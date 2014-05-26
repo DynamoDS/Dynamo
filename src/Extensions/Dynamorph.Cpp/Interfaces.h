@@ -4,54 +4,6 @@
 
 namespace Dynamorph
 {
-    class IVertexShader
-    {
-    public:
-        virtual ~IVertexShader()
-        {
-        }
-    };
-
-    class IFragmentShader
-    {
-    public:
-        virtual ~IFragmentShader()
-        {
-        }
-    };
-
-    class IShaderProgram
-    {
-    public:
-        virtual ~IShaderProgram()
-        {
-        }
-    };
-
-    class IVertexBuffer
-    {
-    public:
-        virtual ~IVertexBuffer()
-        {
-        }
-
-        void LoadData(const std::vector<float>& positions)
-        {
-            this->LoadDataCore(positions);
-        }
-
-        void LoadData(const std::vector<float>& positions,
-            const std::vector<float>& rgbaColors)
-        {
-            this->LoadDataCore(positions, rgbaColors);
-        }
-
-    protected:
-        virtual void LoadDataCore(const std::vector<float>& positions) = 0;
-        virtual void LoadDataCore(const std::vector<float>& positions,
-            const std::vector<float>& rgbaColors) = 0;
-    };
-
     class ITrackBall
     {
     public:
@@ -102,6 +54,79 @@ namespace Dynamorph
         virtual ITrackBall* GetTrackBallCore() const = 0;
     };
 
+    class IVertexShader
+    {
+    public:
+        virtual ~IVertexShader()
+        {
+        }
+    };
+
+    class IFragmentShader
+    {
+    public:
+        virtual ~IFragmentShader()
+        {
+        }
+    };
+
+    class IShaderProgram
+    {
+    public:
+        virtual ~IShaderProgram()
+        {
+        }
+
+        void BindModelMatrixUniform(const std::string& name)
+        {
+            this->BindModelMatrixUniformCore(name);
+        }
+
+        void BindViewMatrixUniform(const std::string& name)
+        {
+            this->BindViewMatrixUniformCore(name);
+        }
+
+        void BindProjMatrixUniform(const std::string& name)
+        {
+            this->BindProjMatrixUniformCore(name);
+        }
+
+        void ApplyTransformation(const ICamera* pCamera) const
+        {
+        }
+
+    protected:
+        virtual void BindModelMatrixUniformCore(const std::string& name) = 0;
+        virtual void BindViewMatrixUniformCore(const std::string& name) = 0;
+        virtual void BindProjMatrixUniformCore(const std::string& name) = 0;
+        virtual void ApplyTransformationCore(const ICamera* pCamera) const = 0;
+    };
+
+    class IVertexBuffer
+    {
+    public:
+        virtual ~IVertexBuffer()
+        {
+        }
+
+        void LoadData(const std::vector<float>& positions)
+        {
+            this->LoadDataCore(positions);
+        }
+
+        void LoadData(const std::vector<float>& positions,
+            const std::vector<float>& rgbaColors)
+        {
+            this->LoadDataCore(positions, rgbaColors);
+        }
+
+    protected:
+        virtual void LoadDataCore(const std::vector<float>& positions) = 0;
+        virtual void LoadDataCore(const std::vector<float>& positions,
+            const std::vector<float>& rgbaColors) = 0;
+    };
+
     class IGraphicsContext
     {
     public:
@@ -128,7 +153,7 @@ namespace Dynamorph
             this->UninitializeCore();
         }
 
-        ICamera* GetDefaultCamera()
+        ICamera* GetDefaultCamera() const
         {
             return this->GetDefaultCameraCore();
         }
@@ -178,7 +203,7 @@ namespace Dynamorph
     protected:
         virtual void InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
-        virtual ICamera* GetDefaultCameraCore(void) = 0;
+        virtual ICamera* GetDefaultCameraCore(void) const = 0;
 
         virtual IVertexShader* CreateVertexShaderCore(
             const std::string& content) const = 0;

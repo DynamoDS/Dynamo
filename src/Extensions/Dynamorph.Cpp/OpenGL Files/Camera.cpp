@@ -32,13 +32,16 @@ void TrackBall::MouseReleasedCore(int screenX, int screenY)
 
 Camera::Camera() : mpTrackBall(nullptr)
 {
+    this->mModelMatrix = glm::mat4(1.0); // Identity
+    this->mViewMatrix  = glm::mat4(1.0); // Identity
+    this->mProjMatrix  = glm::mat4(1.0); // Identity
 }
 
-void Camera::GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj)
+void Camera::GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const
 {
     model = this->mModelMatrix;
-    view = this->mViewMatrix;
-    proj = this->mProjMatrix;
+    view  = this->mViewMatrix;
+    proj  = this->mProjMatrix;
 }
 
 void Camera::SetViewCore(const float* pEye, const float* pCenter, const float* pUp)

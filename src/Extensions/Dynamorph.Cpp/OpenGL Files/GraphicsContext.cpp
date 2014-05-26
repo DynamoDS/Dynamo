@@ -46,7 +46,8 @@ INITGLPROC(PFNGLCLEARCOLORPROC,                 glClearColor);
 
 GraphicsContext::GraphicsContext() : 
     mRenderWindow(nullptr),
-    mhRenderContext(nullptr)
+    mhRenderContext(nullptr),
+    mpDefaultCamera(nullptr)
 {
 }
 
@@ -108,6 +109,9 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
     }
 
     ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
+
+    // Create the default camera.
+    mpDefaultCamera = new Camera();
 }
 
 void GraphicsContext::UninitializeCore(void)
@@ -122,11 +126,16 @@ void GraphicsContext::UninitializeCore(void)
     // Now that the default context is reset, destroy the render context.
     ::wglDeleteContext(mhRenderContext);
     mhRenderContext = nullptr;
+
+    if (mpDefaultCamera != nullptr) {
+        delete mpDefaultCamera;
+        mpDefaultCamera = nullptr;
+    }
 }
 
-ICamera* GraphicsContext::GetDefaultCameraCore(void)
+ICamera* GraphicsContext::GetDefaultCameraCore(void) const
 {
-    return nullptr;
+    return mpDefaultCamera;
 }
 
 IVertexShader* GraphicsContext::CreateVertexShaderCore(const std::string& content) const

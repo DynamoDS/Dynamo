@@ -109,6 +109,8 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
     };
 
+    class Camera; // Forward declaration.
+
     class GraphicsContext : public Dynamorph::IGraphicsContext
     {
     public:
@@ -117,7 +119,7 @@ namespace Dynamorph { namespace OpenGL {
     protected:
         virtual void InitializeCore(HWND hWndOwner);
         virtual void UninitializeCore(void);
-        virtual ICamera* GetDefaultCameraCore(void);
+        virtual ICamera* GetDefaultCameraCore(void) const;
         virtual IVertexShader* CreateVertexShaderCore(
             const std::string& content) const;
         virtual IFragmentShader* CreateFragmentShaderCore(
@@ -133,11 +135,10 @@ namespace Dynamorph { namespace OpenGL {
     private:
         HWND mRenderWindow;
         HGLRC mhRenderContext;
+        Camera* mpDefaultCamera;
     };
 
-    class Camera; // Forward declaration.
-
-    class TrackBall : Dynamorph::ITrackBall
+    class TrackBall : public Dynamorph::ITrackBall
     {
     public:
         TrackBall(Camera* pCamera);
@@ -151,11 +152,11 @@ namespace Dynamorph { namespace OpenGL {
         Camera* mpCamera;
     };
 
-    class Camera : Dynamorph::ICamera
+    class Camera : public Dynamorph::ICamera
     {
     public:
         Camera();
-        void GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj);
+        void GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const;
 
     protected:
         virtual void SetViewCore(const float* pEye, const float* pTarget, const float* pUp);
@@ -210,8 +211,17 @@ namespace Dynamorph { namespace OpenGL {
         ~ShaderProgram(void);
         void Activate(void) const;
 
+    protected:
+        virtual void BindModelMatrixUniformCore(const std::string& name);
+        virtual void BindViewMatrixUniformCore(const std::string& name);
+        virtual void BindProjMatrixUniformCore(const std::string& name);
+        virtual void ApplyTransformationCore(const ICamera* pCamera) const;
+
     private:
         GLuint mProgramId;
+        GLint mModelMatrixUniform;
+        GLint mViewMatrixUniform;
+        GLint mProjMatrixUniform;
         VertexShader* mpVertexShader;
         FragmentShader* mpFragmentShader;
     };

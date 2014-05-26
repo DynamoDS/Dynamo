@@ -78,7 +78,12 @@ GLuint FragmentShader::CreateShaderIdCore(void) const
 
 ShaderProgram::ShaderProgram(
     VertexShader* pVertexShader, FragmentShader* pFragmentShader) : 
-mProgramId(0), mpVertexShader(pVertexShader), mpFragmentShader(pFragmentShader)
+    mProgramId(0),
+    mModelMatrixUniform(0),
+    mViewMatrixUniform(0),
+    mProjMatrixUniform(0),
+    mpVertexShader(pVertexShader),
+    mpFragmentShader(pFragmentShader)
 {
     mProgramId = GL::glCreateProgram();
     GL::glAttachShader(mProgramId, mpVertexShader->GetShaderId());
@@ -115,4 +120,33 @@ ShaderProgram::~ShaderProgram(void)
 void ShaderProgram::Activate(void) const
 {
     GL::glUseProgram(mProgramId);
+}
+
+void ShaderProgram::BindModelMatrixUniformCore(const std::string& name)
+{
+    mModelMatrixUniform = GL::glGetUniformLocation(mProgramId, name.c_str());
+}
+
+void ShaderProgram::BindViewMatrixUniformCore(const std::string& name)
+{
+    mViewMatrixUniform = GL::glGetUniformLocation(mProgramId, name.c_str());
+}
+
+void ShaderProgram::BindProjMatrixUniformCore(const std::string& name)
+{
+    mProjMatrixUniform = GL::glGetUniformLocation(mProgramId, name.c_str());
+}
+
+void ShaderProgram::ApplyTransformationCore(const ICamera* pCamera) const
+{
+    auto pCameraInternal = dynamic_cast<const Camera *>(pCamera);
+    if (pCameraInternal == nullptr)
+        return;
+
+    glm::mat4 model, view, proj;
+    pCameraInternal->GetMatrices(model, view, proj);
+
+    GL::glUniformMatrix4fv(mModelMatrixUniform, 1, GL_FALSE, glm::value_ptr(model));
+    GL::glUniformMatrix4fv(mViewMatrixUniform, 1, GL_FALSE, glm::value_ptr(view));
+    GL::glUniformMatrix4fv(mProjMatrixUniform, 1, GL_FALSE, glm::value_ptr(proj));
 }

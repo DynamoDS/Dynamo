@@ -98,17 +98,22 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpGraphicsContext->Initialize(mhWndVisualizer);
 
     std::string vs(
-        "#version 150 core                          \n"
-        "                                           \n"
-        "in vec3 inPosition;                        \n"
-        "in vec4 inColor;                           \n"
-        "out vec4 vertColor;                        \n"
-        "                                           \n"
-        "void main(void)                            \n"
-        "{                                          \n"
-        "    gl_Position = vec4(inPosition, 1.0);   \n"
-        "    vertColor = inColor;                   \n"
-        "}                                          \n");
+        "#version 150 core                              \n"
+        "                                               \n"
+        "in vec3 inPosition;                            \n"
+        "in vec4 inColor;                               \n"
+        "out vec4 vertColor;                            \n"
+        "                                               \n"
+        "uniform mat4 model;                            \n"
+        "uniform mat4 view;                             \n"
+        "uniform mat4 proj;                             \n"
+        "                                               \n"
+        "void main(void)                                \n"
+        "{                                              \n"
+        "    vec4 pos = vec4(inPosition, 1.0);          \n"
+        "    gl_Position = proj * view * model * pos;   \n"
+        "    vertColor = inColor;                       \n"
+        "}                                              \n");
 
     std::string fs(
         "#version 150 core                          \n"
@@ -124,7 +129,11 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     // Create shaders and their program.
     auto pvs = mpGraphicsContext->CreateVertexShader(vs);
     auto pfs = mpGraphicsContext->CreateFragmentShader(fs);
+
     mpShaderProgram = mpGraphicsContext->CreateShaderProgram(pvs, pfs);
+    mpShaderProgram->BindModelMatrixUniform("model");
+    mpShaderProgram->BindViewMatrixUniform("view");
+    mpShaderProgram->BindProjMatrixUniform("proj");
 
     std::vector<float> positions;
     float data[] = { 0.0f, 0.5f, 0.0f, 0.5, -0.5, 0.0f, -0.5f, -0.5f, 0.0f };
