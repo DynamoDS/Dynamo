@@ -56,7 +56,7 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
 }
 
 void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
-                                const std::vector<float>& argbColors)
+                                const std::vector<float>& rgbaColors)
 {
     EnsureVertexBufferCreation();
 
@@ -70,10 +70,10 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
         data[vertex].x = positions[posOffset + 0];
         data[vertex].y = positions[posOffset + 1];
         data[vertex].z = positions[posOffset + 2];
-        data[vertex].a = positions[colorOffset + 0];
-        data[vertex].r = positions[colorOffset + 1];
-        data[vertex].g = positions[colorOffset + 2];
-        data[vertex].b = positions[colorOffset + 3];
+        data[vertex].r = rgbaColors[colorOffset + 0];
+        data[vertex].g = rgbaColors[colorOffset + 1];
+        data[vertex].b = rgbaColors[colorOffset + 2];
+        data[vertex].a = rgbaColors[colorOffset + 3];
     }
 
     LoadDataInternal(data);
@@ -97,13 +97,10 @@ void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
     GL::glBufferData(GL_ARRAY_BUFFER, bytes, &vertices[0], GL_STATIC_DRAW);
 
     GL::glEnableVertexAttribArray(0);   // Position
-    // GL::glEnableVertexAttribArray(1);   // Normal
-    // GL::glEnableVertexAttribArray(2);   // Color
-    // GL::glDisableVertexAttribArray(3);  // Disabled
+    GL::glEnableVertexAttribArray(1);   // Color
 
-    GL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, FC2O(0));
-    // GL::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
-    // GL::glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
+    GL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(0));
+    GL::glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
 
     GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
     GL::glBindVertexArray(0);

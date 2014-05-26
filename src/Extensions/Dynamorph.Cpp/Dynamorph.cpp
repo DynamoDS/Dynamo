@@ -98,20 +98,28 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpGraphicsContext->Initialize(mhWndVisualizer);
 
     std::string vs(
-        "#version 150 core                              \n"
-        "in vec3 in_position;                           \n"
-        "void main(void)                                \n"
-        "{                                              \n"
-        "    gl_Position = vec4(in_position, 1.0);      \n"
-        "}                                              \n");
+        "#version 150 core                          \n"
+        "                                           \n"
+        "in vec3 inPosition;                        \n"
+        "in vec4 inColor;                           \n"
+        "out vec4 vertColor;                        \n"
+        "                                           \n"
+        "void main(void)                            \n"
+        "{                                          \n"
+        "    gl_Position = vec4(inPosition, 1.0);   \n"
+        "    vertColor = inColor;                   \n"
+        "}                                          \n");
 
     std::string fs(
-        "#version 150 core                              \n"
-        "out vec4 out_Color;                            \n"
-        "void main(void)                                \n"
-        "{                                              \n"
-        "    out_Color = vec4(1.0, 0.0, 0.0, 1.0);      \n"
-        "}                                              \n");
+        "#version 150 core                          \n"
+        "                                           \n"
+        "in vec4 vertColor;                         \n"
+        "out vec4 outColor;                         \n"
+        "                                           \n"
+        "void main(void)                            \n"
+        "{                                          \n"
+        "    outColor = vertColor;                  \n"
+        "}                                          \n");
 
     // Create shaders and their program.
     auto pvs = mpGraphicsContext->CreateVertexShader(vs);
@@ -123,8 +131,19 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     for (int index = 0; index < _countof(data); ++index)
         positions.push_back(data[index]);
 
+    std::vector<float> colors;
+    float colorData[] = // RGBA array
+    {
+        1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f,
+    };
+
+    for (int index = 0; index < _countof(colorData); ++index)
+        colors.push_back(colorData[index]);
+
     mpVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
-    mpVertexBuffer->LoadData(positions);
+    mpVertexBuffer->LoadData(positions, colors);
 }
 
 void Visualizer::Uninitialize(void)

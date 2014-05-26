@@ -83,7 +83,6 @@ mProgramId(0), mpVertexShader(pVertexShader), mpFragmentShader(pFragmentShader)
     mProgramId = GL::glCreateProgram();
     GL::glAttachShader(mProgramId, mpVertexShader->GetShaderId());
     GL::glAttachShader(mProgramId, mpFragmentShader->GetShaderId());
-    GL::glBindAttribLocation(mProgramId, 0, "in_position");
     GL::glLinkProgram(mProgramId);
 
     GLint result = GL_FALSE;

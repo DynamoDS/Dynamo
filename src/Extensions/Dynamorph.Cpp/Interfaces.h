@@ -33,15 +33,15 @@ namespace Dynamorph
         }
 
         void LoadData(const std::vector<float>& positions,
-            const std::vector<float>& argbColors)
+            const std::vector<float>& rgbaColors)
         {
-            this->LoadDataCore(positions, argbColors);
+            this->LoadDataCore(positions, rgbaColors);
         }
 
     protected:
         virtual void LoadDataCore(const std::vector<float>& positions) = 0;
         virtual void LoadDataCore(const std::vector<float>& positions,
-            const std::vector<float>& argbColors) = 0;
+            const std::vector<float>& rgbaColors) = 0;
     };
 
     class IGraphicsContext
