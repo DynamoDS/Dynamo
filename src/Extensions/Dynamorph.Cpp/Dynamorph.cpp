@@ -188,6 +188,11 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
             HDC deviceContext = BeginPaint(hWnd, &ps); 
             mpGraphicsContext->BeginRenderFrame(deviceContext);
             mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
+
+            // Apply camera transformation.
+            auto pCamera = mpGraphicsContext->GetDefaultCamera();
+            mpShaderProgram->ApplyTransformation(pCamera);
+
             mpGraphicsContext->RenderVertexBuffer(mpVertexBuffer);
             mpGraphicsContext->EndRenderFrame(deviceContext);
             EndPaint(hWnd, &ps);
