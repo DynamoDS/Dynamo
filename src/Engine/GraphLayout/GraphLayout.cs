@@ -8,6 +8,8 @@ namespace GraphLayout
 {
     public class Graph
     {
+        public int MaxWidth = 5;
+
         public HashSet<Node> Nodes = new HashSet<Node>();
         public HashSet<Edge> Edges = new HashSet<Edge>();
 
@@ -37,6 +39,11 @@ namespace GraphLayout
                 if (start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
                     return edge;
             return null;
+        }
+
+        private int GetLayerWidth(int layer)
+        {
+            return Nodes.Count(x => x.Layer == layer);
         }
 
         public bool RemoveCycles()
@@ -157,6 +164,33 @@ namespace GraphLayout
             
             return true;
         }
+
+        public bool AssignLayers()
+        {
+            // This method implements Coffman-Graham layering algorithm.
+            
+            List<Node> OrderedNodes = Nodes.OrderByDescending(x => x.LeftEdges.Count).ToList();
+            HashSet<Node> LayeredNodes = new HashSet<Node>();
+
+            int layer = 1;
+            while (LayeredNodes.Count < OrderedNodes.Count)
+            {
+                // Choose a node with the highest priority (leftmost in the list)
+                // such that all the right edges of the is node connected to U.
+                
+                Node n = OrderedNodes.First(x => x.Layer == 0 &&
+                    x.RightEdges.All(e => LayeredNodes.Contains(e.EndNode)));
+
+                if ((GetLayerWidth(layer) > MaxWidth) || !n.RightEdges.All(e => e.EndNode.Layer < layer))
+                    layer++;
+
+                n.Layer = layer;
+                LayeredNodes.Add(n);
+            }
+
+            Nodes = new HashSet<Node>(OrderedNodes);
+            return true;
+        }
     }
 
     public class Node
@@ -169,7 +203,6 @@ namespace GraphLayout
         public double Height;
 
         public int Layer = 0;
-        public int Lambda = 0;
 
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
         public HashSet<Edge> RightEdges = new HashSet<Edge>();

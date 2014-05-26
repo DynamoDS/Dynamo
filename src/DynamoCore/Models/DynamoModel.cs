@@ -363,6 +363,7 @@ namespace Dynamo.Models
 
             graph.RemoveCycles();
             graph.RemoveTransitiveEdges();
+            graph.AssignLayers();
         }
 
         internal bool CanShowOpenDialogAndOpenResultCommand(object parameter)
