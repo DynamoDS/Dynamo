@@ -51,13 +51,30 @@ GraphicsContext* Camera::GetGraphicsContext(void) const
     return this->mpGraphicsContext;
 }
 
-void Camera::SetViewCore(const float* pEye, const float* pCenter, const float* pUp)
+void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
 {
-    glm::vec3 eye(pEye[0], pEye[1], pEye[2]);
-    glm::vec3 center(pCenter[0], pCenter[1], pCenter[2]);
-    glm::vec3 up(pUp[0], pUp[1], pUp[2]);
+    glm::vec3 eye(
+        pConfiguration->eye[0],
+        pConfiguration->eye[1],
+        pConfiguration->eye[2]);
+
+    glm::vec3 center(
+        pConfiguration->center[0],
+        pConfiguration->center[1],
+        pConfiguration->center[2]);
+
+    glm::vec3 up(
+        pConfiguration->up[0],
+        pConfiguration->up[1],
+        pConfiguration->up[2]);
 
     this->mViewMatrix = glm::lookAt(eye, center, up);
+
+    this->mProjMatrix = glm::perspective(
+        pConfiguration->fieldOfView,
+        pConfiguration->aspectRatio,
+        pConfiguration->nearClippingPlane,
+        pConfiguration->farClippingPlane);
 }
 
 Dynamorph::ITrackBall* Camera::GetTrackBallCore() const

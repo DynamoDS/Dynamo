@@ -135,6 +135,16 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpShaderProgram->BindTransformMatrix(TransMatrix::View, "view");
     mpShaderProgram->BindTransformMatrix(TransMatrix::Projection, "proj");
 
+    auto pCamera = mpGraphicsContext->GetDefaultCamera();
+    {
+        CameraConfiguration camConfig;
+        camConfig.SetEyePoint(1.0f, 1.0f, 1.0f);
+        camConfig.SetCenterPoint(0.0f, 0.0f, 0.0f);
+        camConfig.SetUpVector(0.0f, 1.0f, 0.0f);
+        camConfig.aspectRatio = ((float) width) / height;
+        pCamera->Configure(&camConfig);
+    }
+
     std::vector<float> positions;
     float data[] = { 0.0f, 0.5f, 0.0f, 0.5, -0.5, 0.0f, -0.5f, -0.5f, 0.0f };
     for (int index = 0; index < _countof(data); ++index)

@@ -160,7 +160,7 @@ namespace Dynamorph { namespace OpenGL {
         GraphicsContext* GetGraphicsContext(void) const;
 
     protected:
-        virtual void SetViewCore(const float* pEye, const float* pTarget, const float* pUp);
+        virtual void ConfigureCore(const CameraConfiguration* pConfiguration);
         virtual Dynamorph::ITrackBall* GetTrackBallCore() const;
 
     private:

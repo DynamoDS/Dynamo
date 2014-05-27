@@ -32,6 +32,54 @@ namespace Dynamorph
         virtual void MouseReleasedCore(int screenX, int screenY) = 0;
     };
 
+    struct CameraConfiguration
+    {
+        CameraConfiguration()
+        {
+            memset(this, 0, sizeof(CameraConfiguration));
+            eye[0] = eye[1] = eye[2] = 10.0f;
+            center[0] = center[1] = center[2] = 0.0f;
+            up[1] = 1.0f; // Default up-vector is Y-axis
+
+            fieldOfView = 45.0f;
+            aspectRatio = 3.0f / 2.0f;
+            nearClippingPlane = 1.0f;
+            farClippingPlane = 1000.0f;
+        }
+
+        void SetEyePoint(float x, float y, float z)
+        {
+            eye[0] = x;
+            eye[1] = y;
+            eye[2] = z;
+        }
+
+        void SetCenterPoint(float x, float y, float z)
+        {
+            center[0] = x;
+            center[1] = y;
+            center[2] = z;
+        }
+
+        void SetUpVector(float x, float y, float z)
+        {
+            up[0] = x;
+            up[1] = y;
+            up[2] = z;
+        }
+
+        // View matrix.
+        float eye[3];
+        float center[3];
+        float up[3];
+
+        // Projection matrix.
+        float fieldOfView;
+        float aspectRatio;
+        float nearClippingPlane;
+        float farClippingPlane;
+    };
+
     class ICamera
     {
     public:
@@ -39,9 +87,9 @@ namespace Dynamorph
         {
         }
 
-        void SetView(const float* pEye, const float* pCenter, const float* pUp)
+        void Configure(const CameraConfiguration* pConfiguration)
         {
-            this->SetViewCore(pEye, pCenter, pUp);
+            this->ConfigureCore(pConfiguration);
         }
 
         ITrackBall* GetTrackBall() const
@@ -50,7 +98,7 @@ namespace Dynamorph
         }
 
     protected:
-        virtual void SetViewCore(const float* pEye, const float* pCenter, const float* pUp) = 0;
+        virtual void ConfigureCore(const CameraConfiguration* pConfiguration) = 0;
         virtual ITrackBall* GetTrackBallCore() const = 0;
     };
 

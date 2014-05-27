@@ -20,6 +20,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Add slider to work with synthesized graph
 - [ ] Enable slider to work with C++ Visualizer
 - [ ] Implement Track Ball class for navigation
+- [ ] Update aspect ratio when window is sized
 
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
