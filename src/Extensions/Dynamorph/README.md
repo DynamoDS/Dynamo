@@ -19,6 +19,10 @@ Dynamorph, morph the heck out of your design.
 - [ ] Add shader uniform to control per-vertex alpha
 - [ ] Add slider to work with synthesized graph
 - [ ] Enable slider to work with C++ Visualizer
+
+- [ ] Move shader source to external files
+- [ ] Implement logging mechanism
+- [ ] Display OpenGL logs in Dynamorph window
 - [ ] Implement Track Ball class for navigation
 - [ ] Update aspect ratio when window is sized
 - [ ] Implement mini-ball for tightest bounding box
