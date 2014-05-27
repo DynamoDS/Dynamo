@@ -89,11 +89,11 @@ namespace DynamoLauncher
                 return;
             }
 
-            Console.WriteLine(modelPath);
-            Console.WriteLine(dynPath);
-            Console.WriteLine(Settings.Default.assemblyPath);
-            Console.WriteLine(Settings.Default.revitPath);
-            Console.ReadKey();
+            //Console.WriteLine(modelPath);
+            //Console.WriteLine(dynPath);
+            //Console.WriteLine(Settings.Default.assemblyPath);
+            //Console.WriteLine(Settings.Default.revitPath);
+            //Console.ReadKey();
 
             // Write the journal and the addin into the same
             // directory as you are passing in for the test
@@ -113,6 +113,8 @@ namespace DynamoLauncher
             Console.WriteLine("Running {0}", journalPath);
             var process = new Process { StartInfo = startInfo };
             process.Start();
+
+            Settings.Default.Save();
         }
 
         private static void SetDefaultDynamoAssemblyPath()
@@ -166,7 +168,7 @@ namespace DynamoLauncher
                                             "Jrn.Data \"MRUFileName\"  , \"{0}\" \n" +
                                             //"Jrn.RibbonEvent \"Execute external command:{1}:{2}\" \n" +
                                             "Jrn.RibbonEvent \"Execute external command:CustomCtrl_%CustomCtrl_%Add-Ins%Visual Programming Alpha%Dynamo 0.7 Alpha:Dynamo.Applications.DynamoRevit\"\n"+
-                                            "Jrn.Data \"APIStringStringMapJournalData\", 1, \"dynPath\", \"{1}\"",
+                                            "Jrn.Data \"APIStringStringMapJournalData\", 2, \"dynPath\", \"{1}\", \"debug\", \"True\"",
                     modelPath, dynPath);
 
                 tw.Write(journal);
