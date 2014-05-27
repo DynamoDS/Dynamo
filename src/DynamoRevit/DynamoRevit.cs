@@ -194,6 +194,14 @@ namespace Dynamo.Applications
 
                         dynamoView.Show();
 
+                        if (revit.JournalData != null)
+                        {
+                            if (revit.JournalData.ContainsKey("dynPath"))
+                            {
+                                dynamoController.DynamoModel.OpenWorkspace(revit.JournalData["dynPath"]);
+                            }
+                        }
+
                         dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
                         dynamoView.Closing += dynamoView_Closing;
                         dynamoView.Closed += dynamoView_Closed;

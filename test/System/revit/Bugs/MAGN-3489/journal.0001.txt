@@ -1,0 +1,734 @@
+' 0:< Initial VM: Avail 134217485 MB, Used 18 MB, Peak 41; RAM: Avail 3328 MB, Used 38 MB, Peak 41 
+'C 27-May-2014 14:34:35.941;   0:< started recording journal file 
+' Build: 20130308_1515(x64)
+Dim Jrn
+Set Jrn = CrsJournalScript
+' 0:<  ->desktop InitApplication 
+' 0:<  <-desktop InitApplication 
+' 0:<  ->desktop InitNativeInstance 
+' 0:< Options::loadOptions: m_strDataLibraryLocations=Imperial Library=C:\ProgramData\Autodesk\RAC 2014\Libraries\US Imperial\,Imperial Detail Library=C:\ProgramData\Autodesk\RAC 2014\Libraries\US Imperial\Detail Items (defaultLib==\Library) 
+' 0:< ::0:: Delta VM: Avail -41 -> 134217444 MB, Used +5 -> 23 MB; RAM: Avail -13 -> 3316 MB, Used +12 -> 50 MB, Peak +12 -> 50 MB 
+'C 27-May-2014 14:34:36.298;   0:< License initialization complete 
+' 0:< ::0:: Delta VM: Avail -942 -> 134216503 MB, Used +164 -> 188 MB, Peak +148 -> 190 MB; RAM: Avail -187 -> 3129 MB, Used +197 -> 248 MB, Peak +198 -> 249 MB 
+' 0:< Autodesk Revit Architecture 2014 
+' 0:< 64-bit load point = C:\Program Files\Autodesk\Revit Architecture 2014 
+' 0:< this journal = C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\journal.0001.txt 
+' 0:< ::0:: Delta VM: Avail -54 -> 134216449 MB, Used +9 -> 197 MB, Peak +38 -> 228 MB; RAM: Avail -15 -> 3115 MB, Used +13 -> 261 MB, Peak +17 -> 267 MB 
+' 0:< Journal Init 
+' 0:< Log Summary 
+' 0:< .Count 
+' 0:< ...ProjectRecsCreated = 1 
+' 0:< .ThreadPool 
+' 0:< ...ActivePoolSize = 21 
+' 0:< ...ConfiguredPoolSize = automatic 
+' 0:< ...ParallelCores = 8 
+' 0:< ...RequestedPoolSize = automatic 
+' 0:< .Tuning 
+' 0:< ...ElemTable = 1 (Serial except when multithreaded) 
+' 0:< ...Global = 0 (Scalable) 
+' 0:< ...PoolGlobal = 1 (Pool) 
+' 0:< ...PoolLocking = 1 (Locking) 
+' 0:< ...PoolScalable = 1 (Pool) 
+' 0:< ...PoolTreeNodes = 0 (Allocator) 
+' 0:< ...Scalable = 0 (Scalable) 
+'H 27-May-2014 14:34:49.828;   0:< 
+Jrn.Data "JournalDefaultTemplate"  _
+        , "Architectural Template=$AllUsersAppData\Templates\US Imperial\default.rte, Construction Template=$AllUsersAppData\Templates\US Imperial\Construction-Default.rte"
+'H 27-May-2014 14:34:49.829;   0:< 
+Jrn.Data "JournalDefaultViewDiscipline"  _
+        , "Architecture"
+'H 27-May-2014 14:34:49.829;   0:< 
+Jrn.Directive "Version"  _
+        , "2014.000", "2.143"
+'H 27-May-2014 14:34:49.830;   0:< 
+Jrn.Directive "Username"  _
+        , "Ian"
+'H 27-May-2014 14:34:49.830;   0:< 
+Jrn.Directive "CategoryDisciplineFilter"  _
+        , -1
+'H 27-May-2014 14:34:49.830;   0:< 
+Jrn.Directive "DisciplineOption"  _
+        , 7677
+'H 27-May-2014 14:34:49.830;   0:< 
+Jrn.Directive "TabDisplayOptions"  _
+        , "StayOnModifyInProject", 0
+'H 27-May-2014 14:34:49.831;   0:< 
+Jrn.Directive "TabDisplayOptions"  _
+        , "StayOnModifyInFamily", 1
+'H 27-May-2014 14:34:49.831;   0:< 
+Jrn.Directive "TabDisplayOptions"  _
+        , "ActiveCtOnSelection", 1
+'H 27-May-2014 14:34:49.831;   0:< 
+Jrn.Directive "AllowLinkSelection"  _
+        , 1
+'H 27-May-2014 14:34:49.831;   0:< 
+Jrn.Directive "AllowFaceSelection"  _
+        , 0
+'H 27-May-2014 14:34:49.832;   0:< 
+Jrn.Directive "AllowUnderlaySelection"  _
+        , 1
+'H 27-May-2014 14:34:49.832;   0:< 
+Jrn.Directive "AllowPinnedSelection"  _
+        , 1
+' 0:< ::0:: Delta VM: Avail -19 -> 134216431 MB, Used +2 -> 200 MB; RAM: Avail -2 -> 3113 MB, Used +3 -> 265 MB 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(a9bdf0fd-2632-429e-bc35-50ebc2b824d2); VendorId(ADSK); Description(Navisworks Export Service) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(de6db8de-dea6-40bd-9503-4ffe62ff6143); VendorId(ADSK); Description(The external service to view and modify code checking parameter in analytical elements.) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(d8b95737-f943-414c-9ad7-86785bf1acbc); VendorId(ADSK); Description(IFC) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(d8b95737-f943-414c-9ad7-86785bf1acbc); ServerId(ef8d0493-7f36-42b5-b9aa-8aaac716482b); Name(Default IFC); VendorId(ADSK); Description(Default IFC) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(98d317e2-e943-4cc0-a3da-2edf32a5d942); VendorId(ADSK); Description(IFC) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(98d317e2-e943-4cc0-a3da-2edf32a5d942); ServerId(660a7370-f6d6-43c8-8456-6b2eea785110); Name(Default IFC); VendorId(ADSK); Description(Default IFC) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540); VendorId(ADSK); Description(Duct fitting and accessory pressure drop service) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780); VendorId(ADSK); Description(Pipe fitting and accessory pressure drop service) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0); VendorId(ADSK); Description(Duct Straight Segment Pressure Drop Calculation) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(62d13e0c-9fe1-4d8e-a0c7-1f93d24cf3f3); VendorId(ADSK); Description(Pipe Straight Segment Pressure Drop Calculation) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(bf0da776-5307-4747-8285-f358e92a90d0); VendorId(ADSK); Description(Convert Fixture Units to Flow for Plumbing Fixtures, which is applicable to Domestic Water System Flow Calculation) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(52009bda-c817-4aef-aa31-36dc3742516e); VendorId(ADSK); Description(Duct fitting and accessory pressure drop UI service) } 
+' 0:< API_SUCCESS { Registered an external service.: ServiceId(1931b323-1d29-4083-b1ce-bfdcddd011af); VendorId(ADSK); Description(Pipe fitting and accessory pressure drop UI service) } 
+' 0:< ::0:: Delta VM: Avail -74 -> 134216357 MB, Used +19 -> 219 MB; RAM: Avail -26 -> 3088 MB, Used +26 -> 292 MB, Peak +26 -> 293 MB 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(bf0da776-5307-4747-8285-f358e92a90d0); ServerId(56121d7d-e1d7-42a3-bed8-f4d1d32058c8); Name(Plumbing Fixture Flow); VendorId(ADSK); Description(Calculation of flow using the Plumbing Fixture Flow method.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(62d13e0c-9fe1-4d8e-a0c7-1f93d24cf3f3); ServerId(ea275fb1-5d7b-47d6-b828-bf856df9bfd5); Name(Pipe Pressure Drop); VendorId(ADSK); Description(Calculation of pressure drop using Darcy-Weisbach method.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0); ServerId(042a10e0-8d24-46a4-9596-d192b3125d0c); Name(Duct Pressure Drop); VendorId(ADSK); Description(Calculation of duct pressure drop using Darcy method.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540); ServerId(76eff5da-2e71-45f7-b940-cc5716328ba0); Name(Not Defined); VendorId(ADSK); Description(The Pressure Drop on the fitting will be treated as 0.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540); ServerId(8baf7d75-8b9b-46d0-b8ce-3ad1c19e6b19); Name(Coefficient from ASHRAE Table); VendorId(ADSK); Description(Version 5.0.0 of the ASHRAE duct fitting database has been implemented for duct fittings. When using this calculation method, the duct fitting coefficient will be read from the mapped ASHRAE table.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540); ServerId(5a598293-1504-46cc-a9c0-de55c82848b9); Name(Specific Coefficient); VendorId(ADSK); Description(Customize the Loss Coefficient on the fitting, then using the following method to calculate duct fitting pressure drop. this method only available for two connector fittings, like elbow, transitions, etc.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540); ServerId(46245996-eebb-4536-ac17-9c1cd917d8cf); Name(Specific Loss); VendorId(ADSK); Description(Customize the Pressure Drop on the fitting, this method only available for two connector fittings, like elbow, transitions, etc.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780); ServerId(61e7b8e1-16d1-4fe4-82f0-327af736323f); Name(Not Defined); VendorId(ADSK); Description(The Pressure Drop on the fitting will be treated as 0.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780); ServerId(51dd5e98-a9dd-464b-b286-4a37953610bf); Name(K Coefficient from Table); VendorId(ADSK); Description(CIBSE/ASHRAE/Crane standards are used for pipe fitting loss definition based on the pipe fitting types.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780); ServerId(32d58662-b467-4f7b-b728-f6ad7b7ba5e3); Name(Specific Coefficient); VendorId(ADSK); Description(Customize the Loss Coefficient on the fitting, then using the following method to calculate pipe fitting pressure drop. This method only available for two connector fittings, like elbow, transitions, etc.) } 
+' 0:< API_SUCCESS { An external server has been registered.: ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780); ServerId(16f4f7be-0ac0-461d-a9a4-1d3511cd280e); Name(Specific Loss); VendorId(ADSK); Description(Customize the Pressure Drop on the fitting, this method only available for two connector fittings, like elbow, transitions, etc.) } 
+' 0:< Added new API external application RaaS, class Autodesk.RaaS.RevitAddin.EApplication, assembly RaaSApplication.dll, vendorId ADSK, vendor description Autodesk, www.autodesk.com. 
+' 0:< API registering ApplicationClosing event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_IN_CLOUD' Executed implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit Architecture 2014\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_IN_CLOUD' CanExecute implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit Architecture 2014\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_GALLERY' Executed implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit Architecture 2014\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_GALLERY' CanExecute implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit Architecture 2014\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< Added new API external application AutoLoad, class AutoLoader.AutoLoader, assembly AutoLoader.dll, vendorId ADSK, vendor description . 
+'H 27-May-2014 14:34:55.170;   0:< 
+Jrn.Directive "IdleTimeTaskSymbol"  _
+        , "0.ExternalEvent"
+' 0:< Added new API external application Dynamo, class Dynamo.Applications.VersionLoader, assembly C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitVersionSelector.dll, vendorId ADSK, vendor description Autodesk. 
+' 0:< Added new API pushbutton 6400 name  text Dynamo 0.6.3.7996 class Dynamo.Applications.Start06x assembly C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitVersionSelector.dll 
+' 0:< Added new API pushbutton 6401 name  text Dynamo 0.7.0.21354 class Dynamo.Applications.Start07x assembly C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitVersionSelector.dll 
+' 0:< API registering Idling event by application Dynamo (16abab2f-fe6c-4a10-b7f2-475728f66831). 
+'H 27-May-2014 14:34:55.431;   0:< 
+Jrn.Directive "IdleTimeTaskSymbol"  _
+        , "1.OnIdleTask"
+' 0:< Added new API pushbutton 6402 name  text Dynamo 0.7 Alpha class Dynamo.Applications.DynamoRevit assembly C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitDS.dll 
+' 0:< Third Party Updater 'Dynamo: Sun and Shadow Settings Updater' registered for all documents. 
+' 0:< ::0:: Delta VM: Avail -10 -> 134216347 MB, Used -4 -> 216 MB; RAM: Avail -9 -> 3079 MB, Used +6 -> 299 MB, Peak +16 -> 309 MB 
+'C 27-May-2014 14:34:57.321;   0:< ->processShellCommand 
+'C 27-May-2014 14:34:57.322;   0:< <-processShellCommand 
+' 0:<  ->DesktopMFCApp::doStartupWarnings 
+'C 27-May-2014 14:34:57.360;   0:< manage licensing 
+' 0:< License mode: Standalone 
+' 0:< Status: Your license will expire in 694 days. 
+' 0:< Type: Standalone - Locked 
+' 0:< Usage: Not For Resale Version 
+' 0:< Behavior: Extendable 
+' 0:< Expiration: Wednesday, April 20, 2016 
+'C 27-May-2014 14:34:58.034;   0:< manage involvement 
+'C 27-May-2014 14:34:58.239;   0:< manage debug modes 
+'C 27-May-2014 14:34:58.239;   0:< MFCApp::testGraphicsHardware 
+' 0:< ::0:: Delta VM: Avail -47 -> 134216300 MB, Used +2 -> 219 MB; RAM: Avail -8 -> 3071 MB, Used +8 -> 307 MB 
+' 0:< Revit Graphics Information 
+' 0:< 	Current Mode : DirectX Hardware 
+' 0:< 	Use Hardware: ON 
+' 0:< 	Use Overlays : ON 
+' 0:< useNullDevice=false 
+' 0:< START CanUseHardware(forced) 
+' 1:< ::0:: Delta VM: Avail -53 -> 134216248 MB, Used +35 -> 254 MB, Peak +27 -> 256 MB; RAM: Avail -12 -> 3060 MB, Used +12 -> 320 MB, Peak +12 -> 321 MB 
+' 1:< DX Device: DirectX 11, Hardware 
+'C 27-May-2014 14:34:58.454;   1:< START video card certification 
+' 1:< ::0:: Delta VM: Avail -16 -> 134216232 MB, Used +0 -> 255 MB, Peak +3 -> 259 MB; RAM: Avail -3 -> 3057 MB, Used +0 -> 321 MB, Peak +3 -> 325 MB 
+' 1:< 
+'Current driver version: 13.250.28.1000
+'Certified driver(s):  
+' 1:< VIDEO CARD ENVIRONMENT: CARD="AMD Radeon HD 6750M" ManufacturerID="1002" DeviceID="6741" osID="8000" DRIVER="13.250.28.1000" DEVICE="DX11" FL_Caps="50" (Shader Model) 
+'C 27-May-2014 14:34:58.600;   1:< FINISH video card certification 
+'  0.327504   1:<<<CanUseHardware(forced) 
+' 0:< 
+'Can use hardware=y
+'Hardware support flags:
+'FeatureLevelLow=n
+'DrvOlderThanTested=n
+'DrvNewerThanTested=n
+'CardIsNotListed=y
+'NotCertifiedEnv=n
+'3GBSwitchIsOn=n
+'SoftwareModeForced=n 
+' 0:< FINISH CanUseHardware(forced) 
+'C 27-May-2014 14:34:58.600;   0:< postConditionalWarnings 
+'C 27-May-2014 14:34:58.601;   0:< giveAtomRegistrationWarnings 
+'C 27-May-2014 14:34:58.601;   0:< warnings->consumeAll 
+'C 27-May-2014 14:34:58.601;   0:< Process result of DebugModes-Changed Task Dialog 
+'C 27-May-2014 14:34:58.601;   0:< isMaterialLibraryAvailable 
+'C 27-May-2014 14:34:58.602;   0:< start up warnings for AddIns 
+' 0:<  <-DesktopMFCApp::doStartupWarnings 
+' 0:<  <-desktop InitNativeInstance 
+' 0:<  ->desktop InitManagedInstance 
+' 0:<  <-desktop InitManagedInstance 
+'C 27-May-2014 14:34:58.933;   0:< appPriv idle 
+'C 27-May-2014 14:34:59.141;   0:< started journal file playback of "C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\MAGN-3489.txt" 
+' 0:< OPERATING SYSTEM INFORMATION:  
+' 0:<    BuildNumber : 9600 
+' 0:<    BuildType : Multiprocessor Free 
+' 0:<    Caption : Microsoft Windows 8.1 Pro 
+' 0:<    CodeSet : 1252 
+' 0:<    CountryCode : 1 
+' 0:<    FreePhysicalMemory : 3130468 
+' 0:<    FreeSpaceInPagingFiles : 1151516 
+' 0:<    FreeVirtualMemory : 2646808 
+' 0:<    MaxProcessMemorySize : 137438953344 
+' 0:<    OSLanguage : 1033 
+' 0:<    OSType : 18 
+' 0:<    ServicePackMajorVersion : 0 
+' 0:<    ServicePackMinorVersion : 0 
+' 0:<    TotalVirtualMemorySize : 9607916 
+' 0:<    TotalVisibleMemorySize : 8297196 
+' 0:<    Version : 6.3.9600 
+' 0:<    Process affinity mask : FF 
+' 0:<    System affinity mask : FF 
+ ' 23.244761  0:<<Event timer 
+ 'E 27-May-2014 14:34:59.149;   0:< 
+ Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
+ 'H 27-May-2014 14:34:59.151;   0:< 
+ Jrn.Data "MRUFileName"  _
+         , "inst+param+mass+families.rvt"
+ ' 1:< ::1:: Delta VM: Avail -21 -> 134216212 MB, Used +1 -> 257 MB; RAM: Avail -2 -> 3056 MB, Used +3 -> 325 MB 
+ ' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+ ' 1:< RAM Statistics:     3056 /     8102       325=InUse      325=Peak  
+ ' 1:< VM  Statistics: 134216212 / 134217727       257=InUse      259=Peak  
+ 'C 27-May-2014 14:34:59.236;   2:< File: Open 
+ ' 3:< DataStorageInterface created 0x0000000013DCD8F0 
+ ' 3:< Connecting session [$4b7274d7] to Worksharing Log [C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\journal.0001.txt] 
+ '  0.000068      4:<<<WorksharingLog::getSlog [] 
+ ' 3:< Additional IP address/name found for host Ian: fe80::1a8:b871:42df:1f17%3  
+ ' 3:< Additional IP address/name found for host Ian: fe80::b8f4:e57f:54a7:d2e5%8  
+ ' 3:< Additional IP address/name found for host Ian: 10.35.153.1  
+ ' 3:< Additional IP address/name found for host Ian: 192.168.0.5  
+ ' 3:< Additional IP address/name found for host Ian: 192.168.0.6  
+ ' 4:< MasterLocks 0x000000001408CFE0 ensureAppropriateStorage DataStorageInterface WAS m_oDataStorage 0x0000000013DCD8F0 m_pDataStorage 0x0000000013DCD8F0 
+ ' 4:< DataStorageInterface created 0x0000000013DCC0F0 
+ ' 4:< DataStorageInterface destroyed 0x0000000013DCD8F0 
+ ' 4:< MasterLocks 0x000000001408CFE0 ensureAppropriateStorage DataStorageInterface m_oDataStorage 0x0000000013DCC0F0 m_pDataStorage 0x0000000013DCC0F0 
+ ' 4:< MasterLocks 0x000000001408CFE0 DummyStorage stole m_oDataStorage 0x0000000013DCC0F0 but left m_pDataStorage 0x0000000013DCC0F0 
+ ' 4:< LPSTORAGE ACQUIRED: DocumentStorage=0x139aaa20, plpRootStg=0x139aaae8, lpRootStg=0x13fc8750 
+ '  0.005837      4:<<acquireFileLock 
+ '  0.009109     3:<<OpenDocumentTask::acquireFileLock 
+ '  0.373685        6:<<<DictionaryAnalysis::initialize 
+ '  0.070082        6:<<<loadAllClasses 
+ '  0.000211        6:<<<RegisterPreDocLoadCallback::invokeCallbacks 
+ '  0.000176         7:<<<LoadModel DSI 
+ '  0.000385        6:<<loading DocumentStorageIndex 
+  'Warning: Event timer reset skipped - DocumentStorageIndexImpl::loadDocument()  
+  'E 27-May-2014 14:34:59.693;   6:< 
+  ' [Jrn.BasicFileInfo] Rvt.Attr.Worksharing: Not enabled Rvt.Attr.UserName:  Rvt.Attr.CentralModelPath:  Rvt.Attr.RevitBuildVersion: Autodesk Revit 2014 (Build: 20130308_1515(x64)) Rvt.Attr.LastSavePath: C:\Users\kronz\Documents\inst param mass families.rvt Rvt.Attr.ProjectSpark: notProjectSpark Rvt.Attr.LocaleWhenSaved: ENU 
+  ' 7:< [ISL] On open, Adler Checksum: 0x671f0c8c [C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\inst+param+mass+families.rvt] 
+  '  0.004807         7:<<<Checking Checksum 
+  ' 6:< [ISL] Read last modification time: 27-May-2014 12:34:24 (UTC: 27-May-2014 19:34:24) 
+  ' 6:< ::2:: Delta VM: Avail -4 -> 134216208 MB, Used +1 -> 258 MB; RAM: Avail -12 -> 3044 MB, Used +9 -> 334 MB, Peak +9 -> 334 MB 
+  '  0.024074         7:<<<app infos and other global data 
+  ' 6:< File was saved in Autodesk Revit 2014 (Build: 20130308_1515(x64)) 
+  '  0.000447          8:<<<ET::repairModificationDatesOutOfSequence 
+  ' 7:< Loaded ElemTable: Size=12454 
+  ' 6:< ::2:: Delta VM: Avail -4 -> 134216204 MB, Used +4 -> 262 MB, Peak +15 -> 274 MB; RAM: Avail -3 -> 3041 MB, Used +5 -> 340 MB, Peak +5 -> 340 MB 
+  '  0.124372         7:<<ElemTable 
+  '  0.000252         7:<<<ContentDocuments 
+  '  0.012783         7:<<<History 
+  '  0.000299         7:<<<increment table 
+  '  0.000202         7:<<<WorksetTable 
+  '  0.000023         7:<<<partitionStorageLock.open 
+  '  0.000093          8:<<<loadLatestVersionsEstimate 
+  ' 8:< ::2:: Delta VM: Avail -77 -> 134216128 MB, Used +32 -> 295 MB, Peak +20 -> 295 MB; RAM: Avail -13 -> 3029 MB, Used +17 -> 357 MB, Peak +17 -> 357 MB 
+  ' 8:< Loaded elemStream#3: uncompSize=7890254, compSize=1363449, count=12454 
+  '  0.166688          8:<<<loadLatestVersion 
+  '  0.009744           9:<<<ElementReceiver::commitSwapouts()  
+  '  0.009979          8:<<els.commit 
+  '  0.177260         7:<<loadSelectedPartitions 
+  '  0.350813        6:<<DocumentStorageIndexImpl::loadDocument()  
+  ' 7:< Current project ADocument version:2659 
+  '  0.253621           9:<<<updating dependencies in delayed deletion 
+  '  0.001315           9:<<<getAllNonexistentParents in delayed deletion 
+  '  0.022078           9:<<<findAppInfoNonexistentParents in delayed deletion 
+  '  0.277648          8:<<delayed deletion 
+  '  0.003645          8:<<<forceResetOfElemRecOwnerCache 
+  '  0.347206         7:<<ADocumentUpgrade::docUpgrade 
+  '  1.146103      4:<<LoadSerialize 
+  '  1.146493     3:<<LoadFromStorage 
+  '  0.006265      4:<<<forceResetOfElemRecOwnerCache 
+  ' 4:< Unnecessary nesting;Document\PostLoadDocument.cpp;160;String_Revit_DelayedPropagatoinRegen ;N++E(N); 
+  ' 5:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+  ' 5:< RAM Statistics:     3026 /     8102       362=InUse      362=Peak  
+  ' 5:< VM  Statistics: 134216128 / 134217727       294=InUse      296=Peak  
+  ' 5:< 000000000F42A210 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< 000000000F42A328 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< 000000000F42A288 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< 000000000F42A238 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< 000000000F42A2D8 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< 000000000F42A300 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< 000000000F42A260 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< 000000000F42A2B0 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 5:< Element Expansion Statistics: 
+  ' 5:<  0% Opening Plans                    (0) 
+  ' 5:<  0% Opening RC Plans                 (0) 
+  ' 5:<  0% Opening 3d Views                 (0) 
+  ' 5:<  0% Opening Elevations and Sections  (0) 
+  ' 5:<  0% In Regnerate                     (0) 
+  ' 5:<  0% In Autojoin                      (0) 
+  ' 5:<  0% In Overlap Checking              (0) 
+  ' 5:<  0% Reviewing PostedWarnings         (0) 
+  ' 5:<  100% Other                            (436953) 
+  ' 5:< total bytes expanded: 436953 
+  ' 5:< ;EES;0;0;0;0;0;0;0;0;100; 
+  '  0.000021        6:<<<ppg constructor 
+  '  0.000021        6:<<<updating dependencies in dp 
+  '  0.000008         7:<<<updating dependencies in delayed deletion 
+  '  0.001393         7:<<<getAllNonexistentParents in delayed deletion 
+  '  0.025801         7:<<<findAppInfoNonexistentParents in delayed deletion 
+  '  0.027672        6:<<delayed deletion 
+  '  0.062105       5:<<ADocumentMerge::delayedPropagation 
+  '  0.000340        6:<<<EndOrAbortUndoTransaction() -- trackers regen;DOPT; 
+  '  0.000067        6:<<<EndOrAbortUndoTransaction()--AtomViewReferencingUpdate();DOPT; 
+  '  0.000007         7:<<<EndOrAbortUndoTransaction()--end of transaction checks--invisible elements;DOPT; 
+  ' 6:< Connecting session [$f2a033f1] to Worksharing Log [C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\journal.0001.txt] 
+  '  0.000043         7:<<<WorksharingLog::getSlog [] 
+  ' 6:< Additional IP address/name found for host Ian: fe80::1a8:b871:42df:1f17%3  
+  ' 6:< Additional IP address/name found for host Ian: fe80::b8f4:e57f:54a7:d2e5%8  
+  ' 6:< Additional IP address/name found for host Ian: 10.35.153.1  
+  ' 6:< Additional IP address/name found for host Ian: 192.168.0.5  
+  ' 6:< Additional IP address/name found for host Ian: 192.168.0.6  
+  '  0.000042          8:<<<;PERF;MISC;regenerating 
+  '  0.002946        6:<<EndOrAbortUndoTransaction()--end of transaction checks;DOPT;/ALL_GAPS   0.002854/TurnOff_GAPs 5% 
+  '  0.003580        6:<<<ElemTable::expandElementsInParallel 
+  '  0.008426       5:<<EndOrAbortUndoTransaction();DOPT;/ALL_GAPS   0.001493/TurnOff_GAPs 3% 
+  '  0.075053      4:<<delayed propagation on open 
+  '  0.000018      4:<<<updating dependencies on open 
+  '  0.000019        6:<<<EndOrAbortUndoTransaction() -- trackers regen;DOPT; 
+  '  0.000005        6:<<<EndOrAbortUndoTransaction()--AtomViewReferencingUpdate();DOPT; 
+  '  0.000002         7:<<<EndOrAbortUndoTransaction()--end of transaction checks--invisible elements;DOPT; 
+  '  0.000013          8:<<<;PERF;MISC;regenerating 
+  '  0.000391        6:<<EndOrAbortUndoTransaction()--end of transaction checks;DOPT;/ALL_GAPS   0.000375/TurnOff_GAPs 34% 
+  '  0.001360       5:<<EndOrAbortUndoTransaction();DOPT;/ALL_GAPS   0.000946/TurnOff_GAPs 2% 
+  '  0.001625      4:<<reloadLinkedInstances [0/0] 
+  '  0.000012       5:<<<;PERF;MISC;regenerating 
+  '  0.000018       5:<<<EndOrAbortUndoTransaction() -- trackers regen;DOPT; 
+  '  0.000004       5:<<<EndOrAbortUndoTransaction()--AtomViewReferencingUpdate();DOPT; 
+  '  0.000002        6:<<<EndOrAbortUndoTransaction()--end of transaction checks--invisible elements;DOPT; 
+  '  0.000011         7:<<<;PERF;MISC;regenerating 
+  '  0.000377       5:<<EndOrAbortUndoTransaction()--end of transaction checks;DOPT;/ALL_GAPS   0.000364/TurnOff_GAPs 34% 
+  '  0.001152      4:<<EndOrAbortUndoTransaction();DOPT;/ALL_GAPS   0.000753/TurnOff_GAPs 3% 
+  ' 3:< Unnecessary nesting;Document\PostLoadDocument.cpp;398;ID_SETTINGS_SNAPPING ;N++E(N); 
+  '  0.000018       5:<<<EndOrAbortUndoTransaction() -- trackers regen;DOPT; 
+  '  0.000008       5:<<<EndOrAbortUndoTransaction()--AtomViewReferencingUpdate();DOPT; 
+  '  0.000002        6:<<<EndOrAbortUndoTransaction()--end of transaction checks--invisible elements;DOPT; 
+  '  0.000012         7:<<<;PERF;MISC;regenerating 
+  '  0.000379       5:<<EndOrAbortUndoTransaction()--end of transaction checks;DOPT;/ALL_GAPS   0.000364/TurnOff_GAPs 36% 
+  '  0.001173      4:<<EndOrAbortUndoTransaction();DOPT;/ALL_GAPS   0.000768/TurnOff_GAPs 3% 
+  '  0.351328      4:<<<pKeynoteTable->readFile 
+  '  0.002264       5:<<;PERF;MISC;regenerating 
+  '  0.000029       5:<<<EndOrAbortUndoTransaction() -- trackers regen;DOPT; 
+  '  0.000626       5:<<<EndOrAbortUndoTransaction()--docChangingElemsOverlapCheck;DOPT; 
+  '  0.000039       5:<<<EndOrAbortUndoTransaction()--deleteChildlessSlaveSymbols;DOPT; 
+  '  0.000006       5:<<<EndOrAbortUndoTransaction()--AtomViewReferencingUpdate();DOPT; 
+  '  0.000004        6:<<<EndOrAbortUndoTransaction()--end of transaction checks--invisible elements;DOPT; 
+  '  0.000019         7:<<<;PERF;MISC;regenerating 
+  '  0.000684       5:<<EndOrAbortUndoTransaction()--end of transaction checks;DOPT;/ALL_GAPS   0.000662/TurnOff_GAPs 23% 
+  '  0.007728      4:<<EndOrAbortUndoTransaction();DOPT;/ALL_GAPS   0.006343/TurnOff_GAPs 77% 
+  ' 3:< Document save history --> : 
+  ' 3:<   Project Vasari Pre-Release 2013 (2013.000) : 20120718_1800 
+  ' 3:<   Vasari 2013 (2013.000) : 20120816_1800 
+  ' 3:<   Revit Architecture 2013 2013 (2013.000) : 20120221_2030(x64) 
+  ' 3:<   Revit 2014 2014 (2014.000) : 20130308_1515(x64) 
+  ' 3:< Document save history <-- 
+  '  0.452839     3:<<[Cloud]postLoadDocument 
+  '  1.610870    2:<<DocumentStorage::onOpenDocument [C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\inst+param+mass+families.rvt] 
+  'Warning: Event timer reset skipped - [Cloud]standardOpenDocumentFile 
+  'H 27-May-2014 14:35:01.040;   1:< 
+  Jrn.Directive "DocSymbol"  _
+          , "[inst+param+mass+families.rvt]"
+  ' 2:< ::2:: Delta VM: Avail 134216128 MB, Used +0 -> 296 MB, Peak +0 -> 296 MB; RAM: Avail -12 -> 3018 MB, Used +4 -> 362 MB, Peak +4 -> 362 MB 
+  ' 2:< Before : Create Display Manager 
+  ' 2:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+  ' 2:< RAM Statistics:     3017 /     8102       362=InUse      363=Peak  
+  ' 2:< VM  Statistics: 134216128 / 134217727       296=InUse      296=Peak  
+  ' 2:< Revit Graphics Information 
+  ' 2:< 	Current Mode : DirectX Hardware 
+  ' 2:< 	Use Hardware: ON 
+  ' 2:< 	Use Overlays : ON 
+  ' 2:< DX Device: DirectX 11, WARP 
+  ' 2:< After : Create Display Manager 
+  ' 2:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+  ' 2:< RAM Statistics:     3014 /     8102       363=InUse      364=Peak  
+  ' 2:< VM  Statistics: 134216126 / 134217727       296=InUse      298=Peak  
+   ' 2:< ::2:: Delta VM: Avail -11 -> 134216118 MB, Used +3 -> 299 MB, Peak +3 -> 299 MB; RAM: Avail -8 -> 3010 MB, Used +5 -> 368 MB, Peak +5 -> 368 MB 
+   ' 2:< Activate "[inst+param+mass+families.rvt]" , 3D View: Vasari 3D 
+   ' 2:< View Open: Element expansion used 0.000000 seconds averaging 0.000000 seconds/hit for 0 hits. 
+' 2:< ::2:: Delta VM: Avail -3 -> 134216115 MB, Used +17 -> 317 MB, Peak +21 -> 321 MB; RAM: Avail -26 -> 2985 MB, Used +22 -> 390 MB, Peak +26 -> 395 MB 
+'C 27-May-2014 14:35:04.758;   2:< Protein : Register Preview Factories 
+'C 27-May-2014 14:35:04.758;   2:< Protein : Initialize Renderer Module 
+'C 27-May-2014 14:35:04.759;   2:< Protein : Load the MR Renderer plug-in 
+' 2:< ::2:: Delta VM: Avail -27 -> 134216088 MB, Used +2 -> 319 MB; RAM: Avail -2 -> 2984 MB, Used +1 -> 392 MB 
+'C 27-May-2014 14:35:04.797;   2:< Protein : initialize RPC plug-ins 
+'C 27-May-2014 14:35:04.809;   2:< Protein : Open Protein content Libraries 
+' 2:< ::2:: Delta VM: Avail -9 -> 134216080 MB, Used +11 -> 330 MB, Peak +10 -> 331 MB; RAM: Avail -10 -> 2974 MB, Used +12 -> 404 MB, Peak +9 -> 405 MB 
+'C 27-May-2014 14:35:05.028;   2:< Protein : Load Library:  
+' 2:< C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2014\assetlibrary_base.adsklib 
+'C 27-May-2014 14:35:05.028;   2:< Protein : Texture Path:  
+' 2:< C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures/ 
+' 2:< Protein Build       4.0.32.600 
+' 2:< MSI Version         4.0.32.600 
+' 2:< Version Control DLL 4.0.0.0 
+'C 27-May-2014 14:35:06.061;   2:< Protein: RPC Message 
+' 2:< This plugin is unable to acquire a license.
+'Only demo content will be fully functional. 
+' 2:< ::2:: Delta VM: Avail +1 -> 134216081 MB, Used +0 -> 331 MB; RAM: Avail -31 -> 2943 MB, Used +0 -> 405 MB 
+'C 27-May-2014 14:35:07.239;   2:< Protein : Notify Plugins to load the content on the asset library 
+'C 27-May-2014 14:35:07.240;   2:< Protein : Register the Protein RenderingAsset Manager 
+'  6.278441!!!! 3:!!!BIG_GAP [Cloud]openOntoDesktop 
+' 2:< ::2:: Delta VM: Avail +5 -> 134216087 MB, Used 331 MB; RAM: Avail +29 -> 2973 MB, Used -2 -> 404 MB, Peak +0 -> 406 MB 
+' 2:< At line number 5 of source journal
+'DBG_INFO: Detected unfrozen change of selection.: line 571 of n:\build\2014_ship_x64_inst_20130308_1515\source\revit\revitui\modscope\ModScope.cpp. 
+' 2:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: 
+'Category: 0
+'Bar list: 
+'	
+'Presenter list: 
+'	
+'Product: Unknown
+'
+'
+'Edit mode context, but no edit mode set.
+'<<End build CT>> 
+  ' 2:< View Open: Element expansion used 0.000000 seconds averaging 0.000000 seconds/hit for 0 hits. 
+  '  8.466683    2:<<[Cloud]openOntoDesktop 
+  ' 1:< At line number 5 of source journal
+  'DBG_INFO: When constructing ElementRecord, elem 0 not found: line 24 of n:\build\2014_ship_x64_inst_20130308_1515\source\revit\revitdb\elemtable\ElementRecord.cpp. 
+  ' 1:<  0 ModelServerState "Created": Current server = "Not Queried", Model server = "", Model server state = "Not Applicable" 
+  ' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+  ' 1:< RAM Statistics:     2967 /     8102       407=InUse      408=Peak  
+  ' 1:< VM  Statistics: 134216079 / 134217727       333=InUse      334=Peak  
+  ' 1:< 000000000F42A2D8 CompactMemoryManager Memory Statistics: 2 MB with 0 MB view 
+  ' 1:< 000000000F42A238 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 1:< 000000000F42A2B0 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 1:< 000000000F42A288 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 1:< 000000000F42A260 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 1:< 000000000F42A300 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 1:< 000000000F42A328 CompactMemoryManager Memory Statistics: 2 MB with 2 MB view 
+  ' 1:< 000000000F42A210 CompactMemoryManager Memory Statistics: 2 MB with 0 MB view 
+  ' 1:< Element Expansion Statistics: 
+  ' 1:<  0% Opening Plans                    (0) 
+  ' 1:<  0% Opening RC Plans                 (0) 
+  ' 1:<  40% Opening 3d Views                 (360171) 
+  ' 1:<  0% Opening Elevations and Sections  (0) 
+  ' 1:<  0% In Regnerate                     (102) 
+  ' 1:<  0% In Autojoin                      (0) 
+  ' 1:<  0% In Overlap Checking              (1608) 
+  ' 1:<  0% Reviewing PostedWarnings         (0) 
+  ' 1:<  60% Other                            (536423) 
+  ' 1:< total bytes expanded: 898304 
+  ' 1:< ;EES;0;0;40;0;0;0;0;0;60; 
+  ' 1:<  0 ModelServerState "Destroyed": Current server = "Not Queried", Model server = "", Model server state = "Not Applicable" 
+  ' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+  ' 1:< RAM Statistics:     2967 /     8102       407=InUse      408=Peak  
+  ' 1:< VM  Statistics: 134216079 / 134217727       333=InUse      334=Peak  
+  ' 11.281427-- 1:<<[Cloud]standardOpenDocumentFile 
+   ' 11.321157  0:<<Event timer 
+   'E 27-May-2014 14:35:10.471;   0:< 
+   ' [Jrn.File Input Information] COMMON.FILE_INPUT.FILE_TYPE: .rvt 01630208.000000
+ ' 0:< PROCESSOR INFORMATION:  
+ ' 0:<    AddressWidth : 64 
+ ' 0:<    Architecture : 9 
+ ' 0:<    Availability : 3 
+ ' 0:<    Caption : Intel64 Family 6 Model 42 Stepping 7 
+ ' 0:<    CurrentClockSpeed : 800 
+ ' 0:<    DataWidth : 64 
+ ' 0:<    Description : Intel64 Family 6 Model 42 Stepping 7 
+ ' 0:<    Family : 1 
+ ' 0:<    L2CacheSize : 256 
+ ' 0:<    Level : 6 
+ ' 0:<    Manufacturer : GenuineIntel 
+ ' 0:<    MaxClockSpeed : 2301 
+ ' 0:<    Name : Intel(R) Core(TM) i7-2820QM CPU @ 2.30GHz 
+ ' 0:<    ProcessorType : 3 
+ ' 0:<    Revision : 10759 
+ ' 0:<    Role : CPU 
+ ' 0:<    SocketDesignation : U2E1 
+ ' 0:<    StatusInfo : 3 
+ ' 0:<    Version :  
+ 'E 27-May-2014 14:35:10.490;   0:< 
+ Jrn.Size        0 ,    783 ,    549
+ 'E 27-May-2014 14:35:10.492;   0:< 
+ Jrn.Size        0 ,    762 ,    528
+ 'E 27-May-2014 14:35:10.501;   0:< 
+ Jrn.Size        0 ,    782 ,    548
+ 'E 27-May-2014 14:35:10.503;   0:< 
+ Jrn.Size        0 ,    761 ,    527
+ '  0.114580  0:<<Event timer 
+ 'E 27-May-2014 14:35:10.585;   0:< 
+ Jrn.Size        0 ,    772 ,    522
+ 'E 27-May-2014 14:35:10.588;   0:< 
+ Jrn.Size        0 ,    751 ,    501
+' 0:< ::9:: Delta VM: Avail -70 -> 134216017 MB, Used +39 -> 370 MB, Peak +41 -> 372 MB; RAM: Avail -51 -> 2923 MB, Used +48 -> 452 MB, Peak +48 -> 454 MB 
+' 10.317933   1:<<<;PERF;MISC;drawing 
+'C 27-May-2014 14:35:22.173;   0:< idle0_doc 
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_BUTTON_SELECT
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Essentials_FilterSelectionNew
+'Presenter list: 
+'	PP_DebugTab_Binding_Demo
+'Product: Architecture
+'
+'
+'***********************************************************
+'***********************************************************
+'<<End build CT>> 
+ ' 12.581625  0:<<Event timer 
+ 'E 27-May-2014 14:35:23.167;   0:< 
+ 
+ Jrn.RibbonEvent "Execute external command:CustomCtrl_%CustomCtrl_%Add-Ins%Visual Programming Alpha%Dynamo 0.7 Alpha:Dynamo.Applications.DynamoRevit"
+' 1:< API registering DocumentChanged event by application Dynamo (16abab2f-fe6c-4a10-b7f2-475728f66831). 
+' 1:< VIDEO CONTROLLER INFORMATION:  
+' 1:<    AdapterCompatibility : Advanced Micro Devices, Inc. 
+' 1:<    AdapterDACType : Internal DAC(400MHz) 
+' 1:<    AdapterRAM : 1073741824 
+' 1:<    Caption : AMD Radeon HD 6750M 
+' 1:<    CurrentBitsPerPixel : 32 
+' 1:<    CurrentHorizontalResolution : 1680 
+' 1:<    CurrentNumberOfColors : 4294967296 
+' 1:<    CurrentRefreshRate : 60 
+' 1:<    CurrentVerticalResolution : 1050 
+' 1:<    Description : AMD Radeon HD 6750M 
+' 1:<    DriverDate : 20131214000000.000000-000 
+' 1:<    DriverVersion : 13.250.28.1000 
+' 1:<    MaxRefreshRate : 60 
+' 1:<    MinRefreshRate : 60 
+' 1:<    Monochrome : 0 
+' 1:<    Name : AMD Radeon HD 6750M 
+' 1:<    VideoArchitecture : 5 
+' 1:<    VideoMemoryType : 2 
+' 1:<    VideoModeDescription : 1680 x 1050 x 4294967296 colors 
+' 1:<    VideoProcessor : AMD Radeon Graphics Processor (0x6741) 
+'  0.507934   1:<<<API External Command Time 
+'  0.644612  0:<<Event timer 
+'H 27-May-2014 14:35:23.812;   0:< 
+Jrn.Data "APIStringStringMapJournalData"  _
+        , 1, "dynPath", "C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\typeSelection.dyn"
+'C 27-May-2014 14:35:23.917;   0:< finished journal file playback 
+'H 27-May-2014 14:35:23.917;   0:< 
+Jrn.Directive "ScreenResolution"  _
+        , 324, 1200
+'H 27-May-2014 14:35:23.918;   0:< 
+Jrn.Directive "GlobalToProj"  _
+        , "[inst+param+mass+families.rvt]", "3D View: Vasari 3D" _
+        , 0.00520833333333 _
+        , 0.70710678118655, -0.40824829046386, 0.57735026918963 _
+        , 0.70710678118655, 0.40824829046386, -0.57735026918963 _
+        , 0.00000000000000, 0.81649658092773, 0.57735026918963 _
+        , -3.78791483038549, -16.79607926557640, -724.37862103648831
+'H 27-May-2014 14:35:23.919;   0:< 
+Jrn.Directive "ProjToPage"  _
+        , "[inst+param+mass+families.rvt]", "3D View: Vasari 3D" _
+        , 241.02442145919213 _
+        , 241.02442145919213, 0.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 241.02442145919213, 0.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 241.02442145919213 _
+        , 283.48640238503492, -230.12955631705475, 0.00000000000000
+'H 27-May-2014 14:35:23.920;   0:< 
+Jrn.Directive "WindowSize"  _
+        , "[inst+param+mass+families.rvt]", "3D View: Vasari 3D" _
+        , 751, 501
+' 1:< ::10:: Delta VM: Avail -12 -> 134216006 MB, Used +2 -> 373 MB, Peak +2 -> 375 MB; RAM: Avail -12 -> 2911 MB, Used +10 -> 463 MB, Peak +9 -> 464 MB 
+' 1:< PRINTER INFORMATION:  
+' 1:<    Caption : Send To OneNote 2013 
+' 1:<    Default : -1 
+' 1:<    DeviceID : Send To OneNote 2013 
+' 1:<    Direct : 0 
+' 1:<    DriverName : Send to Microsoft OneNote 15 Driver 
+' 1:<    EnableBIDI : 0 
+' 1:<    EnableDevQueryPrint : 0 
+' 1:<    HorizontalResolution : 600 
+' 1:<    Local : -1 
+' 1:<    Name : Send To OneNote 2013 
+' 1:<    Network : 0 
+' 1:<    PortName : nul: 
+' 1:<    PrintJobDataType : RAW 
+' 1:<    PrintProcessor : winprint 
+' 1:<    RawOnly : 0 
+' 1:<    Shared : 0 
+' 1:<    SpoolEnabled : -1 
+' 1:<    VerticalResolution : 600 
+' 1:< ::10:: Delta VM: Avail -41 -> 134215965 MB, Used +30 -> 404 MB, Peak +32 -> 407 MB; RAM: Avail -44 -> 2868 MB, Used +38 -> 502 MB, Peak +40 -> 505 MB 
+' 1:< API registering DocumentClosed event by application Dynamo (16abab2f-fe6c-4a10-b7f2-475728f66831). 
+' 1:< API registering DocumentOpened event by application Dynamo (16abab2f-fe6c-4a10-b7f2-475728f66831). 
+' 1:< API registering ViewActivated event by application Dynamo (16abab2f-fe6c-4a10-b7f2-475728f66831). 
+' 1:< ::10:: Delta VM: Avail -2 -> 134215964 MB, Used +26 -> 430 MB, Peak +23 -> 431 MB; RAM: Avail -24 -> 2845 MB, Used +26 -> 529 MB, Peak +24 -> 529 MB 
+' 1:< PRINTER INFORMATION:  
+' 1:<    Caption : Microsoft XPS Document Writer 
+' 1:<    Default : 0 
+' 1:<    DeviceID : Microsoft XPS Document Writer 
+' 1:<    Direct : 0 
+' 1:<    DriverName : Microsoft XPS Document Writer v4 
+' 1:<    EnableBIDI : 0 
+' 1:<    EnableDevQueryPrint : 0 
+' 1:<    HorizontalResolution : 600 
+' 1:<    Local : -1 
+' 1:<    Name : Microsoft XPS Document Writer 
+' 1:<    Network : 0 
+' 1:<    PortName : PORTPROMPT: 
+' 1:<    PrintJobDataType : RAW 
+' 1:<    PrintProcessor : winprint 
+' 1:<    RawOnly : 0 
+' 1:<    Shared : 0 
+' 1:<    SpoolEnabled : -1 
+' 1:<    VerticalResolution : 600 
+' 1:<    Caption : Fax 
+' 1:<    Default : 0 
+' 1:<    DeviceID : Fax 
+' 1:<    Direct : 0 
+' 1:<    DriverName : Microsoft Shared Fax Driver 
+' 1:<    EnableBIDI : 0 
+' 1:<    EnableDevQueryPrint : 0 
+' 1:<    HorizontalResolution : 200 
+' 1:<    Local : -1 
+' 1:<    Name : Fax 
+' 1:<    Network : 0 
+' 1:<    PortName : SHRFAX: 
+' 1:<    PrintJobDataType : RAW 
+' 1:<    PrintProcessor : winprint 
+' 1:<    RawOnly : 0 
+' 1:<    Shared : 0 
+' 1:<    SpoolEnabled : -1 
+' 1:<    VerticalResolution : 200 
+' 1:< ::10:: Delta VM: Avail -13 -> 134215952 MB, Used +11 -> 442 MB, Peak +10 -> 442 MB; RAM: Avail -13 -> 2832 MB, Used +17 -> 546 MB, Peak +16 -> 546 MB 
+' 1:< API registering ViewActivating event by application Dynamo (16abab2f-fe6c-4a10-b7f2-475728f66831). 
+' 0:< ::10:: Delta VM: Avail -10 -> 134215943 MB, Used +11 -> 453 MB, Peak +10 -> 453 MB; RAM: Avail -9 -> 2823 MB, Used +9 -> 555 MB, Peak +9 -> 555 MB 
+' 0:< The Idling event callback used 15 seconds 
+' 0:< ::10:: Delta VM: Avail +2 -> 134215945 MB, Used +15 -> 468 MB, Peak +15 -> 468 MB; RAM: Avail -15 -> 2809 MB, Used +14 -> 570 MB, Peak +14 -> 570 MB 
+' 0:< PRINTER CONFIGURATION INFORMATION:  
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : Send To OneNote 2013 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2794 
+' 0:<    PaperSize : Letter 8 1/2 x 11 in 
+' 0:<    PaperWidth : 2159 
+' 0:<    PrintQuality : 600 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 600 
+' 0:<    YResolution : 600 
+' 0:< PRINTER CONFIGURATION INFORMATION:  
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : Microsoft XPS Document Writer 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2794 
+' 0:<    PaperSize : Letter 8 1/2 x 11 in 
+' 0:<    PaperWidth : 2159 
+' 0:<    PrintQuality : 600 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 600 
+' 0:<    YResolution : 600 
+' 0:<    Color : 1 
+' 0:<    Description : Fax 
+' 0:<    DriverVersion : 1024 
+' 0:<    Duplex : 0 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2794 
+' 0:<    PaperSize : Letter 8 1/2 x 11 in 
+' 0:<    PaperWidth : 2159 
+' 0:<    PrintQuality : 200 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 200 
+' 0:<    YResolution : 200 
+ 'E 27-May-2014 14:35:43.375;   0:< 
+ Jrn.AddInEvent "AddInJournaling" , "WpfWindow(_this,Dynamo).Close()"
+' 0:< API unregistering DocumentChanged event by application  (). 
+' 0:< API unregistering ViewActivating event by application  (). 
+ 'E 27-May-2014 14:35:44.830;   0:< 
+ Jrn.Command "SystemMenu" , "Quit the application; prompts to save projects , ID_APP_EXIT"
+ ' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+ ' 1:< RAM Statistics:     2804 /     8102       571=InUse      575=Peak  
+ ' 1:< VM  Statistics: 134215949 / 134217727       468=InUse      474=Peak  
+ ' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+ ' 1:< RAM Statistics:     2804 /     8102       571=InUse      575=Peak  
+ ' 1:< VM  Statistics: 134215949 / 134217727       468=InUse      474=Peak  
+ ' 0:< CrsTimer event occurred for 0 times in DesktopMFCView [3D View: Vasari 3D] 
+ ' 0:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+ ' 0:< RAM Statistics:     2809 /     8102       569=InUse      575=Peak  
+ ' 0:< VM  Statistics: 134215950 / 134217727       466=InUse      474=Peak ;oCD; 
+ ' 0:< Before : Destroy Display Manager 
+ ' 0:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+ ' 0:< RAM Statistics:     2808 /     8102       571=InUse      575=Peak  
+ ' 0:< VM  Statistics: 134215953 / 134217727       466=InUse      474=Peak  
+ ' 0:< After : Destroy Display Manager 
+ ' 0:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+ ' 0:< RAM Statistics:     2808 /     8102       571=InUse      575=Peak  
+ ' 0:< VM  Statistics: 134215953 / 134217727       466=InUse      474=Peak  
+ ' 0:< ::12:: Delta VM: Avail +22 -> 134215967 MB, Used -3 -> 466 MB, Peak +5 -> 474 MB; RAM: Avail -3 -> 2806 MB, Used 570 MB, Peak +5 -> 575 MB 
+ ' 0:< DummyStorage destroying DataStorageInterface 0x0000000013DCC0F0 
+ ' 0:< DataStorageInterface destroyed 0x0000000013DCC0F0 
+' 0:< ::12:: Delta VM: Avail -14 -> 134215953 MB, Used 466 MB; RAM: Avail 2806 MB, Used +0 -> 571 MB, Peak +8 -> 583 MB 
+' 0:<  ->desktop ExitManagedInstance 
+' 0:< ::12:: Delta VM: Avail +16 -> 134215970 MB, Used +0 -> 467 MB; RAM: Avail 2806 MB, Used +1 -> 572 MB 
+' 0:<  <-desktop ExitManagedInstance 
+' 0:<  ->desktop ExitNativeInstance 
+' 0:< ::12:: Delta VM: Avail +1 -> 134215971 MB, Used -27 -> 441 MB; RAM: Avail +25 -> 2832 MB, Used -26 -> 546 MB 
+' 0:< Forcibly unregistering Updater with id:51c0be9b-07a8-443a-be8c-21db815b17e7 
+' 0:< Forcibly removing all update triggers for all Updaters 
+' 0:< Unregistering all external services. 
+'C 27-May-2014 14:35:49.865;   0:< Protein : Unload plug-ins 
+'C 27-May-2014 14:35:49.865;   0:< Protein : Release Plugins 
+' 0:< ::12:: Delta VM: Avail +30 -> 134216001 MB, Used -13 -> 429 MB; RAM: Avail +9 -> 2842 MB, Used -11 -> 536 MB 
+'C 27-May-2014 14:35:49.872;   0:< Protein : Release Renderer Module 
+'C 27-May-2014 14:35:49.872;   0:< Protein : Destroy RenderingAsset Library Manager 
+'C 27-May-2014 14:35:49.886;   0:< Protein : ProteinSdkManager has been destroyed successfully 
+' 0:< ::12:: Delta VM: Avail +93 -> 134216095 MB, Used -71 -> 358 MB; RAM: Avail +43 -> 2885 MB, Used -47 -> 489 MB 
+'C 27-May-2014 14:35:50.026;   0:< License cleanup complete: 0, 0 
+' 0:< Journal Exit 
+' 0:< Log Summary 
+' 0:< .Count 
+' 0:< ...CloseHiddenWindowsInAllDocuments = 6 
+' 0:< ...CloseHiddenWindowsInDocumentStorage = 3 
+' 0:< ...DBG_SOMETHING = 2 
+' 0:< ...getADocuments_Arr = 108 
+' 0:< ...onUpdateWindowCloseHidden = 6 
+' 0:< ...ProjectRecsCreated = 2 
+' 0:< ...ProjectRecsLeaked = 1 
+' 0:< ...UnmatchedGViewDirectives = 1 
+' 0:< Total session time spent reclaiming memory: 0.000000 seconds.  Averaged 0.000000 seconds/call for 0 calls. 
+' 0:< Total expansion time: 0.075951 seconds, averaging 0.000010 seconds/expansion for 7829 expansions. 
+' 0:<               BackgroundLoader exec=     1 (parallel=     1)   
+' 0:<         ConsumeArchive_Element exec=    43 (parallel=    43)   self=    0.279461 sec (avg=  0.006) 
+' 0:<            ConsumeArchive_GRep exec=    11 (parallel=    11)   self=    0.113434 sec (avg=  0.010) 
+' 0:<          ConsumeArchive_Header exec=    11 (parallel=    11)   self=    0.638330 sec (avg=  0.058) 
+' 0:<      ConsumeElementVisitBucket exec=    18 (parallel=    14)   self=    0.031687 sec (avg=  0.002) 
+' 0:<         ConsumeGRepVisitBucket exec=     3 (parallel=     2)   self=    0.013675 sec (avg=  0.005) 
+' 0:<                  FormOrAbandon exec=     2 (parallel=     0)   self=   13.001608 sec (avg=  6.501) rollup=  13.018521 (avg=  6.509) 
+' 0:<                 ProduceArchive exec=    66 (parallel=    66)   self=    0.023534 sec (avg=  0.000) 
+' 0:<      ProduceElementVisitBucket exec=    36 (parallel=    32)   self=    0.002224 sec (avg=  0.000) rollup=   0.002221 (avg=  0.000) 
+' 0:<         ProduceGRepVisitBucket exec=     6 (parallel=     5)   self=    0.000248 sec (avg=  0.000) rollup=   0.000247 (avg=  0.000) 
+' 0:<    ReadFileAndPerformOperation exec=    10 (parallel=     0)   self=    0.003996 sec (avg=  0.000) 
+' 0:<             RunPipelineContext exec=    21 (parallel=    16)   self=    0.000703 sec (avg=  0.000) rollup=   0.048516 (avg=  0.002) 
+' 0:<          SetClassMapsAndHeader exec=     1 (parallel=     0)   
+' 0:<                 TaskFileExists exec=   228 (parallel=   221)   self=    0.092136 sec (avg=  0.000) 
+' 0:<          TaskProgressIndicator exec=     1 (parallel=     1)   self=    8.369842 sec (avg=  8.370) 
+' 0:<                    TaskScatter exec=     1 (parallel=     1)   
+' 0:<               TaskScriptEngine exec=     1 (parallel=     1)   
+' 0:<                 TaskWaitCursor exec=     1 (parallel=     1)   
+' 0:<  <-desktop ExitNativeInstance 
+' 0:< ::12:: Delta VM: Avail +22 -> 134216118 MB, Used -1 -> 357 MB; RAM: Avail +4 -> 2890 MB, Used -4 -> 486 MB 
+'C 27-May-2014 14:35:50.633;   0:< finished recording journal file 

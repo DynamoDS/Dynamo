@@ -19,7 +19,7 @@ namespace Revit.Elements.InternalUtilities
                 .WhereElementIsNotElementType()
                 .ToElements()
                 .Cast<Autodesk.Revit.DB.FamilyInstance>()
-                .Where(x => x.Symbol.IsSimilarType(familyType.InternalFamilySymbol.Id));
+                .Where(x => x.Symbol.Equals(familyType.InternalFamilySymbol));
 
             var instances = familyInstances
                 .Select(x => ElementSelector.ByElementId(x.Id.IntegerValue)).ToList();
