@@ -68,6 +68,13 @@ namespace Dynamorph
             up[2] = z;
         }
 
+        void GetViewDirection(float& x, float& y, float& z)
+        {
+            x = center[0] - eye[0];
+            y = center[1] - eye[1];
+            z = center[2] - eye[2];
+        }
+
         // View matrix.
         float eye[3];
         float center[3];
@@ -78,6 +85,71 @@ namespace Dynamorph
         float aspectRatio;
         float nearClippingPlane;
         float farClippingPlane;
+    };
+
+    class BoundingBox
+    {
+    public:
+        BoundingBox()
+        {
+            memset(&mBox[0], 0, sizeof(mBox));
+        }
+
+        void Reset(float x, float y, float z)
+        {
+            mBox[0] = mBox[3] = x;
+            mBox[1] = mBox[4] = y;
+            mBox[2] = mBox[5] = z;
+        }
+
+        void EvaluatePoint(float x, float y, float z)
+        {
+            mBox[0] = ((x < mBox[0]) ? x : mBox[0]);
+            mBox[1] = ((y < mBox[1]) ? y : mBox[1]);
+            mBox[2] = ((z < mBox[2]) ? z : mBox[2]);
+
+            mBox[3] = ((x > mBox[3]) ? x : mBox[3]);
+            mBox[4] = ((y > mBox[4]) ? y : mBox[4]);
+            mBox[5] = ((z > mBox[5]) ? z : mBox[5]);
+        }
+
+        void Get(float* pMin, float* pMax) const
+        {
+            pMin[0] = this->mBox[0];
+            pMin[1] = this->mBox[1];
+            pMin[2] = this->mBox[2];
+
+            pMax[0] = this->mBox[3];
+            pMax[1] = this->mBox[4];
+            pMax[2] = this->mBox[5];
+        }
+
+        void Get(float* pCenter, float& radius) const
+        {
+            float dx = ((mBox[3] - mBox[0]) * 0.5f);
+            float dy = ((mBox[4] - mBox[1]) * 0.5f);
+            float dz = ((mBox[5] - mBox[2]) * 0.5f);
+
+            pCenter[0] = mBox[0] + dx;
+            pCenter[1] = mBox[1] + dy;
+            pCenter[2] = mBox[2] + dz;
+
+            radius = std::sqrtf((dx * dx) + (dy * dy) + (dz * dz));
+        }
+
+        BoundingBox& operator=(const BoundingBox& other)
+        {
+            this->mBox[0] = other.mBox[0];
+            this->mBox[1] = other.mBox[1];
+            this->mBox[2] = other.mBox[2];
+            this->mBox[3] = other.mBox[3];
+            this->mBox[4] = other.mBox[4];
+            this->mBox[5] = other.mBox[5];
+            return *this;
+        }
+
+    private:
+        float mBox[6];
     };
 
     class ICamera
@@ -92,6 +164,11 @@ namespace Dynamorph
             this->ConfigureCore(pConfiguration);
         }
 
+        void FitToBoundingBox(const BoundingBox* pBoundingBox)
+        {
+            this->FitToBoundingBoxCore(pBoundingBox);
+        }
+
         ITrackBall* GetTrackBall() const
         {
             return this->GetTrackBallCore();
@@ -99,6 +176,7 @@ namespace Dynamorph
 
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration) = 0;
+        virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox) = 0;
         virtual ITrackBall* GetTrackBallCore() const = 0;
     };
 
@@ -144,71 +222,6 @@ namespace Dynamorph
     protected:
         virtual void BindTransformMatrixCore(TransMatrix transform, const std::string& name) = 0;
         virtual void ApplyTransformationCore(const ICamera* pCamera) const = 0;
-    };
-
-    class BoundingBox
-    {
-    public:
-        BoundingBox()
-        {
-            memset(&mBox[0], 0, sizeof(mBox));
-        }
-
-        void Reset(float x, float y, float z)
-        {
-            mBox[0] = mBox[3] = x;
-            mBox[1] = mBox[4] = y;
-            mBox[2] = mBox[5] = z;
-        }
-
-        void EvaluatePoint(float x, float y, float z)
-        {
-            mBox[0] = ((x < mBox[0]) ? x : mBox[0]);
-            mBox[1] = ((y < mBox[1]) ? y : mBox[1]);
-            mBox[2] = ((z < mBox[2]) ? z : mBox[2]);
-
-            mBox[4] = ((x > mBox[4]) ? x : mBox[4]);
-            mBox[5] = ((y > mBox[5]) ? y : mBox[5]);
-            mBox[6] = ((z > mBox[6]) ? z : mBox[6]);
-        }
-
-        void Get(float* pMin, float* pMax)
-        {
-            pMin[0] = this->mBox[0];
-            pMin[1] = this->mBox[1];
-            pMin[2] = this->mBox[2];
-
-            pMax[0] = this->mBox[3];
-            pMax[1] = this->mBox[4];
-            pMax[2] = this->mBox[5];
-        }
-
-        void Get(float* pCenter, float& radius)
-        {
-            float dx = ((mBox[3] - mBox[0]) * 0.5f);
-            float dy = ((mBox[4] - mBox[1]) * 0.5f);
-            float dz = ((mBox[5] - mBox[2]) * 0.5f);
-
-            pCenter[0] = mBox[0] + dx;
-            pCenter[1] = mBox[1] + dy;
-            pCenter[2] = mBox[2] + dz;
-
-            radius = std::sqrtf((dx * dx) + (dy * dy) + (dz * dz));
-        }
-
-        BoundingBox& operator=(const BoundingBox& other)
-        {
-            this->mBox[0] = other.mBox[0];
-            this->mBox[1] = other.mBox[1];
-            this->mBox[2] = other.mBox[2];
-            this->mBox[3] = other.mBox[3];
-            this->mBox[4] = other.mBox[4];
-            this->mBox[5] = other.mBox[5];
-            return *this;
-        }
-
-    private:
-        float mBox[6];
     };
 
     class IVertexBuffer

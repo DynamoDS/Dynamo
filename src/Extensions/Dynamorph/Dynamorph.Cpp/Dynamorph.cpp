@@ -138,7 +138,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     {
         CameraConfiguration camConfig;
-        camConfig.SetEyePoint(1.0f, 1.0f, 1.0f);
+        camConfig.SetEyePoint(10.0f, 10.0f, 10.0f);
         camConfig.SetCenterPoint(0.0f, 0.0f, 0.0f);
         camConfig.SetUpVector(0.0f, 1.0f, 0.0f);
         camConfig.aspectRatio = ((float) width) / height;
@@ -163,6 +163,10 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
 
     mpVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
     mpVertexBuffer->LoadData(positions, colors);
+
+    BoundingBox boundingBox;
+    mpVertexBuffer->GetBoundingBox(&boundingBox);
+    pCamera->FitToBoundingBox(&boundingBox);
 }
 
 void Visualizer::Uninitialize(void)

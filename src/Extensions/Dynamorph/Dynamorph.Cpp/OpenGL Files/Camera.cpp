@@ -34,9 +34,8 @@ Camera::Camera(GraphicsContext* pGraphicsContext) :
     mpTrackBall(nullptr),
     mpGraphicsContext(pGraphicsContext)
 {
-    this->mModelMatrix = glm::mat4(1.0); // Identity
-    this->mViewMatrix  = glm::mat4(1.0); // Identity
-    this->mProjMatrix  = glm::mat4(1.0); // Identity
+    CameraConfiguration camConfig;
+    this->Configure(&camConfig); // Default configuration.
 }
 
 void Camera::GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const
@@ -75,6 +74,35 @@ void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
         pConfiguration->aspectRatio,
         pConfiguration->nearClippingPlane,
         pConfiguration->farClippingPlane);
+
+    this->mConfiguration = *pConfiguration;
+}
+
+void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
+{
+    // Get the bound box center and its radius.
+    auto configuration = mConfiguration;
+    float boxCenter[3], radius = 0.0f;
+    pBoundingBox->Get(&boxCenter[0], radius);
+
+    // Calculate the distance from eye to the center.
+    auto halfFov = configuration.fieldOfView * 0.5f;
+    auto distance = std::fabsf(radius / std::sinf(halfFov));
+
+    // Obtain the inversed view vector.
+    float vx, vy, vz;
+    configuration.GetViewDirection(vx, vy, vz);
+    glm::vec3 inversedViewDir(-vx, -vy, -vz);
+    inversedViewDir = glm::normalize(inversedViewDir);
+
+    // Compute the new eye point based on direction and center.
+    glm::vec3 center(boxCenter[0], boxCenter[1], boxCenter[2]);
+    glm::vec3 eye = (center + (inversedViewDir * distance));
+
+    // Update the configuration and reconfigure the camera.
+    configuration.SetEyePoint(eye.x, eye.y, eye.z);
+    configuration.SetCenterPoint(center.x, center.y, center.z);
+    this->Configure(&configuration);
 }
 
 Dynamorph::ITrackBall* Camera::GetTrackBallCore() const
