@@ -4,6 +4,7 @@ Dynamorph, morph the heck out of your design.
 
 ## Tasks (Prioritized) ##
 
+##### Core Tasks #####
 - [x] Implement first cut Camera class
 - [x] Enable shader uniform passing from C++
 - [x] Update background color fill to RGB(30, 30, 30)
@@ -20,6 +21,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Add slider to work with synthesized graph
 - [ ] Enable slider to work with C++ Visualizer
 
+##### Miscellaneous Tasks #####
 - [ ] Move shader source to external files
 - [ ] Implement logging mechanism
 - [ ] Display OpenGL logs in Dynamorph window
