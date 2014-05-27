@@ -45,8 +45,8 @@ namespace ProtoTest.Imperative
             Assert.IsTrue((Int64)mirror.GetValue("aa").Payload == 0);
             Assert.IsTrue((Int64)mirror.GetValue("bb").Payload == 20);
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("c").DsasmValue.IsNull);
         }
 
         [Test]
@@ -174,8 +174,8 @@ namespace ProtoTest.Imperative
             String code =
                     @"a;b;[Imperative]                    {	                    a = 4;			                    if( a == 4 )	                    {		                    i = 0;                        }                        // The unbounded warning only occurs here	                    a = i;                        // At this point 'i' is already allocated and assigned null	                    b = i;                     }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
         }
 
         [Test]
@@ -194,7 +194,7 @@ namespace ProtoTest.Imperative
             String code =
                         @"a;[Imperative]                        {                            a = 4;                            b = a*2;                                            [Associative]                            {                                i=0;                                temp=1;                            }                            a = temp;                        }                        ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
