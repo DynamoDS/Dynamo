@@ -426,7 +426,7 @@ limitations under the License.
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Extensions\Dynamorph.Net\Dynamorph.Net.csproj">
+    <ProjectReference Include="..\Extensions\Dynamorph\Dynamorph.Net\Dynamorph.Net.csproj">
       <Project>{54c12d23-b989-45f4-9681-3a8716f30050}</Project>
       <Name>Dynamorph.Net</Name>
     </ProjectReference>

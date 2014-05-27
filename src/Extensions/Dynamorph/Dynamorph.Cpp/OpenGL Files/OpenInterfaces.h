@@ -3,12 +3,12 @@
 #define _OPEN_INTERFACE_H_
 
 #include "../Interfaces.h"
-#include "../../../../extern/OpenGL/glcorearb.h"
-#include "../../../../extern/OpenGL/glext.h"
-#include "../../../../extern/OpenGL/wglext.h"
-#include "../../../../extern/OpenGL/glm/glm/glm.hpp"
-#include "../../../../extern/OpenGL/glm/glm/gtc/matrix_transform.hpp"
-#include "../../../../extern/OpenGL/glm/glm/gtc/type_ptr.hpp"
+#include "../../../../../extern/OpenGL/glcorearb.h"
+#include "../../../../../extern/OpenGL/glext.h"
+#include "../../../../../extern/OpenGL/wglext.h"
+#include "../../../../../extern/OpenGL/glm/glm/glm.hpp"
+#include "../../../../../extern/OpenGL/glm/glm/gtc/matrix_transform.hpp"
+#include "../../../../../extern/OpenGL/glm/glm/gtc/type_ptr.hpp"
 
 namespace Dynamorph { namespace OpenGL {
 
