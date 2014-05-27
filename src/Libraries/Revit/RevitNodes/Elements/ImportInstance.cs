@@ -117,12 +117,9 @@ namespace Revit.Elements
 
             Robustify(ref geometries, ref translation);
 
-            if (!Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn))
-            {
-                throw new Exception("Failed to import geometry.");
-            }
+            var exported_fn = Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn);
 
-            return new ImportInstance(fn, translation.ToXyz());
+            return new ImportInstance(exported_fn, translation.ToXyz());
         }
 
         /// <summary>
@@ -143,12 +140,9 @@ namespace Revit.Elements
             var translation = Vector.ByCoordinates(0, 0, 0);
             Robustify(ref geometry, ref translation);
 
-            if (!geometry.ExportToSAT(fn))
-            {
-                throw new Exception("Failed to import geometry.");
-            }
+            var exported_fn = geometry.ExportToSAT(fn);
 
-            return new ImportInstance(fn, translation.ToXyz());
+            return new ImportInstance(exported_fn, translation.ToXyz());
         }
 
 

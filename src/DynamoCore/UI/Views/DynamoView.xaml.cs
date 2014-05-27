@@ -49,6 +49,8 @@ namespace Dynamo.Controls
 
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
+        DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+
         public bool ConsoleShowing
         {
             get { return LogScroller.Height > 0; }
@@ -82,6 +84,28 @@ namespace Dynamo.Controls
 
             this.Loaded += DynamoView_Loaded;
             this.Unloaded += DynamoView_Unloaded;
+
+            this.SizeChanged += DynamoView_SizeChanged;
+            this.LocationChanged += DynamoView_LocationChanged;
+
+            Left = dynSettings.Controller.PreferenceSettings.WindowX;
+            Top = dynSettings.Controller.PreferenceSettings.WindowY;
+            Width = dynSettings.Controller.PreferenceSettings.WindowW;
+            Height = dynSettings.Controller.PreferenceSettings.WindowH;
+
+            _workspaceResizeTimer.Tick += _resizeTimer_Tick;
+        }
+
+        void DynamoView_LocationChanged(object sender, EventArgs e)
+        {
+            dynSettings.Controller.PreferenceSettings.WindowX = Left;
+            dynSettings.Controller.PreferenceSettings.WindowY = Top;
+        }
+
+        void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            dynSettings.Controller.PreferenceSettings.WindowW = e.NewSize.Width;
+            dynSettings.Controller.PreferenceSettings.WindowH = e.NewSize.Height;
         }
 
         void InitializeShortcutBar()
@@ -971,9 +995,28 @@ namespace Dynamo.Controls
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this._vm == null)
+            //http://stackoverflow.com/questions/4474670/how-to-catch-the-ending-resize-window
+
+            // Children of the workspace, including the zoom border and the endless grid
+            // are expensive to resize. We use a timer here to defer resizing until 
+            // after workspace resizing is complete. This improves the responziveness of
+            // the UI during resize.
+
+            _workspaceResizeTimer.IsEnabled = true;
+            _workspaceResizeTimer.Stop();
+            _workspaceResizeTimer.Start();
+        }
+
+        void _resizeTimer_Tick(object sender, EventArgs e)
+        {
+            _workspaceResizeTimer.IsEnabled = false;
+
+            // end of timer processing
+            if (_vm == null)
                 return;
-            this._vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
+            _vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
+
+            Debug.WriteLine("Resizing workspace children.");
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)

@@ -373,6 +373,8 @@ namespace Dynamo
 
         public void RunExpression(int? executionInterval = null)
         {
+            
+
             //If we're already running, do nothing.
             if (Running)
             {
@@ -592,6 +594,12 @@ namespace Dynamo
             DynamoViewModel.ExecuteCommand(command);
         }
 
+        internal void MutateTestCmd(object parameters)
+        {
+            var command = new DynamoViewModel.MutateTestCommand();
+            DynamoViewModel.ExecuteCommand(command);
+        }
+
         internal bool CanRunExprCmd(object parameters)
         {
             return (dynSettings.Controller != null);
@@ -623,6 +631,46 @@ namespace Dynamo
 
                 RunExpression();
             }
+        }
+
+        internal void MutateTestInternal()
+        {
+            System.Diagnostics.Debug.WriteLine("MutateTest Internal activate");
+
+            var nodes = DynamoModel.Nodes;
+            NodeModel node = nodes[0];
+
+
+            DynamoViewModel.DeleteModelCommand delCommand = new DynamoViewModel.DeleteModelCommand(node.GUID);
+            DynamoViewModel.ExecuteCommand(delCommand);
+
+            Thread.Sleep(1000);
+
+            DynamoViewModel.RunCancelCommand runCancel = new DynamoViewModel.RunCancelCommand(false, false);
+            DynamoViewModel.ExecuteCommand(runCancel);
+
+            Thread.Sleep(1000);
+
+
+            DynamoViewModel.ForceRunCancelCommand runCancelForce = new DynamoViewModel.ForceRunCancelCommand(false, false);
+            DynamoViewModel.ExecuteCommand(runCancelForce);
+
+            Thread.Sleep(1000);
+
+
+            DynamoViewModel.UndoRedoCommand undoCommand = new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+            DynamoViewModel.ExecuteCommand(undoCommand);
+
+            Thread.Sleep(1000);
+
+            DynamoViewModel.ExecuteCommand(runCancel);
+
+            Thread.Sleep(1000);
+
+            DynamoViewModel.ExecuteCommand(runCancelForce);
+
+            Thread.Sleep(1000);
+
         }
 
         public void DisplayFunction(object parameters)
@@ -659,57 +707,4 @@ namespace Dynamo
         }
     }
     
-    public class CrashPromptArgs : EventArgs
-    {
-        [Flags]
-        public enum DisplayOptions
-        {
-            IsDefaultTextOverridden = 0x00000001,
-            HasDetails = 0x00000002,
-            HasFilePath = 0x00000004
-        }
-
-        public DisplayOptions Options { get; private set; }
-        public string Details { get; private set; }
-        public string OverridingText { get; private set; }
-        public string FilePath { get; private set; }
-
-        // Default Crash Prompt
-        public CrashPromptArgs(string details, string overridingText = null, string filePath = null)
-        {
-            if (details != null)
-            {
-                Details = details;
-                Options |= DisplayOptions.HasDetails;
-            }
-
-            if (overridingText != null)
-            {
-                OverridingText = overridingText;
-                Options |= DisplayOptions.IsDefaultTextOverridden;
-            }
-
-            if (filePath != null)
-            {
-                FilePath = filePath;
-                Options |= DisplayOptions.HasFilePath;
-            }
-        }
-
-        public bool IsDefaultTextOverridden()
-        {
-            return Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
-        }
-
-        public bool HasDetails()
-        {
-            return Options.HasFlag(DisplayOptions.HasDetails);
-        }
-
-        public bool IsFilePath()
-        {
-            return Options.HasFlag(DisplayOptions.HasFilePath);
-        }
-    }
-
 }

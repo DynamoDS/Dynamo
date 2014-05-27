@@ -402,6 +402,9 @@ namespace Dynamo.ViewModels
         }
 
 
+
+
+
         public class ForceRunCancelCommand : RunCancelCommand
         {
 
@@ -414,6 +417,22 @@ namespace Dynamo.ViewModels
             {
 
                 dynamoViewModel.ForceRunCancelImpl(this);
+            }
+
+        }
+
+        public class MutateTestCommand : RecordableCommand
+        {
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.MutateTestImpl();
+
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
             }
 
         }
