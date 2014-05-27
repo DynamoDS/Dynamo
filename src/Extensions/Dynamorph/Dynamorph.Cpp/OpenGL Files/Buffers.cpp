@@ -79,6 +79,11 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
     LoadDataInternal(data);
 }
 
+void VertexBuffer::GetBoundingBoxCore(BoundingBox* pBoundingBox)
+{
+    (*pBoundingBox) = mBoundingBox;
+}
+
 void VertexBuffer::EnsureVertexBufferCreation(void)
 {
     if (mVertexArrayId == 0)
@@ -91,6 +96,17 @@ void VertexBuffer::EnsureVertexBufferCreation(void)
 void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
 {
     const auto bytes = vertices.size() * sizeof(VertexData);
+
+    std::size_t count = vertices.size();
+    if (count <= 0)
+        mBoundingBox.Reset(0.0f, 0.0f, 0.0f);
+    else
+    {
+        const VertexData* p = &vertices[0];
+        mBoundingBox.Reset(p[0].x, p[0].y, p[0].z);
+        for (std::size_t index = 0; index < count; ++index)
+            mBoundingBox.EvaluatePoint(p[index].x, p[index].y, p[index].z);
+    }
 
     GL::glBindVertexArray(mVertexArrayId);
     GL::glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);

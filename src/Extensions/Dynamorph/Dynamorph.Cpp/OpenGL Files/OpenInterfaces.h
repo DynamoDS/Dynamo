@@ -250,6 +250,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual void LoadDataCore(const std::vector<float>& positions);
         virtual void LoadDataCore(const std::vector<float>& positions,
             const std::vector<float>& rgbaColors);
+        virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox);
 
     private:
         void EnsureVertexBufferCreation(void);
@@ -258,6 +259,7 @@ namespace Dynamorph { namespace OpenGL {
         int mVertexCount;
         GLuint mVertexArrayId;
         GLuint mVertexBufferId;
+        BoundingBox mBoundingBox;
     };
 } }
 
