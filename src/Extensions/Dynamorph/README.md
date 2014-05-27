@@ -1,9 +1,26 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
 
-Dynamorph!
+Dynamorph, morph the heck out of your design.
 
-## Tasks ##
+## Tasks (Prioritized) ##
 
-* Eat breakfast
-* Rest
-* Have lunch
+- [x] Implement first cut Camera class
+- [x] Enable shader uniform passing from C++
+- [x] Update background color fill to RGB(30, 30, 30)
+- [ ] Use GLM for transformation matrix computation
+- [ ] Add bounding box to IVertexBuffer class
+- [ ] Fit geometries in bounding sphere
+- [ ] Implement SynthesizedGraph/Node/Edge classes
+- [ ] Provide helper to synthesize Dynamo graph 
+- [ ] Implement layout/rendering for synthesized graph
+- [ ] Implement saving of tessellated data to bin file
+- [ ] Implement loading of tessellated data from file
+- [ ] Design structure to keep node-geometry data
+- [ ] Add shader uniform to control per-vertex alpha
+- [ ] Add slider to work with synthesized graph
+- [ ] Enable slider to work with C++ Visualizer
+- [ ] Implement Track Ball class for navigation
+
+## Screenshot Of The Day ##
+This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
+![Image](https://github.com/Benglin/Dynamo/blob/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)
