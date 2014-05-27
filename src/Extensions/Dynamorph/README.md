@@ -7,7 +7,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Implement first cut Camera class
 - [x] Enable shader uniform passing from C++
 - [x] Update background color fill to RGB(30, 30, 30)
-- [ ] Use GLM for transformation matrix computation
+- [x] Use GLM for transformation matrix computation
 - [ ] Add bounding box to IVertexBuffer class
 - [ ] Fit geometries in bounding sphere
 - [ ] Implement SynthesizedGraph/Node/Edge classes
@@ -24,4 +24,6 @@ Dynamorph, morph the heck out of your design.
 
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
+
+### Camera is now configurable! :) ###
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)
