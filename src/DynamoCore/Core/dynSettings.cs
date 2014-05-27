@@ -32,11 +32,6 @@ namespace Dynamo.Utilities
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
 
-        /// <summary>
-        /// Enable verbose logging this is a lot of data
-        /// </summary>
-        public static bool VerboseLogging { get; set; }
-
         public static string FormatFileName(string filename)
         {
             return RemoveChars(

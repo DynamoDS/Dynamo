@@ -63,9 +63,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\cyclic.dyn");
             model.Open(openPath);
 
-            var builder = new AstBuilder(null);
-
-            var sortedNodes = builder.TopologicalSort(model.CurrentWorkspace.Nodes);
+            var sortedNodes = AstBuilder.TopologicalSort(model.CurrentWorkspace.Nodes);
             Assert.AreEqual(sortedNodes.Count(), 2);
         }
 
@@ -86,13 +84,12 @@ namespace Dynamo.Tests
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
-            var builder = new AstBuilder(null);
             int shuffleCount = 10;
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
             {
-                var sortedNodes = builder.TopologicalSort(shuffle.ShuffledList).ToList();
+                var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
@@ -128,13 +125,12 @@ namespace Dynamo.Tests
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
-            var builder = new AstBuilder(null);
             int shuffleCount = 10;
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
             {
-                var sortedNodes = builder.TopologicalSort(shuffle.ShuffledList).ToList();
+                var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
@@ -169,13 +165,12 @@ namespace Dynamo.Tests
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
-            var builder = new AstBuilder(null);
             int shuffleCount = 10;
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
             {
-                var sortedNodes = builder.TopologicalSort(shuffle.ShuffledList).ToList();
+                var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 3);
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
@@ -207,13 +202,12 @@ namespace Dynamo.Tests
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
-            var builder = new AstBuilder(null);
             int shuffleCount = 10;
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
             {
-                var sortedNodes = builder.TopologicalSort(shuffle.ShuffledList).ToList();
+                var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
@@ -255,14 +249,12 @@ namespace Dynamo.Tests
             var nodes = model.CurrentWorkspace.Nodes.ToList();
             int shuffleCount = 10;
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
-            var builder = new AstBuilder(null);
 
             for (int i = 0; i < shuffleCount; ++i)
             {
                 nodes = shuffle.ShuffledList;
-                var unsortedNickNames = nodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                var sortedNodes = builder.TopologicalSort(nodes).ToList();
+                var sortedNodes = AstBuilder.TopologicalSort(nodes).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 9);
 
                 var nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();

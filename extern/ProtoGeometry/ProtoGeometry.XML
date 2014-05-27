@@ -236,6 +236,9 @@
             Check if the two objects have the same representational geometry or numerical values
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
+            WARNING: non-ascii characters are not supported in file nams.
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
             <summary>
             Get the context/reference coordinate system that was used to create this geometry.

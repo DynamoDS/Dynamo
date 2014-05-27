@@ -257,7 +257,8 @@ namespace Dynamo.Controls
             });
 
             // GridLine binds to ItemsControl
-            this.itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines"){
+            this.itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines")
+            {
                 Mode = BindingMode.OneWay
             });
         }
