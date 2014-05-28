@@ -416,18 +416,6 @@ namespace Dynamo.Models
             }
 
             Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
-
-            var graph = new GraphLayout.Graph();
-
-            foreach (var x in CurrentWorkspace.Nodes)
-                graph.AddNode(x.GUID, x.Width, x.Height);
-
-            foreach (var x in CurrentWorkspace.Connectors)
-                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID);
-
-            graph.RemoveCycles();
-            graph.RemoveTransitiveEdges();
-            graph.AssignLayers();
         }
 
         internal bool CanShowOpenDialogAndOpenResultCommand(object parameter)
@@ -1066,6 +1054,26 @@ namespace Dynamo.Models
                 //    OpenCommand.Execute(_fileDialog.FileName);
                 if (CanOpen(_fileDialog.FileName))
                     Open(_fileDialog.FileName);
+            }
+
+            var graph = new GraphLayout.Graph();
+
+            foreach (var x in CurrentWorkspace.Nodes)
+                graph.AddNode(x.GUID, x.Width, x.Height);
+
+            foreach (var x in CurrentWorkspace.Connectors)
+                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID);
+
+            graph.RemoveCycles();
+            graph.RemoveTransitiveEdges();
+            graph.AssignLayers();
+            graph.OrderNodes();
+
+            foreach (var x in CurrentWorkspace.Nodes)
+            {
+                var id = x.GUID;
+                x.X = graph.FindNode(id).X;
+                x.Y = graph.FindNode(id).Y;
             }
         }
 

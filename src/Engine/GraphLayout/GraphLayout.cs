@@ -13,6 +13,8 @@ namespace GraphLayout
         public HashSet<Node> Nodes = new HashSet<Node>();
         public HashSet<Edge> Edges = new HashSet<Edge>();
 
+        public List<List<Node>> Layers = new List<List<Node>>();
+
         public void AddNode(Guid guid, double width, double height)
         {
             var node = new Node(guid, width, height, this);
@@ -172,24 +174,64 @@ namespace GraphLayout
             List<Node> OrderedNodes = Nodes.OrderByDescending(x => x.LeftEdges.Count).ToList();
             HashSet<Node> LayeredNodes = new HashSet<Node>();
 
-            int layer = 1;
-            while (LayeredNodes.Count < OrderedNodes.Count)
+            Layers.Add(new List<Node>());
+            int k = 0;
+            int processed = 0;
+            while (processed < OrderedNodes.Count)
             {
                 // Choose a node with the highest priority (leftmost in the list)
                 // such that all the right edges of the is node connected to U.
                 
-                Node n = OrderedNodes.First(x => x.Layer == 0 &&
-                    x.RightEdges.All(e => LayeredNodes.Contains(e.EndNode)));
+                Node n = OrderedNodes.First(x => x.Layer < 0 &&
+                    x.RightEdges.All(e => e.EndNode.Layer >= 0));
 
-                if ((GetLayerWidth(layer) > MaxWidth) || !n.RightEdges.All(e => e.EndNode.Layer < layer))
-                    layer++;
+                if ((GetLayerWidth(k) > MaxWidth) || !n.RightEdges.All(e => e.EndNode.Layer < k))
+                {
+                    k++;
+                    Layers.Add(new List<Node>());
+                }
 
-                n.Layer = layer;
-                LayeredNodes.Add(n);
+                n.Layer = k;
+                n.X = 1000 - 250 * k;
+                Layers[k].Add(n);
+                processed++;
             }
 
             Nodes = new HashSet<Node>(OrderedNodes);
+
+            foreach (List<Node> layer in Layers)
+            {
+                int y = 0;
+                foreach (Node node in layer)
+                {
+                    node.Y = y;
+                    y += 100;
+                }
+            }
+
             return true;
+        }
+
+        public bool OrderNodes()
+        {
+            List<Node> previous = null;
+            foreach (List<Node> layer in Layers)
+            {
+                if (previous != null)
+                {
+                    foreach (Node n in layer)
+                    {
+                        List<Node> neighbors = previous.Where(x => n.RightEdges.Select(e => e.EndNode).Contains(x))
+                            .OrderBy(x => x.Y).ToList();
+                        if (neighbors.Count > 0)
+                            n.Y = neighbors[neighbors.Count / 2].Y;
+                    }
+                }
+
+                previous = layer.OrderBy(x => x.Y).ToList();
+            }
+
+            return false;
         }
     }
 
@@ -202,7 +244,10 @@ namespace GraphLayout
         public double Width;
         public double Height;
 
-        public int Layer = 0;
+        public double X;
+        public double Y;
+
+        public int Layer = -1;
 
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
