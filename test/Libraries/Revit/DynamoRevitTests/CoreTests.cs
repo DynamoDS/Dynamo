@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
@@ -16,7 +17,7 @@ namespace Dynamo.Tests
     class CoreTests:DynamoRevitUnitTestBase
     {
         /// <summary>
-        /// Sanity Check graph should always throw an error.
+        /// Sanity Check graph should always have nodes that error.
         /// </summary>
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -27,8 +28,11 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Core\SanityCheck.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
+            //Assert that there are some errors in the graph
             model.Open(testPath);
-            Assert.Throws(typeof(AssertionException), () => dynSettings.Controller.RunExpression());
+            dynSettings.Controller.RunExpression(true);
+            var errorNodes = model.Nodes.Where(x => x.State == ElementState.Warning);
+            Assert.Greater(errorNodes.Count(), 0);
         }
 
         [Test]
@@ -177,36 +181,36 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, TestCaseSource("SetupCopyPastes")]
-        [TestModel(@".\empty.rfa")]
-        public void CanCopyAndPasteAllNodesOnRevit(string typeName)
-        {
-            var model = dynSettings.Controller.DynamoModel;
+        //[Test, TestCaseSource("SetupCopyPastes")]
+        //[TestModel(@".\empty.rfa")]
+        //public void CanCopyAndPasteAllNodesOnRevit(string typeName)
+        //{
+        //    var model = dynSettings.Controller.DynamoModel;
 
-            Assert.DoesNotThrow(() => model.CreateNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
+        //    Assert.DoesNotThrow(() => model.CreateNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
 
-                var node = model.AllNodes.FirstOrDefault();
+        //        var node = model.AllNodes.FirstOrDefault();
 
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(node);
-                Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+        //        DynamoSelection.Instance.ClearSelection();
+        //        DynamoSelection.Instance.Selection.Add(node);
+        //        Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
 
-                Assert.DoesNotThrow(() => model.Copy(null), string.Format("Could not copy node : {0}", node.GetType()));
-                Assert.DoesNotThrow(() => model.Paste(null), string.Format("Could not paste node : {0}", node.GetType()));
+        //        Assert.DoesNotThrow(() => model.Copy(null), string.Format("Could not copy node : {0}", node.GetType()));
+        //        Assert.DoesNotThrow(() => model.Paste(null), string.Format("Could not paste node : {0}", node.GetType()));
 
-                model.Clear(null);    
-        }
+        //        model.Clear(null);    
+        //}
 
-        static List<string> SetupCopyPastes()
-        {
-            var excludes = new List<string>();
-            excludes.Add("Dynamo.Nodes.DSFunction");
-            excludes.Add("Dynamo.Nodes.Symbol");
-            excludes.Add("Dynamo.Nodes.Output");
-            excludes.Add("Dynamo.Nodes.Function");
-            excludes.Add("Dynamo.Nodes.LacerBase");
-            excludes.Add("Dynamo.Nodes.FunctionWithRevit");
-            return dynSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
-        }
+        //static List<string> SetupCopyPastes()
+        //{
+        //    var excludes = new List<string>();
+        //    excludes.Add("Dynamo.Nodes.DSFunction");
+        //    excludes.Add("Dynamo.Nodes.Symbol");
+        //    excludes.Add("Dynamo.Nodes.Output");
+        //    excludes.Add("Dynamo.Nodes.Function");
+        //    excludes.Add("Dynamo.Nodes.LacerBase");
+        //    excludes.Add("Dynamo.Nodes.FunctionWithRevit");
+        //    return dynSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
+        //}
     }
 }
