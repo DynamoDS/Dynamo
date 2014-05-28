@@ -39,49 +39,50 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void CanChangeLacingAndHaveElementsUpdate()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //string samplePath = Path.Combine(_testPath, @".\Core\LacingTest.dyn");
-            //string testPath = Path.GetFullPath(samplePath);
+            string samplePath = Path.Combine(_testPath, @".\Core\LacingTest.dyn");
+            string testPath = Path.GetFullPath(samplePath);
 
-            //model.Open(testPath);
+            model.Open(testPath);
 
-            //var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is Xyz);
-            //Assert.IsNotNull(xyzNode);
+            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x.NickName == "Point.ByCoordinates");
+            Assert.IsNotNull(xyzNode);
 
-            ////test the first lacing
+            //test the first lacing
+            xyzNode.ArgumentLacing = LacingStrategy.Shortest;
+            dynSettings.Controller.RunExpression(true);
+
+            var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(4, fec.ToElements().Count());
+
+            //REMOVED IN 0.7.0. First has been temporarily removed.
+            //test the shortest lacing
             //xyzNode.ArgumentLacing = LacingStrategy.First;
             //dynSettings.Controller.RunExpression(true);
-
-            //FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            //fec = null;
+            //fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
             //fec.OfClass(typeof(ReferencePoint));
             //Assert.AreEqual(1, fec.ToElements().Count());
 
-            ////test the shortest lacing
-            //xyzNode.ArgumentLacing = LacingStrategy.First;
-            //dynSettings.Controller.RunExpression(true);
-            //fec = null;
-            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(1, fec.ToElements().Count());
+            //test the longest lacing
+            xyzNode.ArgumentLacing = LacingStrategy.Longest;
+            dynSettings.Controller.RunExpression(true);
+            fec = null;
+            fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(5, fec.ToElements().Count());
 
-            ////test the longest lacing
-            //xyzNode.ArgumentLacing = LacingStrategy.Longest;
-            //dynSettings.Controller.RunExpression(true);
-            //fec = null;
-            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(5, fec.ToElements().Count());
+            //test the cross product lacing
+            xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
+            dynSettings.Controller.RunExpression(true);
+            fec = null;
+            fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(20, fec.ToElements().Count());
 
-            ////test the cross product lacing
-            //xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            //dynSettings.Controller.RunExpression(true);
-            //fec = null;
-            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(20, fec.ToElements().Count());
-
-            Assert.Inconclusive("Porting : XYZ");
+            //Assert.Inconclusive("Porting : XYZ");
         }
 
         /*
@@ -154,7 +155,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, fec.ToElements().Count());
 
             //open a new document and activate it
-            UIDocument initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+            Autodesk.Revit.UI.UIDocument initialDoc = DocumentManager.Instance.CurrentUIDocument;
             string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
             DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
