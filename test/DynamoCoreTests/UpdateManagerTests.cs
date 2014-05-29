@@ -23,6 +23,20 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void UpdateCheckReturnsInfoWhenNewerDailyBuildAvailable()
+        {
+            var um = dynSettings.Controller.UpdateManager;
+
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.dailyBuildAvailableData);
+
+            um.CheckNewerDailyBuilds = true;
+            um.UpdateDataAvailable(updateRequest.Object);
+            
+            Assert.NotNull(Controller.UpdateManager.UpdateInfo);
+        }
+
+        [Test]
         public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -85,6 +99,28 @@ namespace Dynamo.Tests
                 "<Contents>" +
                 "<Key>DynamoInstall9.9.9.exe</Key>" +
                 "<LastModified>2013-11-03T17:02:59.000Z</LastModified>" +
+                "</Contents>" +
+                "</ListBucketResult>";
+
+        // Daily build data for the year 2099 :)
+        public const string dailyBuildAvailableData =
+            "<ListBucketResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">" +
+                "<Name>dyn-builds-data</Name>" +
+                "<Prefix/>" +
+                "<Marker/>" +
+                "<MaxKeys>1000</MaxKeys>" +
+                "<IsTruncated>true</IsTruncated>" +
+                "<Contents>" +
+                "<Key>DynamoInstall0.1.0.exe</Key>" +
+                "<LastModified>2013-11-01T17:02:59.000Z</LastModified>" +
+                "</Contents>" +
+                "<Contents>" +
+                "<Key>DynamoDailyInstall20990101T0001.exe</Key>" +
+                "<LastModified>2099-11-02T17:02:59.000Z</LastModified>" +
+                "</Contents>" +
+                "<Contents>" +
+                "<Key>DynamoDailyInstall20990101T0002.exe</Key>" +
+                "<LastModified>2099-11-03T17:02:59.000Z</LastModified>" +
                 "</Contents>" +
                 "</ListBucketResult>";
 

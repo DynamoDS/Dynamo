@@ -50,6 +50,7 @@ namespace Dynamo.UpdateManager
         void HostApplicationBeginQuit(object sender, EventArgs e);
         void UpdateDataAvailable(IAsynchronousRequest request);
         bool IsVersionCheckInProgress();
+        bool CheckNewerDailyBuilds { get; set; }
     }
 
     /// <summary>
