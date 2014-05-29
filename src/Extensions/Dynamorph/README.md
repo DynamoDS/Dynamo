@@ -25,6 +25,8 @@ Dynamorph, morph the heck out of your design.
 - [ ] Enable slider to work with C++ Visualizer
 
 ##### Miscellaneous Tasks #####
+- [ ] Fix: Dynamorph relaunch problem
+- [ ] Fix: closing Dynamo does not close Dynamorph
 - [ ] Move shader source to external files
 - [ ] Implement logging mechanism
 - [ ] Display OpenGL logs in Dynamorph window
