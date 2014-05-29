@@ -165,6 +165,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override bool ForceReExecuteOfNode
+        {
+            get { return true; }
+        }
+
         #region protected constructors
 
         protected DSElementSelection(Func<string, ElementId> action, string message)
