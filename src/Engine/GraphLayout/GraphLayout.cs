@@ -84,7 +84,7 @@ namespace GraphLayout
                         e.EndNode.InactiveLeftEdges.Add(e);
                         e.EndNode.LeftEdges.Remove(e);
                     }
-                    n.InactiveRightEdges = n.RightEdges;
+                    n.InactiveRightEdges.UnionWith(n.RightEdges);
                     n.RightEdges = new HashSet<Edge>();
                 }
 
