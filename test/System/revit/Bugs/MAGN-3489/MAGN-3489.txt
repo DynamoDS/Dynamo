@@ -1,6 +1,0 @@
-'Dim Jrn 
-Set Jrn = CrsJournalScript 
-Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST" 
-Jrn.Data "MRUFileName"  , "C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\inst+param+mass+families.rvt" 
-Jrn.RibbonEvent "Execute external command:CustomCtrl_%CustomCtrl_%Add-Ins%Visual Programming Alpha%Dynamo 0.7 Alpha:Dynamo.Applications.DynamoRevit"
-Jrn.Data "APIStringStringMapJournalData", 2, "dynPath", "C:\Users\Ian\Documents\GitHub\Dynamo\test\System\revit\Bugs\MAGN-3489\typeSelection.dyn", "debug", "True"
