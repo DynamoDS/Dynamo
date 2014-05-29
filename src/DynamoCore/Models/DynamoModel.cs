@@ -1058,11 +1058,11 @@ namespace Dynamo.Models
 
             var graph = new GraphLayout.Graph();
 
-            foreach (var x in CurrentWorkspace.Nodes)
+            foreach (NodeModel x in CurrentWorkspace.Nodes)
                 graph.AddNode(x.GUID, x.Width, x.Height);
 
-            foreach (var x in CurrentWorkspace.Connectors)
-                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID);
+            foreach (ConnectorModel x in CurrentWorkspace.Connectors)
+                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID, x.End.X, x.End.Y);
 
             graph.RemoveCycles();
             graph.RemoveTransitiveEdges();

@@ -21,9 +21,9 @@ namespace GraphLayout
             Nodes.Add(node);
         }
 
-        public void AddEdge(Guid guid, Guid start, Guid end)
+        public void AddEdge(Guid guid, Guid start, Guid end, double endX, double endY)
         {
-            var edge = new Edge(guid, start, end, this);
+            var edge = new Edge(guid, start, end, endX, endY, this);
             Edges.Add(edge);
         }
 
@@ -37,7 +37,7 @@ namespace GraphLayout
 
         public Edge FindEdge(Node start, Node end)
         {
-            foreach (Edge edge in Edges)
+            foreach (Edge edge in Edges.Where(x => x.Active))
                 if (start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
                     return edge;
             return null;
@@ -58,34 +58,28 @@ namespace GraphLayout
             while (Nodes.Count > 0)
             {
                 // Remove all sink nodes
-                HashSet<Node> selected = new HashSet<Node>(Nodes.Where(n => n.RightEdges.Count == 0));
+                HashSet<Node> selected = new HashSet<Node>(Nodes.Where(n => n.RightEdges.Count(x => x.Active) == 0));
                 foreach (Node n in selected)
                 {
-                    foreach (Edge e in n.LeftEdges)
+                    foreach (Edge e in n.LeftEdges.Where(x => x.Active))
                     {
                         AcyclicEdges.Add(e);
-                        e.StartNode.InactiveRightEdges.Add(e);
-                        e.StartNode.RightEdges.Remove(e);
+                        e.Active = false;
                     }
-                    n.InactiveLeftEdges = n.LeftEdges;
-                    n.LeftEdges = new HashSet<Edge>();
                 }
 
                 // Remove all isolated nodes
                 Nodes.ExceptWith(selected);
 
                 // Remove all source nodes
-                selected = new HashSet<Node>(Nodes.Where(n => n.LeftEdges.Count == 0));
+                selected = new HashSet<Node>(Nodes.Where(n => n.LeftEdges.Count(x => x.Active) == 0));
                 foreach (Node n in selected)
                 {
-                    foreach (Edge e in n.RightEdges)
+                    foreach (Edge e in n.RightEdges.Where(x => x.Active))
                     {
                         AcyclicEdges.Add(e);
-                        e.EndNode.InactiveLeftEdges.Add(e);
-                        e.EndNode.LeftEdges.Remove(e);
+                        e.Active = false;
                     }
-                    n.InactiveRightEdges.UnionWith(n.RightEdges);
-                    n.RightEdges = new HashSet<Edge>();
                 }
 
                 // Remove all isolated nodes
@@ -94,16 +88,16 @@ namespace GraphLayout
                 // if G is not empty then
                 if (Nodes.Count > 0)
                 {
-                    int max = Nodes.Max(x => x.RightEdges.Count - x.LeftEdges.Count);
-                    Node n = Nodes.First(x => x.RightEdges.Count - x.LeftEdges.Count == max);
+                    int max = Nodes.Max(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active));
+                    Node n = Nodes.First(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active) == max);
 
-                    AcyclicEdges.UnionWith(n.RightEdges);
-                    
+                    AcyclicEdges.UnionWith(n.RightEdges.Where(x => x.Active));
+
                     foreach (Edge e in n.RightEdges)
-                        e.EndNode.LeftEdges.Remove(e);
-                    
+                        e.Active = false;
+
                     foreach (Edge e in n.LeftEdges)
-                        e.StartNode.RightEdges.Remove(e);
+                        e.Active = false;
 
                     Nodes.Remove(n);
                 }
@@ -112,13 +106,8 @@ namespace GraphLayout
             Nodes = BackupNodes;
             Edges = AcyclicEdges;
 
-            foreach (Node n in Nodes)
-            {
-                n.LeftEdges.UnionWith(n.InactiveLeftEdges);
-                n.RightEdges.UnionWith(n.InactiveRightEdges);
-                n.InactiveLeftEdges.Clear();
-                n.InactiveRightEdges.Clear();
-            }
+            foreach (Edge e in Edges)
+                e.Active = true;
 
             return true;
         }
@@ -156,9 +145,7 @@ namespace GraphLayout
 
                         if (conn[xi, yi] + conn[yi, zi] + conn[xi, zi] == 3)
                         {
-                            e.StartNode.RightEdges.Remove(e);
-                            e.EndNode.LeftEdges.Remove(e);
-                            Edges.Remove(e);
+                            e.Active = false;
                         }
                     }
                 }
@@ -171,7 +158,7 @@ namespace GraphLayout
         {
             // This method implements Coffman-Graham layering algorithm.
             
-            List<Node> OrderedNodes = Nodes.OrderByDescending(x => x.LeftEdges.Count).ToList();
+            List<Node> OrderedNodes = Nodes.OrderByDescending(x => x.LeftEdges.Count(e => e.Active)).ToList();
             HashSet<Node> LayeredNodes = new HashSet<Node>();
 
             Layers.Add(new List<Node>());
@@ -182,10 +169,13 @@ namespace GraphLayout
                 // Choose a node with the highest priority (leftmost in the list)
                 // such that all the right edges of the is node connected to U.
                 
-                Node n = OrderedNodes.First(x => x.Layer < 0 &&
-                    x.RightEdges.All(e => e.EndNode.Layer >= 0));
+                List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
+                    x.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer >= 0)).ToList();
 
-                if ((GetLayerWidth(k) > MaxWidth) || !n.RightEdges.All(e => e.EndNode.Layer < k))
+                Node n = selected.FirstOrDefault(x => x.RightEdges.All(e => e.EndNode.Layer < k) && x.LeftEdges.Count(e => e.Active) > 0);
+                if (n == null) n = selected.First();
+
+                if ((GetLayerWidth(k) > MaxWidth) || !n.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer < k))
                 {
                     k++;
                     Layers.Add(new List<Node>());
@@ -221,14 +211,38 @@ namespace GraphLayout
                 {
                     foreach (Node n in layer)
                     {
-                        List<Node> neighbors = previous.Where(x => n.RightEdges.Select(e => e.EndNode).Contains(x))
-                            .OrderBy(x => x.Y).ToList();
-                        if (neighbors.Count > 0)
-                            n.Y = neighbors[neighbors.Count / 2].Y;
+                        List<Edge> neighborEdges = n.RightEdges.Where(e => e.Active)
+                            .OrderBy(x => x.EndY).ToList();
+                        if (neighborEdges.Count > 0)
+                            n.Y = neighborEdges[neighborEdges.Count / 2].EndY;
                     }
                 }
 
                 previous = layer.OrderBy(x => x.Y).ToList();
+                Node top = null;
+                foreach (Node n in previous)
+                {
+                    if (top == null)
+                    {
+                        top = n;
+                        continue;
+                    }
+
+                    // Avoid vertical node overlapping
+                    if (n.Y - top.Y < top.Height + 20)
+                    {
+                        n.Y = top.Y + top.Height + 20;
+                    }
+
+                    int b = 2;
+                    foreach (Edge e in n.LeftEdges)
+                    {
+                        e.EndY = n.Y + b;
+                        b += 2;
+                    }
+
+                    top = n;
+                }
             }
 
             return false;
@@ -251,9 +265,6 @@ namespace GraphLayout
 
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
-
-        public HashSet<Edge> InactiveLeftEdges = new HashSet<Edge>();
-        public HashSet<Edge> InactiveRightEdges = new HashSet<Edge>();
 
         public Node(Guid guid, double width, double height, Graph ownerGraph)
         {
@@ -281,11 +292,18 @@ namespace GraphLayout
         public Node StartNode;
         public Node EndNode;
 
-        public Edge(Guid guid, Guid start, Guid end, Graph ownerGraph)
+        public double EndX;
+        public double EndY;
+
+        public bool Active = true;
+
+        public Edge(Guid guid, Guid start, Guid end, double endX, double endY, Graph ownerGraph)
         {
             Id = guid;
             StartId = start;
             EndId = end;
+            EndX = endX;
+            EndY = endY;
             OwnerGraph = ownerGraph;
 
             StartNode = OwnerGraph.FindNode(StartId);
