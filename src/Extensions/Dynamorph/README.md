@@ -11,6 +11,8 @@ Dynamorph, morph the heck out of your design.
 - [x] Use GLM for transformation matrix computation
 - [x] Add bounding box to IVertexBuffer class
 - [x] Fit camera to bounding sphere of IVertexBuffer
+- [x] Enabled depth test while rendering
+- [x] Fix bounding sphere calculation
 - [ ] Implement SynthesizedGraph/Node/Edge classes
 - [ ] Provide helper to synthesize Dynamo graph 
 - [ ] Implement layout/rendering for synthesized graph

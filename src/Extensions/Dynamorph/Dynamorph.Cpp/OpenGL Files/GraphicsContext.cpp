@@ -112,6 +112,9 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
 
     // Create the default camera.
     mpDefaultCamera = new Camera(this);
+
+    // Default states of our renderer.
+    GL::glEnable(GL_DEPTH_TEST);
 }
 
 void GraphicsContext::UninitializeCore(void)

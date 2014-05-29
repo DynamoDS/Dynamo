@@ -43,7 +43,7 @@ namespace Dynamorph
 
             fieldOfView = 45.0f;
             aspectRatio = 3.0f / 2.0f;
-            nearClippingPlane = 1.0f;
+            nearClippingPlane = 0.1f;
             farClippingPlane = 1000.0f;
         }
 

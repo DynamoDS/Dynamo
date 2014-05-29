@@ -87,7 +87,8 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
 
     // Calculate the distance from eye to the center.
     auto halfFov = configuration.fieldOfView * 0.5f;
-    auto distance = std::fabsf(radius / std::sinf(halfFov));
+    auto halfFovRadian = halfFov * glm::pi<float>() / 180.0f;
+    auto distance = std::fabsf(radius / std::sinf(halfFovRadian));
 
     // Obtain the inversed view vector.
     float vx, vy, vz;
