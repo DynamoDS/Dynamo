@@ -138,7 +138,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     {
         CameraConfiguration camConfig;
-        camConfig.SetEyePoint(10.0f, 10.0f, 10.0f);
+        camConfig.SetEyePoint(10.0f, 15.0f, 20.0f);
         camConfig.SetCenterPoint(0.0f, 0.0f, 0.0f);
         camConfig.SetUpVector(0.0f, 1.0f, 0.0f);
         camConfig.aspectRatio = ((float) width) / height;
@@ -146,20 +146,101 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     }
 
     std::vector<float> positions;
-    float data[] = { 0.0f, 0.5f, 0.0f, 0.5, -0.5, 0.0f, -0.5f, -0.5f, 0.0f };
-    for (int index = 0; index < _countof(data); ++index)
-        positions.push_back(data[index]);
+    float cubeVertices[] = {
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
 
-    std::vector<float> colors;
-    float colorData[] = // RGBA array
-    {
-        1.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
     };
 
-    for (int index = 0; index < _countof(colorData); ++index)
-        colors.push_back(colorData[index]);
+    for (int index = 0; index < _countof(cubeVertices); ++index)
+        positions.push_back(cubeVertices[index]);
+
+    std::vector<float> colors;
+    float cubeColors[] = // RGBA array
+    {
+        1.0f, 0.5f, 0.75f, 1.0f,
+        1.0f, 0.5f, 0.75f, 1.0f,
+        1.0f, 0.5f, 0.75f, 1.0f,
+        1.0f, 0.5f, 0.75f, 1.0f,
+        1.0f, 0.5f, 0.75f, 1.0f,
+        1.0f, 0.5f, 0.75f, 1.0f,
+
+        0.5f, 1.0f, 0.50f, 1.0f,
+        0.5f, 1.0f, 0.50f, 1.0f,
+        0.5f, 1.0f, 0.50f, 1.0f,
+        0.5f, 1.0f, 0.50f, 1.0f,
+        0.5f, 1.0f, 0.50f, 1.0f,
+        0.5f, 1.0f, 0.50f, 1.0f,
+
+        0.0f, 0.5f, 1.00f, 1.0f,
+        0.0f, 0.5f, 1.00f, 1.0f,
+        0.0f, 0.5f, 1.00f, 1.0f,
+        0.0f, 0.5f, 1.00f, 1.0f,
+        0.0f, 0.5f, 1.00f, 1.0f,
+        0.0f, 0.5f, 1.00f, 1.0f,
+
+        1.0f, 1.0f, 0.50f, 1.0f,
+        1.0f, 1.0f, 0.50f, 1.0f,
+        1.0f, 1.0f, 0.50f, 1.0f,
+        1.0f, 1.0f, 0.50f, 1.0f,
+        1.0f, 1.0f, 0.50f, 1.0f,
+        1.0f, 1.0f, 0.50f, 1.0f,
+
+        1.0f, 0.5f, 0.25f, 1.0f,
+        1.0f, 0.5f, 0.25f, 1.0f,
+        1.0f, 0.5f, 0.25f, 1.0f,
+        1.0f, 0.5f, 0.25f, 1.0f,
+        1.0f, 0.5f, 0.25f, 1.0f,
+        1.0f, 0.5f, 0.25f, 1.0f,
+
+        0.5f, 0.5f, 1.00f, 1.0f,
+        0.5f, 0.5f, 1.00f, 1.0f,
+        0.5f, 0.5f, 1.00f, 1.0f,
+        0.5f, 0.5f, 1.00f, 1.0f,
+        0.5f, 0.5f, 1.00f, 1.0f,
+        0.5f, 0.5f, 1.00f, 1.0f,
+    };
+
+    for (int index = 0; index < _countof(cubeColors); ++index)
+        colors.push_back(cubeColors[index]);
 
     mpVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
     mpVertexBuffer->LoadData(positions, colors);
