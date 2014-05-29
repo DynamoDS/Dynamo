@@ -14,6 +14,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Implement SynthesizedGraph/Node/Edge classes
 - [ ] Provide helper to synthesize Dynamo graph 
 - [ ] Implement layout/rendering for synthesized graph
+- [ ] Add support for Point, Line primitive types
 - [ ] Implement saving of tessellated data to bin file
 - [ ] Implement loading of tessellated data from file
 - [ ] Design structure to keep node-geometry data
