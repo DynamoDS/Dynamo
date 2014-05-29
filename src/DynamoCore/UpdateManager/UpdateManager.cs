@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
@@ -168,10 +172,13 @@ namespace Dynamo.UpdateManager
     {
         #region Private Class Data Members
 
-        private bool _versionCheckInProgress;
-        private BinaryVersion _productVersion;
-        private IAppVersionInfo _updateInfo;
-        private ILogger _logger;
+        private bool versionCheckInProgress;
+        private BinaryVersion productVersion;
+        private IAppVersionInfo updateInfo;
+        private readonly ILogger logger;
+        private const string InstallNameBase = "DynamoInstall";
+        private const string DailyInstallNameBase = "DynamoDailyInstall";
+        private bool checkNewerDailyBuilds;
 
         #endregion
 
@@ -194,14 +201,14 @@ namespace Dynamo.UpdateManager
         {
             get
             {
-                if (null == _productVersion)
+                if (null == productVersion)
                 {
                     string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
                     FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(executingAssemblyPathName);
-                    _productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion);
+                    productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion);
                 }
 
-                return _productVersion;
+                return productVersion;
             }
         }
 
@@ -212,9 +219,9 @@ namespace Dynamo.UpdateManager
         {
             get
             {
-                return _updateInfo == null ? 
+                return updateInfo == null ? 
                     ProductVersion : 
-                    _updateInfo.Version;
+                    updateInfo.Version;
             }
         }
 
@@ -225,11 +232,30 @@ namespace Dynamo.UpdateManager
 
         public IAppVersionInfo UpdateInfo
         {
-            get { return _updateInfo; }
+            get { return updateInfo; }
             set
             {
-                _updateInfo = value;
+                updateInfo = value;
                 RaisePropertyChanged("UpdateInfo");
+            }
+        }
+
+        /// <summary>
+        /// This flag is available via the debug menu to
+        /// allow the update manager to check for newer daily 
+        /// builds as well.
+        /// </summary>
+        public bool CheckNewerDailyBuilds
+        {
+            get { return checkNewerDailyBuilds; }
+            set
+            {
+                if (!checkNewerDailyBuilds && value)
+                {
+                   //TODO: User has enabled daily build checking, do a check.
+                }
+                checkNewerDailyBuilds = value;
+                RaisePropertyChanged("CheckNewerDailyBuilds");
             }
         }
 
@@ -237,7 +263,7 @@ namespace Dynamo.UpdateManager
 
         public UpdateManager(ILogger logger)
         {
-            _logger = logger;
+            this.logger = logger;
             PropertyChanged += UpdateManager_PropertyChanged;
         }
 
@@ -246,13 +272,13 @@ namespace Dynamo.UpdateManager
             switch (e.PropertyName)
             {
                 case "UpdateInfo":
-                    if (_updateInfo != null)
+                    if (updateInfo != null)
                     {
                         //HOLD for post 0.7.0
                         //When the UpdateInfo property changes, this will be reflected in the UI
                         //by the vsisibility of the download cloud. The most up to date version will
                         //be downloaded asynchronously.
-                        //DownloadUpdatePackageAsynchronously(_updateInfo.InstallerURL, _updateInfo.Version);
+                        DownloadUpdatePackageAsynchronously(updateInfo.InstallerURL, updateInfo.Version);
                     }
                     break;
             }
@@ -267,12 +293,12 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public void CheckForProductUpdate(IAsynchronousRequest request)
         {
-            _logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
+            logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
-            if (_versionCheckInProgress)
+            if (versionCheckInProgress)
                 return;
 
-            _versionCheckInProgress = true;
+            versionCheckInProgress = true;
         }
 
         /// <summary>
@@ -291,7 +317,7 @@ namespace Dynamo.UpdateManager
             if (!string.IsNullOrEmpty(request.Error) || 
                 string.IsNullOrEmpty(request.Data))
             {
-                _versionCheckInProgress = false;
+                versionCheckInProgress = false;
                 return;
             }
 
@@ -307,41 +333,84 @@ namespace Dynamo.UpdateManager
                 catch (Exception e)
                 {
                     dynSettings.DynamoLogger.Log(e);
-                    _versionCheckInProgress = false;
+                    versionCheckInProgress = false;
                     return;
                 }
             }
 
+            // Reads filenames from S3, and pulls out those which include 
+            // DynamoInstall, and optionally, those that include DynamoDailyInstall.
+            // Order the results according to their LastUpdated field.
+
             var bucketresult = doc.Element(ns + "ListBucketResult");
-            var builds = bucketresult.Descendants(ns + "LastModified").
-                OrderByDescending(x => DateTime.Parse(x.Value)).
-                Where(x => x.Parent.Value.Contains("DynamoInstall")).
-                Select(x => x.Parent);
+
+            IEnumerable<XElement> builds;
+            if (!checkNewerDailyBuilds)
+            {
+                builds = bucketresult.Descendants(ns + "LastModified").
+                                OrderByDescending(x => DateTime.Parse(x.Value)).
+                                Where(x => x.Parent.Value.Contains(InstallNameBase)).
+                                Select(x => x.Parent);
+            }
+            else
+            {
+                builds = bucketresult.Descendants(ns + "LastModified").
+                                OrderByDescending(x => DateTime.Parse(x.Value)).
+                                Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(DailyInstallNameBase)).
+                                Select(x => x.Parent);
+            }
+            
 
             var xElements = builds as XElement[] ?? builds.ToArray();
             if (!xElements.Any())
             {
-                _versionCheckInProgress = false;
+                versionCheckInProgress = false;
                 return;
             }
 
             var latestBuild = xElements.First();
             var latestBuildFileName = latestBuild.Element(ns + "Key").Value;
 
-            var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
-            var latestBuildVersion = BinaryVersion.FromString(Path.GetFileNameWithoutExtension(latestBuildFileName).Remove(0, 13));
+            // Strip the build number from the file name.
+            // DynamoInstall0.7.0 becomes 0.7.0. Build a version
+            // and compare it with the current product version.
 
-            if (latestBuildVersion > ProductVersion)
+            var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
+            var fileName = Path.GetFileNameWithoutExtension(latestBuildFileName);
+
+            if (fileName.Contains(InstallNameBase))
             {
-                UpdateInfo = new AppVersionInfo()
+                // For latest stable builds, check and compare the version number
+                var latestBuildVersion = BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
+                if (latestBuildVersion > ProductVersion)
                 {
-                    Version = latestBuildVersion,
-                    VersionInfoURL = Configurations.UpdateDownloadLocation,
-                    InstallerURL = latestBuildDownloadUrl
-                };
+                    SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
+                }
+            }
+            else if (fileName.Contains(DailyInstallNameBase))
+            {
+                var dtStr = fileName.Replace(DailyInstallNameBase, "");
+
+                // For the latest daily builds, check and compare the date:time stamp.
+                var latestBuildTime = DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
+                if (latestBuildTime > DateTime.Now)
+                {
+                    var v = Assembly.GetExecutingAssembly().GetName().Version;
+                    SetUpdateInfo(BinaryVersion.FromString(string.Format("{0}:{1}",v.Major, v.Minor)), latestBuildDownloadUrl);
+                }
             }
 
-            _versionCheckInProgress = false;
+            versionCheckInProgress = false;
+        }
+
+        private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl)
+        {
+            UpdateInfo = new AppVersionInfo()
+            {
+                Version = latestBuildVersion,
+                VersionInfoURL = Configurations.UpdateDownloadLocation,
+                InstallerURL = latestBuildDownloadUrl
+            };
         }
 
         public void QuitAndInstallUpdate()
@@ -352,7 +421,7 @@ namespace Dynamo.UpdateManager
             MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
             bool installUpdate = result == MessageBoxResult.OK;
 
-            _logger.Log("UpdateManager-QuitAndInstallUpdate",
+            logger.Log("UpdateManager-QuitAndInstallUpdate",
                 (installUpdate ? "Install button clicked" : "Cancel button clicked"));
 
             if (installUpdate)
@@ -373,7 +442,7 @@ namespace Dynamo.UpdateManager
 
         public bool IsVersionCheckInProgress()
         {
-            return _versionCheckInProgress;
+            return versionCheckInProgress;
         }
 
         #endregion
@@ -382,13 +451,13 @@ namespace Dynamo.UpdateManager
 
         private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            _versionCheckInProgress = false;
+            versionCheckInProgress = false;
 
             if (e == null)
                 return;
 
             string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
-            _logger.Log("UpdateManager-OnDownloadFileCompleted", errorMessage);
+            logger.Log("UpdateManager-OnDownloadFileCompleted", errorMessage);
 
             UpdateFileLocation = string.Empty;
             if (e.Error == null)
@@ -413,7 +482,7 @@ namespace Dynamo.UpdateManager
         {
             if (string.IsNullOrEmpty(url) || (null == version))
             {
-                _versionCheckInProgress = false;
+                versionCheckInProgress = false;
                 return false;
             }
 
@@ -431,7 +500,7 @@ namespace Dynamo.UpdateManager
             }
             catch (Exception)
             {
-                _versionCheckInProgress = false;
+                versionCheckInProgress = false;
                 return false;
             }
 

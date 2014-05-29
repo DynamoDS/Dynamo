@@ -8,7 +8,10 @@
     WindowStartupLocation="CenterOwner"
     WindowStyle="SingleBorderWindow"
     ResizeMode="NoResize"
-    Height="350" Width="500" Style="{DynamicResource DynamoWindowStyle}">
+    Height="350" 
+    Width="500" 
+    Style="{DynamicResource DynamoWindowStyle}"
+    Closed="AboutWindow_OnClosed">
 
     <Window.Resources>
         <ResourceDictionary>
