@@ -364,7 +364,8 @@ namespace ProtoScript.Runners
                 {
                     // Cache the subtree if it does not exist yet
                     // This scenario is possible if a subtree was deleted and the same subtree was added again as a modified subtree
-                    currentSubTreeList.Add(st.GUID, st);
+                    //currentSubTreeList.Add(st.GUID, st);
+                    throw new Exception("Attempting to Modify a subtree that does not exist");
                 }
                 else
                 {
