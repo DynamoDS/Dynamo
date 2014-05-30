@@ -21,6 +21,7 @@ namespace Dynamorph
         }
 
         internal int Depth { get; set; }
+        internal int DisplayRow { get; set; }
         internal int ChildrenCount { get; set; }
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
@@ -84,6 +85,22 @@ namespace Dynamorph
 
                 return n1.Depth - n2.Depth;
             });
+
+            // If there are more than one nodes for a given depth, the nodes are 
+            // laid out one node per "row", starting from "row 0" which is on the 
+            // top most. The "Node.DisplayRow" property carries this information.
+            // 
+            int displayRow = 0, currentDepth = -1;
+            foreach (var node in this.nodes)
+            {
+                if (node.Depth != currentDepth)
+                {
+                    displayRow = 0;
+                    currentDepth = node.Depth;
+                }
+
+                node.DisplayRow = displayRow++;
+            }
         }
 
         #endregion
