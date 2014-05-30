@@ -339,11 +339,14 @@ namespace Dynamo
 
         void updateManager_ShutdownRequested(object sender, EventArgs e)
         {
-            UIDispatcher.Invoke((Action) delegate
-            {
-                ShutDown(true);
-                UpdateManager.HostApplicationBeginQuit(this, e);
-            });
+            //UIDispatcher.Invoke((Action) delegate
+            //{
+            //    ShutDown(true);
+            //    UpdateManager.HostApplicationBeginQuit(this, e);
+            //});
+
+            DynamoViewModel.ExitCommand.Execute(null);
+            UpdateManager.HostApplicationBeginQuit(this, e);
         }
 
         #endregion
