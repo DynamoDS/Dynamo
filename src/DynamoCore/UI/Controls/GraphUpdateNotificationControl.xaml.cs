@@ -14,20 +14,16 @@ namespace DynamoCore.UI.Controls
        public GraphUpdateNotificationControl()
         {
             InitializeComponent();
-            this.InstallButton.Click += new RoutedEventHandler(OnInstallButtonClicked);
+            InstallButton.Click += new RoutedEventHandler(OnInstallButtonClicked);
         }
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
         {
-            //dynSettings.DynamoLogger.LogInfo("UpdateNotificationControl-OnInstallButtonClicked",
-            //    "UpdateNotificationControl-OnInstallButtonClicked");
+            dynSettings.DynamoLogger.Log("UpdateNotificationControl-OnInstallButtonClicked",
+                "UpdateNotificationControl-OnInstallButtonClicked");
 
-            //dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
+            dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
 
-            //Disable the update check for 0.6.3. Just send he user to the downloads page.
-            //dynSettings.Controller.UpdateManager.CheckForProductUpdate();
-
-            Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
         }
     }
 }
