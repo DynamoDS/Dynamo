@@ -209,11 +209,38 @@ namespace Dynamo.Controls
 
             if (dynamorphWindow.Visibility != System.Windows.Visibility.Visible)
                 dynamorphWindow.Show();
+
+            var vm = (DataContext as DynamoViewModel);
+            this.SynthesizeGraph(vm.CurrentSpace);
         }
 
         private bool CanDynamorph(object parameter)
         {
             return true;
+        }
+
+        private void SynthesizeGraph(WorkspaceModel workspace)
+        {
+            if (this.dynamorphWindow == null)
+                return;
+
+            var control = this.dynamorphWindow.Control;
+            var graph = control.GetSynthesizedGraph();
+
+            foreach (var node in workspace.Nodes)
+            {
+                var id = node.GUID.ToString().ToLower();
+                graph.AddNode(id, node.NickName);
+            }
+
+            foreach (var conn in workspace.Connectors)
+            {
+                var startId = conn.Start.Owner.GUID.ToString().ToLower();
+                var endId = conn.End.Owner.GUID.ToString().ToLower();
+                graph.AddEdge(startId, endId);
+            }
+
+            control.SetSynthesizedGraph(graph);
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)

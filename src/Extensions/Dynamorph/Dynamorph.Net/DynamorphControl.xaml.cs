@@ -17,6 +17,7 @@ namespace Dynamorph
 {
     public partial class DynamorphControl : UserControl
     {
+        private SynthesizedGraph currentGraph = null;
         private Dynamorph.VisualizerHwndHost visualizer = null;
 
         #region Public Operational Class Methods
@@ -30,6 +31,14 @@ namespace Dynamorph
         public ISynthesizedGraph GetSynthesizedGraph()
         {
             return new SynthesizedGraph();
+        }
+
+        public void SetSynthesizedGraph(ISynthesizedGraph graph)
+        {
+            var nextGraph = graph as SynthesizedGraph;
+            nextGraph.BuildGraphStructure();
+
+            this.currentGraph = nextGraph; // Finally, update the internal graph.
         }
 
         #endregion

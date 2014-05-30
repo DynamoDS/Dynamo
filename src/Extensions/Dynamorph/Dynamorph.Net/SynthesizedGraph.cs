@@ -66,6 +66,14 @@ namespace Dynamorph
 
         #endregion
 
+        #region Internal Class Operational Methods
+
+        public void BuildGraphStructure()
+        {
+        }
+
+        #endregion
+
         #region Class Properties
 
         internal IEnumerable<Node> Nodes { get { return this.nodes; } }
