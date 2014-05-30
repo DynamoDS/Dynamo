@@ -8,10 +8,15 @@
              d:DesignWidth="720">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="128"></RowDefinition>
-            <RowDefinition Height="32"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
         </Grid.RowDefinitions>
+        <Canvas Name="GraphCanvas"
+                Background="Honeydew"></Canvas>
+        <GridSplitter Grid.Row="1" Width="Auto"
+                      Height="6"
+                      HorizontalAlignment="Stretch" />
         <Border Name="VisualizerHostElement"
                 Grid.Row="2"
                 Background="CornflowerBlue" />

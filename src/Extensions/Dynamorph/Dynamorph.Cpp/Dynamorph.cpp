@@ -293,6 +293,9 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
             EndPaint(hWnd, &ps);
             return 0L;
         }
+
+    case WM_ERASEBKGND:
+        return 0L; // Avoid erasing background to flickering during sizing.
     }
 
     return ::DefWindowProc(hWnd, msg, wParam, lParam);
