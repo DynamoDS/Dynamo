@@ -9,11 +9,15 @@ namespace GraphLayout
     public class Graph
     {
         public int MaxWidth = 5;
+        public double HorizontalNodeDistance = 100;
+        public double VerticalNodeDistance = 30;
 
         public HashSet<Node> Nodes = new HashSet<Node>();
         public HashSet<Edge> Edges = new HashSet<Edge>();
 
         public List<List<Node>> Layers = new List<List<Node>>();
+
+        #region Helper methods
 
         public void AddNode(Guid guid, double width, double height)
         {
@@ -43,22 +47,28 @@ namespace GraphLayout
             return null;
         }
 
-        private int GetLayerWidth(int layer)
+        public void NormalizeGraphPosition()
         {
-            return Nodes.Count(x => x.Layer == layer);
+            double offsetX = -Layers.Last().First().X;
+            foreach (Node n in Nodes)
+                n.X += offsetX;
         }
 
-        public bool RemoveCycles()
-        {
-            // This method implements Greedy Cycle Removal heuristic.
+        #endregion
 
-            HashSet<Node> BackupNodes = new HashSet<Node>(Nodes);
+        #region Sugiyama algorithm methods
+
+        public void RemoveCycles()
+        {
+            // This method implements the Enhanced Greedy Cycle Removal heuristic.
+
+            HashSet<Node> RemainingNodes = new HashSet<Node>(Nodes);
             HashSet<Edge> AcyclicEdges = new HashSet<Edge>();
 
-            while (Nodes.Count > 0)
+            while (RemainingNodes.Count > 0)
             {
                 // Remove all sink nodes
-                HashSet<Node> selected = new HashSet<Node>(Nodes.Where(n => n.RightEdges.Count(x => x.Active) == 0));
+                HashSet<Node> selected = new HashSet<Node>(RemainingNodes.Where(n => n.RightEdges.Count(x => x.Active) == 0));
                 foreach (Node n in selected)
                 {
                     foreach (Edge e in n.LeftEdges.Where(x => x.Active))
@@ -69,10 +79,10 @@ namespace GraphLayout
                 }
 
                 // Remove all isolated nodes
-                Nodes.ExceptWith(selected);
+                RemainingNodes.ExceptWith(selected);
 
                 // Remove all source nodes
-                selected = new HashSet<Node>(Nodes.Where(n => n.LeftEdges.Count(x => x.Active) == 0));
+                selected = new HashSet<Node>(RemainingNodes.Where(n => n.LeftEdges.Count(x => x.Active) == 0));
                 foreach (Node n in selected)
                 {
                     foreach (Edge e in n.RightEdges.Where(x => x.Active))
@@ -83,13 +93,13 @@ namespace GraphLayout
                 }
 
                 // Remove all isolated nodes
-                Nodes.ExceptWith(selected);
+                RemainingNodes.ExceptWith(selected);
 
-                // if G is not empty then
-                if (Nodes.Count > 0)
+                // Remove one node with the most outgoing edges
+                if (RemainingNodes.Count > 0)
                 {
-                    int max = Nodes.Max(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active));
-                    Node n = Nodes.First(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active) == max);
+                    int max = RemainingNodes.Max(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active));
+                    Node n = RemainingNodes.First(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active) == max);
 
                     AcyclicEdges.UnionWith(n.RightEdges.Where(x => x.Active));
 
@@ -99,21 +109,20 @@ namespace GraphLayout
                     foreach (Edge e in n.LeftEdges)
                         e.Active = false;
 
-                    Nodes.Remove(n);
+                    RemainingNodes.Remove(n);
                 }
             }
 
-            Nodes = BackupNodes;
             Edges = AcyclicEdges;
 
             foreach (Edge e in Edges)
                 e.Active = true;
-
-            return true;
         }
 
-        public bool RemoveTransitiveEdges()
+        public void RemoveTransitiveEdges()
         {
+            // This method implements a simple transitive reduction using adjacency matrix.
+            
             int N = Nodes.Count;
             int[,] conn = new int[N+1, N+1];
 
@@ -150,11 +159,9 @@ namespace GraphLayout
                     }
                 }
             }
-            
-            return true;
         }
 
-        public bool AssignLayers()
+        public void AssignLayers()
         {
             // This method implements Coffman-Graham layering algorithm.
             
@@ -162,8 +169,11 @@ namespace GraphLayout
             HashSet<Node> LayeredNodes = new HashSet<Node>();
 
             Layers.Add(new List<Node>());
-            int k = 0;
+            int currentLayer = 0;
             int processed = 0;
+            double layerWidth = 0;
+            double previousLayerX = 0;
+
             while (processed < OrderedNodes.Count)
             {
                 // Choose a node with the highest priority (leftmost in the list)
@@ -172,23 +182,39 @@ namespace GraphLayout
                 List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
                     x.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer >= 0)).ToList();
 
-                Node n = selected.FirstOrDefault(x => x.RightEdges.All(e => e.EndNode.Layer < k) && x.LeftEdges.Count(e => e.Active) > 0);
+                Node n = selected.FirstOrDefault(x => x.RightEdges.All(e => e.EndNode.Layer < currentLayer) && x.LeftEdges.Count(e => e.Active) > 0);
                 if (n == null) n = selected.First();
 
-                if ((GetLayerWidth(k) > MaxWidth) || !n.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer < k))
+                // Add new layer when needed
+                if ((Layers[currentLayer].Count >= MaxWidth) || !n.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer < currentLayer))
                 {
-                    k++;
+                    // Horizontal node alignment for the last layer
+                    if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1][0].X;
+                    foreach (Node x in Layers[currentLayer])
+                        x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
+                    
+                    currentLayer++;
                     Layers.Add(new List<Node>());
+
+                    layerWidth = 0;
                 }
 
-                n.Layer = k;
-                n.X = 1000 - 250 * k;
-                Layers[k].Add(n);
+                n.Layer = currentLayer;
+                Layers[currentLayer].Add(n);
                 processed++;
+
+                if (n.Width > layerWidth)
+                    layerWidth = n.Width;
             }
+
+            // Horizontal node alignment for the last layer
+            if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1][0].X;
+            foreach (Node x in Layers[currentLayer])
+                x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
 
             Nodes = new HashSet<Node>(OrderedNodes);
 
+            // Temporary vertical position for further processing
             foreach (List<Node> layer in Layers)
             {
                 int y = 0;
@@ -198,12 +224,12 @@ namespace GraphLayout
                     y += 100;
                 }
             }
-
-            return true;
         }
 
-        public bool OrderNodes()
+        public void OrderNodes()
         {
+            // This method uses Median heuristic to determine the vertical node order on each layer.
+
             List<Node> previous = null;
             foreach (List<Node> layer in Layers)
             {
@@ -229,9 +255,9 @@ namespace GraphLayout
                     }
 
                     // Avoid vertical node overlapping
-                    if (n.Y - top.Y < top.Height + 20)
+                    if (n.Y - top.Y < top.Height + VerticalNodeDistance)
                     {
-                        n.Y = top.Y + top.Height + 20;
+                        n.Y = top.Y + top.Height + VerticalNodeDistance;
                     }
 
                     int b = 2;
@@ -244,9 +270,10 @@ namespace GraphLayout
                     top = n;
                 }
             }
-
-            return false;
         }
+
+        #endregion
+
     }
 
     public class Node

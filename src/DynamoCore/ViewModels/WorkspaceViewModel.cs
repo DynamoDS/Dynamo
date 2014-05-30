@@ -893,6 +893,9 @@ namespace Dynamo.ViewModels
 
         private void RunGraphLayout(object o)
         {
+            if (_model.Nodes.Count == 0)
+                return;
+            
             var graph = new GraphLayout.Graph();
 
             foreach (NodeModel x in _model.Nodes)
@@ -901,10 +904,13 @@ namespace Dynamo.ViewModels
             foreach (ConnectorModel x in _model.Connectors)
                 graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID, x.End.X, x.End.Y);
 
+            // Sugiyama algorithm steps
             graph.RemoveCycles();
             graph.RemoveTransitiveEdges();
             graph.AssignLayers();
             graph.OrderNodes();
+
+            graph.NormalizeGraphPosition();
 
             foreach (var x in _model.Nodes)
             {
@@ -913,6 +919,11 @@ namespace Dynamo.ViewModels
                 x.Y = graph.FindNode(id).Y;
                 x.ReportPosition();
             }
+
+            // Fit view to the new graph layout
+            DynamoSelection.Instance.ClearSelection();
+            ResetFitViewToggle(null);
+            FitViewCommand.Execute(null);
         }
 
         private bool CanRunGraphLayout(object o)
