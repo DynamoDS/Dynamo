@@ -138,6 +138,8 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
+        [Category("Class")]
         public void TestClasses01()
         {
             String code =
@@ -1179,7 +1181,7 @@ r4 = ContainsKey(a, true);
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
             thisTest.Verify("r3", false);
-            thisTest.Verify("r4", false);
+            thisTest.Verify("r4", true);
         }
 
         [Test]
@@ -2404,8 +2406,8 @@ r3 = 'h' + 1;";
         public void TestBasicFFIReplicate()
         {
             string code =
-@"a = {25, 36, 49};r = Math.Sqrt(a);";
-            code = string.Format("{0}\n{1}", "import(\"Math.dll\");", code);
+@"a = {25, 36, 49};r = Minimal.Sqrt(a);";
+            code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", new Object[] { 5.0, 6.0, 7.0 });
         }

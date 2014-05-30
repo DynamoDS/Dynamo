@@ -67,7 +67,7 @@ namespace Revit.GeometryConversion
 
             if (crv.Degree <= 2)
             {
-                throw new Exception("Could not convert the curve to a Revit curve");
+                throw new Exception("Could not convert the curve to a Revit curve because it is less than or equal to degree 2.");
             }
 
             // presumably checking if the curve is circular is quite expensive, we don't do it
