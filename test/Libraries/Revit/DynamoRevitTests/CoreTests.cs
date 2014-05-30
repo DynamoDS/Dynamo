@@ -10,6 +10,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace Dynamo.Tests
 {
@@ -150,18 +151,19 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression());
 
             //verify we have a reference point
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
 
             //open a new document and activate it
-            Autodesk.Revit.UI.UIDocument initialDoc = DocumentManager.Instance.CurrentUIDocument;
+            var initialDoc = (UIDocument)DocumentManager.Instance.CurrentUIDocument;
             string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
-            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(shellPath);
+            TransactionManager.Instance.ForceCloseTransaction();
+            ((UIApplication)DocumentManager.Instance.CurrentUIApplication).OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
 
             ////assert that the doc is set on the controller
-            Assert.IsNotNull(DocumentManager.Instance.CurrentUIDocument.Document);
+            Assert.IsNotNull((Document)DocumentManager.Instance.CurrentDBDocument);
 
             ////update the double node so the graph reevaluates
             var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BasicInteractive<double>);
