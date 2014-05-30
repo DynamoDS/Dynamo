@@ -70,6 +70,7 @@ namespace Dynamorph
 
         public void BuildGraphStructure()
         {
+            TopologicalSort();
         }
 
         #endregion
@@ -78,6 +79,49 @@ namespace Dynamorph
 
         internal IEnumerable<Node> Nodes { get { return this.nodes; } }
         internal IEnumerable<Edge> Edges { get { return this.edges; } }
+
+        #endregion
+
+        #region Private Class Helper Methods
+
+        private void TopologicalSort()
+        {
+            // Move all root nodes onto a separate list.
+            List<Node> rootNodes = ExtractRootNodes();
+
+            List<Node> sortedNodes = new List<Node>();
+
+            while (rootNodes.Count > 0)
+            {
+                var rootNode = rootNodes[0];
+                rootNodes.RemoveAt(0);       // Remove a root node...
+                sortedNodes.Add(rootNode);   // ... move it to the end of list.
+
+            }
+        }
+
+        private List<Node> ExtractRootNodes()
+        {
+            var nodeQuery = nodes.Where(n =>
+            {
+                // A root node is a node which doesn't have input edge.
+                return !(edges.Where(e => e.EndNodeId == n.Identifier).Any());
+            });
+
+            List<Node> rootNodes = new List<Node>(nodeQuery);
+            this.nodes.RemoveAll(n => nodeQuery.Contains(n));
+            return rootNodes;
+        }
+
+        private List<Edge> ExtractChildEdges(Node node)
+        {
+            var nodeId = node.Identifier;
+            var edgeQuery = edges.Where(e => e.StartNodeId == nodeId);
+
+            List<Edge> childEdges = new List<Edge>(edgeQuery);
+            this.edges.RemoveAll(e => childEdges.Contains(e));
+            return childEdges;
+        }
 
         #endregion
     }
