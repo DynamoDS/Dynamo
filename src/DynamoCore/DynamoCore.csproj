@@ -126,7 +126,6 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
-    <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
