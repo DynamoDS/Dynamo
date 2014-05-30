@@ -53,6 +53,7 @@
       <DependentUpon>DynamorphWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SynthesizedGraph.cs" />
+    <Compile Include="GraphVisualHost.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="VisualizerHwndHost.cs" />
     <Page Include="DynamorphControl.xaml">
