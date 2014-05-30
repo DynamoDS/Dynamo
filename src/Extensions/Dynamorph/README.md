@@ -14,8 +14,8 @@ Dynamorph, morph the heck out of your design.
 - [x] Enabled depth test while rendering
 - [x] Fix bounding sphere calculation issue
 - [x] Implement SynthesizedGraph/Node/Edge classes
-- [ ] Implement topological sort for synthesized graph
-- [ ] Provide helper to synthesize Dynamo graph 
+- [x] Implement topological sort for synthesized graph
+- [x] Provide helper to synthesize Dynamo graph 
 - [ ] Implement layout/rendering for synthesized graph
 - [ ] Add support for Point, Line primitive types
 - [ ] Implement saving of tessellated data to bin file

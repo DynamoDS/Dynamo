@@ -13,19 +13,15 @@ namespace Dynamorph
 
     internal class Node
     {
-        internal enum MarkStatus { None, Temporary, Permanent }
-
         internal Node(string identifier, string name)
         {
             this.Identifier = identifier;
             this.Name = name;
-            this.Marking = MarkStatus.None;
         }
 
         internal int Depth { get; set; }
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
-        internal MarkStatus Marking { get; set; }
     }
 
     internal class Edge
@@ -121,45 +117,6 @@ namespace Dynamorph
             var childNodes = GetChildNodes(node);
             foreach (var childNode in childNodes)
                 LabelGraphNode(childNode, depth + 1);
-        }
-
-        private void TopologicalSort()
-        {
-            // Reset the marking status of each node to None.
-            this.nodes.ForEach(n => n.Marking = Node.MarkStatus.None);
-            List<Node> sortedNodes = new List<Node>();
-
-            while (true)
-            {
-                var unvisitedQuery = this.nodes.Where((n) =>
-                {
-                    return n.Marking != Node.MarkStatus.Permanent;
-                });
-
-                if (unvisitedQuery.Any() == false)
-                    break; // No more unvisited node.
-
-                VisitNode(unvisitedQuery.ElementAt(0), sortedNodes);
-            }
-
-            this.nodes.Clear();
-            this.nodes.AddRange(sortedNodes);
-        }
-
-        private void VisitNode(Node node, List<Node> sortedNodes)
-        {
-            if (node.Marking != Node.MarkStatus.None)
-            {
-                var message = "Cyclic graph detected!";
-                throw new InvalidOperationException(message);
-            }
-
-            node.Marking = Node.MarkStatus.Temporary;
-            foreach (var childNode in GetChildNodes(node))
-                VisitNode(childNode, sortedNodes);
-
-            node.Marking = Node.MarkStatus.Permanent;
-            sortedNodes.Insert(0, node);
         }
 
         private IEnumerable<Node> GetChildNodes(Node node)
