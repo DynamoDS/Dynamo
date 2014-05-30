@@ -18,10 +18,11 @@ namespace Revit.Elements.InternalUtilities
             var familyInstances = fec.WherePasses(instanceFilter)
                 .WhereElementIsNotElementType()
                 .ToElements()
-                .Cast<Autodesk.Revit.DB.FamilyInstance>()
-                .Where(x => x.Symbol.IsSimilarType(familyType.InternalFamilySymbol.Id));
+                .Cast<Autodesk.Revit.DB.FamilyInstance>();
 
-            var instances = familyInstances
+            var matches = familyInstances.Where(x => x.Symbol.Id == familyType.InternalFamilySymbol.Id);
+
+            var instances = matches
                 .Select(x => ElementSelector.ByElementId(x.Id.IntegerValue)).ToList();
             return instances;
         }

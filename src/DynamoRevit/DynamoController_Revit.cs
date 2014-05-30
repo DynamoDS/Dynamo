@@ -220,6 +220,16 @@ namespace Dynamo
                     "Dynamo no longer has an active document. Please open a document.",
                     WarningLevel.Error);
             }
+            else
+            {
+                // If Dynamo's active UI document's document is the one that was just closed
+                // then set Dynamo's active UI document to whatever revit says is active.
+                if (DocumentManager.Instance.CurrentUIDocument.Document == null)
+                {
+                    DocumentManager.Instance.CurrentUIDocument =
+                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                }
+            }
         }
 
         /// <summary>
