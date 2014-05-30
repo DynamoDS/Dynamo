@@ -507,8 +507,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynSettings.Controller.UpdateManager.AvailableVersion >
-                       dynSettings.Controller.UpdateManager.ProductVersion;
+                var um = dynSettings.Controller.UpdateManager;
+                if (um.ForceUpdate)
+                {
+                    return true;
+                }
+                return um.AvailableVersion > um.ProductVersion;
             }
         }
 
@@ -644,7 +648,6 @@ namespace Dynamo.ViewModels
             ((DynamoLogger)dynSettings.DynamoLogger).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            //((VisualizationManager)dynSettings.Controller.VisualizationManager).PropertyChanged += VisualizationManager_PropertyChanged;
 
             this.Model.PropertyChanged += (e, args) =>
             {
@@ -672,7 +675,7 @@ namespace Dynamo.ViewModels
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");
-            RaisePropertyChanged("UpToDate");
+            RaisePropertyChanged("IsUpdateAvailable");
         }
 
         //void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
