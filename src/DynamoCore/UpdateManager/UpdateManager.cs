@@ -51,6 +51,8 @@ namespace Dynamo.UpdateManager
         void UpdateDataAvailable(IAsynchronousRequest request);
         bool IsVersionCheckInProgress();
         bool CheckNewerDailyBuilds { get; set; }
+        bool ForceUpdate { get; set; }
+        string UpdateFileLocation { get; }
     }
 
     /// <summary>
@@ -180,6 +182,8 @@ namespace Dynamo.UpdateManager
         private const string InstallNameBase = "DynamoInstall";
         private const string DailyInstallNameBase = "DynamoDailyInstall";
         private bool checkNewerDailyBuilds;
+        private bool forceUpdate;
+        private string updateFileLocation;
 
         #endregion
 
@@ -229,13 +233,26 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// Obtains downloaded update file location.
         /// </summary>
-        public string UpdateFileLocation { get; private set; }
+        public string UpdateFileLocation
+        {
+            get { return updateFileLocation; }
+            private set
+            {
+                updateFileLocation = value;
+                RaisePropertyChanged("UpdateFileLocation");
+            }
+        }
 
         public IAppVersionInfo UpdateInfo
         {
             get { return updateInfo; }
             set
             {
+                if (value != null)
+                {
+                    logger.Log(string.Format("Update available: {0}", value.Version));
+                }
+                
                 updateInfo = value;
                 RaisePropertyChanged("UpdateInfo");
             }
@@ -253,10 +270,29 @@ namespace Dynamo.UpdateManager
             {
                 if (!checkNewerDailyBuilds && value)
                 {
-                   //TODO: User has enabled daily build checking, do a check.
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateDataAvailable));
                 }
                 checkNewerDailyBuilds = value;
                 RaisePropertyChanged("CheckNewerDailyBuilds");
+            }
+        }
+
+        /// <summary>
+        /// Apply the most recent update, regardless
+        /// of whether it is newer than the current version.
+        /// </summary>
+        public bool ForceUpdate
+        {
+            get { return forceUpdate; }
+            set
+            {
+                if (!forceUpdate && value)
+                {
+                    // do a check
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateDataAvailable));
+                }
+                forceUpdate = value;
+                RaisePropertyChanged("ForceUpdate");
             }
         }
 
@@ -275,10 +311,10 @@ namespace Dynamo.UpdateManager
                 case "UpdateInfo":
                     if (updateInfo != null)
                     {
-                        //HOLD for post 0.7.0
                         //When the UpdateInfo property changes, this will be reflected in the UI
                         //by the vsisibility of the download cloud. The most up to date version will
                         //be downloaded asynchronously.
+                        logger.Log("Update download started...");
                         DownloadUpdatePackageAsynchronously(updateInfo.InstallerURL, updateInfo.Version);
                     }
                     break;
@@ -294,7 +330,8 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public void CheckForProductUpdate(IAsynchronousRequest request)
         {
-            logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
+            logger.Log("RequestUpdateVersionInfo", LogLevel.File);
+            logger.Log("Requesting version update info...");
 
             if (versionCheckInProgress)
                 return;
@@ -379,25 +416,48 @@ namespace Dynamo.UpdateManager
             var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
             var fileName = Path.GetFileNameWithoutExtension(latestBuildFileName);
 
-            if (fileName.Contains(InstallNameBase))
+            // Install the latest update regardless of whether it
+            // is newer than the current build.
+            if (ForceUpdate)
             {
-                // For latest stable builds, check and compare the version number
-                var latestBuildVersion = BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
-                if (latestBuildVersion > ProductVersion)
+                if (fileName.Contains(InstallNameBase))
                 {
+                    // For latest stable builds, check and compare the version number
+                    var latestBuildVersion = BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
                     SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
                 }
-            }
-            else if (fileName.Contains(DailyInstallNameBase))
-            {
-                var dtStr = fileName.Replace(DailyInstallNameBase, "");
-
-                // For the latest daily builds, check and compare the date:time stamp.
-                var latestBuildTime = DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
-                if (latestBuildTime > DateTime.Now)
+                else if (fileName.Contains(DailyInstallNameBase))
                 {
+                    var dtStr = fileName.Replace(DailyInstallNameBase, "");
+
+                    // For the latest daily builds, check and compare the date:time stamp.
+                    var latestBuildTime = DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
                     var v = Assembly.GetExecutingAssembly().GetName().Version;
-                    SetUpdateInfo(BinaryVersion.FromString(string.Format("{0}:{1}",v.Major, v.Minor)), latestBuildDownloadUrl);
+                    SetUpdateInfo(BinaryVersion.FromString(string.Format("{0}:{1}", v.Major, v.Minor)), latestBuildDownloadUrl);
+                }
+            }
+            else
+            {
+                if (fileName.Contains(InstallNameBase))
+                {
+                    // For latest stable builds, check and compare the version number
+                    var latestBuildVersion = BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
+                    if (latestBuildVersion > ProductVersion)
+                    {
+                        SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
+                    }
+                }
+                else if (fileName.Contains(DailyInstallNameBase))
+                {
+                    var dtStr = fileName.Replace(DailyInstallNameBase, "");
+
+                    // For the latest daily builds, check and compare the date:time stamp.
+                    var latestBuildTime = DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
+                    if (latestBuildTime > DateTime.Now)
+                    {
+                        var v = Assembly.GetExecutingAssembly().GetName().Version;
+                        SetUpdateInfo(BinaryVersion.FromString(string.Format("{0}:{1}", v.Major, v.Minor)), latestBuildDownloadUrl);
+                    }
                 }
             }
 
@@ -422,14 +482,12 @@ namespace Dynamo.UpdateManager
             MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
             bool installUpdate = result == MessageBoxResult.OK;
 
-            logger.Log("UpdateManager-QuitAndInstallUpdate",
-                (installUpdate ? "Install button clicked" : "Cancel button clicked"));
-
             if (installUpdate)
             {
                 if (ShutdownRequested != null)
                     ShutdownRequested(this, new EventArgs());
             }
+            
         }
 
         public void HostApplicationBeginQuit(object sender, EventArgs e)
@@ -458,11 +516,14 @@ namespace Dynamo.UpdateManager
                 return;
 
             string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
-            logger.Log("UpdateManager-OnDownloadFileCompleted", errorMessage);
+            logger.Log("UpdateManager-OnDownloadFileCompleted", LogLevel.File);
 
             UpdateFileLocation = string.Empty;
             if (e.Error == null)
+            {
                 UpdateFileLocation = (string)e.UserState;
+                logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
+            }
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
