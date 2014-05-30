@@ -1,0 +1,33 @@
+<Workspace Version="0.7.0.37647" X="-550.330774660721" Y="-462.965396315722" zoom="0.906701044577354" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="eed8d389-5ad2-4ac0-a270-7d737f487ad0" nickname="Select Model Element" x="846.35713721073" y="816.037776798216" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="216245e3-dff3-4fbc-b561-9bfc262ae131-0000ce53" />
+    </Dynamo.Nodes.DSModelElementSelection>
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="f46e385f-3b0a-446c-adeb-8d419a480cba" nickname="Select Model Element" x="846.35713721073" y="671.368151070194" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="216245e3-dff3-4fbc-b561-9bfc262ae131-0000ce23" />
+    </Dynamo.Nodes.DSModelElementSelection>
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="fe4c569f-a1b4-46da-8e76-d1b1bd5b6ef4" nickname="Select Model Element" x="846.35713721073" y="954.82501618524" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="216245e3-dff3-4fbc-b561-9bfc262ae131-0000ce73" />
+    </Dynamo.Nodes.DSModelElementSelection>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0087a98f-16fd-4a3a-877d-44e78a0575bd" nickname="CurveElement.Curve" x="1125.07982248451" y="679.76029616859" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\Autodesk\Dynamo07\Core\RevitNodes.dll" function="Revit.Elements.CurveElement.Curve" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3e424ac0-d342-4be1-a83e-709e37f8b9b3" nickname="CurveElement.Curve" x="1064.29516362752" y="792.506034371067" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\Autodesk\Dynamo07\Core\RevitNodes.dll" function="Revit.Elements.CurveElement.Curve" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e37b61cf-6766-4b57-a52b-a89ca88edf85" nickname="CurveElement.Curve" x="1080.96192492702" y="933.68330655504" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\Autodesk\Dynamo07\Core\RevitNodes.dll" function="Revit.Elements.CurveElement.Curve" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="158d361f-4cdc-46e7-8f68-e9b363557f5c" nickname="CurveElement.Curve" x="1089.04606201509" y="1045.07614171724" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\Autodesk\Dynamo07\Core\RevitNodes.dll" function="Revit.Elements.CurveElement.Curve" />
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="346aa172-78f1-46a5-9ea2-d86823739c04" nickname="Select Model Element" x="854.441274298806" y="1066.21785134744" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="1a65d9b5-c0ab-451d-a4a8-e658a91b934c-0000b4a1" />
+    </Dynamo.Nodes.DSModelElementSelection>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="eed8d389-5ad2-4ac0-a270-7d737f487ad0" start_index="0" end="3e424ac0-d342-4be1-a83e-709e37f8b9b3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f46e385f-3b0a-446c-adeb-8d419a480cba" start_index="0" end="0087a98f-16fd-4a3a-877d-44e78a0575bd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe4c569f-a1b4-46da-8e76-d1b1bd5b6ef4" start_index="0" end="e37b61cf-6766-4b57-a52b-a89ca88edf85" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="346aa172-78f1-46a5-9ea2-d86823739c04" start_index="0" end="158d361f-4cdc-46e7-8f68-e9b363557f5c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="846.35713721073" y="635.617946335688" />
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="783.860193710184" y="778.485695449755" />
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="843.048439136605" y="912.592550689351" />
+    <Dynamo.Models.NoteModel text="Run this graph by opening &quot;Adaptive Component Placement.rfa&quot; from Samples folder." x="1261.91313786918" y="594.234679641806" />
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="863.048439136605" y="932.592550689351" />
+  </Notes>
+</Workspace>
