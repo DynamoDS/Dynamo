@@ -26,6 +26,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Enable slider to work with C++ Visualizer
 
 ##### Miscellaneous Tasks #####
+- [ ] Fix: Wrong child node count with adjacent edges
 - [ ] Fix: Dynamorph relaunch problem
 - [ ] Fix: closing Dynamo does not close Dynamorph
 - [ ] Move shader source to external files

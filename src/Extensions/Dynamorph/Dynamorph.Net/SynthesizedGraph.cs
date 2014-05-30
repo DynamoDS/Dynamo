@@ -17,9 +17,11 @@ namespace Dynamorph
         {
             this.Identifier = identifier;
             this.Name = name;
+            this.ChildrenCount = -1;
         }
 
         internal int Depth { get; set; }
+        internal int ChildrenCount { get; set; }
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
     }
@@ -72,9 +74,16 @@ namespace Dynamorph
         public void BuildGraphStructure()
         {
             LabelGraphNodes(); // Label the entire graph with depth info.
+            CalculateChildNode(); // Compute number of children for each node.
 
             // Sort the depth value from small to large.
-            this.nodes.Sort((n1, n2) => n1.Depth - n2.Depth);
+            this.nodes.Sort((n1, n2) =>
+            {
+                if (n1.Depth == n2.Depth) // Larger child node first.
+                    return n2.ChildrenCount - n1.ChildrenCount;
+
+                return n1.Depth - n2.Depth;
+            });
         }
 
         #endregion
@@ -117,6 +126,31 @@ namespace Dynamorph
             var childNodes = GetChildNodes(node);
             foreach (var childNode in childNodes)
                 LabelGraphNode(childNode, depth + 1);
+        }
+
+        private void CalculateChildNode()
+        {
+            this.nodes.ForEach(n => n.ChildrenCount = -1);
+
+            foreach (var node in this.nodes)
+                GetChildNodeCount(node);
+        }
+
+        private int GetChildNodeCount(Node node)
+        {
+            // This node is already visited.
+            if (node.ChildrenCount != -1)
+                return node.ChildrenCount;
+
+            // Mark this node as visited immediately.
+            node.ChildrenCount = 0;
+
+            int childNodeCount = 0;
+            foreach (var childNode in GetChildNodes(node))
+                childNodeCount += GetChildNodeCount(childNode) + 1;
+
+            node.ChildrenCount = childNodeCount;
+            return node.ChildrenCount;
         }
 
         private IEnumerable<Node> GetChildNodes(Node node)
