@@ -575,7 +575,10 @@
 
             <!--CATEGORIES-->
 
-            <TreeView Name="SearchTreeView" Background="Blue" ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" >
+            <TreeView Name="SearchTreeView" Background="Blue" ItemsSource="{Binding Path=BrowserRootCategories}" 
+                      Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" 
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                        VirtualizingStackPanel.VirtualizationMode="Recycling">
 
                 <TreeView.Template>
                     <ControlTemplate>

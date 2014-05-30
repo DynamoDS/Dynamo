@@ -375,11 +375,6 @@ namespace ProtoCore.DSASM
                         {
                             SetupGraphEntryPoint(pc);
                         }
-
-                        if (core.Options.ExecuteSSA)
-                        {
-                            ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(Properties.executingGraphNode);
-                        }
                     }
                 }
             }
@@ -1447,10 +1442,6 @@ namespace ProtoCore.DSASM
                     if (graphNode.isReturn || graphNode.updateNodeRefList[0].nodeList.Count > 0)
                     {
                         graphNode.isDirty = false;
-                        if (core.Options.ExecuteSSA)
-                        {
-                            ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(graphNode);
-                        }
 
                         // In function calls, the first graphnode in the function is executed first and was not marked 
                         // If this is the case, just move on to the next graphnode
@@ -2336,12 +2327,6 @@ namespace ProtoCore.DSASM
                     entryNode = graphNode;
                 }
             }
-
-            if (core.Options.ExecuteSSA)
-            {
-                ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(entryNode);
-            }
-
             pc = setentry;
         }
 
@@ -2377,10 +2362,6 @@ namespace ProtoCore.DSASM
 
             Properties.executingGraphNode = entryNode;
 
-            if (core.Options.ExecuteSSA)
-            {
-                ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(entryNode);
-            }
             pc = setentry;
         }
 

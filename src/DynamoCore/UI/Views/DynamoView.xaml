@@ -355,6 +355,10 @@
                                     Command="{Binding ForceRunExpressionCommand}"
                                     CommandParameter="{Binding Path=RunInDebug}"
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
+                        <MenuItem Focusable="False" Name="MutateTest" Header="Run mutation test" 
+                                    Command="{Binding MutateTestDelegateCommand}"
+                                    CommandParameter="{Binding Path=RunInDebug}"
+                                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
                     </MenuItem>
                     
                 </Menu>

@@ -98,6 +98,10 @@ namespace Dynamo.ViewModels
                 command.ShowErrors, command.CancelRun);
         }
 
+        private void MutateTestImpl()
+        {
+            dynSettings.Controller.MutateTestInternal();
+        }
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {

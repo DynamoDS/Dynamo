@@ -45,9 +45,11 @@ namespace ProtoScript.Runners
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(GUID.ToString() + " " + ForceExecution + " ");
-            AstNodes.ForEach((a) =>
-                             sb.AppendLine(a.ToString()));
-            return sb.ToString();
+            if (AstNodes != null)
+                AstNodes.ForEach((a) => sb.AppendLine(a.ToString()));
+            else
+                sb.AppendLine("AstNodes: null");
+            return sb.ToString();   
 
         }
     }

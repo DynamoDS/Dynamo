@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
@@ -83,11 +84,28 @@ namespace Revit.Elements
         /// <summary>
         /// Create a Revit Floor given it's curve outline and Level
         /// </summary>
+        /// <param name="outlineCurves"></param>
+        /// <param name="floorType"></param>
+        /// <param name="level"></param>
+        /// <returns>The floor</returns>
+        public static Floor ByOutlineTypeAndLevel(Curve[] outlineCurves, FloorType floorType, Level level)
+        {
+            if (outlineCurves == null)
+            {
+                throw new ArgumentNullException("outlineCurves");
+            }
+
+            return ByOutlineTypeAndLevel(PolyCurve.ByJoinedCurves(outlineCurves), floorType, level);
+        }
+
+        /// <summary>
+        /// Create a Revit Floor given it's curve outline and Level
+        /// </summary>
         /// <param name="outline"></param>
         /// <param name="floorType"></param>
         /// <param name="level"></param>
         /// <returns>The floor</returns>
-        public static Floor ByOutlineTypeAndLevel(Curve[] outline, FloorType floorType, Level level)
+        public static Floor ByOutlineTypeAndLevel(PolyCurve outline, FloorType floorType, Level level)
         {
             if (outline == null)
             {
@@ -104,13 +122,13 @@ namespace Revit.Elements
                 throw new ArgumentNullException("level");
             }
 
-            if (outline.Count() < 3)
+            if (!outline.IsClosed)
             {
-                throw new Exception("Outline must have at least 3 edges to enclose an area.");
+                throw new ArgumentException("The input PolyCurve is not closed");
             }
 
             var ca = new CurveArray();
-            outline.ToList().ForEach(x => ca.Append(x.ToRevitType())); 
+            outline.Curves().ForEach(x => ca.Append(x.ToRevitType())); 
 
             return new Floor(ca, floorType.InternalFloorType, level.InternalLevel );
         }
