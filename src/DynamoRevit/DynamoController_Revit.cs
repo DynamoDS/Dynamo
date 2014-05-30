@@ -6,9 +6,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using DSIronPython;
 using DSNodeServices;
@@ -398,20 +400,20 @@ namespace Dynamo
             //     dynamo will crash consistently on shutdown without this commented out.  
             //     TODO: fix with proper reflection call
 
-            //if (shutDownHost)
-            //{
-            //    // this method cannot be called without Revit 2014
-            //    var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
+            if (shutDownHost)
+            {
+                // this method cannot be called without Revit 2014
+                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
 
-            //    UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-            //    if (uiapp.CanPostCommand(exitCommand))
-            //        uiapp.PostCommand(exitCommand);
-            //    else
-            //    {
-            //        MessageBox.Show(
-            //            "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-            //    }
-            //}
+                UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
+                if (uiapp.CanPostCommand(exitCommand))
+                    uiapp.PostCommand(exitCommand);
+                else
+                {
+                    MessageBox.Show(
+                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+                }
+            }
         }
 
         protected override void Evaluate()
