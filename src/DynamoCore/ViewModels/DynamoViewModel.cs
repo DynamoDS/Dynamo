@@ -154,6 +154,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
         public DelegateCommand SaveRecordedCommand { get; set; }
         public DelegateCommand InsertPausePlaybackCommand { get; set; }
+        public DelegateCommand RunGraphLayoutCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
         public DelegateCommand ShowInstalledPackagesCommand { get; set; }
@@ -585,6 +586,7 @@ namespace Dynamo.ViewModels
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
+            RunGraphLayoutCommand = new DelegateCommand(RunGraphLayout, CanRunGraphLayout);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
@@ -1090,6 +1092,16 @@ namespace Dynamo.ViewModels
         internal bool CanAlignSelected(object param)
         {
             return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
+        }
+
+        public void RunGraphLayout(object parameter)
+        {
+            this.CurrentSpaceViewModel.RunGraphLayoutCommand.Execute(parameter);
+        }
+
+        internal bool CanRunGraphLayout(object parameter)
+        {
+            return true;
         }
 
         /// <summary>

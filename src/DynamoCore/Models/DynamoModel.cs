@@ -1055,26 +1055,6 @@ namespace Dynamo.Models
                 if (CanOpen(_fileDialog.FileName))
                     Open(_fileDialog.FileName);
             }
-
-            var graph = new GraphLayout.Graph();
-
-            foreach (NodeModel x in CurrentWorkspace.Nodes)
-                graph.AddNode(x.GUID, x.Width, x.Height);
-
-            foreach (ConnectorModel x in CurrentWorkspace.Connectors)
-                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID, x.End.X, x.End.Y);
-
-            graph.RemoveCycles();
-            graph.RemoveTransitiveEdges();
-            graph.AssignLayers();
-            graph.OrderNodes();
-
-            foreach (var x in CurrentWorkspace.Nodes)
-            {
-                var id = x.GUID;
-                x.X = graph.FindNode(id).X;
-                x.Y = graph.FindNode(id).Y;
-            }
         }
 
         /// <summary>

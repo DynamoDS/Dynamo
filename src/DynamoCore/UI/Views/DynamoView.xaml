@@ -63,6 +63,9 @@
         <KeyBinding Key="Q"
                                 Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.InsertPausePlaybackCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="G"
+                                Modifiers="Control+Shift"
+                                Command="{Binding Path=DataContext.RunGraphLayoutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Tab"
                                 Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
