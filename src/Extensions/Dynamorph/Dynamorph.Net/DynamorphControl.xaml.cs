@@ -19,11 +19,17 @@ namespace Dynamorph
     {
         private Dynamorph.VisualizerHwndHost visualizer = null;
 
+        #region Public Operational Class Methods
+
         public DynamorphControl()
         {
             InitializeComponent();
             this.Loaded += OnDynamorphControlLoaded;
         }
+
+        #endregion
+
+        #region Internal Class Methods
 
         internal void DestroyVisualizer()
         {
@@ -34,6 +40,10 @@ namespace Dynamorph
             }
         }
 
+        #endregion
+
+        #region Private Class Event Handlers
+
         private void OnDynamorphControlLoaded(object sender, RoutedEventArgs e)
         {
             if (visualizer == null)
@@ -43,5 +53,7 @@ namespace Dynamorph
                 VisualizerHostElement.Child = visualizer;
             }
         }
+
+        #endregion
     }
 }

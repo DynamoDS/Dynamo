@@ -12,7 +12,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Add bounding box to IVertexBuffer class
 - [x] Fit camera to bounding sphere of IVertexBuffer
 - [x] Enabled depth test while rendering
-- [x] Fix bounding sphere calculation
+- [x] Fix bounding sphere calculation issue
 - [ ] Implement SynthesizedGraph/Node/Edge classes
 - [ ] Provide helper to synthesize Dynamo graph 
 - [ ] Implement layout/rendering for synthesized graph

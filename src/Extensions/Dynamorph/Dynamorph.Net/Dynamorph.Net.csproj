@@ -52,6 +52,8 @@
     <Compile Include="DynamorphWindow.xaml.cs">
       <DependentUpon>DynamorphWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SynthesizedGraph.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="VisualizerHwndHost.cs" />
     <Page Include="DynamorphControl.xaml">
       <Generator>MSBuild:Compile</Generator>
