@@ -27,6 +27,11 @@ namespace Dynamorph
             this.Loaded += OnDynamorphControlLoaded;
         }
 
+        public ISynthesizedGraph GetSynthesizedGraph()
+        {
+            return new SynthesizedGraph();
+        }
+
         #endregion
 
         #region Internal Class Methods

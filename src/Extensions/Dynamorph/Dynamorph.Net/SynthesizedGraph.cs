@@ -5,34 +5,42 @@ using System.Text;
 
 namespace Dynamorph
 {
-    class Node
+    public interface ISynthesizedGraph
     {
-        public Node(string identifier, string name)
+        void AddNode(string identifier, string name);
+        void AddEdge(string startNodeId, string endNodeId);
+    }
+
+    internal class Node
+    {
+        internal Node(string identifier, string name)
         {
             this.Identifier = identifier;
             this.Name = name;
         }
 
-        public string Identifier { get; private set; }
-        public string Name { get; private set; }
+        internal string Identifier { get; private set; }
+        internal string Name { get; private set; }
     }
 
-    class Edge
+    internal class Edge
     {
-        public Edge(string startNodeId, string endNodeId)
+        internal Edge(string startNodeId, string endNodeId)
         {
             this.StartNodeId = startNodeId;
             this.EndNodeId = EndNodeId;
         }
 
-        public string StartNodeId { get; private set; }
-        public string EndNodeId { get; private set; }
+        internal string StartNodeId { get; private set; }
+        internal string EndNodeId { get; private set; }
     }
 
-    public class SynthesizedGraph
+    internal class SynthesizedGraph : ISynthesizedGraph
     {
         private List<Node> nodes = new List<Node>();
         private List<Edge> edges = new List<Edge>();
+
+        #region Interface Method Implementations
 
         public void AddNode(string identifier, string name)
         {
@@ -56,7 +64,13 @@ namespace Dynamorph
                 edges.Add(new Edge(startNodeId, endNodeId));
         }
 
+        #endregion
+
+        #region Class Properties
+
         internal IEnumerable<Node> Nodes { get { return this.nodes; } }
         internal IEnumerable<Edge> Edges { get { return this.edges; } }
+
+        #endregion
     }
 }

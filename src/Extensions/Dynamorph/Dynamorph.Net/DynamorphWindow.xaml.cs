@@ -23,6 +23,8 @@ namespace Dynamorph
             this.Closing += OnDynamorphWindowClosing;
         }
 
+        public DynamorphControl Control { get { return TheDynamorphControl; } }
+
         private void OnDynamorphWindowClosing(object sender, CancelEventArgs e)
         {
             TheDynamorphControl.DestroyVisualizer();
