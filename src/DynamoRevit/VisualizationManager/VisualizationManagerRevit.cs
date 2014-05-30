@@ -10,6 +10,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using PolyCurve = Autodesk.DesignScript.Geometry.PolyCurve;
 
 namespace Dynamo
 {
@@ -144,21 +145,41 @@ namespace Dynamo
             {
                 foreach (var md in data.GetElements())
                 {
-                    RevitGeometryFromMirrorData(md,ref geoms);
+                    try
+                    {
+                        RevitGeometryFromMirrorData(md, ref geoms);
+                    }
+                    catch (Exception ex)
+                    {
+                        dynSettings.DynamoLogger.Log(ex.Message);
+                    }
                 }
             }
             else
             {
-                var point = data.Data as Point;
-                if (point != null)
+                try
                 {
-                    geoms.Add(DocumentManager.Instance.CurrentUIApplication.Application.Create.NewPoint(point.ToXyz()));
-                }
+                    var geom = data.Data as PolyCurve;
+                    if (geom != null)
+                    {
+                        geoms.AddRange(geom.ToRevitType());
+                    }
 
-                var curve = data.Data as Curve;
-                if (curve != null)
+                    var point = data.Data as Point;
+                    if (point != null)
+                    {
+                        geoms.Add(DocumentManager.Instance.CurrentUIApplication.Application.Create.NewPoint(point.ToXyz()));
+                    }
+
+                    var curve = data.Data as Curve;
+                    if (curve != null)
+                    {
+                        geoms.Add(curve.ToRevitType());
+                    }
+                }
+                catch (Exception ex)
                 {
-                    geoms.Add(curve.ToRevitType());
+                    dynSettings.DynamoLogger.Log(ex.Message);
                 }
             }
         }
