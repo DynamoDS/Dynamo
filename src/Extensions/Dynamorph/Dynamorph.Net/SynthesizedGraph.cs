@@ -22,6 +22,7 @@ namespace Dynamorph
             this.Marking = MarkStatus.None;
         }
 
+        internal int Depth { get; set; }
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
         internal MarkStatus Marking { get; set; }
@@ -32,7 +33,7 @@ namespace Dynamorph
         internal Edge(string startNodeId, string endNodeId)
         {
             this.StartNodeId = startNodeId;
-            this.EndNodeId = EndNodeId;
+            this.EndNodeId = endNodeId;
         }
 
         internal string StartNodeId { get; private set; }
@@ -74,7 +75,10 @@ namespace Dynamorph
 
         public void BuildGraphStructure()
         {
-            TopologicalSort();
+            LabelGraphNodes(); // Label the entire graph with depth info.
+
+            // Sort the depth value from small to large.
+            this.nodes.Sort((n1, n2) => n1.Depth - n2.Depth);
         }
 
         #endregion
@@ -88,10 +92,41 @@ namespace Dynamorph
 
         #region Private Class Helper Methods
 
+        private void LabelGraphNodes()
+        {
+            // Reset the depth value of each node to minimal value.
+            this.nodes.ForEach(n => n.Depth = int.MinValue);
+
+            // Get a list of all root nodes.
+            var rootNodes = nodes.Where(n =>
+            {
+                // A root node is a node which doesn't have input edge.
+                return !(edges.Where(e => e.EndNodeId == n.Identifier).Any());
+            });
+
+            foreach (var rootNode in rootNodes)
+                LabelGraphNode(rootNode, 0);
+        }
+
+        private void LabelGraphNode(Node node, int depth)
+        {
+            // The node is already marked with a larger depth value, which 
+            // means this node was visited before this call with much longer
+            // chain of ancestor list. No point going further to label them.
+            // 
+            if (node.Depth > depth)
+                return;
+
+            node.Depth = depth;
+            var childNodes = GetChildNodes(node);
+            foreach (var childNode in childNodes)
+                LabelGraphNode(childNode, depth + 1);
+        }
+
         private void TopologicalSort()
         {
             // Reset the marking status of each node to None.
-            this.nodes.Select(n => n.Marking = Node.MarkStatus.None);
+            this.nodes.ForEach(n => n.Marking = Node.MarkStatus.None);
             List<Node> sortedNodes = new List<Node>();
 
             while (true)
