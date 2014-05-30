@@ -106,6 +106,9 @@ namespace Dynamorph
 
                 VisitNode(unvisitedQuery.ElementAt(0), sortedNodes);
             }
+
+            this.nodes.Clear();
+            this.nodes.AddRange(sortedNodes);
         }
 
         private void VisitNode(Node node, List<Node> sortedNodes)
