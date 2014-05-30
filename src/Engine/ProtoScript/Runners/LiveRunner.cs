@@ -360,13 +360,7 @@ namespace ProtoScript.Runners
                 csData.ModifiedFunctions.AddRange(modifiedFunctions);
 
                 // Handle cached subtree
-                if (!cachedTreeExists)
-                {
-                    // Cache the subtree if it does not exist yet
-                    // This scenario is possible if a subtree was deleted and the same subtree was added again as a modified subtree
-                    currentSubTreeList.Add(st.GUID, st);
-                }
-                else
+                if (cachedTreeExists)
                 {
                     if (null == oldSubTree.AstNodes)
                     {
