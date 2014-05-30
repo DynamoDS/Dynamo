@@ -551,6 +551,9 @@ namespace Dynamo.Controls
                 return;
             }
 
+            SizeChanged -= DynamoView_SizeChanged;
+            LocationChanged -= DynamoView_LocationChanged;
+
             if (!DynamoController.IsTestMode)
             {
                 dynSettings.Controller.ShutDown(false);
