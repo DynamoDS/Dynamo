@@ -47,6 +47,10 @@ namespace Dynamo
     public class DynamoController : NotificationObject
     {
         private static bool testing;
+        /// <summary>
+        /// DynamoRunner handles execution and dispatch of the graph at the UI layer
+        /// </summary>
+        public DynamoRunner Runner { get; set; }
 
         #region properties
 
@@ -181,6 +185,18 @@ namespace Dynamo
                 RequestTaskDialog(sender, args);
         }
 
+        /// <summary>
+        /// Called when evaluation completes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnEvaluationCompleted(object sender, EventArgs e)
+        {
+            if (EvaluationCompleted != null)
+                EvaluationCompleted(sender, e);
+        }
+
+
         #endregion
 
         #region Constructor and Initialization
@@ -305,7 +321,8 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            evaluationWorker.DoWork += RunThread;
+            Runner = new DynamoRunner();
+
         }
 
         /// <summary>
@@ -363,186 +380,7 @@ namespace Dynamo
             ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
         }
 
-        #region Running
-        
-        private readonly BackgroundWorker evaluationWorker = new BackgroundWorker
-        {
-            WorkerSupportsCancellation = true
-        };
 
-        public bool Running { get; protected set; }
-
-        public void RunExpression(int? executionInterval = null)
-        {
-            
-
-            //If we're already running, do nothing.
-            if (Running)
-            {
-                return;
-            }
-
-            // If there is preloaded trace data, send that along to the current
-            // LiveRunner instance. Here we make sure it is done exactly once 
-            // by resetting WorkspaceModel.PreloadedTraceData property after it 
-            // is obtained.
-            // 
-            var traceData = DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
-            DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
-            EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
-
-            EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
-            if (!EngineController.HasPendingGraphSyncData)
-                return;
-
-            //We are now considered running
-            Running = true;
-
-            if (!testing)
-            {
-                //Setup background worker
-                DynamoViewModel.RunEnabled = false;
-
-                //Let's start
-                evaluationWorker.RunWorkerAsync(executionInterval);
-            }
-            else
-            {
-                //for testing, we do not want to run asynchronously, as it will finish the 
-                //test before the evaluation (and the run) is complete
-                RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
-            }
-        }
-
-        private void RunThread(object s, DoWorkEventArgs args)
-        {
-            var bw = s as BackgroundWorker;
-
-            do
-            {
-                Evaluate();
-
-                if (args == null || args.Argument == null)
-                    break;
-
-                var sleep = (int)args.Argument;
-                Thread.Sleep(sleep);
-            } 
-            while (bw != null && !bw.CancellationPending);
-
-            OnRunCompleted(this, false);
-
-            Running = false;
-            DynamoViewModel.RunEnabled = true;
-        }
-
-        protected virtual void Evaluate()
-        {
-            var sw = new Stopwatch();
-
-            try
-            {
-                sw.Start();
-                Eval();
-            }
-            catch (Exception ex)
-            {
-                //Catch unhandled exception
-                if (ex.Message.Length > 0)
-                {
-                    dynSettings.DynamoLogger.Log(ex);
-                }
-
-                OnRunCancelled(true);
-
-                if (IsTestMode) // Throw exception for NUnit.
-                    throw new Exception(ex.Message + ":" + ex.StackTrace);
-            }
-            finally
-            {
-                sw.Stop();
-
-                dynSettings.DynamoLogger.Log(string.Format("Evaluation completed in {0}", sw.Elapsed));
-            }
-
-            OnEvaluationCompleted(this, EventArgs.Empty);
-        }
-
-        private void Eval()
-        {
-            //Print some stuff if we're in debug mode
-            if (DynamoViewModel.RunInDebug)
-            {
-            }
-
-            // We have caught all possible exceptions in UpdateGraph call, I am 
-            // not certain if this try-catch block is still meaningful or not.
-            try
-            {
-                Exception fatalException = null;
-                bool updated = EngineController.UpdateGraph(ref fatalException);
-
-                // If there's a fatal exception, show it to the user, unless of course 
-                // if we're running in a unit-test, in which case there's no user. I'd 
-                // like not to display the dialog and hold up the continuous integration.
-                // 
-                if (IsTestMode == false && (fatalException != null))
-                {
-                    Action showFailureMessage = () => Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
-
-                    // The "Run" method is guaranteed to be called on a background 
-                    // thread (for Revit's case, it is the idle thread). Here we 
-                    // schedule the message to show up when the UI gets around and 
-                    // handle it.
-                    // 
-                    if (UIDispatcher != null)
-                        UIDispatcher.BeginInvoke(showFailureMessage);
-                }
-
-                // Currently just use inefficient way to refresh preview values. 
-                // After we switch to async call, only those nodes that are really 
-                // updated in this execution session will be required to update 
-                // preview value.
-                if (updated)
-                {
-                    var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
-                    foreach (NodeModel node in nodes)
-                        node.IsUpdated = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                /* Evaluation failed due to error */
-
-                dynSettings.DynamoLogger.Log(ex);
-
-                OnRunCancelled(true);
-
-                //If we are testing, we need to throw an exception here
-                //which will, in turn, throw an Assert.Fail in the 
-                //Evaluation thread.
-                if (IsTestMode)
-                    throw new Exception(ex.Message);
-            }
-        }
-        
-        protected virtual void OnRunCancelled(bool error)
-        {
-            //dynSettings.Controller.DynamoLogger.Log("Run cancelled. Error: " + error);
-        }
-
-        /// <summary>
-        /// Called when evaluation completes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void OnEvaluationCompleted(object sender, EventArgs e)
-        {
-            if (EvaluationCompleted != null)
-                EvaluationCompleted(sender, e);
-        }
-
-        #endregion
 
         public virtual void ResetEngine()
         {
@@ -581,6 +419,11 @@ namespace Dynamo
             RunExpression();
         }
 
+        public void RunExpression()
+        {
+            Runner.RunExpression();
+        }
+
         internal void RunExprCmd(object parameters)
         {
             bool displayErrors = Convert.ToBoolean(parameters);
@@ -606,10 +449,11 @@ namespace Dynamo
             return (dynSettings.Controller != null);
         }
 
+        
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)
-                evaluationWorker.CancelAsync();
+                Runner.CancelAsync();
             else
                 RunExpression();
         }
@@ -617,7 +461,7 @@ namespace Dynamo
         internal void ForceRunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)
-                evaluationWorker.CancelAsync();
+                Runner.CancelAsync();
             else
             {
                 dynSettings.DynamoLogger.Log(
@@ -636,41 +480,228 @@ namespace Dynamo
 
         internal void MutateTestInternal()
         {
+            Random rand = new Random(1);
+            DebugSettings.VerboseLogging = true;
+
+            String logTarget = dynSettings.DynamoLogger.LogPath + "MutationLog.log";
+
+            StreamWriter writer = new StreamWriter(logTarget);
+
+            writer.WriteLine("MutateTest Internal activate");
+
             System.Diagnostics.Debug.WriteLine("MutateTest Internal activate");
 
-            var nodes = DynamoModel.Nodes;
-            NodeModel node = nodes[0];
+            new Thread(() =>
+                {
+                    bool passed = false;
+
+                    try
+                    {
+
+                        for (int i = 0; i < 1000; i++)
+                        {
+                            writer.WriteLine("##### - Beginning run: " + i);
+
+                            var nodes = DynamoModel.Nodes;
+
+                            writer.WriteLine("### - Beginning eval");
 
 
-            DynamoViewModel.DeleteModelCommand delCommand = new DynamoViewModel.DeleteModelCommand(node.GUID);
-            DynamoViewModel.ExecuteCommand(delCommand);
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.RunCancelCommand runCancel =
+                                        new DynamoViewModel.RunCancelCommand(false, false);
+                                    DynamoViewModel.ExecuteCommand(runCancel);
 
-            Thread.Sleep(1000);
+                                }));
 
-            DynamoViewModel.RunCancelCommand runCancel = new DynamoViewModel.RunCancelCommand(false, false);
-            DynamoViewModel.ExecuteCommand(runCancel);
+                            while (DynamoViewModel.Controller.Runner.Running)
+                            {
+                                Thread.Sleep(10);
+                            }
 
-            Thread.Sleep(1000);
-
-
-            DynamoViewModel.ForceRunCancelCommand runCancelForce = new DynamoViewModel.ForceRunCancelCommand(false, false);
-            DynamoViewModel.ExecuteCommand(runCancelForce);
-
-            Thread.Sleep(1000);
+                            writer.WriteLine("### - Eval complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning readout");
 
 
-            DynamoViewModel.UndoRedoCommand undoCommand = new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
-            DynamoViewModel.ExecuteCommand(undoCommand);
+                            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
 
-            Thread.Sleep(1000);
+                            foreach (NodeModel n in nodes)
+                            {
+                                if (n.OutPorts.Count > 0)
+                                {
+                                    Guid guid = n.GUID;
+                                    Object data = n.GetValue(0).Data;
+                                    String val = data != null ? data.ToString() : "null";
+                                    valueMap.Add(guid, val);
+                                    writer.WriteLine(guid + " :: " + val);
+                                    writer.Flush();
 
-            DynamoViewModel.ExecuteCommand(runCancel);
+                                }
+                            }
 
-            Thread.Sleep(1000);
+                            writer.WriteLine("### - Readout complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning delete");
+                            NodeModel node = nodes[rand.Next(nodes.Count)];
+                            writer.WriteLine("### - Deletion target: " + node.GUID);
 
-            DynamoViewModel.ExecuteCommand(runCancelForce);
 
-            Thread.Sleep(1000);
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.DeleteModelCommand delCommand =
+                                        new DynamoViewModel.DeleteModelCommand(node.GUID);
+                                    DynamoViewModel.ExecuteCommand(delCommand);
+
+                                }));
+
+                            Thread.Sleep(100);
+
+                            writer.WriteLine("### - delete complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning re-exec");
+
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.RunCancelCommand runCancel =
+                                        new DynamoViewModel.RunCancelCommand(false, false);
+                                    DynamoViewModel.ExecuteCommand(runCancel);
+
+                                }));
+
+                            Thread.Sleep(100);
+
+                            writer.WriteLine("### - re-exec complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning undo");
+
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.UndoRedoCommand undoCommand =
+                                        new DynamoViewModel.UndoRedoCommand(
+                                            DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                    DynamoViewModel.ExecuteCommand(undoCommand);
+
+                                }));
+
+                            Thread.Sleep(100);
+
+                            writer.WriteLine("### - undo complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning re-exec");
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.RunCancelCommand runCancel =
+                                        new DynamoViewModel.RunCancelCommand(false, false);
+
+                                    DynamoViewModel.ExecuteCommand(runCancel);
+
+                                }));
+                            Thread.Sleep(10);
+
+                            while (DynamoViewModel.Controller.Runner.Running)
+                            {
+                                Thread.Sleep(10);
+                            }
+
+                            writer.WriteLine("### - re-exec complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning readback");
+
+
+                            foreach (NodeModel n in nodes)
+                            {
+                                if (n.OutPorts.Count > 0)
+                                {
+                                    try
+                                    {
+
+
+
+                                        String valmap = valueMap[n.GUID].ToString();
+                                        Object data = n.GetValue(0).Data;
+                                        String nodeVal = data != null ? data.ToString() : "null";
+
+                                        if (valmap != nodeVal)
+                                        {
+
+                                            writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                                            writer.WriteLine(n.GUID);
+
+
+                                            writer.WriteLine("Was: " + nodeVal);
+                                            writer.WriteLine("Should have been: " + valmap);
+                                            writer.Flush();
+                                            return;
+
+
+                                            Debug.WriteLine("==========> Failure on run: " + i);
+                                            Debug.WriteLine("Lookup map failed to agree");
+                                            Validity.Assert(false);
+
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
+                                        writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                                        writer.Flush();
+                                        return;
+                                    }
+                                }
+                            }
+
+                            /*
+                        UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.ForceRunCancelCommand runCancelForce =
+    new DynamoViewModel.ForceRunCancelCommand(false,
+                                              false);
+                        DynamoViewModel.ExecuteCommand(runCancelForce);
+    
+                            }));
+                        while (DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+                        foreach (NodeModel n in nodes)
+                        {
+                            if (n.OutPorts.Count > 0)
+                            {
+                                String valmap = valueMap[n.GUID].ToString();
+                                String nodeVal = n.GetValue(0).Data.ToString();
+
+                                if (valmap != nodeVal)
+                                {
+                                    Debug.WriteLine("==========> Failure on run: " + i);
+                                    Debug.WriteLine("Lookup map failed to agree");
+                                    Validity.Assert(false);
+
+                                }
+                            }
+                        }
+                        */
+
+
+                        }
+
+                        passed = true;
+                    }
+                    finally
+                    {
+                        dynSettings.DynamoLogger.Log("Fuzz testing: " + (passed ? "pass" : "FAIL"));
+
+                        writer.Flush();
+                        writer.Close();
+                        writer.Dispose();
+                    }
+
+
+                }).
+                    Start();
 
         }
 
