@@ -361,8 +361,9 @@
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
                         <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
                                   IsCheckable="True" IsChecked="{Binding Path=UpdateManager.CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        </MenuItem>
-                    
+                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
+                                      IsCheckable="True" IsChecked="{Binding Path=UpdateManager.ForceUpdate, Mode=TwoWay}"/>
+                    </MenuItem>
                 </Menu>
 
                 <!--Titlebar buttons-->
