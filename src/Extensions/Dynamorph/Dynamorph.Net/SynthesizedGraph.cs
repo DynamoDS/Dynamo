@@ -13,14 +13,18 @@ namespace Dynamorph
 
     internal class Node
     {
+        internal enum MarkStatus { None, Temporary, Permanent }
+
         internal Node(string identifier, string name)
         {
             this.Identifier = identifier;
             this.Name = name;
+            this.Marking = MarkStatus.None;
         }
 
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
+        internal MarkStatus Marking { get; set; }
     }
 
     internal class Edge
@@ -86,41 +90,57 @@ namespace Dynamorph
 
         private void TopologicalSort()
         {
-            // Move all root nodes onto a separate list.
-            List<Node> rootNodes = ExtractRootNodes();
-
+            // Reset the marking status of each node to None.
+            this.nodes.Select(n => n.Marking = Node.MarkStatus.None);
             List<Node> sortedNodes = new List<Node>();
 
-            while (rootNodes.Count > 0)
+            while (true)
             {
-                var rootNode = rootNodes[0];
-                rootNodes.RemoveAt(0);       // Remove a root node...
-                sortedNodes.Add(rootNode);   // ... move it to the end of list.
+                var unvisitedQuery = this.nodes.Where((n) =>
+                {
+                    return n.Marking != Node.MarkStatus.Permanent;
+                });
 
+                if (unvisitedQuery.Any() == false)
+                    break; // No more unvisited node.
+
+                VisitNode(unvisitedQuery.ElementAt(0), sortedNodes);
             }
         }
 
-        private List<Node> ExtractRootNodes()
+        private void VisitNode(Node node, List<Node> sortedNodes)
         {
-            var nodeQuery = nodes.Where(n =>
+            if (node.Marking != Node.MarkStatus.None)
             {
-                // A root node is a node which doesn't have input edge.
-                return !(edges.Where(e => e.EndNodeId == n.Identifier).Any());
-            });
+                var message = "Cyclic graph detected!";
+                throw new InvalidOperationException(message);
+            }
 
-            List<Node> rootNodes = new List<Node>(nodeQuery);
-            this.nodes.RemoveAll(n => nodeQuery.Contains(n));
-            return rootNodes;
+            node.Marking = Node.MarkStatus.Temporary;
+            foreach (var childNode in GetChildNodes(node))
+                VisitNode(childNode, sortedNodes);
+
+            node.Marking = Node.MarkStatus.Permanent;
+            sortedNodes.Insert(0, node);
         }
 
-        private List<Edge> ExtractChildEdges(Node node)
+        private IEnumerable<Node> GetChildNodes(Node node)
         {
-            var nodeId = node.Identifier;
-            var edgeQuery = edges.Where(e => e.StartNodeId == nodeId);
+            var endNodeQuery = this.edges.Where((e) =>
+            {
+                // Get edges connecting from this "node".
+                return e.StartNodeId == node.Identifier;
 
-            List<Edge> childEdges = new List<Edge>(edgeQuery);
-            this.edges.RemoveAll(e => childEdges.Contains(e));
-            return childEdges;
+            }).Select(e => e.EndNodeId);
+
+            var nodeQuery = this.nodes.Where((n) =>
+            {
+                // A node will be considered a child node 
+                // if it is at the end of connecting edges.
+                return endNodeQuery.Contains(n.Identifier);
+            });
+
+            return new List<Node>(nodeQuery);
         }
 
         #endregion
