@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using ProtoCore.Mirror;
@@ -10,6 +11,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using PolyCurve = Autodesk.DesignScript.Geometry.PolyCurve;
 
 namespace Dynamo
 {
@@ -149,6 +151,12 @@ namespace Dynamo
             }
             else
             {
+                var geom = data.Data as PolyCurve;
+                if (geom != null)
+                {
+                    geoms.AddRange(geom.ToRevitType());
+                }
+
                 var point = data.Data as Point;
                 if (point != null)
                 {
