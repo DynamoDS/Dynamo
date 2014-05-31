@@ -92,6 +92,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\Fonts\OpenSans-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamorph.Cpp\Dynamorph.vcxproj">

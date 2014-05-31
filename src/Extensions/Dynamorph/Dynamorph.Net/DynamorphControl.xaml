@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <Canvas Name="GraphCanvas"
                 SnapsToDevicePixels="True"
-                Background="Honeydew"></Canvas>
+                Background="White"></Canvas>
         <GridSplitter Grid.Row="1"
                       Width="Auto"
                       Height="6"
