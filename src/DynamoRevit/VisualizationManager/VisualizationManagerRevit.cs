@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using ProtoCore.Mirror;
@@ -146,27 +145,41 @@ namespace Dynamo
             {
                 foreach (var md in data.GetElements())
                 {
-                    RevitGeometryFromMirrorData(md,ref geoms);
+                    try
+                    {
+                        RevitGeometryFromMirrorData(md, ref geoms);
+                    }
+                    catch (Exception ex)
+                    {
+                        dynSettings.DynamoLogger.Log(ex.Message);
+                    }
                 }
             }
             else
             {
-                var geom = data.Data as PolyCurve;
-                if (geom != null)
+                try
                 {
-                    geoms.AddRange(geom.ToRevitType());
-                }
+                    var geom = data.Data as PolyCurve;
+                    if (geom != null)
+                    {
+                        geoms.AddRange(geom.ToRevitType());
+                    }
 
-                var point = data.Data as Point;
-                if (point != null)
-                {
-                    geoms.Add(DocumentManager.Instance.CurrentUIApplication.Application.Create.NewPoint(point.ToXyz()));
-                }
+                    var point = data.Data as Point;
+                    if (point != null)
+                    {
+                        geoms.Add(DocumentManager.Instance.CurrentUIApplication.Application.Create.NewPoint(point.ToXyz()));
+                    }
 
-                var curve = data.Data as Curve;
-                if (curve != null)
+                    var curve = data.Data as Curve;
+                    if (curve != null)
+                    {
+                        geoms.Add(curve.ToRevitType());
+                    }
+                }
+                catch (Exception ex)
                 {
-                    geoms.Add(curve.ToRevitType());
+                    dynSettings.DynamoLogger.Log(ex.Message);
                 }
             }
         }
