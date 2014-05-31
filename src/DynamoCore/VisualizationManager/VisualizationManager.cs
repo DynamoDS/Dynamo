@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Interfaces;
+using DSNodeServices;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -122,12 +123,6 @@ namespace Dynamo
             get { return alternateContextName; }
             set { alternateContextName = value; }
         }
-
-        //public Octree.OctreeSearch.Octree Octree
-        //{
-        //    get { return octree; }
-        //    set { octree = value; }
-        //}
 
         public int MaxGridLines { get; set; }
 
@@ -378,7 +373,7 @@ namespace Dynamo
                 Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for branch {1}.", watch.Elapsed, tag.Node.GUID));
 
                 //send back renderables for the branch
-                packages = GetUpstreamPackages(tag.Node.Inputs).ToList();
+                packages = GetUpstreamPackages(tag.Node.Inputs, 0).ToList();
                 if (packages.Any())
                     OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID.ToString(),tag.TaskId));
             }
@@ -592,36 +587,18 @@ namespace Dynamo
 
         
         /// <summary>
-        /// Setup a spatial index for triangle vertex locations to 
-        /// be used in selection operations.
-        /// </summary>
-        /// <param name="toUpdate"></param>
-        //private void SetupOctree(IEnumerable<NodeModel> toUpdate)
-        //{
-        //    octree.Clear();
-        //    foreach (var node in toUpdate)
-        //    {
-        //        var packages = node.RenderPackages;
-        //        foreach (var p in packages)
-        //        {
-        //            for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
-        //            {
-        //                var a = p.TriangleVertices[i];
-        //                var b = p.TriangleVertices[i + 1];
-        //                var c = p.TriangleVertices[i + 2];
-        //                octree.AddNode(a, b, c, node.GUID.ToString());
-        //            }
-        //        }
-        //    }
-        //}
-
-        /// <summary>
         /// Gathers the Ids of the upstream drawable nodes.
         /// </summary>
         /// <param name="inputs">A dictionary describing the inputs on the node.</param>
         /// <returns>A collection of strings.</returns>
-        private IEnumerable<IRenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs)
+        private IEnumerable<IRenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs, 
+            int recursionLevelCount)
         {
+#if DEBUG
+            const int MAX_RECURSION = 200;
+            Validity.Assert(recursionLevelCount < MAX_RECURSION, "Stack Overflow protection trap");
+#endif
+
             var packages = new List<IRenderPackage>();
 
             foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
@@ -643,35 +620,11 @@ namespace Dynamo
                 }
 
                 if (node.IsUpstreamVisible)
-                    packages.AddRange(GetUpstreamPackages(node.Inputs));
+                    packages.AddRange(GetUpstreamPackages(node.Inputs, recursionLevelCount + 1));
             }
 
             return packages;
         }
-
-        /// <summary>
-        /// Log visualization update timing and geometry data.
-        /// </summary>
-        /// <param name="rd">The aggregated render description for the model.</param>
-        /// <param name="ellapsedTime">The ellapsed time of visualization as a string.</param>
-        //protected void LogVisualizationUpdateData(RenderDescription rd, string ellapsedTime)
-        //{
-        //    var renderDict = new Dictionary<string, object>();
-        //    renderDict["points"] = rd.Points.Count;
-        //    renderDict["line_segments"] = rd.Lines.Count / 2;
-        //    renderDict["mesh_facets"] = rd.Meshes.Any()
-        //                                    ? rd.Meshes.Select(x => x.TriangleIndices.Count / 3).Aggregate((a, b) => a + b)
-        //                                    : 0;
-        //    renderDict["time"] = ellapsedTime;
-        //    renderDict["manager_type"] = this.GetType().ToString();
-
-        //    var renderData = JsonConvert.SerializeObject(renderDict);
-
-        //    InstrumentationLogger.LogInfo("Perf-Latency-RenderGeometryGeneration", renderData);
-
-        //    //Debug.WriteLine(renderData);
-        //}
-
         
         #endregion
 
