@@ -4,6 +4,7 @@ using Autodesk.DesignScript.Geometry;
 using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
+using RevitTestFramework;
 
 namespace DSRevitNodesTests
 {
