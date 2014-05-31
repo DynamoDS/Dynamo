@@ -481,7 +481,7 @@ namespace Dynamo
         internal void MutateTestInternal()
         {
             Random rand = new Random(1);
-            DebugSettings.VerboseLogging = true;
+            //DebugSettings.VerboseLogging = true;
 
             String logTarget = dynSettings.DynamoLogger.LogPath + "MutationLog.log";
 
