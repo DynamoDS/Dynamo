@@ -32,11 +32,12 @@ namespace Dynamo
     /// what application Dynamo is running within. Use NONE for the sandbox and
     /// other applications where context-sensitive loading are not required.
     /// </summary>
-    public static partial class Context
+    public static class Context
     {
         public const string NONE = "None";
         public const string REVIT_2013 = "Revit 2013";
         public const string REVIT_2014 = "Revit 2014";
+        public const string REVIT_2015 = "Revit 2015";
         public const string VASARI_2013 = "Vasari 2013";
         public const string VASARI_2014 = "Vasari 2014";
     }
