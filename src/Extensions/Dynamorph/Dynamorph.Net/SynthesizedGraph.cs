@@ -2,9 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace Dynamorph
 {
+    struct Config
+    {
+        internal static readonly double HorzGap = 32.0;
+        internal static readonly double VertGap = 16.0;
+        internal static readonly double LeftMargin = HorzGap;
+        internal static readonly double TopMargin = VertGap;
+        internal static readonly double NodeWidth = 128.0;
+        internal static readonly double NodeHeight = 32.0;
+        internal static readonly double HorzSpace = ((2 * HorzGap) + NodeWidth);
+        internal static readonly double VertSpace = ((2 * VertGap) + NodeHeight);
+    }
+
     public interface ISynthesizedGraph
     {
         void AddNode(string identifier, string name);
@@ -13,6 +26,10 @@ namespace Dynamorph
 
     internal class Node
     {
+        private Rect rect = new Rect();
+        private Point inputPoint = new Point();
+        private Point outputPoint = new Point();
+
         internal Node(string identifier, string name)
         {
             this.Identifier = identifier;
@@ -20,11 +37,31 @@ namespace Dynamorph
             this.ChildrenCount = -1;
         }
 
+        internal void UpdateNodeLayout()
+        {
+            var top = (Config.TopMargin + (Config.VertSpace * DisplayRow));
+            var left = (Config.LeftMargin + (Config.HorzSpace * Depth));
+
+            top = top + Config.VertGap;
+            left = left + Config.HorzGap;
+            this.rect = new Rect(left, top, Config.NodeWidth, Config.NodeHeight);
+
+            inputPoint = new Point(rect.Left, rect.Top + (0.5 * rect.Height));
+            outputPoint = new Point(rect.Right, inputPoint.Y);
+        }
+
+        #region Public Class Properties
+
         internal int Depth { get; set; }
         internal int DisplayRow { get; set; }
         internal int ChildrenCount { get; set; }
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
+        internal Rect Rect { get { return this.rect; } }
+        internal Point InputPoint { get { return this.inputPoint; } }
+        internal Point OutputPoint { get { return this.outputPoint; } }
+
+        #endregion
     }
 
     internal class Edge
@@ -101,6 +138,9 @@ namespace Dynamorph
 
                 node.DisplayRow = displayRow++;
             }
+
+            // Update the node positioning on canvas.
+            this.nodes.ForEach(n => n.UpdateNodeLayout());
         }
 
         #endregion

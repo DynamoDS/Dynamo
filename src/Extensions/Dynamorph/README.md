@@ -16,7 +16,8 @@ Dynamorph, morph the heck out of your design.
 - [x] Implement SynthesizedGraph/Node/Edge classes
 - [x] Implement topological sort for synthesized graph
 - [x] Provide helper to synthesize Dynamo graph 
-- [ ] Implement layout/rendering for synthesized graph
+- [x] Implement layout algorithm for synthesized graph
+- [ ] Implement rendering for synthesized graph
 - [ ] Add support for Point, Line primitive types
 - [ ] Implement saving of tessellated data to bin file
 - [ ] Implement loading of tessellated data from file
@@ -26,7 +27,6 @@ Dynamorph, morph the heck out of your design.
 - [ ] Enable slider to work with C++ Visualizer
 
 ##### Miscellaneous Tasks #####
-- [ ] Fix: Wrong child node count with adjacent edges
 - [ ] Fix: Dynamorph relaunch problem
 - [ ] Fix: closing Dynamo does not close Dynamorph
 - [ ] Move shader source to external files
@@ -36,6 +36,8 @@ Dynamorph, morph the heck out of your design.
 - [ ] Update aspect ratio when window is sized
 - [ ] Implement mini-ball for tightest bounding box
 - [ ] Add GLM licence terms to EULA and ReadMe.md
+- [ ] Implement hit testing for graph visuals
+- [ ] Fix: Wrong child node count with adjacent edges
 
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
