@@ -7,6 +7,84 @@ using System.Windows.Media;
 
 namespace Dynamorph
 {
+    class GraphResources
+    {
+        internal enum BrushIndex
+        {
+            NodeFillColor,
+            NodeBorderColor,
+            NodeTextColor,
+
+            Lime,
+            Green,
+            Emerald,
+            Teal,
+            Cyan,
+            Cobalt,
+            Indigo,
+            Violet,
+            Pink,
+            Magenta,
+            Crimson,
+            Red,
+            Orange,
+            Amber,
+            Yellow,
+            Brown,
+            Olive,
+            Steel,
+            Mauve,
+            Taupe,
+        }
+
+        static GraphResources()
+        {
+            Brushes = new List<SolidColorBrush>();
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0xcb, 0xc6, 0xbe))); // NodeFillColor
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0x5e, 0x5c, 0x5a))); // NodeBorderColor
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0xff, 0xff, 0xff))); // NodeTextColor
+
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(164, 196, 0)));   // Lime
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(96, 169, 23)));   // Green
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0, 138, 0)));     // Emerald
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0, 171, 169)));   // Teal
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(27, 161, 226)));  // Cyan
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0, 80, 239)));    // Cobalt
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(106, 0, 255)));   // Indigo
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(170, 0, 255)));   // Violet
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(244, 114, 208))); // Pink
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(216, 0, 115)));   // Magenta
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(162, 0, 37)));    // Crimson
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(229, 20, 0)));    // Red    
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(250, 104, 0)));   // Orange
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(240, 163, 10)));  // Amber
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(227, 200, 0)));   // Yellow
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(130, 90, 44)));   // Brown
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(109, 135, 100))); // Olive
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(100, 118, 135))); // Steel
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(118, 96, 138)));  // Mauve
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(135, 121, 78)));  // Taupe
+
+            Brushes.ForEach(b => b.Freeze());
+        }
+
+        internal static SolidColorBrush Brush(BrushIndex index)
+        {
+            return Brushes[(int)index];
+        }
+
+        internal static SolidColorBrush Pen(int index)
+        {
+            int start = ((int)BrushIndex.Lime);
+            int end = ((int)BrushIndex.Taupe);
+            int count = end - start + 1;
+
+            return Brushes[(start + (index % count))];
+        }
+
+        internal static readonly List<SolidColorBrush> Brushes;
+    }
+
     class GraphVisualHost : FrameworkElement
     {
         private SynthesizedGraph graph = null;
@@ -72,11 +150,12 @@ namespace Dynamorph
 
             foreach (var node in graph.Nodes)
             {
-                PathGeometry geom;
-                PathFigure figure;
-                BezierSegment s = new BezierSegment();
-
-                drawingContext.DrawRectangle(Brushes.Black, null, node.Rect);
+                var bi = GraphResources.BrushIndex.NodeBorderColor;
+                var fi = GraphResources.BrushIndex.NodeFillColor;
+                var bp = new Pen(GraphResources.Brush(bi), 1.0);
+                var rect = node.Rect;
+                rect.Offset(-0.5, -0.5);
+                drawingContext.DrawRectangle(GraphResources.Brush(fi), bp, rect);
             }
 
             drawingContext.Close(); // Done drawing, commit changes.
@@ -110,7 +189,8 @@ namespace Dynamorph
 
                 AddBezier(pathFigure, startPoints[index], endPoints[index]);
                 pathGeometry.Figures.Add(pathFigure);
-                drawingContext.DrawGeometry(null, new Pen(Brushes.Red, 1.0), pathGeometry);
+                var pb = GraphResources.Pen(index);
+                drawingContext.DrawGeometry(null, new Pen(pb, 2.0), pathGeometry);
             }
 
             drawingContext.Close();
@@ -118,7 +198,7 @@ namespace Dynamorph
 
         private void AddBezier(PathFigure figure, Point start, Point end)
         {
-            var offset = ((end.X - start.X) * 0.25);
+            var offset = ((end.X - start.X) * 0.5);
             figure.StartPoint = start;
 
             BezierSegment bezierSegment = new BezierSegment(

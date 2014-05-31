@@ -13,8 +13,10 @@
             <RowDefinition Height="3*"></RowDefinition>
         </Grid.RowDefinitions>
         <Canvas Name="GraphCanvas"
+                SnapsToDevicePixels="True"
                 Background="Honeydew"></Canvas>
-        <GridSplitter Grid.Row="1" Width="Auto"
+        <GridSplitter Grid.Row="1"
+                      Width="Auto"
                       Height="6"
                       HorizontalAlignment="Stretch" />
         <Border Name="VisualizerHostElement"
