@@ -12,6 +12,7 @@ using System.Collections;
 using Dynamo.Models;
 using DSCoreNodesUI;
 using DSCore.File;
+using RevitTestFramework;
 
 namespace Dynamo.Tests
 {
@@ -19,7 +20,7 @@ namespace Dynamo.Tests
     class BugTests:DynamoRevitUnitTestBase
     {
         [Test]
-        [TestModelAttribute(@".\Bugs\MAGN_66.rfa")]
+        [TestModel(@".\Bugs\MAGN_66.rfa")]
         public void MAGN_66()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-66

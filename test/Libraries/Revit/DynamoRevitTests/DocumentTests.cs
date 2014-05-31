@@ -2,6 +2,7 @@
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitTestFramework;
 
 namespace Dynamo.Tests
 {
