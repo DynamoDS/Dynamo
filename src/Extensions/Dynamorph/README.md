@@ -17,7 +17,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Implement topological sort for synthesized graph
 - [x] Provide helper to synthesize Dynamo graph 
 - [x] Implement layout algorithm for synthesized graph
-- [ ] Implement rendering for synthesized graph
+- [x] Implement rendering for synthesized graph
 - [ ] Add support for Point, Line primitive types
 - [ ] Implement saving of tessellated data to bin file
 - [ ] Implement loading of tessellated data from file
@@ -42,5 +42,5 @@ Dynamorph, morph the heck out of your design.
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
 
-#### Camera is now fitting to the bounding sphere! :) ####
+#### Nodes are edges are rendered now! :) ####
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)
