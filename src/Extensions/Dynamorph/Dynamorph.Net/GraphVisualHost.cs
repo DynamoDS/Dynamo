@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -42,7 +43,7 @@ namespace Dynamorph
             Brushes = new List<SolidColorBrush>();
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0xcb, 0xc6, 0xbe))); // NodeFillColor
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0x5e, 0x5c, 0x5a))); // NodeBorderColor
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(0xff, 0xff, 0xff))); // NodeTextColor
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00))); // NodeTextColor
 
             Brushes.Add(new SolidColorBrush(Color.FromRgb(164, 196, 0)));   // Lime
             Brushes.Add(new SolidColorBrush(Color.FromRgb(96, 169, 23)));   // Green
@@ -147,6 +148,16 @@ namespace Dynamorph
                 return; // There is no graph or it's an empty graph.
 
             var drawingContext = nodeVisuals.RenderOpen();
+            var textBrush = GraphResources.Brush(GraphResources.BrushIndex.NodeTextColor);
+
+            // Font for use on node text.
+            string fontResourceUri = "./Resources/Fonts/#Open Sans";
+            string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
+            var uri = new Uri(pack + "://application:,,,/Dynamorph.Net;component/");
+            var textFontFamily = new FontFamily(uri, fontResourceUri);
+
+            var typeface = new Typeface(textFontFamily, FontStyles.Normal,
+                FontWeights.Normal, FontStretches.Normal);
 
             foreach (var node in graph.Nodes)
             {
@@ -156,9 +167,33 @@ namespace Dynamorph
                 var rect = node.Rect;
                 rect.Offset(-0.5, -0.5);
                 drawingContext.DrawRectangle(GraphResources.Brush(fi), bp, rect);
+
+                FormattedText ft = new FormattedText(node.Name, CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight, typeface, 10.0, textBrush)
+                    {
+                        Trimming = TextTrimming.CharacterEllipsis,
+                        TextAlignment = TextAlignment.Center
+                    };
+
+                rect = DeflateRectForText(ft, rect);
+                drawingContext.DrawText(ft, rect.Location);
             }
 
             drawingContext.Close(); // Done drawing, commit changes.
+        }
+
+        private Rect DeflateRectForText(FormattedText formattedText, Rect rect)
+        {
+            double margin = 4.0;
+
+            var gap = ((rect.Height - formattedText.Height) * 0.5);
+            rect.Height = formattedText.Height;
+            rect.Width = (rect.Width - (2.0 * margin));
+            rect.Offset(margin, gap);
+
+            formattedText.MaxTextWidth = rect.Width;
+            formattedText.MaxTextHeight = rect.Height;
+            return rect;
         }
 
         private void RefreshGraphEdges()
