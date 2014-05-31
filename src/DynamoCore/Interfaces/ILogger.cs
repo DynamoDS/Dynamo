@@ -4,7 +4,6 @@ namespace Dynamo.Interfaces
 {
     public interface ILogger
     {
-        String LogPath { get; }
         void Log(string message);
         void Log(string message, LogLevel level);
         void Log(string tag, string message);

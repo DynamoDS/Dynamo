@@ -7,7 +7,6 @@ namespace ProtoTest
         {
             //EntryClass.Exec4();
         }
-        /*
         [TestFixture]
         public class TestsFromScripts
         {
@@ -21,7 +20,7 @@ namespace ProtoTest
                 string path = "..\\..\\..\\Scripts";
                 return System.IO.Directory.GetFiles(path, "*.ds");
             }
-        }*/
+        }
 
 
 
