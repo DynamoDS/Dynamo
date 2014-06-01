@@ -4,6 +4,7 @@ using Revit.AnalysisDisplay;
 using Revit.Application;
 using Revit.Elements;
 using NUnit.Framework;
+using RevitTestFramework;
 
 namespace DSRevitNodesTests.AnalysisDisplay
 {

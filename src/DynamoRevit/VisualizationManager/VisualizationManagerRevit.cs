@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.Mirror;
+using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using Curve = Autodesk.DesignScript.Geometry.Curve;
+using Point = Autodesk.DesignScript.Geometry.Point;
+using PolyCurve = Autodesk.DesignScript.Geometry.PolyCurve;
 
 namespace Dynamo
 {
@@ -21,12 +25,14 @@ namespace Dynamo
 
         public VisualizationManagerRevit() : base()
         {
-            if (dynSettings.Controller.Context == Context.VASARI_2014)
+            var context = dynSettings.Controller.Context;
+            if (context == Context.VASARI_2014 || 
+                context == Context.REVIT_2015)
             {
                 AlternateDrawingContextAvailable = true;
                 DrawToAlternateContext = false;
 
-                AlternateContextName = "Vasari";
+                AlternateContextName = context;
 
                 RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
@@ -66,21 +72,22 @@ namespace Dynamo
         {
             ////do not draw to geom keeper if the user has selected
             ////not to draw to the alternate context or if it is not available
-            //if (!AlternateDrawingContextAvailable
-            //    || !DrawToAlternateContext)
-            //    return;
 
-            //IEnumerable<FScheme.Value> values = dynSettings.Controller.DynamoModel.Nodes
-            //    .Where(x => x.IsVisible).Where(x => x.OldValue != null)
-            //    //.Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
-            //    .Select(x => x.OldValue.Data as FScheme.Value);
+            if (!AlternateDrawingContextAvailable
+                || !DrawToAlternateContext)
+                return;
 
-            //List<GeometryObject> geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
+            var values = dynSettings.Controller.DynamoModel.Nodes
+                .Where(x => x.IsVisible).Where(x => x.CachedValue != null)
+                .Select(x => x.CachedValue);
 
-            //Draw(geoms);
+            var geoms = new List<GeometryObject>();
+            values.ToList().ForEach(md=>RevitGeometryFromMirrorData(md, ref geoms));
+
+            Draw(geoms);
         }
 
-        private void Draw(List<GeometryObject> geoms)
+        private void Draw(IEnumerable<GeometryObject> geoms)
         {
             Type geometryElementType = typeof(GeometryElement);
             MethodInfo[] geometryElementTypeMethods =
@@ -127,69 +134,54 @@ namespace Dynamo
                 });
         }
 
-        ///// <summary>
-        /////     Utility method to get the Revit geometry associated with nodes.
-        ///// </summary>
-        ///// <param name="value"></param>
-        ///// <returns></returns>
-        //private static List<GeometryObject> RevitGeometryFromNodes(FScheme.Value value)
-        //{
-        //    var geoms = new List<GeometryObject>();
+        /// <summary>
+        /// Convert mirror data objects for nodes to Revit types.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="geoms"></param>
+        private static void RevitGeometryFromMirrorData(MirrorData data, ref List<GeometryObject> geoms)
+        {
+            if (data.IsCollection)
+            {
+                foreach (var md in data.GetElements())
+                {
+                    try
+                    {
+                        RevitGeometryFromMirrorData(md, ref geoms);
+                    }
+                    catch (Exception ex)
+                    {
+                        dynSettings.DynamoLogger.Log(ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    var geom = data.Data as PolyCurve;
+                    if (geom != null)
+                    {
+                        geoms.AddRange(geom.ToRevitType());
+                    }
 
-        //    if (value == null)
-        //        return geoms;
+                    var point = data.Data as Point;
+                    if (point != null)
+                    {
+                        geoms.Add(DocumentManager.Instance.CurrentUIApplication.Application.Create.NewPoint(point.ToXyz()));
+                    }
 
-        //    if (value.IsList)
-        //    {
-        //        foreach (FScheme.Value valInner in ((FScheme.Value.List)value).Item)
-        //            geoms.AddRange(RevitGeometryFromNodes(valInner));
-        //        return geoms;
-        //    }
-
-        //    var container = value as FScheme.Value.Container;
-        //    if (container == null)
-        //        return geoms;
-
-        //    var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
-        //    if (geom != null && !(geom is Face))
-        //        geoms.Add(geom);
-
-        //    var ps = ((FScheme.Value.Container)value).Item as ParticleSystem;
-        //    if (ps != null)
-        //    {
-        //        geoms.AddRange(
-        //            ps.Springs.Select(
-        //                spring =>
-        //                    Line.CreateBound(
-        //                        spring.getOneEnd().getPosition(),
-        //                        spring.getTheOtherEnd().getPosition())));
-        //    }
-
-        //    var cl = ((FScheme.Value.Container)value).Item as CurveLoop;
-        //    if (cl != null)
-        //        geoms.AddRange(cl);
-
-        //    //draw xyzs as Point objects
-        //    var pt = ((FScheme.Value.Container)value).Item as XYZ;
-        //    if (pt != null)
-        //    {
-        //        Type pointType = typeof(Point);
-        //        MethodInfo[] pointTypeMethods = pointType.GetMethods(
-        //            BindingFlags.Static | BindingFlags.Public);
-        //        MethodInfo method = pointTypeMethods.FirstOrDefault(x => x.Name == "CreatePoint");
-
-        //        if (method != null)
-        //        {
-        //            var args = new object[3];
-        //            args[0] = pt.X;
-        //            args[1] = pt.Y;
-        //            args[2] = pt.Z;
-        //            geoms.Add((Point)method.Invoke(null, args));
-        //        }
-        //    }
-
-        //    return geoms;
-        //}
-
+                    var curve = data.Data as Curve;
+                    if (curve != null)
+                    {
+                        geoms.Add(curve.ToRevitType());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    dynSettings.DynamoLogger.Log(ex.Message);
+                }
+            }
+        }
     }
 }

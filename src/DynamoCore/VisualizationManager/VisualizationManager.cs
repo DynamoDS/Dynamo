@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Interfaces;
+using DSNodeServices;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -17,6 +18,9 @@ using Dynamo.DSEngine;
 namespace Dynamo
 {
     public delegate void RenderCompleteEventHandler(object sender, RenderCompletionEventArgs e);
+
+    public delegate void RenderFailedEventHandler(object sender, RenderFailedEventArgs e);
+
 
     public delegate void ResultsReadyHandler(object sender, VisualizationEventArgs e);
 
@@ -30,15 +34,16 @@ namespace Dynamo
     {
         #region private members
 
-        private string _alternateContextName = "Host";
-        private bool _drawToAlternateContext = true;
+        private string alternateContextName = "Host";
+        private bool drawToAlternateContext = true;
         //private Octree.OctreeSearch.Octree octree;
         private bool updatingPaused = false;
-        private DynamoController _controller;
-        private List<RenderPackage> _currentTaggedPackages = new List<RenderPackage>();
-        private bool _alternateDrawingContextAvailable;
-        private long _taskId = -1;
-        private List<long> _taskList = new List<long>();
+        private readonly DynamoController controller;
+        private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
+        private bool alternateDrawingContextAvailable;
+        private long taskId = -1;
+        private List<long> taskList = new List<long>();
+        private readonly RenderManager renderManager;
 
         #endregion
 
@@ -68,10 +73,10 @@ namespace Dynamo
         /// </summary>
         public bool AlternateDrawingContextAvailable
         {
-            get { return _alternateDrawingContextAvailable; }
+            get { return alternateDrawingContextAvailable; }
             set
             {
-                _alternateDrawingContextAvailable = value;
+                alternateDrawingContextAvailable = value;
                 RaisePropertyChanged("AlternateDrawingContextAvailable");
             }
         }
@@ -81,7 +86,7 @@ namespace Dynamo
         /// </summary>
         public bool DrawToAlternateContext
         {
-            get { return _drawToAlternateContext; }
+            get { return drawToAlternateContext; }
             set
             {
                 if (value == false)
@@ -90,9 +95,9 @@ namespace Dynamo
                     //context and we would like to stop doing so, we need 
                     //to trigger an event requesting alternate contexts
                     //to drop their visualizations
-                    if (_drawToAlternateContext)
+                    if (drawToAlternateContext)
                     {
-                        _drawToAlternateContext = value;
+                        drawToAlternateContext = value;
                         OnRequestAlternateContextClear(this, EventArgs.Empty);
                     }
                 }
@@ -100,9 +105,9 @@ namespace Dynamo
                 {
                     //we would like to reenable drawing to an alternate context.
                     //trigger the standard visualization complete event
-                    if (!_drawToAlternateContext)
+                    if (!drawToAlternateContext)
                     {
-                        _drawToAlternateContext = value;
+                        drawToAlternateContext = value;
                         QueueRenderTask();
                     }
                 }
@@ -115,17 +120,14 @@ namespace Dynamo
         /// </summary>
         public string AlternateContextName
         {
-            get { return _alternateContextName; }
-            set { _alternateContextName = value; }
+            get { return alternateContextName; }
+            set { alternateContextName = value; }
         }
 
-        //public Octree.OctreeSearch.Octree Octree
-        //{
-        //    get { return octree; }
-        //    set { octree = value; }
-        //}
-
         public int MaxGridLines { get; set; }
+
+
+
 
         public Object CurrentTaskIdMutex = new object();
         public long CurrentTaskId
@@ -134,7 +136,7 @@ namespace Dynamo
             {
                 lock (CurrentTaskIdMutex)
                 {
-                    return _taskId;
+                    return taskId;
                 }
             }
 
@@ -142,26 +144,27 @@ namespace Dynamo
             {
                 lock (CurrentTaskIdMutex)
                 {
-                    _taskId = value;
+                    taskId = value;
                 }
             }
         }
 
         public Object TaskListMutex = new object();
+        //NOTE: LC: This isn't thread safe
         public List<long> TaskList
         {
             get
             {
                 lock (TaskListMutex)
                 {
-                    return _taskList;
+                    return taskList;
                 }
             }
             set
             {
                 lock (TaskListMutex)
                 {
-                    _taskList = value;
+                    taskList = value;
                 }
             }
         }
@@ -221,19 +224,20 @@ namespace Dynamo
         {
             MaxGridLines = 12;
 
-            _controller = dynSettings.Controller;
+            controller = dynSettings.Controller;
+            renderManager = new RenderManager(controller);
             //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
 
-            _controller.DynamoModel.WorkspaceClearing += Pause;
-            _controller.DynamoModel.WorkspaceCleared += UnPauseAndUpdate;
+            controller.DynamoModel.WorkspaceClearing += Pause;
+            controller.DynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
-            _controller.DynamoModel.NodeAdded += NodeAdded;
-            _controller.DynamoModel.NodeDeleted += NodeDeleted;
+            controller.DynamoModel.NodeAdded += NodeAdded;
+            controller.DynamoModel.NodeDeleted += NodeDeleted;
 
-            _controller.DynamoModel.DeletionStarted += Pause;
-            _controller.DynamoModel.DeletionComplete += UnPauseAndUpdate;
+            controller.DynamoModel.DeletionStarted += Pause;
+            controller.DynamoModel.DeletionComplete += UnPauseAndUpdate;
 
-            _controller.DynamoModel.CleaningUp += Clear;
+            controller.DynamoModel.CleaningUp += Clear;
 
             UnPause(this, EventArgs.Empty);
         }
@@ -274,10 +278,14 @@ namespace Dynamo
 
             var packages = new List<RenderPackage>();
 
+            //This also isn't thread safe
             foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
             {
                 lock (node.RenderPackagesMutex)
                 {
+                    //Note(Luke): this seems really inefficent, it's doing an O(n) search for a tag
+                    //This is also a target for memory optimisation
+
                     packages
                         .AddRange(node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
                         .Cast<RenderPackage>());
@@ -288,18 +296,18 @@ namespace Dynamo
             {
                 //clear any labels that might have been drawn on this
                 //package already and add the one we want
-                if (_currentTaggedPackages.Any())
+                if (currentTaggedPackages.Any())
                 {
-                    _currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
-                    _currentTaggedPackages.Clear();
+                    currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
+                    currentTaggedPackages.Clear();
                 }
 
                 packages.ToList().ForEach(x => x.DisplayLabels = true);
-                _currentTaggedPackages.AddRange(packages);
+                currentTaggedPackages.AddRange(packages);
 
                 var allPackages = new List<RenderPackage>();
 
-                foreach (var node in _controller.DynamoModel.Nodes)
+                foreach (var node in controller.DynamoModel.Nodes)
                 {
                     lock (node.RenderPackagesMutex)
                     {
@@ -312,6 +320,7 @@ namespace Dynamo
                             allPackages, string.Empty, CurrentTaskId));
             }
         }
+
 
         /// <summary>
         /// Aggregates all upstream geometry for the given node then sends
@@ -330,7 +339,8 @@ namespace Dynamo
             if (tag.Node == null)
             {
                 //send back everything
-                foreach (var modelNode in _controller.DynamoModel.Nodes)
+                List<NodeModel> copyOfNodesList = controller.DynamoModel.Nodes;
+                foreach (var modelNode in copyOfNodesList)
                 {
                     lock (modelNode.RenderPackagesMutex)
                     {
@@ -363,7 +373,7 @@ namespace Dynamo
                 Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for branch {1}.", watch.Elapsed, tag.Node.GUID));
 
                 //send back renderables for the branch
-                packages = GetUpstreamPackages(tag.Node.Inputs).ToList();
+                packages = GetUpstreamPackages(tag.Node.Inputs, 0).ToList();
                 if (packages.Any())
                     OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID.ToString(),tag.TaskId));
             }
@@ -383,7 +393,9 @@ namespace Dynamo
             if (!TaskList.Any(id => id > taskId)) return;
 
             Debug.WriteLine("RENDER : Latest render task id > {0}, re-rendering...", taskId);
-            Render(null,false);
+            //renderManager.RequestRenderAsync(new RenderTask());
+            
+            //renderManager.Render(null,false);
         }
 
         #endregion
@@ -466,7 +478,8 @@ namespace Dynamo
                 e.PropertyName == "IsUpstreamVisible" ||
                 e.PropertyName == "DisplayLabels")
             {
-                Render();
+                renderManager.RequestRenderAsync(new RenderTask());
+                //renderManager.Render();
             }
         }
 
@@ -511,22 +524,33 @@ namespace Dynamo
 
         private void RegisterEventListeners()
         {
-            _controller.EvaluationCompleted += Update;
-            _controller.RequestsRedraw += Update;
-            _controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            controller.EvaluationCompleted += Update;
+            controller.RequestsRedraw += Update;
+            controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
             dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
+
+            renderManager.RenderComplete += RenderManagerOnRenderComplete;
+
+
+        }
+
+        private void RenderManagerOnRenderComplete(object sender, RenderCompletionEventArgs renderCompletionEventArgs)
+        {
+            OnRenderComplete(this, renderCompletionEventArgs);
         }
 
         private void UnregisterEventListeners()
         {
-            _controller.EvaluationCompleted -= Update;
-            _controller.RequestsRedraw -= Update;
-            _controller.DynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
+            controller.EvaluationCompleted -= Update;
+            controller.RequestsRedraw -= Update;
+            controller.DynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
             dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
+
+            renderManager.RenderComplete -= RenderManagerOnRenderComplete;
         }
 
         /// <summary>
@@ -536,7 +560,8 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
-            Render();
+            renderManager.RequestRenderAsync(new RenderTask());
+            //renderManager.Render();
         }
 
         private void Clear(object sender, EventArgs e)
@@ -558,97 +583,22 @@ namespace Dynamo
             Debug.WriteLine("RENDER : Current task id = {0}", CurrentTaskId);
             TaskList.Add(CurrentTaskId);
             OnRenderComplete(this, new RenderCompletionEventArgs(CurrentTaskId));
-        }
+        } 
 
-        /// <summary>
-        /// Finds all nodes marked as upated in the graph and calls their,
-        /// update methods in paralell.
-        /// </summary>
-        private void Render(IEnumerable<NodeModel> toUpdate = null, bool incrementId = true)
-        {
-            if (_controller == null)
-                return;
-
-            var worker = new BackgroundWorker();
-
-            worker.DoWork += (n,i) => RenderThread(toUpdate, incrementId);
-
-            if (DynamoController.IsTestMode)
-                RenderThread(toUpdate, incrementId);
-            else
-                worker.RunWorkerAsync();   
-        }
-
-        private void RenderThread(IEnumerable<NodeModel> nodes, bool incrementId)
-        {
-            try
-            {
-                var sw = new Stopwatch();
-                sw.Start();
-
-                //If the the event arguments contains a list of nodes,
-                //then update those nodes, otherwise process any nodes
-                //that are marked for updating.
-
-                var toUpdate = nodes ??
-                               _controller.DynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
-
-                var nodeModels = toUpdate as IList<NodeModel> ?? toUpdate.ToList();
-                if (!nodeModels.Any())
-                    return;
-
-                nodeModels.ToList().ForEach(x => x.UpdateRenderPackage());
-
-                //Setup the octree. An optimization would defer this operation until
-                //a short while after update operations are complete to avoid
-                //to many rebuilds of this index while building dynamically.
-                //if(!DynamoController.IsTestMode)
-                //    SetupOctree(nodeModels);
-
-                sw.Stop();
-                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating render packages.", sw.Elapsed));
-
-                //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
-                QueueRenderTask(incrementId);
-
-            }
-            catch (Exception ex)
-            {
-                dynSettings.DynamoLogger.Log(ex);
-            }
-        }
-
-        /// <summary>
-        /// Setup a spatial index for triangle vertex locations to 
-        /// be used in selection operations.
-        /// </summary>
-        /// <param name="toUpdate"></param>
-        //private void SetupOctree(IEnumerable<NodeModel> toUpdate)
-        //{
-        //    octree.Clear();
-        //    foreach (var node in toUpdate)
-        //    {
-        //        var packages = node.RenderPackages;
-        //        foreach (var p in packages)
-        //        {
-        //            for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
-        //            {
-        //                var a = p.TriangleVertices[i];
-        //                var b = p.TriangleVertices[i + 1];
-        //                var c = p.TriangleVertices[i + 2];
-        //                octree.AddNode(a, b, c, node.GUID.ToString());
-        //            }
-        //        }
-        //    }
-        //}
-
+        
         /// <summary>
         /// Gathers the Ids of the upstream drawable nodes.
         /// </summary>
         /// <param name="inputs">A dictionary describing the inputs on the node.</param>
         /// <returns>A collection of strings.</returns>
-        private IEnumerable<IRenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs)
+        private IEnumerable<IRenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs, 
+            int recursionLevelCount)
         {
+#if DEBUG
+            const int MAX_RECURSION = 200;
+            Validity.Assert(recursionLevelCount < MAX_RECURSION, "Stack Overflow protection trap");
+#endif
+
             var packages = new List<IRenderPackage>();
 
             foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
@@ -670,56 +620,12 @@ namespace Dynamo
                 }
 
                 if (node.IsUpstreamVisible)
-                    packages.AddRange(GetUpstreamPackages(node.Inputs));
+                    packages.AddRange(GetUpstreamPackages(node.Inputs, recursionLevelCount + 1));
             }
 
             return packages;
         }
-
-        /// <summary>
-        /// Log visualization update timing and geometry data.
-        /// </summary>
-        /// <param name="rd">The aggregated render description for the model.</param>
-        /// <param name="ellapsedTime">The ellapsed time of visualization as a string.</param>
-        //protected void LogVisualizationUpdateData(RenderDescription rd, string ellapsedTime)
-        //{
-        //    var renderDict = new Dictionary<string, object>();
-        //    renderDict["points"] = rd.Points.Count;
-        //    renderDict["line_segments"] = rd.Lines.Count / 2;
-        //    renderDict["mesh_facets"] = rd.Meshes.Any()
-        //                                    ? rd.Meshes.Select(x => x.TriangleIndices.Count / 3).Aggregate((a, b) => a + b)
-        //                                    : 0;
-        //    renderDict["time"] = ellapsedTime;
-        //    renderDict["manager_type"] = this.GetType().ToString();
-
-        //    var renderData = JsonConvert.SerializeObject(renderDict);
-
-        //    InstrumentationLogger.LogInfo("Perf-Latency-RenderGeometryGeneration", renderData);
-
-        //    //Debug.WriteLine(renderData);
-        //}
-
-        /// <summary>
-        /// Lookup a node from a location selected on geometry in the scene.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        //public void LookupSelectedElement(double x, double y, double z)
-        //{
-        //    var id = octree.GetNode(x, y, z);
-
-        //    if (id == null)
-        //        return;
-
-        //    var node = _controller.DynamoModel.Nodes.FirstOrDefault(n => n.GUID.ToString() == id.ToString());
-        //    if (node != null && !DynamoSelection.Instance.Selection.Contains(node))
-        //    {
-        //        DynamoSelection.Instance.ClearSelection();
-        //        DynamoSelection.Instance.Selection.Add(node);
-        //    }
-        //}
-
+        
         #endregion
 
         #region ICleanup interface
@@ -751,7 +657,7 @@ namespace Dynamo
         {
             Packages = description;
             Id = viewId;
-            TaskId = taskId;
+            TaskId = taskId;    
         }
     }
 
@@ -760,6 +666,16 @@ namespace Dynamo
         public long TaskId { get; set; }
 
         public RenderCompletionEventArgs(long taskId)
+        {
+            TaskId = taskId;
+        }
+    }
+
+    public class RenderFailedEventArgs : EventArgs
+    {
+        public long TaskId { get; set; }
+
+        public RenderFailedEventArgs(long taskId)
         {
             TaskId = taskId;
         }

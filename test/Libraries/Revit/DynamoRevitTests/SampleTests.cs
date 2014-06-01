@@ -8,6 +8,8 @@ using NUnit.Framework;
 using DSCoreNodesUI;
 using DSCore.File;
 using Revit.Elements;
+using RevitTestFramework;
+
 namespace Dynamo.Tests
 {
     [TestFixture]
