@@ -166,6 +166,7 @@ namespace Dynamo
                 if (!nodeModels.Any())
                     return;
 
+                //TODO(Luke): Parrallel for once we're stable
                 nodeModels.ToList().ForEach(RenderSpecificNodeSync);
 
                 sw.Stop();
