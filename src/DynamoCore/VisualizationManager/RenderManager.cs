@@ -120,6 +120,8 @@ namespace Dynamo
                 }
                 else
                 {
+                    //TODO(Luke): Fix this with a proper messaging loop rather than
+                    //a polling model
                     Thread.Sleep(10);
                 }
 
