@@ -18,7 +18,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Provide helper to synthesize Dynamo graph 
 - [x] Implement layout algorithm for synthesized graph
 - [x] Implement rendering for synthesized graph
-- [ ] Add support for Point, Line primitive types
+- [ ] Add support for Point, Line, LineStrip primitive types
 - [ ] Implement saving of tessellated data to bin file
 - [ ] Implement loading of tessellated data from file
 - [ ] Design structure to keep node-geometry data
@@ -27,6 +27,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Enable slider to work with C++ Visualizer
 
 ##### Miscellaneous Tasks #####
+- [ ] Merge multiple RenderPackage into one vertex buffer
 - [ ] Fix: Dynamorph relaunch problem
 - [ ] Fix: closing Dynamo does not close Dynamorph
 - [ ] Move shader source to external files
