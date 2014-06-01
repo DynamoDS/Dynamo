@@ -393,7 +393,7 @@ namespace Dynamo
             if (!TaskList.Any(id => id > taskId)) return;
 
             Debug.WriteLine("RENDER : Latest render task id > {0}, re-rendering...", taskId);
-            renderManager.RequestRenderAsync(new RenderTask());
+            //renderManager.RequestRenderAsync(new RenderTask());
             
             //renderManager.Render(null,false);
         }
