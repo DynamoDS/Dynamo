@@ -33,6 +33,9 @@
     <ClInclude Include="OpenGL Files\OpenInterfaces.h">
       <Filter>OpenGL Files</Filter>
     </ClInclude>
+    <ClInclude Include="NodeGeometries.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="OpenGL Files\Camera.cpp">
       <Filter>OpenGL Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeGeometries.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
