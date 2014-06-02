@@ -17,6 +17,11 @@ namespace Dynamorph
             dimension = new System.Windows.Size(width, height);
         }
 
+        internal Visualizer CurrentVisualizer
+        {
+            get { return Visualizer.CurrentInstance(); }
+        }
+
         // internal VisualizerHwndHost()
         // {
         //     this.MessageHook += OnHwndHostMessage;

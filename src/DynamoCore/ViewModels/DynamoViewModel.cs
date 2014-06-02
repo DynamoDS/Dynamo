@@ -1711,8 +1711,9 @@ namespace Dynamo.ViewModels
 
                 lock (node.RenderPackagesMutex)
                 {
-                    var package = node.RenderPackages[0];
-                    packages.Add(node.GUID, package);
+                    var p = node.RenderPackages[0] as Dynamo.DSEngine.RenderPackage;
+                    if (p.IsNotEmpty())
+                        packages.Add(node.GUID, p);
                 }
             }
 

@@ -7,6 +7,8 @@
 
 using namespace System;
 using namespace Dynamorph;
+using namespace System::Collections::Generic;
+using namespace Autodesk::DesignScript::Interfaces;
 
 // ================================================================================
 // IGraphicsContext
@@ -48,6 +50,11 @@ void Visualizer::Destroy(void)
     }
 }
 
+Visualizer^ Visualizer::CurrentInstance(void)
+{
+    return Visualizer::mVisualizer;
+}
+
 LRESULT Visualizer::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (Visualizer::mVisualizer == nullptr)
@@ -59,6 +66,15 @@ LRESULT Visualizer::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 HWND Visualizer::GetWindowHandle(void)
 {
     return this->mhWndVisualizer;
+}
+
+void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometries)
+{
+    for each(KeyValuePair<Guid, IRenderPackage^> geometry in geometries)
+    {
+        auto id = geometry.Key;
+        auto rp = geometry.Value;
+    }
 }
 
 Visualizer::Visualizer() : 

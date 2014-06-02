@@ -10,6 +10,7 @@ namespace Dynamorph
     class IGraphicsContext;
     class IShaderProgram;
     class IVertexBuffer;
+    class GeometryData;
 
     public ref class Visualizer
     {
@@ -18,10 +19,13 @@ namespace Dynamorph
         // Static class methods
         static System::IntPtr Create(System::IntPtr hwndParent, int width, int height);
         static void Destroy(void);
+        static Visualizer^ CurrentInstance(void);
         static LRESULT _stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Public class methods.
         HWND GetWindowHandle(void);
+        void UpdateNodeGeometries(System::Collections::Generic::Dictionary<System::Guid,
+            Autodesk::DesignScript::Interfaces::IRenderPackage^>^ geometries);
 
     private:
 
