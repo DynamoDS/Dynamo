@@ -906,13 +906,11 @@ namespace Dynamo.ViewModels
 
             // Sugiyama algorithm steps
             graph.RemoveCycles();
-            graph.RemoveTransitiveEdges();
             graph.AssignLayers();
             graph.OrderNodes();
 
-            graph.NormalizeGraphPosition();
-
             // Assign coordinates to node models
+            graph.NormalizeGraphPosition();
             foreach (var x in _model.Nodes)
             {
                 var id = x.GUID;

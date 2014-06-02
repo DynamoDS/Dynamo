@@ -8,7 +8,7 @@ namespace GraphLayout
 {
     public class Graph
     {
-        public int MaxWidth = 5;
+        public int MaxLayerHeight = 5;
         public double HorizontalNodeDistance = 100;
         public double VerticalNodeDistance = 30;
 
@@ -47,21 +47,71 @@ namespace GraphLayout
             return null;
         }
 
+        public void RemoveTransitiveEdges()
+        {
+            // Check for transitive edges using an adjacency matrix.
+            // For the matrix cells, 1 implies that there exists a path between
+            // nodes A and B, or -1 otherwise.
+
+            int[,] conn = new int[Nodes.Count + 1, Nodes.Count + 1];
+            int xi, yi, zi;
+
+            xi = 0;
+            foreach (var x in Nodes)
+            {
+                xi++;
+
+                yi = 0;
+                foreach (var y in Nodes)
+                {
+                    yi++;
+                    if (x == y) continue;
+
+                    zi = 0;
+                    foreach (var z in Nodes)
+                    {
+                        zi++;
+                        if (x == z) continue;
+                        if (y == z) continue;
+
+                        if (conn[xi, yi] == 0)
+                            conn[xi, yi] = FindEdge(x, y) != null ? 1 : -1;
+
+                        if (conn[yi, zi] == 0)
+                            conn[yi, zi] = FindEdge(y, z) != null ? 1 : -1;
+
+                        Edge e = FindEdge(x, z);
+                        if (conn[xi, zi] == 0)
+                            conn[xi, zi] = e != null ? 1 : -1;
+
+                        if (conn[xi, yi] + conn[yi, zi] + conn[xi, zi] == 3)
+                            e.Active = false;
+
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Sugiyama algorithm methods
 
+        /// <summary>
+        /// Sugiyama step 1: Cycle Removal
+        /// This method implements an enhanced Greedy Cycle Removal heuristic
+        /// proposed by Eades et al, 1993.
+        /// http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.47.7745
+        /// </summary>
         public void RemoveCycles()
         {
-            // This method implements the Enhanced Greedy Cycle Removal heuristic.
-
             HashSet<Node> RemainingNodes = new HashSet<Node>(Nodes);
             HashSet<Edge> AcyclicEdges = new HashSet<Edge>();
 
             while (RemainingNodes.Count > 0)
             {
                 // Remove all sink nodes
-                HashSet<Node> selected = new HashSet<Node>(RemainingNodes.Where(n => n.RightEdges.Count(x => x.Active) == 0));
+                HashSet<Node> selected = new HashSet<Node>(RemainingNodes.Where(
+                    n => n.RightEdges.Count(x => x.Active) == 0));
                 foreach (Node n in selected)
                 {
                     foreach (Edge e in n.LeftEdges.Where(x => x.Active))
@@ -75,7 +125,8 @@ namespace GraphLayout
                 RemainingNodes.ExceptWith(selected);
 
                 // Remove all source nodes
-                selected = new HashSet<Node>(RemainingNodes.Where(n => n.LeftEdges.Count(x => x.Active) == 0));
+                selected = new HashSet<Node>(RemainingNodes.Where(
+                    n => n.LeftEdges.Count(x => x.Active) == 0));
                 foreach (Node n in selected)
                 {
                     foreach (Edge e in n.RightEdges.Where(x => x.Active))
@@ -88,11 +139,13 @@ namespace GraphLayout
                 // Remove all isolated nodes
                 RemainingNodes.ExceptWith(selected);
 
-                // Remove one node with the most outgoing edges
+                // Remove one node with the largest number of outgoing edges
                 if (RemainingNodes.Count > 0)
                 {
-                    int max = RemainingNodes.Max(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active));
-                    Node n = RemainingNodes.First(x => x.RightEdges.Count(y => y.Active) - x.LeftEdges.Count(y => y.Active) == max);
+                    int max = RemainingNodes.Max(x => x.RightEdges.Count(y => y.Active)
+                        - x.LeftEdges.Count(y => y.Active));
+                    Node n = RemainingNodes.First(x => x.RightEdges.Count(y => y.Active)
+                        - x.LeftEdges.Count(y => y.Active) == max);
 
                     AcyclicEdges.UnionWith(n.RightEdges.Where(x => x.Active));
 
@@ -111,54 +164,18 @@ namespace GraphLayout
             foreach (Edge e in Edges)
                 e.Active = true;
         }
-
-        public void RemoveTransitiveEdges()
-        {
-            // This method implements a simple transitive reduction using adjacency matrix.
-            
-            int N = Nodes.Count;
-            int[,] conn = new int[N+1, N+1];
-
-            int xi = 0, yi, zi;
-            foreach (var x in Nodes)
-            {
-                xi++;
-                yi = 0;
-                foreach (var y in Nodes)
-                {
-                    yi++;
-                    zi = 0;
-                    if (x == y) continue;
-                    foreach (var z in Nodes)
-                    {
-                        zi++;
-                        if (x == z) continue;
-                        if (y == z) continue;
-
-                        if (conn[xi, yi] == 0)
-                            conn[xi, yi] = FindEdge(x, y) != null ? 1 : -1;
-
-                        if (conn[yi, zi] == 0)
-                            conn[yi, zi] = FindEdge(y, z) != null ? 1 : -1;
-
-                        Edge e = FindEdge(x, z);
-                        if (conn[xi, zi] == 0)
-                            conn[xi, zi] = e != null ? 1 : -1;
-
-                        if (conn[xi, yi] + conn[yi, zi] + conn[xi, zi] == 3)
-                        {
-                            e.Active = false;
-                        }
-                    }
-                }
-            }
-        }
-
+        
+        /// <summary>
+        /// Sugiyama step 2: Layering
+        /// This method implements Coffman-Graham layering algorithm.
+        /// </summary>
         public void AssignLayers()
         {
-            // This method implements Coffman-Graham layering algorithm.
-            
-            List<Node> OrderedNodes = Nodes.OrderByDescending(x => x.LeftEdges.Count(e => e.Active)).ToList();
+            RemoveTransitiveEdges();
+
+            // Label the nodes based on the number of incoming edges.
+            List<Node> OrderedNodes = Nodes.OrderByDescending(
+                x => x.LeftEdges.Count(e => e.Active)).ToList();
             HashSet<Node> LayeredNodes = new HashSet<Node>();
 
             Layers.Add(new List<Node>());
@@ -175,13 +192,16 @@ namespace GraphLayout
                 List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
                     x.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer >= 0)).ToList();
 
-                Node n = selected.FirstOrDefault(x => x.RightEdges.All(e => e.EndNode.Layer < currentLayer) && x.LeftEdges.Count(e => e.Active) > 0);
+                Node n = selected.FirstOrDefault(x =>
+                    x.RightEdges.All(e => e.EndNode.Layer < currentLayer) &&
+                    x.LeftEdges.Count(e => e.Active) > 0);
                 if (n == null) n = selected.First();
 
-                // Add new layer when needed
-                if ((Layers[currentLayer].Count >= MaxWidth) || !n.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer < currentLayer))
+                // Add a new layer when needed
+                if ((Layers[currentLayer].Count >= MaxLayerHeight) ||
+                    !n.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer < currentLayer))
                 {
-                    // Horizontal node alignment for the last layer
+                    // Horizontal node alignment for the previous layer
                     if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1][0].X;
                     foreach (Node x in Layers[currentLayer])
                         x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
@@ -200,14 +220,14 @@ namespace GraphLayout
                     layerWidth = n.Width;
             }
 
-            // Horizontal node alignment for the last layer
+            // Horizontal node alignment for the last (leftmost) layer
             if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1][0].X;
             foreach (Node x in Layers[currentLayer])
                 x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
 
             Nodes = new HashSet<Node>(OrderedNodes);
 
-            // Temporary vertical position for further processing
+            // Assign temporary vertical position for further processing
             foreach (List<Node> layer in Layers)
             {
                 int y = 0;
@@ -219,10 +239,13 @@ namespace GraphLayout
             }
         }
 
+        /// <summary>
+        /// Sugiyama step 3: Node Ordering
+        /// This method uses Median heuristic to determine the vertical node
+        /// order for each layer.
+        /// </summary>
         public void OrderNodes()
         {
-            // This method uses Median heuristic to determine the vertical node order on each layer.
-
             List<Node> previous = null;
             foreach (List<Node> layer in Layers)
             {
@@ -230,6 +253,8 @@ namespace GraphLayout
                 {
                     foreach (Node n in layer)
                     {
+                        // Get the temporary vertical coordinate of the median
+                        // outgoing edge
                         List<Edge> neighborEdges = n.RightEdges.Where(e => e.Active)
                             .OrderBy(x => x.EndY).ToList();
                         if (neighborEdges.Count > 0)
@@ -237,6 +262,7 @@ namespace GraphLayout
                     }
                 }
 
+                // Sort the nodes on the layer by its temporary coordinates
                 previous = layer.OrderBy(x => x.Y).ToList();
                 Node top = null;
                 foreach (Node n in previous)
@@ -253,11 +279,12 @@ namespace GraphLayout
                         n.Y = top.Y + top.Height + VerticalNodeDistance;
                     }
 
-                    int b = 2;
+                    // Assign new coordinates to this node's incoming edges
+                    int b = 1;
                     foreach (Edge e in n.LeftEdges)
                     {
                         e.EndY = n.Y + b;
-                        b += 2;
+                        b++;
                     }
 
                     top = n;
@@ -268,13 +295,13 @@ namespace GraphLayout
         #endregion
 
         /// <summary>
-        /// To align the top-left corner of the graph at (x=0, y=0).
+        /// To align the top-left corner of the graph at coordinates (0,0).
         /// </summary>
         public void NormalizeGraphPosition()
         {
-            double offsetX = -Layers.Last().First().X;
+            double offset = Layers.Last().First().X;
             foreach (Node n in Nodes)
-                n.X += offsetX;
+                n.X -= offset;
         }
 
     }
