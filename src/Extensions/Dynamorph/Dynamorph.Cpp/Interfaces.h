@@ -7,6 +7,8 @@ namespace Dynamorph
     class GeometryData
     {
     public:
+        virtual ~GeometryData(void) { }
+
         void PushVertex(float x, float y, float z)
         {
             mCoordinates.push_back(x);
@@ -161,9 +163,14 @@ namespace Dynamorph
     class BoundingBox
     {
     public:
-        BoundingBox()
+        BoundingBox() : mInitialized(false)
         {
             memset(&mBox[0], 0, sizeof(mBox));
+        }
+
+        void Invalidate(void)
+        {
+            this->mInitialized = false;
         }
 
         void Reset(float x, float y, float z)
@@ -171,10 +178,24 @@ namespace Dynamorph
             mBox[0] = mBox[3] = x;
             mBox[1] = mBox[4] = y;
             mBox[2] = mBox[5] = z;
+            this->mInitialized = true;
+        }
+
+        void EvaluateBox(const BoundingBox& other)
+        {
+            float min[3], max[3];
+            other.Get(&min[0], &max[0]);
+            EvaluatePoint(min[0], min[1], min[2]);
+            EvaluatePoint(max[0], max[1], max[2]);
         }
 
         void EvaluatePoint(float x, float y, float z)
         {
+            if (this->mInitialized == false) {
+                Reset(x, y, z);
+                return; 
+            }
+
             mBox[0] = ((x < mBox[0]) ? x : mBox[0]);
             mBox[1] = ((y < mBox[1]) ? y : mBox[1]);
             mBox[2] = ((z < mBox[2]) ? z : mBox[2]);
@@ -221,6 +242,7 @@ namespace Dynamorph
 
     private:
         float mBox[6];
+        bool mInitialized;
     };
 
     class ICamera
@@ -297,6 +319,12 @@ namespace Dynamorph
 
     class IVertexBuffer
     {
+    public:
+        enum class PrimitiveType
+        {
+            None, Point, LineStrip, Triangle
+        };
+
     public:
         virtual ~IVertexBuffer()
         {
