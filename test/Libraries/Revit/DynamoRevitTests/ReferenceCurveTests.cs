@@ -5,6 +5,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitTestFramework;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 
 namespace Dynamo.Tests
