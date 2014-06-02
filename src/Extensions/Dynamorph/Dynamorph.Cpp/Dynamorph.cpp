@@ -14,6 +14,56 @@ using namespace System::Collections::Generic;
 using namespace Autodesk::DesignScript::Interfaces;
 
 // ================================================================================
+// Static helper methods
+// ================================================================================
+
+static bool GetPointGeometries(IRenderPackage^ rp, PointGeometryData& data)
+{
+    if (rp == nullptr || (rp->PointVertices->Count <= 0))
+        return false;
+
+    auto pv = rp->PointVertices;
+    auto count = rp->PointVertices->Count;
+
+    for (int p = 0; p < count; p = p + 3)
+    {
+        data.PushVertex((float) pv[p + 0], (float) pv[p + 1], (float) pv[p + 2]);
+        data.PushColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    return true;
+}
+
+static bool GetLineStripGeometries(IRenderPackage^ rp, LineStripGeometryData& data)
+{
+    if (rp == nullptr || (rp->LineStripVertices->Count <= 0))
+        return false;
+
+    auto lsv = rp->LineStripVertices;
+    auto lsc = rp->LineStripVertexColors;
+    auto count = rp->LineStripVertices->Count;
+
+    float factor = 1.0f / 255.0f;
+    for (int p = 0, c = 0; p < count; p = p + 3, c = c + 4)
+    {
+        data.PushVertex((float) lsv[p + 0], (float) lsv[p + 1], (float) lsv[p + 2]);
+
+        data.PushColor(
+            ((int)lsc[c + 0]) * factor,
+            ((int)lsc[c + 1]) * factor,
+            ((int)lsc[c + 2]) * factor,
+            ((int)lsc[c + 3]) * factor);
+    }
+
+    auto lsvc = rp->LineStripVertexCounts;
+    count = rp->LineStripVertexCounts->Count;
+    for (int index = 0; index < count; ++index)
+        data.PushSegmentVertexCount(lsvc[index]);
+
+    return true;
+}
+
+// ================================================================================
 // IGraphicsContext
 // ================================================================================
 
@@ -71,23 +121,6 @@ HWND Visualizer::GetWindowHandle(void)
     return this->mhWndVisualizer;
 }
 
-bool GetPointGeometries(IRenderPackage^ rp, PointGeometryData& data)
-{
-    if (rp == nullptr || (rp->PointVertices->Count <= 0))
-        return false;
-
-    auto pv = rp->PointVertices;
-    auto count = rp->PointVertices->Count;
-
-    for (int p = 0; p < count; p = p + 3)
-    {
-        data.PushVertex((float) pv[p + 0], (float) pv[p + 1], (float) pv[p + 2]);
-        data.PushColor(1.0f, 1.0f, 1.0f, 1.0f);
-    }
-
-    return true;
-}
-
 void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometries)
 {
     BoundingBox outerBoundingBox;
@@ -117,6 +150,14 @@ void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometr
         {
             auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(pointData);
+            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+        }
+
+        LineStripGeometryData lineData(0);
+        if (GetLineStripGeometries(pRenderPackage, lineData))
+        {
+            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
+            pVertexBuffer->LoadData(lineData);
             pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
         }
 

@@ -66,6 +66,24 @@ namespace Dynamorph
             GeometryData(lineCount + 1)
         {
         }
+
+        void PushSegmentVertexCount(int segmentVertexCount)
+        {
+            mSegmentVertexCount.push_back(segmentVertexCount);
+        }
+
+        int GetSegmentCount(void) const
+        {
+            return ((int) mSegmentVertexCount.size());
+        }
+
+        const int* GetSegmentVertexCounts(void) const
+        {
+            return &mSegmentVertexCount[0];
+        }
+
+    private:
+        std::vector<int> mSegmentVertexCount;
     };
 
     class TriangleGeometryData : public GeometryData

@@ -257,6 +257,8 @@ namespace Dynamorph { namespace OpenGL {
         void LoadDataInternal(const std::vector<VertexData>& vertices);
 
         int mVertexCount;
+        std::vector<int> mSegmentVertexCount;
+
         GLuint mVertexArrayId;
         GLuint mVertexBufferId;
         BoundingBox mBoundingBox;

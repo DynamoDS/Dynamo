@@ -18,15 +18,15 @@ Dynamorph, morph the heck out of your design.
 - [x] Provide helper to synthesize Dynamo graph 
 - [x] Implement layout algorithm for synthesized graph
 - [x] Implement rendering for synthesized graph
-- [ ] Add support for Point, Line, LineStrip primitive types
-- [ ] Implement saving of tessellated data to bin file
-- [ ] Implement loading of tessellated data from file
+- [x] Add support for Point, Line, LineStrip primitive types
 - [ ] Design structure to keep node-geometry data
 - [ ] Add shader uniform to control per-vertex alpha
 - [ ] Add slider to work with synthesized graph
 - [ ] Enable slider to work with C++ Visualizer
+- [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
+- [ ] Fix: Line segment with 0 vertex should be filtered
 - [ ] Fix: Warning surrounding deprecated GLM functions
 - [ ] Merge multiple RenderPackage into one vertex buffer
 - [ ] Fix: Dynamorph relaunch problem
@@ -42,8 +42,13 @@ Dynamorph, morph the heck out of your design.
 - [ ] Implement hit testing for graph visuals
 - [ ] Fix: Wrong child node count with adjacent edges
 
+##### Obsolete Tasks #####
+- [x] Implement saving of tessellated data to bin file
+- [x] Implement loading of tessellated data from file
+
+
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
 
-#### 50 x 50 x 50 = 125000 points! :) ####
+#### Points, line-strips, triangles all supported! :) ####
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)

@@ -40,8 +40,18 @@ void VertexBuffer::Render(void) const
         GL::glDrawArrays(GL_POINTS, 0, mVertexCount);
         break;
     case Dynamorph::IVertexBuffer::PrimitiveType::LineStrip:
-        GL::glDrawArrays(GL_LINE_STRIP, 0, mVertexCount);
-        break;
+        {
+            auto vc = mSegmentVertexCount.begin();
+            for (int start = 0; vc != mSegmentVertexCount.end(); ++vc)
+            {
+                int vertexCount = *vc;
+                if (vertexCount > 0) {
+                    GL::glDrawArrays(GL_LINE_STRIP, start, vertexCount);
+                    start = start + vertexCount;
+                }
+            }
+            break;
+        }
     case Dynamorph::IVertexBuffer::PrimitiveType::Triangle:
         GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
         break;
@@ -74,6 +84,15 @@ void VertexBuffer::LoadDataCore(const GeometryData& geometries)
         data[vertex].g = pRgbaColors[1];
         data[vertex].b = pRgbaColors[2];
         data[vertex].a = pRgbaColors[3];
+    }
+
+    if (mPrimitiveType == Dynamorph::IVertexBuffer::PrimitiveType::LineStrip)
+    {
+        auto ls = dynamic_cast<const LineStripGeometryData *>(p);
+        auto segments = ls->GetSegmentCount();
+        auto svc = ls->GetSegmentVertexCounts();
+        for (int segment = 0; segment < segments; ++segment)
+            mSegmentVertexCount.push_back(svc[segment]);
     }
 
     LoadDataInternal(data);
