@@ -902,7 +902,7 @@ namespace Dynamo.ViewModels
                 graph.AddNode(x.GUID, x.Width, x.Height);
 
             foreach (ConnectorModel x in _model.Connectors)
-                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID, x.End.X, x.End.Y);
+                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID, x.End.Y);
 
             // Sugiyama algorithm steps
             graph.RemoveCycles();
@@ -912,6 +912,7 @@ namespace Dynamo.ViewModels
 
             graph.NormalizeGraphPosition();
 
+            // Assign coordinates to node models
             foreach (var x in _model.Nodes)
             {
                 var id = x.GUID;

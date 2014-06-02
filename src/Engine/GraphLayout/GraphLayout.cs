@@ -25,9 +25,9 @@ namespace GraphLayout
             Nodes.Add(node);
         }
 
-        public void AddEdge(Guid guid, Guid start, Guid end, double endX, double endY)
+        public void AddEdge(Guid guid, Guid startId, Guid endId, double endY)
         {
-            var edge = new Edge(guid, start, end, endX, endY, this);
+            var edge = new Edge(guid, startId, endId, endY, this);
             Edges.Add(edge);
         }
 
@@ -45,13 +45,6 @@ namespace GraphLayout
                 if (start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
                     return edge;
             return null;
-        }
-
-        public void NormalizeGraphPosition()
-        {
-            double offsetX = -Layers.Last().First().X;
-            foreach (Node n in Nodes)
-                n.X += offsetX;
         }
 
         #endregion
@@ -274,6 +267,16 @@ namespace GraphLayout
 
         #endregion
 
+        /// <summary>
+        /// To align the top-left corner of the graph at (x=0, y=0).
+        /// </summary>
+        public void NormalizeGraphPosition()
+        {
+            double offsetX = -Layers.Last().First().X;
+            foreach (Node n in Nodes)
+                n.X += offsetX;
+        }
+
     }
 
     public class Node
@@ -300,11 +303,6 @@ namespace GraphLayout
             Height = height;
             OwnerGraph = ownerGraph;
         }
-
-        public Node Clone()
-        {
-            return this.MemberwiseClone() as Node;
-        }
     }
 
     public class Edge
@@ -313,38 +311,26 @@ namespace GraphLayout
 
         public Guid Id;
 
-        public Guid StartId;
-        public Guid EndId;
-
         public Node StartNode;
         public Node EndNode;
 
-        public double EndX;
         public double EndY;
 
         public bool Active = true;
 
-        public Edge(Guid guid, Guid start, Guid end, double endX, double endY, Graph ownerGraph)
+        public Edge(Guid edgeId, Guid startId, Guid endId, double endY, Graph ownerGraph)
         {
-            Id = guid;
-            StartId = start;
-            EndId = end;
-            EndX = endX;
+            Id = edgeId;
             EndY = endY;
             OwnerGraph = ownerGraph;
 
-            StartNode = OwnerGraph.FindNode(StartId);
+            StartNode = OwnerGraph.FindNode(startId);
             if (StartNode != null)
                 StartNode.RightEdges.Add(this);
 
-            EndNode = OwnerGraph.FindNode(EndId);
+            EndNode = OwnerGraph.FindNode(endId);
             if (EndNode != null)
                 EndNode.LeftEdges.Add(this);
-        }
-
-        public Edge Clone()
-        {
-            return this.MemberwiseClone() as Edge;
         }
     }
 }
