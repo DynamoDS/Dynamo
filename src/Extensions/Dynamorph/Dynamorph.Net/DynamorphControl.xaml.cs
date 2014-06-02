@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autodesk.DesignScript.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,6 +50,10 @@ namespace Dynamorph
                 // The graph visual host is ready to update.
                 this.graphVisualHost.RefreshGraph(nextGraph);
             }
+        }
+
+        public void SetNodeGeometries(Dictionary<Guid, IRenderPackage> geometries)
+        {
         }
 
         #endregion
