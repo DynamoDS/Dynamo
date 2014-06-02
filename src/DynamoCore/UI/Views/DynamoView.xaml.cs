@@ -282,6 +282,10 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
+#if DYNAMORPH
+            _vm.RequestUpdateDynamorphVisual += OnRequestUpdateDynamorphVisual;
+#endif
+
             _vm.RequestClose += _vm_RequestClose;
             _vm.RequestSaveImage += _vm_RequestSaveImage;
             _vm.SidebarClosed += _vm_SidebarClosed;
@@ -300,6 +304,15 @@ namespace Dynamo.Controls
 
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
+        }
+
+        void OnRequestUpdateDynamorphVisual(object sender, UpdateDynamorphVisualEventArgs e)
+        {
+            if (this.dynamorphWindow != null)
+            {
+                var control = this.dynamorphWindow.Control;
+                control.SetNodeGeometries(e.Geometries);
+            }
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -623,6 +636,10 @@ namespace Dynamo.Controls
 
             //FUNCTION NAME PROMPT
             _vm.RequestsFunctionNamePrompt -= _vm_RequestsFunctionNamePrompt;
+
+#if DYNAMORPH
+            _vm.RequestUpdateDynamorphVisual -= OnRequestUpdateDynamorphVisual;
+#endif
 
             _vm.RequestClose -= _vm_RequestClose;
             _vm.RequestSaveImage -= _vm_RequestSaveImage;

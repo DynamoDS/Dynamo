@@ -1485,6 +1485,11 @@ namespace Dynamo.Models
                     count++;
                 } 
 
+#if DYNAMORPH
+                var p = new RenderPackage(true);
+                RenderPackages.Add(p);
+#endif
+
                 count = 0;
                 foreach (var varName in drawableIds)
                 {
@@ -1492,6 +1497,10 @@ namespace Dynamo.Models
                     if (graphItems == null)
                         continue;
 
+#if DYNAMORPH
+                    foreach (var gi in graphItems)
+                        MergeGraphicItemIntoPackage(gi, p);
+#else
                     foreach (var gItem in graphItems)
                     {
                         var package = new RenderPackage(IsSelected, DisplayLabels);
@@ -1505,6 +1514,7 @@ namespace Dynamo.Models
                         RenderPackages.Add(package);
                         count++;
                     }
+#endif
                 }
 
                 if (RenderPackages.Any())
@@ -1532,6 +1542,18 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine("PushGraphicItemIntoPackage: " + e);
+            }
+        }
+
+        private void MergeGraphicItemIntoPackage(IGraphicItem gi, IRenderPackage p)
+        {
+            try
+            {
+                var vm = dynSettings.Controller.VisualizationManager;
+                gi.Tessellate(p, -1.0, vm.MaxGridLines);
+            }
+            catch (Exception)
+            {
             }
         }
 
