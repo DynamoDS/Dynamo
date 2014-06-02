@@ -54,7 +54,8 @@ namespace Dynamorph
 
         public void SetNodeGeometries(Dictionary<Guid, IRenderPackage> geometries)
         {
-            this.visualizer.CurrentVisualizer.UpdateNodeGeometries(geometries);
+            if (visualizer != null && (visualizer.CurrentVisualizer != null))
+                this.visualizer.CurrentVisualizer.UpdateNodeGeometries(geometries);
         }
 
         #endregion

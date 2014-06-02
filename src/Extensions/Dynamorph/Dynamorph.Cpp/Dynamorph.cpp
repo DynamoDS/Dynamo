@@ -128,6 +128,8 @@ void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometr
 
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     pCamera->FitToBoundingBox(&outerBoundingBox);
+
+    ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
 }
 
 Visualizer::Visualizer() : 
