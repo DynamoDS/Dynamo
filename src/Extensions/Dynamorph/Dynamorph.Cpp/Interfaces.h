@@ -4,6 +4,77 @@
 
 namespace Dynamorph
 {
+    class GeometryData
+    {
+    public:
+        void PushVertex(float x, float y, float z)
+        {
+            mCoordinates.push_back(x);
+            mCoordinates.push_back(y);
+            mCoordinates.push_back(z);
+        }
+
+        void PushColor(float r, float g, float b, float a)
+        {
+            mRgbaColors.push_back(r);
+            mRgbaColors.push_back(g);
+            mRgbaColors.push_back(b);
+            mRgbaColors.push_back(a);
+        }
+
+        int VertexCount(void) const
+        {
+            return ((int) mCoordinates.size()) / 3;
+        }
+
+        const float* GetCoordinates(int vertex) const
+        {
+            return &mCoordinates[vertex * 3];
+        }
+
+        const float* GetRgbaColors(int vertex) const
+        {
+            return &mRgbaColors[vertex * 4];
+        }
+
+    protected:
+        GeometryData(int vertexCount)
+        {
+            mCoordinates.reserve(vertexCount * 3);
+            mRgbaColors.reserve(vertexCount * 4);
+        }
+
+        std::vector<float> mCoordinates;
+        std::vector<float> mRgbaColors;
+    };
+
+    class PointGeometryData : public GeometryData
+    {
+    public:
+        PointGeometryData(int pointCount) :
+            GeometryData(pointCount)
+        {
+        }
+    };
+
+    class LineStripGeometryData : public GeometryData
+    {
+    public:
+        LineStripGeometryData(int lineCount) : 
+            GeometryData(lineCount + 1)
+        {
+        }
+    };
+
+    class TriangleGeometryData : public GeometryData
+    {
+    public:
+        TriangleGeometryData(int triangleCount) : 
+            GeometryData(triangleCount * 3)
+        {
+        }
+    };
+
     class ITrackBall
     {
     public:
@@ -231,15 +302,9 @@ namespace Dynamorph
         {
         }
 
-        void LoadData(const std::vector<float>& positions)
+        void LoadData(const GeometryData& geometries)
         {
-            this->LoadDataCore(positions);
-        }
-
-        void LoadData(const std::vector<float>& positions,
-            const std::vector<float>& rgbaColors)
-        {
-            this->LoadDataCore(positions, rgbaColors);
+            this->LoadDataCore(geometries);
         }
 
         void GetBoundingBox(BoundingBox* pBoundingBox)
@@ -248,10 +313,7 @@ namespace Dynamorph
         }
 
     protected:
-        virtual void LoadDataCore(const std::vector<float>& positions) = 0;
-        virtual void LoadDataCore(const std::vector<float>& positions,
-            const std::vector<float>& rgbaColors) = 0;
-
+        virtual void LoadDataCore(const GeometryData& geometries) = 0;
         virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox) = 0;
     };
 

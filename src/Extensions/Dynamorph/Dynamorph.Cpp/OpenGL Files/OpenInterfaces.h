@@ -249,9 +249,7 @@ namespace Dynamorph { namespace OpenGL {
         void Render(void) const;
 
     protected:
-        virtual void LoadDataCore(const std::vector<float>& positions);
-        virtual void LoadDataCore(const std::vector<float>& positions,
-            const std::vector<float>& rgbaColors);
+        virtual void LoadDataCore(const GeometryData& geometries);
         virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox);
 
     private:

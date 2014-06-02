@@ -35,45 +35,24 @@ void VertexBuffer::Render(void) const
     GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
 }
 
-void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
-{
-    // TODO(Ben): Ensure that we only get positions in 3D coordinates.
-
-    EnsureVertexBufferCreation();
-
-    mVertexCount = ((int) std::floor(positions.size() / 3.0));
-
-    std::vector<VertexData> data(mVertexCount);
-    for (int vertex = 0; vertex < mVertexCount; ++vertex)
-    {
-        int offset = vertex * 3;
-        data[vertex].x = positions[offset + 0];
-        data[vertex].y = positions[offset + 1];
-        data[vertex].z = positions[offset + 2];
-    }
-
-    LoadDataInternal(data);
-}
-
-void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
-                                const std::vector<float>& rgbaColors)
+void VertexBuffer::LoadDataCore(const GeometryData& geometries)
 {
     EnsureVertexBufferCreation();
 
-    mVertexCount = ((int) std::floor(positions.size() / 3.0));
-
+    mVertexCount = geometries.VertexCount();
     std::vector<VertexData> data(mVertexCount);
     for (int vertex = 0; vertex < mVertexCount; ++vertex)
     {
-        int posOffset = vertex * 3;
-        int colorOffset = vertex * 4;
-        data[vertex].x = positions[posOffset + 0];
-        data[vertex].y = positions[posOffset + 1];
-        data[vertex].z = positions[posOffset + 2];
-        data[vertex].r = rgbaColors[colorOffset + 0];
-        data[vertex].g = rgbaColors[colorOffset + 1];
-        data[vertex].b = rgbaColors[colorOffset + 2];
-        data[vertex].a = rgbaColors[colorOffset + 3];
+        auto pCoordinates = geometries.GetCoordinates(vertex);
+        auto pRgbaColors = geometries.GetRgbaColors(vertex);
+
+        data[vertex].x = pCoordinates[0];
+        data[vertex].y = pCoordinates[1];
+        data[vertex].z = pCoordinates[2];
+        data[vertex].r = pRgbaColors[0];
+        data[vertex].g = pRgbaColors[1];
+        data[vertex].b = pRgbaColors[2];
+        data[vertex].a = pRgbaColors[3];
     }
 
     LoadDataInternal(data);

@@ -63,7 +63,7 @@ limitations under the License.
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
-    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
+    <DefineConstants>$(DefineConstants);USE_DSENGINE;DYNAMORPH</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

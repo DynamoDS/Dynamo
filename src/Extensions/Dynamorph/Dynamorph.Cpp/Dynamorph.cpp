@@ -145,105 +145,98 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         pCamera->Configure(&camConfig);
     }
 
-    std::vector<float> positions;
-    float cubeVertices[] = {
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
+    TriangleGeometryData triangleData(12);
 
-        -0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
+#pragma region Sample Test Data (To Be Removed)
 
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
+    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
+    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
+    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
 
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
+    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
 
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
+    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
+    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
 
-        -0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-    };
+    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
 
-    for (int index = 0; index < _countof(cubeVertices); ++index)
-        positions.push_back(cubeVertices[index]);
+    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
+    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
 
-    std::vector<float> colors;
-    float cubeColors[] = // RGBA array
-    {
-        1.0f, 0.5f, 0.75f, 1.0f,
-        1.0f, 0.5f, 0.75f, 1.0f,
-        1.0f, 0.5f, 0.75f, 1.0f,
-        1.0f, 0.5f, 0.75f, 1.0f,
-        1.0f, 0.5f, 0.75f, 1.0f,
-        1.0f, 0.5f, 0.75f, 1.0f,
+    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
+    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
 
-        0.5f, 1.0f, 0.50f, 1.0f,
-        0.5f, 1.0f, 0.50f, 1.0f,
-        0.5f, 1.0f, 0.50f, 1.0f,
-        0.5f, 1.0f, 0.50f, 1.0f,
-        0.5f, 1.0f, 0.50f, 1.0f,
-        0.5f, 1.0f, 0.50f, 1.0f,
+    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
 
-        0.0f, 0.5f, 1.00f, 1.0f,
-        0.0f, 0.5f, 1.00f, 1.0f,
-        0.0f, 0.5f, 1.00f, 1.0f,
-        0.0f, 0.5f, 1.00f, 1.0f,
-        0.0f, 0.5f, 1.00f, 1.0f,
-        0.0f, 0.5f, 1.00f, 1.0f,
+    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
 
-        1.0f, 1.0f, 0.50f, 1.0f,
-        1.0f, 1.0f, 0.50f, 1.0f,
-        1.0f, 1.0f, 0.50f, 1.0f,
-        1.0f, 1.0f, 0.50f, 1.0f,
-        1.0f, 1.0f, 0.50f, 1.0f,
-        1.0f, 1.0f, 0.50f, 1.0f,
+    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
 
-        1.0f, 0.5f, 0.25f, 1.0f,
-        1.0f, 0.5f, 0.25f, 1.0f,
-        1.0f, 0.5f, 0.25f, 1.0f,
-        1.0f, 0.5f, 0.25f, 1.0f,
-        1.0f, 0.5f, 0.25f, 1.0f,
-        1.0f, 0.5f, 0.25f, 1.0f,
+    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
+    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
 
-        0.5f, 0.5f, 1.00f, 1.0f,
-        0.5f, 0.5f, 1.00f, 1.0f,
-        0.5f, 0.5f, 1.00f, 1.0f,
-        0.5f, 0.5f, 1.00f, 1.0f,
-        0.5f, 0.5f, 1.00f, 1.0f,
-        0.5f, 0.5f, 1.00f, 1.0f,
-    };
+    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
+    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
 
-    for (int index = 0; index < _countof(cubeColors); ++index)
-        colors.push_back(cubeColors[index]);
+    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
+    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
+
+#pragma endregion
 
     mpVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
-    mpVertexBuffer->LoadData(positions, colors);
+    mpVertexBuffer->LoadData(triangleData);
 
     BoundingBox boundingBox;
     mpVertexBuffer->GetBoundingBox(&boundingBox);
