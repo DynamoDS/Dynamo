@@ -12,7 +12,8 @@ using namespace Dynamorph::OpenGL;
 VertexBuffer::VertexBuffer() :
     mVertexCount(0),
     mVertexArrayId(0),
-    mVertexBufferId(0)
+    mVertexBufferId(0),
+    mPrimitiveType(Dynamorph::IVertexBuffer::PrimitiveType::None)
 {
 }
 
@@ -32,12 +33,32 @@ VertexBuffer::~VertexBuffer()
 void VertexBuffer::Render(void) const
 {
     GL::glBindVertexArray(mVertexArrayId);
-    GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
+
+    switch (mPrimitiveType)
+    {
+    case Dynamorph::IVertexBuffer::PrimitiveType::Point:
+        GL::glDrawArrays(GL_POINTS, 0, mVertexCount);
+        break;
+    case Dynamorph::IVertexBuffer::PrimitiveType::LineStrip:
+        GL::glDrawArrays(GL_LINE_STRIP, 0, mVertexCount);
+        break;
+    case Dynamorph::IVertexBuffer::PrimitiveType::Triangle:
+        GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
+        break;
+    }
 }
 
 void VertexBuffer::LoadDataCore(const GeometryData& geometries)
 {
     EnsureVertexBufferCreation();
+
+    const GeometryData* p = &geometries;
+    if ((dynamic_cast<const PointGeometryData *>(p)) != nullptr)
+        mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::Point;
+    else if ((dynamic_cast<const LineStripGeometryData *>(p)) != nullptr)
+        mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::LineStrip;
+    else if ((dynamic_cast<const TriangleGeometryData *>(p)) != nullptr)
+        mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::Triangle;
 
     mVertexCount = geometries.VertexCount();
     std::vector<VertexData> data(mVertexCount);

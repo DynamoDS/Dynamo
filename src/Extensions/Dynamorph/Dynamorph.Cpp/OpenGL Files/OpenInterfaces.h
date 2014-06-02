@@ -260,6 +260,7 @@ namespace Dynamorph { namespace OpenGL {
         GLuint mVertexArrayId;
         GLuint mVertexBufferId;
         BoundingBox mBoundingBox;
+        PrimitiveType mPrimitiveType;
     };
 } }
 
