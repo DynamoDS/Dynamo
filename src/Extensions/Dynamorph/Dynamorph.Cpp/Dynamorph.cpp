@@ -3,7 +3,10 @@
 
 #include "stdafx.h"
 #include "Dynamorph.h"
+#include "NodeGeometries.h"
 #include "OpenGL Files\OpenInterfaces.h"
+
+#include <msclr/marshal_cppstd.h>
 
 using namespace System;
 using namespace Dynamorph;
@@ -68,16 +71,67 @@ HWND Visualizer::GetWindowHandle(void)
     return this->mhWndVisualizer;
 }
 
+bool GetPointGeometries(IRenderPackage^ rp, PointGeometryData& data)
+{
+    if (rp == nullptr || (rp->PointVertices->Count <= 0))
+        return false;
+
+    auto pv = rp->PointVertices;
+    auto count = rp->PointVertices->Count;
+
+    for (int p = 0; p < count; p = p + 3)
+    {
+        data.PushVertex((float) pv[p + 0], (float) pv[p + 1], (float) pv[p + 2]);
+        data.PushColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    return true;
+}
+
 void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometries)
 {
+    BoundingBox outerBoundingBox;
+
     for each(KeyValuePair<Guid, IRenderPackage^> geometry in geometries)
     {
-        auto id = geometry.Key;
-        auto rp = geometry.Value;
+        System::String^ nodeId = geometry.Key.ToString()->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+
+        NodeGeometries* pNodeGeometries = nullptr;
+        auto found = mpNodeGeometries->find(identifier);
+        if (found != mpNodeGeometries->end())
+        {
+            pNodeGeometries = found->second;
+            pNodeGeometries->ClearVertexBuffers();
+        }
+        else
+        {
+            pNodeGeometries = new NodeGeometries(identifier);
+            mpNodeGeometries->insert(std::pair<std::wstring, NodeGeometries*>
+                (identifier, pNodeGeometries));
+        }
+
+        auto pRenderPackage = geometry.Value;
+        PointGeometryData pointData(pRenderPackage->PointVertices->Count / 3);
+        if (GetPointGeometries(pRenderPackage, pointData))
+        {
+            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
+            pVertexBuffer->LoadData(pointData);
+            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+        }
+
+        // Finally, determine the bounding box for these geometries.
+        BoundingBox boundingBox;
+        pNodeGeometries->GetBoundingBox(&boundingBox);
+        outerBoundingBox.EvaluateBox(boundingBox);
     }
+
+    auto pCamera = mpGraphicsContext->GetDefaultCamera();
+    pCamera->FitToBoundingBox(&outerBoundingBox);
 }
 
 Visualizer::Visualizer() : 
+    mpNodeGeometries(nullptr),
     mhWndVisualizer(nullptr),
     mpShaderProgram(nullptr),
     mpVertexBuffer(nullptr),
@@ -257,10 +311,25 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     BoundingBox boundingBox;
     mpVertexBuffer->GetBoundingBox(&boundingBox);
     pCamera->FitToBoundingBox(&boundingBox);
+
+    // Create storage for storing nodes and their geometries.
+    mpNodeGeometries = new std::map<std::wstring, NodeGeometries*>();
 }
 
 void Visualizer::Uninitialize(void)
 {
+    if (this->mpNodeGeometries != nullptr)
+    {
+        auto iterator = mpNodeGeometries->begin();
+        for (; iterator != mpNodeGeometries->end(); ++iterator) {
+            auto pNodeGeometries = iterator->second;
+            delete pNodeGeometries;
+        }
+
+        this->mpNodeGeometries->clear();
+        this->mpNodeGeometries = nullptr;
+    }
+
     if (this->mpVertexBuffer != nullptr) {
         delete this->mpVertexBuffer;
         mpVertexBuffer = nullptr;
@@ -297,7 +366,14 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
             auto pCamera = mpGraphicsContext->GetDefaultCamera();
             mpShaderProgram->ApplyTransformation(pCamera);
 
-            mpGraphicsContext->RenderVertexBuffer(mpVertexBuffer);
+            auto iterator = mpNodeGeometries->begin();
+            for (; iterator != mpNodeGeometries->end(); ++iterator)
+            {
+                auto pNodeGeometries = iterator->second;
+                pNodeGeometries->Render(mpGraphicsContext);
+            }
+
+            // mpGraphicsContext->RenderVertexBuffer(mpVertexBuffer);
             mpGraphicsContext->EndRenderFrame(deviceContext);
             EndPaint(hWnd, &ps);
             return 0L;

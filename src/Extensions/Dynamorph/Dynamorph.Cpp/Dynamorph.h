@@ -11,6 +11,7 @@ namespace Dynamorph
     class IShaderProgram;
     class IVertexBuffer;
     class GeometryData;
+    class NodeGeometries;
 
     public ref class Visualizer
     {
@@ -43,5 +44,8 @@ namespace Dynamorph
         IGraphicsContext* mpGraphicsContext;
         IShaderProgram* mpShaderProgram;
         IVertexBuffer* mpVertexBuffer;
+
+        // Node data.
+        std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
     };
 }

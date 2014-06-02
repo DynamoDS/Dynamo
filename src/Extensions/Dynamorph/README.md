@@ -27,9 +27,11 @@ Dynamorph, morph the heck out of your design.
 - [ ] Enable slider to work with C++ Visualizer
 
 ##### Miscellaneous Tasks #####
+- [ ] Fix: Warning surrounding deprecated GLM functions
 - [ ] Merge multiple RenderPackage into one vertex buffer
 - [ ] Fix: Dynamorph relaunch problem
-- [ ] Fix: closing Dynamo does not close Dynamorph
+- [ ] Fix: Closing Dynamo does not close Dynamorph
+- [ ] Fix: Update methods to take BoundingBox & (not *)
 - [ ] Move shader source to external files
 - [ ] Implement logging mechanism
 - [ ] Display OpenGL logs in Dynamorph window
