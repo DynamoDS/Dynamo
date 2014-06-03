@@ -75,9 +75,24 @@ namespace Dynamo.Utilities
 
             var targetType = obj.GetType();
 
-            Converter<object, object> marshaler;
-            if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))
-                return marshaler(obj);
+            // Check if a marshaler was registered previously in the cache.
+            if (cache.ContainsKey(targetType))
+            {
+                return cache[targetType](obj);
+            }
+
+            // Check for a marshaler of the object's type.
+            if (marshalers.ContainsKey(obj.GetType()))
+            {
+                return marshalers[targetType](obj);
+            }
+
+            // Check whether this object is an instance of 
+            // any marshaler's type.
+            if (marshalers.Any(x => x.Key.IsInstanceOfType(obj)))
+            {
+                return marshalers.First(m => m.Key.IsInstanceOfType(obj)).Value.Invoke(obj);
+            }
 
             var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(obj.GetType(), x => x);
 
