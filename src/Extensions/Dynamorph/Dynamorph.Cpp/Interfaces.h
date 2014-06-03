@@ -93,6 +93,21 @@ namespace Dynamorph
             GeometryData(triangleCount * 3)
         {
         }
+
+        void PushNormal(float x, float y, float z)
+        {
+            mNormalCoords.push_back(x);
+            mNormalCoords.push_back(y);
+            mNormalCoords.push_back(z);
+        }
+
+        const float* GetNormalCoords(int vertex) const
+        {
+            return &mNormalCoords[vertex * 3];
+        }
+
+    private:
+        std::vector<float> mNormalCoords;
     };
 
     class ITrackBall

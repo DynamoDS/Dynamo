@@ -26,6 +26,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
+- [ ] Translate directly into GeometryData as interleaved
 - [ ] Fix: Line segment with 0 vertex should be filtered
 - [ ] Fix: Warning surrounding deprecated GLM functions
 - [ ] Merge multiple RenderPackage into one vertex buffer

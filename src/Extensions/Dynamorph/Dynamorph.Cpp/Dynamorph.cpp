@@ -63,6 +63,24 @@ static bool GetLineStripGeometries(IRenderPackage^ rp, LineStripGeometryData& da
     return true;
 }
 
+static bool GetTriangleGeometries(IRenderPackage^ rp, TriangleGeometryData& data)
+{
+    if (rp == nullptr || (rp->TriangleVertices->Count <= 0))
+        return false;
+
+    auto tv = rp->TriangleVertices;
+    auto count = rp->TriangleVertices->Count;
+
+    for (int p = 0; p < count; p = p + 3)
+    {
+        data.PushVertex((float) tv[p + 0], (float) tv[p + 1], (float) tv[p + 2]);
+        // data.PushNormal((float) tn[p + 0], (float) tn[p + 1], (float) tn[p + 2]);
+        data.PushColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    return true;
+}
+
 // ================================================================================
 // IGraphicsContext
 // ================================================================================
@@ -158,6 +176,14 @@ void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometr
         {
             auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(lineData);
+            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+        }
+
+        TriangleGeometryData triangleData(pRenderPackage->TriangleVertices->Count / 3);
+        if (GetTriangleGeometries(pRenderPackage, triangleData))
+        {
+            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
+            pVertexBuffer->LoadData(triangleData);
             pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
         }
 
