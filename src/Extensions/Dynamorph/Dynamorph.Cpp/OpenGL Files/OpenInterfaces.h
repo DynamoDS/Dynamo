@@ -66,6 +66,8 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
             GETGLPROC(PFNGLCLEARPROC,                       glClear);
             GETGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
+            GETGLPROC(PFNGLBLENDEQUATIONSEPARATEPROC,       glBlendEquationSeparate);
+            GETGLPROC(PFNGLBLENDFUNCSEPARATEPROC,           glBlendFuncSeparate);
 
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
         }
@@ -107,6 +109,8 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
         DEFGLPROC(PFNGLCLEARPROC,                       glClear);
         DEFGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
+        DEFGLPROC(PFNGLBLENDEQUATIONSEPARATEPROC,       glBlendEquationSeparate);
+        DEFGLPROC(PFNGLBLENDFUNCSEPARATEPROC,           glBlendFuncSeparate);
     };
 
     class Camera; // Forward declaration.
@@ -131,6 +135,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const;
         virtual void EndRenderFrameCore(HDC deviceContext) const;
+        virtual void EnableAlphaBlendCore(void) const;
 
     private:
         HWND mRenderWindow;

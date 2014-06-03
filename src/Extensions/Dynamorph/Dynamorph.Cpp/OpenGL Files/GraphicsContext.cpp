@@ -43,6 +43,8 @@ INITGLPROC(PFNGLVIEWPORTPROC,                   glViewport);
 INITGLPROC(PFNGLDRAWARRAYSPROC,                 glDrawArrays);
 INITGLPROC(PFNGLCLEARPROC,                      glClear);
 INITGLPROC(PFNGLCLEARCOLORPROC,                 glClearColor);
+INITGLPROC(PFNGLBLENDEQUATIONSEPARATEPROC,      glBlendEquationSeparate);
+INITGLPROC(PFNGLBLENDFUNCSEPARATEPROC,          glBlendFuncSeparate);
 
 GraphicsContext::GraphicsContext() : 
     mRenderWindow(nullptr),
@@ -198,4 +200,11 @@ void GraphicsContext::RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const
 void GraphicsContext::EndRenderFrameCore(HDC deviceContext) const
 {
     ::SwapBuffers(deviceContext);
+}
+
+void GraphicsContext::EnableAlphaBlendCore(void) const
+{
+    GL::glEnable(GL_BLEND);
+    GL::glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+    GL::glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 }

@@ -451,6 +451,11 @@ namespace Dynamorph
             this->EndRenderFrameCore(deviceContext);
         }
 
+        void EnableAlphaBlend(void) const
+        {
+            this->EnableAlphaBlendCore();
+        }
+
     protected:
         virtual void InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
@@ -468,6 +473,7 @@ namespace Dynamorph
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const = 0;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const = 0;
         virtual void EndRenderFrameCore(HDC deviceContext) const = 0;
+        virtual void EnableAlphaBlendCore(void) const = 0;
     };
 }
 
