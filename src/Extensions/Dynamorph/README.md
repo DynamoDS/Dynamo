@@ -29,6 +29,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
+- [ ] Introduce "normal matrix" into [Phong shader](http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/renderer.js)
 - [ ] Translate directly into GeometryData as interleaved
 - [ ] Fix: Line segment with 0 vertex should be filtered
 - [ ] Fix: Warning surrounding deprecated GLM functions
