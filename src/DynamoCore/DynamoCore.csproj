@@ -124,6 +124,10 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\CrashPromptArgs.cs" />
+    <Compile Include="Core\DebugSettings.cs" />
+    <Compile Include="Core\DynamoRunner.cs" />
+    <Compile Include="Core\TimeStampOrdering.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
@@ -136,6 +140,7 @@ limitations under the License.
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
+    <Compile Include="TestInfrastructure\AbstractMutator.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -212,6 +217,7 @@ limitations under the License.
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
+    <Compile Include="Utilities\MigrationReport.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
@@ -357,6 +363,7 @@ limitations under the License.
     <Compile Include="VisualizationManager\octree\Vector3d.cs" />
     <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
+    <Compile Include="VisualizationManager\RenderManager.cs" />
     <Compile Include="VisualizationManager\STLExport.cs" />
     <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />

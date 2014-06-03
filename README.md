@@ -22,7 +22,7 @@ Dynamo runs as an addin on top of Autodesk Revit, extending the parametric funct
 * [Yu Ke](https://github.com/ke-yu): Langauge and VM developer.
 * [Randy Ma](https://github.com/Randy-Ma): Geometry developer.
 * [Patrick Tierney](https://github.com/hlp): Geometry developer.
-* [Colin McCrone' (https://github.com/mccrone): Technology Evangelist, Education, Requirements 
+* [Colin McCrone](https://github.com/mccrone): Technology Evangelist, Education, Requirements 
 
 
 Dynamo has been developed based on feedback from several parties including Arup, KPF, Buro Happold, Autodesk, and students and faculty at the USC School of Architecture.

@@ -694,12 +694,14 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Defect_MAGN_2375()
+        public void Defect_MAGN_2375_3487()
         {
+            // This test case is addressing the following two defects:
             // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2375
+            //                      and http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3487
             var model = dynSettings.Controller.DynamoModel;
 
-            RunModel(@"core\dsevaluation\Defect_MAGN_2375.dyn");
+            RunModel(@"core\dsevaluation\Defect_MAGN_2375_3487.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);

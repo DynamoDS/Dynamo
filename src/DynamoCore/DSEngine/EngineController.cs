@@ -14,12 +14,16 @@ using ProtoCore.DSASM.Mirror;
 
 namespace Dynamo.DSEngine
 {
+    public delegate void AstBuiltEventHandler(object sender, AstBuilder.ASTBuiltEventArgs e);
+
     /// <summary>
     /// A controller to coordinate the interactions between some DesignScript
     /// sub components like library managment, live runner and so on.
     /// </summary>
     public class EngineController: IAstNodeContainer, IDisposable
     {
+        public event AstBuiltEventHandler AstBuilt;
+
         private LiveRunnerServices liveRunnerServices;
         private LibraryServices libraryServices;
         private AstBuilder astBuilder;
@@ -27,6 +31,13 @@ namespace Dynamo.DSEngine
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private DynamoController controller;
+
+        private Object MacroMutex = new Object();
+
+        internal SyncDataManager SyncDataManager
+        {
+            get { return syncDataManager; }
+        }
 
         public EngineController(DynamoController controller)
         {
@@ -57,6 +68,8 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
         }
 
+        #region Function Groups
+
         /// <summary>
         /// Return all function groups.
         /// </summary>
@@ -75,6 +88,9 @@ namespace Dynamo.DSEngine
             libraryServices.ImportLibrary(library);
         }
 
+        #endregion
+
+
         /// <summary>
         /// Get DesignScript core.
         /// </summary>
@@ -86,6 +102,8 @@ namespace Dynamo.DSEngine
             }
         }
 
+        #region Value queries
+
         /// <summary>
         /// Get runtime mirror for variable.
         /// </summary>
@@ -93,94 +111,27 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public RuntimeMirror GetMirror(string variableName)
         {
-            RuntimeMirror mirror = null;
-            try
+            lock (MacroMutex)
             {
-                mirror = liveRunnerServices.GetMirror(variableName);
-            }
-            catch (SymbolNotFoundException)
-            {
-                // The variable hasn't been defined yet. Just skip it. 
-            }
-            catch (Exception ex)
-            {
-                dynSettings.DynamoLogger.Log("Failed to get mirror for variable: " + variableName + "; reason: " + ex.Message);
-            }
+                RuntimeMirror mirror = null;
+                try
+                {
+                    mirror = liveRunnerServices.GetMirror(variableName);
+                }
+                catch (SymbolNotFoundException)
+                {
+                    // The variable hasn't been defined yet. Just skip it. 
+                }
+                catch (Exception ex)
+                {
+                    dynSettings.DynamoLogger.Log("Failed to get mirror for variable: " + variableName + "; reason: " +
+                                                 ex.Message);
+                }
 
-            return mirror;
+                return mirror;
+            }
         }
-
-        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string,string> variableNames)
-        {
-            variableNames = new Dictionary<string, string>();
-            if (!nodes.Any())
-                return string.Empty;
-
-            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
-            if (string.IsNullOrEmpty(code))
-                return code;
-
-            StringBuilder sb = new StringBuilder(code);
-            string newVar;
-            foreach (var node in nodes)
-            {
-                if (node is CodeBlockNodeModel)
-                {
-                    var tempVars = (node as CodeBlockNodeModel).TempVariables;
-                    foreach (var tempVar in tempVars)
-                    {
-                        newVar = GenerateShortVariable();
-                        sb = sb.Replace(tempVar, newVar);
-                        variableNames.Add(tempVar, newVar);
-                    }
-                }
-                else
-                {
-                    string thisVar = node.AstIdentifierForPreview.ToString();
-                    newVar = GenerateShortVariable();
-                    sb = sb.Replace(thisVar, newVar);
-                    variableNames.Add(thisVar, newVar);
-                }
-
-                //get the names of inputs as well and replace them with simpler names
-                foreach (var inport in node.InPorts)
-                {
-                    if (inport.Connectors.Count == 0)
-                        continue;
-                    var inputNode = inport.Connectors[0].Start.Owner;
-                    if (nodes.Contains(inputNode))
-                        continue;
-                    if (!(inputNode is CodeBlockNodeModel))
-                    {
-                        string inputVar = inputNode.AstIdentifierForPreview.ToString(); 
-                        if (!variableNames.ContainsKey(inputVar))
-                        {
-                            newVar = GenerateShortVariable();
-                            variableNames.Add(inputVar, newVar);
-                            sb = sb.Replace(inputVar, newVar);
-                        }
-                    }
-                    else
-                    {
-                        var cbn = inputNode as CodeBlockNodeModel;
-                        int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
-                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
-                        if (cbn.TempVariables.Contains(inputVar))
-                        {
-                            if (!variableNames.ContainsKey(inputVar))
-                            {
-                                newVar = GenerateShortVariable();
-                                variableNames.Add(inputVar, newVar);
-                                sb = sb.Replace(inputVar, newVar);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return sb.ToString();
-        }
-
+        
         /// <summary>
         /// Get string representation of the value of variable.
         /// </summary>
@@ -188,8 +139,11 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public string GetStringValue(string variableName)
         {
-            RuntimeMirror mirror = GetMirror(variableName);
-            return null == mirror ? "null" : mirror.GetStringData();
+            lock (MacroMutex)
+            {
+                RuntimeMirror mirror = GetMirror(variableName);
+                return null == mirror ? "null" : mirror.GetStringData();
+            }
         }
 
         /// <summary>
@@ -200,9 +154,15 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public List<IGraphicItem> GetGraphicItems(string variableName)
         {
-            RuntimeMirror mirror = GetMirror(variableName);
-            return null == mirror ? null : mirror.GetData().GetGraphicsItems();
+            lock (MacroMutex)
+            {
+                RuntimeMirror mirror = GetMirror(variableName);
+                return null == mirror ? null : mirror.GetData().GetGraphicsItems();
+            }
         }
+
+        #endregion
+
 
         /// <summary>
         /// Generate graph sync data based on the input Dynamo nodes. Return 
@@ -212,12 +172,15 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            var activeNodes = nodes.Where(n => n.State != ElementState.Error);
+            lock (MacroMutex)
+            {
+                var activeNodes = nodes.Where(n => n.State != ElementState.Error);
 
-            if (activeNodes.Any())
-                astBuilder.CompileToAstNodes(activeNodes, true);
+                if (activeNodes.Any())
+                    astBuilder.CompileToAstNodes(activeNodes, true);
 
-            return VerifyGraphSyncData();
+                return VerifyGraphSyncData();
+            }
         }
 
         /// <summary>
@@ -229,9 +192,13 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                lock (graphSyncDataQueue)
+                lock (MacroMutex)
                 {
-                    return graphSyncDataQueue.Count > 0;
+
+                    lock (graphSyncDataQueue)
+                    {
+                        return graphSyncDataQueue.Count > 0;
+                    }
                 }
             }
         }
@@ -251,8 +218,11 @@ namespace Dynamo.DSEngine
             List<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
-            astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
-            return VerifyGraphSyncData();
+            lock (MacroMutex)
+            {
+                astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
+                return VerifyGraphSyncData();
+            }
         }
 
         private bool VerifyGraphSyncData()
@@ -303,44 +273,48 @@ namespace Dynamo.DSEngine
         /// 
         public bool UpdateGraph(ref Exception fatalException)
         {
-            bool updated = false;
-            fatalException = null;
-
-            ClearWarnings();
-
-            lock (graphSyncDataQueue)
+            lock (MacroMutex)
             {
-                while (graphSyncDataQueue.Count > 0)
-                {
-                    try
-                    {
-                        var data = graphSyncDataQueue.Dequeue();
-                        liveRunnerServices.UpdateGraph(data);
-                        updated = true;
-                    }
-                    catch (Exception e)
-                    {
-                        // The exception that is not handled within the UpdateGraph
-                        // method is recorded here. The only thing for now is, we 
-                        // are only interested in the first unhandled exception.
-                        // This decision may change in the future if we decided to 
-                        // clear up "graphSyncDataQueue" whenever there is a fatal 
-                        // exception?
-                        // 
-                        if (fatalException == null)
-                            fatalException = e;
 
-                        dynSettings.DynamoLogger.Log("Update graph failed: " + e.Message);
+                bool updated = false;
+                fatalException = null;
+
+                ClearWarnings();
+
+                lock (graphSyncDataQueue)
+                {
+                    while (graphSyncDataQueue.Count > 0)
+                    {
+                        try
+                        {
+                            var data = graphSyncDataQueue.Dequeue();
+                            liveRunnerServices.UpdateGraph(data);
+                            updated = true;
+                        }
+                        catch (Exception e)
+                        {
+                            // The exception that is not handled within the UpdateGraph
+                            // method is recorded here. The only thing for now is, we 
+                            // are only interested in the first unhandled exception.
+                            // This decision may change in the future if we decided to 
+                            // clear up "graphSyncDataQueue" whenever there is a fatal 
+                            // exception?
+                            // 
+                            if (fatalException == null)
+                                fatalException = e;
+
+                            dynSettings.DynamoLogger.Log("Update graph failed: " + e.Message);
+                        }
                     }
                 }
-            }
 
-            if (updated)
-            {
-                ShowRuntimeWarnings();
-            }
+                if (updated)
+                {
+                    ShowRuntimeWarnings();
+                }
 
-            return updated;
+                return updated;
+            }
         }
 
         private void ClearWarnings()
@@ -389,30 +363,8 @@ namespace Dynamo.DSEngine
             return libraryServices.GetFunctionDescriptor(managledName);
         }
 
-        private string GenerateShortVariable()
-        {
-            while (true)
-            {
-                shortVarCounter++;
-                string var = AstBuilder.StringConstants.ShortVarPrefix + shortVarCounter.ToString();
+        
 
-                if (!HasVariableDefined(var))
-                    return var;
-            }
-        }
-
-        private bool HasVariableDefined(string var)
-        {
-            ProtoCore.Core core = GraphToDSCompiler.GraphUtilities.GetCore();
-            var cbs = core.CodeBlockList;
-            if (cbs == null || cbs.Count > 0)
-            {
-                return false;
-            }
-
-            var idx = cbs[0].symbolTable.IndexOf(var, ProtoCore.DSASM.Constants.kGlobalScope, ProtoCore.DSASM.Constants.kGlobalScope);
-            return idx == ProtoCore.DSASM.Constants.kInvalidIndex;
-        }
 
         /// <summary>
         /// LibraryLoading event handler.
@@ -468,7 +420,16 @@ namespace Dynamo.DSEngine
             {
                 syncDataManager.AddNode(nodeGuid, astNode); 
             }
+
+            if (AstBuilt != null)
+            {
+                if (controller.DynamoModel.NodeMap.ContainsKey(nodeGuid))
+                {
+                    AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(controller.DynamoModel.NodeMap[nodeGuid], astNodes));
+                }
+            }
         }
+        
         #endregion
 
         /// <summary>
@@ -479,6 +440,111 @@ namespace Dynamo.DSEngine
         {
             syncDataManager.DeleteNodes(node.GUID);
         }
+
+
+
+
+        #region N2C
+
+        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames)
+        {
+            variableNames = new Dictionary<string, string>();
+            if (!nodes.Any())
+                return string.Empty;
+
+            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
+            if (string.IsNullOrEmpty(code))
+                return code;
+
+            StringBuilder sb = new StringBuilder(code);
+            string newVar;
+            foreach (var node in nodes)
+            {
+                if (node is CodeBlockNodeModel)
+                {
+                    var tempVars = (node as CodeBlockNodeModel).TempVariables;
+                    foreach (var tempVar in tempVars)
+                    {
+                        newVar = GenerateShortVariable();
+                        sb = sb.Replace(tempVar, newVar);
+                        variableNames.Add(tempVar, newVar);
+                    }
+                }
+                else
+                {
+                    string thisVar = node.AstIdentifierForPreview.ToString();
+                    newVar = GenerateShortVariable();
+                    sb = sb.Replace(thisVar, newVar);
+                    variableNames.Add(thisVar, newVar);
+                }
+
+                //get the names of inputs as well and replace them with simpler names
+                foreach (var inport in node.InPorts)
+                {
+                    if (inport.Connectors.Count == 0)
+                        continue;
+                    var inputNode = inport.Connectors[0].Start.Owner;
+                    if (nodes.Contains(inputNode))
+                        continue;
+                    if (!(inputNode is CodeBlockNodeModel))
+                    {
+                        string inputVar = inputNode.AstIdentifierForPreview.ToString();
+                        if (!variableNames.ContainsKey(inputVar))
+                        {
+                            newVar = GenerateShortVariable();
+                            variableNames.Add(inputVar, newVar);
+                            sb = sb.Replace(inputVar, newVar);
+                        }
+                    }
+                    else
+                    {
+                        var cbn = inputNode as CodeBlockNodeModel;
+                        int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
+                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
+                        if (cbn.TempVariables.Contains(inputVar))
+                        {
+                            if (!variableNames.ContainsKey(inputVar))
+                            {
+                                newVar = GenerateShortVariable();
+                                variableNames.Add(inputVar, newVar);
+                                sb = sb.Replace(inputVar, newVar);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+
+        private string GenerateShortVariable()
+        {
+            while (true)
+            {
+                shortVarCounter++;
+                string var = AstBuilder.StringConstants.ShortVarPrefix + shortVarCounter.ToString();
+
+                if (!HasVariableDefined(var))
+                    return var;
+            }
+        }
+
+        private bool HasVariableDefined(string var)
+        {
+            ProtoCore.Core core = GraphToDSCompiler.GraphUtilities.GetCore();
+            var cbs = core.CodeBlockList;
+            if (cbs == null || cbs.Count > 0)
+            {
+                return false;
+            }
+
+            var idx = cbs[0].symbolTable.IndexOf(var, ProtoCore.DSASM.Constants.kGlobalScope, ProtoCore.DSASM.Constants.kGlobalScope);
+            return idx == ProtoCore.DSASM.Constants.kInvalidIndex;
+        }
+
+
+        #endregion
 
     }
 }

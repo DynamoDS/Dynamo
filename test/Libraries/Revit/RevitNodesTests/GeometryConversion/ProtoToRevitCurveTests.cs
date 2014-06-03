@@ -4,6 +4,7 @@ using Autodesk.DesignScript.Geometry;
 using Dynamo.Tests;
 using Revit.GeometryConversion;
 using NUnit.Framework;
+using RevitTestFramework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests.GeometryConversion

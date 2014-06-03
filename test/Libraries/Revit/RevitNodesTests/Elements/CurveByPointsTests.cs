@@ -4,6 +4,7 @@ using Dynamo.Tests;
 using NUnit.Framework;
 using Revit.Elements;
 using RevitServices.Persistence;
+using RevitTestFramework;
 
 namespace DSRevitNodesTests.Elements
 {

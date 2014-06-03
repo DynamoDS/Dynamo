@@ -15,6 +15,10 @@ namespace Dynamo.Interfaces
         DynamoVolumeUnit VolumeUnit { get; set; }
         bool IsUsageReportingApproved { get; set; }
         bool IsFirstRun { get; set; }
+        double WindowX { get; set; }
+        double WindowY { get; set; }
+        double WindowH { get; set; }
+        double WindowW { get; set; }
 
         /// <summary>
         /// Save PreferenceSettings in XML File Path if possible,

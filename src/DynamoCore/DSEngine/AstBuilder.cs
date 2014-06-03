@@ -4,8 +4,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -229,7 +231,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
+        public static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
             var sortedNodes = new Stack<NodeModel>();
             IList<NodeModel> nodeModels = nodes as IList<NodeModel> ?? nodes.ToList();
@@ -297,8 +299,8 @@ namespace Dynamo.DSEngine
 #endif
 
             IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
-
-            if (dynSettings.VerboseLogging)
+            
+            if (dynSettings.Controller.DebugSettings.VerboseLogging)
             {
                 foreach (var n in astNodes)
                 {
@@ -472,14 +474,14 @@ namespace Dynamo.DSEngine
 
         public class ASTBuiltEventArgs : EventArgs
         {
-            public ASTBuiltEventArgs(NodeModel node, List<AssociativeNode> astNodes)
+            public ASTBuiltEventArgs(NodeModel node, IEnumerable<AssociativeNode> astNodes)
             {
                 Node = node;
                 AstNodes = astNodes;
             }
 
             public NodeModel Node { get; private set; }
-            public List<AssociativeNode> AstNodes { get; private set; }
+            public IEnumerable<AssociativeNode> AstNodes { get; private set; }
         }
 
         private enum MarkFlag

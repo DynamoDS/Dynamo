@@ -3982,6 +3982,7 @@ namespace ProtoAssociative
             }
 
             ResolveFinalNodeRefs();
+            ResolveSSADependencies();
 
             if (codeBlock.parent == null)  // top-most langauge block
             {
@@ -7378,8 +7379,41 @@ namespace ProtoAssociative
 
             ProtoCore.Type type = new ProtoCore.Type();
         }
-
         
+        /// <summary>
+        /// Associate the SSA'd graphnodes to the final assignment graphnode
+        /// 
+        /// Given:
+        ///     a = b + c   ->  t0 = a
+        ///                     t1 = b
+        ///                     t2 = t0 + t1
+        ///                     a = t2
+        ///                     
+        /// Store the SSA graphnodes:
+        ///     t0, t1, t2
+        ///     
+        /// in the final graphnode 
+        ///     a = t2;
+        ///     
+        /// </summary>
+        private void ResolveSSADependencies()
+        {
+            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in codeBlock.instrStream.dependencyGraph.GraphList)
+            {
+                if (graphNode != null && graphNode.IsSSANode())
+                {
+                    if (graphNode.lastGraphNode != null)
+                    {
+                        SymbolNode dependentSymbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
+                        if (!graphNode.lastGraphNode.symbolListWithinExpression.Contains(dependentSymbol))
+                        {
+                            graphNode.lastGraphNode.symbolListWithinExpression.Add(dependentSymbol);
+                        }
+                    }
+                }
+            }
+        }
+
         //
         //  proc ResolveFinalNodeRefs()
         //      foreach graphnode in graphnodeList

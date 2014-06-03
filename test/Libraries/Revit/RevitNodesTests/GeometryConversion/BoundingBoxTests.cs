@@ -3,6 +3,7 @@ using Dynamo.Tests;
 using Revit.Elements;
 using Revit.GeometryConversion;
 using NUnit.Framework;
+using RevitTestFramework;
 
 namespace DSRevitNodesTests.Conversion
 {

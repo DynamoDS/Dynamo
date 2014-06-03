@@ -3,6 +3,10 @@ using RevitServices.Transactions;
 
 namespace DSRevitNodesTests
 {
+    /// <summary>
+    /// Base class for units tests of Revit nodes.
+    /// 
+    /// </summary>
     public class RevitNodeTestBase
     {
         [SetUp]

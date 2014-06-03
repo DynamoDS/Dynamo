@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
@@ -14,6 +15,9 @@ namespace Dynamo
 
     public class DynamoLogger:NotificationObject, ILogger, IDisposable
     {
+        private readonly Object guardMutex = new Object();
+
+
         const string DYNAMO_LOG_DIRECTORY = @"Autodesk\Dynamo\Logs\";
 
         //private static DynamoLogger instance;
@@ -22,16 +26,19 @@ namespace Dynamo
         private WarningLevel _warningLevel;
         private bool _isDisposed;
 
-        public TextWriter FileWriter { get; set; }
-        public StringBuilder ConsoleWriter { get; set; }
+        private TextWriter FileWriter { get; set; }
+        private StringBuilder ConsoleWriter { get; set; }
 
         public WarningLevel WarningLevel
         {
             get { return _warningLevel; }
             set
             {
-                _warningLevel = value;
-                RaisePropertyChanged("WarningLevel");
+                lock (this.guardMutex)
+                {
+                    _warningLevel = value;
+                    RaisePropertyChanged("WarningLevel");
+                }
             }
         }
 
@@ -40,8 +47,12 @@ namespace Dynamo
             get { return _warning; }
             set
             {
-                _warning = value;
-                RaisePropertyChanged("Warning");
+                lock (this.guardMutex)
+                {
+
+                    _warning = value;
+                    RaisePropertyChanged("Warning");
+                }
             }
         }
 
@@ -54,9 +65,12 @@ namespace Dynamo
         {
             get
             {
-                if (ConsoleWriter != null)
-                    return ConsoleWriter.ToString();
-                return "";
+                lock (this.guardMutex)
+                {
+                    if (ConsoleWriter != null)
+                        return ConsoleWriter.ToString();
+                    return "";
+                }
             }
         }
 
@@ -65,12 +79,15 @@ namespace Dynamo
         /// </summary>
         public DynamoLogger()
         {
-            _isDisposed = false;
+            lock (this.guardMutex)
+            {
+                _isDisposed = false;
 
-            WarningLevel = WarningLevel.Mild;
-            Warning = "";
+                WarningLevel = WarningLevel.Mild;
+                Warning = "";
 
-            StartLogging();
+                StartLogging();
+            }
         }
 
         public void Log(string message, LogLevel level)
@@ -84,51 +101,54 @@ namespace Dynamo
         /// <param name="message"></param>
         private void Log(string message, LogLevel level, bool reportModification)
         {
-            //Don't overwhelm the logging system
-            if (!dynSettings.VerboseLogging)
-                InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);                
-
-            switch (level)
+            lock (this.guardMutex)
             {
-                //write to the console
-                case LogLevel.Console:
-                    if (ConsoleWriter != null)
-                    {
-                        try
+                //Don't overwhelm the logging system
+                if (dynSettings.Controller != null && !dynSettings.Controller.DebugSettings.VerboseLogging)
+                    InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);
+
+                switch (level)
+                {
+                        //write to the console
+                    case LogLevel.Console:
+                        if (ConsoleWriter != null)
                         {
-                            ConsoleWriter.AppendLine(string.Format("{0}", message));
-                            FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
-                            FileWriter.Flush();
-                            RaisePropertyChanged("ConsoleWriter");
+                            try
+                            {
+                                ConsoleWriter.AppendLine(string.Format("{0}", message));
+                                FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
+                                FileWriter.Flush();
+                                RaisePropertyChanged("ConsoleWriter");
+                            }
+                            catch
+                            {
+                                // likely caught if the writer is closed
+                            }
                         }
-                        catch
+                        break;
+
+                        //write to the file
+                    case LogLevel.File:
+                        if (FileWriter != null)
                         {
-                            // likely caught if the writer is closed
+                            try
+                            {
+                                FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
+                                FileWriter.Flush();
+                            }
+                            catch
+                            {
+                                // likely caught if the writer is closed
+                            }
                         }
-                    }  
-                    break;
-                
-                //write to the file
-                case LogLevel.File:
-                    if (FileWriter != null)
-                    {
-                        try
-                        {
-                            FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
-                            FileWriter.Flush();
-                        }
-                        catch
-                        {
-                            // likely caught if the writer is closed
-                        }
-                    }  
-                    break;
+                        break;
+                }
+
+                if (reportModification)
+                {
+                    RaisePropertyChanged("LogText");
+                }
             }
-
-            if(reportModification)
-            {
-                RaisePropertyChanged("LogText"); 
-            } 
         }
 
         public void LogWarning(string message, WarningLevel level)
@@ -160,8 +180,11 @@ namespace Dynamo
 
         public void ResetWarning()
         {
-            Warning = "";
-            WarningLevel = WarningLevel.Mild;
+            lock (this.guardMutex)
+            {
+                Warning = "";
+                WarningLevel = WarningLevel.Mild;
+            }
         }
 
         /// <summary>
@@ -196,8 +219,11 @@ namespace Dynamo
 
         public void ClearLog()
         {
-            ConsoleWriter.Clear();
-            RaisePropertyChanged("LogText");
+            lock (this.guardMutex)
+            {
+                ConsoleWriter.Clear();
+                RaisePropertyChanged("LogText");
+            }
         }
 
         /// <summary>
@@ -205,25 +231,28 @@ namespace Dynamo
         /// </summary>
         private void StartLogging()
         {
-            //create log files in a directory 
-            //with the executing assembly
-            string log_dir = System.Environment.GetFolderPath(
+            lock (this.guardMutex)
+            {
+                //create log files in a directory 
+                //with the executing assembly
+                string log_dir = System.Environment.GetFolderPath(
                     System.Environment.SpecialFolder.ApplicationData);
 
-            log_dir = Path.Combine(log_dir, DYNAMO_LOG_DIRECTORY);
+                log_dir = Path.Combine(log_dir, DYNAMO_LOG_DIRECTORY);
 
-            if (!Directory.Exists(log_dir))
-            {
-                Directory.CreateDirectory(log_dir);
+                if (!Directory.Exists(log_dir))
+                {
+                    Directory.CreateDirectory(log_dir);
+                }
+
+                _logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+
+                FileWriter = new StreamWriter(_logPath);
+                FileWriter.WriteLine("Dynamo log started " + DateTime.Now.ToString());
+
+                ConsoleWriter = new StringBuilder();
+                ConsoleWriter.AppendLine("Dynamo log started " + DateTime.Now.ToString());
             }
-
-            _logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
-
-            FileWriter = new StreamWriter(_logPath);
-            FileWriter.WriteLine("Dynamo log started " + DateTime.Now.ToString());
-
-            ConsoleWriter = new StringBuilder();
-            ConsoleWriter.AppendLine("Dynamo log started " + DateTime.Now.ToString());
 
         }
 
@@ -232,6 +261,8 @@ namespace Dynamo
         /// </summary>
         public void Dispose(bool isDisposed)
         {
+            //Don't lock here as it risks deadlocking the collector
+
             if (isDisposed)
             {
                 return;

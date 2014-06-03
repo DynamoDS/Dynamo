@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
@@ -25,6 +26,8 @@ namespace Dynamo.Search
     {
         private SearchViewModel _viewModel;
 
+        readonly DispatcherTimer searchTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 100), IsEnabled = false };
+
         public SearchView()
         {
             InitializeComponent();
@@ -41,6 +44,8 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
+
+            searchTimer.Tick += SearchTimerTick;
         }
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
@@ -181,6 +186,20 @@ namespace Dynamo.Search
             BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
                 binding.UpdateSource();
+
+            searchTimer.IsEnabled = true;
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+
+        void SearchTimerTick(object sender, EventArgs e)
+        {
+            searchTimer.IsEnabled = false;
+
+            Debug.WriteLine("Updating search results...");
+            // end of timer processing
+            // Execute command to pop search stack
+            DynamoCommands.SearchCommand.Execute(null);
         }
 
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
