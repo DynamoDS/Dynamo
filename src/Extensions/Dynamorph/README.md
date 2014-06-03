@@ -19,6 +19,8 @@ Dynamorph, morph the heck out of your design.
 - [x] Implement layout algorithm for synthesized graph
 - [x] Implement rendering for synthesized graph
 - [x] Add support for Point, Line, LineStrip primitive types
+- [ ] Add normal information in vertex data
+- [ ] Implement Phong shading model in GLSL
 - [ ] Design structure to keep node-geometry data
 - [ ] Add shader uniform to control per-vertex alpha
 - [ ] Add slider to work with synthesized graph
@@ -34,6 +36,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Fix: Closing Dynamo does not close Dynamorph
 - [ ] Fix: Update methods to take BoundingBox & (not *)
 - [ ] Move shader source to external files
+- [ ] Remove normal computation in GetTriangleGeometries
 - [ ] Implement logging mechanism
 - [ ] Display OpenGL logs in Dynamorph window
 - [ ] Implement Track Ball class for navigation
