@@ -21,7 +21,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Add support for Point, Line, LineStrip primitive types
 - [x] Add normal information in vertex data
 - [x] Use layout qualifier in GLSL instead of hard-coding
-- [ ] Implement Phong shading model in GLSL
+- [x] Implement Phong shading model in GLSL
 - [ ] Design structure to keep node-geometry data
 - [ ] Add shader uniform to control per-vertex alpha
 - [ ] Add slider to work with synthesized graph
@@ -56,5 +56,5 @@ Dynamorph, morph the heck out of your design.
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
 
-#### Points, line-strips, triangles all supported! :) ####
+#### Points, line-strips, triangles and Phong shading! :) ####
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)
