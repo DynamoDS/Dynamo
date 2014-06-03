@@ -89,24 +89,67 @@ namespace Dynamo.Controls
             this.SizeChanged += DynamoView_SizeChanged;
             this.LocationChanged += DynamoView_LocationChanged;
 
-            Left = dynSettings.Controller.PreferenceSettings.WindowX;
-            Top = dynSettings.Controller.PreferenceSettings.WindowY;
-            Width = dynSettings.Controller.PreferenceSettings.WindowW;
-            Height = dynSettings.Controller.PreferenceSettings.WindowH;
+            // Check that preference bounds are actually within one
+            // of the available monitors.
+            if (CheckVirtualScreenSize())
+            {
+                Left = dynSettings.Controller.PreferenceSettings.WindowX;
+                Top = dynSettings.Controller.PreferenceSettings.WindowY;
+                Width = dynSettings.Controller.PreferenceSettings.WindowW;
+                Height = dynSettings.Controller.PreferenceSettings.WindowH;
+            }
+            else
+            {
+                Left = 0;
+                Top = 0;
+                Width = 1024;
+                Height = 768;
+            }
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
+        }
+
+        bool CheckVirtualScreenSize()
+        {
+            var w = SystemParameters.VirtualScreenWidth;
+            var h = SystemParameters.VirtualScreenHeight;
+            var ox = SystemParameters.VirtualScreenLeft;
+            var oy = SystemParameters.VirtualScreenTop;
+
+            // TODO: Remove 10 pixel check if others can't reproduce
+            // On Ian's Windows 8 setup, when Dynamo is maximized, the origin
+            // saves at -8,-8. There doesn't seem to be any documentation on this
+            // so we'll put in a 10 pixel check to still allow the window to maximize.
+            if (dynSettings.Controller.PreferenceSettings.WindowX < ox - 10 ||
+                dynSettings.Controller.PreferenceSettings.WindowY < oy - 10)
+            {
+                return false;
+            }
+
+            // Check that the window is smaller than the available area.
+            if (dynSettings.Controller.PreferenceSettings.WindowW > w ||
+                dynSettings.Controller.PreferenceSettings.WindowH > h)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         void DynamoView_LocationChanged(object sender, EventArgs e)
         {
             dynSettings.Controller.PreferenceSettings.WindowX = Left;
             dynSettings.Controller.PreferenceSettings.WindowY = Top;
+
+            Debug.WriteLine("Resetting window location to {0}:{1}", Left, Top);
         }
 
         void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             dynSettings.Controller.PreferenceSettings.WindowW = e.NewSize.Width;
             dynSettings.Controller.PreferenceSettings.WindowH = e.NewSize.Height;
+
+            Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
 
         void InitializeShortcutBar()
