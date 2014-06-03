@@ -261,7 +261,9 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         "#version 150 core                              \n"
         "                                               \n"
         "in vec3 inPosition;                            \n"
+        "in vec3 inNormal;                              \n"
         "in vec4 inColor;                               \n"
+        "out vec3 vertNormal;                           \n"
         "out vec4 vertColor;                            \n"
         "                                               \n"
         "uniform mat4 model;                            \n"
@@ -273,17 +275,20 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         "    vec4 pos = vec4(inPosition, 1.0);          \n"
         "    gl_Position = proj * view * model * pos;   \n"
         "    vertColor = inColor;                       \n"
+        "    vertNormal = normalize(inNormal);          \n"
         "}                                              \n");
 
     std::string fs(
         "#version 150 core                          \n"
         "                                           \n"
+        "in vec3 vertNormal;                        \n"
         "in vec4 vertColor;                         \n"
         "out vec4 outColor;                         \n"
         "                                           \n"
         "void main(void)                            \n"
         "{                                          \n"
-        "    outColor = vertColor;                  \n"
+        "    vec3 v = vertColor.rgb * vertNormal.xyz; \n"
+        "    outColor = vec4(v, vertColor.a);       \n"
         "}                                          \n");
 
     // Create shaders and their program.

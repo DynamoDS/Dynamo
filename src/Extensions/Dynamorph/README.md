@@ -19,7 +19,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Implement layout algorithm for synthesized graph
 - [x] Implement rendering for synthesized graph
 - [x] Add support for Point, Line, LineStrip primitive types
-- [ ] Add normal information in vertex data
+- [x] Add normal information in vertex data
 - [ ] Implement Phong shading model in GLSL
 - [ ] Design structure to keep node-geometry data
 - [ ] Add shader uniform to control per-vertex alpha
@@ -28,6 +28,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
+- [ ] Use layout qualifier in GLSL instead of hard-coding
 - [ ] Translate directly into GeometryData as interleaved
 - [ ] Fix: Line segment with 0 vertex should be filtered
 - [ ] Fix: Warning surrounding deprecated GLM functions

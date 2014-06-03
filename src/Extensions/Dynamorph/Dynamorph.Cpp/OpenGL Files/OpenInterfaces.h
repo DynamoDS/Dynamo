@@ -231,11 +231,12 @@ namespace Dynamorph { namespace OpenGL {
     struct VertexData
     {
         float x, y, z;
-        // float nx, ny, nz;
+        float nx, ny, nz;
         float r, g, b, a;
 
         VertexData() :
             x(0.0f), y(0.0f), z(0.0f),
+            nx(1.0f), ny(1.0f), nz(1.0f),
             r(1.0f), g(1.0f), b(1.0f), a(1.0f)
         {
         }

@@ -63,11 +63,15 @@ void VertexBuffer::LoadDataCore(const GeometryData& geometries)
     EnsureVertexBufferCreation();
 
     const GeometryData* p = &geometries;
-    if ((dynamic_cast<const PointGeometryData *>(p)) != nullptr)
+    auto pgd = dynamic_cast<const PointGeometryData *>(p);
+    auto lgd = dynamic_cast<const LineStripGeometryData *>(p);
+    auto tgd = dynamic_cast<const TriangleGeometryData *>(p);
+
+    if (pgd != nullptr)
         mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::Point;
-    else if ((dynamic_cast<const LineStripGeometryData *>(p)) != nullptr)
+    else if (lgd != nullptr)
         mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::LineStrip;
-    else if ((dynamic_cast<const TriangleGeometryData *>(p)) != nullptr)
+    else if (tgd != nullptr)
         mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::Triangle;
 
     mVertexCount = geometries.VertexCount();
@@ -86,11 +90,22 @@ void VertexBuffer::LoadDataCore(const GeometryData& geometries)
         data[vertex].a = pRgbaColors[3];
     }
 
-    if (mPrimitiveType == Dynamorph::IVertexBuffer::PrimitiveType::LineStrip)
+    if (tgd != nullptr)
     {
-        auto ls = dynamic_cast<const LineStripGeometryData *>(p);
-        auto segments = ls->GetSegmentCount();
-        auto svc = ls->GetSegmentVertexCounts();
+        // We have normal values when we deal with triangles.
+        const float* pNormalCoords = tgd->GetNormalCoords(0);
+        for (int vertex = 0; vertex < mVertexCount; ++vertex)
+        {
+            data[vertex].nx = pNormalCoords[0];
+            data[vertex].ny = pNormalCoords[1];
+            data[vertex].nz = pNormalCoords[2];
+            pNormalCoords = pNormalCoords + 3;
+        }
+    }
+    else if (lgd != nullptr)
+    {
+        auto segments = lgd->GetSegmentCount();
+        auto svc = lgd->GetSegmentVertexCounts();
         for (int segment = 0; segment < segments; ++segment)
             mSegmentVertexCount.push_back(svc[segment]);
     }
@@ -132,10 +147,12 @@ void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
     GL::glBufferData(GL_ARRAY_BUFFER, bytes, &vertices[0], GL_STATIC_DRAW);
 
     GL::glEnableVertexAttribArray(0);   // Position
-    GL::glEnableVertexAttribArray(1);   // Color
+    GL::glEnableVertexAttribArray(1);   // Normal
+    GL::glEnableVertexAttribArray(2);   // Color
 
     GL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(0));
-    GL::glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
+    GL::glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
+    GL::glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
 
     GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
     GL::glBindVertexArray(0);
