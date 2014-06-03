@@ -12,9 +12,14 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="3*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Canvas Name="GraphCanvas"
-                SnapsToDevicePixels="True"
-                Background="White"></Canvas>
+        <ScrollViewer Name="canvasScrollViewer"
+                      CanContentScroll="True"
+                      HorizontalScrollBarVisibility="Hidden"
+                      VerticalScrollBarVisibility="Hidden">
+            <Canvas Name="graphCanvas"
+                    SnapsToDevicePixels="True"
+                    Background="White"></Canvas>
+        </ScrollViewer>
         <GridSplitter Grid.Row="1"
                       Width="Auto"
                       Height="6"

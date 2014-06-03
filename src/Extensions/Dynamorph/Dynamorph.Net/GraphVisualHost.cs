@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Dynamorph
@@ -128,6 +130,21 @@ namespace Dynamorph
             return childVisuals[index];
         }
 
+        private Canvas ParentCanvas
+        {
+            get
+            {
+                Canvas parentCanvas = this.Parent as Canvas;
+                if (parentCanvas == null)
+                {
+                    var message = "GraphVisualHost expects a Canvas as parent";
+                    throw new InvalidOperationException(message);
+                }
+
+                return parentCanvas;
+            }
+        }
+
         #endregion
 
         #region Private Class Event Handlers
@@ -144,6 +161,8 @@ namespace Dynamorph
 
         private void RefreshGraphNodes()
         {
+            var parentCanvas = this.ParentCanvas;
+            parentCanvas.Width = parentCanvas.Height = 0;
             if (graph == null || (graph.Nodes.Any() == false))
                 return; // There is no graph or it's an empty graph.
 
@@ -159,12 +178,15 @@ namespace Dynamorph
             var typeface = new Typeface(textFontFamily, FontStyles.Normal,
                 FontWeights.Normal, FontStretches.Normal);
 
+            Rect boundingBox = graph.Nodes.ElementAt(0).Rect;
             foreach (var node in graph.Nodes)
             {
+                var rect = node.Rect;
+                boundingBox.Union(rect);
+
                 var bi = GraphResources.BrushIndex.NodeBorderColor;
                 var fi = GraphResources.BrushIndex.NodeFillColor;
                 var bp = new Pen(GraphResources.Brush(bi), 1.0);
-                var rect = node.Rect;
                 rect.Offset(-0.5, -0.5);
                 drawingContext.DrawRectangle(GraphResources.Brush(fi), bp, rect);
 
@@ -180,6 +202,9 @@ namespace Dynamorph
             }
 
             drawingContext.Close(); // Done drawing, commit changes.
+            boundingBox.Inflate(Config.HorzGap * 2, Config.VertGap * 2);
+            parentCanvas.Width = boundingBox.Width;
+            parentCanvas.Height = boundingBox.Height;
         }
 
         private Rect DeflateRectForText(FormattedText formattedText, Rect rect)

@@ -12,15 +12,25 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Resources;
 using System.Windows.Shapes;
 
 namespace Dynamorph
 {
     public partial class DynamorphControl : UserControl
     {
+        private enum CursorIndex
+        {
+            Pointer, Hand, HandPan, HandDrag
+        }
+
+        private Point prevMousePosition = new Point();
         private SynthesizedGraph pendingGraph = null;
         private VisualizerHwndHost visualizer = null;
         private GraphVisualHost graphVisualHost = null;
+
+        // Cursor resources.
+        private Cursor[] canvasCursors = null;
 
         #region Public Operational Class Methods
 
@@ -78,7 +88,10 @@ namespace Dynamorph
         private void OnDynamorphControlLoaded(object sender, RoutedEventArgs e)
         {
             this.graphVisualHost = new GraphVisualHost();
-            this.GraphCanvas.Children.Add(graphVisualHost);
+            this.graphCanvas.Children.Add(graphVisualHost);
+            this.graphCanvas.MouseDown += OnGraphCanvasMouseDown;
+            this.graphCanvas.MouseUp += OnGraphCanvasMouseUp;
+            this.graphCanvas.MouseMove += OnGraphCanvasMouseMove;
 
             if (this.pendingGraph != null)
             {
@@ -94,6 +107,74 @@ namespace Dynamorph
                 visualizer = new VisualizerHwndHost(b.ActualWidth, b.ActualHeight);
                 VisualizerHostElement.Child = visualizer;
             }
+
+            ActivateCusor(CursorIndex.HandPan);
+        }
+
+        private void OnGraphCanvasMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Always get the position before "CaptureMouse" because once the 
+            // mouse is captured, it immediately sends "MouseMove" to the canvas,
+            // so if the position is to be used in "MouseMove", it had better be 
+            // correct at that point.
+            // 
+            this.prevMousePosition = e.GetPosition(this);
+            if (this.graphCanvas.CaptureMouse())
+                ActivateCusor(CursorIndex.HandDrag);
+        }
+
+        private void OnGraphCanvasMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ActivateCusor(CursorIndex.HandPan);
+            if (this.graphCanvas.IsMouseCaptured)
+                this.graphCanvas.ReleaseMouseCapture();
+        }
+
+        private void OnGraphCanvasMouseMove(object sender, MouseEventArgs e)
+        {
+            if (this.graphCanvas.IsMouseCaptured == false)
+                return;
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            var position = e.GetPosition(this);
+            var delta = position - prevMousePosition;
+
+            double vertOffset = this.canvasScrollViewer.VerticalOffset;
+            double horzOffset = this.canvasScrollViewer.HorizontalOffset;
+            this.canvasScrollViewer.ScrollToVerticalOffset(vertOffset - delta.Y);
+            this.canvasScrollViewer.ScrollToHorizontalOffset(horzOffset - delta.X);
+
+            // Update the current mouse position.
+            this.prevMousePosition = position;
+        }
+
+        #endregion
+
+        #region Private Class Helper Methods
+
+        private Cursor LoadCursorResource(string name)
+        {
+            var baseUri = "pack://application:,,,/Dynamorph.Net;component/Resources";
+            Uri uri = new Uri(string.Format("{0}/Cursors/{1}", baseUri, name));
+            StreamResourceInfo cursorStream = Application.GetResourceStream(uri);
+            return new Cursor(cursorStream.Stream);
+        }
+
+        private void ActivateCusor(CursorIndex cursorIndex)
+        {
+            if (this.canvasCursors == null)
+            {
+                canvasCursors = new Cursor[]
+                {
+                    Cursors.Arrow,
+                    LoadCursorResource("hand.cur"),
+                    LoadCursorResource("hand_pan.cur"),
+                    LoadCursorResource("hand_drag.cur"),
+                };
+            }
+
+            this.graphCanvas.Cursor = canvasCursors[(int)cursorIndex];
         }
 
         #endregion
