@@ -151,8 +151,8 @@ void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
     GL::glEnableVertexAttribArray(2);   // Color
 
     GL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(0));
-    GL::glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
-    GL::glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
+    GL::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
+    GL::glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
 
     GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
     GL::glBindVertexArray(0);

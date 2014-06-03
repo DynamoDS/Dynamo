@@ -258,11 +258,12 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpGraphicsContext->Initialize(mhWndVisualizer);
 
     std::string vs(
-        "#version 150 core                              \n"
+        "#version 330                                   \n"
         "                                               \n"
-        "in vec3 inPosition;                            \n"
-        "in vec3 inNormal;                              \n"
-        "in vec4 inColor;                               \n"
+        "layout (location = 0) in vec3 inPosition;      \n"
+        "layout (location = 1) in vec3 inNormal;        \n"
+        "layout (location = 2) in vec4 inColor;         \n"
+        "                                               \n"
         "out vec3 vertNormal;                           \n"
         "out vec4 vertColor;                            \n"
         "                                               \n"
@@ -279,17 +280,18 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         "}                                              \n");
 
     std::string fs(
-        "#version 150 core                          \n"
-        "                                           \n"
-        "in vec3 vertNormal;                        \n"
-        "in vec4 vertColor;                         \n"
-        "out vec4 outColor;                         \n"
-        "                                           \n"
-        "void main(void)                            \n"
-        "{                                          \n"
-        "    vec3 v = vertColor.rgb * vertNormal.xyz; \n"
-        "    outColor = vec4(v, vertColor.a);       \n"
-        "}                                          \n");
+        "#version 330                                   \n"
+        "                                               \n"
+        "in vec3 vertNormal;                            \n"
+        "in vec4 vertColor;                             \n"
+        "                                               \n"
+        "out vec4 outColor;                             \n"
+        "                                               \n"
+        "void main(void)                                \n"
+        "{                                              \n"
+        "    vec3 v = vertColor.rgb * vertNormal.xyz;   \n"
+        "    outColor = vec4(v, vertColor.a);           \n"
+        "}                                              \n");
 
     // Create shaders and their program.
     auto pvs = mpGraphicsContext->CreateVertexShader(vs);
