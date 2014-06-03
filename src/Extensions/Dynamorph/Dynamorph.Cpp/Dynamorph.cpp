@@ -225,7 +225,6 @@ Visualizer::Visualizer() :
     mpNodeGeometries(nullptr),
     mhWndVisualizer(nullptr),
     mpShaderProgram(nullptr),
-    mpVertexBuffer(nullptr),
     mpGraphicsContext(nullptr)
 {
 }
@@ -306,103 +305,6 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         pCamera->Configure(&camConfig);
     }
 
-    TriangleGeometryData triangleData(12);
-
-#pragma region Sample Test Data (To Be Removed)
-
-    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
-    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
-    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
-
-    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
-
-    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
-    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
-
-    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
-
-    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
-    triangleData.PushVertex( 0.5f, -0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f, -0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f, -0.5f, -0.5f);
-
-    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f, -0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex( 0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f,  0.5f,  0.5f);
-    triangleData.PushVertex(-0.5f,  0.5f, -0.5f);
-
-    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.75f, 1.0f);
-
-    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(0.5f, 1.0f, 0.50f, 1.0f);
-
-    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.0f, 0.5f, 1.00f, 1.0f);
-
-    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
-    triangleData.PushColor(1.0f, 1.0f, 0.50f, 1.0f);
-
-    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
-    triangleData.PushColor(1.0f, 0.5f, 0.25f, 1.0f);
-
-    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
-    triangleData.PushColor(0.5f, 0.5f, 1.00f, 1.0f);
-
-#pragma endregion
-
-    mpVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
-    mpVertexBuffer->LoadData(triangleData);
-
-    BoundingBox boundingBox;
-    mpVertexBuffer->GetBoundingBox(&boundingBox);
-    pCamera->FitToBoundingBox(&boundingBox);
-
     // Create storage for storing nodes and their geometries.
     mpNodeGeometries = new std::map<std::wstring, NodeGeometries*>();
 }
@@ -419,11 +321,6 @@ void Visualizer::Uninitialize(void)
 
         this->mpNodeGeometries->clear();
         this->mpNodeGeometries = nullptr;
-    }
-
-    if (this->mpVertexBuffer != nullptr) {
-        delete this->mpVertexBuffer;
-        mpVertexBuffer = nullptr;
     }
 
     if (this->mpShaderProgram != nullptr) {
@@ -464,7 +361,6 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
                 pNodeGeometries->Render(mpGraphicsContext);
             }
 
-            // mpGraphicsContext->RenderVertexBuffer(mpVertexBuffer);
             mpGraphicsContext->EndRenderFrame(deviceContext);
             EndPaint(hWnd, &ps);
             return 0L;

@@ -43,7 +43,6 @@ namespace Dynamorph
         HWND mhWndVisualizer;
         IGraphicsContext* mpGraphicsContext;
         IShaderProgram* mpShaderProgram;
-        IVertexBuffer* mpVertexBuffer;
 
         // Node data.
         std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
