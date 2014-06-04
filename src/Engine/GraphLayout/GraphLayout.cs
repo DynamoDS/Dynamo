@@ -207,8 +207,7 @@ namespace GraphLayout
                 // such that all the right edges of the is node connected to U.
                 
                 List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
-                    x.RightEdges.Where(e => e.Active)
-                    .All(e => e.EndNode.Layer >= 0)).ToList();
+                    x.RightEdges.All(e => e.EndNode.Layer >= 0)).ToList();
 
                 Node n = selected.FirstOrDefault(x =>
                     x.RightEdges.All(e => e.EndNode.Layer < currentLayer) &&
@@ -219,8 +218,7 @@ namespace GraphLayout
 
                 // Add a new layer when needed
                 if ((Layers[currentLayer].Count >= MaxLayerHeight) ||
-                    !n.RightEdges.Where(e => e.Active).
-                    All(e => e.EndNode.Layer < currentLayer) ||
+                    !n.RightEdges.All(e => e.EndNode.Layer < currentLayer) ||
                     (currentLayer > 0 && n.LeftEdges.Count == 0 && !isFinalLayer))
                 {
                     // Horizontal node alignment for the previous layer
@@ -386,12 +384,6 @@ namespace GraphLayout
 
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
-
-        public double MidY
-        {
-            get { return Y + Height / 2; }
-            set { Y = value - Height / 2; }
-        }
 
         public Node(Guid guid, double width, double height, double y, Graph ownerGraph)
         {
