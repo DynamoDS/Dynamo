@@ -28,6 +28,7 @@ namespace Dynamorph
         private SynthesizedGraph pendingGraph = null;
         private VisualizerHwndHost visualizer = null;
         private GraphVisualHost graphVisualHost = null;
+        private SliderVisualHost sliderVisualHost = null;
 
         // Cursor resources.
         private Cursor[] canvasCursors = null;
@@ -92,6 +93,9 @@ namespace Dynamorph
             this.graphCanvas.MouseDown += OnGraphCanvasMouseDown;
             this.graphCanvas.MouseUp += OnGraphCanvasMouseUp;
             this.graphCanvas.MouseMove += OnGraphCanvasMouseMove;
+
+            this.sliderVisualHost = new SliderVisualHost(canvasScrollViewer);
+            this.sliderCanvas.Children.Add(sliderVisualHost);
 
             if (this.pendingGraph != null)
             {

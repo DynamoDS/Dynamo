@@ -10,8 +10,6 @@ namespace Dynamorph
     {
         internal static readonly double HorzGap = 32.0;
         internal static readonly double VertGap = 16.0;
-        internal static readonly double LeftMargin = HorzGap;
-        internal static readonly double TopMargin = VertGap;
         internal static readonly double NodeWidth = 128.0;
         internal static readonly double NodeHeight = 32.0;
         internal static readonly double HorzSpace = ((2 * HorzGap) + NodeWidth);
@@ -39,11 +37,8 @@ namespace Dynamorph
 
         internal void UpdateNodeLayout()
         {
-            var top = (Config.TopMargin + (Config.VertSpace * DisplayRow));
-            var left = (Config.LeftMargin + (Config.HorzSpace * Depth));
-
-            top = top + Config.VertGap;
-            left = left + Config.HorzGap;
+            var top = (Config.VertGap + (Config.VertSpace * DisplayRow));
+            var left = (Config.HorzGap + (Config.HorzSpace * Depth));
             this.rect = new Rect(left, top, Config.NodeWidth, Config.NodeHeight);
 
             inputPoint = new Point(rect.Left, rect.Top + (0.5 * rect.Height));

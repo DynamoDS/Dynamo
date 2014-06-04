@@ -12,17 +12,27 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="3*"></RowDefinition>
         </Grid.RowDefinitions>
-        <ScrollViewer Name="canvasScrollViewer"
-                      CanContentScroll="True"
-                      HorizontalScrollBarVisibility="Hidden"
-                      VerticalScrollBarVisibility="Hidden">
-            <Canvas Name="graphCanvas"
-                    SnapsToDevicePixels="True"
-                    Background="White"></Canvas>
-        </ScrollViewer>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="24"></RowDefinition>
+            </Grid.RowDefinitions>
+            <ScrollViewer Name="canvasScrollViewer"
+                          CanContentScroll="True"
+                          HorizontalScrollBarVisibility="Hidden"
+                          VerticalScrollBarVisibility="Hidden">
+                <Canvas Name="graphCanvas"
+                        SnapsToDevicePixels="True"
+                        Background="White"></Canvas>
+            </ScrollViewer>
+            <Canvas Name="sliderCanvas"
+                    Grid.Row="1"
+                    Background="GreenYellow"></Canvas>
+        </Grid>
         <GridSplitter Grid.Row="1"
                       Width="Auto"
                       Height="6"
+                      Background="#2d2d2d"
                       HorizontalAlignment="Stretch" />
         <Border Name="VisualizerHostElement"
                 Grid.Row="2"

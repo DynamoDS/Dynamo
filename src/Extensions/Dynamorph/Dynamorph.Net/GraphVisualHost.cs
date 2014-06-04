@@ -18,6 +18,10 @@ namespace Dynamorph
             NodeBorderColor,
             NodeTextColor,
 
+            SliderEdge,
+            SliderFill,
+            SliderDivider,
+
             Lime,
             Green,
             Emerald,
@@ -46,6 +50,10 @@ namespace Dynamorph
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0xcb, 0xc6, 0xbe))); // NodeFillColor
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0x5e, 0x5c, 0x5a))); // NodeBorderColor
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00))); // NodeTextColor
+
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(62, 62, 66)));       // SliderEdge
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(104, 104, 104)));    // SliderFill
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(30, 30, 30)));       // SliderDivider
 
             Brushes.Add(new SolidColorBrush(Color.FromRgb(164, 196, 0)));   // Lime
             Brushes.Add(new SolidColorBrush(Color.FromRgb(96, 169, 23)));   // Green
@@ -86,6 +94,106 @@ namespace Dynamorph
         }
 
         internal static readonly List<SolidColorBrush> Brushes;
+    }
+
+    class SliderVisualHost : FrameworkElement
+    {
+        private TranslateTransform horzTransform = null;
+        private VisualCollection childVisuals = null;
+        private DrawingVisual sliderBackground = new DrawingVisual();
+        private ScrollViewer canvasScrollViewer = null;
+
+        #region Public Operational Class Methods
+
+        internal SliderVisualHost(ScrollViewer canvasScrollViewer)
+        {
+            this.childVisuals = new VisualCollection(this);
+            this.childVisuals.Add(sliderBackground);
+            this.canvasScrollViewer = canvasScrollViewer;
+
+            this.horzTransform = new TranslateTransform();
+            this.RenderTransform = horzTransform;
+
+            this.Loaded += OnSliderVisualHostLoaded;
+            this.canvasScrollViewer.ScrollChanged += OnCanvasScrollChanged;
+        }
+
+        #endregion
+
+        #region FrameworkElement Overridable Methods
+
+        protected override int VisualChildrenCount
+        {
+            get { return childVisuals.Count; }
+        }
+
+        protected override Visual GetVisualChild(int index)
+        {
+            return childVisuals[index];
+        }
+
+        private Canvas ParentCanvas
+        {
+            get
+            {
+                Canvas parentCanvas = this.Parent as Canvas;
+                if (parentCanvas == null)
+                {
+                    var message = "SliderVisualHost expects a Canvas as parent";
+                    throw new InvalidOperationException(message);
+                }
+
+                return parentCanvas;
+            }
+        }
+
+        #endregion
+
+        #region Private Class Event Handlers
+
+        private void OnSliderVisualHostLoaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnCanvasScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            RenderSliderBackground(e);
+        }
+
+        #endregion
+
+        #region Private Class Helper Methods
+
+        private void RenderSliderBackground(ScrollChangedEventArgs e)
+        {
+            if (e.ExtentWidthChange > 0.0)
+            {
+                var drawingContext = this.sliderBackground.RenderOpen();
+                var fillBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderFill);
+                var edgeBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderEdge);
+
+                var height = ParentCanvas.ActualHeight + 1;
+                var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
+
+                // Fill the entire slider region with slider fill brush.
+                Rect sliderRegion = new Rect(-0.5, -0.5, e.ExtentWidth + 1, height);
+                drawingContext.DrawRectangle(fillBrush, null, sliderRegion);
+
+                // Render both the edges (left and right ends of the slider).
+                var edgeRegion = sliderRegion;
+                edgeRegion.Width = edgeWidth;
+                drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
+                edgeRegion.X = sliderRegion.Right - edgeWidth;
+                drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
+
+                drawingContext.Close();
+            }
+
+            // Update the horizontal offset of background.
+            this.horzTransform.X = -e.HorizontalOffset;
+        }
+
+        #endregion
     }
 
     class GraphVisualHost : FrameworkElement
@@ -202,7 +310,7 @@ namespace Dynamorph
             }
 
             drawingContext.Close(); // Done drawing, commit changes.
-            boundingBox.Inflate(Config.HorzGap * 2, Config.VertGap * 2);
+            boundingBox.Inflate(Config.HorzGap, Config.VertGap);
             parentCanvas.Width = boundingBox.Width;
             parentCanvas.Height = boundingBox.Height;
         }

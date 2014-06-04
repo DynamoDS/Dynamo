@@ -40,6 +40,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Move shader source to external files
 - [ ] Remove normal computation in GetTriangleGeometries
 - [ ] Implement logging mechanism
+- [ ] Incorporate [debugging facility](http://www.opengl.org/registry/specs/ARB/debug_output.txt) provided by OpenGL
 - [ ] Display OpenGL logs in Dynamorph window
 - [ ] Implement Track Ball class for navigation
 - [ ] Update aspect ratio when window is sized
@@ -56,5 +57,5 @@ Dynamorph, morph the heck out of your design.
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
 
-#### Points, line-strips, triangles and Phong shading! :) ####
+#### Slider, and more accurate surface normals from ASM! :) ####
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)
