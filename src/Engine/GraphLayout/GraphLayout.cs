@@ -8,9 +8,10 @@ namespace GraphLayout
 {
     public class Graph
     {
-        public int MaxLayerHeight = 5;
+        public int MaxLayerHeight = 15;
         public double HorizontalNodeDistance = 100;
         public double VerticalNodeDistance = 30;
+        public double Infinite = 1000000;
 
         public HashSet<Node> Nodes = new HashSet<Node>();
         public HashSet<Edge> Edges = new HashSet<Edge>();
@@ -19,15 +20,15 @@ namespace GraphLayout
 
         #region Helper methods
 
-        public void AddNode(Guid guid, double width, double height)
+        public void AddNode(Guid guid, double width, double height, double y)
         {
-            var node = new Node(guid, width, height, this);
+            var node = new Node(guid, width, height, y, this);
             Nodes.Add(node);
         }
 
-        public void AddEdge(Guid guid, Guid startId, Guid endId, double endY)
+        public void AddEdge(Guid startId, Guid endId, double startY, double endY)
         {
-            var edge = new Edge(guid, startId, endId, endY, this);
+            var edge = new Edge(startId, endId, startY, endY, this);
             Edges.Add(edge);
         }
 
@@ -167,20 +168,36 @@ namespace GraphLayout
         
         /// <summary>
         /// Sugiyama step 2: Layering
-        /// This method implements Coffman-Graham layering algorithm.
+        /// This method implements Coffman-Graham layering algorithm.  All
+        /// output nodes will be put on the rightmost layer and they will be
+        /// ordered based on their original vertical positions.  All input
+        /// nodes will be put on the leftmost layer, and all isolated nodes
+        /// will be put below the input nodes.  This includes an implementation
+        /// to avoid horizontal node overlapping.
         /// </summary>
         public void AssignLayers()
         {
             RemoveTransitiveEdges();
 
-            // Label the nodes based on the number of incoming edges.
+            // The rightmost layer is ordered based on the original vertical
+            // position of the nodes.
+            if (Edges.Count > 0)
+                Layers.Add(Nodes.Where(x => x.RightEdges.Count == 0
+                    && x.LeftEdges.Count > 0).OrderBy(x => x.Y).ToList());
+            else
+                Layers.Add(Nodes.OrderBy(x => x.Y).ToList());
+
+            foreach (Node n in Layers.First())
+                n.Layer = 0;
+
+            // Label the rest of the nodes based on the number of incoming edges.
             List<Node> OrderedNodes = Nodes.OrderByDescending(
                 x => x.LeftEdges.Count(e => e.Active)).ToList();
-            HashSet<Node> LayeredNodes = new HashSet<Node>();
 
-            Layers.Add(new List<Node>());
+            bool isFinalLayer = false;
             int currentLayer = 0;
-            int processed = 0;
+            int processed = Layers.First().Count;
+
             double layerWidth = 0;
             double previousLayerX = 0;
 
@@ -190,19 +207,25 @@ namespace GraphLayout
                 // such that all the right edges of the is node connected to U.
                 
                 List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
-                    x.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer >= 0)).ToList();
+                    x.RightEdges.Where(e => e.Active)
+                    .All(e => e.EndNode.Layer >= 0)).ToList();
 
                 Node n = selected.FirstOrDefault(x =>
                     x.RightEdges.All(e => e.EndNode.Layer < currentLayer) &&
                     x.LeftEdges.Count(e => e.Active) > 0);
-                if (n == null) n = selected.First();
+
+                if (n == null)
+                    n = selected.OrderByDescending(x => x.LeftEdges.Count).First();
 
                 // Add a new layer when needed
                 if ((Layers[currentLayer].Count >= MaxLayerHeight) ||
-                    !n.RightEdges.Where(e => e.Active).All(e => e.EndNode.Layer < currentLayer))
+                    !n.RightEdges.Where(e => e.Active).
+                    All(e => e.EndNode.Layer < currentLayer) ||
+                    (currentLayer > 0 && n.LeftEdges.Count == 0 && !isFinalLayer))
                 {
                     // Horizontal node alignment for the previous layer
-                    if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1][0].X;
+                    if (currentLayer > 0)
+                        previousLayerX = Layers[currentLayer - 1].First().X;
                     foreach (Node x in Layers[currentLayer])
                         x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
                     
@@ -210,6 +233,9 @@ namespace GraphLayout
                     Layers.Add(new List<Node>());
 
                     layerWidth = 0;
+
+                    if (n.LeftEdges.Count == 0)
+                        isFinalLayer = true;
                 }
 
                 n.Layer = currentLayer;
@@ -221,52 +247,76 @@ namespace GraphLayout
             }
 
             // Horizontal node alignment for the last (leftmost) layer
-            if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1][0].X;
+            if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1].First().X;
             foreach (Node x in Layers[currentLayer])
                 x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
 
             Nodes = new HashSet<Node>(OrderedNodes);
-
-            // Assign temporary vertical position for further processing
-            foreach (List<Node> layer in Layers)
-            {
-                int y = 0;
-                foreach (Node node in layer)
-                {
-                    node.Y = y;
-                    y += 100;
-                }
-            }
         }
 
         /// <summary>
         /// Sugiyama step 3: Node Ordering
         /// This method uses Median heuristic to determine the vertical node
-        /// order for each layer.
+        /// order for each layer.  This includes an implementation to avoid
+        /// vertical node overlapping.
         /// </summary>
         public void OrderNodes()
         {
-            List<Node> previous = null;
+            // Assign temporary vertical position for further processing
             foreach (List<Node> layer in Layers)
             {
-                if (previous != null)
+                foreach (Node node in layer)
+                    node.Y = Infinite;
+            }
+            double y = 0;
+            foreach (Node node in Layers.First())
+            {
+                node.Y = y;
+                y += 80;
+            }
+            
+            List<Node> previousLayer = null;
+            foreach (List<Node> layer in Layers)
+            {
+                if (previousLayer != null)
                 {
+                    // Get the temporary vertical coordinates from each node's
+                    // median outgoing edge
+
                     foreach (Node n in layer)
                     {
-                        // Get the temporary vertical coordinate of the median
-                        // outgoing edge
-                        List<Edge> neighborEdges = n.RightEdges.Where(e => e.Active)
-                            .OrderBy(x => x.EndY).ToList();
-                        if (neighborEdges.Count > 0)
-                            n.Y = neighborEdges[neighborEdges.Count / 2].EndY;
+                        List<Edge> neighborEdges = n.RightEdges.OrderBy(x => x.EndY).ToList();
+
+                        if (neighborEdges.Count > 1 && neighborEdges.Count % 2 == 0)
+                        {
+                            Edge median1 = neighborEdges[(neighborEdges.Count - 1) / 2];
+                            Edge median2 = neighborEdges[(neighborEdges.Count) / 2];
+
+                            n.Y = (median1.EndNode.Y + median1.EndOffsetY +
+                                median2.EndNode.Y + median2.EndOffsetY -
+                                median1.StartOffsetY - median2.StartOffsetY) / 2;
+                        }
+                        else if (neighborEdges.Count > 0)
+                        {
+                            Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
+                            n.Y = median.EndNode.Y + median.EndOffsetY - median.StartOffsetY;
+                        }
                     }
                 }
 
                 // Sort the nodes on the layer by its temporary coordinates
-                previous = layer.OrderBy(x => x.Y).ToList();
+                previousLayer = layer.OrderBy(x => x.Y).ToList();
                 Node top = null;
-                foreach (Node n in previous)
+                foreach (Node n in previousLayer)
                 {
+                    // Assign new coordinates to this node's incoming edges
+                    int b = 1;
+                    foreach (Edge e in n.LeftEdges.OrderBy(x => x.EndY))
+                    {
+                        e.EndY = n.Y + b;
+                        b++;
+                    }
+                    
                     if (top == null)
                     {
                         top = n;
@@ -279,29 +329,43 @@ namespace GraphLayout
                         n.Y = top.Y + top.Height + VerticalNodeDistance;
                     }
 
-                    // Assign new coordinates to this node's incoming edges
-                    int b = 1;
-                    foreach (Edge e in n.LeftEdges)
-                    {
-                        e.EndY = n.Y + b;
-                        b++;
-                    }
-
                     top = n;
                 }
+            }
+
+            int i = 0;
+            while (i < Layers.Count)
+            {
+                Layers[i] = Layers[i].OrderBy(x => x.Y).ToList();
+                i++;
             }
         }
 
         #endregion
 
         /// <summary>
-        /// To align the top-left corner of the graph at coordinates (0,0).
+        /// To align the top and left bound of the graph at x = 0 and y = 0.
         /// </summary>
         public void NormalizeGraphPosition()
         {
-            double offset = Layers.Last().First().X;
-            foreach (Node n in Nodes)
-                n.X -= offset;
+            double offsetX = -Layers.Last().First().X;
+            double offsetY = Nodes.OrderBy(x => x.Y).First().Y;
+
+            foreach (List<Node> layer in Layers)
+            {
+                double maxY = -Infinite;
+                foreach (Node n in layer)
+                {
+                    n.X += offsetX;
+                    n.Y += offsetY;
+
+                    if (n.Y >= Infinite + offsetY)
+                        n.Y = maxY + VerticalNodeDistance;
+                    
+                    if (n.Y + n.Height > maxY)
+                        maxY = n.Y + n.Height;
+                }
+            }
         }
 
     }
@@ -323,11 +387,18 @@ namespace GraphLayout
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
 
-        public Node(Guid guid, double width, double height, Graph ownerGraph)
+        public double MidY
+        {
+            get { return Y + Height / 2; }
+            set { Y = value - Height / 2; }
+        }
+
+        public Node(Guid guid, double width, double height, double y, Graph ownerGraph)
         {
             Id = guid;
             Width = width;
             Height = height;
+            Y = y;
             OwnerGraph = ownerGraph;
         }
     }
@@ -342,12 +413,13 @@ namespace GraphLayout
         public Node EndNode;
 
         public double EndY;
+        public double StartOffsetY;
+        public double EndOffsetY;
 
         public bool Active = true;
 
-        public Edge(Guid edgeId, Guid startId, Guid endId, double endY, Graph ownerGraph)
+        public Edge(Guid startId, Guid endId, double startY, double endY, Graph ownerGraph)
         {
-            Id = edgeId;
             EndY = endY;
             OwnerGraph = ownerGraph;
 
@@ -358,6 +430,9 @@ namespace GraphLayout
             EndNode = OwnerGraph.FindNode(endId);
             if (EndNode != null)
                 EndNode.LeftEdges.Add(this);
+
+            StartOffsetY = startY - StartNode.Y;
+            EndOffsetY = endY - EndNode.Y;
         }
     }
 }

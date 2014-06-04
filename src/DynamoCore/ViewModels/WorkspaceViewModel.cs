@@ -899,10 +899,10 @@ namespace Dynamo.ViewModels
             var graph = new GraphLayout.Graph();
 
             foreach (NodeModel x in _model.Nodes)
-                graph.AddNode(x.GUID, x.Width, x.Height);
+                graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
 
             foreach (ConnectorModel x in _model.Connectors)
-                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID, x.End.Y);
+                graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
 
             // Sugiyama algorithm steps
             graph.RemoveCycles();
