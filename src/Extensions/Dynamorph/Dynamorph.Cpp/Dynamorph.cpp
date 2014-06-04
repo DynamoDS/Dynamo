@@ -69,35 +69,14 @@ static bool GetTriangleGeometries(IRenderPackage^ rp, TriangleGeometryData& data
         return false;
 
     auto tv = rp->TriangleVertices;
+    auto tn = rp->TriangleNormals;
     auto count = rp->TriangleVertices->Count;
 
     for (int p = 0; p < count; p = p + 3)
     {
         data.PushVertex((float) tv[p + 0], (float) tv[p + 1], (float) tv[p + 2]);
+        data.PushNormal((float) tn[p + 0], (float) tn[p + 1], (float) tn[p + 2]);
         data.PushColor(1.0f, 1.0f, 1.0f, 1.0f);
-    }
-
-    // TODO(Ben): Make use of normals from IRenderPackage when it is available.
-    auto floats = data.VertexCount() * 3;
-    const float* pCoords = data.GetCoordinates(0);
-    const float* pEndCoords = &(pCoords[floats]);
-
-    for (const float* p = pCoords; p < pEndCoords; p = p + 9)
-    {
-        float u[3] = { p[3] - p[0], p[4] - p[1], p[5] - p[2] };
-        float v[3] = { p[6] - p[0], p[7] - p[1], p[8] - p[2] };
-
-        float n[3] =
-        {
-            u[1] * v[2] - u[2] * v[1],
-            u[2] * v[0] - u[0] * v[2],
-            u[0] * v[1] - u[1] * v[0]
-        };
-
-        // Push one normal per vertex.
-        data.PushNormal(n[0], n[1], n[2]);
-        data.PushNormal(n[0], n[1], n[2]);
-        data.PushNormal(n[0], n[1], n[2]);
     }
 
     return true;
