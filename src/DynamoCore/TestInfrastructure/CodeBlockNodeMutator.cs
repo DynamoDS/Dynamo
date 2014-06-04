@@ -21,8 +21,6 @@ namespace Dynamo.TestInfrastructure
         {
 
             List<NodeModel> nodes = DynamoModel.Nodes.Where(x => x.GetType() == typeof (CodeBlockNodeModel)).ToList();
-            
-
 
             //If there aren't any CBNs, we can't mutate anything
             if (nodes.Count == 0)
@@ -42,11 +40,15 @@ namespace Dynamo.TestInfrastructure
 
                     if (Rand.NextDouble() <= 0.5)
                     {
+                        //Strategy 1: Replacement with simplest minimal replacement
+
                         replacement = "1;";
 
                     }
                     else
                     {
+                        //Strategy 2: Noise injection
+
                         replacement = code;
                         
                         while (Rand.NextDouble() > 0.5)
@@ -68,7 +70,7 @@ namespace Dynamo.TestInfrastructure
 
             }));
 
-            //We've performed a single edit
+            //We've performed a single edit from the perspective of undo
             return 1;
 
 
