@@ -45,6 +45,7 @@ INITGLPROC(PFNGLCLEARPROC,                      glClear);
 INITGLPROC(PFNGLCLEARCOLORPROC,                 glClearColor);
 INITGLPROC(PFNGLBLENDEQUATIONSEPARATEPROC,      glBlendEquationSeparate);
 INITGLPROC(PFNGLBLENDFUNCSEPARATEPROC,          glBlendFuncSeparate);
+INITGLPROC(PFNGLPOINTSIZEPROC,                  glPointSize);
 
 GraphicsContext::GraphicsContext() : 
     mRenderWindow(nullptr),
@@ -117,6 +118,7 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
 
     // Default states of our renderer.
     GL::glEnable(GL_DEPTH_TEST);
+    GL::glPointSize(4.0f);
 }
 
 void GraphicsContext::UninitializeCore(void)

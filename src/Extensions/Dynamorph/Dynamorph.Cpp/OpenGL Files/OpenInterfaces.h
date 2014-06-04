@@ -68,6 +68,7 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
             GETGLPROC(PFNGLBLENDEQUATIONSEPARATEPROC,       glBlendEquationSeparate);
             GETGLPROC(PFNGLBLENDFUNCSEPARATEPROC,           glBlendFuncSeparate);
+            GETGLPROC(PFNGLPOINTSIZEPROC,                   glPointSize);
 
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
         }
@@ -111,6 +112,7 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
         DEFGLPROC(PFNGLBLENDEQUATIONSEPARATEPROC,       glBlendEquationSeparate);
         DEFGLPROC(PFNGLBLENDFUNCSEPARATEPROC,           glBlendFuncSeparate);
+        DEFGLPROC(PFNGLPOINTSIZEPROC,                   glPointSize);
     };
 
     class Camera; // Forward declaration.
