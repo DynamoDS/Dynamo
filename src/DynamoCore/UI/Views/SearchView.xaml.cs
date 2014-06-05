@@ -142,6 +142,49 @@ namespace Dynamo.Search
                         e.Handled = true;
                         dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
                     }
+
+                    //if there are no nodes being selected, the delete key should 
+                    //delete the text in the search box of library preview
+                    else {
+
+                        //if there is no text, then jump out of the switch
+                        if (String.IsNullOrEmpty(SearchTextBox.Text))
+                        {
+                            break;
+                        }
+                        else 
+                        {
+                            int cursorPosition = SearchTextBox.SelectionStart;
+                            string searchBoxText = SearchTextBox.Text;
+
+                            //if some piece of text is seleceted by users.
+                            //delete this piece of text
+                            if (SearchTextBox.SelectedText != "")
+                            {
+                                searchBoxText = searchBoxText.Remove(cursorPosition, 
+                                    SearchTextBox.SelectionLength);
+                            }
+
+                            //if there is no text selected, delete the character after the cursor
+                            else 
+                            {
+                                
+                                //the cursor is at the end of this text string
+                                if (cursorPosition == searchBoxText.Length)
+                                {
+                                    break;
+                                }
+                                else 
+                                {
+                                    searchBoxText = searchBoxText.Remove(cursorPosition, 1);
+                                }
+                            }
+
+                            //update the SearchTextBox's text and the cursor position
+                            SearchTextBox.Text = searchBoxText;
+                            SearchTextBox.SelectionStart = cursorPosition;
+                        }
+                    }
                     break;
 
                 case Key.Tab:
