@@ -6,6 +6,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitTestFramework;
 using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests

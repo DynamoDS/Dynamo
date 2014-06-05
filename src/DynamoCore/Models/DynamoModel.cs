@@ -334,7 +334,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// The collection of Nodes in the model.
+        /// Returns a shallow copy of the collection of Nodes in the model.
         /// </summary>
         public List<NodeModel> Nodes
         {

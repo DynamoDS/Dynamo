@@ -1104,9 +1104,9 @@
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                    <!--<Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
 
-                      Command="{Binding CancelRunCommand}" Margin="5"/>
+                      Command="{Binding CancelRunCommand}" Margin="5"/>-->
 
                     <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"

@@ -933,6 +933,11 @@ namespace Dynamo.ViewModels
                 helper.SetAttribute("Value", Value);
             }
 
+            public override string ToString()
+            {
+                return String.Format("ModelGuid: {0}, Name: {1}, Value: {2}", ModelGuid, Name, Value);
+            }
+
             #endregion
         }
 
