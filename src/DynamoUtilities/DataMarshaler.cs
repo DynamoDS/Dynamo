@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,11 +18,11 @@ namespace Dynamo.Utilities
 
         public DataMarshaler()
         {
+            RegisterMarshaler((IEnumerable e) => e.Cast<object>().Select(Marshal));
+            RegisterMarshaler((IList e) => e.Cast<object>().Select(Marshal).ToList());
             RegisterMarshaler(
-                (IDictionary<object, object> dict) =>
-                    dict.ToDictionary(x => Marshal(x.Key), x => Marshal(x.Value)));
-            RegisterMarshaler((IEnumerable<object> e) => e.Select(Marshal));
-            RegisterMarshaler((IList<object> e) => e.Select(Marshal).ToList());
+                (IDictionary dict) =>
+                    dict.Cast<dynamic>().ToDictionary(x => Marshal(x.Key), x => Marshal(x.Value)));
         }
 
         /// <summary>
@@ -75,35 +76,21 @@ namespace Dynamo.Utilities
 
             var targetType = obj.GetType();
 
-            // Check for a marshaler of the object's type.
-            if (marshalers.ContainsKey(obj.GetType()))
-            {
-                return marshalers[targetType](obj);
-            }
-
-            // Check whether this object is an instance of 
-            // any marshaler's type. This will find the marshaler which
-            // is registered for a base type.
-            if (marshalers.Any(x => x.Key.IsInstanceOfType(obj)))
-            {
-                return marshalers.First(m => m.Key.IsInstanceOfType(obj)).Value.Invoke(obj);
-            }
-
-            // Check if a marshaler was registered previously in the cache.
-            if (cache.ContainsKey(targetType))
-            {
-                return cache[targetType](obj);
-            }
+            Converter<object, object> marshaler;
+            if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))
+                return marshaler(obj);
 
             var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(obj.GetType(), x => x);
 
-            //Find the marshaler that operates on the closest base type of the target type.
+            // Find the marshaler that operates on the closest base type of the target type.
             var dispatchedMarshaler =
+                // Only deal with marshalers that can operator on the target type
                 marshalers.Where(pair => pair.Key.IsAssignableFrom(targetType))
                     .Aggregate(
-                        defaultMarshaler,
-                        (acc, next) => acc.Key.IsAssignableFrom(next.Key) ? next : acc);
+                        defaultMarshaler, // used if none are found
+                        (acc, next) => acc.Key.IsAssignableFrom(next.Key) ? next : acc); // always keep the more specific marshaler
 
+            // Cache the marshaler so we don't keep doing this lookup
             cache[targetType] = dispatchedMarshaler.Value;
 
             return dispatchedMarshaler.Value(obj);
