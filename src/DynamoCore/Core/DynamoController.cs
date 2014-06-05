@@ -549,7 +549,13 @@ namespace Dynamo
                             writer.WriteLine("### - Deletion target: " + node.GUID);
 
 
-                            DeleteNodeMutator mutator = new DeleteNodeMutator(rand);
+                            List<AbstractMutator> mutators = new List<AbstractMutator>()
+                                {
+                                    new CodeBlockNodeMutator(rand), new DeleteNodeMutator(rand)
+                                };
+
+
+                            AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                             
                             int numberOfUndosNeeded = mutator.Mutate();
 
