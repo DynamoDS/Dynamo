@@ -47,7 +47,7 @@ namespace Dynamo.UpdateManager
         event ShutdownRequestedEventHandler ShutdownRequested;
         void CheckForProductUpdate(IAsynchronousRequest request);
         void QuitAndInstallUpdate();
-        void HostApplicationBeginQuit(object sender, EventArgs e);
+        void HostApplicationBeginQuit();
         void UpdateDataAvailable(IAsynchronousRequest request);
         bool IsVersionCheckInProgress();
         bool CheckNewerDailyBuilds { get; set; }
@@ -184,6 +184,7 @@ namespace Dynamo.UpdateManager
         private bool checkNewerDailyBuilds;
         private bool forceUpdate;
         private string updateFileLocation;
+        private int currentDownloadProgress = -1;
 
         #endregion
 
@@ -240,6 +241,9 @@ namespace Dynamo.UpdateManager
             {
                 updateFileLocation = value;
                 RaisePropertyChanged("UpdateFileLocation");
+
+                // Save the last downloaded location to the preferences.
+                dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath = updateFileLocation;
             }
         }
 
@@ -359,6 +363,96 @@ namespace Dynamo.UpdateManager
                 return;
             }
 
+            var latestBuildFilePath = GetLatestBuildFromS3(request);
+            if (string.IsNullOrEmpty(latestBuildFilePath))
+            {
+                versionCheckInProgress = false;
+                return;
+            }
+
+            // Strip the build number from the file name.
+            // DynamoInstall0.7.0 becomes 0.7.0. Build a version
+            // and compare it with the current product version.
+
+            var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFilePath);
+
+            BinaryVersion latestBuildVersion;
+            var latestBuildTime = new DateTime();
+
+            bool useStable = false;
+            if (IsStableBuild(latestBuildFilePath))
+            {
+                useStable = true;
+                latestBuildVersion = GetBinaryVersionFromFilePath(latestBuildFilePath);
+            }
+            else if (IsDailyBuild(latestBuildFilePath))
+            {
+                latestBuildTime = GetBuildTimeFromFilePath(latestBuildFilePath);
+                latestBuildVersion = GetCurrentBinaryVersion();
+            }
+            else
+            {
+                logger.Log("The specified file path is not recognizable as a stable or a daily build");
+                versionCheckInProgress = false;
+                return;
+            }
+
+            // Check the last downloaded update. If it's the same or newer as the 
+            // one found on S3, then just set the update information to that one
+            // and bounce.
+
+            //if (ExistingUpdateIsNewer())
+            //{
+            //    logger.Log(string.Format("Using previously updated download {0}", dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath));
+            //    UpdateDownloaded(this, new UpdateDownloadedEventArgs(null, UpdateFileLocation));
+            //    versionCheckInProgress = false;
+            //    return;
+            //}
+
+            // Install the latest update regardless of whether it
+            // is newer than the current build.
+            if (ForceUpdate)
+            {
+                SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
+            }
+            else
+            {
+                if (useStable) //Check stables
+                {
+                    if (latestBuildVersion > ProductVersion)
+                    {
+                        SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
+                    }
+                    else
+                    {
+                        logger.Log("Dynamo is up to date.");
+                    }
+                }
+                else // Check dailies
+                {
+                    if (latestBuildTime > DateTime.Now)
+                    {
+                        SetUpdateInfo(GetCurrentBinaryVersion(), latestBuildDownloadUrl);
+                    }
+                    else
+                    {
+                        logger.Log("Dynamo is up to date.");
+                    }
+                }
+            }
+
+            versionCheckInProgress = false;
+        }
+
+        /// <summary>
+        /// Get the file name of the latest build on S3
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        private string GetLatestBuildFromS3(IAsynchronousRequest request)
+        {
+            string latestBuildFileName = "";
+
             XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
 
             XDocument doc = null;
@@ -371,8 +465,7 @@ namespace Dynamo.UpdateManager
                 catch (Exception e)
                 {
                     dynSettings.DynamoLogger.Log(e);
-                    versionCheckInProgress = false;
-                    return;
+                    return null;
                 }
             }
 
@@ -386,82 +479,98 @@ namespace Dynamo.UpdateManager
             if (!checkNewerDailyBuilds)
             {
                 builds = bucketresult.Descendants(ns + "LastModified").
-                                OrderByDescending(x => DateTime.Parse(x.Value)).
-                                Where(x => x.Parent.Value.Contains(InstallNameBase)).
-                                Select(x => x.Parent);
+                    OrderByDescending(x => DateTime.Parse(x.Value)).
+                    Where(x => x.Parent.Value.Contains(InstallNameBase)).
+                    Select(x => x.Parent);
             }
             else
             {
                 builds = bucketresult.Descendants(ns + "LastModified").
-                                OrderByDescending(x => DateTime.Parse(x.Value)).
-                                Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(DailyInstallNameBase)).
-                                Select(x => x.Parent);
+                    OrderByDescending(x => DateTime.Parse(x.Value)).
+                    Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(DailyInstallNameBase)).
+                    Select(x => x.Parent);
             }
-            
+
 
             var xElements = builds as XElement[] ?? builds.ToArray();
             if (!xElements.Any())
             {
-                versionCheckInProgress = false;
-                return;
+                return null;
             }
 
             var latestBuild = xElements.First();
-            var latestBuildFileName = latestBuild.Element(ns + "Key").Value;
+            latestBuildFileName = latestBuild.Element(ns + "Key").Value;
 
-            // Strip the build number from the file name.
-            // DynamoInstall0.7.0 becomes 0.7.0. Build a version
-            // and compare it with the current product version.
+            return latestBuildFileName;
+        }
 
-            var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
-            var fileName = Path.GetFileNameWithoutExtension(latestBuildFileName);
-
-            // Install the latest update regardless of whether it
-            // is newer than the current build.
-            if (ForceUpdate)
+        private bool ExistingUpdateIsNewer()
+        {
+            if (!ExistingUpdateAvailable())
             {
-                if (fileName.Contains(InstallNameBase))
-                {
-                    // For latest stable builds, check and compare the version number
-                    var latestBuildVersion = BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
-                    SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
-                }
-                else if (fileName.Contains(DailyInstallNameBase))
-                {
-                    var dtStr = fileName.Replace(DailyInstallNameBase, "");
-
-                    // For the latest daily builds, check and compare the date:time stamp.
-                    var latestBuildTime = DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
-                    var v = Assembly.GetExecutingAssembly().GetName().Version;
-                    SetUpdateInfo(BinaryVersion.FromString(string.Format("{0}:{1}", v.Major, v.Minor)), latestBuildDownloadUrl);
-                }
-            }
-            else
-            {
-                if (fileName.Contains(InstallNameBase))
-                {
-                    // For latest stable builds, check and compare the version number
-                    var latestBuildVersion = BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
-                    if (latestBuildVersion > ProductVersion)
-                    {
-                        SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
-                    }
-                }
-                else if (fileName.Contains(DailyInstallNameBase))
-                {
-                    var dtStr = fileName.Replace(DailyInstallNameBase, "");
-
-                    // For the latest daily builds, check and compare the date:time stamp.
-                    var latestBuildTime = DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
-                    if (latestBuildTime > DateTime.Now)
-                    {
-                        var v = Assembly.GetExecutingAssembly().GetName().Version;
-                        SetUpdateInfo(BinaryVersion.FromString(string.Format("{0}:{1}", v.Major, v.Minor)), latestBuildDownloadUrl);
-                    }
-                }
+                return false;
             }
 
-            versionCheckInProgress = false;
+            var existingBuildPath = dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath;
+            var existingIsStable = IsStableBuild(existingBuildPath);
+
+            if (existingIsStable)
+            {
+                var latestBuildVersion = GetCurrentBinaryVersion();
+                var existingBuildVersion = GetBinaryVersionFromFilePath(existingBuildPath);
+                if (existingBuildVersion > latestBuildVersion)
+                {
+                    return true;
+                }
+            }
+            else //existing is daily
+            {
+                // If the existing is a daily build from today
+                var existingBuildTime = GetBuildTimeFromFilePath(existingBuildPath);
+                if (existingBuildTime.Date == DateTime.Today)
+                {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        private DateTime GetBuildTimeFromFilePath(string filePath)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var dtStr = fileName.Replace(DailyInstallNameBase, "");
+            return DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
+        }
+
+        private BinaryVersion GetCurrentBinaryVersion()
+        {
+            // If we're looking at dailies, latest build version will simply be
+            // the current build version without a build or revision, ex. 0.6
+            var v = Assembly.GetExecutingAssembly().GetName().Version;
+            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Revision));
+        }
+
+        private BinaryVersion GetBinaryVersionFromFilePath(string filePath)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            return BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
+        }
+
+        private bool ExistingUpdateAvailable()
+        {
+            var existingUpdatePath = dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath;
+            return !string.IsNullOrEmpty(existingUpdatePath) && File.Exists(existingUpdatePath);
+        }
+
+        private bool IsDailyBuild(string fileName)
+        {
+            return fileName.Contains(DailyInstallNameBase);
+        }
+
+        private bool IsStableBuild(string fileName)
+        {
+            return fileName.Contains(InstallNameBase);
         }
 
         private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl)
@@ -490,7 +599,7 @@ namespace Dynamo.UpdateManager
             
         }
 
-        public void HostApplicationBeginQuit(object sender, EventArgs e)
+        public void HostApplicationBeginQuit()
         {
             if (!string.IsNullOrEmpty(UpdateFileLocation))
             {
@@ -542,6 +651,8 @@ namespace Dynamo.UpdateManager
         /// <returns>Request status, it may return false if invalid URL was passed.</returns>
         private bool DownloadUpdatePackageAsynchronously(string url, BinaryVersion version)
         {
+            currentDownloadProgress = -1;
+
             if (string.IsNullOrEmpty(url) || (null == version))
             {
                 versionCheckInProgress = false;
@@ -567,9 +678,20 @@ namespace Dynamo.UpdateManager
             }
 
             var client = new WebClient();
+            client.DownloadProgressChanged += client_DownloadProgressChanged;
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(OnDownloadFileCompleted);
             client.DownloadFileAsync(new Uri(url), downloadedFilePath, downloadedFilePath);
             return true;
+        }
+
+        void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage % 10 == 0 && 
+                e.ProgressPercentage > currentDownloadProgress)
+            {
+                logger.Log(string.Format("Update download progress: {0}%", e.ProgressPercentage));
+                currentDownloadProgress = e.ProgressPercentage;
+            }
         }
 
         #endregion
