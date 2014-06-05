@@ -73,6 +73,9 @@ namespace Dynamo.ViewModels
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
 
+            if (dynSettings.Controller.DebugSettings.VerboseLogging)
+                dynSettings.DynamoLogger.Log("Command: " + command);
+
             command.Execute(this);
         }
 

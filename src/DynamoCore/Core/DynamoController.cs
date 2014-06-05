@@ -15,6 +15,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Services;
+using Dynamo.TestInfrastructure;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -548,13 +549,10 @@ namespace Dynamo
                             writer.WriteLine("### - Deletion target: " + node.GUID);
 
 
-                            UIDispatcher.Invoke(new Action(() =>
-                                {
-                                    DynamoViewModel.DeleteModelCommand delCommand =
-                                        new DynamoViewModel.DeleteModelCommand(node.GUID);
-                                    DynamoViewModel.ExecuteCommand(delCommand);
+                            DeleteNodeMutator mutator = new DeleteNodeMutator(rand);
+                            
+                            int numberOfUndosNeeded = mutator.Mutate();
 
-                                }));
 
                             Thread.Sleep(100);
 
@@ -578,16 +576,22 @@ namespace Dynamo
                             writer.WriteLine("### - Beginning undo");
 
 
-                            UIDispatcher.Invoke(new Action(() =>
-                                {
-                                    DynamoViewModel.UndoRedoCommand undoCommand =
-                                        new DynamoViewModel.UndoRedoCommand(
-                                            DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                    DynamoViewModel.ExecuteCommand(undoCommand);
+                            for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                            {
+                                
+                                UIDispatcher.Invoke(new Action(() =>
+                                    {
+                                        DynamoViewModel.UndoRedoCommand undoCommand =
+                                            new DynamoViewModel.UndoRedoCommand(
+                                                DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                        DynamoViewModel.ExecuteCommand(undoCommand);
 
-                                }));
+                                    }));
 
                             Thread.Sleep(100);
+
+                            }
+
 
                             writer.WriteLine("### - undo complete");
                             writer.Flush();
