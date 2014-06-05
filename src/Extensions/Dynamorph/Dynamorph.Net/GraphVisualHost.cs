@@ -99,9 +99,10 @@ namespace Dynamorph
 
     class SliderVisualHost : FrameworkElement
     {
-        private BitmapImage sliderThumb = null;
+        private BitmapImage sliderThumbImage = null;
         private TranslateTransform horzTransform = null;
         private VisualCollection childVisuals = null;
+        private DrawingVisual sliderThumbLayer = new DrawingVisual();
         private DrawingVisual sliderBackground = new DrawingVisual();
         private ScrollViewer canvasScrollViewer = null;
 
@@ -111,6 +112,7 @@ namespace Dynamorph
         {
             this.childVisuals = new VisualCollection(this);
             this.childVisuals.Add(sliderBackground);
+            this.childVisuals.Add(sliderThumbLayer);
             this.canvasScrollViewer = canvasScrollViewer;
 
             this.horzTransform = new TranslateTransform();
@@ -158,53 +160,73 @@ namespace Dynamorph
             var pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
             var path = pack + "://application:,,,/Dynamorph.Net;component/";
             var uri = new Uri(path + "Resources/Images/slider-thumb.png");
-            sliderThumb = new BitmapImage(uri);
+            sliderThumbImage = new BitmapImage(uri);
         }
 
         private void OnCanvasScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            RenderSliderBackground(e);
+            if (e.ExtentWidthChange > 0.0)
+                RenderSliderBackground(e.ExtentWidth);
+
+            if (e.ExtentHeightChange > 0.0)
+                RenderSliderThumbSeparator();
+
+            // Update the horizontal offset of background.
+            this.horzTransform.X = -e.HorizontalOffset;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            var result = VisualTreeHelper.HitTest(this, e.GetPosition(this));
+            this.Cursor = ((result.VisualHit == sliderThumbLayer) ?
+                Cursors.SizeWE : Cursors.Arrow);
+
+            base.OnMouseMove(e);
         }
 
         #endregion
 
         #region Private Class Helper Methods
 
-        private void RenderSliderBackground(ScrollChangedEventArgs e)
+        private void RenderSliderBackground(double extentWidth)
         {
-            if (e.ExtentWidthChange > 0.0)
-            {
-                var drawingContext = this.sliderBackground.RenderOpen();
-                var fillBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderFill);
-                var edgeBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderEdge);
+            var drawingContext = this.sliderBackground.RenderOpen();
+            var fillBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderFill);
+            var edgeBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderEdge);
 
-                var height = ParentCanvas.ActualHeight + 1;
-                var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
+            var height = ParentCanvas.ActualHeight + 1;
+            var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
 
-                // Fill the entire slider region with slider fill brush.
-                Rect sliderRegion = new Rect(-0.5, -0.5, e.ExtentWidth + 1, height);
-                drawingContext.DrawRectangle(fillBrush, null, sliderRegion);
+            // Fill the entire slider region with slider fill brush.
+            Rect sliderRegion = new Rect(-0.5, -0.5, extentWidth + 1, height);
+            drawingContext.DrawRectangle(fillBrush, null, sliderRegion);
 
-                // Render both the edges (left and right ends of the slider).
-                var edgeRegion = sliderRegion;
-                edgeRegion.Width = edgeWidth;
-                drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
-                edgeRegion.X = sliderRegion.Right - edgeWidth;
-                drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
+            // Render both the edges (left and right ends of the slider).
+            var edgeRegion = sliderRegion;
+            edgeRegion.Width = edgeWidth;
+            drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
+            edgeRegion.X = sliderRegion.Right - edgeWidth;
+            drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
 
-                // TODO(Ben): Move these on separate visual: render slider thumb.
-                var thumbWidth = sliderThumb.PixelWidth;
-                var thumbHeight = sliderThumb.PixelHeight;
-                var thumbRegion = new Rect((edgeWidth - (thumbWidth * 0.5)),
-                    ((height - thumbHeight) * 0.5), thumbWidth, thumbHeight);
+            drawingContext.Close();
+        }
 
-                drawingContext.DrawImage(sliderThumb, thumbRegion);
+        private void RenderSliderThumbSeparator()
+        {
+            this.sliderThumbLayer.Transform = new TranslateTransform(100, 0);
+            var drawingContext = this.sliderThumbLayer.RenderOpen();
 
-                drawingContext.Close();
-            }
+            var thumbWidth = sliderThumbImage.PixelWidth;
+            var thumbHeight = sliderThumbImage.PixelHeight;
 
-            // Update the horizontal offset of background.
-            this.horzTransform.X = -e.HorizontalOffset;
+            var height = ParentCanvas.ActualHeight + 1;
+            var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
+
+            var thumbRegion = new Rect((edgeWidth - (thumbWidth * 0.5)),
+                ((height - thumbHeight) * 0.5), thumbWidth, thumbHeight);
+
+            drawingContext.DrawImage(sliderThumbImage, thumbRegion);
+            drawingContext.Close();
         }
 
         #endregion
