@@ -80,7 +80,7 @@ namespace Dynamo.Utilities
             if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))
                 return marshaler(obj);
 
-            var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(obj.GetType(), x => x);
+            var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(typeof(object), x => x);
 
             // Find the marshaler that operates on the closest base type of the target type.
             var dispatchedMarshaler =
