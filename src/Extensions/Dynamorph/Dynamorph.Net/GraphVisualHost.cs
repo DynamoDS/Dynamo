@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Dynamorph
 {
@@ -98,6 +99,7 @@ namespace Dynamorph
 
     class SliderVisualHost : FrameworkElement
     {
+        private BitmapImage sliderThumb = null;
         private TranslateTransform horzTransform = null;
         private VisualCollection childVisuals = null;
         private DrawingVisual sliderBackground = new DrawingVisual();
@@ -153,6 +155,10 @@ namespace Dynamorph
 
         private void OnSliderVisualHostLoaded(object sender, RoutedEventArgs e)
         {
+            var pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
+            var path = pack + "://application:,,,/Dynamorph.Net;component/";
+            var uri = new Uri(path + "Resources/Images/slider-thumb.png");
+            sliderThumb = new BitmapImage(uri);
         }
 
         private void OnCanvasScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -185,6 +191,14 @@ namespace Dynamorph
                 drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
                 edgeRegion.X = sliderRegion.Right - edgeWidth;
                 drawingContext.DrawRectangle(edgeBrush, null, edgeRegion);
+
+                // TODO(Ben): Move these on separate visual: render slider thumb.
+                var thumbWidth = sliderThumb.PixelWidth;
+                var thumbHeight = sliderThumb.PixelHeight;
+                var thumbRegion = new Rect((edgeWidth - (thumbWidth * 0.5)),
+                    ((height - thumbHeight) * 0.5), thumbWidth, thumbHeight);
+
+                drawingContext.DrawImage(sliderThumb, thumbRegion);
 
                 drawingContext.Close();
             }
