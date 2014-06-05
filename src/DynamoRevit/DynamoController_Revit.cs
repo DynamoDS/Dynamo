@@ -295,7 +295,6 @@ namespace Dynamo
             OnRevitDocumentChanged();
         }
 
-
         public override void OnEvaluationCompleted(object sender, EventArgs e)
         {
             //Cleanup Delegate
@@ -391,10 +390,6 @@ namespace Dynamo
             base.ShutDown(shutDownHost, args);
             Updater.UnRegisterAllChangeHooks();
 
-            // PB: killed this block as the LookupPostableCommandId method is not available in revit 2013
-            //     dynamo will crash consistently on shutdown without this commented out.  
-            //     TODO: fix with proper reflection call
-
             if (shutDownHost)
             {
                 // this method cannot be called without Revit 2014
@@ -411,7 +406,6 @@ namespace Dynamo
             }
         }
 
-        
         public override void ResetEngine()
         {
             RevThread.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);

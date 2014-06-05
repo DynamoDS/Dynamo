@@ -576,6 +576,7 @@ namespace Dynamo.ViewModels
             
             //Register for a notification when the update manager downloads an update
             dynSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            dynSettings.Controller.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
@@ -678,18 +679,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        //void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    switch (e.PropertyName)
-        //    {
-        //        case "AlternateDrawingContextAvailable":
-        //            RaisePropertyChanged("AlternateDrawingContextAvailable");
-        //            break;
-        //        case "ShowGeometryInAlternateContext":
-        //            RaisePropertyChanged("ShowGeometryInAlternateContext");
-        //            break;
-        //    }
-        //}
+        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        {
+            Exit(true, true);
+            Controller.UpdateManager.HostApplicationBeginQuit();
+        }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -1139,20 +1133,39 @@ namespace Dynamo.ViewModels
 
         public void Exit(object allowCancel)
         {
+            if (SetAllowCancelAndRequestUIClose(allowCancel))
+            {
+                return;
+            }
+
+            dynSettings.Controller.ShutDown(false);
+        }
+
+        internal void Exit(bool allowCancel, bool shutDownHost)
+        {
+            if (SetAllowCancelAndRequestUIClose(allowCancel))
+            {
+                return;
+            }
+
+            dynSettings.Controller.ShutDown(true);
+        }
+
+        private bool SetAllowCancelAndRequestUIClose(object allowCancel)
+        {
             bool allowCancelBool = true;
             if (allowCancel != null)
             {
                 allowCancelBool = (bool)allowCancel;
             }
             if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
-                return;
+                return true;
 
             exitInvoked = true;
 
             //request the UI to close its window
             OnRequestClose(this, EventArgs.Empty);
-
-            dynSettings.Controller.ShutDown(false);
+            return false;
         }
 
         internal bool CanExit(object allowCancel)
