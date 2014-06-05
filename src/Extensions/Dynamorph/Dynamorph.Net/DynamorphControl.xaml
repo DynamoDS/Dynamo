@@ -19,6 +19,7 @@
             </Grid.RowDefinitions>
             <ScrollViewer Name="canvasScrollViewer"
                           CanContentScroll="True"
+                          HorizontalAlignment="Left"
                           HorizontalScrollBarVisibility="Hidden"
                           VerticalScrollBarVisibility="Hidden">
                 <Canvas Name="graphCanvas"
@@ -27,7 +28,7 @@
             </ScrollViewer>
             <Canvas Name="sliderCanvas"
                     Grid.Row="1"
-                    Background="GreenYellow"></Canvas>
+                    Background="#3e3e42"></Canvas>
         </Grid>
         <GridSplitter Grid.Row="1"
                       Width="Auto"

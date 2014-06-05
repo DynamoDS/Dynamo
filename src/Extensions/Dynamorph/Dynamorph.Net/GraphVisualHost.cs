@@ -194,11 +194,11 @@ namespace Dynamorph
             var fillBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderFill);
             var edgeBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderEdge);
 
-            var height = ParentCanvas.ActualHeight + 1;
+            var height = ParentCanvas.ActualHeight;
             var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
 
             // Fill the entire slider region with slider fill brush.
-            Rect sliderRegion = new Rect(-0.5, -0.5, extentWidth + 1, height);
+            Rect sliderRegion = new Rect(0.5, 0.5, extentWidth, height);
             drawingContext.DrawRectangle(fillBrush, null, sliderRegion);
 
             // Render both the edges (left and right ends of the slider).
