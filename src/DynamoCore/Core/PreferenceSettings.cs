@@ -23,6 +23,7 @@ namespace Dynamo
         private DynamoAreaUnit _areaUnit;
         private DynamoVolumeUnit _volumeUnit;
         private string _numberFormat;
+        private string lastUpdateDownloadPath;
 
         // Variables of the settings that will be persistent
 
@@ -80,6 +81,22 @@ namespace Dynamo
         public double WindowW { get; set; }
         public double WindowH { get; set; }
 
+        public string LastUpdateDownloadPath
+        {
+            get { return lastUpdateDownloadPath; }
+            set
+            {
+                if (!File.Exists(value))
+                {
+                    lastUpdateDownloadPath = "";
+                }
+                else
+                {
+                    lastUpdateDownloadPath = value; 
+                }
+            }
+        }
+
         public PreferenceSettings()
         {
             WindowH = 768;
@@ -97,6 +114,7 @@ namespace Dynamo
             AreaUnit = DynamoAreaUnit.SquareMeter;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
             NumberFormat = "f3";
+            LastUpdateDownloadPath = "";
         }
 
         /// <summary>
