@@ -99,8 +99,11 @@ namespace Dynamorph
 
     class SliderVisualHost : FrameworkElement
     {
+        private double maxThumbOffset = 0;
+        private double mouseThumbOffset = 0;
         private BitmapImage sliderThumbImage = null;
         private TranslateTransform horzTransform = null;
+        private TranslateTransform thumbTransform = null;
         private VisualCollection childVisuals = null;
         private DrawingVisual sliderThumbLayer = new DrawingVisual();
         private DrawingVisual sliderBackground = new DrawingVisual();
@@ -117,6 +120,8 @@ namespace Dynamorph
 
             this.horzTransform = new TranslateTransform();
             this.RenderTransform = horzTransform;
+            this.thumbTransform = new TranslateTransform();
+            this.sliderThumbLayer.Transform = thumbTransform;
 
             this.Loaded += OnSliderVisualHostLoaded;
             this.canvasScrollViewer.ScrollChanged += OnCanvasScrollChanged;
@@ -166,10 +171,25 @@ namespace Dynamorph
         private void OnCanvasScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (e.ExtentWidthChange > 0.0)
-                RenderSliderBackground(e.ExtentWidth);
+            {
+                // The thumb cannot move into the region of slider edges, 
+                // and there are two edges to a slider, so we remove the 
+                // edge width of total extent width, resulting in an area 
+                // in which slider thumb can freely move.
+                // 
+                var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
+                maxThumbOffset = (e.ExtentWidth - (2.0 * edgeWidth));
 
-            if (e.ExtentHeightChange > 0.0)
-                RenderSliderThumbSeparator();
+                if (this.thumbTransform.X < 0.0)
+                    this.thumbTransform.X = 0.0;
+                else if (this.thumbTransform.X > maxThumbOffset)
+                    this.thumbTransform.X = maxThumbOffset;
+
+                RenderSliderBackground(e);
+                RenderSliderThumbSeparator(e);
+            }
+            else if (e.ExtentHeightChange > 0.0)
+                RenderSliderThumbSeparator(e);
 
             // Update the horizontal offset of background.
             this.horzTransform.X = -e.HorizontalOffset;
@@ -177,18 +197,60 @@ namespace Dynamorph
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            var result = VisualTreeHelper.HitTest(this, e.GetPosition(this));
-            this.Cursor = ((result.VisualHit == sliderThumbLayer) ?
-                Cursors.SizeWE : Cursors.Arrow);
+            if (this.IsMouseCaptured)
+            {
+                var point = e.GetPosition(this);
+                thumbTransform.X = point.X - this.mouseThumbOffset;
+
+                // Limit thumb movement to within range.
+                if (this.thumbTransform.X < 0.0)
+                    this.thumbTransform.X = 0.0;
+                else if (this.thumbTransform.X > maxThumbOffset)
+                    this.thumbTransform.X = maxThumbOffset;
+            }
+            else
+            {
+                var mouseOnThumb = IsMouseOnSliderThumb(e);
+                this.Cursor = (mouseOnThumb ? Cursors.SizeWE : Cursors.Arrow);
+            }
 
             base.OnMouseMove(e);
+        }
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (IsMouseOnSliderThumb(e))
+                {
+                    var point = e.GetPosition(this);
+                    this.mouseThumbOffset = point.X - thumbTransform.X;
+                    this.CaptureMouse();
+                }
+            }
+
+            base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            if (this.IsMouseCaptured)
+                this.ReleaseMouseCapture();
+
+            base.OnMouseUp(e);
         }
 
         #endregion
 
         #region Private Class Helper Methods
 
-        private void RenderSliderBackground(double extentWidth)
+        private bool IsMouseOnSliderThumb(MouseEventArgs e)
+        {
+            var result = VisualTreeHelper.HitTest(this, e.GetPosition(this));
+            return (result.VisualHit == sliderThumbLayer);
+        }
+
+        private void RenderSliderBackground(ScrollChangedEventArgs e)
         {
             var drawingContext = this.sliderBackground.RenderOpen();
             var fillBrush = GraphResources.Brush(GraphResources.BrushIndex.SliderFill);
@@ -198,7 +260,7 @@ namespace Dynamorph
             var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
 
             // Fill the entire slider region with slider fill brush.
-            Rect sliderRegion = new Rect(0.5, 0.5, extentWidth, height);
+            Rect sliderRegion = new Rect(0.5, 0.5, e.ExtentWidth, height);
             drawingContext.DrawRectangle(fillBrush, null, sliderRegion);
 
             // Render both the edges (left and right ends of the slider).
@@ -211,9 +273,8 @@ namespace Dynamorph
             drawingContext.Close();
         }
 
-        private void RenderSliderThumbSeparator()
+        private void RenderSliderThumbSeparator(ScrollChangedEventArgs e)
         {
-            this.sliderThumbLayer.Transform = new TranslateTransform(100, 0);
             var drawingContext = this.sliderThumbLayer.RenderOpen();
 
             var thumbWidth = sliderThumbImage.PixelWidth;
