@@ -124,8 +124,6 @@ namespace Dynamo.Utilities
         /// </summary>
         internal static void LoadNodeModels()
         {
-            string location = Path.Combine(GetDynamoDirectory(), "nodes");
-
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
 
@@ -146,10 +144,7 @@ namespace Dynamo.Utilities
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
             List<string> allDynamoAssemblyPaths =
-                SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
-                           .Aggregate(
-                                Directory.GetFiles(location, "*.dll") as IEnumerable<string>,
-                                Enumerable.Concat).ToList();
+                SearchPaths.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
             allDynamoAssemblyPaths.Add(Path.Combine(GetDynamoDirectory(), "DynamoCore.dll"));

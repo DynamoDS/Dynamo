@@ -299,6 +299,10 @@ namespace Dynamo
 
             CustomNodeManager = new CustomNodeManager(pluginsPath);
             
+            // Add the main nodes search path to the search paths
+            var coreNodesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "nodes");
+            DynamoLoader.AddBinarySearchPath(coreNodesPath);
+
             SearchViewModel = new SearchViewModel();
 
             dynSettings.PackageLoader = new PackageLoader();
