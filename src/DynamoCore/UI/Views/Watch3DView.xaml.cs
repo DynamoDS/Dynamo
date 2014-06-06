@@ -78,7 +78,6 @@ namespace Dynamo.Controls
             set
             {
                 _points = value;
-                NotifyPropertyChanged("Points");
             }
         }
 
@@ -88,7 +87,6 @@ namespace Dynamo.Controls
             set
             {
                 _lines = value;
-                NotifyPropertyChanged("Lines");
             }
         }
 
@@ -98,7 +96,6 @@ namespace Dynamo.Controls
             set
             {
                 _xAxis = value;
-                NotifyPropertyChanged("XAxes");
             }
         }
 
@@ -108,7 +105,6 @@ namespace Dynamo.Controls
             set
             {
                 _yAxis = value;
-                NotifyPropertyChanged("YAxes");
             }
         }
 
@@ -118,7 +114,6 @@ namespace Dynamo.Controls
             set
             {
                 _zAxis = value;
-                NotifyPropertyChanged("ZAxes");
             }
         }
 
@@ -128,7 +123,6 @@ namespace Dynamo.Controls
             set
             {
                 _mesh = value;
-                NotifyPropertyChanged("Mesh");
             }
         }
 
@@ -138,7 +132,6 @@ namespace Dynamo.Controls
             set
             {
                 _pointsSelected = value;
-                NotifyPropertyChanged("PointsSelected");
             }
         }
 
@@ -148,7 +141,6 @@ namespace Dynamo.Controls
             set
             {
                 _linesSelected = value;
-                NotifyPropertyChanged("LinesSelected");
             }
         }
 
@@ -158,7 +150,6 @@ namespace Dynamo.Controls
             set
             {
                 _meshSelected = value;
-                NotifyPropertyChanged("MeshSelected");
             }
         }
 
@@ -171,7 +162,6 @@ namespace Dynamo.Controls
             set
             {
                 _text = value;
-                NotifyPropertyChanged("Text");
             }
         }
 
@@ -493,6 +483,20 @@ namespace Dynamo.Controls
                 vm.CheckForLatestRenderCommand.Execute(e.TaskId);
             }
 
+            points.Freeze();
+            pointsSelected.Freeze();
+            lines.Freeze();
+            linesSelected.Freeze();
+            redLines.Freeze();
+            greenLines.Freeze();
+            blueLines.Freeze();
+            verts.Freeze();
+            norms.Freeze();
+            tris.Freeze();
+            vertsSel.Freeze();
+            normsSel.Freeze();
+            trisSel.Freeze();
+
             Dispatcher.Invoke(new Action<Point3DCollection, Point3DCollection,
                 Point3DCollection, Point3DCollection, Point3DCollection, Point3DCollection,
                 Point3DCollection, Point3DCollection, Vector3DCollection, Int32Collection, 
@@ -509,20 +513,6 @@ namespace Dynamo.Controls
             Point3DCollection vertsSel, Vector3DCollection normsSel, Int32Collection trisSel, MeshGeometry3D mesh,
             MeshGeometry3D meshSel, List<BillboardTextItem> text)
         {
-            points.Freeze();
-            pointsSelected.Freeze();
-            lines.Freeze();
-            linesSelected.Freeze();
-            redLines.Freeze();
-            greenLines.Freeze();
-            blueLines.Freeze();
-            verts.Freeze();
-            norms.Freeze();
-            tris.Freeze();
-            vertsSel.Freeze();
-            normsSel.Freeze();
-            trisSel.Freeze();
-
             Points = points;
             PointsSelected = pointsSelected;
             Lines = lines;
@@ -539,6 +529,9 @@ namespace Dynamo.Controls
             Mesh = mesh;
             MeshSelected = meshSel;
             Text = text;
+
+            // Send property changed notifications for everything
+            NotifyPropertyChanged(string.Empty);
         }
 
         private void ConvertPoints(RenderPackage p,

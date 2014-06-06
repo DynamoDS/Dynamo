@@ -143,6 +143,7 @@ limitations under the License.
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\MutatorDriver.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
