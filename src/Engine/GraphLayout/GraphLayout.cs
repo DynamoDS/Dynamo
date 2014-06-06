@@ -260,7 +260,7 @@ namespace GraphLayout
         /// </summary>
         public void OrderNodes()
         {
-            // Assign temporary vertical position for further processing
+            // Assign temporary vertical indices for further processing
             foreach (List<Node> layer in Layers)
             {
                 foreach (Node node in layer)
@@ -273,15 +273,14 @@ namespace GraphLayout
                 y += 80;
             }
             
-            List<Node> previousLayer = null;
             foreach (List<Node> layer in Layers)
             {
-                if (previousLayer != null)
+                foreach (Node n in layer)
                 {
-                    // Get the temporary vertical coordinates from each node's
-                    // median outgoing edge
+                    // Get the vertical coordinates from each node's median
+                    // outgoing edge
 
-                    foreach (Node n in layer)
+                    if (layer.First().Layer > 0)
                     {
                         List<Edge> neighborEdges = n.RightEdges.OrderBy(x => x.EndY).ToList();
 
@@ -303,9 +302,7 @@ namespace GraphLayout
                 }
 
                 // Sort the nodes on the layer by its temporary coordinates
-                previousLayer = layer.OrderBy(x => x.Y).ToList();
-                Node top = null;
-                foreach (Node n in previousLayer)
+                foreach (Node n in layer.OrderBy(x => x.Y))
                 {
                     // Assign new coordinates to this node's incoming edges
                     int b = 1;
@@ -314,7 +311,28 @@ namespace GraphLayout
                         e.EndY = n.Y + b;
                         b++;
                     }
-                    
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sugiyama step 4: Assign Coordinates
+        /// </summary>
+        public void AssignCoordinates()
+        {
+            int i = 0;
+            while (i < Layers.Count)
+            {
+                Layers[i] = Layers[i].OrderBy(x => x.Y).ToList();
+                i++;
+            } 
+            
+            foreach (List<Node> layer in Layers)
+            {
+                Node top = null;
+                
+                foreach (Node n in layer)
+                {
                     if (top == null)
                     {
                         top = n;
@@ -331,12 +349,7 @@ namespace GraphLayout
                 }
             }
 
-            int i = 0;
-            while (i < Layers.Count)
-            {
-                Layers[i] = Layers[i].OrderBy(x => x.Y).ToList();
-                i++;
-            }
+            NormalizeGraphPosition();
         }
 
         #endregion

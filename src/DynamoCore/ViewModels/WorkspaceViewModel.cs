@@ -908,9 +908,9 @@ namespace Dynamo.ViewModels
             graph.RemoveCycles();
             graph.AssignLayers();
             graph.OrderNodes();
+            graph.AssignCoordinates();
 
             // Assign coordinates to node models
-            graph.NormalizeGraphPosition();
             foreach (var x in _model.Nodes)
             {
                 var id = x.GUID;
