@@ -75,8 +75,17 @@ namespace Dynamo
             }
         }
 
+        public double WindowX { get; set; }
+        public double WindowY { get; set; }
+        public double WindowW { get; set; }
+        public double WindowH { get; set; }
+
         public PreferenceSettings()
         {
+            WindowH = 768;
+            WindowW = 1024;
+            WindowY = 0.0;
+            WindowX = 0.0;
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;

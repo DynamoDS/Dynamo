@@ -178,6 +178,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand RunExpressionCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
+        public DelegateCommand MutateTestDelegateCommand { get; set; }
         public DelegateCommand DisplayFunctionCommand { get; set; }
         public DelegateCommand SetConnectorTypeCommand { get; set; }
         public DelegateCommand ReportABugCommand { get; set; }
@@ -532,17 +533,26 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsDebugBuild
+        public bool VerboseLogging
         {
-            get
+            get { return Controller.DebugSettings.VerboseLogging; }
+            set
             {
-#if DEBUG
-                return true;
-#else
-                return false;
-#endif
+                Controller.DebugSettings.VerboseLogging = value;
+                RaisePropertyChanged("VerboseLogging");
             }
         }
+
+        public bool ShowDebugASTs
+        {
+            get { return IsDebugBuild && dynSettings.Controller.DebugSettings.ShowDebugASTs; }
+            set
+            {
+                Controller.DebugSettings.ShowDebugASTs = value;
+                RaisePropertyChanged("ShowDebugASTs");
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
@@ -599,7 +609,7 @@ namespace Dynamo.ViewModels
             CancelRunCommand = new DelegateCommand(Controller.CancelRunCmd, Controller.CanCancelRunCmd);
             RunExpressionCommand = new DelegateCommand(Controller.RunExprCmd, Controller.CanRunExprCmd);
             ForceRunExpressionCommand = new DelegateCommand(Controller.ForceRunExprCmd, Controller.CanRunExprCmd);
-
+            MutateTestDelegateCommand = new DelegateCommand(Controller.MutateTestCmd, Controller.CanRunExprCmd);
             DisplayFunctionCommand = new DelegateCommand(Controller.DisplayFunction, Controller.CanDisplayFunction);
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
@@ -656,6 +666,7 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
 
             WatchIsResizable = false;
+            
         }
 
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -48,6 +49,8 @@ namespace Dynamo.Controls
 
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
+        DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+
         public bool ConsoleShowing
         {
             get { return LogScroller.Height > 0; }
@@ -81,6 +84,71 @@ namespace Dynamo.Controls
 
             this.Loaded += DynamoView_Loaded;
             this.Unloaded += DynamoView_Unloaded;
+
+            this.SizeChanged += DynamoView_SizeChanged;
+            this.LocationChanged += DynamoView_LocationChanged;
+
+            // Check that preference bounds are actually within one
+            // of the available monitors.
+            if (CheckVirtualScreenSize())
+            {
+                Left = dynSettings.Controller.PreferenceSettings.WindowX;
+                Top = dynSettings.Controller.PreferenceSettings.WindowY;
+                Width = dynSettings.Controller.PreferenceSettings.WindowW;
+                Height = dynSettings.Controller.PreferenceSettings.WindowH;
+            }
+            else
+            {
+                Left = 0;
+                Top = 0;
+                Width = 1024;
+                Height = 768;
+            }
+
+            _workspaceResizeTimer.Tick += _resizeTimer_Tick;
+        }
+
+        bool CheckVirtualScreenSize()
+        {
+            var w = SystemParameters.VirtualScreenWidth;
+            var h = SystemParameters.VirtualScreenHeight;
+            var ox = SystemParameters.VirtualScreenLeft;
+            var oy = SystemParameters.VirtualScreenTop;
+
+            // TODO: Remove 10 pixel check if others can't reproduce
+            // On Ian's Windows 8 setup, when Dynamo is maximized, the origin
+            // saves at -8,-8. There doesn't seem to be any documentation on this
+            // so we'll put in a 10 pixel check to still allow the window to maximize.
+            if (dynSettings.Controller.PreferenceSettings.WindowX < ox - 10 ||
+                dynSettings.Controller.PreferenceSettings.WindowY < oy - 10)
+            {
+                return false;
+            }
+
+            // Check that the window is smaller than the available area.
+            if (dynSettings.Controller.PreferenceSettings.WindowW > w ||
+                dynSettings.Controller.PreferenceSettings.WindowH > h)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        void DynamoView_LocationChanged(object sender, EventArgs e)
+        {
+            dynSettings.Controller.PreferenceSettings.WindowX = Left;
+            dynSettings.Controller.PreferenceSettings.WindowY = Top;
+
+            Debug.WriteLine("Resetting window location to {0}:{1}", Left, Top);
+        }
+
+        void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            dynSettings.Controller.PreferenceSettings.WindowW = e.NewSize.Width;
+            dynSettings.Controller.PreferenceSettings.WindowH = e.NewSize.Height;
+
+            Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
 
         void InitializeShortcutBar()
@@ -970,9 +1038,28 @@ namespace Dynamo.Controls
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this._vm == null)
+            //http://stackoverflow.com/questions/4474670/how-to-catch-the-ending-resize-window
+
+            // Children of the workspace, including the zoom border and the endless grid
+            // are expensive to resize. We use a timer here to defer resizing until 
+            // after workspace resizing is complete. This improves the responziveness of
+            // the UI during resize.
+
+            _workspaceResizeTimer.IsEnabled = true;
+            _workspaceResizeTimer.Stop();
+            _workspaceResizeTimer.Start();
+        }
+
+        void _resizeTimer_Tick(object sender, EventArgs e)
+        {
+            _workspaceResizeTimer.IsEnabled = false;
+
+            // end of timer processing
+            if (_vm == null)
                 return;
-            this._vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
+            _vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
+
+            Debug.WriteLine("Resizing workspace children.");
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -1020,12 +1107,6 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
-        }
-
-        //@TODO(Luke): Turn this into a dependency property
-        private void VerboseLogging_OnChecked(object sender, RoutedEventArgs e)
-        {
-            dynSettings.VerboseLogging = ((MenuItem)e.Source).IsChecked;
         }
     }
 }

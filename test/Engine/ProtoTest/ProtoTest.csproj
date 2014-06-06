@@ -129,6 +129,7 @@
     <Compile Include="FFITests\RegressionAnalysisTests.cs" />
     <Compile Include="FuzzTests.cs" />
     <Compile Include="GraphCompiler\MicroFeatureTests.cs" />
+    <Compile Include="GraphCompiler\NewFrontEndTests.cs" />
     <Compile Include="Imperative\FromOldTestSuite.cs" />
     <Compile Include="Imperative\MicroFeatureTests.cs" />
     <Compile Include="LiveRunnerTests\ChangeSetComputerTests.cs" />

@@ -44,7 +44,6 @@ namespace DSRevitNodesTests.Elements
 
             var floorType = FloorType.ByName("Generic - 12\"");
 
-            Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(null, floorType, level));
             Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(outline, null, level));
             Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(outline, floorType, null));
         }

@@ -209,5 +209,99 @@ namespace Dynamo.Utilities
 
             return logicalToVisualLines;
         }
+
+        /// <summary>
+        /// Call this method to format user codes in the following ways:
+        /// 
+        /// 1. Heading and trailing whitespaces are removed from the original 
+        ///    string. Characters that quality as "whitespaces" are: '\n', '\t'
+        ///    and ' '.
+        /// 
+        /// 2. Multiple statements on a single line will be broken down further 
+        ///    into multiple statements. For example, "a = 1; b = 2;" will be 
+        ///    broken down into two lines: "a = 1;\nb = 2;" (line break denoted 
+        ///    by the new \n character).
+        /// 
+        /// 3. Heading whitespaces will be removed ony for the first line. This 
+        ///    is to preserve the indentation for lines other than the first.
+        /// 
+        /// 4. If the resulting codes do not end with a closing curly bracket '}',
+        ///    then a semi-colon is appended to the code. This ensures codes like 
+        ///    "a" will result in codes becoming "a;"
+        /// 
+        /// </summary>
+        /// <param name="inputCode">Original code content as typed in by the user.
+        /// </param>
+        /// <returns>Returns the formatted code with the above process.</returns>
+        /// 
+        public static string FormatUserText(string inputCode)
+        {
+            if (inputCode == null)
+                return string.Empty;
+
+            // Trailing and preceeding whitespaces removal.
+            var charsToTrim = new char[] { '\n', '\t', ' ' };
+            inputCode = NormalizeLineBreaks(inputCode);
+            inputCode = inputCode.Trim(charsToTrim);
+
+            List<string> statements = new List<string>();
+            var splitOption = StringSplitOptions.RemoveEmptyEntries;
+
+            // Break the input string into lines based on the \n characters that
+            // are already in the string. Note that after breaking the string, 
+            // each line can still contain multiple statements (e.g. "a = 1; b;"
+            // that does not contain a \n between the two statements).
+            // 
+            var lines = inputCode.Split('\n');
+            foreach (var line in lines)
+            {
+                if (line.IndexOf(';') == -1)
+                {
+                    // The line does not have any semi-colon originally. We know 
+                    // this is a line by itself, but may or may not represent a 
+                    // statement. But since this line (potentially an empty one)
+                    // exists in the original user string, it needs to go into 
+                    // the resulting statement list.
+                    // 
+                    var trimmed = line.TrimEnd(charsToTrim);
+                    statements.Add(trimmed + "\n");
+                }
+                else
+                {
+                    // This line potentially contains more than one statements 
+                    // (e.g. "a = 1; b = 2;"), or it might even be a single 
+                    // statement (e.g. "a = 1;  " with trailing spaces). After 
+                    // breaking each line up into statements, it is important 
+                    // that only non-empty lines go into the resulting statement 
+                    // list, and not the empty ones (for the case of "a = 1; ").
+                    // 
+                    var parts = line.Split(new char[] { ';' }, splitOption);
+                    foreach (var part in parts)
+                    {
+                        var trimmed = part.TrimEnd(charsToTrim);
+                        if (!string.IsNullOrEmpty(trimmed))
+                            statements.Add(trimmed + ";\n");
+                    }
+                }
+            }
+
+            // Now join all the statements together into one single code, and 
+            // remove the final trailing white spaces (including the last \n).
+            inputCode = statements.Aggregate("", (curr, stmt) => curr + stmt);
+            inputCode = inputCode.TrimEnd(charsToTrim);
+
+            // If after all the processing we do not end up with an empty code,
+            // then we may need a semi-colon at the end. This is provided if the 
+            // code does not end with a closing curly bracket (in which case a 
+            // trailing semi-colon is not required).
+            // 
+            if (!string.IsNullOrEmpty(inputCode) && (!inputCode.EndsWith("}")))
+            {
+                if (inputCode.EndsWith(";") == false)
+                    inputCode = inputCode + ";";
+            }
+
+            return inputCode;
+        }
     }
 }

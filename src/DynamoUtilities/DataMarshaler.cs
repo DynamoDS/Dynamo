@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,11 +18,11 @@ namespace Dynamo.Utilities
 
         public DataMarshaler()
         {
+            RegisterMarshaler((IEnumerable e) => e.Cast<object>().Select(Marshal));
+            RegisterMarshaler((IList e) => e.Cast<object>().Select(Marshal).ToList());
             RegisterMarshaler(
-                (IDictionary<object, object> dict) =>
-                    dict.ToDictionary(x => Marshal(x.Key), x => Marshal(x.Value)));
-            RegisterMarshaler((IEnumerable<object> e) => e.Select(Marshal));
-            RegisterMarshaler((IList<object> e) => e.Select(Marshal).ToList());
+                (IDictionary dict) =>
+                    dict.Cast<dynamic>().ToDictionary(x => Marshal(x.Key), x => Marshal(x.Value)));
         }
 
         /// <summary>
@@ -79,15 +80,17 @@ namespace Dynamo.Utilities
             if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))
                 return marshaler(obj);
 
-            var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(obj.GetType(), x => x);
+            var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(typeof(object), x => x);
 
-            //Find the marshaler that operates on the closest base type of the target type.
+            // Find the marshaler that operates on the closest base type of the target type.
             var dispatchedMarshaler =
+                // Only deal with marshalers that can operator on the target type
                 marshalers.Where(pair => pair.Key.IsAssignableFrom(targetType))
                     .Aggregate(
-                        defaultMarshaler,
-                        (acc, next) => acc.Key.IsAssignableFrom(next.Key) ? next : acc);
+                        defaultMarshaler, // used if none are found
+                        (acc, next) => acc.Key.IsAssignableFrom(next.Key) ? next : acc); // always keep the more specific marshaler
 
+            // Cache the marshaler so we don't keep doing this lookup
             cache[targetType] = dispatchedMarshaler.Value;
 
             return dispatchedMarshaler.Value(obj);

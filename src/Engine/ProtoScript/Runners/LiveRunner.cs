@@ -45,9 +45,11 @@ namespace ProtoScript.Runners
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(GUID.ToString() + " " + ForceExecution + " ");
-            AstNodes.ForEach((a) =>
-                             sb.AppendLine(a.ToString()));
-            return sb.ToString();
+            if (AstNodes != null)
+                AstNodes.ForEach((a) => sb.AppendLine(a.ToString()));
+            else
+                sb.AppendLine("AstNodes: null");
+            return sb.ToString();   
 
         }
     }
@@ -131,7 +133,7 @@ namespace ProtoScript.Runners
 
         private void ApplyChangeSetDeleted(ChangeSetData changeSet)
         {
-            MarkGraphNodesInactive(changeSet.DeletedBinaryExprASTNodes);
+            DeactivateGraphnodes(changeSet.DeletedBinaryExprASTNodes);
             UndefineFunctions(changeSet.DeletedFunctionDefASTNodes);
         }
 
@@ -149,40 +151,7 @@ namespace ProtoScript.Runners
             // Mark all graphnodes dirty which are associated with the force exec ASTs
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
         }
-
-        /// <summary>
-        /// Takes in a Subtree to delete or modify and marks the corresponding 
-        /// gragh nodes in DS inactive.
-        // 
-        /// This is equivalent to removing them from the VM
-        /// </summary>
-        /// <param name="subtree"></param>
-        /// <returns></returns>
-        private void MarkGraphNodesInactive(List<AssociativeNode> modifiedASTList)
-        {
-            if (null == modifiedASTList)
-            {
-                return;
-            }
-
-            foreach (var node in modifiedASTList)
-            {
-                BinaryExpressionNode bNode = node as BinaryExpressionNode;
-                if (bNode != null)
-                {
-                    // TODO: Aparajit - this can be made more efficient by maintaining a map in core of 
-                    // graphnode vs expression UID 
-                    foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
-                    {
-                        if (gnode.exprUID == bNode.exprUID)
-                        {
-                            gnode.isActive = false;
-                        }
-                    }
-                }
-            }
-        }
-
+     
 
         /// <summary>
         /// Deactivate a single graphnode regardless of its associated dependencies
@@ -391,7 +360,13 @@ namespace ProtoScript.Runners
                 csData.ModifiedFunctions.AddRange(modifiedFunctions);
 
                 // Handle cached subtree
-                if (cachedTreeExists)
+                if (!cachedTreeExists)
+                {
+                    // Cache the subtree if it does not exist yet
+                    // This scenario is possible if a subtree was deleted and the same subtree was added again as a modified subtree
+                    currentSubTreeList.Add(st.GUID, st);
+                }
+                else
                 {
                     if (null == oldSubTree.AstNodes)
                     {

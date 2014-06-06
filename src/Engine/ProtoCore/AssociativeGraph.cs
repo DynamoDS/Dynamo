@@ -16,21 +16,6 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
-        /// This function sets the modified temp graphnodes to the last graphnode in a statement
-        /// </summary>
-        /// <param name="graphnode"></param>
-        public static void SetFinalGraphNodeRuntimeDependents(AssociativeGraph.GraphNode graphnode)
-        {
-            if (null != graphnode && graphnode.IsSSANode())
-            {
-                if (null != graphnode.lastGraphNode)
-                {
-                    graphnode.lastGraphNode.symbolListWithinExpression.Add(graphnode.updateNodeRefList[0].nodeList[0].symbol);
-                }
-            }
-        }
-
-        /// <summary>
         /// Finds all graphnodes associated with each AST and marks them dirty
         /// </summary>
         /// <param name="nodeList"></param>

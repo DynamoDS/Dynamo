@@ -24,7 +24,9 @@ namespace Dynamo.Models
         public static readonly double ZOOM_MAXIMUM = 4.0;
         public static readonly double ZOOM_MINIMUM = 0.01;
 
-        #region Properties
+        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
+
+        #region internal members
 
         private string _fileName;
         private string _name;
@@ -33,6 +35,25 @@ namespace Dynamo.Models
         private double _x;
         private double _y;
         private double _zoom = 1.0;
+        private DateTime _lastSaved;
+        private string _author = "None provided";
+        private string _description = "";
+        private string _category = "";
+        private bool _hasUnsavedChanges;
+        private bool _isCurrentSpace;
+        private ObservableCollection<NodeModel> _nodes;
+        private ObservableCollection<ConnectorModel> _connectors;
+
+        #endregion
+
+        #region events
+
+        public event Action OnModified;
+        public event WorkspaceSavedEvent WorkspaceSaved;
+
+        #endregion
+
+        #region Properties
 
         public bool WatchChanges
         {
@@ -54,6 +75,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Defines whether this is the current space in Dynamo
+        /// </summary>
         public bool IsCurrentSpace
         {
             get { return _isCurrentSpace; }
@@ -64,10 +88,6 @@ namespace Dynamo.Models
             }
         }
 
-        public event Action OnModified;
-
-
-        private string _category = "";
         public string Category
         {
             get { return _category; }
@@ -81,7 +101,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     The date of the last save.
         /// </summary>
-        private DateTime _lastSaved;
         public DateTime LastSaved
         {
             get { return _lastSaved; }
@@ -95,7 +114,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     A description of the workspace
         /// </summary>
-        private string _author = "None provided";
         public string Author
         {
             get { return _author; }
@@ -109,7 +127,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     A description of the workspace
         /// </summary>
-        private string _description = "";
         public string Description
         {
             get { return _description; }
@@ -123,8 +140,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
-        private bool _hasUnsavedChanges;
-
         public bool HasUnsavedChanges
         {
             get { return _hasUnsavedChanges; }
@@ -267,19 +282,6 @@ namespace Dynamo.Models
 
         internal Version WorkspaceVersion { get; set; }
 
-
-
-        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
-        public event WorkspaceSavedEvent WorkspaceSaved;
-
-        /// <summary>
-        ///     Defines whether this is the current space in Dynamo
-        /// </summary>
-        private bool _isCurrentSpace;
-
-        private ObservableCollection<NodeModel> _nodes;
-        private ObservableCollection<ConnectorModel> _connectors;
-
         public double CenterX
         {
             get { return 0; }
@@ -349,6 +351,8 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region constructors
+
         protected WorkspaceModel(
             String name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
         {
@@ -367,6 +371,10 @@ namespace Dynamo.Models
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
         }
+
+        #endregion
+
+        #region public methods
 
         public abstract void OnDisplayed();
 
@@ -405,38 +413,6 @@ namespace Dynamo.Models
             return SaveAs(FileName);
         }
 
-        /// <summary>
-        ///     If there are observers for the save, notifies them
-        /// </summary>
-        private void OnWorkspaceSaved()
-        {
-            if (WorkspaceSaved != null)
-                WorkspaceSaved(this);
-        }
-
-        /// <summary>
-        ///     Updates relevant parameters on save
-        /// </summary>
-        /// <param name="model">The workspace that was just saved</param>
-        private static void OnWorkspaceSaved(WorkspaceModel model)
-        {
-            model.LastSaved = DateTime.Now;
-            model.HasUnsavedChanges = false;
-        }
-
-        private void MarkUnsaved(
-            object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            HasUnsavedChanges = true;
-        }
-
-        private void MarkUnsavedAndModified(
-            object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            HasUnsavedChanges = true;
-            Modified();
-        }
-
         //TODO: Replace all Modified calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
         public void DisableReporting()
         {
@@ -447,307 +423,6 @@ namespace Dynamo.Models
         {
             Nodes.ToList().ForEach(x => x.EnableReporting());
         }
-
-        #region Undo/Redo Supporting Methods
-
-        private UndoRedoRecorder undoRecorder = null;
-
-        internal void Undo()
-        {
-            if (null != undoRecorder)
-                undoRecorder.Undo();
-        }
-
-        internal void Redo()
-        {
-            if (null != undoRecorder)
-                undoRecorder.Redo();
-        }
-
-        internal void ClearUndoRecorder()
-        {
-            if (null != undoRecorder)
-                undoRecorder.Clear();
-        }
-
-        // See RecordModelsForModification below for more details.
-        public void RecordModelForModification(ModelBase model)
-        {
-            if (null != model)
-            {
-                var models = new List<ModelBase> { model };
-                RecordModelsForModification(models);
-            }
-        }
-
-        /// <summary>
-        /// TODO(Ben): This method is exposed this way for external codes (e.g. 
-        /// the DragCanvas) to record models before they are modified. This is 
-        /// by no means ideal. The ideal case of course is for ALL codes that 
-        /// end up modifying models to be folded back into WorkspaceViewModel in 
-        /// the form of commands. These commands then internally record those
-        /// affected models before updating them. We need this method to be gone
-        /// sooner than later.
-        /// </summary>
-        /// <param name="models">The models to be recorded for undo.</param>
-        /// 
-        internal void RecordModelsForModification(List<ModelBase> models)
-        {
-            if (null == undoRecorder)
-                return;
-            if (!ShouldProceedWithRecording(models))
-                return;
-
-            undoRecorder.BeginActionGroup();
-            {
-                foreach (ModelBase model in models)
-                    undoRecorder.RecordModificationForUndo(model);
-            }
-            undoRecorder.EndActionGroup();
-        }
-
-        public void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
-        {
-            if (null == undoRecorder)
-                return;
-            if (!ShouldProceedWithRecording(models))
-                return;
-
-            undoRecorder.BeginActionGroup();
-            {
-                foreach (var modelPair in models)
-                {
-                    switch (modelPair.Value)
-                    {
-                        case UndoRedoRecorder.UserAction.Creation:
-                            undoRecorder.RecordCreationForUndo(modelPair.Key);
-                            break;
-                        case UndoRedoRecorder.UserAction.Deletion:
-                            undoRecorder.RecordDeletionForUndo(modelPair.Key);
-                            break;
-                        case UndoRedoRecorder.UserAction.Modification:
-                            undoRecorder.RecordModificationForUndo(modelPair.Key);
-                            break;
-                    }
-                }
-            }
-            undoRecorder.EndActionGroup();
-        }
-
-        internal void RecordCreatedModel(ModelBase model)
-        {
-            if (null != model)
-            {
-                undoRecorder.BeginActionGroup();
-                undoRecorder.RecordCreationForUndo(model);
-                undoRecorder.EndActionGroup();
-            }
-        }
-
-        internal void RecordCreatedModels(List<ModelBase> models)
-        {
-            if (!ShouldProceedWithRecording(models))
-                return; // There's nothing created.
-
-            undoRecorder.BeginActionGroup();
-            foreach (ModelBase model in models)
-                undoRecorder.RecordCreationForUndo(model);
-            undoRecorder.EndActionGroup();
-        }
-
-        internal void RecordAndDeleteModels(List<ModelBase> models)
-        {
-            if (!ShouldProceedWithRecording(models))
-                return; // There's nothing for deletion.
-
-            // Gather a list of connectors first before the nodes they connect
-            // to are deleted. We will have to delete the connectors first 
-            // before 
-
-            undoRecorder.BeginActionGroup(); // Start a new action group.
-
-            foreach (ModelBase model in models)
-            {
-                if (model is NoteModel)
-                {
-                    // Take a snapshot of the note before it goes away.
-                    undoRecorder.RecordDeletionForUndo(model);
-                    Notes.Remove(model as NoteModel);
-                }
-                else if (model is NodeModel)
-                {
-                    // Just to make sure we don't end up deleting nodes from 
-                    // another workspace (potentially two issues: the node was 
-                    // having its "Workspace" pointing to another workspace, 
-                    // or the selection set was not quite set up properly.
-                    // 
-                    var node = model as NodeModel;
-                    Debug.Assert(this == node.WorkSpace);
-
-                    // Note that AllConnectors is duplicated as a separate list 
-                    // by calling its "ToList" method. This is the because the 
-                    // "Connectors.Remove" will modify "AllConnectors", causing 
-                    // the Enumerator in this "foreach" to become invalid.
-                    // 
-                    foreach (var conn in node.AllConnectors.ToList())
-                    {
-                        conn.NotifyConnectedPortsOfDeletion();
-                        Connectors.Remove(conn);
-                        undoRecorder.RecordDeletionForUndo(conn);
-                    }
-
-                    // Take a snapshot of the node before it goes away.
-                    undoRecorder.RecordDeletionForUndo(model);
-
-                    node.DisableReporting();
-                    node.Destroy();
-                    node.Cleanup();
-                    node.WorkSpace.Nodes.Remove(node);
-                }
-                else if (model is ConnectorModel)
-                {
-                    var connector = model as ConnectorModel;
-                    Connectors.Remove(connector);
-                    undoRecorder.RecordDeletionForUndo(model);
-                }
-            }
-
-            undoRecorder.EndActionGroup(); // Conclude the deletion.
-        }
-
-        private static bool ShouldProceedWithRecording(List<ModelBase> models)
-        {
-            if (null != models)
-                models.RemoveAll((x) => (x == null));
-
-            return (null != models && (models.Count > 0));
-        }
-
-        private static bool ShouldProceedWithRecording(
-            Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
-        {
-            return (null != models && (models.Count > 0));
-        }
-
-        #endregion
-
-        #region IUndoRedoRecorderClient Members
-
-        public void DeleteModel(XmlElement modelData)
-        {
-            ModelBase model = GetModelForElement(modelData);
-
-            if (model is NoteModel)
-                Notes.Remove(model as NoteModel);
-            else if (model is ConnectorModel)
-            {
-                ConnectorModel connector = model as ConnectorModel;
-                Connectors.Remove(connector);
-                connector.NotifyConnectedPortsOfDeletion();
-            }
-            else if (model is NodeModel)
-                Nodes.Remove(model as NodeModel);
-            else
-            {
-                // If it gets here we obviously need to handle it.
-                throw new InvalidOperationException(string.Format(
-                    "Unhandled type: {0}", model.GetType().ToString()));
-            }
-        }
-
-        public void ReloadModel(XmlElement modelData)
-        {
-            ModelBase model = GetModelForElement(modelData);
-            model.Deserialize(modelData, SaveContext.Undo);
-        }
-
-        public void CreateModel(XmlElement modelData)
-        {
-            XmlElementHelper helper = new XmlElementHelper(modelData);
-            string typeName = helper.ReadString("type", String.Empty);
-            if (string.IsNullOrEmpty(typeName))
-            {
-                // If there wasn't a "type" attribute, then we fall-back onto 
-                // the name of the XmlElement itself, which is usually the type 
-                // name.
-                typeName = modelData.Name;
-                if (string.IsNullOrEmpty(typeName))
-                {
-                    string guid = helper.ReadString("guid");
-                    throw new InvalidOperationException(
-                        string.Format("No type information: {0}", guid));
-                }
-            }
-
-#if USE_DSENGINE
-            if (typeName.Equals("Dynamo.Nodes.DSFunction"))
-            {
-                // For DSFunction node type, the type name is actually embedded 
-                // within "name" attribute (e.g. UV.ByCoordinates@double,double).
-                typeName = modelData.Attributes["name"].Value;
-            }
-#endif
-
-            if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
-            {
-                ConnectorModel connector = ConnectorModel.Make();
-                connector.Deserialize(modelData, SaveContext.Undo);
-                Connectors.Add(connector);
-            }
-            else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
-            {
-                NoteModel noteModel = new NoteModel(0.0, 0.0);
-                noteModel.Deserialize(modelData, SaveContext.Undo);
-                Notes.Add(noteModel);
-            }
-            else // Other node types.
-            {
-                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
-                nodeModel.WorkSpace = this;
-                nodeModel.Deserialize(modelData, SaveContext.Undo);
-                Nodes.Add(nodeModel);
-            }
-        }
-
-        public ModelBase GetModelForElement(XmlElement modelData)
-        {
-            // TODO(Ben): This may or may not be true, but I guess we should be 
-            // using "System.Type" (given the "type" information in "modelData"),
-            // and determine the matching category (e.g. is this a Node, or a 
-            // Connector?) instead of checking in each and every collections we
-            // have in the workspace.
-            // 
-            // System.Type type = System.Type.GetType(helper.ReadString("type"));
-            // if (typeof(Dynamo.Models.NodeModel).IsAssignableFrom(type))
-            //     return Nodes.First((x) => (x.GUID == modelGuid));
-
-            XmlElementHelper helper = new XmlElementHelper(modelData);
-            Guid modelGuid = helper.ReadGuid("guid");
-
-            ModelBase foundModel = GetModelInternal(modelGuid);
-            if (null != foundModel)
-                return foundModel;
-
-            throw new ArgumentException(string.Format(
-                "Unhandled model type: {0}", helper.ReadString("type")));
-        }
-
-        internal ModelBase GetModelInternal(Guid modelGuid)
-        {
-            ModelBase foundModel = null;
-            if (null == foundModel && (Connectors.Count > 0))
-                foundModel = Connectors.FirstOrDefault((x) => x.GUID == modelGuid);
-
-            if (null == foundModel && (Nodes.Count > 0))
-                foundModel = Nodes.FirstOrDefault((x) => (x.GUID == modelGuid));
-
-            if (null == foundModel && (Notes.Count > 0))
-                foundModel = Notes.FirstOrDefault((x) => (x.GUID == modelGuid));
-
-            return foundModel;
-        }
-
-        #endregion
 
         public virtual void Modified()
         {
@@ -765,6 +440,15 @@ namespace Dynamo.Models
         {
             return Nodes.Where(IsTopMostNode);
         }
+
+        public void ReportPosition()
+        {
+            RaisePropertyChanged("Position");
+        }
+
+        #endregion
+
+        #region private/internal methods
 
         //If node is connected to some other node(other than Output) then it is not a 'top' node
         private static bool IsTopMostNode(NodeModel node)
@@ -925,7 +609,7 @@ namespace Dynamo.Models
                 // a DSVarArgFunction or a CodeBlockNodeModel into a list.
                 var nodeGuids = this.Nodes.Where((n) =>
                 {
-                    return (n is DSFunction 
+                    return (n is DSFunction
                         || (n is DSVarArgFunction)
                         || (n is CodeBlockNodeModel));
 
@@ -945,11 +629,6 @@ namespace Dynamo.Models
             }
         }
 
-        public void ReportPosition()
-        {
-            RaisePropertyChanged("Position");
-        }
-
         internal void SendModelEvent(Guid modelGuid, string eventName)
         {
             ModelBase model = this.GetModelInternal(modelGuid);
@@ -960,9 +639,9 @@ namespace Dynamo.Models
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
-                        "ModelBase.HandleModelEvent call not handled.\n\n" + 
+                        "ModelBase.HandleModelEvent call not handled.\n\n" +
                         "Model type: {0}\n" +
-                        "Model GUID: {1}\n" + 
+                        "Model GUID: {1}\n" +
                         "Event name: {2}",
                         type, modelGuid.ToString(), eventName);
 
@@ -1104,7 +783,7 @@ namespace Dynamo.Models
             #endregion
 
             #region Step II. Create the new code block node
-            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX/nodeCount, totalY/nodeCount);
+            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX / nodeCount, totalY / nodeCount);
             UndoRecorder.RecordCreationForUndo(codeBlockNode);
             Nodes.Add(codeBlockNode);
             #endregion
@@ -1127,6 +806,345 @@ namespace Dynamo.Models
 
             Modified();
         }
+
+        /// <summary>
+        ///     If there are observers for the save, notifies them
+        /// </summary>
+        private void OnWorkspaceSaved()
+        {
+            if (WorkspaceSaved != null)
+                WorkspaceSaved(this);
+        }
+
+        /// <summary>
+        ///     Updates relevant parameters on save
+        /// </summary>
+        /// <param name="model">The workspace that was just saved</param>
+        private static void OnWorkspaceSaved(WorkspaceModel model)
+        {
+            model.LastSaved = DateTime.Now;
+            model.HasUnsavedChanges = false;
+        }
+
+        private void MarkUnsaved(
+            object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            HasUnsavedChanges = true;
+        }
+
+        private void MarkUnsavedAndModified(
+            object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            HasUnsavedChanges = true;
+            Modified();
+        }
+
+        #endregion
+        
+        #region Undo/Redo Supporting Methods
+
+        private UndoRedoRecorder undoRecorder = null;
+
+        internal void Undo()
+        {
+            if (null != undoRecorder)
+                undoRecorder.Undo();
+        }
+
+        internal void Redo()
+        {
+            if (null != undoRecorder)
+                undoRecorder.Redo();
+        }
+
+        internal void ClearUndoRecorder()
+        {
+            if (null != undoRecorder)
+                undoRecorder.Clear();
+        }
+
+        // See RecordModelsForModification below for more details.
+        public void RecordModelForModification(ModelBase model)
+        {
+            if (null != model)
+            {
+                var models = new List<ModelBase> { model };
+                RecordModelsForModification(models);
+            }
+        }
+
+        /// <summary>
+        /// TODO(Ben): This method is exposed this way for external codes (e.g. 
+        /// the DragCanvas) to record models before they are modified. This is 
+        /// by no means ideal. The ideal case of course is for ALL codes that 
+        /// end up modifying models to be folded back into WorkspaceViewModel in 
+        /// the form of commands. These commands then internally record those
+        /// affected models before updating them. We need this method to be gone
+        /// sooner than later.
+        /// </summary>
+        /// <param name="models">The models to be recorded for undo.</param>
+        /// 
+        internal void RecordModelsForModification(List<ModelBase> models)
+        {
+            if (null == undoRecorder)
+                return;
+            if (!ShouldProceedWithRecording(models))
+                return;
+
+            undoRecorder.BeginActionGroup();
+            {
+                foreach (ModelBase model in models)
+                    undoRecorder.RecordModificationForUndo(model);
+            }
+            undoRecorder.EndActionGroup();
+        }
+
+        public void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        {
+            if (null == undoRecorder)
+                return;
+            if (!ShouldProceedWithRecording(models))
+                return;
+
+            undoRecorder.BeginActionGroup();
+            {
+                foreach (var modelPair in models)
+                {
+                    switch (modelPair.Value)
+                    {
+                        case UndoRedoRecorder.UserAction.Creation:
+                            undoRecorder.RecordCreationForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Deletion:
+                            undoRecorder.RecordDeletionForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Modification:
+                            undoRecorder.RecordModificationForUndo(modelPair.Key);
+                            break;
+                    }
+                }
+            }
+            undoRecorder.EndActionGroup();
+        }
+
+        internal void RecordCreatedModel(ModelBase model)
+        {
+            if (null != model)
+            {
+                undoRecorder.BeginActionGroup();
+                undoRecorder.RecordCreationForUndo(model);
+                undoRecorder.EndActionGroup();
+            }
+        }
+
+        internal void RecordCreatedModels(List<ModelBase> models)
+        {
+            if (!ShouldProceedWithRecording(models))
+                return; // There's nothing created.
+
+            undoRecorder.BeginActionGroup();
+            foreach (ModelBase model in models)
+                undoRecorder.RecordCreationForUndo(model);
+            undoRecorder.EndActionGroup();
+        }
+
+        internal void RecordAndDeleteModels(List<ModelBase> models)
+        {
+            if (!ShouldProceedWithRecording(models))
+                return; // There's nothing for deletion.
+
+            // Gather a list of connectors first before the nodes they connect
+            // to are deleted. We will have to delete the connectors first 
+            // before 
+
+            undoRecorder.BeginActionGroup(); // Start a new action group.
+
+            foreach (ModelBase model in models)
+            {
+                if (model is NoteModel)
+                {
+                    // Take a snapshot of the note before it goes away.
+                    undoRecorder.RecordDeletionForUndo(model);
+                    Notes.Remove(model as NoteModel);
+                }
+                else if (model is NodeModel)
+                {
+                    // Just to make sure we don't end up deleting nodes from 
+                    // another workspace (potentially two issues: the node was 
+                    // having its "Workspace" pointing to another workspace, 
+                    // or the selection set was not quite set up properly.
+                    // 
+                    var node = model as NodeModel;
+                    Debug.Assert(this == node.WorkSpace);
+
+                    // Note that AllConnectors is duplicated as a separate list 
+                    // by calling its "ToList" method. This is the because the 
+                    // "Connectors.Remove" will modify "AllConnectors", causing 
+                    // the Enumerator in this "foreach" to become invalid.
+                    // 
+                    List<ConnectorModel> connectors = node.AllConnectors.ToList();
+                    foreach (var conn in connectors)
+                    {
+                        conn.NotifyConnectedPortsOfDeletion();
+                        Connectors.Remove(conn);
+                        undoRecorder.RecordDeletionForUndo(conn);
+                    }
+
+                    // Take a snapshot of the node before it goes away.
+                    undoRecorder.RecordDeletionForUndo(model);
+
+                    node.DisableReporting();
+                    node.Destroy();
+                    node.Cleanup();
+                    node.WorkSpace.Nodes.Remove(node);
+                }
+                else if (model is ConnectorModel)
+                {
+                    var connector = model as ConnectorModel;
+                    Connectors.Remove(connector);
+                    undoRecorder.RecordDeletionForUndo(model);
+                }
+            }
+
+            undoRecorder.EndActionGroup(); // Conclude the deletion.
+        }
+
+        private static bool ShouldProceedWithRecording(List<ModelBase> models)
+        {
+            if (null != models)
+                models.RemoveAll((x) => (x == null));
+
+            return (null != models && (models.Count > 0));
+        }
+
+        private static bool ShouldProceedWithRecording(
+            Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        {
+            return (null != models && (models.Count > 0));
+        }
+
+        #endregion
+
+        #region IUndoRedoRecorderClient Members
+
+        public void DeleteModel(XmlElement modelData)
+        {
+            ModelBase model = GetModelForElement(modelData);
+
+            if (model is NoteModel)
+                Notes.Remove(model as NoteModel);
+            else if (model is ConnectorModel)
+            {
+                ConnectorModel connector = model as ConnectorModel;
+                Connectors.Remove(connector);
+                connector.NotifyConnectedPortsOfDeletion();
+            }
+            else if (model is NodeModel)
+                Nodes.Remove(model as NodeModel);
+            else
+            {
+                // If it gets here we obviously need to handle it.
+                throw new InvalidOperationException(string.Format(
+                    "Unhandled type: {0}", model.GetType().ToString()));
+            }
+        }
+
+        public void ReloadModel(XmlElement modelData)
+        {
+            ModelBase model = GetModelForElement(modelData);
+            model.Deserialize(modelData, SaveContext.Undo);
+        }
+
+        public void CreateModel(XmlElement modelData)
+        {
+            XmlElementHelper helper = new XmlElementHelper(modelData);
+            string typeName = helper.ReadString("type", String.Empty);
+            if (string.IsNullOrEmpty(typeName))
+            {
+                // If there wasn't a "type" attribute, then we fall-back onto 
+                // the name of the XmlElement itself, which is usually the type 
+                // name.
+                typeName = modelData.Name;
+                if (string.IsNullOrEmpty(typeName))
+                {
+                    string guid = helper.ReadString("guid");
+                    throw new InvalidOperationException(
+                        string.Format("No type information: {0}", guid));
+                }
+            }
+
+#if USE_DSENGINE
+            if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
+                typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
+            {
+                // For DSFunction and DSVarArgFunction node types, the type name
+                // is actually embedded within "name" attribute (for an example,
+                // "UV.ByCoordinates@double,double").
+                // 
+                typeName = modelData.Attributes["name"].Value;
+            }
+#endif
+
+            if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
+            {
+                ConnectorModel connector = ConnectorModel.Make();
+                connector.Deserialize(modelData, SaveContext.Undo);
+                Connectors.Add(connector);
+            }
+            else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
+            {
+                NoteModel noteModel = new NoteModel(0.0, 0.0);
+                noteModel.Deserialize(modelData, SaveContext.Undo);
+                Notes.Add(noteModel);
+            }
+            else // Other node types.
+            {
+                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
+                nodeModel.WorkSpace = this;
+                nodeModel.Deserialize(modelData, SaveContext.Undo);
+                Nodes.Add(nodeModel);
+            }
+        }
+
+        public ModelBase GetModelForElement(XmlElement modelData)
+        {
+            // TODO(Ben): This may or may not be true, but I guess we should be 
+            // using "System.Type" (given the "type" information in "modelData"),
+            // and determine the matching category (e.g. is this a Node, or a 
+            // Connector?) instead of checking in each and every collections we
+            // have in the workspace.
+            // 
+            // System.Type type = System.Type.GetType(helper.ReadString("type"));
+            // if (typeof(Dynamo.Models.NodeModel).IsAssignableFrom(type))
+            //     return Nodes.First((x) => (x.GUID == modelGuid));
+
+            XmlElementHelper helper = new XmlElementHelper(modelData);
+            Guid modelGuid = helper.ReadGuid("guid");
+
+            ModelBase foundModel = GetModelInternal(modelGuid);
+            if (null != foundModel)
+                return foundModel;
+
+            throw new ArgumentException(string.Format(
+                "Unhandled model type: {0}", helper.ReadString("type")));
+        }
+
+        internal ModelBase GetModelInternal(Guid modelGuid)
+        {
+            ModelBase foundModel = null;
+            if (null == foundModel && (Connectors.Count > 0))
+                foundModel = Connectors.FirstOrDefault((x) => x.GUID == modelGuid);
+
+            if (null == foundModel && (Nodes.Count > 0))
+                foundModel = Nodes.FirstOrDefault((x) => (x.GUID == modelGuid));
+
+            if (null == foundModel && (Notes.Count > 0))
+                foundModel = Notes.FirstOrDefault((x) => (x.GUID == modelGuid));
+
+            return foundModel;
+        }
+
+        #endregion
 
         #region Node To Code Reconnection
 
