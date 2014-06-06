@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitTestFramework;
 using CurveByPoints = Autodesk.Revit.DB.CurveByPoints;
 
 namespace Dynamo.Tests

@@ -82,6 +82,7 @@
     <Compile Include="MigrationTestFramework.cs" />
     <Compile Include="NodeMigrationTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
+    <Compile Include="TimeStampOrderingTests.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
     <Compile Include="WatchNodeTests.cs" />

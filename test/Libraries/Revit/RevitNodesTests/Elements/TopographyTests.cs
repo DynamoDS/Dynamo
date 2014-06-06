@@ -3,6 +3,7 @@ using Autodesk.DesignScript.Geometry;
 using Dynamo.Tests;
 using NUnit.Framework;
 using Revit.Elements;
+using RevitTestFramework;
 
 namespace DSRevitNodesTests.Elements
 {

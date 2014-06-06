@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows for DesignScript codes to be authored directly")]
+    [NodeDescription("Allows for DesignScript code to be authored directly")]
     [IsDesignScriptCompatible]
     public partial class CodeBlockNodeModel : NodeModel
     {
@@ -66,15 +66,6 @@ namespace Dynamo.Nodes
         private void ProcessError()
         {
             dynSettings.DynamoLogger.Log("Error in Code Block Node");
-
-            //Remove all ports
-            int size = InPortData.Count;
-            for (int i = 0; i < size; i++)
-                InPortData.RemoveAt(0);
-            size = OutPortData.Count;
-            for (int i = 0; i < size; i++)
-                OutPortData.RemoveAt(0);
-            RegisterAllPorts();
 
             previewVariable = null;
         }
@@ -435,6 +426,7 @@ namespace Dynamo.Nodes
                 {
                     errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();
+                    CreateInputOutputPorts();
                     return;
                 }
 
@@ -457,9 +449,10 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                // Make sure variables have not been declared in other Code block nodes.
                 if (parseParam.UnboundIdentifiers != null)
                     inputIdentifiers = new List<string>(parseParam.UnboundIdentifiers);
+                else
+                    inputIdentifiers.Clear();
             }
             catch (Exception e)
             {
@@ -530,7 +523,8 @@ namespace Dynamo.Nodes
         {
             InPortData.Clear();
             OutPortData.Clear();
-            if (codeStatements == null || (codeStatements.Count == 0))
+            if ((codeStatements == null || (codeStatements.Count == 0))
+                && (inputIdentifiers == null || (inputIdentifiers.Count == 0)))
             {
                 RegisterAllPorts();
                 return;

@@ -277,7 +277,10 @@ namespace Dynamo.ViewModels
         public bool ShowDebugASTs
         {
             get { return dynSettings.Controller.DebugSettings.ShowDebugASTs; }
-            set { dynSettings.Controller.DebugSettings.ShowDebugASTs = value; }
+            set
+            {
+                dynSettings.Controller.DebugSettings.ShowDebugASTs = value;
+            }
         }
 
         #endregion
@@ -361,6 +364,8 @@ namespace Dynamo.ViewModels
             if (e.Node == nodeLogic)
             {
                 var sb = new StringBuilder();
+                sb.AppendLine(string.Format("{0} AST:", e.Node.GUID));
+
                 foreach (var assocNode in e.AstNodes)
                 {
                     var pretty = assocNode.ToString();

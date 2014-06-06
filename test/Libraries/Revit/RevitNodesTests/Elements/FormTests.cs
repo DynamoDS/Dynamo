@@ -7,6 +7,7 @@ using Revit.Elements;
 using NUnit.Framework;
 using Revit.GeometryReferences;
 using RevitServices.Persistence;
+using RevitTestFramework;
 using Form = Revit.Elements.Form;
 using ModelCurve = Revit.Elements.ModelCurve;
 

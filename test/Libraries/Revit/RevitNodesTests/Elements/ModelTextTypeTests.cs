@@ -3,6 +3,7 @@ using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitTestFramework;
 
 namespace DSRevitNodesTests.Elements
 {

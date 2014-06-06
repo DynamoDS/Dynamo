@@ -168,5 +168,22 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void Defect_MAGN_3646()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3646
+            DynamoModel model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3646.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(null);
+
+            AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.00001);
+            AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.0000000000000001);
+        }
     }
 }
