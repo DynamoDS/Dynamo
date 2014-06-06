@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo.Models;
@@ -10,20 +9,20 @@ namespace Dynamo.TestInfrastructure
 {
     abstract class AbstractMutator
     {
-        protected Random rand;
+        protected Random Rand;
 
         //Convienence state, the presence of this state cache means that
         //usage of this mutator should be short lived
-        protected DynamoController controller;
-        protected DynamoViewModel dynamoViewModel;
-        protected DynamoModel dynamoModel;
+        protected DynamoController Controller;
+        protected DynamoViewModel DynamoViewModel;
+        protected DynamoModel DynamoModel;
 
         protected AbstractMutator(Random rand)
         {
-            this.rand = rand;
-            this.controller = dynSettings.Controller;
-            this.dynamoViewModel = controller.DynamoViewModel;
-            this.dynamoModel = controller.DynamoModel;
+            this.Rand = rand;
+            this.Controller = dynSettings.Controller;
+            this.DynamoViewModel = Controller.DynamoViewModel;
+            this.DynamoModel = Controller.DynamoModel;
         }
 
         /// <summary>
@@ -32,38 +31,5 @@ namespace Dynamo.TestInfrastructure
         /// <returns></returns>
         public abstract int Mutate();
 
-    }
-
-
-    class DeleteNodeMutator : AbstractMutator
-    {
-        public DeleteNodeMutator(Random rand) : base(rand)
-        {
-        }
-
-        public override int Mutate()
-        {
-            List<NodeModel> nodes = dynamoModel.Nodes;
-
-
-            NodeModel node = nodes[rand.Next(nodes.Count)];
-            //writer.WriteLine("### - Deletion target: " + node.GUID);
-
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
-            {
-                DynamoViewModel.DeleteModelCommand delCommand =
-                    new DynamoViewModel.DeleteModelCommand(node.GUID);
-                
-                
-                dynamoViewModel.ExecuteCommand(delCommand);
-
-            }));
-
-            //We've performed a single delete
-            return 1;
-
-        }
-
-        
     }
 }
