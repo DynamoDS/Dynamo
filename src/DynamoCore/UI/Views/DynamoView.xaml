@@ -993,9 +993,6 @@
                     </TabControl.ContentTemplate>
 
                 </TabControl>
-                <Grid Name="InfoBubbleGrid"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left" />
             </Grid>
 
         </Border>
