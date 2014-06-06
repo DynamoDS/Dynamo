@@ -444,6 +444,65 @@ namespace Dynamo.UpdateManager
             versionCheckInProgress = false;
         }
 
+        public void QuitAndInstallUpdate()
+        {
+            string message = string.Format("An update is available for {0}.\n\n" +
+                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
+
+            MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
+            bool installUpdate = result == MessageBoxResult.OK;
+
+            if (installUpdate)
+            {
+                if (ShutdownRequested != null)
+                    ShutdownRequested(this, new EventArgs());
+            }
+            
+        }
+
+        public void HostApplicationBeginQuit()
+        {
+            if (!string.IsNullOrEmpty(UpdateFileLocation))
+            {
+                if (File.Exists(UpdateFileLocation))
+                    Process.Start(UpdateFileLocation);
+            }
+        }
+
+        public bool IsVersionCheckInProgress()
+        {
+            return versionCheckInProgress;
+        }
+
+        #endregion
+
+        #region Private Event Handlers
+
+        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            versionCheckInProgress = false;
+
+            if (e == null)
+                return;
+
+            string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
+            logger.Log("UpdateManager-OnDownloadFileCompleted", LogLevel.File);
+
+            UpdateFileLocation = string.Empty;
+            if (e.Error == null)
+            {
+                UpdateFileLocation = (string)e.UserState;
+                logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
+            }
+
+            if (null != UpdateDownloaded)
+                UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
+        }
+
+        #endregion
+
+        #region Private Class Helper Methods
+
         /// <summary>
         /// Get the file name of the latest build on S3
         /// </summary>
@@ -532,7 +591,7 @@ namespace Dynamo.UpdateManager
                     return true;
                 }
             }
-            
+
             return false;
         }
 
@@ -557,6 +616,16 @@ namespace Dynamo.UpdateManager
             return BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
         }
 
+        private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl)
+        {
+            UpdateInfo = new AppVersionInfo()
+            {
+                Version = latestBuildVersion,
+                VersionInfoURL = Configurations.UpdateDownloadLocation,
+                InstallerURL = latestBuildDownloadUrl
+            };
+        }
+
         private bool ExistingUpdateAvailable()
         {
             var existingUpdatePath = dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath;
@@ -572,75 +641,6 @@ namespace Dynamo.UpdateManager
         {
             return fileName.Contains(InstallNameBase);
         }
-
-        private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl)
-        {
-            UpdateInfo = new AppVersionInfo()
-            {
-                Version = latestBuildVersion,
-                VersionInfoURL = Configurations.UpdateDownloadLocation,
-                InstallerURL = latestBuildDownloadUrl
-            };
-        }
-
-        public void QuitAndInstallUpdate()
-        {
-            string message = string.Format("An update is available for {0}.\n\n" +
-                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
-
-            MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
-            bool installUpdate = result == MessageBoxResult.OK;
-
-            if (installUpdate)
-            {
-                if (ShutdownRequested != null)
-                    ShutdownRequested(this, new EventArgs());
-            }
-            
-        }
-
-        public void HostApplicationBeginQuit()
-        {
-            if (!string.IsNullOrEmpty(UpdateFileLocation))
-            {
-                if (File.Exists(UpdateFileLocation))
-                    Process.Start(UpdateFileLocation);
-            }
-        }
-
-        public bool IsVersionCheckInProgress()
-        {
-            return versionCheckInProgress;
-        }
-
-        #endregion
-
-        #region Private Event Handlers
-
-        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            versionCheckInProgress = false;
-
-            if (e == null)
-                return;
-
-            string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
-            logger.Log("UpdateManager-OnDownloadFileCompleted", LogLevel.File);
-
-            UpdateFileLocation = string.Empty;
-            if (e.Error == null)
-            {
-                UpdateFileLocation = (string)e.UserState;
-                logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
-            }
-
-            if (null != UpdateDownloaded)
-                UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
-        }
-
-        #endregion
-
-        #region Private Class Helper Methods
 
         /// <summary>
         /// Async call to request downloading a file from web.
