@@ -48,6 +48,21 @@ namespace GraphLayout
             return null;
         }
 
+        public void AddToLayer(Node n, int currentLayer)
+        {
+            while (Layers.Count <= currentLayer)
+                Layers.Add(new List<Node>());
+
+            Layers[currentLayer].Add(n);
+            n.Layer = currentLayer;
+        }
+
+        public void AddToLayer(List<Node> list, int currentLayer)
+        {
+            foreach (Node n in list)
+                AddToLayer(n, currentLayer);
+        }
+
         public void RemoveTransitiveEdges()
         {
             // Check for transitive edges using an adjacency matrix.
@@ -182,24 +197,20 @@ namespace GraphLayout
             // The rightmost layer is ordered based on the original vertical
             // position of the nodes.
             if (Edges.Count > 0)
-                Layers.Add(Nodes.Where(x => x.RightEdges.Count == 0
-                    && x.LeftEdges.Count > 0).OrderBy(x => x.Y).ToList());
+                AddToLayer(Nodes.Where(x => x.RightEdges.Count == 0
+                    && x.LeftEdges.Count > 0).OrderBy(x => x.Y).ToList(), 0);
             else
-                Layers.Add(Nodes.OrderBy(x => x.Y).ToList());
-
-            foreach (Node n in Layers.First())
-                n.Layer = 0;
+                AddToLayer(Nodes.OrderBy(x => x.Y).ToList(), 0);
 
             // Label the rest of the nodes based on the number of incoming edges.
-            List<Node> OrderedNodes = Nodes.OrderByDescending(
-                x => x.LeftEdges.Count(e => e.Active)).ToList();
+            List<Node> OrderedNodes = Nodes.Where(x => x.LeftEdges.Count > 0)
+                .OrderByDescending(x => x.LeftEdges.Count).ToList();
 
             bool isFinalLayer = false;
             int currentLayer = 0;
-            int processed = Layers.First().Count;
+            int processed = Layers.Count > 0 ? Layers.First().Count : 0;
 
             double layerWidth = 0;
-            double previousLayerX = 0;
 
             while (processed < OrderedNodes.Count)
             {
@@ -209,26 +220,38 @@ namespace GraphLayout
                 List<Node> selected = OrderedNodes.Where(x => x.Layer < 0 &&
                     x.RightEdges.All(e => e.EndNode.Layer >= 0)).ToList();
 
-                Node n = selected.FirstOrDefault(x =>
-                    x.RightEdges.All(e => e.EndNode.Layer < currentLayer) &&
-                    x.LeftEdges.Count(e => e.Active) > 0);
+                Node n = null;
 
-                if (n == null)
-                    n = selected.OrderByDescending(x => x.LeftEdges.Count).First();
+                if (selected.Count > 0)
+                {
+                    n = selected.FirstOrDefault(x =>
+                        x.RightEdges.All(e => e.EndNode.Layer < currentLayer) &&
+                        x.LeftEdges.Count(e => e.Active) > 0);
+
+                    if (n == null)
+                        n = selected.OrderByDescending(x => x.LeftEdges.Count).First();
+
+                    if (n.LeftEdges.Count == 0)
+                    {
+                        Node temp = OrderedNodes.FirstOrDefault(x => x.Layer < 0 && x.LeftEdges.Count > 0);
+                        if (temp != null)
+                            n = temp;
+                    }
+                }
+                else
+                {
+                    // For cyclic subgraphs
+                    n = OrderedNodes.Where(x => x.Layer < 0).OrderByDescending(
+                        x => x.RightEdges.Count(e => e.EndNode.Layer >= 0)).First();
+                    currentLayer = 0;
+                }
 
                 // Add a new layer when needed
-                if ((Layers[currentLayer].Count >= MaxLayerHeight) ||
+                if ((Layers.Count > 0 && Layers[currentLayer].Count >= MaxLayerHeight) ||
                     !n.RightEdges.All(e => e.EndNode.Layer < currentLayer) ||
                     (currentLayer > 0 && n.LeftEdges.Count == 0 && !isFinalLayer))
                 {
-                    // Horizontal node alignment for the previous layer
-                    if (currentLayer > 0)
-                        previousLayerX = Layers[currentLayer - 1].First().X;
-                    foreach (Node x in Layers[currentLayer])
-                        x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
-                    
                     currentLayer++;
-                    Layers.Add(new List<Node>());
 
                     layerWidth = 0;
 
@@ -236,20 +259,15 @@ namespace GraphLayout
                         isFinalLayer = true;
                 }
 
-                n.Layer = currentLayer;
-                Layers[currentLayer].Add(n);
+                AddToLayer(n, currentLayer);
                 processed++;
 
                 if (n.Width > layerWidth)
                     layerWidth = n.Width;
             }
 
-            // Horizontal node alignment for the last (leftmost) layer
-            if (currentLayer > 0) previousLayerX = Layers[currentLayer - 1].First().X;
-            foreach (Node x in Layers[currentLayer])
-                x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
-
-            Nodes = new HashSet<Node>(OrderedNodes);
+            // Put the input nodes on the leftmost layer
+            AddToLayer(Nodes.Where(x => x.LeftEdges.Count == 0).ToList(), Layers.Count);
         }
 
         /// <summary>
@@ -275,6 +293,8 @@ namespace GraphLayout
             
             foreach (List<Node> layer in Layers)
             {
+                double prevY = -10;
+
                 foreach (Node n in layer)
                 {
                     // Get the vertical coordinates from each node's median
@@ -282,7 +302,8 @@ namespace GraphLayout
 
                     if (layer.First().Layer > 0)
                     {
-                        List<Edge> neighborEdges = n.RightEdges.OrderBy(x => x.EndY).ToList();
+                        List<Edge> neighborEdges = n.RightEdges
+                            .Where(x => x.EndNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
 
                         if (neighborEdges.Count > 1 && neighborEdges.Count % 2 == 0)
                         {
@@ -296,60 +317,48 @@ namespace GraphLayout
                         else if (neighborEdges.Count > 0)
                         {
                             Edge median = neighborEdges[(neighborEdges.Count - 1) / 2];
+
                             n.Y = median.EndNode.Y + median.EndOffsetY - median.StartOffsetY;
+                        }
+                        else if (n.LeftEdges.Count > 0)
+                        {
+                            n.Y = prevY + 10;
+                            prevY = n.Y;
                         }
                     }
                 }
 
-                // Sort the nodes on the layer by its temporary coordinates
-                foreach (Node n in layer.OrderBy(x => x.Y))
-                {
-                    // Assign new coordinates to this node's incoming edges
-                    int b = 1;
-                    foreach (Edge e in n.LeftEdges.OrderBy(x => x.EndY))
-                    {
-                        e.EndY = n.Y + b;
-                        b++;
-                    }
-                }
+                AssignCoordinates(layer);
             }
         }
 
         /// <summary>
         /// Sugiyama step 4: Assign Coordinates
         /// </summary>
-        public void AssignCoordinates()
+        public void AssignCoordinates(List<Node> layer)
         {
-            int i = 0;
-            while (i < Layers.Count)
-            {
-                Layers[i] = Layers[i].OrderBy(x => x.Y).ToList();
-                i++;
-            } 
+            layer = layer.OrderBy(x => x.Y).ToList();
             
-            foreach (List<Node> layer in Layers)
+            double topY = 0;
+
+            foreach (Node n in layer)
             {
-                Node top = null;
-                
-                foreach (Node n in layer)
-                {
-                    if (top == null)
-                    {
-                        top = n;
-                        continue;
-                    }
+                // Avoid vertical node overlapping
+                if (n.Y < topY) n.Y = topY;
 
-                    // Avoid vertical node overlapping
-                    if (n.Y - top.Y < top.Height + VerticalNodeDistance)
-                    {
-                        n.Y = top.Y + top.Height + VerticalNodeDistance;
-                    }
-
-                    top = n;
-                }
+                topY = n.Y + n.Height + VerticalNodeDistance;
             }
 
-            NormalizeGraphPosition();
+            foreach (Node n in layer)
+            {
+                // Assign dummy coordinates to node incoming edges
+                int b = 1;
+                foreach (Edge e in n.LeftEdges.OrderBy(x => x.EndY))
+                {
+                    e.EndY = n.Y + b;
+                    b++;
+                }
+            }
         }
 
         #endregion
@@ -362,19 +371,31 @@ namespace GraphLayout
             double offsetX = -Layers.Last().First().X;
             double offsetY = Nodes.OrderBy(x => x.Y).First().Y;
 
+            double previousLayerX = 0;
+
             foreach (List<Node> layer in Layers)
             {
-                double maxY = -Infinite;
-                foreach (Node n in layer)
+                double layerWidth = layer.Max(x => x.Width);
+
+                foreach (Node x in layer)
+                    x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
+
+                previousLayerX = layer.First().X;
+
+
+                double maxY = (layer.Min(x => x.Y) >= Infinite) ?
+                    0 : layer.Min(x => x.Y);
+
+                foreach (Node n in layer.OrderBy(x => x.Y))
                 {
                     n.X += offsetX;
                     n.Y += offsetY;
 
                     if (n.Y >= Infinite + offsetY)
-                        n.Y = maxY + VerticalNodeDistance;
+                        n.Y = maxY;
                     
                     if (n.Y + n.Height > maxY)
-                        maxY = n.Y + n.Height;
+                        maxY = n.Y + n.Height + VerticalNodeDistance;
                 }
             }
         }
