@@ -56,10 +56,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -119,15 +115,6 @@
     <Compile Include="RevitNodeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodesUI\RevitNodesUI.csproj">
-      <Project>{75940acc-3708-4526-8d91-7e3365baf682}</Project>
-      <Name>RevitNodesUI</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodes\RevitNodes.csproj">
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
       <Name>RevitNodes</Name>
