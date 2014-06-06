@@ -97,6 +97,18 @@ namespace Dynamorph
         internal static readonly List<SolidColorBrush> Brushes;
     }
 
+    class SliderEventArgs : EventArgs
+    {
+        internal SliderEventArgs(double value)
+        {
+            this.Value = value;
+        }
+
+        internal double Value { get; private set; }
+    }
+
+    delegate void SliderChangedEventHandler(object sender, SliderEventArgs e);
+
     class SliderVisualHost : FrameworkElement
     {
         private double maxThumbOffset = 0;
@@ -108,6 +120,8 @@ namespace Dynamorph
         private DrawingVisual sliderThumbLayer = new DrawingVisual();
         private DrawingVisual sliderBackground = new DrawingVisual();
         private ScrollViewer canvasScrollViewer = null;
+
+        internal event SliderChangedEventHandler Changed = null;
 
         #region Public Operational Class Methods
 
@@ -179,11 +193,7 @@ namespace Dynamorph
                 // 
                 var edgeWidth = (Config.HorzGap + (0.5 * Config.NodeWidth));
                 maxThumbOffset = (e.ExtentWidth - (2.0 * edgeWidth));
-
-                if (this.thumbTransform.X < 0.0)
-                    this.thumbTransform.X = 0.0;
-                else if (this.thumbTransform.X > maxThumbOffset)
-                    this.thumbTransform.X = maxThumbOffset;
+                UpdateAndNotify(this.thumbTransform.X);
 
                 RenderSliderBackground(e);
                 RenderSliderThumbSeparator(e);
@@ -200,13 +210,7 @@ namespace Dynamorph
             if (this.IsMouseCaptured)
             {
                 var point = e.GetPosition(this);
-                thumbTransform.X = point.X - this.mouseThumbOffset;
-
-                // Limit thumb movement to within range.
-                if (this.thumbTransform.X < 0.0)
-                    this.thumbTransform.X = 0.0;
-                else if (this.thumbTransform.X > maxThumbOffset)
-                    this.thumbTransform.X = maxThumbOffset;
+                UpdateAndNotify(point.X - this.mouseThumbOffset);
             }
             else
             {
@@ -243,6 +247,23 @@ namespace Dynamorph
         #endregion
 
         #region Private Class Helper Methods
+
+        private void UpdateAndNotify(double offset)
+        {
+            thumbTransform.X = offset;
+
+            // Limit thumb movement to within range.
+            if (this.thumbTransform.X < 0.0)
+                this.thumbTransform.X = 0.0;
+            else if (this.thumbTransform.X > maxThumbOffset)
+                this.thumbTransform.X = maxThumbOffset;
+
+            if (this.Changed != null)
+            {
+                double unitWidth = ((2.0 * Config.HorzGap) + Config.NodeWidth);
+                Changed(this, new SliderEventArgs(thumbTransform.X / unitWidth));
+            }
+        }
 
         private bool IsMouseOnSliderThumb(MouseEventArgs e)
         {
