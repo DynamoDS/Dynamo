@@ -40,12 +40,13 @@ namespace Dynamo
         /// </summary>
         private Assembly singleSignOnAssembly;
 
-        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager)
+        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager, string corePath)
             : base(
                 context,
                 updateManager,
                 new RevitWatchHandler(),
-                Dynamo.PreferenceSettings.Load())
+                Dynamo.PreferenceSettings.Load(),
+                corePath)
         {
             Updater = updater;
 
@@ -85,6 +86,7 @@ namespace Dynamo
             IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
 
             Runner = new DynamoRunner_Revit(this);
+
         }
 
         public RevitServicesUpdater Updater { get; private set; }
