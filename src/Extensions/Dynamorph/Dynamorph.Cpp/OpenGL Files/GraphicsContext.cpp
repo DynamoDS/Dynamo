@@ -214,3 +214,8 @@ void GraphicsContext::EnableAlphaBlendCore(void) const
     GL::glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
     GL::glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 }
+
+void GraphicsContext::ClearDepthBufferCore(void) const
+{
+    GL::glClear(GL_DEPTH_BUFFER_BIT);
+}

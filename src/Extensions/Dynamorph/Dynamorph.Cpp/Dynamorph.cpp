@@ -463,8 +463,10 @@ void Visualizer::RenderWithBlendingFactor(void)
     float integralPart = 0.0f;
     float alpha = std::modf(mBlendingFactor, &integralPart);
     RenderGeometriesAtDepth(lower, 1.0f - alpha);
-    if (lower != upper) // At 0.0 or 1.0 ends.
+    if (lower != upper) { // At 0.0 or 1.0 ends.
+        mpGraphicsContext->ClearDepthBuffer();
         RenderGeometriesAtDepth(upper, alpha);
+    }
 }
 
 void Visualizer::RenderGeometriesAtDepth(int depth, float alpha)

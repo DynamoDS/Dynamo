@@ -467,6 +467,11 @@ namespace Dynamorph
             this->EnableAlphaBlendCore();
         }
 
+        void ClearDepthBuffer(void) const
+        {
+            this->ClearDepthBufferCore();
+        }
+
     protected:
         virtual void InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
@@ -485,6 +490,7 @@ namespace Dynamorph
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const = 0;
         virtual void EndRenderFrameCore(HDC deviceContext) const = 0;
         virtual void EnableAlphaBlendCore(void) const = 0;
+        virtual void ClearDepthBufferCore(void) const = 0;
     };
 }
 

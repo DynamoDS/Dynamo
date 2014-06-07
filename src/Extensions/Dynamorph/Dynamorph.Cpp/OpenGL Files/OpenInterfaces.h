@@ -146,6 +146,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const;
         virtual void EndRenderFrameCore(HDC deviceContext) const;
         virtual void EnableAlphaBlendCore(void) const;
+        virtual void ClearDepthBufferCore(void) const;
 
     private:
         HWND mRenderWindow;
