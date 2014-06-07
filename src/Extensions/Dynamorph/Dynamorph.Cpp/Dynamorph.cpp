@@ -140,13 +140,14 @@ HWND Visualizer::GetWindowHandle(void)
     return this->mhWndVisualizer;
 }
 
-void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometries)
+void Visualizer::UpdateNodeGeometries(UpdateGeometryParam^ geometryParam)
 {
     BoundingBox outerBoundingBox;
 
-    for each(KeyValuePair<Guid, IRenderPackage^> geometry in geometries)
+    auto geometries = geometryParam->Geometries;
+    for each(KeyValuePair<System::String^, IRenderPackage^> geometry in geometries)
     {
-        System::String^ nodeId = geometry.Key.ToString()->ToLower();
+        System::String^ nodeId = geometry.Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
         NodeGeometries* pNodeGeometries = nullptr;

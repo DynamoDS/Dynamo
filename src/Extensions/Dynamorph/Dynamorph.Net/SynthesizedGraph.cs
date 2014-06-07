@@ -145,6 +145,15 @@ namespace Dynamorph
             return currentNodeIds.Except(otherNodeIds);
         }
 
+        internal IEnumerable<KeyValuePair<string, int>> GetNodeDepths()
+        {
+            var depths = new Dictionary<string, int>();
+            foreach (var node in this.nodes)
+                depths.Add(node.Identifier, node.Depth);
+
+            return depths;
+        }
+
         #endregion
 
         #region Class Properties

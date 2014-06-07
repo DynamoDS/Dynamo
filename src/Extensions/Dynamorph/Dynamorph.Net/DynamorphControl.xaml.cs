@@ -65,10 +65,14 @@ namespace Dynamorph
             this.graphVisualHost.RefreshGraph(nextGraph);
         }
 
-        public void SetNodeGeometries(Dictionary<Guid, IRenderPackage> geometries)
+        public void SetNodeGeometries(Dictionary<string, IRenderPackage> geometries)
         {
             if (visualizer != null && (visualizer.CurrentVisualizer != null))
-                this.visualizer.CurrentVisualizer.UpdateNodeGeometries(geometries);
+            {
+                var depths = this.currentGraph.GetNodeDepths();
+                var param = new UpdateGeometryParam(depths, geometries);
+                visualizer.CurrentVisualizer.UpdateNodeGeometries(param);
+            }
         }
 
         #endregion

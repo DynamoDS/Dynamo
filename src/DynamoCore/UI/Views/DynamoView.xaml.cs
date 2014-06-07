@@ -30,6 +30,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
 using Dynamo.UI.Commands;
+using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Controls
 {
@@ -354,7 +355,8 @@ namespace Dynamo.Controls
             if (this.dynamorphWindow != null)
             {
                 var control = this.dynamorphWindow.Control;
-                control.SetNodeGeometries(e.Geometries);
+                control.SetNodeGeometries(e.Geometries.ToDictionary(
+                    item => item.Key.ToString(), item => item.Value));
             }
         }
 

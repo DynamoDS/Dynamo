@@ -5,6 +5,12 @@
 #define DYNAMORPH_API __declspec(dllimport)
 #endif
 
+namespace Gen = System::Collections::Generic;
+namespace Ds = Autodesk::DesignScript::Interfaces;
+
+typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, int>> NodeDepthsType;
+typedef Gen::Dictionary<System::String^, Ds::IRenderPackage^> NodeGeomsType;
+
 namespace Dynamorph
 {
     class IGraphicsContext;
@@ -12,6 +18,30 @@ namespace Dynamorph
     class IVertexBuffer;
     class GeometryData;
     class NodeGeometries;
+
+    public ref class UpdateGeometryParam
+    {
+    public:
+        UpdateGeometryParam(NodeDepthsType^ depths, NodeGeomsType^ geometries)
+        {
+            this->depths = depths;
+            this->geometries = geometries;
+        }
+
+        property NodeDepthsType^ Depth
+        {
+            NodeDepthsType^ get() { return this->depths; }
+        }
+
+        property NodeGeomsType^ Geometries
+        {
+            NodeGeomsType^ get() { return this->geometries; }
+        }
+
+    private:
+        NodeDepthsType^ depths;
+        NodeGeomsType^ geometries;
+    };
 
     public ref class Visualizer
     {
@@ -25,9 +55,8 @@ namespace Dynamorph
 
         // Public class methods.
         HWND GetWindowHandle(void);
-        void UpdateNodeGeometries(System::Collections::Generic::Dictionary<System::Guid,
-            Autodesk::DesignScript::Interfaces::IRenderPackage^>^ geometries);
-        void RemoveNodeGeometries(System::Collections::Generic::IEnumerable<System::String^>^ nodes);
+        void UpdateNodeGeometries(UpdateGeometryParam^ geometryParam);
+        void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
 
     private:
 
