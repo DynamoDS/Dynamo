@@ -23,9 +23,9 @@ Dynamorph, morph the heck out of your design.
 - [x] Use layout qualifier in GLSL instead of hard-coding
 - [x] Implement Phong shading model in GLSL
 - [x] Add slider to work with synthesized graph
-- [ ] Design structure to keep node-geometry data
-- [ ] Add shader uniform to control per-vertex alpha
-- [ ] Enable slider to work with C++ Visualizer
+- [x] Design structure to keep node-geometry data
+- [x] Add shader uniform to control per-vertex alpha
+- [x] Enable slider to work with C++ Visualizer
 - [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
@@ -58,5 +58,5 @@ Dynamorph, morph the heck out of your design.
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
 
-#### Slider with thumb, and more accurate surface normals from ASM! :) ####
+#### Dynamorph workflow completed with geometry blending!!! :) ####
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)
