@@ -102,6 +102,11 @@ namespace Dynamorph
 
             this.sliderVisualHost = new SliderVisualHost(canvasScrollViewer);
             this.sliderCanvas.Children.Add(sliderVisualHost);
+            this.sliderVisualHost.Changed += delegate(object s, SliderEventArgs se)
+            {
+                if (visualizer != null && (visualizer.CurrentVisualizer != null))
+                    visualizer.CurrentVisualizer.BlendGeometryLevels((float)se.Value);
+            };
 
             if (visualizer == null)
             {
