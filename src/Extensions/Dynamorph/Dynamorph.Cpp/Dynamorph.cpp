@@ -200,8 +200,41 @@ void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometr
     ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
 }
 
+void Visualizer::RemoveNodeGeometries(IEnumerable<System::Guid>^ nodes)
+{
+    for each (System::Guid node in nodes)
+    {
+        System::String^ nodeId = node.ToString()->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+
+        auto found = mpNodeGeometries->find(identifier);
+        if (found == mpNodeGeometries->end())
+            continue; // The node does not have any associated geometries.
+
+        // Release the node geometry ownership from map.
+        NodeGeometries* pNodeGeometries = found->second;
+        mpNodeGeometries->erase(found);
+
+        auto outer = mpGeomsOnDepthLevel->begin();
+        for (; outer != mpGeomsOnDepthLevel->end(); ++outer)
+        {
+            auto inner = outer->begin();
+            for (; inner != outer->end(); ++inner)
+            {
+                if (pNodeGeometries == *inner) {
+                    outer->erase(inner);
+                    break;
+                }
+            }
+        }
+
+        delete pNodeGeometries; // Release node geometries and its resources.
+    }
+}
+
 Visualizer::Visualizer() : 
     mpNodeGeometries(nullptr),
+    mpGeomsOnDepthLevel(nullptr),
     mhWndVisualizer(nullptr),
     mpShaderProgram(nullptr),
     mpGraphicsContext(nullptr)
@@ -319,10 +352,20 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
 
     // Create storage for storing nodes and their geometries.
     mpNodeGeometries = new std::map<std::wstring, NodeGeometries*>();
+    mpGeomsOnDepthLevel = new std::vector<std::vector<NodeGeometries*>>();
 }
 
 void Visualizer::Uninitialize(void)
 {
+    // The ultimate ownership of NodeGeometries is in mpNodeGeometries map, 
+    // so here we simply clear the mpGeomsOnDepthLevel vector, and delete the 
+    // vector itself.
+    // 
+    if (this->mpGeomsOnDepthLevel != nullptr) {
+        mpGeomsOnDepthLevel->clear();
+        mpGeomsOnDepthLevel = nullptr;
+    }
+
     if (this->mpNodeGeometries != nullptr)
     {
         auto iterator = mpNodeGeometries->begin();

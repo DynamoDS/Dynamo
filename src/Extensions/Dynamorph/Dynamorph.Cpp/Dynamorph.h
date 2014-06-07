@@ -27,6 +27,7 @@ namespace Dynamorph
         HWND GetWindowHandle(void);
         void UpdateNodeGeometries(System::Collections::Generic::Dictionary<System::Guid,
             Autodesk::DesignScript::Interfaces::IRenderPackage^>^ geometries);
+        void RemoveNodeGeometries(System::Collections::Generic::IEnumerable<System::Guid>^ nodes);
 
     private:
 
@@ -45,6 +46,7 @@ namespace Dynamorph
         IShaderProgram* mpShaderProgram;
 
         // Node data.
+        std::vector<std::vector<NodeGeometries*>>* mpGeomsOnDepthLevel;
         std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
     };
 }

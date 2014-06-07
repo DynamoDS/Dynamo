@@ -31,6 +31,7 @@ Dynamorph, morph the heck out of your design.
 ##### Miscellaneous Tasks #####
 - [ ] Introduce "normal matrix" into [Phong shader](http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/renderer.js)
 - [ ] Translate directly into GeometryData as interleaved
+- [ ] Factor mpNodeGeometries, mpGeomsOnDepthLevel out of Visualizer
 - [ ] Fix: Line segment with 0 vertex should be filtered
 - [ ] Fix: Warning surrounding deprecated GLM functions
 - [ ] Merge multiple RenderPackage into one vertex buffer
