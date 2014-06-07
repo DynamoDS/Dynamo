@@ -57,6 +57,10 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray);
             GETGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
             GETGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
+            GETGLPROC(PFNGLUNIFORM1FPROC,                   glUniform1f);
+            GETGLPROC(PFNGLUNIFORM2FPROC,                   glUniform2f);
+            GETGLPROC(PFNGLUNIFORM3FPROC,                   glUniform3f);
+            GETGLPROC(PFNGLUNIFORM4FPROC,                   glUniform4f);
             GETGLPROC(PFNGLUNIFORMMATRIX4FVPROC,            glUniformMatrix4fv);
             GETGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
             GETGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
@@ -101,6 +105,10 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray);
         DEFGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
         DEFGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
+        DEFGLPROC(PFNGLUNIFORM1FPROC,                   glUniform1f);
+        DEFGLPROC(PFNGLUNIFORM2FPROC,                   glUniform2f);
+        DEFGLPROC(PFNGLUNIFORM3FPROC,                   glUniform3f);
+        DEFGLPROC(PFNGLUNIFORM4FPROC,                   glUniform4f);
         DEFGLPROC(PFNGLUNIFORMMATRIX4FVPROC,            glUniformMatrix4fv);
         DEFGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
         DEFGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
@@ -224,6 +232,7 @@ namespace Dynamorph { namespace OpenGL {
 
     protected:
         virtual int GetShaderParameterIndexCore(const std::string& name) const;
+        virtual void SetParameterCore(int index, const float* pValues, int count) const;
         virtual void BindTransformMatrixCore(TransMatrix transform, const std::string& name);
         virtual void ApplyTransformationCore(const ICamera* pCamera) const;
 

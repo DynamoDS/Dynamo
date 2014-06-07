@@ -339,6 +339,11 @@ namespace Dynamorph
             return this->GetShaderParameterIndexCore(name);
         }
 
+        void SetParameter(int index, const float* pValues, int count) const
+        {
+            return this->SetParameterCore(index, pValues, count);
+        }
+
         void BindTransformMatrix(TransMatrix transform, const std::string& name)
         {
             this->BindTransformMatrixCore(transform, name);
@@ -351,6 +356,7 @@ namespace Dynamorph
 
     protected:
         virtual int GetShaderParameterIndexCore(const std::string& name) const = 0;
+        virtual void SetParameterCore(int index, const float* pValues, int count) const = 0;
         virtual void BindTransformMatrixCore(TransMatrix transform, const std::string& name) = 0;
         virtual void ApplyTransformationCore(const ICamera* pCamera) const = 0;
     };

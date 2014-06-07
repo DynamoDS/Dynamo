@@ -186,6 +186,7 @@ void Visualizer::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
 }
 
 Visualizer::Visualizer() : 
+    mAlphaParamIndex(-1),
     mBlendingFactor(0.0f),
     mpNodeGeometries(nullptr),
     mpGeomsOnDepthLevel(nullptr),
@@ -259,6 +260,8 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         "                                                               \n"
         "out vec4 outColor;                                             \n"
         "                                                               \n"
+        "uniform float alpha;                                           \n"
+        "                                                               \n"
         "const vec3 lightPosition = vec3(1.0, 1.0, 1.0);                \n"
         "const vec3 ambientColor  = vec3(0.3, 0.0, 0.0);                \n"
         "const vec3 diffuseColor  = vec3(0.5, 0.0, 0.0);                \n"
@@ -282,7 +285,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         "    vec3 a = ambientColor * vertColor.rgb;                     \n"
         "    outColor = vec4(a +                                        \n"
         "        lambertian * diffuseColor +                            \n"
-        "        specular * specularColor, 1.0);                        \n"
+        "        specular * specularColor, alpha);                      \n"
         "}                                                              \n");
 
     // Create shaders and their program.
@@ -293,6 +296,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpShaderProgram->BindTransformMatrix(TransMatrix::Model, "model");
     mpShaderProgram->BindTransformMatrix(TransMatrix::View, "view");
     mpShaderProgram->BindTransformMatrix(TransMatrix::Projection, "proj");
+    mAlphaParamIndex = mpShaderProgram->GetShaderParameterIndex("alpha");
 
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     {
@@ -448,6 +452,7 @@ void Visualizer::RenderWithBlendingFactor(void)
     lower = ((lower < 0) ? 0 : lower);
     upper = ((upper > maxIndex) ? maxIndex : upper);
 
+    mpGraphicsContext->EnableAlphaBlend();
     mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
 
     // Apply camera transformation.
@@ -464,6 +469,8 @@ void Visualizer::RenderWithBlendingFactor(void)
 
 void Visualizer::RenderGeometriesAtDepth(int depth, float alpha)
 {
+    mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
+
     auto pInnerList = mpGeomsOnDepthLevel->at(depth);
     auto iterator = pInnerList->begin();
     for (; iterator != pInnerList->end(); ++iterator)

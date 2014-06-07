@@ -75,9 +75,11 @@ namespace Dynamorph
         static Visualizer^ mVisualizer = nullptr;
 
         // Class instance data members.
-        float mBlendingFactor;
         HWND mhWndVisualizer;
         IGraphicsContext* mpGraphicsContext;
+
+        int mAlphaParamIndex;
+        float mBlendingFactor;
         IShaderProgram* mpShaderProgram;
 
         // Node data.

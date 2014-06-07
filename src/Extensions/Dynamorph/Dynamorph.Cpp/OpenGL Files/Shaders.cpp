@@ -127,6 +127,20 @@ int ShaderProgram::GetShaderParameterIndexCore(const std::string& name) const
     return GL::glGetUniformLocation(mProgramId, name.c_str());
 }
 
+void ShaderProgram::SetParameterCore(int index, const float* pv, int count) const
+{
+    switch (count)
+    {
+    case 1: GL::glUniform1f(index, pv[0]); break;
+    case 2: GL::glUniform2f(index, pv[0], pv[1]); break;
+    case 3: GL::glUniform3f(index, pv[0], pv[1], pv[2]); break;
+    case 4: GL::glUniform4f(index, pv[0], pv[1], pv[2], pv[3]); break;
+
+    default:
+        throw new std::exception("Invalid 'count' value in 'ShaderProgram::SetParameter'");
+    }
+}
+
 void ShaderProgram::BindTransformMatrixCore(TransMatrix transform, const std::string& name)
 {
     GLint index = GL::glGetUniformLocation(mProgramId, name.c_str());
