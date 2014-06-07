@@ -12,6 +12,7 @@ namespace DynamoUtilities
     /// </summary>
     public static class DynamoPaths
     {
+
         public static string Core { get; set; }
         public static string Definitions { get; set; }
         public static string Packages { get; set; }

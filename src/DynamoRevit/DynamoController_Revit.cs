@@ -19,6 +19,7 @@ using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.UpdateManager;
+using DynamoUtilities;
 using Greg;
 using Revit.Elements;
 using RevitServices.Elements;
@@ -74,8 +75,10 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
-            EngineController.ImportLibrary("RevitNodes.dll");
-            EngineController.ImportLibrary("SimpleRaaS.dll");
+            var revitPath = Path.Combine(DynamoPaths.Core, @"Revit_2014\RevitNodes.dll");
+            var raasPath = Path.Combine(DynamoPaths.Core, @"Revit_2014\SimpleRaaS.dll");
+            EngineController.ImportLibrary(revitPath);
+            EngineController.ImportLibrary(raasPath);
             
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
