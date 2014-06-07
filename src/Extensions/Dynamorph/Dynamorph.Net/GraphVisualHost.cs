@@ -316,7 +316,6 @@ namespace Dynamorph
 
     class GraphVisualHost : FrameworkElement
     {
-        private SynthesizedGraph graph = null;
         private VisualCollection childVisuals = null;
         private DrawingVisual nodeVisuals = new DrawingVisual();
         private DrawingVisual edgeVisuals = new DrawingVisual();
@@ -328,17 +327,14 @@ namespace Dynamorph
             childVisuals = new VisualCollection(this);
             childVisuals.Add(edgeVisuals);
             childVisuals.Add(nodeVisuals);
-            this.Loaded += OnGraphVisualHostLoaded;
         }
 
         internal void RefreshGraph(SynthesizedGraph graph)
         {
-            this.graph = graph;
-
             if (this.IsLoaded != false)
             {
-                RefreshGraphNodes();
-                RefreshGraphEdges();
+                RefreshGraphNodes(graph);
+                RefreshGraphEdges(graph);
             }
         }
 
@@ -375,17 +371,11 @@ namespace Dynamorph
 
         #region Private Class Event Handlers
 
-        private void OnGraphVisualHostLoaded(object sender, RoutedEventArgs e)
-        {
-            RefreshGraphNodes();
-            RefreshGraphEdges();
-        }
-
         #endregion
 
         #region Private Class Helper Methods
 
-        private void RefreshGraphNodes()
+        private void RefreshGraphNodes(SynthesizedGraph graph)
         {
             var parentCanvas = this.ParentCanvas;
             parentCanvas.Width = parentCanvas.Height = 0;
@@ -447,7 +437,7 @@ namespace Dynamorph
             return rect;
         }
 
-        private void RefreshGraphEdges()
+        private void RefreshGraphEdges(SynthesizedGraph graph)
         {
             if (graph == null || (graph.Edges.Any() == false))
                 return; // There is no graph or it has no edges.
@@ -455,8 +445,8 @@ namespace Dynamorph
             var startPoints = new PointCollection();
             var endPoints = new PointCollection();
 
-            var nodes = this.graph.Nodes;
-            foreach (var edge in this.graph.Edges)
+            var nodes = graph.Nodes;
+            foreach (var edge in graph.Edges)
             {
                 var startNode = nodes.First(n => n.Identifier == edge.StartNodeId);
                 var endNode = nodes.First(n => n.Identifier == edge.EndNodeId);

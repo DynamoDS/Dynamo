@@ -25,7 +25,7 @@ namespace Dynamorph
         }
 
         private Point prevMousePosition = new Point();
-        private SynthesizedGraph pendingGraph = null;
+        private SynthesizedGraph currentGraph = null;
         private VisualizerHwndHost visualizer = null;
         private GraphVisualHost graphVisualHost = null;
         private SliderVisualHost sliderVisualHost = null;
@@ -51,16 +51,9 @@ namespace Dynamorph
             var nextGraph = graph as SynthesizedGraph;
             nextGraph.BuildGraphStructure();
 
-            if (this.graphVisualHost == null)
-            {
-                // No visual host yet, set it later when it gets created.
-                this.pendingGraph = nextGraph;
-            }
-            else
-            {
-                // The graph visual host is ready to update.
+            this.currentGraph = nextGraph;
+            if (this.graphVisualHost != null)
                 this.graphVisualHost.RefreshGraph(nextGraph);
-            }
         }
 
         public void SetNodeGeometries(Dictionary<Guid, IRenderPackage> geometries)
@@ -97,12 +90,11 @@ namespace Dynamorph
             this.sliderVisualHost = new SliderVisualHost(canvasScrollViewer);
             this.sliderCanvas.Children.Add(sliderVisualHost);
 
-            if (this.pendingGraph != null)
+            if (this.currentGraph != null)
             {
                 // A graph was sent before GraphVisualHost got created, now 
                 // that we have the visual host, set the graph for display.
-                this.graphVisualHost.RefreshGraph(this.pendingGraph);
-                this.pendingGraph = null;
+                this.graphVisualHost.RefreshGraph(this.currentGraph);
             }
 
             if (visualizer == null)
