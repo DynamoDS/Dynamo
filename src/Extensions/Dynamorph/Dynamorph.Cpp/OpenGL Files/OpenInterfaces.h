@@ -223,6 +223,7 @@ namespace Dynamorph { namespace OpenGL {
         void Activate(void) const;
 
     protected:
+        virtual int GetShaderParameterIndexCore(const std::string& name) const;
         virtual void BindTransformMatrixCore(TransMatrix transform, const std::string& name);
         virtual void ApplyTransformationCore(const ICamera* pCamera) const;
 

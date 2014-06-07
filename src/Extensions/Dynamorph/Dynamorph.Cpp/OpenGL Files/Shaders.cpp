@@ -122,6 +122,11 @@ void ShaderProgram::Activate(void) const
     GL::glUseProgram(mProgramId);
 }
 
+int ShaderProgram::GetShaderParameterIndexCore(const std::string& name) const
+{
+    return GL::glGetUniformLocation(mProgramId, name.c_str());
+}
+
 void ShaderProgram::BindTransformMatrixCore(TransMatrix transform, const std::string& name)
 {
     GLint index = GL::glGetUniformLocation(mProgramId, name.c_str());

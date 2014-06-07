@@ -330,9 +330,13 @@ namespace Dynamorph
     class IShaderProgram
     {
     public:
-    public:
         virtual ~IShaderProgram()
         {
+        }
+
+        int GetShaderParameterIndex(const std::string& name) const
+        {
+            return this->GetShaderParameterIndexCore(name);
         }
 
         void BindTransformMatrix(TransMatrix transform, const std::string& name)
@@ -346,6 +350,7 @@ namespace Dynamorph
         }
 
     protected:
+        virtual int GetShaderParameterIndexCore(const std::string& name) const = 0;
         virtual void BindTransformMatrixCore(TransMatrix transform, const std::string& name) = 0;
         virtual void ApplyTransformationCore(const ICamera* pCamera) const = 0;
     };
