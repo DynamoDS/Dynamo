@@ -268,7 +268,7 @@ namespace Dynamorph
         private bool IsMouseOnSliderThumb(MouseEventArgs e)
         {
             var result = VisualTreeHelper.HitTest(this, e.GetPosition(this));
-            return (result.VisualHit == sliderThumbLayer);
+            return (result != null && (result.VisualHit == sliderThumbLayer));
         }
 
         private void RenderSliderBackground(ScrollChangedEventArgs e)
