@@ -104,7 +104,7 @@ namespace Dynamorph
 
         #region Internal Class Operational Methods
 
-        public void BuildGraphStructure()
+        internal void BuildGraphStructure()
         {
             LabelGraphNodes(); // Label the entire graph with depth info.
             CalculateChildNode(); // Compute number of children for each node.
@@ -136,6 +136,13 @@ namespace Dynamorph
 
             // Update the node positioning on canvas.
             this.nodes.ForEach(n => n.UpdateNodeLayout());
+        }
+
+        internal IEnumerable<string> NodesNotInGraph(SynthesizedGraph otherGraph)
+        {
+            var currentNodeIds = this.Nodes.Select(n => n.Identifier);
+            var otherNodeIds = otherGraph.Nodes.Select(n => n.Identifier);
+            return currentNodeIds.Except(otherNodeIds);
         }
 
         #endregion

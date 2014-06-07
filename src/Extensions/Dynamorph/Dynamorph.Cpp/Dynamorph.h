@@ -27,7 +27,7 @@ namespace Dynamorph
         HWND GetWindowHandle(void);
         void UpdateNodeGeometries(System::Collections::Generic::Dictionary<System::Guid,
             Autodesk::DesignScript::Interfaces::IRenderPackage^>^ geometries);
-        void RemoveNodeGeometries(System::Collections::Generic::IEnumerable<System::Guid>^ nodes);
+        void RemoveNodeGeometries(System::Collections::Generic::IEnumerable<System::String^>^ nodes);
 
     private:
 

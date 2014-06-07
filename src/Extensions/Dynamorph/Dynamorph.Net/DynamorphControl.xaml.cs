@@ -51,9 +51,18 @@ namespace Dynamorph
             var nextGraph = graph as SynthesizedGraph;
             nextGraph.BuildGraphStructure();
 
+            if (this.currentGraph != null)
+            {
+                var removedNodes = this.currentGraph.NodesNotInGraph(nextGraph);
+                if (removedNodes.Any())
+                {
+                    if (visualizer != null && (visualizer.CurrentVisualizer != null))
+                        visualizer.CurrentVisualizer.RemoveNodeGeometries(removedNodes);
+                }
+            }
+
             this.currentGraph = nextGraph;
-            if (this.graphVisualHost != null)
-                this.graphVisualHost.RefreshGraph(nextGraph);
+            this.graphVisualHost.RefreshGraph(nextGraph);
         }
 
         public void SetNodeGeometries(Dictionary<Guid, IRenderPackage> geometries)
@@ -89,13 +98,6 @@ namespace Dynamorph
 
             this.sliderVisualHost = new SliderVisualHost(canvasScrollViewer);
             this.sliderCanvas.Children.Add(sliderVisualHost);
-
-            if (this.currentGraph != null)
-            {
-                // A graph was sent before GraphVisualHost got created, now 
-                // that we have the visual host, set the graph for display.
-                this.graphVisualHost.RefreshGraph(this.currentGraph);
-            }
 
             if (visualizer == null)
             {

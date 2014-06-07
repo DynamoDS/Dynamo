@@ -200,11 +200,11 @@ void Visualizer::UpdateNodeGeometries(Dictionary<Guid, IRenderPackage^>^ geometr
     ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
 }
 
-void Visualizer::RemoveNodeGeometries(IEnumerable<System::Guid>^ nodes)
+void Visualizer::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
 {
-    for each (System::Guid node in nodes)
+    for each (System::String^ identifier in identifiers)
     {
-        System::String^ nodeId = node.ToString()->ToLower();
+        System::String^ nodeId = identifier->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
         auto found = mpNodeGeometries->find(identifier);
