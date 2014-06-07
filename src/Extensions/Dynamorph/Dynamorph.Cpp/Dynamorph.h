@@ -55,6 +55,7 @@ namespace Dynamorph
 
         // Public class methods.
         HWND GetWindowHandle(void);
+        void BlendGeometryLevels(float blendingFactor);
         void UpdateNodeGeometries(UpdateGeometryParam^ geometryParam);
         void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
 
@@ -66,12 +67,15 @@ namespace Dynamorph
         void Uninitialize(void);
         void UpdateNodeGeometries(NodeGeomsType^ geometries);
         void AssociateToDepthValues(NodeDepthsType^ depths);
+        void RenderWithBlendingFactor(void);
+        void RenderGeometriesAtDepth(int depth, float alpha);
         LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Static class data member.
         static Visualizer^ mVisualizer = nullptr;
 
         // Class instance data members.
+        float mBlendingFactor;
         HWND mhWndVisualizer;
         IGraphicsContext* mpGraphicsContext;
         IShaderProgram* mpShaderProgram;

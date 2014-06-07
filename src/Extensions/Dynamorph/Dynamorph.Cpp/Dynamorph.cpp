@@ -140,6 +140,12 @@ HWND Visualizer::GetWindowHandle(void)
     return this->mhWndVisualizer;
 }
 
+void Visualizer::BlendGeometryLevels(float blendingFactor)
+{
+    this->mBlendingFactor = blendingFactor;
+    ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
+}
+
 void Visualizer::UpdateNodeGeometries(UpdateGeometryParam^ geometryParam)
 {
     UpdateNodeGeometries(geometryParam->Geometries);
@@ -180,6 +186,7 @@ void Visualizer::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
 }
 
 Visualizer::Visualizer() : 
+    mBlendingFactor(0.0f),
     mpNodeGeometries(nullptr),
     mpGeomsOnDepthLevel(nullptr),
     mhWndVisualizer(nullptr),
@@ -418,7 +425,7 @@ void Visualizer::AssociateToDepthValues(NodeDepthsType^ depths)
         return;
 
     // Pre-allocate the desired number of depth levels.
-    for (int index = 0; index < maxDepth; ++index)
+    for (int index = 0; index <= maxDepth; ++index)
         mpGeomsOnDepthLevel->push_back(new std::vector<std::wstring>());
 
     for each (KeyValuePair<System::String^, int>^ depth in depths)
@@ -429,6 +436,46 @@ void Visualizer::AssociateToDepthValues(NodeDepthsType^ depths)
     }
 }
 
+void Visualizer::RenderWithBlendingFactor(void)
+{
+    int maxIndex = ((int) mpGeomsOnDepthLevel->size()) - 1;
+    if (maxIndex < 0) // If there is nothing to be rendered.
+        return;
+
+    int lower = ((int)std::floorf(this->mBlendingFactor));
+    int upper = ((int)std::ceilf(this->mBlendingFactor));
+
+    lower = ((lower < 0) ? 0 : lower);
+    upper = ((upper > maxIndex) ? maxIndex : upper);
+
+    mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
+
+    // Apply camera transformation.
+    auto pCamera = mpGraphicsContext->GetDefaultCamera();
+    mpShaderProgram->ApplyTransformation(pCamera);
+
+    // Render lower level node geometries.
+    float integralPart = 0.0f;
+    float alpha = std::modf(mBlendingFactor, &integralPart);
+    RenderGeometriesAtDepth(lower, 1.0f - alpha);
+    if (lower != upper) // At 0.0 or 1.0 ends.
+        RenderGeometriesAtDepth(upper, alpha);
+}
+
+void Visualizer::RenderGeometriesAtDepth(int depth, float alpha)
+{
+    auto pInnerList = mpGeomsOnDepthLevel->at(depth);
+    auto iterator = pInnerList->begin();
+    for (; iterator != pInnerList->end(); ++iterator)
+    {
+        auto found = mpNodeGeometries->find(*iterator);
+        if (found != mpNodeGeometries->end()) {
+            auto pNodeGeometries = found->second;
+            pNodeGeometries->Render(mpGraphicsContext);
+        }
+    }
+}
+
 LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -436,22 +483,12 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
-            HDC deviceContext = BeginPaint(hWnd, &ps); 
-            mpGraphicsContext->BeginRenderFrame(deviceContext);
-            mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
-
-            // Apply camera transformation.
-            auto pCamera = mpGraphicsContext->GetDefaultCamera();
-            mpShaderProgram->ApplyTransformation(pCamera);
-
-            auto iterator = mpNodeGeometries->begin();
-            for (; iterator != mpNodeGeometries->end(); ++iterator)
+            HDC deviceContext = BeginPaint(hWnd, &ps);
             {
-                auto pNodeGeometries = iterator->second;
-                pNodeGeometries->Render(mpGraphicsContext);
+                mpGraphicsContext->BeginRenderFrame(deviceContext);
+                RenderWithBlendingFactor();
+                mpGraphicsContext->EndRenderFrame(deviceContext);
             }
-
-            mpGraphicsContext->EndRenderFrame(deviceContext);
             EndPaint(hWnd, &ps);
             return 0L;
         }
