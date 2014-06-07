@@ -142,62 +142,8 @@ HWND Visualizer::GetWindowHandle(void)
 
 void Visualizer::UpdateNodeGeometries(UpdateGeometryParam^ geometryParam)
 {
-    BoundingBox outerBoundingBox;
-
-    auto geometries = geometryParam->Geometries;
-    for each(KeyValuePair<System::String^, IRenderPackage^> geometry in geometries)
-    {
-        System::String^ nodeId = geometry.Key->ToLower();
-        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
-
-        NodeGeometries* pNodeGeometries = nullptr;
-        auto found = mpNodeGeometries->find(identifier);
-        if (found != mpNodeGeometries->end())
-        {
-            pNodeGeometries = found->second;
-            pNodeGeometries->ClearVertexBuffers();
-        }
-        else
-        {
-            pNodeGeometries = new NodeGeometries(identifier);
-            mpNodeGeometries->insert(std::pair<std::wstring, NodeGeometries*>
-                (identifier, pNodeGeometries));
-        }
-
-        auto pRenderPackage = geometry.Value;
-        PointGeometryData pointData(pRenderPackage->PointVertices->Count / 3);
-        if (GetPointGeometries(pRenderPackage, pointData))
-        {
-            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
-            pVertexBuffer->LoadData(pointData);
-            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
-        }
-
-        LineStripGeometryData lineData(0);
-        if (GetLineStripGeometries(pRenderPackage, lineData))
-        {
-            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
-            pVertexBuffer->LoadData(lineData);
-            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
-        }
-
-        TriangleGeometryData triangleData(pRenderPackage->TriangleVertices->Count / 3);
-        if (GetTriangleGeometries(pRenderPackage, triangleData))
-        {
-            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
-            pVertexBuffer->LoadData(triangleData);
-            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
-        }
-
-        // Finally, determine the bounding box for these geometries.
-        BoundingBox boundingBox;
-        pNodeGeometries->GetBoundingBox(&boundingBox);
-        outerBoundingBox.EvaluateBox(boundingBox);
-    }
-
-    auto pCamera = mpGraphicsContext->GetDefaultCamera();
-    pCamera->FitToBoundingBox(&outerBoundingBox);
-
+    UpdateNodeGeometries(geometryParam->Geometries);
+    AssociateToDepthValues(geometryParam->Depth);
     ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
 }
 
@@ -215,21 +161,21 @@ void Visualizer::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
         // Release the node geometry ownership from map.
         NodeGeometries* pNodeGeometries = found->second;
         mpNodeGeometries->erase(found);
+        delete pNodeGeometries; // Release node geometries and its resources.
 
         auto outer = mpGeomsOnDepthLevel->begin();
         for (; outer != mpGeomsOnDepthLevel->end(); ++outer)
         {
-            auto inner = outer->begin();
-            for (; inner != outer->end(); ++inner)
+            auto pInnerVector = *outer;
+            auto inner = pInnerVector->begin();
+            for (; inner != pInnerVector->end(); ++inner)
             {
-                if (pNodeGeometries == *inner) {
-                    outer->erase(inner);
+                if (identifier == *inner) {
+                    pInnerVector->erase(inner);
                     break;
                 }
             }
         }
-
-        delete pNodeGeometries; // Release node geometries and its resources.
     }
 }
 
@@ -353,17 +299,21 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
 
     // Create storage for storing nodes and their geometries.
     mpNodeGeometries = new std::map<std::wstring, NodeGeometries*>();
-    mpGeomsOnDepthLevel = new std::vector<std::vector<NodeGeometries*>>();
+    mpGeomsOnDepthLevel = new std::vector<std::vector<std::wstring> *>();
 }
 
 void Visualizer::Uninitialize(void)
 {
-    // The ultimate ownership of NodeGeometries is in mpNodeGeometries map, 
-    // so here we simply clear the mpGeomsOnDepthLevel vector, and delete the 
-    // vector itself.
-    // 
-    if (this->mpGeomsOnDepthLevel != nullptr) {
-        mpGeomsOnDepthLevel->clear();
+    if (this->mpGeomsOnDepthLevel != nullptr)
+    {
+        auto iterator = mpGeomsOnDepthLevel->begin();
+        for (; iterator != mpGeomsOnDepthLevel->end(); ++iterator)
+        {
+            auto pInnerVector = *iterator;
+            delete pInnerVector;
+        }
+
+        delete mpGeomsOnDepthLevel;
         mpGeomsOnDepthLevel = nullptr;
     }
 
@@ -375,7 +325,7 @@ void Visualizer::Uninitialize(void)
             delete pNodeGeometries;
         }
 
-        this->mpNodeGeometries->clear();
+        delete this->mpNodeGeometries;
         this->mpNodeGeometries = nullptr;
     }
 
@@ -392,6 +342,90 @@ void Visualizer::Uninitialize(void)
     if (this->mhWndVisualizer != nullptr) {
         ::DestroyWindow(this->mhWndVisualizer);
         this->mhWndVisualizer = nullptr;
+    }
+}
+
+void Visualizer::UpdateNodeGeometries(NodeGeomsType^ geometries)
+{
+    BoundingBox outerBoundingBox;
+
+    for each(KeyValuePair<System::String^, IRenderPackage^> geometry in geometries)
+    {
+        System::String^ nodeId = geometry.Key->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+
+        NodeGeometries* pNodeGeometries = nullptr;
+        auto found = mpNodeGeometries->find(identifier);
+        if (found != mpNodeGeometries->end())
+        {
+            pNodeGeometries = found->second;
+            pNodeGeometries->ClearVertexBuffers();
+        }
+        else
+        {
+            pNodeGeometries = new NodeGeometries(identifier);
+            mpNodeGeometries->insert(std::pair<std::wstring, NodeGeometries*>
+                (identifier, pNodeGeometries));
+        }
+
+        auto pRenderPackage = geometry.Value;
+        PointGeometryData pointData(pRenderPackage->PointVertices->Count / 3);
+        if (GetPointGeometries(pRenderPackage, pointData))
+        {
+            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
+            pVertexBuffer->LoadData(pointData);
+            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+        }
+
+        LineStripGeometryData lineData(0);
+        if (GetLineStripGeometries(pRenderPackage, lineData))
+        {
+            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
+            pVertexBuffer->LoadData(lineData);
+            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+        }
+
+        TriangleGeometryData triangleData(pRenderPackage->TriangleVertices->Count / 3);
+        if (GetTriangleGeometries(pRenderPackage, triangleData))
+        {
+            auto pVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
+            pVertexBuffer->LoadData(triangleData);
+            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+        }
+
+        // Finally, determine the bounding box for these geometries.
+        BoundingBox boundingBox;
+        pNodeGeometries->GetBoundingBox(&boundingBox);
+        outerBoundingBox.EvaluateBox(boundingBox);
+    }
+
+    auto pCamera = mpGraphicsContext->GetDefaultCamera();
+    pCamera->FitToBoundingBox(&outerBoundingBox);
+}
+
+void Visualizer::AssociateToDepthValues(NodeDepthsType^ depths)
+{
+    mpGeomsOnDepthLevel->clear();
+
+    int maxDepth = -1; // Determine the maximum number of levels required.
+    for each (KeyValuePair<System::String^, int>^ depth in depths)
+    {
+        if (depth->Value > maxDepth)
+            maxDepth = depth->Value;
+    }
+
+    if (maxDepth < 0) // There seems to be no depth values.
+        return;
+
+    // Pre-allocate the desired number of depth levels.
+    for (int index = 0; index < maxDepth; ++index)
+        mpGeomsOnDepthLevel->push_back(new std::vector<std::wstring>());
+
+    for each (KeyValuePair<System::String^, int>^ depth in depths)
+    {
+        System::String^ nodeId = depth->Key->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+        (mpGeomsOnDepthLevel->at(depth->Value))->push_back(identifier);
     }
 }
 

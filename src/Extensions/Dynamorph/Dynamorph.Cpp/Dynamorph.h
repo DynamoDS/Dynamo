@@ -64,6 +64,8 @@ namespace Dynamorph
         Visualizer();
         void Initialize(HWND hWndParent, int width, int height);
         void Uninitialize(void);
+        void UpdateNodeGeometries(NodeGeomsType^ geometries);
+        void AssociateToDepthValues(NodeDepthsType^ depths);
         LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Static class data member.
@@ -75,7 +77,7 @@ namespace Dynamorph
         IShaderProgram* mpShaderProgram;
 
         // Node data.
-        std::vector<std::vector<NodeGeometries*>>* mpGeomsOnDepthLevel;
+        std::vector<std::vector<std::wstring> *>* mpGeomsOnDepthLevel;
         std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
     };
 }
