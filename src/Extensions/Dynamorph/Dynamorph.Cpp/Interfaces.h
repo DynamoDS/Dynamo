@@ -147,8 +147,9 @@ namespace Dynamorph
             center[0] = center[1] = center[2] = 0.0f;
             up[1] = 1.0f; // Default up-vector is Y-axis
 
+            viewportWidth = 1280;
+            viewportHeight = 720;
             fieldOfView = 45.0f;
-            aspectRatio = 3.0f / 2.0f;
             nearClippingPlane = 0.1f;
             farClippingPlane = 1000.0f;
         }
@@ -187,8 +188,9 @@ namespace Dynamorph
         float up[3];
 
         // Projection matrix.
+        int viewportWidth;
+        int viewportHeight;
         float fieldOfView;
-        float aspectRatio;
         float nearClippingPlane;
         float farClippingPlane;
     };

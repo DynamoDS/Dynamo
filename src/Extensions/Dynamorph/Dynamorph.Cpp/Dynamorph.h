@@ -67,8 +67,10 @@ namespace Dynamorph
         void Uninitialize(void);
         void UpdateNodeGeometries(NodeGeomsType^ geometries);
         void AssociateToDepthValues(NodeDepthsType^ depths);
+        void RequestFrameUpdate(void);
         void RenderWithBlendingFactor(void);
         void RenderGeometriesAtDepth(int depth, float alpha);
+        LRESULT ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam);
         LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Static class data member.

@@ -10,20 +10,70 @@ using namespace Dynamorph::OpenGL;
 // TrackBall
 // ================================================================================
 
-TrackBall::TrackBall(Camera* pCamera) : mpCamera(pCamera)
+TrackBall::TrackBall(Camera* pCamera) : mpCamera(pCamera),
+    mTrackBallActivated(false),
+    mPrevX(0), mPrevY(0), mCurrX(0), mCurrY(0)
 {
 }
 
 void TrackBall::MousePressedCore(int screenX, int screenY)
 {
+    mCurrX = mPrevX = screenX;
+    mCurrY = mPrevY = screenY;
+    mTrackBallActivated = true;
+    mpCamera->GetConfiguration(mConfiguration); // Get the updated configuration.
 }
 
 void TrackBall::MouseMovedCore(int screenX, int screenY)
 {
+    if (this->mTrackBallActivated == false)
+        return;
+
+    mCurrX = screenX;
+    mCurrY = screenY;
+    if (mCurrX == mPrevX && (mCurrY == mPrevY))
+        return; // No movement.
+
+    // Get the current transformation matrices from camera.
+    glm::mat4 model, view, projection;
+    mpCamera->GetMatrices(model, view, projection);
+
+    glm::vec3 va = GetVector(mPrevX, mPrevY);
+    glm::vec3 vb = GetVector(mCurrX, mCurrY);
+    mPrevX = mCurrX;
+    mPrevY = mCurrY;
+
+    float angle = acos(std::min(1.0f, glm::dot(va, vb)));
+    glm::vec3 axisInCameraCoords = glm::cross(va, vb);
+
+    glm::mat3 cameraToObject = glm::inverse(glm::mat3(view) * glm::mat3(model));
+    glm::vec3 axisInObjectCoords = cameraToObject * axisInCameraCoords;
+    auto finalModel = glm::rotate(model, glm::degrees(angle), axisInObjectCoords);
+    mpCamera->SetModelTransformation(finalModel);
 }
 
 void TrackBall::MouseReleasedCore(int screenX, int screenY)
 {
+    this->mTrackBallActivated = false;
+}
+
+glm::vec3 TrackBall::GetVector(int x, int y) const
+{
+    float sw = ((float) mConfiguration.viewportWidth);
+    float sh = ((float) mConfiguration.viewportHeight);
+
+    glm::vec3 vector = glm::vec3(
+        ((2.0f * x) / sw) - 1.0,
+        ((2.0f * y) / sh) - 1.0, 0);
+
+    vector.y = -vector.y;
+    float squared = vector.x * vector.x + vector.y * vector.y;
+    if (squared <= 1.0f)
+        vector.z = sqrt(1.0f - squared);  // Pythagore
+    else
+        vector = glm::normalize(vector);  // nearest point
+
+    return vector;
 }
 
 // ================================================================================
@@ -36,6 +86,12 @@ Camera::Camera(GraphicsContext* pGraphicsContext) :
 {
     CameraConfiguration camConfig;
     this->Configure(&camConfig); // Default configuration.
+    mpTrackBall = new TrackBall(this);
+}
+
+void Camera::GetConfiguration(CameraConfiguration& configuration) const
+{
+    configuration = this->mConfiguration;
 }
 
 void Camera::GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const
@@ -48,6 +104,11 @@ void Camera::GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) con
 GraphicsContext* Camera::GetGraphicsContext(void) const
 {
     return this->mpGraphicsContext;
+}
+
+void Camera::SetModelTransformation(glm::mat4& model)
+{
+    this->mModelMatrix = model;
 }
 
 void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
@@ -69,9 +130,11 @@ void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
 
     this->mViewMatrix = glm::lookAt(eye, center, up);
 
+    const float w = ((float) pConfiguration->viewportWidth);
+    const float h = ((float) pConfiguration->viewportHeight);
+
     this->mProjMatrix = glm::perspective(
-        pConfiguration->fieldOfView,
-        pConfiguration->aspectRatio,
+        pConfiguration->fieldOfView, w / h,
         pConfiguration->nearClippingPlane,
         pConfiguration->farClippingPlane);
 

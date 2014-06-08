@@ -165,15 +165,23 @@ namespace Dynamorph { namespace OpenGL {
         virtual void MouseReleasedCore(int screenX, int screenY);
 
     private:
+        glm::vec3 GetVector(int x, int y) const;
+
+    private:
         Camera* mpCamera;
+        CameraConfiguration mConfiguration;
+        bool mTrackBallActivated;
+        int mPrevX, mPrevY, mCurrX, mCurrY;
     };
 
     class Camera : public Dynamorph::ICamera
     {
     public:
         Camera(GraphicsContext* pGraphicsContext);
+        void GetConfiguration(CameraConfiguration& configuration) const;
         void GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const;
         GraphicsContext* GetGraphicsContext(void) const;
+        void SetModelTransformation(glm::mat4& model);
 
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration);

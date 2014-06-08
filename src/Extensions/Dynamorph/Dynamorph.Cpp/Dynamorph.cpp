@@ -143,14 +143,14 @@ HWND Visualizer::GetWindowHandle(void)
 void Visualizer::BlendGeometryLevels(float blendingFactor)
 {
     this->mBlendingFactor = blendingFactor;
-    ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
+    RequestFrameUpdate(); // Update window.
 }
 
 void Visualizer::UpdateNodeGeometries(UpdateGeometryParam^ geometryParam)
 {
     UpdateNodeGeometries(geometryParam->Geometries);
     AssociateToDepthValues(geometryParam->Depth);
-    ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
+    RequestFrameUpdate(); // Update window.
 }
 
 void Visualizer::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
@@ -304,7 +304,8 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         camConfig.SetEyePoint(10.0f, 15.0f, 20.0f);
         camConfig.SetCenterPoint(0.0f, 0.0f, 0.0f);
         camConfig.SetUpVector(0.0f, 1.0f, 0.0f);
-        camConfig.aspectRatio = ((float) width) / height;
+        camConfig.viewportWidth = width;
+        camConfig.viewportHeight = height;
         pCamera->Configure(&camConfig);
     }
 
@@ -440,6 +441,11 @@ void Visualizer::AssociateToDepthValues(NodeDepthsType^ depths)
     }
 }
 
+void Visualizer::RequestFrameUpdate(void)
+{
+    ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
+}
+
 void Visualizer::RenderWithBlendingFactor(void)
 {
     int maxIndex = ((int) mpGeomsOnDepthLevel->size()) - 1;
@@ -485,6 +491,38 @@ void Visualizer::RenderGeometriesAtDepth(int depth, float alpha)
     }
 }
 
+LRESULT Visualizer::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    auto x = GET_X_LPARAM(lParam);
+    auto y = GET_Y_LPARAM(lParam);
+
+    auto pCamera = mpGraphicsContext->GetDefaultCamera();
+    auto pTrackBall = pCamera->GetTrackBall();
+
+    switch (msg)
+    {
+    case WM_LBUTTONDOWN:
+        SetCapture(this->mhWndVisualizer);
+        pTrackBall->MousePressed(x, y);
+        break;
+
+    case WM_LBUTTONUP:
+        pTrackBall->MouseReleased(x, y);
+        ::ReleaseCapture();
+        break;
+
+    case WM_MOUSEMOVE:
+        if ((wParam & MK_LBUTTON) == 0)
+            return 0L; // Mouse button isn't pressed.
+
+        pTrackBall->MouseMoved(x, y);
+        break;
+    }
+
+    RequestFrameUpdate(); // Update window.
+    return 0L; // Message processed.
+}
+
 LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -501,6 +539,11 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
             EndPaint(hWnd, &ps);
             return 0L;
         }
+
+    case WM_LBUTTONDOWN:
+    case WM_LBUTTONUP:
+    case WM_MOUSEMOVE:
+        return ProcessMouseMessage(msg, wParam, lParam);
 
     case WM_ERASEBKGND:
         return 0L; // Avoid erasing background to flickering during sizing.
