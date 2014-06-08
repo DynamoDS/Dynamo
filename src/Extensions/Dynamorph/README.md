@@ -26,6 +26,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Design structure to keep node-geometry data
 - [x] Add shader uniform to control per-vertex alpha
 - [x] Enable slider to work with C++ Visualizer
+- [x] Implement Track Ball class for navigation
 - [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
@@ -43,7 +44,6 @@ Dynamorph, morph the heck out of your design.
 - [ ] Implement logging mechanism
 - [ ] Incorporate [debugging facility](http://www.opengl.org/registry/specs/ARB/debug_output.txt) provided by OpenGL
 - [ ] Display OpenGL logs in Dynamorph window
-- [ ] Implement Track Ball class for navigation
 - [ ] Update aspect ratio when window is sized
 - [ ] Implement mini-ball for tightest bounding box
 - [ ] Add GLM licence terms to EULA and ReadMe.md
