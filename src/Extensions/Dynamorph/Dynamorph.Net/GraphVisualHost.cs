@@ -450,8 +450,8 @@ namespace Dynamorph
             {
                 var startNode = nodes.First(n => n.Identifier == edge.StartNodeId);
                 var endNode = nodes.First(n => n.Identifier == edge.EndNodeId);
-                startPoints.Add(startNode.OutputPoint);
-                endPoints.Add(endNode.InputPoint);
+                startPoints.Add(startNode.GetOutputPoint(edge.StartIndex));
+                endPoints.Add(endNode.GetInputPoint(edge.EndIndex));
             }
 
             var drawingContext = edgeVisuals.RenderOpen();

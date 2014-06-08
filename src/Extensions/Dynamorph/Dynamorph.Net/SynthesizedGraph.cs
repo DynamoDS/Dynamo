@@ -11,9 +11,8 @@ namespace Dynamorph
         internal static readonly double HorzGap = 32.0;
         internal static readonly double VertGap = 16.0;
         internal static readonly double NodeWidth = 128.0;
-        internal static readonly double NodeHeight = 32.0;
+        internal static readonly double NodeHeight = 16.0;
         internal static readonly double HorzSpace = ((2 * HorzGap) + NodeWidth);
-        internal static readonly double VertSpace = ((2 * VertGap) + NodeHeight);
     }
 
     public interface ISynthesizedGraph
@@ -25,8 +24,6 @@ namespace Dynamorph
     internal class Node
     {
         private Rect rect = new Rect();
-        private Point inputPoint = new Point();
-        private Point outputPoint = new Point();
 
         internal Node(string identifier, string name)
         {
@@ -36,14 +33,26 @@ namespace Dynamorph
             this.InputCount = this.OutputCount = 0;
         }
 
-        internal void UpdateNodeLayout()
+        internal double UpdateNodeLayout(double nodeTopCoord)
         {
-            var top = (Config.VertGap + (Config.VertSpace * DisplayRow));
-            var left = (Config.HorzGap + (Config.HorzSpace * Depth));
-            this.rect = new Rect(left, top, Config.NodeWidth, Config.NodeHeight);
+            var portCount = Math.Max(this.InputCount, this.OutputCount);
+            var height = ((portCount + 1) * Config.NodeHeight);
 
-            inputPoint = new Point(rect.Left, rect.Top + (0.5 * rect.Height));
-            outputPoint = new Point(rect.Right, inputPoint.Y);
+            var left = (Config.HorzGap + (Config.HorzSpace * Depth));
+            this.rect = new Rect(left, nodeTopCoord, Config.NodeWidth, height);
+            return height;
+        }
+
+        internal Point GetInputPoint(int index)
+        {
+            var offset = ((index + 0.5) * Config.NodeHeight);
+            return new Point(rect.Left, rect.Top + offset);
+        }
+
+        internal Point GetOutputPoint(int index)
+        {
+            var offset = ((index + 0.5) * Config.NodeHeight);
+            return new Point(rect.Right, rect.Top + offset);
         }
 
         #region Public Class Properties
@@ -56,8 +65,6 @@ namespace Dynamorph
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
         internal Rect Rect { get { return this.rect; } }
-        internal Point InputPoint { get { return this.inputPoint; } }
-        internal Point OutputPoint { get { return this.outputPoint; } }
 
         #endregion
     }
@@ -141,7 +148,20 @@ namespace Dynamorph
             }
 
             // Update the node positioning on canvas.
-            this.nodes.ForEach(n => n.UpdateNodeLayout());
+            int depth = -1;
+            double nodeTopCoord = Config.VertGap;
+            foreach (var node in this.nodes)
+            {
+                if (depth != node.Depth)
+                {
+                    depth = node.Depth;
+                    nodeTopCoord = Config.VertGap;
+                }
+
+                double height = node.UpdateNodeLayout(nodeTopCoord);
+                nodeTopCoord = nodeTopCoord + height + Config.VertGap;
+            }
+
         }
 
         internal IEnumerable<string> NodesNotInGraph(SynthesizedGraph otherGraph)
@@ -271,8 +291,14 @@ namespace Dynamorph
 
             this.nodes.ForEach((n) =>
             {
-                n.InputCount = nodeInputs[n.Identifier] + 1;
-                n.OutputCount = nodeOutputs[n.Identifier] + 1;
+                n.InputCount = n.OutputCount = 0;
+
+                int dummyInputCount, dummyOutputCount;
+                if (nodeInputs.TryGetValue(n.Identifier, out dummyInputCount))
+                    n.InputCount = dummyInputCount;
+
+                if (nodeOutputs.TryGetValue(n.Identifier, out dummyOutputCount))
+                    n.OutputCount = dummyOutputCount;
             });
         }
 
