@@ -33,6 +33,7 @@ namespace Dynamorph
             this.Identifier = identifier;
             this.Name = name;
             this.ChildrenCount = -1;
+            this.InputCount = this.OutputCount = 0;
         }
 
         internal void UpdateNodeLayout()
@@ -50,6 +51,8 @@ namespace Dynamorph
         internal int Depth { get; set; }
         internal int DisplayRow { get; set; }
         internal int ChildrenCount { get; set; }
+        internal int InputCount { get; set; }
+        internal int OutputCount { get; set; }
         internal string Identifier { get; private set; }
         internal string Name { get; private set; }
         internal Rect Rect { get { return this.rect; } }
@@ -67,6 +70,8 @@ namespace Dynamorph
             this.EndNodeId = endNodeId;
         }
 
+        internal int StartIndex { get; set; }
+        internal int EndIndex { get; set; }
         internal string StartNodeId { get; private set; }
         internal string EndNodeId { get; private set; }
     }
@@ -106,8 +111,9 @@ namespace Dynamorph
 
         internal void BuildGraphStructure()
         {
-            LabelGraphNodes(); // Label the entire graph with depth info.
+            LabelGraphNodes();    // Label the entire graph with depth info.
             CalculateChildNode(); // Compute number of children for each node.
+            AssignEdgeIndices();  // Assign an index for each edge based on position.
 
             // Sort the depth value from small to large.
             this.nodes.Sort((n1, n2) =>
@@ -238,6 +244,36 @@ namespace Dynamorph
             });
 
             return new List<Node>(nodeQuery);
+        }
+
+        private void AssignEdgeIndices()
+        {
+            var nodeInputs = new Dictionary<string, int>();
+            var nodeOutputs = new Dictionary<string, int>();
+            this.edges.ForEach(e => e.StartIndex = e.EndIndex = -1);
+
+            foreach (var edge in this.edges)
+            {
+                var startNodeId = edge.StartNodeId;
+                var endNodeId = edge.EndNodeId;
+
+                edge.StartIndex = 0;
+                if (nodeOutputs.Keys.Contains(startNodeId) != false)
+                    edge.StartIndex = nodeOutputs[startNodeId] + 1;
+
+                edge.EndIndex = 0;
+                if (nodeInputs.Keys.Contains(endNodeId) != false)
+                    edge.EndIndex = nodeInputs[endNodeId] + 1;
+
+                nodeOutputs[startNodeId] = edge.StartIndex;
+                nodeInputs[endNodeId] = edge.EndIndex;
+            }
+
+            this.nodes.ForEach((n) =>
+            {
+                n.InputCount = nodeInputs[n.Identifier] + 1;
+                n.OutputCount = nodeOutputs[n.Identifier] + 1;
+            });
         }
 
         #endregion
