@@ -129,7 +129,6 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\TimeStampOrdering.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="DSEngine\LinkedListOfList.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
@@ -220,6 +219,7 @@ limitations under the License.
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
+    <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
