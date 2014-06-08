@@ -1,0 +1,50 @@
+<!--
+Copyright Autodesk, Inc. 2012. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<dynWorkspace X="10" Y="55" Name="solarradupdate" Category="Analyze.Solar" ID="3ad2dee3-f815-4afa-8372-3f580b01c748">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="080c41ad-eff1-41b6-bb1a-277bec2b0e77" nickname="Variable" x="0" y="0">
+      <Symbol value="fi" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="448c2dc1-c21b-4ceb-be29-1a4720a947f8" nickname="Variable" x="0" y="57.0375">
+      <Symbol value="p" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="d46738a1-8d53-4225-89ad-56ee9fc0c672" nickname="Variable" x="0" y="257.2875">
+      <Symbol value="result" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynFamilyInstanceParameterSetter type="Dynamo.Nodes.dynFamilyInstanceParameterSetter" guid="063055c0-10ed-4dc5-8a30-8c82e118b0f3" nickname="Set Instance Parameter" x="486.15" y="30.0375" />
+    <Dynamo.Nodes.dynGetFromList type="Dynamo.Nodes.dynGetFromList" guid="55525b9c-dd66-4ff2-a2fe-13d2292a0f29" nickname="get" x="349.1" y="200.3" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="b8b44e1b-2840-4056-88ea-ff58b6daf2be" nickname="Number" x="95.1999999999999" y="169.3">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynFirst type="Dynamo.Nodes.dynFirst" guid="ad917e6d-416e-4680-ba45-98ac350c6dad" nickname="first" x="345.2" y="296.3" />
+    <Dynamo.Nodes.dynBegin type="Dynamo.Nodes.dynBegin" guid="21def60b-7f69-44f9-beec-5b44977b5d63" nickname="begin" x="657.1" y="172.5">
+      <Input name="expr1" />
+      <Input name="expr2" />
+    </Dynamo.Nodes.dynBegin>
+    <Dynamo.Nodes.dynTransaction type="Dynamo.Nodes.dynTransaction" guid="7d85c47a-4abd-491b-ac0f-58145743d8a6" nickname="Transaction" x="623.3" y="89.7" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="080c41ad-eff1-41b6-bb1a-277bec2b0e77" start_index="0" end="063055c0-10ed-4dc5-8a30-8c82e118b0f3" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="448c2dc1-c21b-4ceb-be29-1a4720a947f8" start_index="0" end="063055c0-10ed-4dc5-8a30-8c82e118b0f3" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d46738a1-8d53-4225-89ad-56ee9fc0c672" start_index="0" end="55525b9c-dd66-4ff2-a2fe-13d2292a0f29" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d46738a1-8d53-4225-89ad-56ee9fc0c672" start_index="0" end="ad917e6d-416e-4680-ba45-98ac350c6dad" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="063055c0-10ed-4dc5-8a30-8c82e118b0f3" start_index="0" end="7d85c47a-4abd-491b-ac0f-58145743d8a6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="55525b9c-dd66-4ff2-a2fe-13d2292a0f29" start_index="0" end="063055c0-10ed-4dc5-8a30-8c82e118b0f3" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="b8b44e1b-2840-4056-88ea-ff58b6daf2be" start_index="0" end="55525b9c-dd66-4ff2-a2fe-13d2292a0f29" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="ad917e6d-416e-4680-ba45-98ac350c6dad" start_index="0" end="21def60b-7f69-44f9-beec-5b44977b5d63" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="7d85c47a-4abd-491b-ac0f-58145743d8a6" start_index="0" end="21def60b-7f69-44f9-beec-5b44977b5d63" end_index="0" portType="0" />
+  </dynConnectors>
+</dynWorkspace>
