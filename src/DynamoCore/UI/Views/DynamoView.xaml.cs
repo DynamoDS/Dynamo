@@ -29,6 +29,8 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.Views;
+using System.Collections.Specialized;
 
 namespace Dynamo.Controls
 {
@@ -412,7 +414,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
@@ -423,6 +425,9 @@ namespace Dynamo.Controls
             switch (e.PropertyName)
             {
                 case "CanNavigateBackground":
+                    var wsv = Dynamo.Nodes.Utilities.FindVisualChild<dynWorkspaceView>(this);
+                    if (wsv != null)
+                        wsv.UpdateViewButtonVisuals();
                     break;
             }
         }

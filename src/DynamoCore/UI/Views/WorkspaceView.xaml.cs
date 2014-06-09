@@ -675,6 +675,7 @@ namespace Dynamo.Views
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
             WorkBench.owningWorkspace = this;
+            UpdateViewButtonVisuals();
         }
 
         private PortViewModel PortFromHitTestResult(DependencyObject depObject)
@@ -751,6 +752,8 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
+        #region Geometry/Node View Toggle Buttons
+
         private enum ViewButtonState
         {
             NormalIndex, HoverOverIndex, ClickedIndex, ActiveIndex
@@ -768,13 +771,18 @@ namespace Dynamo.Views
 
         private void OnViewButtonMouseDown(object sender, MouseButtonEventArgs e)
         {
+            (sender as UIElement).CaptureMouse();
             UpdateViewButtonVisuals();
         }
 
         private void OnViewButtonMouseUp(object sender, MouseButtonEventArgs e)
         {
+            var imageButton = sender as FrameworkElement;
+            if (imageButton.IsMouseCaptured)
+                imageButton.ReleaseMouseCapture();
+
             bool toggleToGeometryView = false;
-            if ((sender as FrameworkElement).Name.Equals("geomsViewButton"))
+            if (imageButton.Name.Equals("geomsViewButton"))
                 toggleToGeometryView = true;
 
             var dvm = dynSettings.Controller.DynamoViewModel;
@@ -833,5 +841,7 @@ namespace Dynamo.Views
             transform = nodesViewButton.RenderTransform as TranslateTransform;
             transform.Y = ((int)nodesButtonState) * invButtonHeight;
         }
+
+        #endregion
     }
 }
