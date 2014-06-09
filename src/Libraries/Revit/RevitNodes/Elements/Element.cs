@@ -340,10 +340,10 @@ namespace Revit.Elements
         {
             var thisElement = InternalElement;
 
-            var geoOptionsOne = new Autodesk.Revit.DB.Options();
-            geoOptionsOne.ComputeReferences = true;
+            var goptions0 = new Autodesk.Revit.DB.Options();
+            goptions0.ComputeReferences = true;
 
-            GeometryElement geomElement = thisElement.get_Geometry(geoOptionsOne);
+            var geomElement = thisElement.get_Geometry(goptions0);
 
             // GenericForm is a special case
             if ((thisElement is GenericForm) && (!geomElement.Any()))
@@ -351,10 +351,10 @@ namespace Revit.Elements
                 var gF = (GenericForm)thisElement;
                 if (!gF.Combinations.IsEmpty)
                 {
-                    var geoOptionsTwo = new Autodesk.Revit.DB.Options();
-                    geoOptionsTwo.IncludeNonVisibleObjects = false;
-                    geoOptionsTwo.ComputeReferences = true;
-                    geomElement = thisElement.get_Geometry(geoOptionsTwo);
+                    var goptions1 = new Autodesk.Revit.DB.Options();
+                    goptions1.IncludeNonVisibleObjects = true;
+                    goptions1.ComputeReferences = true;
+                    geomElement = thisElement.get_Geometry(goptions1);
                 }
             }
 
