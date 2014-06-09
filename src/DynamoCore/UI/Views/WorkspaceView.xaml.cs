@@ -801,10 +801,7 @@ namespace Dynamo.Views
             {
                 var isInGeometryView = dvm.CanNavigateBackground;
                 if (isInGeometryView != toggleToGeometryView)
-                {
                     dvm.ToggleCanNavigateBackground(null);
-                    UpdateViewButtonVisuals();
-                }
             }
         }
 
