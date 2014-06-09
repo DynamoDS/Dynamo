@@ -246,6 +246,7 @@ namespace Dynamo.Controls
 
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
+            _vm.PropertyChanged += OnViewModelPropertyChanged;
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             _vm.PostUiActivationCommand.Execute(null);
 
@@ -416,7 +417,16 @@ namespace Dynamo.Controls
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
         }
-        
+
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CanNavigateBackground":
+                    break;
+            }
+        }
+
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             var prompt = new CrashPrompt(args);
