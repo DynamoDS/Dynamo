@@ -761,12 +761,14 @@ namespace Dynamo.Views
 
         private void OnViewButtonMouseEnter(object sender, MouseEventArgs e)
         {
-            UpdateViewButtonVisuals();
+            if ((sender as UIElement).IsMouseCaptured)
+                UpdateViewButtonVisuals();
         }
 
         private void OnViewButtonMouseLeave(object sender, MouseEventArgs e)
         {
-            UpdateViewButtonVisuals();
+            if ((sender as UIElement).IsMouseCaptured)
+                UpdateViewButtonVisuals();
         }
 
         private void OnViewButtonMouseDown(object sender, MouseButtonEventArgs e)
@@ -778,12 +780,21 @@ namespace Dynamo.Views
         private void OnViewButtonMouseUp(object sender, MouseButtonEventArgs e)
         {
             var imageButton = sender as FrameworkElement;
-            if (imageButton.IsMouseCaptured)
-                imageButton.ReleaseMouseCapture();
+            if (imageButton.IsMouseCaptured == false)
+                return;
+
+            imageButton.ReleaseMouseCapture();
 
             bool toggleToGeometryView = false;
             if (imageButton.Name.Equals("geomsViewButton"))
                 toggleToGeometryView = true;
+
+            if (imageButton.IsMouseOver == false)
+            {
+                // Mouse released outside of where it was clicked.
+                UpdateViewButtonVisuals();
+                return;
+            }
 
             var dvm = dynSettings.Controller.DynamoViewModel;
             if (dvm.CanToggleCanNavigateBackground(null))
