@@ -349,8 +349,16 @@
                     </MenuItem>
 
                     <MenuItem Header="Debug" Focusable="False" Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                        <MenuItem Focusable="False" Name="VerboseLogging" IsCheckable="True" Unchecked="VerboseLogging_OnChecked" Checked="VerboseLogging_OnChecked" Header="Verbose Logging"/>
-
+                        <MenuItem Focusable="False" Name="VerboseLogging" IsCheckable="True" IsChecked="{Binding VerboseLogging}" Header="Verbose Logging"/>
+                        <MenuItem Focusable="False" Name="ShowDebugASTs" IsCheckable="True" Header ="Show Debug ASTs" IsChecked="{Binding ShowDebugASTs}" ></MenuItem>
+                        <MenuItem Focusable="False" Name="ForceReexec" Header="Force Re-execute" 
+                                    Command="{Binding ForceRunExpressionCommand}"
+                                    CommandParameter="{Binding Path=RunInDebug}"
+                                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
+                        <MenuItem Focusable="False" Name="MutateTest" Header="Run mutation test" 
+                                    Command="{Binding MutateTestDelegateCommand}"
+                                    CommandParameter="{Binding Path=RunInDebug}"
+                                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
                     </MenuItem>
                     
                 </Menu>
@@ -985,9 +993,6 @@
                     </TabControl.ContentTemplate>
 
                 </TabControl>
-                <Grid Name="InfoBubbleGrid"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left" />
             </Grid>
 
         </Border>
@@ -1093,19 +1098,9 @@
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
+                    <!--<Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
 
-                    <Button Name="ForceRunButton" Width="150" Content="Force ReExec" 
-                    Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
-                    Click="RunButton_OnClick"
-                    Command="{Binding ForceRunExpressionCommand}"
-                    CommandParameter="{Binding Path=RunInDebug}"
-                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
-
-
-
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
-
-                      Command="{Binding CancelRunCommand}" Margin="5"/>
+                      Command="{Binding CancelRunCommand}" Margin="5"/>-->
 
                     <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"

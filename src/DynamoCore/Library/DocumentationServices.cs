@@ -14,6 +14,15 @@ namespace Dynamo.DSEngine
         private static Dictionary<string, XDocument> _cached =
             new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
 
+        public static void DestroyCachedData()
+        {
+            if (_triedPaths != null) // Release references for collection.
+                _triedPaths.Clear();
+
+            if (_cached != null) // Release references for collection.
+                _cached.Clear();
+        }
+
         public static XDocument GetForAssembly(string assemblyPath)
         {
             if (_triedPaths.ContainsKey(assemblyPath))

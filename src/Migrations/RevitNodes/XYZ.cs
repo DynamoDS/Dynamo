@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using Dynamo.Models;
 using Migrations;
@@ -232,21 +233,18 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
+            var migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
 
-            codeBlockNode.SetAttribute("CodeText",
-                "Point.ByCoordinates(\n" +
-                "List.Sublists(list,0,3),\n" +
-                "List.Sublists(list,1,3),\n" +
-                "List.Sublists(list,2,3));");
+            var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
+                "d58a9edc-7623-424b-ac45-a71bfa40046d",
+                "XyzFromListOfNumbers",
+                "This node represents an upgrade of the 0.6.3 XyzFromListOfNumbers node to 0.7.x",
+                new List<string>() { "list" },
+                new List<string>() { "list" });
 
-            codeBlockNode.SetAttribute("nickname", "XYZ from List of Numbers");
-
-            migrationData.AppendNode(codeBlockNode);
-            return migrationData;
+            migratedData.AppendNode(newNode);
+            return migratedData;
         }
     }
 
@@ -755,13 +753,13 @@ namespace Dynamo.Nodes
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
             XmlElement pointAsVector1 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector1);
             string pointAsVector1Id = MigrationManager.GetGuidFromXmlElement(pointAsVector1);
 
             XmlElement vectorCross = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "ProtoGeometry.dll",
+                data.Document, oldNode, 2, "ProtoGeometry.dll",
                 "Vector.Cross", "Vector.Cross@Vector");
             migrationData.AppendNode(vectorCross);
             string vectorCrossId = MigrationManager.GetGuidFromXmlElement(vectorCross);
@@ -797,7 +795,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Vector.AsPoint", "Vector.AsPoint");
+                "Vector.Dot", "Vector.Dot@Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -808,16 +806,10 @@ namespace Dynamo.Nodes
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
             XmlElement pointAsVector1 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector1);
             string pointAsVector1Id = MigrationManager.GetGuidFromXmlElement(pointAsVector1);
-
-            XmlElement vectorDot = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "ProtoGeometry.dll",
-                "Vector.Dot", "Vector.Dot@Vector");
-            migrationData.AppendNode(vectorDot);
-            string vectorDotId = MigrationManager.GetGuidFromXmlElement(vectorDot);
 
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
@@ -827,13 +819,12 @@ namespace Dynamo.Nodes
 
             PortId pointAsVector0InPort0 = new PortId(pointAsVector0Id, 0, PortType.INPUT);
             PortId pointAsVector1InPort0 = new PortId(pointAsVector1Id, 0, PortType.INPUT);
-            PortId vectorDotInPort0 = new PortId(vectorDotId, 0, PortType.INPUT);
+            PortId vectorDotInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
 
             data.ReconnectToPort(connector0, pointAsVector0InPort0);
             data.ReconnectToPort(connector1, pointAsVector1InPort0);
-            data.CreateConnector(pointAsVector0, 0, vectorDot, 0);
-            data.CreateConnector(pointAsVector1, 0, vectorDot, 1);
-            data.CreateConnector(vectorDot, 0, newNode, 0);
+            data.CreateConnector(pointAsVector0, 0, newNode, 0);
+            data.CreateConnector(pointAsVector1, 0, newNode, 1);
 
             return migrationData;
         }
@@ -888,76 +879,18 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
+            var migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(data.Document, oldNode, 1, "");
-            codeBlockNode.SetAttribute("CodeText",
-                "xstart..#xcount..xspace;\n" +
-                "ystart..#ycount..yspace;\n" +
-                "zstart..#zcount..zspace;");
-            migrationData.AppendNode(codeBlockNode);
-            string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
+            var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
+                "9215492a-4cb9-4ec1-a111-c18d7f6fd5b3",
+                "XyzGrid",
+                "This node represents an upgrade of the 0.6.3 XyzGrid node to 0.7.x",
+                new List<string>() { "x-count", "y-count", "z-count", "x0", "y0", "z0", "x-space", "y-space", "z-space" },
+                new List<string>() { "Point[]" });
 
-            XmlElement pointNode = MigrationManager.CreateCodeBlockNodeModelNode(data.Document, oldNode, 2, "");
-            pointNode.SetAttribute("CodeText",
-                "Point.ByCoordinates(x<3>,y<2>,z<1>)");
-            migrationData.AppendNode(pointNode);
-
-            XmlElement flattenNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(flattenNode, "",
-                "Flatten", "Flatten");
-            flattenNode.SetAttribute("lacing", "Shortest");
-            migrationData.AppendNode(flattenNode);
-
-            // Update connectors
-            PortId inPort0 = new PortId(codeBlockNodeId, 0, PortType.INPUT);
-            PortId inPort1 = new PortId(codeBlockNodeId, 1, PortType.INPUT);
-            PortId inPort2 = new PortId(codeBlockNodeId, 2, PortType.INPUT);
-            PortId inPort3 = new PortId(codeBlockNodeId, 3, PortType.INPUT);
-            PortId inPort4 = new PortId(codeBlockNodeId, 4, PortType.INPUT);
-            PortId inPort5 = new PortId(codeBlockNodeId, 5, PortType.INPUT);
-            PortId inPort6 = new PortId(codeBlockNodeId, 6, PortType.INPUT);
-            PortId inPort7 = new PortId(codeBlockNodeId, 7, PortType.INPUT);
-            PortId inPort8 = new PortId(codeBlockNodeId, 8, PortType.INPUT);
-
-            PortId oldPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            PortId oldPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
-            PortId oldPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            PortId oldPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
-            PortId oldPort4 = new PortId(oldNodeId, 4, PortType.INPUT);
-            PortId oldPort5 = new PortId(oldNodeId, 5, PortType.INPUT);
-            PortId oldPort6 = new PortId(oldNodeId, 6, PortType.INPUT);
-            PortId oldPort7 = new PortId(oldNodeId, 7, PortType.INPUT);
-            PortId oldPort8 = new PortId(oldNodeId, 8, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldPort0);
-            XmlElement connector1 = data.FindFirstConnector(oldPort1);
-            XmlElement connector2 = data.FindFirstConnector(oldPort2);
-            XmlElement connector3 = data.FindFirstConnector(oldPort3);
-            XmlElement connector4 = data.FindFirstConnector(oldPort4);
-            XmlElement connector5 = data.FindFirstConnector(oldPort5);
-            XmlElement connector6 = data.FindFirstConnector(oldPort6);
-            XmlElement connector7 = data.FindFirstConnector(oldPort7);
-            XmlElement connector8 = data.FindFirstConnector(oldPort8);
-
-            data.ReconnectToPort(connector0, inPort1);
-            data.ReconnectToPort(connector1, inPort4);
-            data.ReconnectToPort(connector2, inPort7);
-            data.ReconnectToPort(connector3, inPort0);
-            data.ReconnectToPort(connector4, inPort3);
-            data.ReconnectToPort(connector5, inPort6);
-            data.ReconnectToPort(connector6, inPort2);
-            data.ReconnectToPort(connector7, inPort5);
-            data.ReconnectToPort(connector8, inPort8);
-
-            data.CreateConnector(codeBlockNode, 0, pointNode, 0);
-            data.CreateConnector(codeBlockNode, 1, pointNode, 1);
-            data.CreateConnector(codeBlockNode, 2, pointNode, 2);
-            data.CreateConnector(pointNode, 0, flattenNode, 0);
-
-            return migrationData;
+            migratedData.AppendNode(newNode);
+            return migratedData;
         }
     }
 

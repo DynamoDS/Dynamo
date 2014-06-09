@@ -3,6 +3,7 @@ using Dynamo.Tests;
 using Revit.AnalysisDisplay;
 using Revit.Application;
 using NUnit.Framework;
+using RevitTestFramework;
 
 namespace DSRevitNodesTests.AnalysisDisplay
 {

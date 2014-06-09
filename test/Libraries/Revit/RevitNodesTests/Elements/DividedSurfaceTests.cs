@@ -3,6 +3,7 @@ using System.Linq;
 using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
+using RevitTestFramework;
 using DividedSurface = Revit.Elements.DividedSurface;
 using Form = Revit.Elements.Form;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
@@ -9,6 +10,8 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
+using RevitTestFramework;
 
 namespace Dynamo.Tests
 {
@@ -16,7 +19,7 @@ namespace Dynamo.Tests
     class CoreTests:DynamoRevitUnitTestBase
     {
         /// <summary>
-        /// Sanity Check graph should always throw an error.
+        /// Sanity Check graph should always have nodes that error.
         /// </summary>
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -27,57 +30,61 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Core\SanityCheck.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
+            //Assert that there are some errors in the graph
             model.Open(testPath);
-            Assert.Throws(typeof(AssertionException), () => dynSettings.Controller.RunExpression());
+            dynSettings.Controller.RunExpression(true);
+            var errorNodes = model.Nodes.Where(x => x.State == ElementState.Warning);
+            Assert.Greater(errorNodes.Count(), 0);
         }
 
         [Test]
         [TestModel(@".\empty.rfa")]
         public void CanChangeLacingAndHaveElementsUpdate()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //string samplePath = Path.Combine(_testPath, @".\Core\LacingTest.dyn");
-            //string testPath = Path.GetFullPath(samplePath);
+            string samplePath = Path.Combine(_testPath, @".\Core\LacingTest.dyn");
+            string testPath = Path.GetFullPath(samplePath);
 
-            //model.Open(testPath);
+            model.Open(testPath);
 
-            //var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is Xyz);
-            //Assert.IsNotNull(xyzNode);
+            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x.NickName == "Point.ByCoordinates");
+            Assert.IsNotNull(xyzNode);
 
-            ////test the first lacing
+            //test the first lacing
+            xyzNode.ArgumentLacing = LacingStrategy.Shortest;
+            dynSettings.Controller.RunExpression(true);
+
+            var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(4, fec.ToElements().Count());
+
+            //REMOVED IN 0.7.0. First has been temporarily removed.
+            //test the shortest lacing
             //xyzNode.ArgumentLacing = LacingStrategy.First;
             //dynSettings.Controller.RunExpression(true);
-
-            //FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            //fec = null;
+            //fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
             //fec.OfClass(typeof(ReferencePoint));
             //Assert.AreEqual(1, fec.ToElements().Count());
 
-            ////test the shortest lacing
-            //xyzNode.ArgumentLacing = LacingStrategy.First;
-            //dynSettings.Controller.RunExpression(true);
-            //fec = null;
-            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(1, fec.ToElements().Count());
+            //test the longest lacing
+            xyzNode.ArgumentLacing = LacingStrategy.Longest;
+            dynSettings.Controller.RunExpression(true);
+            fec = null;
+            fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(5, fec.ToElements().Count());
 
-            ////test the longest lacing
-            //xyzNode.ArgumentLacing = LacingStrategy.Longest;
-            //dynSettings.Controller.RunExpression(true);
-            //fec = null;
-            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(5, fec.ToElements().Count());
+            //test the cross product lacing
+            xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
+            dynSettings.Controller.RunExpression(true);
+            fec = null;
+            fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(ReferencePoint));
+            Assert.AreEqual(20, fec.ToElements().Count());
 
-            ////test the cross product lacing
-            //xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            //dynSettings.Controller.RunExpression(true);
-            //fec = null;
-            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(20, fec.ToElements().Count());
-
-            Assert.Inconclusive("Porting : XYZ");
+            //Assert.Inconclusive("Porting : XYZ");
         }
 
         /*
@@ -145,18 +152,19 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression());
 
             //verify we have a reference point
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
 
             //open a new document and activate it
-            UIDocument initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+            var initialDoc = (UIDocument)DocumentManager.Instance.CurrentUIDocument;
             string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
-            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(shellPath);
+            TransactionManager.Instance.ForceCloseTransaction();
+            ((UIApplication)DocumentManager.Instance.CurrentUIApplication).OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
 
             ////assert that the doc is set on the controller
-            Assert.IsNotNull(DocumentManager.Instance.CurrentUIDocument.Document);
+            Assert.IsNotNull((Document)DocumentManager.Instance.CurrentDBDocument);
 
             ////update the double node so the graph reevaluates
             var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BasicInteractive<double>);
@@ -177,36 +185,36 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, TestCaseSource("SetupCopyPastes")]
-        [TestModel(@".\empty.rfa")]
-        public void CanCopyAndPasteAllNodesOnRevit(string typeName)
-        {
-            var model = dynSettings.Controller.DynamoModel;
+        //[Test, TestCaseSource("SetupCopyPastes")]
+        //[TestModel(@".\empty.rfa")]
+        //public void CanCopyAndPasteAllNodesOnRevit(string typeName)
+        //{
+        //    var model = dynSettings.Controller.DynamoModel;
 
-            Assert.DoesNotThrow(() => model.CreateNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
+        //    Assert.DoesNotThrow(() => model.CreateNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
 
-                var node = model.AllNodes.FirstOrDefault();
+        //        var node = model.AllNodes.FirstOrDefault();
 
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(node);
-                Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+        //        DynamoSelection.Instance.ClearSelection();
+        //        DynamoSelection.Instance.Selection.Add(node);
+        //        Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
 
-                Assert.DoesNotThrow(() => model.Copy(null), string.Format("Could not copy node : {0}", node.GetType()));
-                Assert.DoesNotThrow(() => model.Paste(null), string.Format("Could not paste node : {0}", node.GetType()));
+        //        Assert.DoesNotThrow(() => model.Copy(null), string.Format("Could not copy node : {0}", node.GetType()));
+        //        Assert.DoesNotThrow(() => model.Paste(null), string.Format("Could not paste node : {0}", node.GetType()));
 
-                model.Clear(null);    
-        }
+        //        model.Clear(null);    
+        //}
 
-        static List<string> SetupCopyPastes()
-        {
-            var excludes = new List<string>();
-            excludes.Add("Dynamo.Nodes.DSFunction");
-            excludes.Add("Dynamo.Nodes.Symbol");
-            excludes.Add("Dynamo.Nodes.Output");
-            excludes.Add("Dynamo.Nodes.Function");
-            excludes.Add("Dynamo.Nodes.LacerBase");
-            excludes.Add("Dynamo.Nodes.FunctionWithRevit");
-            return dynSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
-        }
+        //static List<string> SetupCopyPastes()
+        //{
+        //    var excludes = new List<string>();
+        //    excludes.Add("Dynamo.Nodes.DSFunction");
+        //    excludes.Add("Dynamo.Nodes.Symbol");
+        //    excludes.Add("Dynamo.Nodes.Output");
+        //    excludes.Add("Dynamo.Nodes.Function");
+        //    excludes.Add("Dynamo.Nodes.LacerBase");
+        //    excludes.Add("Dynamo.Nodes.FunctionWithRevit");
+        //    return dynSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
+        //}
     }
 }

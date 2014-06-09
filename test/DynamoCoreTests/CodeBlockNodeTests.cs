@@ -12,6 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.DSEngine;
 using ProtoCore.Mirror;
 using ProtoCore.DSASM;
+using Dynamo.Models;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Tests
@@ -199,24 +200,44 @@ b = c[w][x][y][z];";
         {
             string userText, compilableText;
             userText = "a";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("a;", compilableText);
 
             userText = "\na\n\n\n";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("a;", compilableText);
 
             userText = "a = 1; \n\n b = foo( c,\nd\n,\ne)";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
-            Assert.AreEqual("a = 1; \n\n b = foo( c,\nd\n,\ne);", compilableText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
+            Assert.AreEqual("a = 1;\n\n b = foo( c,\nd\n,\ne);", compilableText);
 
             userText = "      a = b-c;\nx = 1+3;\n   ";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("a = b-c;\nx = 1+3;", compilableText);
 
             userText = "\n   \n   \n    \n";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("", compilableText);
+        }
+
+        [Test]
+        public void TestFormatTextScenarios()
+        {
+            var before = "1;2;";
+            var after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("1;\n2;", after);
+
+            before = "  \t\n  1;2;  \t\n   ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("1;\n2;", after);
+
+            before = "  a = 1;    b = 2;  \n  \n  ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("a = 1;\n    b = 2;", after);
+
+            before = "  a = 1;    \nb = 2;  \n  \n  ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("a = 1;\nb = 2;", after);
         }
 
         [Test]
@@ -244,6 +265,145 @@ b = c[w][x][y][z];";
 
             Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanUndo);
             Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanRedo);
+        }
+
+        [Test]
+        public void Defect_MAGN_3244()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, @"point.ByCoordinates(0,0,0);");
+            
+            // Check
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+
+            // Update the code block node
+            UpdateCodeBlockNodeContent(codeBlockNode, @"Point.ByCoordinates(0,0,0);");
+
+            // Check
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_3244_extended()
+        {
+            //This is to test if the code block node has errors, the connectors are still
+            //there. And if the variables in the code block node are defined, the connectors
+            //will disappear.
+
+            // Create the first code block node.
+            var codeBlockNode0 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode0, @"x=y;");
+
+            // Create the second code block node.
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, @"1;");
+
+            // Connect the two nodes
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            ConnectorModel connector = ConnectorModel.Make(codeBlockNode1, codeBlockNode0,
+                0, 0, PortType.INPUT);
+            workspace.Connectors.Add(connector);
+
+            // Update the first code block node to have errors
+            UpdateCodeBlockNodeContent(codeBlockNode0, @"x=&y;");
+
+            // Check
+            Assert.AreEqual(1, codeBlockNode0.InPortData.Count);
+
+            // Update the first code block node to have y defined
+            UpdateCodeBlockNodeContent(codeBlockNode0, "y=1;\nx=y;");
+
+            // Check
+            Assert.AreEqual(0, codeBlockNode0.InPortData.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_3580()
+        {
+            // Create the initial code block node.
+            var codeBlockNode0 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode0, @"true;");
+
+            // Create the watch node.
+            var nodeGuid = Guid.NewGuid();
+            var command = new DynCmd.CreateNodeCommand(
+                nodeGuid, "Watch", 0, 0, true, false);
+
+            Controller.DynamoViewModel.ExecuteCommand(command);
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var watchNode = workspace.NodeFromWorkspace<Watch>(nodeGuid);
+
+            // Connect the two nodes
+            ConnectorModel connector0 = ConnectorModel.Make(codeBlockNode0, watchNode,
+                0, 0, PortType.INPUT);
+            workspace.Connectors.Add(connector0);
+
+            // Run
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+
+            // Update the code block node
+            UpdateCodeBlockNodeContent(codeBlockNode0, @"truuuue;");
+
+            // Check
+            Assert.AreEqual(1, codeBlockNode0.InPortData.Count);
+
+            // Create the second code block node
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, @"false;");
+
+            // Connect the two code block nodes
+            ConnectorModel connector1 = ConnectorModel.Make(codeBlockNode1, codeBlockNode0,
+                0, 0, PortType.INPUT);
+            workspace.Connectors.Add(connector1);
+
+            // Run
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+
+            UpdateCodeBlockNodeContent(codeBlockNode0, @"true;");
+
+            // Check
+            Assert.AreEqual(0, codeBlockNode0.InPortData.Count);
+
+            // Run
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+
+            // Delete the first code block node
+            List<ModelBase> nodes = new List<ModelBase>();
+            nodes.Add(codeBlockNode0);
+            Controller.DynamoModel.DeleteModelInternal(nodes);
+
+            // Undo
+            workspace.Undo();
+        }
+
+        [Test]
+        public void Defect_MAGN_3599()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, @"Circle.ByCenterPointRadius(pt,5)");
+
+            // Create the Point.Origin node.
+            var nodeGuid = Guid.NewGuid();
+            var command = new DynCmd.CreateNodeCommand(
+                nodeGuid, "Point.Origin", 0, 0, true, false);
+
+            Controller.DynamoViewModel.ExecuteCommand(command);
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var pointOriginNode = workspace.NodeFromWorkspace<DSFunction>(nodeGuid);
+
+            // Connect the two nodes
+            ConnectorModel connector = ConnectorModel.Make(pointOriginNode, codeBlockNode,
+                0, 0, PortType.INPUT);
+            workspace.Connectors.Add(connector);
+
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+
+            // Update the code block node
+            UpdateCodeBlockNodeContent(codeBlockNode, "pt = Point.ByCoordinates(0,0,0);\nCircle.ByCenterPointRadius(pt,5)");
+
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
         }
 
         #region CodeBlockUtils Specific Tests

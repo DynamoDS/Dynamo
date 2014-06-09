@@ -236,6 +236,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void TV1467135_DotOp_Replication_1()
         {
             String code =
@@ -264,6 +265,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void TV1467135_DotOp_Replication_3()
         {
             String code =
@@ -712,6 +714,9 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
+        [Category("Negative")]
+        [Category("Class")]
         public void T029_Inheritance_Property_1()
         {
             String code =
@@ -1151,6 +1156,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void TV1467063_Function_Overriding()
         {
             String code =
@@ -1275,6 +1281,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void TV1467167()
         {
             String code =
@@ -1331,6 +1338,8 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("ToFixJun")]
+        [Category("Failing")]
+        [Category("Class")]
         public void T051_TransitiveInheritance_Constructor()
         {
             String code =
@@ -1380,6 +1389,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
+        [Category("Failing")]
         public void TV052_Defect_ReplicationMethodOverloading_01()
         {
             String code =
@@ -1401,6 +1411,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
+        [Category("Failing")]
         public void TV052_Defect_ReplicationMethodOverloading_03()
         {
             String code =
@@ -1412,6 +1423,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
+        [Category("Failing")]
         public void TV052_Defect_ReplicationMethodOverloading_InUserDefinedClass()
         {
             String code =

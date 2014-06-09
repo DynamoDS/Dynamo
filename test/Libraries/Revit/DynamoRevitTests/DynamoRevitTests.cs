@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
+using Dynamo.Applications;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -10,7 +12,9 @@ using DynamoUnits;
 using Dynamo.UpdateManager;
 using NUnit.Framework;
 using ProtoCore.Mirror;
+using RevitServices.Elements;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 using Plane = Autodesk.Revit.DB.Plane;
@@ -36,6 +40,8 @@ namespace Dynamo.Tests
         public void Setup()
         {
             StartDynamo();
+
+            DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
 
             //it doesn't make sense to do these steps before every test
             //but when running from the revit plugin we are not loading the 
@@ -70,10 +76,30 @@ namespace Dynamo.Tests
             }
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            // Automatic transaction strategy requires that we 
+            // close the transaction if it hasn't been closed by 
+            // by the end of an evaluation. It is possible to 
+            // run the test framework without running Dynamo, so
+            // we ensure that the transaction is closed here.
+            TransactionManager.Instance.ForceCloseTransaction();
+        }
+
+        void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
+        {
+            DynamoRevit.SetRunEnabledBasedOnContext(e);
+        }
+
         private void StartDynamo()
         {
             try
             {
+                var updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
+                updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
+                updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
+
                 SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
                 SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
@@ -82,23 +108,21 @@ namespace Dynamo.Tests
                 dynSettings.DynamoLogger = logger;
                 var updateManager = new UpdateManager.UpdateManager(logger);
 
-                //create a new instance of the ViewModel
-                Controller = new DynamoController(Context.NONE, updateManager, 
-                    new DefaultWatchHandler(), new PreferenceSettings());
+                Controller = DynamoRevit.CreateDynamoRevitControllerAndViewModel(updater, logger, Context.NONE);
                 DynamoController.IsTestMode = true;
-                Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
-                Controller.VisualizationManager = new VisualizationManager();
+
+                // create the transaction manager object
+                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+
+                // Because the test framework does not work in the idle thread. 
+                // We need to trick Dynamo into believing that it's in the idle
+                // thread already.
+                IdlePromise.InIdleThread = true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }
-
-            //create the transaction manager object
-            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
-
-            //tests do not run from idle thread
-            TransactionManager.Instance.DoAssertInIdleThread = false;
         }
 
         /// <summary>
@@ -149,11 +173,21 @@ namespace Dynamo.Tests
         }
 
         /// <summary>
+        /// Opens and activates a new model.
+        /// </summary>
+        /// <param name="modelPath"></param>
+        protected UIDocument OpenAndActivateNewModel(string modelPath)
+        {
+            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(modelPath);
+            return DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+        }
+
+        /// <summary>
         /// Opens and activates a new model, and closes the old model.
         /// </summary>
         protected void SwapCurrentModel(string modelPath)
         {
-            Document initialDoc = DocumentManager.Instance.CurrentUIDocument.Document;
+            Document initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument.Document;
             DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
         }

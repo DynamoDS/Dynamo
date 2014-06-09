@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
@@ -73,12 +74,21 @@ namespace DSIronPython
         /// <summary>
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
-        public static DataMarshaler InputMarshaler = new DataMarshaler();
+        public static DataMarshaler InputMarshaler
+        {
+            get { return inputMarshaler ?? (inputMarshaler = new DataMarshaler()); }
+        }
 
         /// <summary>
         ///     Data Marshaler for all data coming out of a Python node.
         /// </summary>
-        public static DataMarshaler OutputMarshaler = new DataMarshaler();
+        public static DataMarshaler OutputMarshaler
+        {
+            get { return outputMarshaler ?? (outputMarshaler = new DataMarshaler()); }
+        }
+
+        private static DataMarshaler inputMarshaler;
+        private static DataMarshaler outputMarshaler;
 
         #endregion
 

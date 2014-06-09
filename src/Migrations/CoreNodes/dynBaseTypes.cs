@@ -802,43 +802,52 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            //create the node itself
-            XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+            // Create nodes
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "List.Slice", "List.Slice@var[]..[],int,int,int");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            migratedData.AppendNode(dsCoreNode);
-            string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
+            XmlElement plus = MigrationManager.CreateFunctionNode(data.Document,
+                oldNode, 0, "", "+", "+@,");
+            migrationData.AppendNode(plus);
+            string plusId = MigrationManager.GetGuidFromXmlElement(plus);
 
-            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, oldNode, 0, "1;");   
-
-            migratedData.AppendNode(codeBlockNode);
-
-            //create and reconnect the connecters
+            // Update connectors
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
-            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
-
             PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
-            PortId newInPort0 = new PortId(dsCoreNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsCoreNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(dsCoreNodeId, 2, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId plusInPort1 = new PortId(plusId, 1, PortType.INPUT);
+
+            if (connector0 != null)
+            {
+                string startId = connector0.GetAttribute("start");
+                data.CreateConnectorFromId(startId, 0, plusId, 0);
+            }
 
             data.ReconnectToPort(connector0, newInPort1);
-            data.ReconnectToPort(connector1, newInPort2);
+            data.ReconnectToPort(connector1, plusInPort1);
             data.ReconnectToPort(connector2, newInPort0);
-            data.CreateConnector(codeBlockNode, 0, dsCoreNode, 3);
+            data.CreateConnector(plus, 0, newNode, 2);
 
-            return migratedData;
+            // Add default value
+            XmlElement defaultValue = data.Document.CreateElement("PortInfo");
+            defaultValue.SetAttribute("index", "3");
+            defaultValue.SetAttribute("default", "True");
+            newNode.AppendChild(defaultValue);
+
+            return migrationData;
         }
     }
 
@@ -2414,9 +2423,10 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            var newNode = MigrationManager.CreateVarArgFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "String.Split", "String.Split@string,string[]");
+            newNode.SetAttribute("inputcount", "2");
 
             migrationData.AppendNode(newNode);
 
@@ -2447,10 +2457,22 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
-                "String.Join", "String.Join@string,string[]");
-
+                "List.GetItemAtIndex", "List.GetItemAtIndex@var[]..[],int");
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
+
+
+            XmlElement stringJoinNode = MigrationManager.CreateVarArgFunctionNode(
+                data.Document, oldNode, 1, "DSCoreNodes.dll",
+                "String.Join", "String.Join@string,string[]", "2");
+            migratedData.AppendNode(stringJoinNode);
+            string stringJoinNodeId = MigrationManager.GetGuidFromXmlElement(stringJoinNode);
+
+
+            XmlElement cbn = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, oldNode, 2, "0");
+            migratedData.AppendNode(cbn);
+            string cbnId = MigrationManager.GetGuidFromXmlElement(cbn);
 
             //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -2459,11 +2481,13 @@ namespace Dynamo.Nodes
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId newInPort0 = new PortId(dsCoreNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsCoreNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(stringJoinNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(stringJoinNodeId, 1, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
+            data.CreateConnector(stringJoinNode, 0, dsCoreNode, 0);
+            data.CreateConnector(cbn, 0, dsCoreNode, 1);
 
             // Add default values
             foreach (XmlNode child in oldNode.ChildNodes)
@@ -2473,7 +2497,7 @@ namespace Dynamo.Nodes
                 if (newChild.GetAttribute("index") == "1")
                     newChild.SetAttribute("index", "0");
 
-                dsCoreNode.AppendChild(newChild);
+                stringJoinNode.AppendChild(newChild);
             }
 
             return migratedData;           
