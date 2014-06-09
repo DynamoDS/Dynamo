@@ -11,7 +11,7 @@ namespace Dynamorph
         internal static readonly double HorzGap = 32.0;
         internal static readonly double VertGap = 16.0;
         internal static readonly double NodeWidth = 128.0;
-        internal static readonly double NodeHeight = 16.0;
+        internal static readonly double NodeHeight = 8.0;
         internal static readonly double HorzSpace = ((2 * HorzGap) + NodeWidth);
     }
 
@@ -45,13 +45,13 @@ namespace Dynamorph
 
         internal Point GetInputPoint(int index)
         {
-            var offset = ((index + 0.5) * Config.NodeHeight);
+            var offset = ((index + 1) * Config.NodeHeight);
             return new Point(rect.Left, rect.Top + offset);
         }
 
         internal Point GetOutputPoint(int index)
         {
-            var offset = ((index + 0.5) * Config.NodeHeight);
+            var offset = ((index + 1) * Config.NodeHeight);
             return new Point(rect.Right, rect.Top + offset);
         }
 
@@ -295,10 +295,10 @@ namespace Dynamorph
 
                 int dummyInputCount, dummyOutputCount;
                 if (nodeInputs.TryGetValue(n.Identifier, out dummyInputCount))
-                    n.InputCount = dummyInputCount;
+                    n.InputCount = dummyInputCount + 1;
 
                 if (nodeOutputs.TryGetValue(n.Identifier, out dummyOutputCount))
-                    n.OutputCount = dummyOutputCount;
+                    n.OutputCount = dummyOutputCount + 1;
             });
         }
 
