@@ -54,6 +54,11 @@ namespace Revit.GeometryConversion
             return geo;
         }
 
+        private static object Tag(object obj, Autodesk.Revit.DB.Reference reference)
+        {
+            return obj;
+        }
+
         #region Converter methods
 
         private static Autodesk.DesignScript.Geometry.Curve InternalConvert(Autodesk.Revit.DB.Edge geom)
@@ -81,7 +86,7 @@ namespace Revit.GeometryConversion
             return geom.ToProtoType();
         }
 
-        public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(Autodesk.Revit.DB.PolyLine geom)
+        public static Autodesk.DesignScript.Geometry.PolyCurve InternalConvert(Autodesk.Revit.DB.PolyLine geom)
         {
             return geom.ToProtoType();
         }
