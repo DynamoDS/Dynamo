@@ -329,9 +329,10 @@ namespace Revit.Elements
         /// <summary>
         /// Get all of the Geometry associated with this object
         /// </summary>
-        public Geometry[] Geometry()
+        public object[] Geometry()
         {
-            return InternalGeometry().Select(x => x.Convert()).ToArray();
+            var res = InternalGeometry().Select(x => x.Convert()).ToArray();
+            return res;
         }
 
         [SupressImportIntoVM]
