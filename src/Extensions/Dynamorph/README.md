@@ -27,6 +27,7 @@ Dynamorph, morph the heck out of your design.
 - [x] Add shader uniform to control per-vertex alpha
 - [x] Enable slider to work with C++ Visualizer
 - [x] Implement Track Ball class for navigation
+- [x] Make nodes align to leaf nodes instead of root nodes
 - [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
@@ -58,5 +59,5 @@ Dynamorph, morph the heck out of your design.
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
 
-#### SynthesizedGraph avoids edge overlapping with multiple in/outputs! :) ####
+#### SynthesizedGraph nodes now aligned to leaf nodes! :) ####
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)

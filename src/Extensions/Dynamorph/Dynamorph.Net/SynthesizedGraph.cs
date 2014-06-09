@@ -29,7 +29,7 @@ namespace Dynamorph
         {
             this.Identifier = identifier;
             this.Name = name;
-            this.ChildrenCount = -1;
+            this.UpstreamNodeCount = -1;
             this.InputCount = this.OutputCount = 0;
         }
 
@@ -59,7 +59,7 @@ namespace Dynamorph
 
         internal int Depth { get; set; }
         internal int DisplayRow { get; set; }
-        internal int ChildrenCount { get; set; }
+        internal int UpstreamNodeCount { get; set; }
         internal int InputCount { get; set; }
         internal int OutputCount { get; set; }
         internal string Identifier { get; private set; }
@@ -119,14 +119,14 @@ namespace Dynamorph
         internal void BuildGraphStructure()
         {
             LabelGraphNodes();    // Label the entire graph with depth info.
-            CalculateChildNode(); // Compute number of children for each node.
+            CalculateUpstreamNode(); // Compute number of upstreams for each node.
             AssignEdgeIndices();  // Assign an index for each edge based on position.
 
             // Sort the depth value from small to large.
             this.nodes.Sort((n1, n2) =>
             {
-                if (n1.Depth == n2.Depth) // Larger child node first.
-                    return n2.ChildrenCount - n1.ChildrenCount;
+                if (n1.Depth == n2.Depth) // Larger parent node first.
+                    return n2.UpstreamNodeCount - n1.UpstreamNodeCount;
 
                 return n1.Depth - n2.Depth;
             });
@@ -193,77 +193,78 @@ namespace Dynamorph
 
         private void LabelGraphNodes()
         {
-            // Reset the depth value of each node to minimal value.
-            this.nodes.ForEach(n => n.Depth = int.MinValue);
+            // Reset the depth value of each node to maximum value.
+            this.nodes.ForEach(n => n.Depth = int.MaxValue);
 
-            // Get a list of all root nodes.
-            var rootNodes = nodes.Where(n =>
+            // Get a list of all leaf nodes.
+            var leafNodes = nodes.Where(n =>
             {
-                // A root node is a node which doesn't have input edge.
-                return !(edges.Where(e => e.EndNodeId == n.Identifier).Any());
+                // A leaf node is a node which doesn't have output edge.
+                return !(edges.Where(e => e.StartNodeId == n.Identifier).Any());
             });
 
-            foreach (var rootNode in rootNodes)
-                LabelGraphNode(rootNode, 0);
+            foreach (var leafNode in leafNodes)
+                LabelGraphNode(leafNode, 0);
+
+            // Reset all node depth values so that 
+            // they start from zero and move upwards.
+            int minDepth = nodes.Min(n => n.Depth);
+            nodes.ForEach(n => n.Depth = n.Depth - minDepth);
         }
 
         private void LabelGraphNode(Node node, int depth)
         {
-            // The node is already marked with a larger depth value, which 
+            // The node is already marked with a smaller depth value, which 
             // means this node was visited before this call with much longer
-            // chain of ancestor list. No point going further to label them.
+            // chain of descendant list. No point going further to label them.
             // 
-            if (node.Depth > depth)
+            if (node.Depth < depth)
                 return;
 
             node.Depth = depth;
-            var childNodes = GetChildNodes(node);
-            foreach (var childNode in childNodes)
-                LabelGraphNode(childNode, depth + 1);
+            var upstreamdNodes = GetUpstreamNodes(node);
+            foreach (var upstreamNode in upstreamdNodes)
+                LabelGraphNode(upstreamNode, depth - 1);
         }
 
-        private void CalculateChildNode()
+        private void CalculateUpstreamNode()
         {
-            this.nodes.ForEach(n => n.ChildrenCount = -1);
+            this.nodes.ForEach(n => n.UpstreamNodeCount = -1);
 
             foreach (var node in this.nodes)
-                GetChildNodeCount(node);
+                GetUpstreamNodeCount(node);
         }
 
-        private int GetChildNodeCount(Node node)
+        private int GetUpstreamNodeCount(Node node)
         {
             // This node is already visited.
-            if (node.ChildrenCount != -1)
-                return node.ChildrenCount;
+            if (node.UpstreamNodeCount != -1)
+                return node.UpstreamNodeCount;
 
             // Mark this node as visited immediately.
-            node.ChildrenCount = 0;
+            node.UpstreamNodeCount = 0;
 
-            int childNodeCount = 0;
-            foreach (var childNode in GetChildNodes(node))
-                childNodeCount += GetChildNodeCount(childNode) + 1;
+            foreach (var upstreamNode in GetUpstreamNodes(node))
+                node.UpstreamNodeCount += GetUpstreamNodeCount(upstreamNode) + 1;
 
-            node.ChildrenCount = childNodeCount;
-            return node.ChildrenCount;
+            return node.UpstreamNodeCount;
         }
 
-        private IEnumerable<Node> GetChildNodes(Node node)
+        private IEnumerable<Node> GetUpstreamNodes(Node node)
         {
-            var endNodeQuery = this.edges.Where((e) =>
+            var startNodeQuery = this.edges.Where((e) =>
             {
-                // Get edges connecting from this "node".
-                return e.StartNodeId == node.Identifier;
+                // Get edges connecting to this "node".
+                return e.EndNodeId == node.Identifier;
 
-            }).Select(e => e.EndNodeId);
+            }).Select(e => e.StartNodeId);
 
-            var nodeQuery = this.nodes.Where((n) =>
+            return this.nodes.Where((n) =>
             {
-                // A node will be considered a child node 
-                // if it is at the end of connecting edges.
-                return endNodeQuery.Contains(n.Identifier);
+                // A node will be considered a upstream node 
+                // if it is at the start of connecting edges.
+                return startNodeQuery.Contains(n.Identifier);
             });
-
-            return new List<Node>(nodeQuery);
         }
 
         private void AssignEdgeIndices()
