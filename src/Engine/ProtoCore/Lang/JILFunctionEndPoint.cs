@@ -60,7 +60,7 @@ namespace ProtoCore.Lang
                 for (int n = execStateSize - 1; n >= 0 ; --n)
                 {
                     StackValue svState = stackFrame.ExecutionStates[n];
-                    Validity.Assert(svState.optype == DSASM.AddressType.Boolean);
+                    Validity.Assert(svState.IsBoolean);
                     interpreter.Push(svState);
                 }
             }

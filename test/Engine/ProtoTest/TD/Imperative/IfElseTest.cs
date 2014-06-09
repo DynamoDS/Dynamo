@@ -1495,7 +1495,7 @@ c;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 1);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1569,7 +1569,7 @@ c;
 } 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
         }
 
@@ -2125,7 +2125,21 @@ c = even(1);
         public void TDD_SimpleIfCondition_1()
         {
             String code =
-@"r = [Imperative]{    //b = 1;    if (null==false)    {        return = ""null==true"";    }    else if(!null)    {        return = ""!null==true"";    }    return = ""expected"";}";
+@"
+r = [Imperative]
+{
+    //b = 1;
+    if (null==false)
+    {
+        return = ""null==true"";
+    }
+    else if(!null)
+    {
+        return = ""!null==true"";
+    }
+    return = ""expected"";
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", "expected");
         }
@@ -2135,7 +2149,22 @@ c = even(1);
         public void TDD_SimpleIfCondition_2()
         {
             String code =
-@"r = [Imperative]{    if (!null)    {        return = ""!null==true"";    }    else if(!(true||null))    {        return = ""true||null==false"";    }else    {        return =""expected"";     }}";
+@"
+r = [Imperative]
+{
+    if (!null)
+    {
+        return = ""!null==true"";
+    }
+    else if(!(true||null))
+    {
+        return = ""true||null==false"";
+    }else
+    {
+        return =""expected""; 
+    }
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", "expected");
         }
@@ -2146,7 +2175,13 @@ c = even(1);
         public void TDD_NullAsArgs()
         {
             String code =
-@"def foo(x:string){    return = 1;}r:bool = foo(null);";
+@"
+def foo(x:string)
+{
+    return = 1;
+}
+r:bool = foo(null);
+";
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("r", true);
@@ -2157,7 +2192,17 @@ c = even(1);
         public void TDD_UserDefinedTypeConvertedToBool_NotNull_defect()
         {
             String code =
-@"        class A{        a:int;        constructor A (b:int)        {                a=b;    }}d:bool=A.A(5);";
+@"
+        class A
+{
+        a:int;
+        constructor A (b:int)
+        {
+                a=b;
+    }
+}
+d:bool=A.A(5);
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("d", true);
         }
@@ -2168,7 +2213,18 @@ c = even(1);
         public void TDD_UserDefinedTypeConvertedToBool()
         {
             String code =
-@"        class A{}r = [Imperative]{a = A.A();if(a){    return = true;}}";
+@"
+        class A{}
+r = 
+[Imperative]
+{
+a = A.A();
+if(a)
+{
+    return = true;
+}
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", true);
         }
@@ -2178,7 +2234,22 @@ c = even(1);
         public void TDD_UserDefinedTypeConvertedToBool_Null()
         {
             String code =
-@"n;r = [Imperative]{a = A.A();b:bool = A.A();def foo(x:bool){    return = ""true"";}m = b;n = foo(a);return = foo(b);}";
+@"
+n;
+r = 
+[Imperative]
+{
+a = A.A();
+b:bool = A.A();
+def foo(x:bool)
+{
+    return = ""true"";
+}
+m = b;
+n = foo(a);
+return = foo(b);
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", "true");
             thisTest.Verify("n", "true");
@@ -2190,7 +2261,12 @@ c = even(1);
         public void TDD_SimpleInlineCondition_1()
         {
             String code =
-@"r = [Imperative]{return = null==false?""null==false"":""null==false is false"";}";
+@"
+r = [Imperative]
+{
+return = null==false?""null==false"":""null==false is false"";
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", "null==false is false");
         }
@@ -2200,7 +2276,13 @@ c = even(1);
         public void TDD_SimpleInlineCondition_2()
         {
             String code =
-@"r = [Imperative]{    return = !null==false?""!null==false"":""expected"";   }";
+@"
+r = [Imperative]
+{
+    return = !null==false?""!null==false"":""expected"";
+   
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", "expected");
         }
@@ -2210,7 +2292,15 @@ c = even(1);
         public void TDD_UserDefinedTypeConvertedToBool_Inline()
         {
             String code =
-@"        class A{}r = [Imperative]{a = A.A();return = a==true?true:""A.A()!=true"";}";
+@"
+        class A{}
+r = 
+[Imperative]
+{
+a = A.A();
+return = a==true?true:""A.A()!=true"";
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", true);
         }

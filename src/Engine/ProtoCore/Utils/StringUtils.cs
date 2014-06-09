@@ -12,7 +12,7 @@ namespace ProtoCore.Utils
     {
         public static int CompareString(StackValue s1, StackValue s2, Core core)
         {
-            if (!StackUtils.IsString(s1) || !StackUtils.IsString(s2))
+            if (!s1.IsString || !s2.IsString)
             {
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
@@ -58,8 +58,8 @@ namespace ProtoCore.Utils
 
         public static StackValue ConcatString(StackValue op1, StackValue op2, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            StackValue[] v1 = (AddressType.String == op1.optype) ? rmem.GetArrayElements(op1) : new StackValue[] { op1 };
-            StackValue[] v2 = (AddressType.String == op2.optype) ? rmem.GetArrayElements(op2) : new StackValue[] { op2 };
+            StackValue[] v1 = op1.IsString ? rmem.GetArrayElements(op1) : new StackValue[] { op1 };
+            StackValue[] v2 = op2.IsString ? rmem.GetArrayElements(op2) : new StackValue[] { op2 };
             StackValue tmp = rmem.BuildArray(v1.Concat(v2).ToArray());
             return StackValue.BuildString(tmp.opdata);
         }
