@@ -14,6 +14,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.UI;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.Views
 {
@@ -748,6 +749,20 @@ namespace Dynamo.Views
             }
 
             return HitTestResultBehavior.Continue;
+        }
+
+        private void OnButtonMouseEnter(object sender, MouseEventArgs e)
+        {
+            var imageButton = sender as Image;
+            var transform = imageButton.RenderTransform as TranslateTransform;
+            transform.Y = -24.0;
+        }
+
+        private void OnButtonMouseLeave(object sender, MouseEventArgs e)
+        {
+            var imageButton = sender as Image;
+            var transform = imageButton.RenderTransform as TranslateTransform;
+            transform.Y = 0.0;
         }
     }
 }

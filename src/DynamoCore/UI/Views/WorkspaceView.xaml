@@ -13,8 +13,7 @@
              IsHitTestVisible="{Binding IsCurrentSpace}">
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-
-        <Canvas Name="outerCanvas" 
+            <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
                  Grid.Row="0" 
@@ -99,6 +98,42 @@
             </Canvas.ContextMenu>
 
         </Canvas>
-        
+
+        <StackPanel Name="statusBarPanel"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Height="Auto">
+            <Canvas Width="64"
+                    Height="24"
+                    Margin="4,4,0,4">
+                <Canvas.Clip>
+                    <RectangleGeometry Rect="0,0,64,24" />
+                </Canvas.Clip>
+                <Image Width="64"
+                       MouseEnter="OnButtonMouseEnter"
+                       MouseLeave="OnButtonMouseLeave"
+                       Source="/DynamoCore;component/UI/Images/canvas_button_geom_view.png">
+                    <Image.RenderTransform>
+                        <TranslateTransform></TranslateTransform>
+                    </Image.RenderTransform>
+                </Image>
+            </Canvas>
+            <Canvas Width="64"
+                    Height="24"
+                    Margin="0,4,4,4">
+                <Canvas.Clip>
+                    <RectangleGeometry Rect="0,0,64,24" />
+                </Canvas.Clip>
+                <Image Width="64"
+                       MouseEnter="OnButtonMouseEnter"
+                       MouseLeave="OnButtonMouseLeave"
+                       Source="/DynamoCore;component/UI/Images/canvas_button_node_view.png">
+                    <Image.RenderTransform>
+                        <TranslateTransform></TranslateTransform>
+                    </Image.RenderTransform>
+                </Image>
+            </Canvas>
+        </StackPanel>
     </Grid>
 </UserControl>

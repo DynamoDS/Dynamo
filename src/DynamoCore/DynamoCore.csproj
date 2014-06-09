@@ -747,6 +747,10 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="UI\Images\AboutWindow\logo_about.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\canvas_button_geom_view.png" />
+    <Resource Include="UI\Images\canvas_button_node_view.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
