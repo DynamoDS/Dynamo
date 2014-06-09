@@ -1739,6 +1739,205 @@ x4 = 0..#5..10;
                 @"                    a = 1;                    b = b + a;                    b = 2;                    a = 10;                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 2);
+        }
+
+        [Test]
+        public void TestUpdate03()
+        {
+            String code =
+                @"def f : int(p : int){    a = 10;    b = a;    a = p;    return = b;}x = 20;y = f(x);x = 40;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 40);
+            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 40);
+        }
+
+        [Test]
+        public void TestUpdateRedefinition01()
+        {
+            String code =
+                @"a = 1;c = 2;b = a + 1;b = c + 1;a = 3;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 3);
+        }
+
+        [Test]
+        public void TestUpdateRedefinition02()
+        {
+            String code =
+                @"                    a = 1;                    a = a + 1;                    a = 10;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
+        }
+
+        [Test]
+        public void TestArrayUpdate01()
+        {
+            String code =
+                @"a = {10,11,12};t = 0;i = a[t];t = 2;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("i").Payload == 12);
+        }
+
+        [Test]
+        public void TestFunctionUpdate01()
+        {
+            String code =
+                @"class C{    x : int;    constructor C()    {        x = 1;    }}def f(a : C){    a.x = 10;    return = 0;}p = C.C();i = p.x;t = f(p);                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("i").Payload == 10);
+        }
+
+        [Test]
+        [Category("JunToFix")]
+        public void TestFunctionUpdate02()
+        {
+            String code =
+                @"class A {    a : int;    constructor A ()    {        b = 1;        a = b;        b = 10;    }}x = A.A();y = x.a;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 10);
+        }
+
+        [Test]
+        public void TestNoUpdate01()
+        {
+            String code =
+                @"class Line{    x : int;    constructor Line(i : int)    {        x = i;    }    def Trim()    {        return = Line.Line(x - 1);           }}myline = Line.Line(10);myline = myline.Trim();myline = myline.Trim();length = myline.x;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("length").Payload == 8);
+        }
+
+        [Test]
+        public void TestPropertyUpdate01()
+        {
+            String code =
+                @"class A{    x : int;	    constructor A()    {        x = 0;    }}p = A.A();a = p.x;p.x = 2;                 ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
+        }
+        // Comment Jun: Investigate how replicating setters have affected this update
+
+        [Test]
+        public void TestPropertyUpdate02()
+        {
+            String code =
+                @"class A{    x : int;	    constructor A()    {        x = 0;    }}p = A.A();b = 2;p.x = b;b = 10;t = p.x;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            //Assert.Fail("1467249 - Sprint25: rev 3468 : REGRESSION: class property update is not propagating");
+            Assert.IsTrue((Int64)mirror.GetValue("t").Payload == 10);
+        }
+
+        [Test]
+        public void TestPropertyUpdate03()
+        {
+            String code =
+                @"class A{    x : int;	    constructor A()    {        x = 1;    }}class B{    m : var;	    constructor B()    {        m = A.A();    }}p = B.B();a = p.m.x;p.m.x = 2;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
+        }
+
+        [Test]
+        public void TestPropertyUpdate04()
+        {
+            String code =
+                @"class A{    x : int;	    constructor A()    {        x = 1;    }}class B{    m : var;	    constructor B()    {        m = A.A();    }}p = B.B();b = 2;p.m.x = b;b = 10;t = p.m.x;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("t").Payload == 10);
+        }
+
+        [Test]
+        public void TestPropertyUpdate05()
+        {
+            String code =
+                @"class f{	x : var;	y : var;	constructor f()	{		x = 1;			y = 2;		}}p = f.f();i = p.x;p.y = 1000;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("i").Payload == 1);
+        }
+
+        [Test]
+        public void TestPropertyUpdate06()
+        {
+            String code =
+                @"class C{    x :var;    constructor C()    {        x = 10;    }}p = C.C();p.x = p.x + 1;p.x = p.x + 1;t = p.x;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("t").Payload == 12);
+        }
+
+
+        [Test]
+        public void TestPropertyUpdate07()
+        {
+            String code =
+                @"class C{    x : int;    constructor C(i:int)    {        x = i;    }}i = 10;a = C.C(i);a.x = 15;v = a.x;i = 7;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("v").Payload == 15);
+        }
+
+        [Test]
+        public void TestLHSUpdate01()
+        {
+            String code =
+                @"class C{    x : var;    constructor C(i : int)    {        x = D.D(i);    }}class D{    y : int = 0;    constructor D(i : int)    {        y = i;    }}a = C.C();// must reexecute a.x.y = 10 because a.x was modifieda.x.y = 10;i = a.x.y;a.x = D.D(2);j = a.x.y                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("i").Payload == 10);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("j").Payload == 10);
+        }
+
+        [Test]
+        public void TestLHSUpdate02()
+        {
+            String code =
+                @"class A{    a : int;    }a1 = A.A();a1.a = 1;b = a1.a; // Should only update oncea1.a = 10;                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("b").Payload == 10);
+        }
+
+        [Test]
+        public void TestPropertyModificationInMethodUpdate01()
+        {
+            String code =
+                @"class C{    mx : var;    constructor C ()	{	    mx = 1; 	}	def f()	{		mx = 10;		return = 0; 	}}p = C.C();x = p.mx; a = p.f();                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 10);
+        }
+
+        [Test]
+        public void TestPropertyModificationInMethodUpdate02()
+        {
+            String code =
+                @"class C{    mx : var;	my : var;     constructor C ()	{	    mx = 1; 	    my = 2; 	}	def f()	{		mx = 10;		my = 20;		return = 0; 	}}p = C.C();x = p.mx; y = p.my; a = p.f();                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 10);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("y").Payload == 20);
+        }
+
+        [Test]
+        public void TestXLangUpdate01()
+        {
+            String code =
+                @"a;b;[Associative]{    a = 1;    b = a;    [Imperative]    {        a = a + 1;    }}                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 2);
+        }
+
+        [Test]
+        public void TestXLangUpdate02()
+        {
+            String code =
+                @"a;b;[Associative]{    a = 1;    b = a;    a = 10;    [Imperative]    {        a = a + 1;    }}                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 11);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 11);
+        }
+
+        [Test]
+        public void TestXLangUpdate03()
+        {
+            String code =
+                @"a;b;c;d;[Associative]{    a = 1;    b = a;    c = 100;    d = c;    [Imperative]    {        a = a + 1;        c = 10;    }}                ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 10);
             Assert.IsTrue((Int64)mirror.GetValue("d").Payload == 10);
         }
@@ -1747,18 +1946,7 @@ x4 = 0..#5..10;
         public void TestXLangUpdate04()
         {
             String code =
-                @"
-def f(p : int)
-{
-    return = p;
-}
-a = 1;
-i = [Imperative]
-{
-    return = f(a);
-}
-a = 10;
-                ";
+                @"def f(p : int){    return = p;}a = 1;i = [Imperative]{    return = f(a);}a = 10;                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("i").Payload == 10);
         }
@@ -1767,31 +1955,7 @@ a = 10;
         public void TestGCRefCount()
         {
             String code =
-                @"
-class point
-{
-    x : var;
-    y : var;
-    constructor point()
-    {
-        x = 10;
-        y = 20;
-    }
-    def _Dispose : int()
-    {
-        x = 100;
-        return = null;
-    }
-}
-def f : int()
-{
-    p = point.point();
-    p2 = p;
-    return = p.x;
-}
-i = f();
-n = point.point();
-                ";
+                @"class point{    x : var;    y : var;    constructor point()    {        x = 10;        y = 20;    }    def _Dispose : int()    {        x = 100;        return = null;    }}def f : int(){    p = point.point();    p2 = p;    return = p.x;}i = f();n = point.point();                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
@@ -1799,18 +1963,7 @@ n = point.point();
         public void TestGCFFI001()
         {
             String code =
-                @"
-def foo : int()
-{
-	p = Point.ByCoordinates(10, 20, 30);
-	p2 = Point.ByCoordinates(12, 22, 32);
-	p3 = Point.ByCoordinates(14, 24, 34);
-	return = 10;
-}
-p = Point.ByCoordinates(15, 25, 35);
-x = p.X;
-y = foo();
-                ";
+                @"def foo : int(){	p = Point.ByCoordinates(10, 20, 30);	p2 = Point.ByCoordinates(12, 22, 32);	p3 = Point.ByCoordinates(14, 24, 34);	return = 10;}p = Point.ByCoordinates(15, 25, 35);x = p.X;y = foo();                ";
             code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
@@ -1819,18 +1972,7 @@ y = foo();
         public void TestGCRefCount002()
         {
             String code =
-                @"
-def CreatePoint : Point(x : int, y : int, z : int)
-{
-	return = Point.ByCoordinates(x, y, z);
-}
-def getx : double(p : Point)
-{
-	return = p.X;
-}
-p = CreatePoint(5, 6, 7);
-x = getx(p);
-                ";
+                @"def CreatePoint : Point(x : int, y : int, z : int){	return = Point.ByCoordinates(x, y, z);}def getx : double(p : Point){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                ";
             code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetFirstValue("x");
@@ -1841,14 +1983,7 @@ x = getx(p);
         public void TestGlobalVariable()
         {
             String code =
-                @"
-                    gx = 100;
-                    def f : int()
-                    {
-                        return = gx;
-                    }
-                    i = f();
-                ";
+                @"                    gx = 100;                    def f : int()                    {                        return = gx;                    }                    i = f();                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetFirstValue("gx").Payload == 100);
         }
@@ -1857,31 +1992,10 @@ x = getx(p);
         public void TestNullFFI()
         {
             String code =
-                @"
-class Test
-{
-    X : int;
-    constructor Test(x : int)
-    {
-        X = x;
-    }
-    
-    def Equals : bool (other : Test)
-    {
-        return = (other.X == this.X);
-    }
-}
-x = {1001,2001};
-t = Point.ByCoordinates(x, 0, 0);
-s = t;
-s[1] = null;
-check = s.Equals(t);
-value = check[1];
-Print(check);
-                ";
+                @"class Test{    X : int;    constructor Test(x : int)    {        X = x;    }        def Equals : bool (other : Test)    {        return = (other.X == this.X);    }}x = {1001,2001};t = Point.ByCoordinates(x, 0, 0);s = t;s[1] = null;check = s.Equals(t);value = check[1];Print(check);                ";
             code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
         }
 
         [Test]
