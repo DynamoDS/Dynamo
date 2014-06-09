@@ -527,7 +527,7 @@ a1;a2;a3;a4;
             Assert.IsTrue(mirror.CompareArrays("b", result4, typeof(System.Double)));
             List<Object> result5 = new List<Object> { 4.5, 5.1, 5.6999999999999993, 6.2999999999999989, 6.8999999999999986, 7.4999999999999982 };
             Assert.IsTrue(mirror.CompareArrays("c", result5, typeof(System.Double)));
-            Assert.IsTrue(mirror.GetValue("e1").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("e1").DsasmValue.IsNull);
             List<Object> result9 = new List<Object> { 4.5, 5.25, 6.0 };
             Assert.IsTrue(mirror.CompareArrays("f", result9, typeof(System.Double)));
             List<Object> result10 = new List<Object> { 2.0, 1.75, 1.5, 1.25, 1.0 };
@@ -799,7 +799,20 @@ b;
             Assert.IsTrue(mirror.CompareArrays("e1", result, typeof(System.Double)));
             List<Object> result1 = new List<Object> { 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0 };
             Assert.IsTrue(mirror.CompareArrays("f", result1, typeof(System.Double)));
-            /*List<Object> result2 = new List<Object>() { 0.01,0.02,0.03,0.04 };            Assert.IsTrue(mirror.CompareArrays("h", result2, typeof(System.Double)));            List<Object> result3 = new List<Object>() { 0.1, 0.2 };            Assert.IsTrue(mirror.CompareArrays("i", result3, typeof(System.Double)));            List<Object> result5 = new List<Object>() { 0.4,0.45 };            Assert.IsTrue(mirror.CompareArrays("j", result5, typeof(System.Double)));            List<Object> result6 = new List<Object>() { 1.2,1.4 };            Assert.IsTrue(mirror.CompareArrays("k", result6, typeof(System.Double)));            List<Object> result7 = new List<Object>() { 1.2,1.3 };            Assert.IsTrue(mirror.CompareArrays("l", result7, typeof(System.Double)));            List<Object> result8 = new List<Object>() { 0.8,0.9 };            Assert.IsTrue(mirror.CompareArrays("m", result8, typeof(System.Double)));            List<Object> result9 = new List<Object>() { 0.08, 0.09 };            Assert.IsTrue(mirror.CompareArrays("n", result9, typeof(System.Double)));*/
+            /*List<Object> result2 = new List<Object>() { 0.01,0.02,0.03,0.04 };
+            Assert.IsTrue(mirror.CompareArrays("h", result2, typeof(System.Double)));
+            List<Object> result3 = new List<Object>() { 0.1, 0.2 };
+            Assert.IsTrue(mirror.CompareArrays("i", result3, typeof(System.Double)));
+            List<Object> result5 = new List<Object>() { 0.4,0.45 };
+            Assert.IsTrue(mirror.CompareArrays("j", result5, typeof(System.Double)));
+            List<Object> result6 = new List<Object>() { 1.2,1.4 };
+            Assert.IsTrue(mirror.CompareArrays("k", result6, typeof(System.Double)));
+            List<Object> result7 = new List<Object>() { 1.2,1.3 };
+            Assert.IsTrue(mirror.CompareArrays("l", result7, typeof(System.Double)));
+            List<Object> result8 = new List<Object>() { 0.8,0.9 };
+            Assert.IsTrue(mirror.CompareArrays("m", result8, typeof(System.Double)));
+            List<Object> result9 = new List<Object>() { 0.08, 0.09 };
+            Assert.IsTrue(mirror.CompareArrays("n", result9, typeof(System.Double)));*/
         }
 
         [Test]
@@ -1127,7 +1140,7 @@ a;b;
 	a = 7.5..-2..#-9;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1168,7 +1181,7 @@ a;b;
 	a = 5..1..2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1181,7 +1194,7 @@ a;b;
 	a = 5.5..10.7..-2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1778,7 +1791,18 @@ c = 5;
         [Category("SmokeTest")]
         public void IndexingIntoClassInstanceByRangeExpr()
         {
-            string code = @"class A{    x;    constructor A(i)    {        x = i;    }}x = (A.A(1..3))[0];z = x.x;";
+            string code = @"
+class A
+{
+    x;
+    constructor A(i)
+    {
+        x = i;
+    }
+}
+x = (A.A(1..3))[0];
+z = x.x;
+";
             thisTest.VerifyRunScriptSource(code, "DNL-1467618 Regression : Use of the array index after replicated constructor yields complier error now");
             thisTest.Verify("z", 1);
         }
@@ -1786,7 +1810,15 @@ c = 5;
         [Test]
         public void TA24_1467454_negative_case()
         {
-            string code = @"b = 10.0;a = 0.0;d1 = a..b..c;d2 = c..b..c;d3 = a..c..b;d4 = c..a..c;d5 = c..2*c..c;";
+            string code = @"
+b = 10.0;
+a = 0.0;
+d1 = a..b..c;
+d2 = c..b..c;
+d3 = a..c..b;
+d4 = c..a..c;
+d5 = c..2*c..c;
+";
             Object n1 = null;
             thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("d1", n1);
@@ -1800,7 +1832,19 @@ c = 5;
         [Test]
         public void TA24_1467454_negative_case_2()
         {
-            string code = @"b = 10.0;a = 0.0;d1;d2;d3;d4;d5;[Imperative]{    d1 = a..b..c;    d2 = c..b..c;    d3 = a..c..b;    d4 = c..a..c;    d5 = c..2*c..c;}";
+            string code = @"
+b = 10.0;
+a = 0.0;
+d1;d2;d3;d4;d5;
+[Imperative]
+{
+    d1 = a..b..c;
+    d2 = c..b..c;
+    d3 = a..c..b;
+    d4 = c..a..c;
+    d5 = c..2*c..c;
+}
+";
             Object n1 = null;
             thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("d1", n1);

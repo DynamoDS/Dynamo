@@ -88,19 +88,11 @@ namespace Dynamo.Core
                 //Setup background worker
                 controller.DynamoViewModel.RunEnabled = false;
 
-                //Let's start
-                //It is possible that the worker is still cleaning up after the end of the last run
-                //so we have to spin waiting for it
-
                 //As we are the only place that is allowed to activate this, it is a trap door, so this is safe
                 lock (runControlMutex)
                 {
                     Validity.Assert(Running);
                 }
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-
-                Debug.WriteLine("About to enter spin lock");
                 RunAsync();
             }
             else
@@ -131,6 +123,14 @@ namespace Dynamo.Core
             }
             while (!cancelSet);
 
+            RunComplete();
+        }
+
+        /// <summary>
+        /// Method to group together all the tasks associated with an execution being complete
+        /// </summary>
+        public void RunComplete()
+        {
             controller.OnRunCompleted(this, false);
 
             lock (runControlMutex)

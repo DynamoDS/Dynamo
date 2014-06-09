@@ -35,7 +35,7 @@ namespace ProtoCore.DSASM
 
             for (int n = 0; n < AllocSize; ++n)
             {
-                Stack[n].optype = AddressType.Invalid;
+                Stack[n] = StackValue.BuildInvalid();
             }
         }
 
@@ -194,7 +194,7 @@ namespace ProtoCore.DSASM
 
         public int GetHashCode(StackValue value)
         {
-            if (AddressType.String == value.optype)
+            if (value.IsString)
             {
                 HeapElement he = ArrayUtils.GetHeapElement(value, core);
                 int length = he.VisibleSize;
@@ -295,7 +295,7 @@ namespace ProtoCore.DSASM
             {
                 for (int j = 0; j < Heaplist[i].GetAllocatedSize(); ++j)
                 {
-                    if (ProtoCore.DSASM.AddressType.Pointer == Heaplist[i].Stack[j].optype)
+                    if (Heaplist[i].Stack[j].IsPointer)
                     {
                         Heaplist[i].Stack[j].opdata += offset;
                     }
@@ -391,7 +391,7 @@ namespace ProtoCore.DSASM
 
         public bool IsTemporaryPointer(StackValue sv)
         {
-            if (!StackUtils.IsReferenceType(sv))
+            if (!sv.IsReferenceType)
             {
                 return false;
             }
@@ -403,7 +403,7 @@ namespace ProtoCore.DSASM
 
         public void IncRefCount(StackValue sv)
         {
-            if (!StackUtils.IsReferenceType(sv))
+            if (!sv.IsReferenceType)
             {
                 return;
             }
@@ -419,7 +419,7 @@ namespace ProtoCore.DSASM
 
         public void DecRefCount(StackValue sv)
         {
-            if (!StackUtils.IsReferenceType(sv))
+            if (!sv.IsReferenceType)
             {
                 return;
             }
@@ -439,7 +439,7 @@ namespace ProtoCore.DSASM
             for (int n = 0; n < ptrList.Length; ++n)
             {
                 StackValue svPtr = ptrList[n];
-                if (svPtr.optype != AddressType.Pointer && svPtr.optype != AddressType.ArrayPointer)
+                if (!svPtr.IsPointer && !svPtr.IsArray)
                 {
                     continue;
                 }
@@ -465,10 +465,10 @@ namespace ProtoCore.DSASM
                 if (hs.Refcount == 0)
                 {
                     // if it is of class type, first call its destructor before clean its members
-                    if(svPtr.optype == AddressType.Pointer)
+                    if(svPtr.IsPointer)
                         GCDisposeObject(ref svPtr, exe);
 
-                    if (svPtr.optype == AddressType.ArrayPointer && hs.Dict != null)
+                    if (svPtr.IsArray && hs.Dict != null)
                     {
                         foreach (var item in hs.Dict)
                         {
