@@ -84,6 +84,16 @@ namespace Dynamo
             IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
             IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
 
+            // register UnwrapElement method in ironpython
+            IronPythonEvaluator.EvaluationBegin += (a, b, scope, d, e) =>
+            {
+                var marshaler = new DataMarshaler();
+                marshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
+
+                Func<WrappedElement, object> unwrap = marshaler.Marshal;
+                scope.SetVariable("UnwrapElement", unwrap);
+            };
+
             Runner = new DynamoRunner_Revit(this);
         }
 
