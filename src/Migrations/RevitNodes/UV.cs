@@ -122,6 +122,7 @@ namespace Dynamo.Nodes
                 "dom[0][1]+Math.RandomList\n" +
                 "(ucount*vcount)\n" +
                 "*(dom[1][1]-dom[0][1]);");
+            codeBlockNode.SetAttribute("nickname", "Random UV");
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
