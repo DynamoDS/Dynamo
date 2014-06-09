@@ -757,20 +757,25 @@ namespace Dynamo.Views
             internal static readonly int HoverOverIndex = 1;
             internal static readonly int ClickedIndex = 2;
             internal static readonly int ActiveIndex = 3;
-            internal static readonly double ButtonHeight = 24.0;
+            internal static readonly double ButtonHeight = 30.0;
         }
 
         private void OnViewButtonMouseEnter(object sender, MouseEventArgs e)
         {
-            UpdateViewButtonStates();
+            UpdateViewButtonVisuals();
         }
 
         private void OnViewButtonMouseLeave(object sender, MouseEventArgs e)
         {
-            UpdateViewButtonStates();
+            UpdateViewButtonVisuals();
         }
 
         private void OnViewButtonMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            UpdateViewButtonVisuals();
+        }
+
+        private void OnViewButtonMouseUp(object sender, MouseButtonEventArgs e)
         {
             bool toggleToGeometryView = false;
             if ((sender as FrameworkElement).Name.Equals("geomsViewButton"))
@@ -781,15 +786,14 @@ namespace Dynamo.Views
             {
                 var isInGeometryView = dvm.CanNavigateBackground;
                 if (isInGeometryView != toggleToGeometryView)
+                {
                     dvm.ToggleCanNavigateBackground(null);
+                    UpdateViewButtonVisuals();
+                }
             }
         }
 
-        private void OnViewButtonMouseUp(object sender, MouseButtonEventArgs e)
-        {
-        }
-
-        internal void UpdateViewButtonStates()
+        internal void UpdateViewButtonVisuals()
         {
             bool isInGeometryView = false;
             if (dynSettings.Controller.DynamoViewModel.CanNavigateBackground)
@@ -801,14 +805,22 @@ namespace Dynamo.Views
             if (isInGeometryView)
             {
                 if (nodesViewButton.IsMouseOver)
+                {
                     nodesButtonState = ViewButton.HoverOverIndex;
+                    if (Mouse.LeftButton == MouseButtonState.Pressed)
+                        nodesButtonState = ViewButton.ClickedIndex;
+                }
 
                 geomsButtonState = ViewButton.ActiveIndex;
             }
             else
             {
                 if (geomsViewButton.IsMouseOver)
+                {
                     geomsButtonState = ViewButton.HoverOverIndex;
+                    if (Mouse.LeftButton == MouseButtonState.Pressed)
+                        geomsButtonState = ViewButton.ClickedIndex;
+                }
 
                 nodesButtonState = ViewButton.ActiveIndex;
             }
