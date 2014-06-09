@@ -131,9 +131,7 @@ namespace ProtoCore.DSASM
     public struct StackValue
     {
         public Int64 opdata;
-#if !OPDATA_UNIFY
         public double opdata_d;
-#endif
         public AddressType optype;
         public MetaData metaData;
 
@@ -148,9 +146,7 @@ namespace ProtoCore.DSASM
             StackValue newSv = new StackValue();
             newSv.optype = optype;
             newSv.opdata = opdata;
-#if !OPDATA_UNIFY
             newSv.opdata_d = opdata_d;
-#endif
             newSv.metaData = new MetaData { type = metaData.type };
             return newSv;
         }
@@ -205,11 +201,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-#if OPDATA_UNIFY
-                return BitConverter.Int64BitsToDouble(opdata);
-#else
                 return opdata_d;
-#endif
             }
         }
 
@@ -410,11 +402,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Double;
-#if OPDATA_UNIFY
-            value.opdata = BitConverter.DoubleToInt64Bits(data);
-#else
             value.opdata_d = data;
-#endif
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeDouble;
@@ -474,28 +462,25 @@ namespace ProtoCore.DSASM
             return value;
         }
 
-        public static StackValue BuildArrayKey(int rawArrayPtr, int index)
+        public static StackValue BuildArrayKey(int arrayPtr, int index)
         {
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
+            value.opdata = index;
+            value.opdata_d = arrayPtr;
 
-            if (index == Constants.kInvalidIndex || rawArrayPtr == Constants.kInvalidIndex)
-            {
-                value.opdata = Constants.kInvalidIndex;
-            }
-            else
-            {
-                // Array key information is encoded in 64bits opdata. 
-                //
-                // High 32 bits: array pointer
-                // Low 32 bits : array key
+            return value;
+        }
 
-                // TODO: find out a cleaner way to represent array key instead 
-                // of using this kind of hacking.
-                ulong key = (ulong)rawArrayPtr;
-                key = (key << 32) | (uint)index;
-                value.opdata = (long)key;
-            }
+        public static StackValue BuildArrayKey(StackValue array, int index)
+        {
+            StackValue value = new StackValue();
+            value.optype = AddressType.ArrayKey;
+            value.opdata = index;
+
+            Validity.Assert(array.IsArray);
+            value.opdata_d = (int)array.opdata;
+
             return value;
         }
 
@@ -737,32 +722,24 @@ namespace ProtoCore.DSASM
 
         /// <summary>
         /// Try to get the host array and key value from StackValue. The address
-        /// type of StackValue should be AddressType.ArrayKey, otherwise 
-        /// StackValue.Null will be returned.
+        /// type of StackValue should be AddressType.ArrayKey. 
         /// </summary>
-        /// <param name="array">Host array</param>
-        /// <param name="key">Key value</param>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        public bool TryGetArrayKey(out StackValue array, out int key)
+        public bool TryGetArrayKey(out StackValue array, out int index)
         {
             array = StackValue.Null;
-            key = Constants.kInvalidIndex;
+            index = Constants.kInvalidIndex;
 
-            if (!this.IsArrayKey)
+            if (!this.IsArrayKey || opdata == Constants.kInvalidIndex)
+            {
                 return false;
+            }
 
-            if (opdata == Constants.kInvalidIndex)
-                return false;
+            array = StackValue.BuildArrayPointer((int)RawDoubleValue);
+            index = (int)this.opdata;
 
-            // Array key information is encoded in 64bits opdata. 
-            // High 32 bits: array pointer
-            // Low 32 bits : array key
-            //
-            // TODO: find out a cleaner way to represent array key instead of
-            // using this kind of hacking.
-            var rawArrayPointer = ((ulong)opdata >> 32);
-            array = StackValue.BuildArrayPointer((long)rawArrayPointer);
-            key = (int)((ulong)opdata << 32 >> 32);
             return true;
         }
 

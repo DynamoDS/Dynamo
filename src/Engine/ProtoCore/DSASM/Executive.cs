@@ -5314,7 +5314,7 @@ namespace ProtoCore.DSASM
             {
                 if (he.VisibleSize > 0 || (he.Dict != null && he.Dict.Count > 0))
                 {
-                    key = StackValue.BuildArrayKey((int)array.opdata, 0);
+                    key = StackValue.BuildArrayKey(array, 0);
                 }
             }
             else if (!array.IsNull)

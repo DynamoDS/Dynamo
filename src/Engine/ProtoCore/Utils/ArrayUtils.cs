@@ -1273,7 +1273,7 @@ namespace ProtoCore.Utils
             if ((he.VisibleSize  > index + 1) ||
                 (he.Dict != null && he.Dict.Count + he.VisibleSize > index + 1))
             {
-                return StackValue.BuildArrayKey((int)array.opdata, index + 1); 
+                return StackValue.BuildArrayKey(array, index + 1);
             }
 
             return StackValue.Null;
