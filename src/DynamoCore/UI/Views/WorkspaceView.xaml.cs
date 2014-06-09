@@ -751,18 +751,75 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
-        private void OnButtonMouseEnter(object sender, MouseEventArgs e)
+        private struct ViewButton
         {
-            var imageButton = sender as Image;
-            var transform = imageButton.RenderTransform as TranslateTransform;
-            transform.Y = -24.0;
+            internal static readonly int NormalIndex = 0;
+            internal static readonly int HoverOverIndex = 1;
+            internal static readonly int ClickedIndex = 2;
+            internal static readonly int ActiveIndex = 3;
+            internal static readonly double ButtonHeight = 24.0;
         }
 
-        private void OnButtonMouseLeave(object sender, MouseEventArgs e)
+        private void OnViewButtonMouseEnter(object sender, MouseEventArgs e)
         {
-            var imageButton = sender as Image;
-            var transform = imageButton.RenderTransform as TranslateTransform;
-            transform.Y = 0.0;
+            UpdateViewButtonStates();
+        }
+
+        private void OnViewButtonMouseLeave(object sender, MouseEventArgs e)
+        {
+            UpdateViewButtonStates();
+        }
+
+        private void OnViewButtonMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            bool toggleToGeometryView = false;
+            if ((sender as FrameworkElement).Name.Equals("geomsViewButton"))
+                toggleToGeometryView = true;
+
+            var dvm = dynSettings.Controller.DynamoViewModel;
+            if (dvm.CanToggleCanNavigateBackground(null))
+            {
+                var isInGeometryView = dvm.CanNavigateBackground;
+                if (isInGeometryView != toggleToGeometryView)
+                    dvm.ToggleCanNavigateBackground(null);
+            }
+        }
+
+        private void OnViewButtonMouseUp(object sender, MouseButtonEventArgs e)
+        {
+        }
+
+        internal void UpdateViewButtonStates()
+        {
+            bool isInGeometryView = false;
+            if (dynSettings.Controller.DynamoViewModel.CanNavigateBackground)
+                isInGeometryView = true;
+
+            int geomsButtonState = ViewButton.NormalIndex;
+            int nodesButtonState = ViewButton.NormalIndex;
+
+            if (isInGeometryView)
+            {
+                if (nodesViewButton.IsMouseOver)
+                    nodesButtonState = ViewButton.HoverOverIndex;
+
+                geomsButtonState = ViewButton.ActiveIndex;
+            }
+            else
+            {
+                if (geomsViewButton.IsMouseOver)
+                    geomsButtonState = ViewButton.HoverOverIndex;
+
+                nodesButtonState = ViewButton.ActiveIndex;
+            }
+
+            // Update geometry view button visual.
+            var transform = geomsViewButton.RenderTransform as TranslateTransform;
+            transform.Y = -1.0 * geomsButtonState * ViewButton.ButtonHeight;
+
+            // Update node view button visual.
+            transform = nodesViewButton.RenderTransform as TranslateTransform;
+            transform.Y = -1.0 * nodesButtonState * ViewButton.ButtonHeight;
         }
     }
 }

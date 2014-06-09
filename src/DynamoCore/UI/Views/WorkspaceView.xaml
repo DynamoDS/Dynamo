@@ -110,12 +110,15 @@
                 <Canvas.Clip>
                     <RectangleGeometry Rect="0,0,64,24" />
                 </Canvas.Clip>
-                <Image Width="64"
-                       MouseEnter="OnButtonMouseEnter"
-                       MouseLeave="OnButtonMouseLeave"
+                <Image Name="geomsViewButton"
+                       Width="64"
+                       MouseEnter="OnViewButtonMouseEnter"
+                       MouseLeave="OnViewButtonMouseLeave"
+                       MouseLeftButtonDown="OnViewButtonMouseDown"
+                       MouseLeftButtonUp="OnViewButtonMouseUp"
                        Source="/DynamoCore;component/UI/Images/canvas_button_geom_view.png">
                     <Image.RenderTransform>
-                        <TranslateTransform></TranslateTransform>
+                        <TranslateTransform />
                     </Image.RenderTransform>
                 </Image>
             </Canvas>
@@ -125,12 +128,15 @@
                 <Canvas.Clip>
                     <RectangleGeometry Rect="0,0,64,24" />
                 </Canvas.Clip>
-                <Image Width="64"
-                       MouseEnter="OnButtonMouseEnter"
-                       MouseLeave="OnButtonMouseLeave"
+                <Image Name="nodesViewButton"
+                       Width="64"
+                       MouseEnter="OnViewButtonMouseEnter"
+                       MouseLeave="OnViewButtonMouseLeave"
+                       MouseLeftButtonDown="OnViewButtonMouseDown"
+                       MouseLeftButtonUp="OnViewButtonMouseUp"
                        Source="/DynamoCore;component/UI/Images/canvas_button_node_view.png">
                     <Image.RenderTransform>
-                        <TranslateTransform></TranslateTransform>
+                        <TranslateTransform />
                     </Image.RenderTransform>
                 </Image>
             </Canvas>
