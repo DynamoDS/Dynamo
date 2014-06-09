@@ -751,13 +751,9 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
-        private struct ViewButton
+        private enum ViewButtonState
         {
-            internal static readonly int NormalIndex = 0;
-            internal static readonly int HoverOverIndex = 1;
-            internal static readonly int ClickedIndex = 2;
-            internal static readonly int ActiveIndex = 3;
-            internal static readonly double ButtonHeight = 30.0;
+            NormalIndex, HoverOverIndex, ClickedIndex, ActiveIndex
         }
 
         private void OnViewButtonMouseEnter(object sender, MouseEventArgs e)
@@ -799,39 +795,43 @@ namespace Dynamo.Views
             if (dynSettings.Controller.DynamoViewModel.CanNavigateBackground)
                 isInGeometryView = true;
 
-            int geomsButtonState = ViewButton.NormalIndex;
-            int nodesButtonState = ViewButton.NormalIndex;
+            ViewButtonState geomsButtonState = ViewButtonState.NormalIndex;
+            ViewButtonState nodesButtonState = ViewButtonState.NormalIndex;
 
             if (isInGeometryView)
             {
                 if (nodesViewButton.IsMouseOver)
                 {
-                    nodesButtonState = ViewButton.HoverOverIndex;
+                    nodesButtonState = ViewButtonState.HoverOverIndex;
                     if (Mouse.LeftButton == MouseButtonState.Pressed)
-                        nodesButtonState = ViewButton.ClickedIndex;
+                        nodesButtonState = ViewButtonState.ClickedIndex;
                 }
 
-                geomsButtonState = ViewButton.ActiveIndex;
+                geomsButtonState = ViewButtonState.ActiveIndex;
             }
             else
             {
                 if (geomsViewButton.IsMouseOver)
                 {
-                    geomsButtonState = ViewButton.HoverOverIndex;
+                    geomsButtonState = ViewButtonState.HoverOverIndex;
                     if (Mouse.LeftButton == MouseButtonState.Pressed)
-                        geomsButtonState = ViewButton.ClickedIndex;
+                        geomsButtonState = ViewButtonState.ClickedIndex;
                 }
 
-                nodesButtonState = ViewButton.ActiveIndex;
+                nodesButtonState = ViewButtonState.ActiveIndex;
             }
+
+            // Button height in reversed since we are 
+            // translating the image upward instead of downward.
+            double invButtonHeight = -1.0 * Configurations.ButtonHeight;
 
             // Update geometry view button visual.
             var transform = geomsViewButton.RenderTransform as TranslateTransform;
-            transform.Y = -1.0 * geomsButtonState * ViewButton.ButtonHeight;
+            transform.Y = ((int)geomsButtonState) * invButtonHeight;
 
             // Update node view button visual.
             transform = nodesViewButton.RenderTransform as TranslateTransform;
-            transform.Y = -1.0 * nodesButtonState * ViewButton.ButtonHeight;
+            transform.Y = ((int)nodesButtonState) * invButtonHeight;
         }
     }
 }
