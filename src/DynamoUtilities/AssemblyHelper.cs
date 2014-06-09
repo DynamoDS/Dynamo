@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using DynamoUtilities;
 
 namespace Dynamo.Utilities
 {
@@ -12,14 +13,23 @@ namespace Dynamo.Utilities
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
-            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
-            if (!File.Exists(assemblyPath))
-                return null;
-            Assembly assembly = Assembly.LoadFrom(assemblyPath);
-            return assembly;
+            // First check the core path
+            string assemblyPath = Path.Combine(DynamoPaths.Core, new AssemblyName(args.Name).Name + ".dll");
+            if (File.Exists(assemblyPath))
+            {
+                return Assembly.LoadFrom(assemblyPath);
+            }
+
+            // Then check the dll path
+            assemblyPath = Path.Combine(DynamoPaths.Asm, new AssemblyName(args.Name).Name + ".dll");
+            if (File.Exists(assemblyPath))
+            {
+                return Assembly.LoadFrom(assemblyPath);
+            }
+
+            return null;
         }
 
         public static Version GetDynamoVersion()
