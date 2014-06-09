@@ -1074,6 +1074,19 @@ namespace Dynamo.Controls
         }
     }
 
+    public class NavigationToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var canNavigateBackground = ((bool)value);
+            return (canNavigateBackground ? 0.1 : 1.0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class LacingToVisibilityConverter : IValueConverter
     {

@@ -46,6 +46,12 @@
                                     <Canvas.Background>
                                         <SolidColorBrush Color="Transparent"/>
                                     </Canvas.Background>
+                                    <Canvas.Opacity>
+                                        <Binding Path="DataContext.CanNavigateBackground"
+                                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                                                 Converter="{StaticResource NavigationToOpacityConverter}">
+                                        </Binding>
+                                    </Canvas.Opacity>
                                 </controls:DragCanvas>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
