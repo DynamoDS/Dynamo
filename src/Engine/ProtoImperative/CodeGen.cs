@@ -1701,8 +1701,7 @@ namespace ProtoImperative
                     DfsTraverse(elseifNode.Expr, ref inferedType, false, graphNode);
 
                     EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                    opCX.optype = ProtoCore.DSASM.AddressType.Register;
-                    opCX.opdata = (int)ProtoCore.DSASM.Registers.CX;
+                    opCX = StackValue.BuildRegister(Registers.CX);
                     EmitPop(opCX, Constants.kGlobalScope);
 
                     L1 = pc + 1;

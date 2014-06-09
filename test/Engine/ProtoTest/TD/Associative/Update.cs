@@ -372,7 +372,7 @@ t1 = 5.5;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
             thisTest.Verify("b", 3, 0);
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
         }
 
         [Test]
@@ -442,11 +442,11 @@ r1 = true;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification         
-            Assert.IsTrue(mirror.GetValue("p2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("q2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("s2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("p2").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("q2").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("s2").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.IsNull);
 
         }
 
@@ -472,8 +472,8 @@ t1 = A.A();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification      
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.IsNull);
 
         }
 
@@ -612,7 +612,56 @@ a 	 = MyPoint.ByAngleRadius(5.0);
             thisTest.Verify("aX", 1.0);
             thisTest.Verify("aY", 5.0);
 
-            /*            //ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T017_Update_Of_Class_Instances.ds");            string src =                Path.GetFullPath(string.Format("{0}{1}", testCasePath, "T017_Update_Of_Class_Instances.ds"));                         fsr.LoadAndPreStart(src, runnerConfig);            ProtoCore.CodeModel.CodePoint cp1 = new ProtoCore.CodeModel.CodePoint            {                CharNo = 25,                LineNo = 56,                SourceLocation = new ProtoCore.CodeModel.CodeFile                {                    FilePath = Path.GetFullPath(src)                }            };            ProtoCore.CodeModel.CodePoint cp2 = new ProtoCore.CodeModel.CodePoint            {                CharNo = 25,                LineNo = 57,                SourceLocation = new ProtoCore.CodeModel.CodeFile                {                    FilePath = Path.GetFullPath(src)                }            };            ProtoCore.CodeModel.CodePoint cp3 = new ProtoCore.CodeModel.CodePoint            {                CharNo = 25,                LineNo = 58,                SourceLocation = new ProtoCore.CodeModel.CodeFile                {                    FilePath = Path.GetFullPath(src)                }            };            fsr.ToggleBreakpoint(cp1);            ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();            thisTest.DebugModeVerification(vms.mirror, "aX", 1.0);            thisTest.DebugModeVerification(vms.mirror, "aY", 2);            fsr.ToggleBreakpoint(cp2);            fsr.Run();            thisTest.DebugModeVerification(vms.mirror, "aX", 1);            thisTest.DebugModeVerification(vms.mirror, "aY", 2.0);            fsr.ToggleBreakpoint(cp3);            fsr.Run();                      thisTest.DebugModeVerification(vms.mirror, "aX", 4.0);            thisTest.DebugModeVerification(vms.mirror, "aY", 2);            fsr.Run();            thisTest.DebugModeVerification(vms.mirror, "aX", 1);            thisTest.DebugModeVerification(vms.mirror, "aY", 5.0);            */
+            /*
+            //ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T017_Update_Of_Class_Instances.ds");
+            string src =
+                Path.GetFullPath(string.Format("{0}{1}", testCasePath, "T017_Update_Of_Class_Instances.ds")); 
+            
+            fsr.LoadAndPreStart(src, runnerConfig);
+            ProtoCore.CodeModel.CodePoint cp1 = new ProtoCore.CodeModel.CodePoint
+            {
+                CharNo = 25,
+                LineNo = 56,
+                SourceLocation = new ProtoCore.CodeModel.CodeFile
+                {
+                    FilePath = Path.GetFullPath(src)
+                }
+            };
+            ProtoCore.CodeModel.CodePoint cp2 = new ProtoCore.CodeModel.CodePoint
+            {
+                CharNo = 25,
+                LineNo = 57,
+                SourceLocation = new ProtoCore.CodeModel.CodeFile
+                {
+                    FilePath = Path.GetFullPath(src)
+                }
+            };
+            ProtoCore.CodeModel.CodePoint cp3 = new ProtoCore.CodeModel.CodePoint
+            {
+                CharNo = 25,
+                LineNo = 58,
+                SourceLocation = new ProtoCore.CodeModel.CodeFile
+                {
+                    FilePath = Path.GetFullPath(src)
+                }
+            };
+            fsr.ToggleBreakpoint(cp1);
+            ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();
+            thisTest.DebugModeVerification(vms.mirror, "aX", 1.0);
+            thisTest.DebugModeVerification(vms.mirror, "aY", 2);
+            fsr.ToggleBreakpoint(cp2);
+            fsr.Run();
+            thisTest.DebugModeVerification(vms.mirror, "aX", 1);
+            thisTest.DebugModeVerification(vms.mirror, "aY", 2.0);
+            fsr.ToggleBreakpoint(cp3);
+            fsr.Run();
+          
+            thisTest.DebugModeVerification(vms.mirror, "aX", 4.0);
+            thisTest.DebugModeVerification(vms.mirror, "aY", 2);
+            fsr.Run();
+            thisTest.DebugModeVerification(vms.mirror, "aX", 1);
+            thisTest.DebugModeVerification(vms.mirror, "aY", 5.0);
+            */
         }
 
         [Test]
@@ -1809,7 +1858,17 @@ x2;
         public void T031_Defect_1467302()
         {
             String code =
-@"def foo ( a : int[] ) {    b = a;    b[0] = b[1] + 1;    return = b;}a = { 0, 1, 2};e1 = foo(a);a = { 1, 2};";
+@"
+def foo ( a : int[] ) 
+{
+    b = a;
+    b[0] = b[1] + 1;
+    return = b;
+}
+a = { 0, 1, 2};
+e1 = foo(a);
+a = { 1, 2};
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1821,7 +1880,18 @@ x2;
         public void T031_Defect_1467302_2()
         {
             String code =
-@"def foo ( a : int[] ) {    b = a;    b[0] = b[1] + 1;    return = b;}i = 1..2;a = { 0, 1, 2, 3};e1 = foo(a[i]);i = 0..2;";
+@"
+def foo ( a : int[] ) 
+{
+    b = a;
+    b[0] = b[1] + 1;
+    return = b;
+}
+i = 1..2;
+a = { 0, 1, 2, 3};
+e1 = foo(a[i]);
+i = 0..2;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1833,7 +1903,21 @@ x2;
         public void T031_Defect_1467302_3()
         {
             String code =
-@"class A{    b : int[] = { 0, 1, 2, 3 };        def foo (i:int )     {        b[i] = b[i] + 1;        return = b;    }}i = 1..2;e1 = A.A().foo(i);i = 0..2;";
+@"
+class A
+{
+    b : int[] = { 0, 1, 2, 3 };
+    
+    def foo (i:int ) 
+    {
+        b[i] = b[i] + 1;
+        return = b;
+    }
+}
+i = 1..2;
+e1 = A.A().foo(i);
+i = 0..2;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg); 
@@ -1858,7 +1942,21 @@ x2;
         public void T032_Defect_1467335_Update_In_class_Constructor()
         {
             String code =
-@"class A{    b : int[] = { 0, 1, 2, 3 };        def foo (i:int )     {        b[i] = b[i] + 1;        return = b;    }}i = 1..2;e1 = A.A().foo(i);i = 0..2;";
+@"
+class A
+{
+    b : int[] = { 0, 1, 2, 3 };
+    
+    def foo (i:int ) 
+    {
+        b[i] = b[i] + 1;
+        return = b;
+    }
+}
+i = 1..2;
+e1 = A.A().foo(i);
+i = 0..2;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1883,7 +1981,31 @@ x2;
         public void T033_Defect_1467187_Update_In_class_collection_property()
         {
             String code =
-@"class Point{    X : double;        constructor ByCoordinates( x : double )    {        X = x;        } def foo ( y ){    [Imperative]    {        X = y + 1;    }    return = true;}        }p1 = Point.ByCoordinates(1);test = p1.X;dummy = p1.foo(2);//expected test to update to '3'";
+@"
+class Point
+{
+    X : double;
+    
+    constructor ByCoordinates( x : double )
+    {
+        X = x;
+    
+    } 
+def foo ( y )
+{
+    [Imperative]
+    {
+        X = y + 1;
+    }
+    return = true;
+}    
+    
+}
+p1 = Point.ByCoordinates(1);
+test = p1.X;
+dummy = p1.foo(2);
+//expected test to update to '3'
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1895,7 +2017,21 @@ x2;
         public void T033_Defect_1467187_Update_In_class_collection_property_2()
         {
             String code =
-@"class B{        a1 : int;    a2 : double[];    constructor B (a:int, b : double[])        {                a1 = a;        a2 = b;    }}b1 = B.B ( 1, {1.0, 2.0} );test1 = b1.a2[0];b1.a2[0] = b1.a2[1];";
+@"
+class B
+{    
+    a1 : int;
+    a2 : double[];
+    constructor B (a:int, b : double[])    
+    {        
+        a1 = a;
+        a2 = b;
+    }
+}
+b1 = B.B ( 1, {1.0, 2.0} );
+test1 = b1.a2[0];
+b1.a2[0] = b1.a2[1];
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1907,7 +2043,37 @@ x2;
         public void T033_Defect_1467187_Update_In_class_collection_property_3()
         {
             String code =
-@"class Point{    X : double[];        constructor ByCoordinates( x : double[] )    {        X = x;        }     def foo ( y :double[])    {        X = y + 1;        [Imperative]        {           count = 0;           for (i in y)           {               X[count] = y[count] + X[count];               count = count + 1;           }        }        return = true;    }        }p1 = Point.ByCoordinates({0,0,0,0});test = p1.X;dummy = p1.foo({1,1,1,1});p1.X[0..1] = -1;";
+@"
+class Point
+{
+    X : double[];
+    
+    constructor ByCoordinates( x : double[] )
+    {
+        X = x;
+    
+    } 
+    def foo ( y :double[])
+    {
+        X = y + 1;
+        [Imperative]
+        {
+           count = 0;
+           for (i in y)
+           {
+               X[count] = y[count] + X[count];
+               count = count + 1;
+           }
+        }
+        return = true;
+    }    
+    
+}
+p1 = Point.ByCoordinates({0,0,0,0});
+test = p1.X;
+dummy = p1.foo({1,1,1,1});
+p1.X[0..1] = -1;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467401 Rev 4347 : Update issue with collection property in nested imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1918,7 +2084,15 @@ x2;
         [Category("Update")]
         public void T034_UpdaetStaticProperty()
         {
-            string code = @"class Base{    static x : int[];}b = Base.Base();t = b.x;               // x is a static propertyBase.x = { 5.2, 3.9 }; // expect t = {5, 4}, but t = {null}";
+            string code = @"
+class Base
+{
+    static x : int[];
+}
+b = Base.Base();
+t = b.x;               // x is a static property
+Base.x = { 5.2, 3.9 }; // expect t = {5, 4}, but t = {null}
+";
             string errmsg = "DNL-1467431 Modify static property doesn't trigger update";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t", new object[] { 5, 4 });
@@ -1928,7 +2102,22 @@ x2;
         [Category("Update")]
         public void T035_FalseCyclicDependency()
         {
-            string code = @"def foo(){    a = b;    return = null;}def bar(){    b = a;    return = null;}a = 1;b = 0;r = bar();q = a;";
+            string code = @"
+def foo()
+{
+    a = b;
+    return = null;
+}
+def bar()
+{
+    b = a;
+    return = null;
+}
+a = 1;
+b = 0;
+r = bar();
+q = a;
+";
             string errmsg = "DNL-1467336 Rev 3971 :global and local scope identifiers of same name causing cyclic dependency issue";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("q", 1);

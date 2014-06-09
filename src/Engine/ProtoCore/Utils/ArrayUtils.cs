@@ -20,7 +20,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static ClassNode GetGreatestCommonSubclassForArray(StackValue array, Core core)
         {
-            if (!StackUtils.IsArray(array))
+            if (!array.IsArray)
                 throw new ArgumentException("The stack value provided was not an array");
 
             Dictionary<ClassNode, int> typeStats = GetTypeStatisticsForArray(array, core);
@@ -176,7 +176,7 @@ namespace ProtoCore.Utils
 
         public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue array, Core core)
         {
-            if (!StackUtils.IsArray(array))
+            if (!array.IsArray)
             {
                 Dictionary<int, StackValue> ret = new Dictionary<int, StackValue>();
                 ret.Add((int)array.metaData.type, array);
@@ -207,7 +207,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static Dictionary<ClassNode, int> GetTypeStatisticsForLayer(StackValue array, Core core)
         {
-            if (!StackUtils.IsArray(array))
+            if (!array.IsArray)
             {
                 Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
                 ret.Add(core.ClassTable.ClassNodes[(int)array.metaData.type], 1);
@@ -241,7 +241,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static Dictionary<ClassNode, int> GetTypeStatisticsForArray(StackValue array, Core core)
         {
-            if (!StackUtils.IsArray(array))
+            if (!array.IsArray)
             {
                 Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
                 ret.Add(core.ClassTable.ClassNodes[(int) array.metaData.type], 1);
@@ -257,7 +257,7 @@ namespace ProtoCore.Utils
             {
                 StackValue sv = heapElement.Stack[i];
 
-                if (sv.optype == AddressType.ArrayPointer)
+                if (sv.IsArray)
                 {
                     //Recurse
                     Dictionary<ClassNode, int> subLayer = GetTypeStatisticsForArray(sv, core);
@@ -289,7 +289,7 @@ namespace ProtoCore.Utils
             if (tracer > RECURSION_LIMIT)
                 throw new CompilerInternalException("Internal Recursion limit exceeded in Rank Check - Possible heap corruption {3317D4F6-4758-4C19-9680-75B68DA0436D}");
 
-            if (!StackUtils.IsArray(array))
+            if (!array.IsArray)
                 return 0;
             //throw new ArgumentException("The stack value provided was not an array");
 
@@ -305,7 +305,7 @@ namespace ProtoCore.Utils
             {
                 StackValue sv = heapElement.Stack[i];
 
-                if (sv.optype == AddressType.ArrayPointer)
+                if (sv.IsArray)
                 {
                     int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
 
@@ -318,7 +318,7 @@ namespace ProtoCore.Utils
             {
                 foreach (var sv in dict.Values)
                 {
-                    if (sv.optype == AddressType.ArrayPointer)
+                    if (sv.IsArray)
                     {
                         int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
                         largestSub = Math.Max(subArrayRank, largestSub);
@@ -343,13 +343,13 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static bool ContainsDoubleElement(StackValue sv, Core core)
         {
-            if (!StackUtils.IsArray(sv))
+            if (!sv.IsArray)
                 return core.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
             StackValue[] svArray = core.Rmem.GetArrayElements(sv);
             foreach (var item in svArray)
             {
-                if (StackUtils.IsArray(item) && ContainsDoubleElement(item, core))
+                if (item.IsArray && ContainsDoubleElement(item, core))
                     return true;
 
                 if (core.TypeSystem.GetType(item) == (int)PrimitiveType.kTypeDouble)
@@ -370,7 +370,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static bool ContainsNonArrayElement(StackValue sv, Core core)
         {
-            if (!StackUtils.IsArray(sv))
+            if (!sv.IsArray)
                 return true;
 
             StackValue[] svArray = core.Rmem.GetArrayElements(sv);
@@ -391,9 +391,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static HeapElement GetHeapElement(StackValue heapObject, Core core)
         {
-            if (heapObject.optype != AddressType.ArrayPointer && 
-                heapObject.optype != AddressType.String &&
-                heapObject.optype != AddressType.Pointer)
+            if (!heapObject.IsArray && !heapObject.IsString && !heapObject.IsPointer)
             {
                 return null;
             }
@@ -403,7 +401,7 @@ namespace ProtoCore.Utils
 
         public static bool IsUniform(StackValue sv, Core core)
         {
-            if (!StackUtils.IsArray(sv))
+            if (!sv.IsArray)
                 return false;
 
             if (Utils.ArrayUtils.GetTypeStatisticsForArray(sv, core).Count != 1)
@@ -461,7 +459,7 @@ namespace ProtoCore.Utils
         /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, Core core)
         {
-            if (AddressType.ArrayPointer != svArray.optype)
+            if (!svArray.IsArray)
             {
                 return false;
             }
@@ -474,7 +472,7 @@ namespace ProtoCore.Utils
                 return false;
             }
 
-            while (StackUtils.IsArray(core.Rmem.Heap.Heaplist[ptr].Stack[0]))
+            while (core.Rmem.Heap.Heaplist[ptr].Stack[0].IsArray)
             {
 
                 ptr = (int)core.Rmem.Heap.Heaplist[ptr].Stack[0].opdata;
@@ -486,9 +484,7 @@ namespace ProtoCore.Utils
                 }
             }
 
-            sv.optype = core.Rmem.Heap.Heaplist[ptr].Stack[0].optype;
-            sv.opdata = core.Rmem.Heap.Heaplist[ptr].Stack[0].opdata;
-            sv.metaData = core.Rmem.Heap.Heaplist[ptr].Stack[0].metaData;
+            sv = core.Rmem.Heap.Heaplist[ptr].Stack[0].ShallowClone();
             return true;
         }
 
@@ -500,8 +496,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static int GetElementSize(StackValue array, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
-            if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
+            Validity.Assert(array.IsArray || array.IsString);
+            if (!array.IsArray && !array.IsString)
             {
                 return Constants.kInvalidIndex;
             }
@@ -511,8 +507,8 @@ namespace ProtoCore.Utils
 
         public static int GetValueSize(StackValue array, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array));
-            if (!StackUtils.IsArray(array))
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return Constants.kInvalidIndex;
             }
@@ -529,8 +525,8 @@ namespace ProtoCore.Utils
 
         public static int GetFullSize(StackValue array, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array));
-            if (!StackUtils.IsArray(array))
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return Constants.kInvalidIndex;
             }
@@ -579,7 +575,7 @@ namespace ProtoCore.Utils
             foreach (var index in indices)
             {
                 int length = 1;
-                if (StackUtils.IsArray(index))
+                if (index.IsArray)
                 {
                     StackValue[] flattenValues = GetFlattenValue(index, core);
                     allFlattenValues.Add(flattenValues);
@@ -613,14 +609,14 @@ namespace ProtoCore.Utils
                 {
                     StackValue index = indices[i];
                     StackValue[] values = null;
-                    if (StackUtils.IsArray(index))
+                    if (index.IsArray)
                     {
                         values = allFlattenValues[i];
                     }
 
                     if (1 == zipLength)
                     {
-                        if (AddressType.ArrayPointer == index.optype)
+                        if (index.IsArray)
                         {
                             zippedIndices[0][i] = values[0];
                         }
@@ -652,8 +648,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
-            if (StackUtils.IsString(array) && value.optype != AddressType.Char)
+            Validity.Assert(array.IsArray || array.IsString);
+            if (array.IsString && !value.IsChar)
             {
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, RuntimeData.WarningMessage.kAssignNonCharacterToString);
                 return StackValue.Null;
@@ -680,11 +676,11 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, StackValue index, StackValue value, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
+            Validity.Assert(array.IsArray || array.IsString);
 
-            if (StackUtils.IsNumeric(index))
+            if (index.IsNumeric)
             {
-                index = index.AsInt();
+                index = index.ToInteger();
                 return SetValueForIndex(array, (int)index.opdata, value, core);
             }
             else
@@ -722,7 +718,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndices(StackValue array, StackValue[] indices, StackValue value, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
+            Validity.Assert(array.IsArray || array.IsString);
 
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -731,9 +727,9 @@ namespace ProtoCore.Utils
 
                 StackValue subArray;
 
-                if (StackUtils.IsNumeric(index))
+                if (index.IsNumeric)
                 {
-                    index = index.AsInt();
+                    index = index.ToInteger();
                     int absIndex = he.ExpandByAcessingAt((int)index.opdata);
                     subArray = he.Stack[absIndex];
                 }
@@ -743,7 +739,7 @@ namespace ProtoCore.Utils
                 }
 
                 // auto-promotion
-                if (!StackUtils.IsArray(subArray))
+                if (!subArray.IsArray)
                 {
                     subArray = HeapUtils.StoreArray(new StackValue[] { subArray }, null, core);
                     GCUtils.GCRetain(subArray, core);
@@ -786,7 +782,7 @@ namespace ProtoCore.Utils
                 t.rank = t.rank - 1;
             }
 
-            if (value.optype == AddressType.ArrayPointer)
+            if (value.IsArray)
             {
                 // Replication happens on both side.
                 HeapElement dataHeapElement = GetHeapElement(value, core);
@@ -830,8 +826,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, int index, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
-            if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
+            Validity.Assert(array.IsArray || array.IsString);
+            if (!array.IsArray && !array.IsString)
             {
                 return StackValue.Null;
             }
@@ -851,18 +847,18 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, StackValue index, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
-            if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
+            Validity.Assert(array.IsArray || array.IsString);
+            if (!array.IsArray && !array.IsString)
             {
                 return StackValue.Null;
             }
 
-            if (StackUtils.IsNumeric(index))
+            if (index.IsNumeric)
             {
-                index = index.AsInt();
+                index = index.ToInteger();
                 return GetValueFromIndex(array, (int)index.opdata, core);
             }
-            else if (index.optype == AddressType.ArrayKey)
+            else if (index.IsArrayKey)
             {
                 int fullIndex = (int)index.opdata;
                 HeapElement he = GetHeapElement(array, core);
@@ -918,18 +914,18 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
+            Validity.Assert(array.IsArray || array.IsString);
             for (int i = 0; i < indices.Length - 1; ++i)
             {
                 StackValue index = indices[i];
-                if (StackUtils.IsNumeric(index))
+                if (index.IsNumeric)
                 {
-                    index = index.AsInt();
+                    index = index.ToInteger();
                     array = GetValueFromIndex(array, (int)index.opdata, core);
                 }
                 else
                 {
-                    if (array.optype != AddressType.ArrayPointer)
+                    if (!array.IsArray)
                     {
                         core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                         return StackValue.Null;
@@ -937,7 +933,7 @@ namespace ProtoCore.Utils
                     array = GetValueFromIndex(array, index, core);
                 }
 
-                if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
+                if (!array.IsArray && !array.IsString)
                 {
                     core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                     return StackValue.Null;
@@ -961,7 +957,7 @@ namespace ProtoCore.Utils
             {
                 return array;
             }
-            else if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
+            else if (!array.IsArray && !array.IsString)
             {
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                 return StackValue.Null;
@@ -1015,8 +1011,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue CopyArray(StackValue array, Type type, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array));
-            if (!StackUtils.IsArray(array))
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return StackValue.Null;
             }
@@ -1076,8 +1072,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static List<T> GetValues<T>(StackValue array, Core core, Func<StackValue, T> converter)
         {
-            Validity.Assert(StackUtils.IsArray(array));
-            if (!StackUtils.IsArray(array))
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return null;
             }
@@ -1105,7 +1101,7 @@ namespace ProtoCore.Utils
             Queue<StackValue> workingSet = new Queue<StackValue>();
             List<StackValue> flattenValues = new List<StackValue>();
 
-            if (!StackUtils.IsArray(array))
+            if (!array.IsArray)
             {
                 return null;
             }
@@ -1119,7 +1115,7 @@ namespace ProtoCore.Utils
                 for (int i = 0; i < he.VisibleSize; ++i)
                 {
                     StackValue value = he.Stack[i];
-                    if (StackUtils.IsArray(value))
+                    if (value.IsArray)
                     {
                         workingSet.Enqueue(value);
                     }
@@ -1133,7 +1129,7 @@ namespace ProtoCore.Utils
                 {
                     foreach (var value in he.Dict.Values)
                     {
-                        if (StackUtils.IsArray(value))
+                        if (value.IsArray)
                         {
                             workingSet.Enqueue(value);
                         }
@@ -1156,8 +1152,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue[] GetKeys(StackValue array, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array));
-            if (!StackUtils.IsArray(array))
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return null;
             }
@@ -1190,16 +1186,16 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static bool ContainsKey(StackValue array, StackValue key, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array));
-            if (!StackUtils.IsArray(array))
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return false;
             }
 
             HeapElement he = GetHeapElement(array, core);
-            if (StackUtils.IsNumeric(key))
+            if (key.IsNumeric)
             {
-                long index = key.AsInt().opdata;
+                long index = key.ToInteger().opdata;
                 if (index < 0)
                 {
                     index = index + he.VisibleSize;
@@ -1214,17 +1210,17 @@ namespace ProtoCore.Utils
 
         public static bool RemoveKey(StackValue array, StackValue key, Core core)
         {
-            Validity.Assert(StackUtils.IsArray(array));
-            if (!StackUtils.IsArray(array))
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return false;
             }
 
             HeapElement he = GetHeapElement(array, core);
 
-            if (StackUtils.IsNumeric(key))
+            if (key.IsNumeric)
             {
-                long index = key.AsInt().opdata;
+                long index = key.ToInteger().opdata;
                 if (index < 0)
                 {
                     index = index + he.VisibleSize;
@@ -1265,24 +1261,19 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetNextKey(StackValue key, Core core)
         {
-            if (StackUtils.IsNull(key) || 
-                key.optype != AddressType.ArrayKey ||
-                key.opdata < 0 ||
-                key.opdata_d < 0)
+            StackValue array;
+            int index;
+
+            if (!key.TryGetArrayKey(out array, out index))
             {
                 return StackValue.Null;
             }
 
-            int ptr = (int)key.opdata_d;
-            int index = (int) key.opdata;
-
-            HeapElement he = core.Heap.Heaplist[ptr];
+            HeapElement he = GetHeapElement(array, core);
             if ((he.VisibleSize  > index + 1) ||
                 (he.Dict != null && he.Dict.Count + he.VisibleSize > index + 1))
             {
-                StackValue newKey = key;
-                newKey.opdata = newKey.opdata + 1;
-                return newKey;
+                return StackValue.BuildArrayKey(array, index + 1);
             }
 
             return StackValue.Null;

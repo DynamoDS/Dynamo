@@ -140,6 +140,9 @@
         <KeyBinding Key="D0"
                     Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="P"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.TogglePanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
     </Window.InputBindings>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True" PreviewMouseDown="Window_PreviewMouseDown" PreviewMouseUp="Window_PreviewMouseUp">
@@ -295,6 +298,7 @@
                         <MenuItem Header="_Enable usability data reporting"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   Focusable="False"/>
                         <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
@@ -993,9 +997,6 @@
                     </TabControl.ContentTemplate>
 
                 </TabControl>
-                <Grid Name="InfoBubbleGrid"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left" />
             </Grid>
 
         </Border>
@@ -1101,9 +1102,9 @@
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                    <!--<Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
 
-                      Command="{Binding CancelRunCommand}" Margin="5"/>
+                      Command="{Binding CancelRunCommand}" Margin="5"/>-->
 
                     <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"

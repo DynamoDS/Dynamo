@@ -334,7 +334,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// The collection of Nodes in the model.
+        /// Returns a shallow copy of the collection of Nodes in the model.
         /// </summary>
         public List<NodeModel> Nodes
         {
@@ -1401,6 +1401,16 @@ namespace Dynamo.Models
                     }
 
                     el.DisableReporting();
+
+                    // This is to fix MAGN-3648. Method reference in CBN that gets 
+                    // loaded before method definition causes a CBN to be left in 
+                    // a warning state. This is to clear such warnings and set the 
+                    // node to "Dead" state (correct value of which will be set 
+                    // later on with a call to "EnableReporting" below). Please 
+                    // refer to the defect for details and other possible fixes.
+                    // 
+                    if (el.State == ElementState.Warning && (el is CodeBlockNodeModel))
+                        el.State = ElementState.Dead; // Condition to fix MAGN-3648
 
                     el.IsVisible = isVisible;
                     el.IsUpstreamVisible = isUpstreamVisible;

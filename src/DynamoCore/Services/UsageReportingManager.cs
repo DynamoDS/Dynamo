@@ -21,11 +21,14 @@ namespace Dynamo.Services
 
         #region Static Properties
 
-        public static UsageReportingAgreementPrompt UsageReportingPrompt { get; set; }
-
         public static UsageReportingManager Instance
         {
             get { return instance ?? (instance = new UsageReportingManager()); }
+        }
+
+        public static void DestroyInstance()
+        {
+            instance = null;
         }
 
         #endregion
@@ -83,7 +86,7 @@ namespace Dynamo.Services
             ToggleIsUsageReportingApprovedCommand = new DelegateCommand(ToggleIsUsageReportingApproved, CanToggleIsUsageReportingApproved);
         }
 
-        public void CheckIsFirstRun()
+        public void CheckIsFirstRun(Window ownerWindow)
         {
             // First run of Dynamo
             if (dynSettings.Controller.PreferenceSettings.IsFirstRun)
@@ -91,17 +94,23 @@ namespace Dynamo.Services
                 FirstRun = false;
 
                 if (!DynamoController.IsTestMode)
-                    ShowUsageReportingPrompt();
+                    ShowUsageReportingPrompt(ownerWindow);
             }
         }
 
         public void ToggleIsUsageReportingApproved(object parameter)
         {
+            if (!(parameter is Dynamo.Controls.DynamoView))
+            {
+                var message = "DynamoView must be supplied for this command";
+                throw new InvalidOperationException(message);
+            }
+
             bool resultOption = !IsUsageReportingApproved;
 
             // If toggling to approve usage reporting, show agreement consent
             if (resultOption)
-                ShowUsageReportingPrompt();
+                ShowUsageReportingPrompt(parameter as Window);
             else
                 IsUsageReportingApproved = false;
         }
@@ -116,13 +125,23 @@ namespace Dynamo.Services
             IsUsageReportingApproved = approved;
         }
 
-        private static void ShowUsageReportingPrompt()
+        private static void ShowUsageReportingPrompt(Window ownerWindow)
         {
-            UsageReportingPrompt = new UsageReportingAgreementPrompt();
-            if (null != Application.Current)
-                UsageReportingPrompt.Owner = Application.Current.MainWindow;
+            // If an owner window is not supplied, then we will fallback onto 
+            // using the application's main window. In native host application
+            // scenario (e.g. Revit), the "Application.Current" will be "null".
+            // The owner window is important so that usage report window always 
+            // get shown on top of the owner window, otherwise it is possible 
+            // for usage report window to show up in the background (behind all
+            // other full screen windows), and Dynamo main window will appear 
+            // to be frozen because control cannot return to it.
+            // 
+            if (ownerWindow == null && (null != Application.Current))
+                ownerWindow = Application.Current.MainWindow;
 
-            UsageReportingPrompt.ShowDialog();
+            var usageReportingPrompt = new UsageReportingAgreementPrompt();
+            usageReportingPrompt.Owner = ownerWindow;
+            usageReportingPrompt.ShowDialog();
         }
     }
 }

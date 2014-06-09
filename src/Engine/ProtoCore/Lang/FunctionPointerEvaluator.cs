@@ -18,7 +18,7 @@ namespace ProtoCore.Lang
 
         public FunctionPointerEvaluator(StackValue pointer, Interpreter dsi)
         {
-            Validity.Assert(pointer.optype == AddressType.FunctionPointer);
+            Validity.Assert(pointer.IsFunctionPointer);
             interpreter = dsi;
             Core core = dsi.runtime.Core;
 
@@ -58,7 +58,7 @@ namespace ProtoCore.Lang
             {
                 Validity.Assert(args.Count >= 1);
                 thisPtr = args[0];
-                if (thisPtr.IsArray())
+                if (thisPtr.IsArray)
                 {
                     isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
                 }
@@ -68,7 +68,7 @@ namespace ProtoCore.Lang
                 }
             }
 
-            if (!isValidThisPointer || (!thisPtr.IsObject() && !thisPtr.IsArray()))
+            if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                                      WarningMessage.kDeferencingNonPointer);
@@ -130,7 +130,7 @@ namespace ProtoCore.Lang
 
         public static string GetMethodName(StackValue pointer, Interpreter dsi)
         {
-            Validity.Assert(pointer.optype == AddressType.FunctionPointer);
+            Validity.Assert(pointer.IsFunctionPointer);
             return dsi.runtime.exe.procedureTable[0].procList[(int)pointer.opdata].name;
         }
     }

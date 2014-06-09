@@ -193,6 +193,19 @@ namespace Dynamo.Controls
 
         #region Overrides
 
+        protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
+        {
+            // If the focus falls on a node's text box, or a slider's thumb, 
+            // this method will be called with "e.NewValue" sets to "true". 
+            // In such cases the state machine should be notified, and any 
+            // connection that is in progress should be cancelled off.
+            // 
+            object dataContext = this.owningWorkspace.DataContext;
+            WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
+            wvm.HandleFocusChanged(this, ((bool)e.NewValue));
+            base.OnIsKeyboardFocusWithinChanged(e);
+        }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             // If we are snapping to a port when the mouse is clicked, the 

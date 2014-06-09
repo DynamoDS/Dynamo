@@ -37,15 +37,15 @@ namespace Dynamo.Nodes
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-            if (!dynSettings.Controller.Running)
-                RequiresRecalc = true;
-            else
-            {
-                //TODO: Refactor
-                DisableReporting();
-                RequiresRecalc = true;
-                EnableReporting();
-            }
+                if (!dynSettings.Controller.Runner.Running)
+                    RequiresRecalc = true;
+                else
+                {
+                    //TODO: Refactor
+                    DisableReporting();
+                    RequiresRecalc = true;
+                    EnableReporting();
+                }
         }
     }
 
