@@ -159,7 +159,7 @@ namespace ProtoFFI
                 }
 
                 StackValue dsValue = exe.Core.Rmem.GetAtRelative(symbolNode);
-                if (dsValue.optype != AddressType.Pointer && dsValue.opdata != thisptr)
+                if (!dsValue.IsObject() && dsValue.opdata != thisptr)
                 {
                     continue;
                 }
