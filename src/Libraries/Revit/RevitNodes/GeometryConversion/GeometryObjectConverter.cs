@@ -19,8 +19,9 @@ namespace Revit.GeometryConversion
         /// Convert a GeometryObject to an applicable ProtoGeometry type.
         /// </summary>
         /// <param name="geom"></param>
+        /// <param name="reference"></param>
         /// <returns>A Geometry type.  Null if there's no suitable conversion.</returns>
-        public static Autodesk.DesignScript.Geometry.Geometry Convert(this Autodesk.Revit.DB.GeometryObject geom, Autodesk.Revit.DB.Reference reference = null )
+        public static object Convert(this Autodesk.Revit.DB.GeometryObject geom, Autodesk.Revit.DB.Reference reference = null)
         {
             if (geom == null) return null;
 
@@ -35,6 +36,8 @@ namespace Revit.GeometryConversion
             }
 
         }
+
+        #region Tagging
 
         private static Autodesk.DesignScript.Geometry.Curve Tag(Autodesk.DesignScript.Geometry.Curve curve,
             Autodesk.Revit.DB.Reference reference)
@@ -53,6 +56,13 @@ namespace Revit.GeometryConversion
         {
             return geo;
         }
+
+        private static object Tag(object obj, Autodesk.Revit.DB.Reference reference)
+        {
+            return obj;
+        }
+
+        #endregion
 
         #region Converter methods
 
@@ -81,7 +91,7 @@ namespace Revit.GeometryConversion
             return geom.ToProtoType();
         }
 
-        public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(Autodesk.Revit.DB.PolyLine geom)
+        public static Autodesk.DesignScript.Geometry.PolyCurve InternalConvert(Autodesk.Revit.DB.PolyLine geom)
         {
             return geom.ToProtoType();
         }

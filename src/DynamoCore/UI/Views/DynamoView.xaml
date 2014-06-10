@@ -298,6 +298,7 @@
                         <MenuItem Header="_Enable usability data reporting"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   Focusable="False"/>
                         <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
