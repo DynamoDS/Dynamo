@@ -95,40 +95,54 @@ namespace ProtoFFI
 
     public class DLLFFIHandler : FFIHandler
     {
-        static DLLFFIHandler()
+        private DLLFFIHandler()
         {
-            Register(); //Do the default initialization for CSharp FFI handlers
+            this.helpers = new Dictionary<FFILanguage, ModuleHelper>();
+            this.modules = new Dictionary<string, DLLModule>(StringComparer.CurrentCultureIgnoreCase);
+
+            if (!ProtoCore.Lang.FFIFunctionEndPoint.FFIHandlers.ContainsKey("dll"))
+                ProtoCore.Lang.FFIFunctionEndPoint.FFIHandlers.Add("dll", instance);
+
+            if (!helpers.ContainsKey(FFILanguage.CSharp))
+                helpers.Add(FFILanguage.CSharp, new CSModuleHelper());
         }
 
-        private DLLFFIHandler() { }
-        private static readonly Dictionary<FFILanguage, ModuleHelper> helpers = new Dictionary<FFILanguage, ModuleHelper>();
-        private static readonly DLLFFIHandler Instance = new DLLFFIHandler();
-        private static bool registered;
-        public static Dictionary<string, DLLModule> Modules = new Dictionary<string, DLLModule>(StringComparer.CurrentCultureIgnoreCase);
+        private static void EnsureHandlerCreated()
+        {
+            if (DLLFFIHandler.instance == null)
+                DLLFFIHandler.instance = new DLLFFIHandler();
+        }
+
+        private static DLLFFIHandler instance = null;
+
+        private Dictionary<FFILanguage, ModuleHelper> helpers = null;
+        private Dictionary<string, DLLModule> modules = null;
+
         public static IntPtr Env
         {
             get;
             set;
         }
-        public static void Register()
-        {
-            if (!ProtoCore.Lang.FFIFunctionEndPoint.FFIHandlers.ContainsKey("dll"))
-            {
-                ProtoCore.Lang.FFIFunctionEndPoint.FFIHandlers.Add("dll", Instance);
-                helpers.Add(FFILanguage.CSharp, new CSModuleHelper());
-            }
-        }
 
         public static void Register(FFILanguage type, ModuleHelper helper)
         {
-            if (!registered)
-                Register();
-
-            if (!helpers.ContainsKey(type))
-                helpers.Add(type, helper);
+            EnsureHandlerCreated();
+            if (!instance.helpers.ContainsKey(type))
+                instance.helpers.Add(type, helper);
         }
 
-        public override FFIFunctionPointer GetFunctionPointer(string dllModuleName, string className, string functionName, List<ProtoCore.Type> parameterTypes, ProtoCore.Type returnType)
+        public static void DestroyInstance()
+        {
+            if (DLLFFIHandler.instance != null)
+            {
+                DLLFFIHandler.instance.modules.Clear();
+                DLLFFIHandler.instance.helpers.Clear();
+                DLLFFIHandler.instance = null;
+            }
+        }
+
+        public override FFIFunctionPointer GetFunctionPointer(string dllModuleName,string className,
+            string functionName, List<ProtoCore.Type> parameterTypes, ProtoCore.Type returnType)
         {
             DLLModule dllModule = GetModule(dllModuleName);
             return dllModule.GetFunctionPointer(className, functionName, parameterTypes, returnType);
@@ -136,28 +150,30 @@ namespace ProtoFFI
 
         public static ModuleHelper GetModuleHelper(FFILanguage language)
         {
-            if (language == FFILanguage.CPlusPlus || language == FFILanguage.CSharp)
-            {
-                return helpers[language];
-            }
-            return null;
+            EnsureHandlerCreated();
+            return DLLFFIHandler.instance.helpers[language];
         }
 
         public static DLLModule GetModule(string dllModuleName)
         {
+            EnsureHandlerCreated();
+            var modules = DLLFFIHandler.instance.modules;
+
             string moduleFileName = System.IO.Path.GetFileName(dllModuleName);
-            if (!Modules.ContainsKey(moduleFileName))
+            if (!modules.ContainsKey(moduleFileName))
             {
                 try
                 {
-                    Modules.Add(moduleFileName, helpers[FFILanguage.CSharp].getModule(dllModuleName));
+                    var helper = DLLFFIHandler.instance.helpers[FFILanguage.CSharp];
+                    modules.Add(moduleFileName, helper.getModule(dllModuleName));
                 }
                 catch
                 {
                     //try loading c++
                     try
                     {
-                        Modules.Add(moduleFileName, helpers[FFILanguage.CPlusPlus].getModule(dllModuleName));
+                        var helper = DLLFFIHandler.instance.helpers[FFILanguage.CPlusPlus];
+                        modules.Add(moduleFileName, helper.getModule(dllModuleName));
                     }
                     catch
                     {
@@ -166,13 +182,7 @@ namespace ProtoFFI
                 }
             }
 
-            DLLModule dllModule = Modules[moduleFileName];
-            return dllModule;
+            return modules[moduleFileName];
         }
     }
-
-    //public class PYthonFFIHandler
-    //{
-    //}
 }
-

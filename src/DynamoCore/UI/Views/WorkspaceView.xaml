@@ -27,7 +27,8 @@
                                  Cursor="{Binding CurrentCursor}"
                                  ForceCursor="{Binding IsCursorForced}">
                 <Grid>
-                    <ItemsControl ItemsSource="{Binding WorkspaceElements}" Name="WorkspaceElements">
+                    <ItemsControl Name="WorkspaceElementsControl"
+                                  ItemsSource="{Binding WorkspaceElements}">
 
                         <!--Resources for the ItemsControl can now be found in DataTemplates.xml-->
                         

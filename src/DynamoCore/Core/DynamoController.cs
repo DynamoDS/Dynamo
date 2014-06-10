@@ -308,8 +308,6 @@ namespace Dynamo
 
             DisposeLogic.IsShuttingDown = false;
 
-            EngineController = new EngineController(this);
-
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
             //TODO(Luke): Push this into a resync call with the engine controller
@@ -368,18 +366,21 @@ namespace Dynamo
 
         #endregion
 
-        public virtual void
-            ShutDown(bool shutDownHost, EventArgs args = null)
+        // TODO(Ben): Make this protected and call from DestroySessionSingletonObjects.
+        public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
             EngineController.Dispose();
             EngineController = null;
 
-            PreferenceSettings.Save();
+            var settings = PreferenceSettings as PreferenceSettings;
+            settings.Save();
+            settings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
-            dynSettings.Controller.DynamoModel.OnCleanup(args);
-            dynSettings.Controller = null;
+            this.DynamoModel.OnCleanup(args);
+            this.DynamoModel = null;
 
-            ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
+            DocumentationServices.DestroyCachedData();
+            dynSettings.DestroySessionSingletonObjects();
         }
 
 

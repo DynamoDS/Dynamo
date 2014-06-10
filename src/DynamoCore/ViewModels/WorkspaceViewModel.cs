@@ -298,6 +298,13 @@ namespace Dynamo.ViewModels
             _model = model;
             stateMachine = new StateMachine(this);
 
+            // Create a new CollectionViewSource to avoid the static one 
+            // (WPF internal) being used (which leads to eventual memory leak).
+            var _elementViewSource = new CollectionViewSource()
+            {
+                Source = _workspaceElements
+            };
+
             var nodesColl = new CollectionContainer { Collection = Nodes };
             _workspaceElements.Add(nodesColl);
 
