@@ -216,6 +216,17 @@
                         <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
                         </MenuItem>
                         <Separator />
+                        
+                        <MenuItem Header="_Recent Files" ItemsSource="{Binding RecentFiles}">
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="Header" Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
+                                    <Setter Property="Command" Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
+                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
+                        </MenuItem>
+                        <Separator />
                         <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt + F4" Focusable="False"/>
                     </MenuItem>
 
@@ -287,7 +298,7 @@
                     </MenuItem>
 
                     <MenuItem Header="_Libraries" Name="LibraryManagerMenu" Focusable="False" IsEnabled="True">
-                        <MenuItem Focusable="False" Header="_Import Library (EXPERIMENTAL)..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
+                        <MenuItem Focusable="False" Header="_Import Library..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
                     </MenuItem>
                     
                     <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
