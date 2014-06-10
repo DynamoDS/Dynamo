@@ -11,7 +11,7 @@ namespace DSCore
     /// </summary>
     public static class Sorting
     {
-        [IsVisibleInDynamoLibrary(false)]
+        //MAGN -3382 [IsVisibleInDynamoLibrary(false)]
         public static object minByKey(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
@@ -31,7 +31,7 @@ namespace DSCore
             return min;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
+        //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
         public static object maxByKey(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
@@ -51,7 +51,7 @@ namespace DSCore
             return max;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
+        //MAGN-3382 [IsVisibleInDynamoLibrary(false)] 
         public static IList sortByKey(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
