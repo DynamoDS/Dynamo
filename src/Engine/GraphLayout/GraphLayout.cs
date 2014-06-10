@@ -368,19 +368,20 @@ namespace GraphLayout
         /// </summary>
         public void NormalizeGraphPosition()
         {
-            double offsetX = -Layers.Last().First().X;
-            double offsetY = Nodes.OrderBy(x => x.Y).First().Y;
+            List<List<Node>> ReversedLayers = Layers;
+            ReversedLayers.Reverse();
 
             double previousLayerX = 0;
+            double offsetY = Nodes.OrderBy(x => x.Y).First().Y;
 
             foreach (List<Node> layer in Layers)
             {
                 double layerWidth = layer.Max(x => x.Width);
 
                 foreach (Node x in layer)
-                    x.X = previousLayerX - layerWidth - HorizontalNodeDistance;
+                    x.X = previousLayerX;
 
-                previousLayerX = layer.First().X;
+                previousLayerX = layer.First().X + layerWidth + HorizontalNodeDistance;
 
 
                 double maxY = (layer.Min(x => x.Y) >= Infinite) ?
@@ -388,7 +389,6 @@ namespace GraphLayout
 
                 foreach (Node n in layer.OrderBy(x => x.Y))
                 {
-                    n.X += offsetX;
                     n.Y += offsetY;
 
                     if (n.Y >= Infinite + offsetY)
