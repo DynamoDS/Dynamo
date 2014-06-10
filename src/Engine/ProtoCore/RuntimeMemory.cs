@@ -198,28 +198,19 @@ namespace ProtoCore
 
             public bool ValidateStackFrame()
             {
-                bool isValid =
-                    //(
-                        AddressType.Pointer == Stack[GetRelative(StackFrame.kFrameIndexThisPtr)].optype
-                    //|| AddressType.Invalid == stack[GetRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr)].optype 
-                    //|| AddressType.ClassIndex == stack[GetRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr)].optype 
-                    //)
-
-                    && AddressType.Int == Stack[GetRelative(StackFrame.kFrameIndexClass)].optype
-                    && AddressType.Int == Stack[GetRelative(StackFrame.kFrameIndexFunction)].optype
-                    && AddressType.Int == Stack[GetRelative(StackFrame.kFrameIndexReturnAddress)].optype
-                    && AddressType.BlockIndex == Stack[GetRelative(StackFrame.kFrameIndexFunctionBlock)].optype
-                    && AddressType.BlockIndex == Stack[GetRelative(StackFrame.kFrameIndexFunctionCallerBlock)].optype
-                    && AddressType.FrameType == Stack[GetRelative(StackFrame.kFrameIndexCallerStackFrameType)].optype
-                    && AddressType.FrameType == Stack[GetRelative(StackFrame.kFrameIndexStackFrameType)].optype
-                    && AddressType.Int == Stack[GetRelative(StackFrame.kFrameIndexLocalVariables)].optype
-                    && AddressType.Int == Stack[GetRelative(StackFrame.kFrameIndexExecutionStates)].optype
-                    && AddressType.Int == Stack[GetRelative(StackFrame.kFrameIndexStackFrameDepth)].optype
-                    && AddressType.Int == Stack[GetRelative(StackFrame.kFrameIndexFramePointer)].optype;
-
-                return isValid;
+                return Stack[GetRelative(StackFrame.kFrameIndexThisPtr)].IsPointer
+                    && Stack[GetRelative(StackFrame.kFrameIndexClass)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexFunction)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexReturnAddress)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexFunctionBlock)].IsBlockIndex
+                    && Stack[GetRelative(StackFrame.kFrameIndexFunctionCallerBlock)].IsBlockIndex
+                    && Stack[GetRelative(StackFrame.kFrameIndexCallerStackFrameType)].IsFrameType
+                    && Stack[GetRelative(StackFrame.kFrameIndexStackFrameType)].IsFrameType
+                    && Stack[GetRelative(StackFrame.kFrameIndexLocalVariables)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexExecutionStates)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexStackFrameDepth)].IsInteger
+                    && Stack[GetRelative(StackFrame.kFrameIndexFramePointer)].IsInteger;
             }
-
 
             private void PushRegisters(List<StackValue> registers)
             {
@@ -437,16 +428,15 @@ namespace ProtoCore
                     return StackValue.Null;
 
                 StackValue sv = Heap.Heaplist[thisptr].Stack[offset];
-                Validity.Assert(AddressType.Pointer == sv.optype || AddressType.ArrayPointer == sv.optype || AddressType.Invalid == sv.optype);
+                Validity.Assert(sv.IsPointer || sv.IsArray|| sv.IsInvalid);
 
                 // Not initialized yet
-                if (sv.optype == AddressType.Invalid)
+                if (sv.IsInvalid)
                 {
-                    sv.optype = AddressType.Null;
-                    sv.opdata_d = sv.opdata = 0;
+                    sv = StackValue.Null;
                     return sv;
                 }
-                else if (sv.optype == AddressType.ArrayPointer)
+                else if (sv.IsArray)
                 {
                     return sv;
                 }
@@ -455,14 +445,11 @@ namespace ProtoCore
                 Validity.Assert(nextPtr >= 0);
                 if (null != Heap.Heaplist[nextPtr].Stack && Heap.Heaplist[nextPtr].Stack.Length > 0)
                 {
-                    bool isActualData =
-                            AddressType.Pointer != Heap.Heaplist[nextPtr].Stack[0].optype
-                        && AddressType.ArrayPointer != Heap.Heaplist[nextPtr].Stack[0].optype
-                        && AddressType.Invalid != Heap.Heaplist[nextPtr].Stack[0].optype; // Invalid is an uninitialized member
-
+                    StackValue data = Heap.Heaplist[nextPtr].Stack[0];
+                    bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
                     if (isActualData)
                     {
-                        return Heap.Heaplist[nextPtr].Stack[0];
+                        return data;
                     }
                 }
                 return sv;
@@ -470,12 +457,12 @@ namespace ProtoCore
 
             public StackValue GetPrimitive(StackValue op)
             {
-                if (AddressType.Pointer != op.optype)
+                if (!op.IsPointer)
                 {
                     return op;
                 }
                 int ptr = (int)op.opdata;
-                while (AddressType.Pointer == Heap.Heaplist[ptr].Stack[0].optype)
+                while (Heap.Heaplist[ptr].Stack[0].IsPointer)
                 {
                     ptr = (int)Heap.Heaplist[ptr].Stack[0].opdata;
                 }
@@ -497,7 +484,7 @@ namespace ProtoCore
 
             public int GetArraySize(StackValue array)
             {
-                if (array.optype != AddressType.ArrayPointer)
+                if (!array.IsArray)
                 {
                     return Constants.kInvalidIndex;
                 }
@@ -551,7 +538,7 @@ namespace ProtoCore
 
             public bool IsHeapActive(StackValue sv)
             {
-                if (!StackUtils.IsReferenceType(sv))
+                if (!sv.IsReferenceType)
                 {
                     return false;
                 }

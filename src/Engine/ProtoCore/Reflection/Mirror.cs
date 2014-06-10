@@ -140,13 +140,13 @@ namespace ProtoCore
 
             /*private string GetAssembly(StackValue sv)
             {
-                if (sv.optype == AddressType.Pointer)
+                if (sv.IsObject())
                 {
                     ClassNode classNode = core.ClassTable.ClassNodes[(int)sv.metaData.type];
                     assemblyName = classNode.ExternLib;
                     
                 }
-                else if (sv.optype == AddressType.ArrayPointer)
+                else if (sv.IsArray)
                 {
                     assemblyName = GetTypesHelper();                    
                 }
@@ -160,14 +160,14 @@ namespace ProtoCore
                 Dictionary<string, List<string>> asmTypes = new Dictionary<string, List<string>>();
                 //List<string> types = new List<string>();
 
-                Validity.Assert(svData.optype == AddressType.ArrayPointer);
+                Validity.Assert(svData.IsArray);
 
                 int ptr = (int)svData.opdata;
                 HeapElement hs = core.Heap.Heaplist[ptr];
                 for (int n = 0; n < hs.VisibleSize; ++n)
                 {
                     StackValue sv = hs.Stack[n];
-                    if (sv.optype == AddressType.ArrayPointer)
+                    if (sv.IsArray)
                     {
                         /*List<string> arrtypes = new List<string>();
                         arrtypes = GetArrayTypes(sv);
@@ -227,7 +227,7 @@ namespace ProtoCore
             private Dictionary<string, List<string>> GetType(StackValue sv)
             {
                 Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
-                if (sv.optype == AddressType.Pointer)
+                if (sv.IsPointer)
                 {
                     ClassNode classNode = core.ClassTable.ClassNodes[(int)sv.metaData.type];
                     //assemblyName = classNode.ExternLib;                    
@@ -510,7 +510,7 @@ namespace ProtoCore
             internal ClassMirror(StackValue svData, ProtoCore.Core core)
                 : base(core)
             {
-                Validity.Assert(svData.optype == AddressType.Pointer);
+                Validity.Assert(svData.IsPointer);
                 Validity.Assert(null != core);
                 Validity.Assert(null != core.DSExecutable.classTable);
 

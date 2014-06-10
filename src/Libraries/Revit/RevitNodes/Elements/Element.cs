@@ -329,9 +329,10 @@ namespace Revit.Elements
         /// <summary>
         /// Get all of the Geometry associated with this object
         /// </summary>
-        public Geometry[] Geometry()
+        public object[] Geometry()
         {
-            return InternalGeometry().Select(x => x.Convert()).ToArray();
+            var res = InternalGeometry().Select(x => x.Convert()).ToArray();
+            return res;
         }
 
         [SupressImportIntoVM]
@@ -339,38 +340,44 @@ namespace Revit.Elements
         {
             var thisElement = InternalElement;
 
-            var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
+            var goptions0 = new Autodesk.Revit.DB.Options();
+            goptions0.ComputeReferences = true;
 
-            var geoOptionsOne = new Autodesk.Revit.DB.Options();
-            geoOptionsOne.ComputeReferences = true;
+            var geomElement = thisElement.get_Geometry(goptions0);
 
-            var geomObj = thisElement.get_Geometry(geoOptionsOne);
-            var geomElement = geomObj as GeometryElement;
-
-            if ((thisElement is GenericForm) && (geomElement.Count() < 1))
+            // GenericForm is a special case
+            if ((thisElement is GenericForm) && (!geomElement.Any()))
             {
                 var gF = (GenericForm)thisElement;
                 if (!gF.Combinations.IsEmpty)
                 {
-                    var geoOptionsTwo = new Autodesk.Revit.DB.Options();
-                    geoOptionsTwo.IncludeNonVisibleObjects = true;
-                    geoOptionsTwo.ComputeReferences = true;
-                    geomObj = thisElement.get_Geometry(geoOptionsTwo);
-                    geomElement = geomObj as GeometryElement;
+                    var goptions1 = new Autodesk.Revit.DB.Options();
+                    goptions1.IncludeNonVisibleObjects = true;
+                    goptions1.ComputeReferences = true;
+                    geomElement = thisElement.get_Geometry(goptions1);
                 }
             }
 
-            foreach (Autodesk.Revit.DB.GeometryObject geob in geomElement)
+            return CollectConcreteGeometry(geomElement);
+        }
+
+        private IEnumerable<Autodesk.Revit.DB.GeometryObject> CollectConcreteGeometry(Autodesk.Revit.DB.GeometryElement geometryElement)
+        {
+            var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
+
+            foreach (Autodesk.Revit.DB.GeometryObject geob in geometryElement)
             {
-                var ginsta = geob as GeometryInstance;
-                if (ginsta != null)
+                var geomInstance = geob as GeometryInstance;
+                var geomElement = geob as GeometryElement;
+
+                if (geomInstance != null)
                 {
-                    Autodesk.Revit.DB.GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
-                    instanceGeometryObjects.Add(instanceGeom);
-                    foreach (Autodesk.Revit.DB.GeometryObject geobInst in instanceGeom)
-                    {
-                        instanceGeometryObjects.Add(geobInst);
-                    }
+                    var instanceGeom = geomInstance.GetInstanceGeometry();
+                    instanceGeometryObjects.AddRange(CollectConcreteGeometry(instanceGeom));
+                }
+                else if (geomElement != null)
+                {
+                    instanceGeometryObjects.AddRange( CollectConcreteGeometry(geometryElement) );
                 }
                 else
                 {
@@ -378,7 +385,11 @@ namespace Revit.Elements
                 }
             }
 
-            return instanceGeometryObjects;
+            // Certain kinds of Elements will return Solids with zero faces - make sure to filter them out
+            return
+                instanceGeometryObjects.Where(
+                    x =>
+                        !(x is Autodesk.Revit.DB.Solid) || (x as Autodesk.Revit.DB.Solid).Faces.Size > 0);
         }
 
         public Autodesk.DesignScript.Geometry.Solid[] Solids

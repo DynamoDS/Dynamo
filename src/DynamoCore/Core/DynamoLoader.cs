@@ -299,11 +299,7 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
-#if USE_DSENGINE
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
-#else
-                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && !isHidden)
-#endif
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;

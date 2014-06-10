@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ProtoCore.Utils;
 using Operand = ProtoCore.DSASM.StackValue;
 
 namespace ProtoCore.DSASM
@@ -18,7 +19,7 @@ namespace ProtoCore.DSASM
         TX = 9
     }
 
-    public enum AddressType
+    public enum AddressType: int 
     {
         Invalid,
         Register,
@@ -59,10 +60,6 @@ namespace ProtoCore.DSASM
         MUL,
         DIV,
         MOD,
-        ADDD,
-        SUBD,
-        MULD,
-        DIVD,
         PUSH,
         PUSHG,
         PUSHM,
@@ -96,12 +93,6 @@ namespace ProtoCore.DSASM
         LT,
         GE,
         LE,
-        EQD,
-        NQD,
-        GTD,
-        LTD,
-        GED,
-        LED,
         BOUNCE,
         ALLOC,
         ALLOCA,
@@ -140,180 +131,249 @@ namespace ProtoCore.DSASM
     public struct StackValue
     {
         public Int64 opdata;
-        public Double opdata_d;
+        public double opdata_d;
         public AddressType optype;
         public MetaData metaData;
 
+        /// <summary>
+        /// Although StackValue is a struct and assignment creates a copy
+        /// of StackValue on stack, ShallowClone() has an explicit meaning
+        /// to do copy.
+        /// </summary>
+        /// <returns></returns>
         public StackValue ShallowClone()
         {
             StackValue newSv = new StackValue();
             newSv.optype = optype;
-            newSv.opdata_d = opdata_d;
             newSv.opdata = opdata;
+            newSv.opdata_d = opdata_d;
             newSv.metaData = new MetaData { type = metaData.type };
-
             return newSv;
         }
 
-        public override string ToString()
+        #region Override functions
+        public override bool Equals(object other)
         {
-            if (optype == AddressType.Double)
-                return opdata_d.ToString();
+            if (!(other is StackValue))
+                return false;
 
-            if (optype == AddressType.Int)
-                return opdata.ToString();
+            StackValue rhs = (StackValue)other;
+            if (this.optype != rhs.optype || this.metaData.type != rhs.metaData.type)
+                return false;
 
-            else
-                return String.Format("{0}, opdata = {1}, metaData = {2}", optype.ToString(), opdata.ToString(),
-                                     metaData.type.ToString());
+            switch (optype)
+            {
+                case AddressType.Double:
+                    return MathUtils.Equals(this.RawDoubleValue, rhs.RawDoubleValue);
 
+                case AddressType.Boolean:
+                    return this.RawBooleanValue == rhs.RawBooleanValue;
+
+                default:
+                    return opdata == rhs.opdata;
+            }
         }
+
+        public override int GetHashCode()
+        {
+            return opdata.GetHashCode() ^ optype.GetHashCode() ^ metaData.GetHashCode();
+        }
+        #endregion
+
+        #region Get raw values
+        /// <summary>
+        /// Get integer value without checking its type or do type conversion,
+        /// so the StackValue shoule be boolean typed.
+        /// </summary>
+        public Int64 RawIntValue
+        {
+            get
+            {
+                return opdata;
+            }
+        }
+
+        /// <summary>
+        /// Get double value without checking its type or do type conversion. 
+        /// The StackValue should be double typed. 
+        /// </summary>
+        public double RawDoubleValue
+        {
+            get
+            {
+                return opdata_d;
+            }
+        }
+
+        /// <summary>
+        /// Get boolean value without checking its type or do type conversion,
+        /// so the StackValue shoule be boolean typed.
+        /// </summary>
+        public bool RawBooleanValue
+        {
+            get
+            {
+                return opdata != 0;
+            }
+        }
+        #endregion
         
-        #region Some constant values
+        #region Constant values
         public static StackValue Null = BuildNull();
         public static StackValue True = BuildBoolean(true);
         public static StackValue False = BuildBoolean(false);
         #endregion
 
         #region Type checkers
-        public bool IsInvalid()
+        public bool IsInvalid
         {
-            return optype == AddressType.Invalid;
+            get { return optype == AddressType.Invalid; }
         }
 
-        public bool IsRegister()
+        public bool IsRegister
         {
-            return optype == AddressType.Register;
+            get { return optype == AddressType.Register; }
         }
 
-        public bool IsVariableIndex()
+        public bool IsVariableIndex
         {
-            return optype == AddressType.VarIndex;
+            get { return optype == AddressType.VarIndex; }
         }
 
-        public bool IsFunctionIndex()
+        public bool IsFunctionIndex
         {
-            return optype == AddressType.FunctionIndex;
+            get { return optype == AddressType.FunctionIndex; }
         }
 
-        public bool IsMemberVariableIndex()
+        public bool IsMemberVariableIndex
         {
-            return optype == AddressType.MemVarIndex;
+            get { return optype == AddressType.MemVarIndex; }
         }
 
-        public bool IsStaticVariableIndex()
+        public bool IsStaticVariableIndex
         {
-            return optype == AddressType.StaticMemVarIndex;
+            get { return optype == AddressType.StaticMemVarIndex; }
         }
 
-        public bool IsClassIndex()
+        public bool IsClassIndex
         {
-            return optype == AddressType.ClassIndex;
+            get { return optype == AddressType.ClassIndex; }
         }
 
-        public bool IsInteger()
+        public bool IsInteger
         {
-            return optype == AddressType.Int;
+            get { return optype == AddressType.Int; }
         }
 
-        public bool IsDouble()
+        public bool IsDouble
         {
-            return optype == AddressType.Double;
+            get { return optype == AddressType.Double; }
         }
 
-        public bool IsBoolean()
+        public bool IsNumeric
         {
-            return optype == AddressType.Boolean;
+            get { return optype == AddressType.Int || optype ==
+            AddressType.Double; }
         }
 
-        public bool IsChar()
+        public bool IsBoolean
         {
-            return optype == AddressType.Char;
+            get { return optype == AddressType.Boolean; }
         }
 
-        public bool IsString()
+        public bool IsChar
         {
-            return optype == AddressType.String;
+            get { return optype == AddressType.Char; }
         }
 
-        public bool IsLabelIndex()
+        public bool IsString
         {
-            return optype == AddressType.LabelIndex;
+            get { return optype == AddressType.String; }
         }
 
-        public bool IsBlockIndex()
+        public bool IsLabelIndex
         {
-            return optype == AddressType.BlockIndex;
+            get { return optype == AddressType.LabelIndex; }
         }
 
-        public bool IsObject()
+        public bool IsBlockIndex
         {
-            return optype == AddressType.Pointer;
+            get { return optype == AddressType.BlockIndex; }
         }
 
-        public bool IsArray()
+        public bool IsPointer
         {
-            return optype == AddressType.ArrayPointer;
+            get { return optype == AddressType.Pointer; }
         }
 
-        public bool IsFunctionPointer()
+        public bool IsArray
         {
-            return optype == AddressType.FunctionPointer;
+            get { return optype == AddressType.ArrayPointer; }
         }
 
-        public bool IsNull()
+        public bool IsFunctionPointer
         {
-            return optype == AddressType.Null;
+            get { return optype == AddressType.FunctionPointer; }
         }
 
-        public bool IsDefaultArgument()
+        public bool IsNull
         {
-            return optype == AddressType.DefaultArg;
+            get { return optype == AddressType.Null; }
         }
 
-        public bool IsArrayDimension()
+        public bool IsDefaultArgument
         {
-            return optype == AddressType.ArrayDim;
+            get { return optype == AddressType.DefaultArg; }
         }
 
-        public bool IsReplicationGuide()
+        public bool IsArrayDimension
         {
-            return optype == AddressType.ReplicationGuide;
+            get { return optype == AddressType.ArrayDim; }
         }
 
-        public bool IsDynamic()
+        public bool IsReplicationGuide
         {
-            return optype == AddressType.Dynamic;
+            get { return optype == AddressType.ReplicationGuide; }
         }
 
-        public bool IsStaticType()
+        public bool IsDynamic
         {
-            return optype == AddressType.StaticType;
+            get { return optype == AddressType.Dynamic; }
         }
 
-        public bool IsCallingConvention()
+        public bool IsStaticType
         {
-            return optype == AddressType.CallingConvention;
+            get { return optype == AddressType.StaticType; }
         }
 
-        public bool IsFrameType()
+        public bool IsCallingConvention
         {
-            return optype == AddressType.FrameType;
+            get { return optype == AddressType.CallingConvention; }
         }
 
-        public bool IsThisPtr()
+        public bool IsFrameType
         {
-            return optype == AddressType.ThisPtr;
+            get { return optype == AddressType.FrameType; }
         }
 
-        public bool IsExplicitCall()
+        public bool IsThisPtr
         {
-            return optype == AddressType.ExplicitCall;
+            get { return optype == AddressType.ThisPtr; }
         }
 
-        public bool IsArrayKey()
+        public bool IsExplicitCall
         {
-            return optype == AddressType.ArrayKey;
+            get { return optype == AddressType.ExplicitCall; }
+        }
+
+        public bool IsArrayKey
+        {
+            get { return optype == AddressType.ArrayKey; }
+        }
+
+        public bool IsReferenceType
+        {
+            get { return opdata != Constants.kInvalidIndex && (IsArray || IsPointer || IsString); }
         }
         #endregion
 
@@ -331,7 +391,6 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.Int;
             value.opdata = data;
-            value.opdata_d = value.opdata;
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeInt;
@@ -344,7 +403,6 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.Double;
             value.opdata_d = data;
-            value.opdata = (long)data;
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeDouble;
@@ -357,7 +415,6 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.Char;
             value.opdata = ProtoCore.Utils.EncodingUtils.ConvertCharacterToInt64(ch);
-            value.opdata_d = value.opdata;
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeChar;
@@ -369,7 +426,6 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Null;
-            value.opdata_d = 0;
             value.opdata = 0;
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeNull;
@@ -406,12 +462,25 @@ namespace ProtoCore.DSASM
             return value;
         }
 
-        public static StackValue BuildArrayKey(int index, int arrayPtr)
+        public static StackValue BuildArrayKey(int arrayPtr, int index)
         {
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
             value.opdata = index;
             value.opdata_d = arrayPtr;
+
+            return value;
+        }
+
+        public static StackValue BuildArrayKey(StackValue array, int index)
+        {
+            StackValue value = new StackValue();
+            value.optype = AddressType.ArrayKey;
+            value.opdata = index;
+
+            Validity.Assert(array.IsArray);
+            value.opdata_d = (int)array.opdata;
+
             return value;
         }
 
@@ -529,13 +598,12 @@ namespace ProtoCore.DSASM
 
             foreach (char ch in str)
             {
-                svchars.Add(ProtoCore.DSASM.StackValue.BuildChar(ch));
+                svchars.Add(BuildChar(ch));
             }
 
             lock (heap.cslock)
             {
                 int size = str.Length;
-
                 int ptr = heap.Allocate(size);
 
                 for (int i = 0; i < size; ++i)
@@ -543,7 +611,7 @@ namespace ProtoCore.DSASM
                     heap.Heaplist[ptr].Stack[i] = BuildChar(str[i]);
                 }
 
-                return StackValue.BuildString(ptr);
+                return BuildString(ptr);
             }
         }
 
@@ -564,7 +632,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.DefaultArg;
-            value.opdata_d = value.opdata = 0;
+            value.opdata = 0;
 
             MetaData mdata;
             mdata.type = (int)PrimitiveType.kTypeVar;
@@ -649,6 +717,111 @@ namespace ProtoCore.DSASM
                 registers.Add(BulildInvalid());
             }
             return registers;
+        }
+        #endregion
+
+        /// <summary>
+        /// Try to get the host array and key value from StackValue. The address
+        /// type of StackValue should be AddressType.ArrayKey. 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public bool TryGetArrayKey(out StackValue array, out int index)
+        {
+            array = StackValue.Null;
+            index = Constants.kInvalidIndex;
+
+            if (!this.IsArrayKey || opdata == Constants.kInvalidIndex)
+            {
+                return false;
+            }
+
+            array = StackValue.BuildArrayPointer((int)RawDoubleValue);
+            index = (int)this.opdata;
+
+            return true;
+        }
+
+        #region Converters
+        /// <summary>
+        /// Convert StackValue to boolean typed StackValue. Returns 
+        /// StackValue.Null if not able to do conversion.
+        /// </summary>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public StackValue ToBoolean(Core core)
+        {
+            switch (optype)
+            {
+                case AddressType.Boolean:
+                    return this;
+
+                case AddressType.Int:
+                    return BuildBoolean(opdata != 0);
+
+                case AddressType.Null:
+                    return StackValue.Null; 
+
+                case AddressType.Double:
+                    bool b = !Double.IsNaN(RawDoubleValue) && !RawDoubleValue.Equals(0.0);
+                    return BuildBoolean(b);
+
+                case AddressType.Pointer:
+                    return StackValue.BuildBoolean(true);
+
+                case AddressType.String:
+                    int size = ArrayUtils.GetElementSize(this, core);
+                    return (size == 0) ? StackValue.False : StackValue.True;
+
+                case AddressType.Char:
+                    char c = EncodingUtils.ConvertInt64ToCharacter(opdata);
+                    return (c == 0) ? StackValue.False : StackValue.True;
+
+                default:
+                    return StackValue.Null;
+            }
+        }
+
+        /// <summary>
+        /// Convert numeric typed StackValue to double typed StackValue. For
+        /// other types, returns StackValue.Null.
+        /// </summary>
+        /// <returns></returns>
+        public StackValue ToDouble()
+        {
+            switch (optype)
+            {
+                case AddressType.Int:
+                    return BuildDouble(RawIntValue);
+
+                case AddressType.Double:
+                    return this;
+
+                default:
+                    return StackValue.Null;
+            }
+        }
+
+        /// <summary>
+        /// Convert numeric typed StackValue to integer typed StackValue. For
+        /// other types, returns StackValue.Null.
+        /// </summary>
+        /// <returns></returns>
+        public StackValue ToInteger()
+        {
+            switch (optype)
+            {
+                case AddressType.Int:
+                    return this;
+
+                case AddressType.Double:
+                    double value = RawDoubleValue;
+                    return BuildInt((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero));
+
+                default:
+                    return StackValue.Null;
+            }
         }
         #endregion
     }

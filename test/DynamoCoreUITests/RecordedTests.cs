@@ -2518,6 +2518,177 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_3599()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3599
+
+            RunCommandsFromFile("Defect_MAGN_3599.xml", true, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                var cbn = GetNode("26d75d07-10d7-4517-83b8-0f45711706b2") as CodeBlockNodeModel;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+                else if (commandTag == "LastRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(2, cbn.OutPorts.Count);
+                    Assert.AreEqual(0, cbn.InPorts.Count);
+
+                    AssertPreviewValue("26d75d07-10d7-4517-83b8-0f45711706b2", 3);
+
+                }
+
+            });
+
+        }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_3580()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3580
+
+            RunCommandsFromFile("Defect_MAGN_3580.xml", true, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                var cbn = GetNode("b9c2edd6-5d73-4243-90fb-2b608250adee") as CodeBlockNodeModel;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+                    
+                    // check preview value of CBN
+                    AssertPreviewValue("b9c2edd6-5d73-4243-90fb-2b608250adee", false);
+
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(0, cbn.InPorts.Count);
+
+                    // check preview value of CBN
+                    AssertPreviewValue("b9c2edd6-5d73-4243-90fb-2b608250adee", true);
+
+                }
+                else if (commandTag == "FourthRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    // check preview value of CBN
+                    AssertPreviewValue("8dd1d732-f5d7-42d9-aadb-c960ac5d868e", false);
+
+                }
+                else if (commandTag == "LastRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(0, cbn.InPorts.Count);
+
+                    // check preview value of CBN
+                    AssertPreviewValue("b9c2edd6-5d73-4243-90fb-2b608250adee", true);
+
+                }
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_3212()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3212
+
+            RunCommandsFromFile("Defect_MAGN_3212.xml", true, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                var cbn = GetNode("28029adc-b19d-414c-996c-545572aa9efc") as CodeBlockNodeModel;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                    AssertPreviewValue("28029adc-b19d-414c-996c-545572aa9efc", 8);
+
+                }
+                else if (commandTag == "LastRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports
+                    Assert.AreNotEqual(ElementState.Error, cbn.State);
+                    Assert.AreEqual(0, cbn.OutPorts.Count);
+                    Assert.AreEqual(0, cbn.InPorts.Count);
+
+                }
+
+            });
+
+        }
+
 
         #endregion
 

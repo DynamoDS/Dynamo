@@ -1373,13 +1373,13 @@ namespace ProtoCore
         protected void Backpatch(int bp, int pc)
         {
             if (ProtoCore.DSASM.OpCode.JMP == codeBlock.instrStream.instrList[bp].opCode
-                && ProtoCore.DSASM.AddressType.LabelIndex == codeBlock.instrStream.instrList[bp].op1.optype)
+                && codeBlock.instrStream.instrList[bp].op1.IsLabelIndex)
             {
                 Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op1.opdata);
                 codeBlock.instrStream.instrList[bp].op1.opdata = pc;
             }
             else if (ProtoCore.DSASM.OpCode.CJMP == codeBlock.instrStream.instrList[bp].opCode
-                && ProtoCore.DSASM.AddressType.LabelIndex == codeBlock.instrStream.instrList[bp].op3.optype)
+                && codeBlock.instrStream.instrList[bp].op3.IsLabelIndex)
             {
                 Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op3.opdata);
                 codeBlock.instrStream.instrList[bp].op3.opdata = pc;
@@ -1673,9 +1673,7 @@ namespace ProtoCore
             instr.op2 = StackValue.BuildClassIndex(classIndex);
 
             // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(ProtoCore.DSASM.AddressType.VarIndex == op.optype
-                || ProtoCore.DSASM.AddressType.MemVarIndex == op.optype
-                || ProtoCore.DSASM.AddressType.Register == op.optype);
+            Validity.Assert(op.IsVariableIndex || op.IsMemberVariableIndex || op.IsRegister);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -1992,7 +1990,7 @@ namespace ProtoCore
             instr.op2 = op2;
 
             // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(ProtoCore.DSASM.AddressType.VarIndex == op1.optype || ProtoCore.DSASM.AddressType.Register == op1.optype);
+            Validity.Assert(op1.IsVariableIndex || op1.IsRegister);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -2008,7 +2006,7 @@ namespace ProtoCore
             instr.op1 = op1;
 
             // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(ProtoCore.DSASM.AddressType.VarIndex == op1.optype || ProtoCore.DSASM.AddressType.Register == op1.optype);
+            Validity.Assert(op1.IsVariableIndex || op1.IsRegister);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -2495,10 +2493,6 @@ namespace ProtoCore
             StackValue opAX = StackValue.BuildRegister(Registers.AX);
             EmitPop(opAX, Constants.kGlobalScope);
 
-            // TODO Jun: double operations are executed in the main instruction for now, until this proves to be a performance issue
-            bool isDoubleOp = false; // (optype1 == ProtoCore.DSASM.AddressType.Double || optype2 == ProtoCore.DSASM.AddressType.Double);
-
-            optr = (isDoubleOp) ? Op.GetFloatingOp(optr) : optr;
             string op = Op.GetOpName(optr);
             EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
             EmitBinary(Op.GetOpCode(optr), opAX, opBX);
