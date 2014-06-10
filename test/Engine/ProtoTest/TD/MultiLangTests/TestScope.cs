@@ -210,9 +210,9 @@ a_inner2;b_inner2;c_inner2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
         }
 
         [Test]
@@ -233,9 +233,9 @@ a_inner2;b_inner2;c_inner2;
 	cA = c;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
         }
 
         [Test]
@@ -324,9 +324,9 @@ newA;newB;newC;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
         }
 
         [Test]
@@ -349,9 +349,9 @@ newA;newB;newC;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
         }
 
         [Test]
@@ -382,12 +382,12 @@ aA;bA;cA;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
         }
 
         [Test]
@@ -418,12 +418,12 @@ aA;bA;cA;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
         }
 
         [Test]
@@ -672,7 +672,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
             //Fuqiang: If function not found, it will return null and continues to execute.
 
             //Assert.Fail("1453777: Sprint 15: Rev 617: Scope: DS is able to call function defined in a parallel language block ");
@@ -707,7 +707,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -737,7 +737,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -767,7 +767,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -804,8 +804,8 @@ z_2;
 	z_2 = foo (x_2, y_2);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z_1").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("z_2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("z_1").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("z_2").DsasmValue.IsNull);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -842,8 +842,8 @@ z_2;
 	z_2 = foo (x_2, y_2);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z_1").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("z_2").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("z_1").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("z_2").DsasmValue.IsNull);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -1018,10 +1018,10 @@ y = 1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
-            Assert.IsTrue(mirror.GetValue("f").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("f").DsasmValue.IsNull);
 
-            Assert.IsTrue(mirror.GetValue("p").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("q").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("p").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("q").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("y1").Payload == 3);
             Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 4);
@@ -1968,7 +1968,25 @@ def foo(@a:var)
         [Category("SmokeTest")]
         public void T052_DNL_1467464()
         {
-            string code = @"class test{    f;    constructor test()    {    [Associative]        {            [Imperative]            {                i = 3;            }            f = i;        }    }}a = test.test();b = a.f;";
+            string code = @"
+class test
+{
+    f;
+    constructor test()
+    {
+    [Associative]
+        {
+            [Imperative]
+            {
+                i = 3;
+            }
+            f = i;
+        }
+    }
+}
+a = test.test();
+b = a.f;
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", null);
         }

@@ -19,7 +19,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="referenceString"></param>
         /// <returns></returns>
-        public static Autodesk.DesignScript.Geometry.Geometry ByReferenceStableRepresentation(string referenceString)
+        public static object ByReferenceStableRepresentation(string referenceString)
         {
             var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, referenceString);
 

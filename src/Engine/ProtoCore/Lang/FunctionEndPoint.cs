@@ -50,7 +50,7 @@ namespace ProtoCore
 
             for (int i = 0; i < FormalParams.Length; i++)
             {
-                if (FormalParams[i].IsIndexable && StackUtils.IsArray(formalParameters[i]))
+                if (FormalParams[i].IsIndexable && formalParameters[i].IsArray)
                     continue;
 
                 if (FormalParams[i].UID != (int)formalParameters[i].metaData.type)
@@ -66,10 +66,10 @@ namespace ProtoCore
 
             for (int i = 0; i < FormalParams.Length; i++)
             {
-                if (FormalParams[i].IsIndexable != StackUtils.IsArray(formalParameters[i]))
+                if (FormalParams[i].IsIndexable != formalParameters[i].IsArray)
                     return false;
 
-                if (FormalParams[i].IsIndexable && StackUtils.IsArray(formalParameters[i]))
+                if (FormalParams[i].IsIndexable && formalParameters[i].IsArray)
                 {
                     if (FormalParams[i].rank != ArrayUtils.GetMaxRankForArray(formalParameters[i], core)
                         && FormalParams[i].rank != DSASM.Constants.kArbitraryRank)
@@ -154,7 +154,7 @@ namespace ProtoCore
 
                     // If its a default argumnet, then it wasnt provided by the caller
                     // The rcvdType is the type of the argument signature
-                    if (args[i].optype == AddressType.DefaultArg)
+                    if (args[i].IsDefaultArgument)
                     {
                         rcvdType = FormalParams[i].UID;
                     }
@@ -163,16 +163,16 @@ namespace ProtoCore
 
                     int currentCost = 0;
 
-                    if (FormalParams[i].IsIndexable != StackUtils.IsArray(args[i])) //Replication code will take care of this
+                    if (FormalParams[i].IsIndexable != args[i].IsArray) //Replication code will take care of this
                     {
                         continue;
                     }
-                    else if (FormalParams[i].IsIndexable && (FormalParams[i].IsIndexable == StackUtils.IsArray(args[i])))
+                    else if (FormalParams[i].IsIndexable && (FormalParams[i].IsIndexable == args[i].IsArray))
                     {
                         continue;
 
                     }
-                    else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == StackUtils.IsArray(args[i])))
+                    else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == args[i].IsArray))
                     {
                         continue;
 
@@ -223,7 +223,7 @@ namespace ProtoCore
 
                         // If its a default argumnet, then it wasnt provided by the caller
                         // The rcvdType is the type of the argument signature
-                        if (args[i].optype == AddressType.DefaultArg)
+                        if (args[i].IsDefaultArgument)
                         {
                             rcvdType = FormalParams[i].UID; 
                         }
@@ -249,7 +249,7 @@ namespace ProtoCore
                         if (allowArrayPromotion)
                         {
                             //stop array -> single
-                            if (StackUtils.IsArray(args[i]) && !FormalParams[i].IsIndexable) //Replication code will take care of this
+                            if (args[i].IsArray && !FormalParams[i].IsIndexable) //Replication code will take care of this
                             {
                                 distance = (int)ProcedureDistance.kMaxDistance;
                                 break;
@@ -258,7 +258,7 @@ namespace ProtoCore
                         else
                         {
                             //stop array -> single && single -> array
-                            if (StackUtils.IsArray(args[i]) != FormalParams[i].IsIndexable)
+                            if (args[i].IsArray != FormalParams[i].IsIndexable)
                             //Replication code will take care of this
                             {
                                 distance = (int)ProcedureDistance.kMaxDistance;
@@ -266,7 +266,7 @@ namespace ProtoCore
                             }
                         }
                         
-                        if (FormalParams[i].IsIndexable && (FormalParams[i].IsIndexable == StackUtils.IsArray(args[i])))
+                        if (FormalParams[i].IsIndexable && (FormalParams[i].IsIndexable == args[i].IsArray))
                         {
                             //In case of conversion from double to int, add a conversion score.
                             //There are overloaded methods and the difference is the parameter type between int and double.
@@ -285,7 +285,7 @@ namespace ProtoCore
                                 currentScore = (int)ProcedureDistance.kExactMatchScore;
                             }
                         }
-                        else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == StackUtils.IsArray(args[i])))
+                        else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == args[i].IsArray))
                         {
                             currentScore = (int)ProcedureDistance.kExactMatchScore;
                         }

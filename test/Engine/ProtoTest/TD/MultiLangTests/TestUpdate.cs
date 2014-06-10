@@ -259,7 +259,14 @@ e = b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
-            /*            Object[] v2 = new Object[] { 3, 4, 5 };            Object[] v1 = new Object[] { 2, 3, 4 };            thisTest.Verify("a", v2, 0);            thisTest.Verify("e", v1, 0);            thisTest.Verify("c", v2, 0);            thisTest.Verify("d", v2, 0);            */
+            /*
+            Object[] v2 = new Object[] { 3, 4, 5 };
+            Object[] v1 = new Object[] { 2, 3, 4 };
+            thisTest.Verify("a", v2, 0);
+            thisTest.Verify("e", v1, 0);
+            thisTest.Verify("c", v2, 0);
+            thisTest.Verify("d", v2, 0);
+            */
         }
 
         [Test]
@@ -285,7 +292,12 @@ f = d;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
 
-            /*            thisTest.Verify("d", 3, 0);            thisTest.Verify("b", 3, 0);            thisTest.Verify("e", 2, 0);            thisTest.Verify("f", 3, 0);            */
+            /*
+            thisTest.Verify("d", 3, 0);
+            thisTest.Verify("b", 3, 0);
+            thisTest.Verify("e", 2, 0);
+            thisTest.Verify("f", 3, 0);
+            */
         }
 
         [Test]
@@ -816,8 +828,67 @@ a1 = 5;
             Object v1 = null;
             thisTest.Verify("y", v1, 0);
         }
-        /*        
-[Test]        [Category ("SmokeTest")] public void T18_Update_Variables_In_Inner_Assoc()        {            string src = string.Format("{0}{1}", testPath, "T18_Update_Variables_In_Inner_Assoc.ds");            fsr.LoadAndPreStart(src, runnerConfig);            ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint            {                CharNo = 8,                LineNo = 9,                SourceLocation = new ProtoCore.CodeModel.CodeFile                {                    FilePath = Path.GetFullPath(src)                }            };            fsr.ToggleBreakpoint(cp);            cp = new ProtoCore.CodeModel.CodePoint            {                CharNo = 9,                LineNo = 13,                SourceLocation = new ProtoCore.CodeModel.CodeFile                {                    FilePath = Path.GetFullPath(src)                }            };            fsr.ToggleBreakpoint(cp);            cp = new ProtoCore.CodeModel.CodePoint            {                CharNo = 9,                LineNo = 14,                SourceLocation = new ProtoCore.CodeModel.CodeFile                {                    FilePath = Path.GetFullPath(src)                }            };            fsr.ToggleBreakpoint(cp);            ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();            thisTest.DebugModeVerification(vms.mirror, "c", 1);            thisTest.DebugModeVerification(vms.mirror, "b", 2);            thisTest.DebugModeVerification(vms.mirror, "x", 4);            thisTest.DebugModeVerification(vms.mirror, "d", 3);            fsr.Run();            thisTest.DebugModeVerification(vms.mirror, "c", 4);            thisTest.DebugModeVerification(vms.mirror, "b", 3);            thisTest.DebugModeVerification(vms.mirror, "x", 4);            thisTest.DebugModeVerification(vms.mirror, "d", 6);            fsr.Run();            thisTest.DebugModeVerification(vms.mirror, "c", 4);            thisTest.DebugModeVerification(vms.mirror, "b", 8);            thisTest.DebugModeVerification(vms.mirror, "x", 8);            thisTest.DebugModeVerification(vms.mirror, "d", 6);            fsr.Run();            thisTest.DebugModeVerification(vms.mirror, "c", 4);            thisTest.DebugModeVerification(vms.mirror, "b", 7);            thisTest.DebugModeVerification(vms.mirror, "x", 7);            thisTest.DebugModeVerification(vms.mirror, "d", 6);        }                */
+        /*
+        
+[Test]
+        [Category ("SmokeTest")]
+ public void T18_Update_Variables_In_Inner_Assoc()
+        {
+            string src = string.Format("{0}{1}", testPath, "T18_Update_Variables_In_Inner_Assoc.ds");
+            fsr.LoadAndPreStart(src, runnerConfig);
+            ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
+            {
+                CharNo = 8,
+                LineNo = 9,
+                SourceLocation = new ProtoCore.CodeModel.CodeFile
+                {
+                    FilePath = Path.GetFullPath(src)
+                }
+            };
+            fsr.ToggleBreakpoint(cp);
+            cp = new ProtoCore.CodeModel.CodePoint
+            {
+                CharNo = 9,
+                LineNo = 13,
+                SourceLocation = new ProtoCore.CodeModel.CodeFile
+                {
+                    FilePath = Path.GetFullPath(src)
+                }
+            };
+            fsr.ToggleBreakpoint(cp);
+            cp = new ProtoCore.CodeModel.CodePoint
+            {
+                CharNo = 9,
+                LineNo = 14,
+                SourceLocation = new ProtoCore.CodeModel.CodeFile
+                {
+                    FilePath = Path.GetFullPath(src)
+                }
+            };
+            fsr.ToggleBreakpoint(cp);
+            ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();
+            thisTest.DebugModeVerification(vms.mirror, "c", 1);
+            thisTest.DebugModeVerification(vms.mirror, "b", 2);
+            thisTest.DebugModeVerification(vms.mirror, "x", 4);
+            thisTest.DebugModeVerification(vms.mirror, "d", 3);
+            fsr.Run();
+            thisTest.DebugModeVerification(vms.mirror, "c", 4);
+            thisTest.DebugModeVerification(vms.mirror, "b", 3);
+            thisTest.DebugModeVerification(vms.mirror, "x", 4);
+            thisTest.DebugModeVerification(vms.mirror, "d", 6);
+            fsr.Run();
+            thisTest.DebugModeVerification(vms.mirror, "c", 4);
+            thisTest.DebugModeVerification(vms.mirror, "b", 8);
+            thisTest.DebugModeVerification(vms.mirror, "x", 8);
+            thisTest.DebugModeVerification(vms.mirror, "d", 6);
+            fsr.Run();
+            thisTest.DebugModeVerification(vms.mirror, "c", 4);
+            thisTest.DebugModeVerification(vms.mirror, "b", 7);
+            thisTest.DebugModeVerification(vms.mirror, "x", 7);
+            thisTest.DebugModeVerification(vms.mirror, "d", 6);
+        }
+        
+        */
         [Test, Ignore]
         [Category("SmokeTest")]
         [Category("Cyclic")]
@@ -1342,7 +1413,7 @@ p1 = 2;
 p2 = p1+2;
 p1 = true;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("p2", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("p2", 0).DsasmValue.IsNull);
         }
 
         [Test]
@@ -1355,7 +1426,7 @@ y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("y", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("y", 0).DsasmValue.IsNull);
         }
 
         [Test]
@@ -1413,7 +1484,7 @@ a;
 	a = x;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1466,7 +1537,7 @@ class A
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.Fail("1459777 - Sprint 17 : Rev 1526 : Design Issue : When class property is updated the the variables derived from the class instance should be updated ? ");
-            Assert.IsTrue((ProtoCore.DSASM.AddressType)mirror.GetValue("d", 1).DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("d", 1).DsasmValue.IsNull);
         }
 
         [Test]
@@ -3314,7 +3385,11 @@ y = x.a;";
             string error = "1467261 Sprint25: rev 3543: False Cyclic dependency error message for valid code";
 
             String code =
-@"a = 2;b = 2 * a;c = a + b;a = 4;";
+@"a = 2;
+b = 2 * a;
+c = a + b;
+a = 4;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("c", 12);
         }
@@ -3397,7 +3472,13 @@ x = c1.Pt;
         public void T45_Defect_1467191_Update_Inline_Condition()
         {
             String code =
- @"x = 3;a1 = { 1, 2};a2 = 3;a = x > 2 ? a2: a1;a2 = 5;x = 1;a1[0] = 0;";
+ @"x = 3;
+a1 = { 1, 2};
+a2 = 3;
+a = x > 2 ? a2: a1;
+a2 = 5;
+x = 1;
+a1[0] = 0;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new Object[] { 0, 2 });
         }
@@ -3407,7 +3488,18 @@ x = c1.Pt;
         public void T45_Defect_1467191_Update_Inline_Condition_2()
         {
             String code =
- @"def foo ( x1 ){    return = x1 + 1;}x = 3;a1 = { 1, 2};a2 = 3;a = x > 2 ? foo(a2): foo(a1);a2 = 5;x = 1;a1[0] = 0;";
+ @"
+def foo ( x1 )
+{
+    return = x1 + 1;
+}
+x = 3;
+a1 = { 1, 2};
+a2 = 3;
+a = x > 2 ? foo(a2): foo(a1);
+a2 = 5;
+x = 1;
+a1[0] = 0;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new Object[] { 1, 3 });
         }
@@ -3417,7 +3509,18 @@ x = c1.Pt;
         public void T45_Defect_1467191_Update_Inline_Condition_3()
         {
             String code =
- @"def foo ( x, a2, a1:int[] ){   y = x > 2 ? a2: a1;   return = y;}a1 = { 1, 2 };a2 = 5;x = 3;a = foo ( x, a2, a1 );x = 1;a1[0] = 0;";
+ @"
+def foo ( x, a2, a1:int[] )
+{
+   y = x > 2 ? a2: a1;
+   return = y;
+}
+a1 = { 1, 2 };
+a2 = 5;
+x = 3;
+a = foo ( x, a2, a1 );
+x = 1;
+a1[0] = 0;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new Object[] { 0, 2 });
         }
@@ -3427,7 +3530,18 @@ x = c1.Pt;
         public void T46_Defect_1467245()
         {
             String code =
- @"A = 10;              // assignment of single literal valueB = 2*A;              // expression involving previously defined variablesA = A + 1;            // expressions modifying an existing variable;A = 15;               // redefine A, removing modifierA = {1,2,3,4};         // redefine A as a collectionA = 1..10..2;          // redefine A as a range expression (start..end..inc)A = 1..10..~4;         // redefine A as a range expression (start..end..approx_inc)A = 1..10..#4;         // redefine A as a range expression (start..end..no_of_incs)A = A + 1;         // modifying A as a range expressionA = 1..10..2;  ";
+ @"
+A = 10;              // assignment of single literal value
+B = 2*A;              // expression involving previously defined variables
+A = A + 1;            // expressions modifying an existing variable;
+A = 15;               // redefine A, removing modifier
+A = {1,2,3,4};         // redefine A as a collection
+A = 1..10..2;          // redefine A as a range expression (start..end..inc)
+A = 1..10..~4;         // redefine A as a range expression (start..end..approx_inc)
+A = 1..10..#4;         // redefine A as a range expression (start..end..no_of_incs)
+A = A + 1;         // modifying A as a range expression
+A = 1..10..2;  
+";
             string errmsg = "";// "DNL-1462143 Sprint 19 : Rev 1912 : Update Design Issue : Redefinition of a variable should ensure there are no more updates on changes in RHS of older definitions";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("B", new Object[] { 2, 6, 10, 14, 18 }); // prev language
@@ -3438,7 +3552,21 @@ x = c1.Pt;
         public void T46_Defect_1467245_2()
         {
             String code =
- @"class A{            Pt : double;            constructor A (pt : double)                {                                Pt = pt;                }}t = 0.0..3.0;c = A.A ( t );x = c.Pt;c = A.A ( c[0].Pt );c = A.A ( c.Pt ); ";
+ @"
+class A
+{        
+    Pt : double;        
+    constructor A (pt : double)            
+    {                        
+        Pt = pt;            
+    }
+}
+t = 0.0..3.0;
+c = A.A ( t );
+x = c.Pt;
+c = A.A ( c[0].Pt );
+c = A.A ( c.Pt ); 
+";
             string errmsg = "";// "DNL-1462143 Sprint 19 : Rev 1912 : Update Design Issue : Redefinition of a variable should ensure there are no more updates on changes in RHS of older definitions";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 0.0);
@@ -3449,7 +3577,12 @@ x = c1.Pt;
         public void T46_Defect_1467275()
         {
             String code =
- @"a = {0,1,2};t = {10,11,12};a[0] = t[0];t[1] = a[1]; ";
+ @"
+a = {0,1,2};
+t = {10,11,12};
+a[0] = t[0];
+t[1] = a[1]; 
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { 10, 1, 2 });
@@ -3460,7 +3593,22 @@ x = c1.Pt;
         public void T46_Defect_1467275_2()
         {
             String code =
- @"class A{    a : int[];    t : int[];    constructor A()    {        a = {0,1,2};        t = {10,11,12};        a[0] = t[0];        t[1] = a[1];     }}a1 = A.A();a = a1.a;";
+ @"
+class A
+{
+    a : int[];
+    t : int[];
+    constructor A()
+    {
+        a = {0,1,2};
+        t = {10,11,12};
+        a[0] = t[0];
+        t[1] = a[1]; 
+    }
+}
+a1 = A.A();
+a = a1.a;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { 10, 1, 2 });
@@ -3471,7 +3619,27 @@ x = c1.Pt;
         public void T46_Defect_1467275_3()
         {
             String code =
- @"class A{    a : int[];    t : int[];    constructor A()    {        a = {0,1,2};        t = {10,11,12};            }    def foo ()    {        a[0] = t[0];        t[1] = a[1];         return = null;    }}a1 = A.A();dummy = a1.foo();a = a1.a;";
+ @"
+class A
+{
+    a : int[];
+    t : int[];
+    constructor A()
+    {
+        a = {0,1,2};
+        t = {10,11,12};        
+    }
+    def foo ()
+    {
+        a[0] = t[0];
+        t[1] = a[1]; 
+        return = null;
+    }
+}
+a1 = A.A();
+dummy = a1.foo();
+a = a1.a;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { 10, 1, 2 });
@@ -3482,7 +3650,17 @@ x = c1.Pt;
         public void T47_Defect_1467092()
         {
             String code =
- @"def foo ( x ){    return = x + 1;}x = {1,2,3};b = 0;y1 = x[b];y2 = x[foo(b)];b = 1;";
+ @"
+def foo ( x )
+{
+    return = x + 1;
+}
+x = {1,2,3};
+b = 0;
+y1 = x[b];
+y2 = x[foo(b)];
+b = 1;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y1", 2);
@@ -3494,7 +3672,12 @@ x = c1.Pt;
         public void T48_Defect_1467276()
         {
             String code =
- @"a = {10,11,12};t = 0;i = a[t];t = 2; // expected i = 12";
+ @"
+a = {10,11,12};
+t = 0;
+i = a[t];
+t = 2; // expected i = 12
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("i", 12);
@@ -3505,7 +3688,20 @@ x = c1.Pt;
         public void T49_Defect_1461985()
         {
             String code =
- @"class A{x:int = 3; }a = A.A();a.x = 2;b1 = a.x;c = [Imperative]{a.x = 4;return = a.x;} ";
+ @"
+class A
+{
+x:int = 3; 
+}
+a = A.A();
+a.x = 2;
+b1 = a.x;
+c = [Imperative]
+{
+a.x = 4;
+return = a.x;
+} 
+";
             string errmsg = "";//1467385: Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", 4);
@@ -3517,7 +3713,19 @@ x = c1.Pt;
         public void T49_Defect_1461985_2()
         {
             String code =
- @"totalLength = 0;[Imperative]{                while (totalLength < 20) // create a simple outer loop                {                                [Associative] // within that loop build an associative model                                {                                                totalLength  = totalLength + 1;                                }                                              }}";
+ @"
+totalLength = 0;
+[Imperative]
+{
+                while (totalLength < 20) // create a simple outer loop
+                {
+                                [Associative] // within that loop build an associative model
+                                {
+                                                totalLength  = totalLength + 1;
+                                }                              
+                }
+}
+";
             // Assert.Fail("Suspected of crashing NUnit");
             string errmsg = "";//1461985 - Sprint 19 : Rev 1880 : Cross Language Update issue : When class properties are updated in different blocks the update is not happening as expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3529,7 +3737,26 @@ x = c1.Pt;
         public void T49_Defect_1461985_3()
         {
             String code =
- @"class A{    x:int = 3; }a = A.A();totalLength = a.x;i = 0;[Imperative]{    while (a.x < 5)     {        [Associative]         {            a.x = a.x + 1;            i = i + 1;        }                                  }}";
+ @"
+class A
+{
+    x:int = 3; 
+}
+a = A.A();
+totalLength = a.x;
+i = 0;
+[Imperative]
+{
+    while (a.x < 5) 
+    {
+        [Associative] 
+        {
+            a.x = a.x + 1;
+            i = i + 1;
+        }                              
+    }
+}
+";
             //Assert.Fail("Suspected of crashing NUnit");
             string errmsg = "";//1461985 - Sprint 19 : Rev 1880 : Cross Language Update issue : When class properties are updated in different blocks the update is not happening as expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3543,7 +3770,37 @@ x = c1.Pt;
         public void T49_Defect_1461985_4()
         {
             String code =
- @"class A{}totalLength = 0;i = 4;b = 0;[Imperative]{	while (totalLength < 3) // create a simple outer loop	{		[Associative] // within that loop build an associative model		{			a = 0..i;			[Imperative] // within the associative model start some imperative scripting			{				for (j in a) 				{					if(j%2==0) 					{						a[j] = 0;					}				}			}					b = a + 1;			totalLength  = totalLength +1;		}		i = i + 1; 	}}";
+ @"
+class A
+{
+}
+totalLength = 0;
+i = 4;
+b = 0;
+[Imperative]
+{
+	while (totalLength < 3) // create a simple outer loop
+	{
+		[Associative] // within that loop build an associative model
+		{
+			a = 0..i;
+			[Imperative] // within the associative model start some imperative scripting
+			{
+				for (j in a) 
+				{
+					if(j%2==0) 
+					{
+						a[j] = 0;
+					}
+				}
+			}		
+			b = a + 1;
+			totalLength  = totalLength +1;
+		}
+		i = i + 1; 
+	}
+}
+";
             //Assert.Fail("Suspected of crashing NUnit");
             string errmsg = "";//1461985 - Sprint 19 : Rev 1880 : Cross Language Update issue : When class properties are updated in different blocks the update is not happening as expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3558,7 +3815,26 @@ x = c1.Pt;
         public void T50_Defect_1466076()
         {
             String code =
- @"class A{    a : int; }class B extends A {    b : var; }def foo ( x ){    x.b = 2;    return = true;}y = B.B();y.b = 1;z = y.b;test = foo ( y ) ;z2 = z; ";
+ @"
+class A
+{
+    a : int; 
+}
+class B extends A 
+{
+    b : var; 
+}
+def foo ( x )
+{
+    x.b = 2;
+    return = true;
+}
+y = B.B();
+y.b = 1;
+z = y.b;
+test = foo ( y ) ;
+z2 = z; 
+";
             string errmsg = "1467385 - Sprint 27 - rev 4219 - valid update testcase throws cyclic dependancy error ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z2", 1);
@@ -3568,11 +3844,37 @@ x = c1.Pt;
         public void T51_Defect_1461388()
         {
             String code =
- @"b = 2;a = { 0, 1, 2 };c = 0;[Imperative]{    d = a + 1;    [Associative]    {        b = a  + 1;        a = { c, c } ;        [Imperative]        {            for ( i in a )            {                a[c] = i + 1;                c = c + 1;            }                    }    }}c = 10;";
+ @"
+b = 2;
+a = { 0, 1, 2 };
+c = 0;
+[Imperative]
+{
+    d = a + 1;
+    [Associative]
+    {
+        b = a  + 1;
+        a = { c, c } ;
+        [Imperative]
+        {
+            for ( i in a )
+            {
+                a[c] = i + 1;
+                c = c + 1;
+            }            
+        }
+    }
+}
+c = 10;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
-            /*            thisTest.Verify("a", new Object[] { 2, 2 });            thisTest.Verify("b", new Object[] { 3, 3 });            thisTest.Verify("c", 10);            */
+            /*
+            thisTest.Verify("a", new Object[] { 2, 2 });
+            thisTest.Verify("b", new Object[] { 3, 3 });
+            thisTest.Verify("c", 10);
+            */
         }
 
         [Test]
@@ -3580,7 +3882,20 @@ x = c1.Pt;
         public void T52_Defect_1459478()
         {
             String code =
-@"class A{    x :var[];    constructor A (x1:var[])    {        x1 = x1 + 1;        x = x1;    }   }a = 0..4..1;x = A.A(a);test = x.x;";
+@"
+class A
+{
+    x :var[];
+    constructor A (x1:var[])
+    {
+        x1 = x1 + 1;
+        x = x1;
+    }   
+}
+a = 0..4..1;
+x = A.A(a);
+test = x.x;
+";
             string errmsg = "1467309 - rev 3786 : Warning:Couldn't decide which function to execute... coming from valid code";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 1, 2, 3, 4, 5 });
@@ -3591,7 +3906,26 @@ x = c1.Pt;
         public void T52_Defect_1459478_2()
         {
             String code =
-@"class A{    x :var[];    constructor A (x1:var[])    {        x1 = x1 + 1;        x = x1;    }    def foo ( a : var[] )     {        a[0] = a[0] + 1;        return = a;    }}a = 0..4..1;x = A.A(a);test = x.x;y = x.foo (a );";
+@"
+class A
+{
+    x :var[];
+    constructor A (x1:var[])
+    {
+        x1 = x1 + 1;
+        x = x1;
+    }
+    def foo ( a : var[] ) 
+    {
+        a[0] = a[0] + 1;
+        return = a;
+    }
+}
+a = 0..4..1;
+x = A.A(a);
+test = x.x;
+y = x.foo (a );
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { 0, 1, 2, 3, 4 });
@@ -3604,7 +3938,22 @@ x = c1.Pt;
         public void T53_Defect_1467086()
         {
             String code =
-@"class A{    x :var[];    constructor A (x1:var[])    {                x = x1;    }}a = 0..4..1;x = A.A(a);test1 = x.x;test2 = x.x;test1 = test1 + 1;";
+@"
+class A
+{
+    x :var[];
+    constructor A (x1:var[])
+    {
+        
+        x = x1;
+    }
+}
+a = 0..4..1;
+x = A.A(a);
+test1 = x.x;
+test2 = x.x;
+test1 = test1 + 1;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test2", new Object[] { 0, 1, 2, 3, 4 });
@@ -3617,7 +3966,21 @@ x = c1.Pt;
         public void T53_Defect_1467086_2()
         {
             String code =
-@"class A{    x :var[];    constructor A (x1:var[])    {                x = x1;    }}a = 0..4..1;x = A.A(a);test1 = x.x;a = a + 1;";
+@"
+class A
+{
+    x :var[];
+    constructor A (x1:var[])
+    {
+        
+        x = x1;
+    }
+}
+a = 0..4..1;
+x = A.A(a);
+test1 = x.x;
+a = a + 1;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new Object[] { 1, 2, 3, 4, 5 });
@@ -3770,7 +4133,19 @@ a =
         [Category("SmokeTest")]
         public void T54_Defect_1467185_CrossLinked_Modifier_Blocks()
         {
-            String code = @"            a1 =             {                    5 => a1@initial;                     + b1@initial => a1@subsequent;                     + 2;            }            b1 =             {			        a1@initial => b1@initial;                     + a1@subsequent => b1@subsequent;                     + 3;            }";
+            String code = @"
+            a1 = 
+            {
+                    5 => a1@initial;
+                     + b1@initial => a1@subsequent;
+                     + 2;
+            }
+            b1 = 
+            {
+			        a1@initial => b1@initial;
+                     + a1@subsequent => b1@subsequent;
+                     + 3;
+            }";
             string errmsg = "DNL-1467185 Modifier Blocks: Support to be added for exclusion of explicit variable prefixing of instance method/property/operator calls";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a1@initial", 5);
@@ -3785,7 +4160,17 @@ a =
         [Category("SmokeTest")]
         public void T55_Defect_1467341_Update_Causing_Cyclic_Dep()
         {
-            String code = @"def foo(arr: double){	return = arr;}z=0;p1 = z+1;p2 = z+2;points = {p1,p2};a = foo(points);z = 2;";
+            String code = @"
+def foo(arr: double)
+{
+	return = arr;
+}
+z=0;
+p1 = z+1;
+p2 = z+2;
+points = {p1,p2};
+a = foo(points);
+z = 2;";
             string errmsg = "DNL-1467341 rev 3997: REGRESSION : false cyclic dependency detected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { 3.0, 4.0 });
@@ -3795,7 +4180,9 @@ a =
         [Category("SmokeTest")]
         public void T56_Defect_1467342_Inline_Condition_replication()
         {
-            String code = @"a = { 1, 2};x = a > 1 ? a : null; ";
+            String code = @"
+a = { 1, 2};
+x = a > 1 ? a : null; ";
             Object n1 = null;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3806,7 +4193,22 @@ a =
         [Category("SmokeTest")]
         public void T57_Defect_1467399()
         {
-            String code = @"class A{    a : int[];            }def foo ( x1 : A){x1.a= -1;    return = x1;}a1 = A.A();a1.a = {1,2};b = a1.a;a1 = foo ( a1);// received b = {1,2} - 10,11,12,13,11,12  - wrong  ";
+            String code = @"
+class A
+{
+    a : int[];            
+}
+def foo ( x1 : A)
+{
+x1.a= -1;
+    return = x1;
+}
+a1 = A.A();
+a1.a = {1,2};
+b = a1.a;
+a1 = foo ( a1);
+// received b = {1,2} - 10,11,12,13,11,12  - wrong 
+ ";
             Object n1 = null;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3817,7 +4219,22 @@ a =
         [Category("SmokeTest")]
         public void T57_Defect_1467399_2()
         {
-            String code = @"class A{    a : int[];            }def foo ( x1 : A){    x1.a= -1;    return = x1;}a1 = A.A();a1.a = {1,2};b = a1.a;a1.a = -1;// b= {-1} , received - 10,11,12,13 - correct  ";
+            String code = @"
+class A
+{
+    a : int[];            
+}
+def foo ( x1 : A)
+{
+    x1.a= -1;
+    return = x1;
+}
+a1 = A.A();
+a1.a = {1,2};
+b = a1.a;
+a1.a = -1;
+// b= {-1} , received - 10,11,12,13 - correct 
+ ";
             Object n1 = null;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3828,7 +4245,27 @@ a =
         [Category("SmokeTest")]
         public void T57_Defect_1467399_3()
         {
-            String code = @"class A{    a : int[];            }def foo ( x1 : A){    x1.a = -1;    return = x1;}def foo1 ( x1 : A){    x1.a = 1;    return = x1;}a1 = A.A();a1 = foo ( a1);b = a1.a;a1 = foo1 ( a1);//received b =1 - 15,16,17,18,17 - correct  ";
+            String code = @"
+class A
+{
+    a : int[];            
+}
+def foo ( x1 : A)
+{
+    x1.a = -1;
+    return = x1;
+}
+def foo1 ( x1 : A)
+{
+    x1.a = 1;
+    return = x1;
+}
+a1 = A.A();
+a1 = foo ( a1);
+b = a1.a;
+a1 = foo1 ( a1);
+//received b =1 - 15,16,17,18,17 - correct 
+ ";
             Object n1 = null;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3839,7 +4276,23 @@ a =
         [Category("SmokeTest")]
         public void T57_Defect_1467399_4()
         {
-            String code = @"class A{    a : int[];            }def foo ( x1 : A){    x1.a = -1;    return = x1;}a1 = A.A();a2 = A.A();a1 = foo ( a1);b = a1.a;a1.a = {1,2};// received - b- {1,2} 10,11,12,13 - correct ";
+            String code = @"
+class A
+{
+    a : int[];            
+}
+def foo ( x1 : A)
+{
+    x1.a = -1;
+    return = x1;
+}
+a1 = A.A();
+a2 = A.A();
+a1 = foo ( a1);
+b = a1.a;
+a1.a = {1,2};
+// received - b- {1,2} 10,11,12,13 - correct
+ ";
             Object n1 = null;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3850,7 +4303,18 @@ a =
         [Category("SmokeTest")]
         public void T58_Defect_1467396_Update_In_Global_Variables()
         {
-            String code = @"def foo (){    a = 1;    b = a + 1;        return = a + b;    }b = 1;a = b;test = foo();";
+            String code = @"
+def foo ()
+{
+    a = 1;
+    b = a + 1;    
+    return = a + b;
+    
+}
+b = 1;
+a = b;
+test = foo();
+";
             string errmsg = "DNL-1467567 Regression : Update of global variables in function call giving different result now : need to clarify the design intent here";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3864,7 +4328,16 @@ a =
         [Category("SmokeTest")]
         public void T58_Defect_1467396_Update_In_Global_Variables_2()
         {
-            String code = @"def foo(){    a = 1;    return = a + 1;}a = 2;b = a + 1;c = foo();";
+            String code = @"
+def foo()
+{
+    a = 1;
+    return = a + 1;
+}
+a = 2;
+b = a + 1;
+c = foo();
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
@@ -3919,7 +4392,29 @@ i = 0;
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope()
         {
-            String code = @"class A{    a : int;    constructor A ( a1 : int )    {    a = a1; }}x = { 1, 2 };y1 = A.A(x);y2 = { y1[0].a, y1[1].a };[Imperative]{    count = 0;    for ( i in 0..1)    {        //i.a = 0;        x[count] = x[count] + 1;        count = count + 1;    }}";
+            String code = @"
+class A
+{
+    a : int;
+    constructor A ( a1 : int )
+    {
+    a = a1; 
+}
+}
+x = { 1, 2 };
+y1 = A.A(x);
+y2 = { y1[0].a, y1[1].a };
+[Imperative]
+{
+    count = 0;
+    for ( i in 0..1)
+    {
+        //i.a = 0;
+        x[count] = x[count] + 1;
+        count = count + 1;
+    }
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -3930,7 +4425,26 @@ i = 0;
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_2()
         {
-            String code = @"class A{    a : int;    constructor A ( a1 : int )    {    a = a1; }}x = { 1, 2 };y1 = A.A(x);y2 = { y1[0].a, y1[1].a };[Imperative]{    for ( i in y1)    {        i.a = 0;            }}";
+            String code = @"
+class A
+{
+    a : int;
+    constructor A ( a1 : int )
+    {
+    a = a1; 
+}
+}
+x = { 1, 2 };
+y1 = A.A(x);
+y2 = { y1[0].a, y1[1].a };
+[Imperative]
+{
+    for ( i in y1)
+    {
+        i.a = 0;        
+    }
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y2", new Object[] { 1, 2 });
@@ -3940,7 +4454,33 @@ i = 0;
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_3()
         {
-            String code = @"class A{    a : int;    constructor A ( a1 : int )    {    a = a1;     }    def update ( a2 : int )    {        a = a2;        return = true;    }}x = { 1, 2 };y1 = A.A(x);y2 = { y1[0].a, y1[1].a };[Imperative]{     count = 0;    for ( i in y1)    {        temp = y1[count].update(0);         count = count + 1;     }}";
+            String code = @"
+class A
+{
+    a : int;
+    constructor A ( a1 : int )
+    {
+    a = a1; 
+    }
+    def update ( a2 : int )
+    {
+        a = a2;
+        return = true;
+    }
+}
+x = { 1, 2 };
+y1 = A.A(x);
+y2 = { y1[0].a, y1[1].a };
+[Imperative]
+{ 
+    count = 0;
+    for ( i in y1)
+    {
+        temp = y1[count].update(0); 
+        count = count + 1; 
+    }
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y2", new Object[] { 1, 2 });
@@ -3950,7 +4490,32 @@ i = 0;
         [Category("SmokeTest")]
         public void T61_Defect_1467410_Update_In_Class_Properties()
         {
-            String code = @"class Point{    X : double;    Y : double;    Z : double;        constructor ByCartesianCoordinates( x : double, y : double, z : double )    {        X = x;		Y = y;		Z = z;    }         def Translate( x1 : double, y1 : double, z1 : double )    {    	return = Point.ByCartesianCoordinates( X + x1, Y + y1, Z + z1 );    }}a = Point.ByCartesianCoordinates(3, 4, 0);x1 = a.X;y1 = a.Y;z1 = a.Z;a = a.Translate(0, 0, 5);x2 = a.X;y2 = a.Y;z2 = a.Z;";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    Z : double;    
+    constructor ByCartesianCoordinates( x : double, y : double, z : double )
+    {
+        X = x;
+		Y = y;
+		Z = z;
+    }     
+    def Translate( x1 : double, y1 : double, z1 : double )
+    {
+    	return = Point.ByCartesianCoordinates( X + x1, Y + y1, Z + z1 );
+    }
+}
+a = Point.ByCartesianCoordinates(3, 4, 0);
+x1 = a.X;
+y1 = a.Y;
+z1 = a.Z;
+a = a.Translate(0, 0, 5);
+x2 = a.X;
+y2 = a.Y;
+z2 = a.Z;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x1", 3.0);
@@ -3965,7 +4530,35 @@ i = 0;
         [Category("SmokeTest")]
         public void T61_Defect_1467410_Update_In_Class_Properties_2()
         {
-            String code = @"class Point{    X : double;    Y : double;    Z : double;        constructor ByCartesianCoordinates( x : double, y : double, z : double )    {        X = x;		Y = y;		Z = z;    }         def Translate( x1 : double, y1 : double, z1 : double )    {    	X = X + x1;        Y = Y + y1;        Z = Z + z1;        return = null;    }}a = Point.ByCartesianCoordinates(3, 4, 0);x1 = a.X;y1 = a.Y;z1 = a.Z;dummy = a.Translate(0, 0, 5);x2 = a.X;y2 = a.Y;z2 = a.Z;";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    Z : double;    
+    constructor ByCartesianCoordinates( x : double, y : double, z : double )
+    {
+        X = x;
+		Y = y;
+		Z = z;
+    }     
+    def Translate( x1 : double, y1 : double, z1 : double )
+    {
+    	X = X + x1;
+        Y = Y + y1;
+        Z = Z + z1;
+        return = null;
+    }
+}
+a = Point.ByCartesianCoordinates(3, 4, 0);
+x1 = a.X;
+y1 = a.Y;
+z1 = a.Z;
+dummy = a.Translate(0, 0, 5);
+x2 = a.X;
+y2 = a.Y;
+z2 = a.Z;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x1", 3.0);
@@ -3980,7 +4573,21 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484()
         {
-            String code = @"x = 1;g = 10;def f(){    g = g + 1;    return = g;}a = x; c = f(); b = 2; t = a+c; c = a + b; x = 3;";
+            String code = @"
+x = 1;
+g = 10;
+def f()
+{
+    g = g + 1;
+    return = g;
+}
+a = x; 
+c = f(); 
+b = 2; 
+t = a+c; 
+c = a + b; 
+x = 3;
+";
             string errmsg = "1467484 - wrong execution sequence for update ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("g", 11);
@@ -3991,7 +4598,22 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_2()
         {
-            String code = @"a=0;b=0;c=0;m=0;    def foo(){a = 1;b = 2;c = 3;m = a + b + c;    return =true;}z = foo();";
+            String code = @"
+a=0;
+b=0;
+c=0;
+m=0;
+    
+def foo()
+{
+a = 1;
+b = 2;
+c = 3;
+m = a + b + c;
+    return =true;
+}
+z = foo();
+";
             string errmsg = "1467484 - wrong execution sequence for update ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("m", 6);
@@ -4002,7 +4624,20 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_global_1467484_3()
         {
-            String code = @"a;b;c;    def foo(){a = 1;b = a;c = b;    return =true;}z = foo();";
+            String code = @"
+a;
+b;
+c;
+    
+def foo()
+{
+a = 1;
+b = a;
+c = b;
+    return =true;
+}
+z = foo();
+";
             string errmsg = "1467484 - wrong execution sequence for update ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 1);
@@ -4013,7 +4648,15 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_4()
         {
-            String code = @"x = 1; a = x + 1; c = 0; b = 2; t = a+c; c = a + b; x = 3;";
+            String code = @"
+x = 1; 
+a = x + 1; 
+c = 0; 
+b = 2; 
+t = a+c; 
+c = a + b; 
+x = 3;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t", 10);
@@ -4025,7 +4668,14 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_5()
         {
-            String code = @"a = {  1, 2,3 };a = {  0, 2,4 };b = { 1, 2, 3 };c = 1;a = b[c] + 1;c = {1,2};";
+            String code = @"
+a = {  1, 2,3 };
+a = {  0, 2,4 };
+b = { 1, 2, 3 };
+c = 1;
+a = b[c] + 1;
+c = {1,2};
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new object[] { 3, 4 });
@@ -4037,7 +4687,12 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_6()
         {
-            String code = @"c = 1;a = 1;c = a;a = 1;";
+            String code = @"
+c = 1;
+a = 1;
+c = a;
+a = 1;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", 1);
@@ -4048,7 +4703,18 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_7()
         {
-            String code = @"def foo(){    g = g + 1;    return = g;}g = 1;c = foo();a = 1;c = a;a = 1;";
+            String code = @"
+def foo()
+{
+    g = g + 1;
+    return = g;
+}
+g = 1;
+c = foo();
+a = 1;
+c = a;
+a = 1;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", 1);
@@ -4060,7 +4726,14 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_8()
         {
-            String code = @"a = 7;s = ""aa = "" + a;c = a + 2;s = ""cc = "" + c;a = 10;a = 33;";
+            String code = @"
+a = 7;
+s = ""aa = "" + a;
+c = a + 2;
+s = ""cc = "" + c;
+a = 10;
+a = 33;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 33);
@@ -4072,7 +4745,27 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_9()
         {
-            String code = @"class Point{    X : double;    Y : double;    Z : double;    constructor ByCoordinates(x : double, y : double, z : double)    {        X = x;        Y = y;        Z = z;    }}c = 0;x = c > 5 ? 1 : 2;[Imperative]{ c = 10; }a = Point.ByCoordinates(10, 20, 30);b = a;c = Print(b);[Imperative]{ a = { 1, 2, 3, 4, { 5, { 6, { 7, { 8.9 } } } } }; }";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    Z : double;
+    constructor ByCoordinates(x : double, y : double, z : double)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+    }
+}
+c = 0;
+x = c > 5 ? 1 : 2;
+[Imperative]{ c = 10; }
+a = Point.ByCoordinates(10, 20, 30);
+b = a;
+c = Print(b);
+[Imperative]{ a = { 1, 2, 3, 4, { 5, { 6, { 7, { 8.9 } } } } }; }
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 2);
@@ -4085,7 +4778,21 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_10()
         {
-            String code = @"a;b;c;m;n;def foo(){a = 1;b = a;c = b;return =true;}z = foo();";
+            String code = @"
+a;
+b;
+c;
+m;
+n;
+def foo()
+{
+a = 1;
+b = a;
+c = b;
+return =true;
+}
+z = foo();
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1);
@@ -4099,7 +4806,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_11()
         {
-            String code = @"a;b;c;m;n;def foo(){    a = 1;    b = a;    c = b;    m = a + b + c;    n = m;    a = 2;    return =true;}z = foo();";
+            String code = @"
+a;
+b;
+c;
+m;
+n;
+def foo()
+{
+    a = 1;
+    b = a;
+    c = b;
+    m = a + b + c;
+    n = m;
+    a = 2;
+    return =true;
+}
+z = foo();
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4114,7 +4838,14 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_12()
         {
-            String code = @"a = 2;b = 3;c = a + b;dummy = c + 1;c = a * b;a = 3;";
+            String code = @"
+a = 2;
+b = 3;
+c = a + b;
+dummy = c + 1;
+c = a * b;
+a = 3;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 3);
@@ -4129,7 +4860,34 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_13()
         {
-            String code = @"class test{    a;    b;    c;    m;    n;    def foo()    {        a = 1;        b = a;        c = b;        m = a + b + c;        n = m;        a = 2;        return =true;    }}    z = test.test();    y = z.foo();    a = z.a;    b = z.b;    c = z.c;    m = z.m;    n = z.n;   ";
+            String code = @"
+class test
+{
+    a;
+    b;
+    c;
+    m;
+    n;
+    def foo()
+    {
+        a = 1;
+        b = a;
+        c = b;
+        m = a + b + c;
+        n = m;
+        a = 2;
+        return =true;
+    }
+}
+    z = test.test();
+    y = z.foo();
+    a = z.a;
+    b = z.b;
+    c = z.c;
+    m = z.m;
+    n = z.n;
+   
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4144,7 +4902,25 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_14()
         {
-            String code = @"a;b;c;m;n;def foo(){    a = 1;    b = a;    c = b;    m = a + b + c;    n = m;    a = 2;    return =true;}z = foo();   ";
+            String code = @"
+a;
+b;
+c;
+m;
+n;
+def foo()
+{
+    a = 1;
+    b = a;
+    c = b;
+    m = a + b + c;
+    n = m;
+    a = 2;
+    return =true;
+}
+z = foo();
+   
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4159,7 +4935,25 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_15()
         {
-            String code = @"                        a;                        b;                        c;                        m;                        n;                        def foo()                        {                            a = 1;                            b = a;                            c = b;                            m = a + b + c;                            n = m;                            a = 2;                            return =true;                        }                        z = foo();                           ";
+            String code = @"
+                        a;
+                        b;
+                        c;
+                        m;
+                        n;
+                        def foo()
+                        {
+                            a = 1;
+                            b = a;
+                            c = b;
+                            m = a + b + c;
+                            n = m;
+                            a = 2;
+                            return =true;
+                        }
+                        z = foo();
+   
+                        ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4174,7 +4968,19 @@ i = 0;
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_16()
         {
-            String code = @"                a = 7;                s = ""aa = "" + a;                c = a + 2;                s = ""cc = "" + c;                [Imperative]                {                    a = 10;                                }                a = 33;                           ";
+            String code = @"
+                a = 7;
+                s = ""aa = "" + a;
+                c = a + 2;
+                s = ""cc = "" + c;
+                [Imperative]
+                {
+                    a = 10;
+                
+                }
+                a = 33;
+   
+                        ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 33);
@@ -4186,7 +4992,22 @@ i = 0;
         [Category("SmokeTest")]
         public void T63_NoInfiniteLoop()
         {
-            String code = @"b;[Imperative]{    a = 1;    [Associative]    {        b = a;        [Imperative]        {            c = a;            a = {2};        }    }}";
+            String code = @"
+b;
+[Imperative]
+{
+    a = 1;
+    [Associative]
+    {
+        b = a;
+        [Imperative]
+        {
+            c = a;
+            a = {2};
+        }
+    }
+}
+";
             string errmsg = "1467501- Infinite loop for this script";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new object[] { 2 });
@@ -4196,7 +5017,22 @@ i = 0;
         [Category("SmokeTest")]
         public void T63_NoInfiniteLoop_1467501()
         {
-            String code = @"b;[Imperative]{    a = 1;    [Associative]    {        b = a;        [Imperative]        {            c = a;            a = {2};        }    }}";
+            String code = @"
+b;
+[Imperative]
+{
+    a = 1;
+    [Associative]
+    {
+        b = a;
+        [Imperative]
+        {
+            c = a;
+            a = {2};
+        }
+    }
+}
+";
             string errmsg = "1467501- Infinite loop for this script";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new object[] { 2 });
@@ -4206,7 +5042,22 @@ i = 0;
         [Category("SmokeTest")]
         public void T63_NoInfiniteLoop_1467501_2()
         {
-            String code = @"[Imperative]{    a = 1;    [Associative]    {        b = a;        [Imperative]        {            c = a;            d = b;            a = { 2 };        }    }}";
+            String code = @"
+[Imperative]
+{
+    a = 1;
+    [Associative]
+    {
+        b = a;
+        [Imperative]
+        {
+            c = a;
+            d = b;
+            a = { 2 };
+        }
+    }
+}
+";
             string errmsg = "1467501- Infinite loop for this script";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyRuntimeWarningCount(1);
@@ -4216,7 +5067,17 @@ i = 0;
         [Category("SmokeTest")]
         public void T63_NoInfiniteLoop_3_1467519()
         {
-            String code = @"[Imperative]{    a = 1;    c = a;    [Associative]    {        a = 2;    }}";
+            String code = @"
+[Imperative]
+{
+    a = 1;
+    c = a;
+    [Associative]
+    {
+        a = 2;
+    }
+}
+";
             string errmsg = "1467519 - [Design Issue ] should a variable declared in imperative, modified in an inner associative block trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4230,7 +5091,30 @@ i = 0;
         [Category("SmokeTest")]
         public void T64_1467161_Update_ssie_with_class_member_call_1()
         {
-            String code = @"class A{        fx:int;        def foo(x:var)        {                fx = x +10;                return = fx;        }}class B extends A{        fy:var;        constructor B(): base.A()        {                fx = 10;                fy = 20;        }}b = B.B();r1 = b.fx;r2 = b.fy; r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected";
+            String code = @"
+class A
+{
+        fx:int;
+        def foo(x:var)
+        {
+                fx = x +10;
+                return = fx;
+        }
+}
+class B extends A
+{
+        fy:var;
+        constructor B(): base.A()
+        {
+                fx = 10;
+                fy = 20;
+        }
+}
+b = B.B();
+r1 = b.fx;
+r2 = b.fy; 
+r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r1", 11);
@@ -4241,7 +5125,30 @@ i = 0;
         [Category("SmokeTest")]
         public void T64_1467161_Update_issue_with_class_member_call_2()
         {
-            String code = @"class A{        fx:int;        def foo(x:var)        {                fx = x + 10;                return = fx;        }}class B extends A{        fy:var;        constructor B(): base.A()        {                fx = 10;                fy = 20;        }}b = B.B();r1 = b.fx;r2 = b.fy; r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected";
+            String code = @"
+class A
+{
+        fx:int;
+        def foo(x:var)
+        {
+                fx = x + 10;
+                return = fx;
+        }
+}
+class B extends A
+{
+        fy:var;
+        constructor B(): base.A()
+        {
+                fx = 10;
+                fy = 20;
+        }
+}
+b = B.B();
+r1 = b.fx;
+r2 = b.fy; 
+r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r1", 11);
@@ -4252,7 +5159,30 @@ i = 0;
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy()
         {
-            String code = @"class Point{    X : double;    Y : double;    NextPoint: Point;            constructor Point( p : Point)    {        NextPoint = p;    }        def XPlusY()    {        x = NextPoint.X;        y = NextPoint.Y;        temp = x + y;        return = temp;    }}pt1 = Point.Point();pt2 = Point.Point(pt1);pt3 = pt2.XPlusY();";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    NextPoint: Point;
+        
+    constructor Point( p : Point)
+    {
+        NextPoint = p;
+    }
+    
+    def XPlusY()
+    {
+        x = NextPoint.X;
+        y = NextPoint.Y;
+        temp = x + y;
+        return = temp;
+    }
+}
+pt1 = Point.Point();
+pt2 = Point.Point(pt1);
+pt3 = pt2.XPlusY();
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("pt3", 0.0);
@@ -4262,7 +5192,36 @@ i = 0;
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_2()
         {
-            String code = @"class Point{    X : double;    Y : double;    NextPoint: Point;            constructor Point( p : Point)    {        NextPoint = p;    }        def XPlusY()    {        x = NextPoint.X;        y = NextPoint.Y;        temp = x + y;        return = temp;    }}pt1;pt2;pt3;[Imperative]{pt1 = Point.Point();pt2 = Point.Point(pt1);pt3 = pt2.XPlusY();}";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    NextPoint: Point;
+        
+    constructor Point( p : Point)
+    {
+        NextPoint = p;
+    }
+    
+    def XPlusY()
+    {
+        x = NextPoint.X;
+        y = NextPoint.Y;
+        temp = x + y;
+        return = temp;
+    }
+}
+pt1;
+pt2;
+pt3;
+[Imperative]
+{
+pt1 = Point.Point();
+pt2 = Point.Point(pt1);
+pt3 = pt2.XPlusY();
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("pt3", 0.0);
@@ -4272,7 +5231,32 @@ i = 0;
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_3()
         {
-            String code = @"class Point{    X : double;    Y : double;    NextPoint: Point;                  def XPlusY(p:Point)    {        NextPoint = p;        x = NextPoint.X;        y = NextPoint.Y;        temp = x + y;        return = temp;    }}pt1;pt3;[Imperative]{pt1 = Point.Point();pt3 = pt1.XPlusY(pt1);}";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    NextPoint: Point;
+        
+  
+    
+    def XPlusY(p:Point)
+    {
+        NextPoint = p;
+        x = NextPoint.X;
+        y = NextPoint.Y;
+        temp = x + y;
+        return = temp;
+    }
+}
+pt1;
+pt3;
+[Imperative]
+{
+pt1 = Point.Point();
+pt3 = pt1.XPlusY(pt1);
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("pt3", 0.0);
@@ -4282,7 +5266,29 @@ i = 0;
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_4()
         {
-            String code = @"class Point{    X : double;    Y : double;    NextPoint: Point;                   def XPlusY(p:Point)    {        NextPoint = p;        x = NextPoint.X;        y = NextPoint.Y;        temp = x + y;        return = temp;    }}pt1;pt3;pt1 = Point.Point();pt3 = pt1.XPlusY(pt1);";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    NextPoint: Point;
+        
+   
+    
+    def XPlusY(p:Point)
+    {
+        NextPoint = p;
+        x = NextPoint.X;
+        y = NextPoint.Y;
+        temp = x + y;
+        return = temp;
+    }
+}
+pt1;
+pt3;
+pt1 = Point.Point();
+pt3 = pt1.XPlusY(pt1);
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("pt3", 0.0);
@@ -4292,7 +5298,30 @@ i = 0;
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_5()
         {
-            String code = @"class Point{    X : double;    Y : double;    NextPoint: Point;                def XPlusY(p:Point)    {        NextPoint = p;        x = NextPoint.X;        y = NextPoint.Y;        temp = x + y;        return = temp;    }}pt1;pt3;pt1 = Point.Point();pt2 = Point.Point();pt3 = pt1.XPlusY(pt1);pt3 = pt1.XPlusY(pt2);";
+            String code = @"
+class Point
+{
+    X : double;
+    Y : double;
+    NextPoint: Point;
+        
+    
+    def XPlusY(p:Point)
+    {
+        NextPoint = p;
+        x = NextPoint.X;
+        y = NextPoint.Y;
+        temp = x + y;
+        return = temp;
+    }
+}
+pt1;
+pt3;
+pt1 = Point.Point();
+pt2 = Point.Point();
+pt3 = pt1.XPlusY(pt1);
+pt3 = pt1.XPlusY(pt2);
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("pt3", 0.0);
@@ -4302,7 +5331,16 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467483_CyclicDependancy()
         {
-            String code = @"                a = 1;                b = a;                def foo(x)                {                a = b+1;                return = a;                }                r = foo(b);";
+            String code = @"
+                a = 1;
+                b = a;
+                def foo(x)
+                {
+                a = b+1;
+                return = a;
+                }
+                r = foo(b);
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -4314,7 +5352,19 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467483_CyclicDependancy_2()
         {
-            String code = @"            [Imperative]            {                a = 1;                b = a;                def foo(x)                {                a = b+1;                return = a;                }                r = foo(b);            }";
+            String code = @"
+            [Imperative]
+            {
+                a = 1;
+                b = a;
+                def foo(x)
+                {
+                a = b+1;
+                return = a;
+                }
+                r = foo(b);
+            }
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -4324,7 +5374,21 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467512_RighthandsideUpdate_imperative()
         {
-            String code = @"            a = 1 ;                b;                [Imperative]                {                   c = 3;                   i = 0;                    c = { 1, 2, 3 };                    for(i in c)                    {                        b = a;                    }                }                a = 2;";
+            String code = @"
+            a = 1 ;
+                b;
+                [Imperative]
+                {
+                   c = 3;
+                   i = 0;
+                    c = { 1, 2, 3 };
+                    for(i in c)
+                    {
+                        b = a;
+                    }
+                }
+                a = 2;
+";
             string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4335,7 +5399,23 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467512_RighthandsideUpdate_imperative_2()
         {
-            String code = @"            a = 1 ;                b;                [Imperative]                {                   c = 3;                   i = 0;                       while(i < c)                    {                        b = a;                        i = i + 1;                    }                                  }                a = 2;                ";
+            String code = @"
+            a = 1 ;
+                b;
+                [Imperative]
+                {
+                   c = 3;
+                   i = 0;
+    
+                   while(i < c)
+                    {
+                        b = a;
+                        i = i + 1;
+                    }
+                  
+                }
+                a = 2;
+                ";
             string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4345,7 +5425,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467512_RighthandsideUpdate_imperative_3()
         {
-            String code = @"          a = 1 ;            b;            [Imperative]            {               c = 3;               i = 0;                def foo(a:int)            {                    b = a;                    i = i + 1;            }                c = foo(a);             }            a = 2;                ";
+            String code = @"
+          a = 1 ;
+            b;
+            [Imperative]
+            {
+               c = 3;
+               i = 0;
+    
+            def foo(a:int)
+            {
+                    b = a;
+                    i = i + 1;
+            }
+                c = foo(a);
+ 
+            }
+            a = 2;
+                ";
             string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4355,7 +5452,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467512_RighthandsideUpdate_imperative_4()
         {
-            String code = @"            a = 1 ;            b;            [Imperative]            {               c = 3;               i = 0;                if (d)                {                     b = a;                }                else                {                    b = a;                }            }            a = 2;                ";
+            String code = @"
+            a = 1 ;
+            b;
+            [Imperative]
+            {
+               c = 3;
+               i = 0;
+                if (d)
+                {
+                     b = a;
+                }
+                else
+                {
+                    b = a;
+                }
+            }
+            a = 2;
+                ";
             string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4365,7 +5479,25 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467512_RighthandsideUpdate_imperative_5()
         {
-            String code = @"            a = 1 ;            b;            [Imperative]            {               c = 3;               i = 0;                d=1;                if (d)                {                     b = a;                }                else                {                    b = a;                }            }            a = 2;                ";
+            String code = @"
+            a = 1 ;
+            b;
+            [Imperative]
+            {
+               c = 3;
+               i = 0;
+                d=1;
+                if (d)
+                {
+                     b = a;
+                }
+                else
+                {
+                    b = a;
+                }
+            }
+            a = 2;
+                ";
             string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4375,7 +5507,29 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467512_RighthandsideUpdate_imperative_6()
         {
-            String code = @"           a = 1 ;            b;            [Imperative]            {               c = 3;               i = 0;                e;                if (d)                {                     b = a;                }                else if (e)                {                    b = a;                }                else                {                    b = a;                }            }            a = 2;                ";
+            String code = @"
+           a = 1 ;
+            b;
+            [Imperative]
+            {
+               c = 3;
+               i = 0;
+                e;
+                if (d)
+                {
+                     b = a;
+                }
+                else if (e)
+                {
+                    b = a;
+                }
+                else
+                {
+                    b = a;
+                }
+            }
+            a = 2;
+                ";
             string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4385,7 +5539,17 @@ i = 0;
         [Category("SmokeTest")]
         public void T66_1467513_RighthandsideUpdate_innerassociative()
         {
-            String code = @"            b;            a = 1 ;            [Associative]            {               c = 3;               i = 0;               b = a;            }            a = 2;                 ";
+            String code = @"
+            b;
+            a = 1 ;
+            [Associative]
+            {
+               c = 3;
+               i = 0;
+               b = a;
+            }
+            a = 2; 
+                ";
             string errmsg = "1467513 - [Design issue]Update on the inner associatve block is not triggered ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4395,7 +5559,19 @@ i = 0;
         [Category("SmokeTest")]
         public void T67_CrossLanguage_1467520()
         {
-            String code = @" a=1; d=100; [Imperative] {    d = a;    } [Associative]    {        a = 5;    }";
+            String code = @"
+ a=1;
+ d=100;
+ [Imperative]
+ {
+    d = a;
+   
+ }
+ [Associative]
+    {
+        a = 5;
+    }
+";
             string errmsg = "1467520 [Regression] Cross language update is not correct if a variable used in imperative is modified in associative";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 5);
@@ -4407,7 +5583,22 @@ i = 0;
         [Category("SmokeTest")]
         public void T68_Cyclic_globalvariable_1467439()
         {
-            String code = @"def foo(){    a = b;    return = null;}def bar(){    b = a;    return = null;}a = 1;b = 0;r = bar();q = a;";
+            String code = @"
+def foo()
+{
+    a = b;
+    return = null;
+}
+def bar()
+{
+    b = a;
+    return = null;
+}
+a = 1;
+b = 0;
+r = bar();
+q = a;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("q", 1);
@@ -4417,7 +5608,28 @@ i = 0;
         [Category("SmokeTest")]
         public void T69_Cyclic_globalvariable_1467439()
         {
-            String code = @"a;b;q;[Imperative]{def foo(){    a = b;    return = null;}def bar(){    b = a;    return = null;}a = 1;b = 0;q = a;r = bar();}";
+            String code = @"
+a;
+b;
+q;
+[Imperative]
+{
+def foo()
+{
+    a = b;
+    return = null;
+}
+def bar()
+{
+    b = a;
+    return = null;
+}
+a = 1;
+b = 0;
+q = a;
+r = bar();
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("q", 1);
@@ -4427,7 +5639,28 @@ i = 0;
         [Category("SmokeTest")]
         public void T70_Cyclic_globalvariable_1467439()
         {
-            String code = @"a;b;q;[Associative]{def foo(){    a = b;    return = null;}def bar(){    b = a;    return = null;}a = 1;b = 0;q = a;r = bar();}";
+            String code = @"
+a;
+b;
+q;
+[Associative]
+{
+def foo()
+{
+    a = b;
+    return = null;
+}
+def bar()
+{
+    b = a;
+    return = null;
+}
+a = 1;
+b = 0;
+q = a;
+r = bar();
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("q", 1);
@@ -4437,7 +5670,26 @@ i = 0;
         [Category("SmokeTest")]
         public void T71_Cyclic_globalvariable_1467439()
         {
-            String code = @"class test{def foo(){    a = b;    return = null;}def bar(){    b = a;    return = null;}}a = 1;b = 0;q = a;s = test.test();r = s.bar();";
+            String code = @"
+class test
+{
+def foo()
+{
+    a = b;
+    return = null;
+}
+def bar()
+{
+    b = a;
+    return = null;
+}
+}
+a = 1;
+b = 0;
+q = a;
+s = test.test();
+r = s.bar();
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("q", 1);
@@ -4447,7 +5699,18 @@ i = 0;
         [Category("SmokeTest")]
         public void T72_Cyclic_globalvariable_1467439()
         {
-            String code = @"a = 1;b = 0;    b = a;[Imperative]{    [Associative]    {        a = b;    }}";
+            String code = @"
+a = 1;
+b = 0;
+    b = a;
+[Imperative]
+{
+    [Associative]
+    {
+        a = b;
+    }
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1);
@@ -4457,7 +5720,18 @@ i = 0;
         [Category("SmokeTest")]
         public void T73_Cyclic_globalvariable_1467439()
         {
-            String code = @"a = 1;b = 0;    b = a;[Imperative]{    [Associative]    {        a = b;    }}";
+            String code = @"
+a = 1;
+b = 0;
+    b = a;
+[Imperative]
+{
+    [Associative]
+    {
+        a = b;
+    }
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1);
@@ -4467,7 +5741,12 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate()
         {
-            String code = @"a = 1;c = 1;c = a;a = 2;";
+            String code = @"
+a = 1;
+c = 1;
+c = a;
+a = 2;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4478,7 +5757,12 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_ExecutionSequence_1467484()
         {
-            String code = @"a = 1;c = 1;c = a;a = 2;";
+            String code = @"
+a = 1;
+c = 1;
+c = a;
+a = 2;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4489,7 +5773,12 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467484_2()
         {
-            String code = @"a = 1;c = 1;c = a;a = 2;";
+            String code = @"
+a = 1;
+c = 1;
+c = a;
+a = 2;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4500,7 +5789,15 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467484_3()
         {
-            String code = @"x = 1;  // 1  a = x + 1; //4c = 0; //0b = 2; //2t = a+c; //8c = a + b; //6x = 3;//3";
+            String code = @"
+x = 1;  // 1  
+a = x + 1; //4
+c = 0; //0
+b = 2; //2
+t = a+c; //8
+c = a + b; //6
+x = 3;//3
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -4515,7 +5812,15 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467484_4()
         {
-            String code = @"x = 1;  // 1  a = x + 1; //4c = 0; //0b = 2; //2t = a+c; //8c = a + b; //6x = 3;//3";
+            String code = @"
+x = 1;  // 1  
+a = x + 1; //4
+c = 0; //0
+b = 2; //2
+t = a+c; //8
+c = a + b; //6
+x = 3;//3
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -4531,7 +5836,15 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467484_5()
         {
-            String code = @"x = 1;  // 1  a = x + 1; //4c = 0; //0b = 2; //2t = a+c; //8c = a + b; //6x = 3;//3";
+            String code = @"
+x = 1;  // 1  
+a = x + 1; //4
+c = 0; //0
+b = 2; //2
+t = a+c; //8
+c = a + b; //6
+x = 3;//3
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
@@ -4547,7 +5860,19 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532()
         {
-            String code = @" a = 1;    b;    [Imperative]    {        [Associative]        {           b = a;        }    }a = 2;// expect b = 2, but b = 1";
+            String code = @"
+ a = 1;
+    b;
+    [Imperative]
+    {
+        [Associative]
+        {
+           b = a;
+        }
+    }
+a = 2;
+// expect b = 2, but b = 1
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4557,7 +5882,20 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_2()
         {
-            String code = @"a = 1;b = 2;[Imperative]{        [Associative]    {        b = b + a;    }    //b-expected 13 , received - 3}a = 10;";
+            String code = @"
+a = 1;
+b = 2;
+[Imperative]
+{
+    
+    [Associative]
+    {
+        b = b + a;
+    }
+    //b-expected 13 , received - 3
+}
+a = 10;
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 13);
@@ -4567,7 +5905,19 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_3()
         {
-            String code = @"a = 1;b;[Imperative]{    b = a;    [Associative]    {           a = 2;        // expect b = 2, but b = 1    }}";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    b = a;
+    [Associative]
+    {
+           a = 2;
+        // expect b = 2, but b = 1
+    }
+}
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 1);
@@ -4579,7 +5929,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_4()
         {
-            String code = @"a = 1;b;[Imperative]{    [Associative]    {           b = a;    }}[Imperative]{    [Associative]    {        a = 2;    }}";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    [Associative]
+    {
+           b = a;
+    }
+}
+[Imperative]
+{
+    [Associative]
+    {
+        a = 2;
+    }
+}
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4589,7 +5956,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_5()
         {
-            String code = @"a = 1;b;[Imperative]{    [Associative]    {           b = a;    }}[Imperative]{    [Associative]    {        a = 2;    }}";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    [Associative]
+    {
+           b = a;
+    }
+}
+[Imperative]
+{
+    [Associative]
+    {
+        a = 2;
+    }
+}
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4599,7 +5983,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_6()
         {
-            String code = @"a = 1;b;[Imperative]{    [Associative]    {           b = a;    }}[Imperative]{    [Associative]    {        a = 2;    }}";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    [Associative]
+    {
+           b = a;
+    }
+}
+[Imperative]
+{
+    [Associative]
+    {
+        a = 2;
+    }
+}
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4609,7 +6010,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_7()
         {
-            String code = @"a = 1;b;[Imperative]{    [Associative]    {           b = a;    }}[Associative]{    [Imperative]    {        a = 2;    }}";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    [Associative]
+    {
+           b = a;
+    }
+}
+[Associative]
+{
+    [Imperative]
+    {
+        a = 2;
+    }
+}
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4619,7 +6037,22 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_8()
         {
-            String code = @"a = 1;b;[Imperative]{    c = 1;    if (c)    {    [Associative]    {        b = a;    }    }}a = 2;";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    c = 1;
+    if (c)
+    {
+    [Associative]
+    {
+        b = a;
+    }
+    }
+}
+a = 2;
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4629,7 +6062,21 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_9()
         {
-            String code = @"a = 1;b;[Imperative]{    for(c in 0..2)    {    [Associative]    {        b = a;    }    }}a = 2;";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    for(c in 0..2)
+    {
+    [Associative]
+    {
+        b = a;
+    }
+    }
+}
+a = 2;
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4639,7 +6086,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467532_10()
         {
-            String code = @"a = 1;b;[Imperative]{    c = 1;    j = 1;    while(j<2)    {    [Associative]    {        b = a;    }        j = j + 1;    }}a = 2;";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    c = 1;
+    j = 1;
+    while(j<2)
+    {
+    [Associative]
+    {
+        b = a;
+    }
+        j = j + 1;
+    }
+}
+a = 2;
+";
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4649,7 +6113,20 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467533()
         {
-            String code = @"class A{    x;    constructor A(i) { x = i;}    def modify(i)  { x = i; }}a = A.A(17);t = a.x;[Imperative]{    r = a.modify(41);}";
+            String code = @"
+class A
+{
+    x;
+    constructor A(i) { x = i;}
+    def modify(i)  { x = i; }
+}
+a = A.A(17);
+t = a.x;
+[Imperative]
+{
+    r = a.modify(41);
+}
+";
             string errmsg = "1467533 - when Property of class is modified using a method in Imperative, does not trigger update of the variable where it is used";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t", 41);
@@ -4659,7 +6136,12 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467531()
         {
-            String code = @"a = 1;b = 2;b = b + a;a = 10;";
+            String code = @"
+a = 1;
+b = 2;
+b = b + a;
+a = 10;
+";
             string errmsg = "1467531 - final result is wrong when self referencing the object";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 12);
@@ -4670,7 +6152,12 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467531_2()
         {
-            String code = @"a = 1;b = 2;b = b + a;a = 10;";
+            String code = @"
+a = 1;
+b = 2;
+b = b + a;
+a = 10;
+";
             string errmsg = "1467531 - final result is wrong when self referencing the object";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 12);
@@ -4681,7 +6168,17 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467531_3()
         {
-            String code = @"a;b;[Imperative]{a = 1;b = 2;    b = b + a;    a = 10;    //expected 13 , received - 12}";
+            String code = @"
+a;b;
+[Imperative]
+{
+a = 1;
+b = 2;
+    b = b + a;
+    a = 10;
+    //expected 13 , received - 12
+}
+";
             string errmsg = "1467531 - final result is wrong when self referencing the object";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 10);
@@ -4692,7 +6189,17 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467531_4()
         {
-            String code = @"a = 1;b = 2;[Imperative]{    b = b + a;      //expected 13 , received - 12}  a = 10;";
+            String code = @"
+a = 1;
+b = 2;
+[Imperative]
+{
+    b = b + a;
+  
+    //expected 13 , received - 12
+}
+  a = 10;
+";
             string errmsg = "1467531 - final result is wrong when self referencing the object";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 10);
@@ -4703,7 +6210,20 @@ i = 0;
         [Category("SmokeTest")]
         public void T74_TestUpdate_1467531_5()
         {
-            String code = @"a = 1;b = 2;[Imperative]{    b = b + a;      //expected 13 , received - 12}[Associative]{  a = 10;}";
+            String code = @"
+a = 1;
+b = 2;
+[Imperative]
+{
+    b = b + a;
+  
+    //expected 13 , received - 12
+}
+[Associative]
+{
+  a = 10;
+}
+";
             string errmsg = "1467531 - final result is wrong when self referencing the object";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 10);
@@ -4714,7 +6234,28 @@ i = 0;
         [Category("SmokeTest")]
         public void T75_TestUpdate_1467536()
         {
-            String code = @"class C {    x=0;    def f(p : C)    {        return = p.x+1;    }    def g()    {        return = C.C();    }};p1 = C.C();p2 = C.C();j=0;i = [Imperative]{    j = j + 1;    return = p1.f(p2);}p2 = p2.g();";
+            String code = @"
+class C {
+    x=0;
+    def f(p : C)
+    {
+        return = p.x+1;
+    }
+    def g()
+    {
+        return = C.C();
+    }
+};
+p1 = C.C();
+p2 = C.C();
+j=0;
+i = [Imperative]
+{
+    j = j + 1;
+    return = p1.f(p2);
+}
+p2 = p2.g();
+";
             string errmsg = "1467536 -when class instance is used inside an imperative block and modifid outside , it does not reexecute imperative block ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("j", 2);
@@ -4724,7 +6265,20 @@ i = 0;
         [Category("SmokeTest")]
         public void T76_TestUpdate_1467520()
         {
-            String code = @"            a = 1;            b;            d;            [Imperative]            {               b = a;            }            [Associative]            {               //d = b;            }            a = 2;";
+            String code = @"
+            a = 1;
+            b;
+            d;
+            [Imperative]
+            {
+               b = a;
+            }
+            [Associative]
+            {
+               //d = b;
+            }
+            a = 2;
+";
             string errmsg = "1467520-Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4734,7 +6288,25 @@ i = 0;
         [Category("SmokeTest")]
         public void T77_TestUpdate_Crosslangauge_1467520_2()
         {
-            String code = @"         a = 1;b;[Imperative]{    c = 1;    if (c)    {    [Associative]    {        b = a;    }    }}[Associative]{    a = 2;}";
+            String code = @"
+         a = 1;
+b;
+[Imperative]
+{
+    c = 1;
+    if (c)
+    {
+    [Associative]
+    {
+        b = a;
+    }
+    }
+}
+[Associative]
+{
+    a = 2;
+}
+";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4744,7 +6316,24 @@ i = 0;
         [Category("SmokeTest")]
         public void T78_TestUpdate_Crosslangauge_1467520_3()
         {
-            String code = @"a = 1;b;[Imperative]{    for(c in 0..2)    {    [Associative]    {        b = a;    }    }}[Associative]{    a = 2;}";
+            String code = @"
+a = 1;
+b;
+[Imperative]
+{
+    for(c in 0..2)
+    {
+    [Associative]
+    {
+        b = a;
+    }
+    }
+}
+[Associative]
+{
+    a = 2;
+}
+";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
@@ -4754,7 +6343,30 @@ i = 0;
         [Category("SmokeTest")]
         public void T79_TestUpdate_Crosslangauge_1467520_4()
         {
-            String code = @"d;a = 1;b;z;[Imperative]{     [Associative]    {        b = a;    }         if (d)    {        z = 1;    }}[Associative]{    a = 2;}    d = a;";
+            String code = @"
+d;
+a = 1;
+b;
+z;
+[Imperative]
+{
+ 
+    [Associative]
+    {
+        b = a;
+    }
+ 
+        if (d)
+    {
+        z = 1;
+    }
+}
+[Associative]
+{
+    a = 2;
+}
+    d = a;
+";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 1);
@@ -4765,7 +6377,29 @@ i = 0;
         [Category("SmokeTest")]
         public void T80_TestUpdate_Crosslangauge_1467520_5()
         {
-            String code = @"a = 1;b;d;[Imperative]{    for(c in 0..2)    {        if (d)        {    [Associative]    {        b = a;    }        }    }}[Associative]{    a = 2;}d = 1;";
+            String code = @"
+a = 1;
+b;
+d;
+[Imperative]
+{
+    for(c in 0..2)
+    {
+        if (d)
+        {
+    [Associative]
+    {
+        b = a;
+    }
+        }
+    }
+}
+[Associative]
+{
+    a = 2;
+}
+d = 1;
+";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4776,7 +6410,32 @@ i = 0;
         [Category("SmokeTest")]
         public void T81_TestUpdate_Crosslangauge_1467520_6()
         {
-            String code = @"a = 1;b;d;[Imperative]{    for(c in 0..2)    {        if (d)        {    [Associative]    {        b = a;    }        }    }}[Associative]{    a = 2;}[Associative]{    d = 1;}";
+            String code = @"
+a = 1;
+b;
+d;
+[Imperative]
+{
+    for(c in 0..2)
+    {
+        if (d)
+        {
+    [Associative]
+    {
+        b = a;
+    }
+        }
+    }
+}
+[Associative]
+{
+    a = 2;
+}
+[Associative]
+{
+    d = 1;
+}
+";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4788,7 +6447,32 @@ i = 0;
         [Category("SmokeTest")]
         public void T82_TestUpdate_Crosslangauge_1467520_7()
         {
-            String code = @"a = 1;b;d;[Imperative]{    for(c in 0..2)    {        if (d)        {    [Associative]    {        b = a;    }        }    }}[Associative]{    a = 2;}[Imperative]{    d = 1;}";
+            String code = @"
+a = 1;
+b;
+d;
+[Imperative]
+{
+    for(c in 0..2)
+    {
+        if (d)
+        {
+    [Associative]
+    {
+        b = a;
+    }
+        }
+    }
+}
+[Associative]
+{
+    a = 2;
+}
+[Imperative]
+{
+    d = 1;
+}
+";
             string errmsg = "1467520 -Cross language update is not correct if a variable used in imperative is modified in associative ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -4800,7 +6484,21 @@ i = 0;
         [Category("SmokeTest")]
         public void T83_TestUpdate_Crosslangauge_1467538()
         {
-            String code = @"a = 1;b;d;c;[Imperative]{    b = a;}[Associative]{    c=1;}a = 2;";
+            String code = @"
+a = 1;
+b;
+d;
+c;
+[Imperative]
+{
+    b = a;
+}
+[Associative]
+{
+    c=1;
+}
+a = 2;
+";
             string errmsg = "1467538- it does not reexecute imperative ,in the presence of a parallel associative block";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", 1);
@@ -4811,7 +6509,20 @@ i = 0;
         [Category("SmokeTest")]
         public void T84_TestUpdate_Crosslangauge_1467513_3()
         {
-            String code = @"a = 1;b;d;[Imperative]{    b = a;}[Associative]{    d = b;}a = 2;";
+            String code = @"
+a = 1;
+b;
+d;
+[Imperative]
+{
+    b = a;
+}
+[Associative]
+{
+    d = b;
+}
+a = 2;
+";
             string errmsg = "1467538- it does not reexecute imperative ,in the presence of a parallel associative block";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 2);
@@ -4821,7 +6532,23 @@ i = 0;
         [Category("SmokeTest")]
         public void T84_TestUpdate_Crosslangauge_1467513_4()
         {
-            String code = @"a = 1;b;d;[Imperative]{    b = a;}[Associative]{  }[Associative]{  d = b;}a = 2;";
+            String code = @"
+a = 1;
+b;
+d;
+[Imperative]
+{
+    b = a;
+}
+[Associative]
+{
+  
+}
+[Associative]
+{  d = b;
+}
+a = 2;
+";
             string errmsg = "1467538- it does not reexecute imperative ,in the presence of a parallel associative block";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", 2);
@@ -4831,7 +6558,26 @@ i = 0;
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods()
         {
-            String code = @"class A{    x : var;    def foo : int ( a : int )    {        x = a ;        return = x;    }    }a1 = A.A();test = a1.x;x1 = 3;y = a1.foo( x1 ); [Imperative]{    x1 = 4;}";
+            String code = @"
+class A
+{
+    x : var;
+    def foo : int ( a : int )
+    {
+        x = a ;
+        return = x;
+    }
+    
+}
+a1 = A.A();
+test = a1.x;
+x1 = 3;
+y = a1.foo( x1 ); 
+[Imperative]
+{
+    x1 = 4;
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 4);
@@ -4842,7 +6588,27 @@ i = 0;
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_2()
         {
-            String code = @"class A{    x : var;    def foo : int ( a : int )    {        x = a ;        return = x;    }}x1 = 3;y = 0;test = 0;[Imperative]{    a1 = A.A();        y = a1.foo( x1 );     test = a1.x;}x1 = 4;";
+            String code = @"
+class A
+{
+    x : var;
+    def foo : int ( a : int )
+    {
+        x = a ;
+        return = x;
+    }
+}
+x1 = 3;
+y = 0;
+test = 0;
+[Imperative]
+{
+    a1 = A.A();    
+    y = a1.foo( x1 ); 
+    test = a1.x;
+}
+x1 = 4;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 4);
@@ -4853,7 +6619,26 @@ i = 0;
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_3()
         {
-            String code = @"class A{    x : var;    def foo : int ( a : int )    {        x = a ;        return = x;    }}x1 = 3;y = 0;[Associative]{    a1 = A.A();    test = a1.x;    y = a1.foo( x1 ); }x1 = 4;";
+            String code = @"
+class A
+{
+    x : var;
+    def foo : int ( a : int )
+    {
+        x = a ;
+        return = x;
+    }
+}
+x1 = 3;
+y = 0;
+[Associative]
+{
+    a1 = A.A();
+    test = a1.x;
+    y = a1.foo( x1 ); 
+}
+x1 = 4;
+";
             string errmsg = "DNL-1467513 [Design issue]Update on the inner associatve block is not triggered";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 4);
@@ -4863,7 +6648,30 @@ i = 0;
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_4()
         {
-            String code = @"class A{    x : var;    def foo : int ( a : int )    {        x = a ;        return = x;    }}y;[Associative]{    x1 = 3;    y = x1;    [Imperative]    {        a1 = A.A();        test = a1.x;        y = a1.foo( x1 );     }}x1 = 4;";
+            String code = @"
+class A
+{
+    x : var;
+    def foo : int ( a : int )
+    {
+        x = a ;
+        return = x;
+    }
+}
+y;
+[Associative]
+{
+    x1 = 3;
+    y = x1;
+    [Imperative]
+    {
+        a1 = A.A();
+        test = a1.x;
+        y = a1.foo( x1 ); 
+    }
+}
+x1 = 4;
+";
             string errmsg = "DNL-1467513 [Design issue]Update on the inner associatve block is not triggered";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 4);
@@ -4873,7 +6681,32 @@ i = 0;
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_5()
         {
-            String code = @"class A{    x : var;    def foo : int ( a : int )    {        x = a ;        return = x;    }}y;x1 = 3;[Imperative]{    a1 = A.A();    if( x1 == 3)    {        y = a1.foo(x1);    }    else    {        y = a1.foo(x1+1);    }}x1 = 4;";
+            String code = @"
+class A
+{
+    x : var;
+    def foo : int ( a : int )
+    {
+        x = a ;
+        return = x;
+    }
+}
+y;
+x1 = 3;
+[Imperative]
+{
+    a1 = A.A();
+    if( x1 == 3)
+    {
+        y = a1.foo(x1);
+    }
+    else
+    {
+        y = a1.foo(x1+1);
+    }
+}
+x1 = 4;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 5);
@@ -4883,7 +6716,28 @@ i = 0;
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_6()
         {
-            String code = @"class A{    x : var;    def foo : int ( a : int )    {        x = a ;        return = x;    }}y= 0;x1 = 3;[Imperative]{    a1 = A.A();    for(i in 0..1)    {        y = y + a1.foo(x1);    }}x1 = 4;";
+            String code = @"
+class A
+{
+    x : var;
+    def foo : int ( a : int )
+    {
+        x = a ;
+        return = x;
+    }
+}
+y= 0;
+x1 = 3;
+[Imperative]
+{
+    a1 = A.A();
+    for(i in 0..1)
+    {
+        y = y + a1.foo(x1);
+    }
+}
+x1 = 4;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 14);
@@ -4893,7 +6747,30 @@ i = 0;
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_7()
         {
-            String code = @"class A{    x : var;    def foo : int ( a : int )    {        x = a ;        return = x;    }}y= 0;x1 = 3;[Imperative]{    a1 = A.A();    i = 1;    while(i <= 2)    {        y = y + a1.foo(x1);        i = i+1;    }}x1 = 4;";
+            String code = @"
+class A
+{
+    x : var;
+    def foo : int ( a : int )
+    {
+        x = a ;
+        return = x;
+    }
+}
+y= 0;
+x1 = 3;
+[Imperative]
+{
+    a1 = A.A();
+    i = 1;
+    while(i <= 2)
+    {
+        y = y + a1.foo(x1);
+        i = i+1;
+    }
+}
+x1 = 4;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y", 14);
@@ -4903,7 +6780,13 @@ i = 0;
         [Category("SmokeTest")]
         public void T86_variableupdate()
         {
-            String code = @"             x = 1;             a = x;             b = a;             a = a + 1; // Redefinition 'a' no longer depends on 'x'             x = 3;            ";
+            String code = @"
+             x = 1;
+             a = x;
+             b = a;
+             a = a + 1; // Redefinition 'a' no longer depends on 'x'
+             x = 3;
+            ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", 3);
@@ -4915,7 +6798,14 @@ i = 0;
         [Category("SmokeTest")]
         public void T87_arrayupdate()
         {
-            String code = @"             a = { 10, 20, 30 };            c = 1;            b = a[c];            a[c] = 100;            c = 2;";
+            String code = @"
+ 
+            a = { 10, 20, 30 };
+            c = 1;
+            b = a[c];
+            a[c] = 100;
+            c = 2;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 100);
@@ -4927,7 +6817,23 @@ i = 0;
         [Category("SmokeTest")]
         public void T87_nestedblocks()
         {
-            String code = @"          a; x; b;[Associative]  	{      	a = 1;      	[Imperative]      	{			b = 10;			[Associative]			{          		x = a;			}      	}	      	a = 10;	}";
+            String code = @"
+ 
+         a; x; b;
+[Associative]
+  	{
+      	a = 1;
+      	[Imperative]
+      	{
+			b = 10;
+			[Associative]
+			{
+          		x = a;
+			}
+      	}	
+      	a = 10;
+	}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 10);
@@ -5013,7 +6919,29 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T89_1467414_cyclic()
         {
-            String code = @"          a; x;            a = 1;            b = a + 1;            d;            [Imperative]            {                a = 2;                c = b + 1;	            b = a + 2;                [Associative]                {                   a = 1.5;                   d = c + 1;                   b = a + 3;                    a = 2.5; 	                   }                b = a + 4;                a = 3;	            }            f = a + b;";
+            String code = @"
+ 
+         a; x;
+            a = 1;
+            b = a + 1;
+            d;
+            [Imperative]
+            {
+                a = 2;
+                c = b + 1;
+	            b = a + 2;
+                [Associative]
+                {
+                   a = 1.5;
+                   d = c + 1;
+                   b = a + 3; 
+                   a = 2.5; 	   
+                }
+                b = a + 4;
+                a = 3;	
+            }
+            f = a + b;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
@@ -5023,7 +6951,38 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T90_1467510_cyclic()
         {
-            String code = @"          class A            {                x1;                y1;                z1;                constructor A(x, y, z)                {                    x1 = x;                    y1 = y;                    z1 = z;                        }            }            class B            {                x1;                   constructor B(x:A)                {                    x1 = x;                                      }            }            a = 1;            b = a + 1;            c = a + b;            n = A.A( a, b, c );            m = B.B(n);            a = 3;";
+            String code = @"
+ 
+         class A
+            {
+                x1;
+                y1;
+                z1;
+                constructor A(x, y, z)
+                {
+                    x1 = x;
+                    y1 = y;
+                    z1 = z;        
+                }
+            }
+            class B
+            {
+                x1;
+   
+                constructor B(x:A)
+                {
+                    x1 = x;
+        
+              
+                }
+            }
+            a = 1;
+            b = a + 1;
+            c = a + b;
+            n = A.A( a, b, c );
+            m = B.B(n);
+            a = 3;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -5033,7 +6992,15 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T90_1467510_cyclic_2()
         {
-            String code = @"         a = 1;        b = a;        c = b;        m = a + b + c;        n = m;        a = 2;";
+            String code = @"
+ 
+        a = 1;
+        b = a;
+        c = b;
+        m = a + b + c;
+        n = m;
+        a = 2;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -5043,7 +7010,15 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467336_cyclic_1()
         {
-            String code = @"         a = 1;        b = a;        c = b;        m = a + b + c;        n = m;        a = 2;";
+            String code = @"
+ 
+        a = 1;
+        b = a;
+        c = b;
+        m = a + b + c;
+        n = m;
+        a = 2;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -5053,7 +7028,24 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467547()
         {
-            String code = @"         def foo()        {            return = a + 7;        }        def bar()        {            return = 3;        }        def ding()        {            return = a < 100? foo(): bar();        }        a = 10;        t = ding();        a = 50;";
+            String code = @"
+ 
+        def foo()
+        {
+            return = a + 7;
+        }
+        def bar()
+        {
+            return = 3;
+        }
+        def ding()
+        {
+            return = a < 100? foo(): bar();
+        }
+        a = 10;
+        t = ding();
+        a = 50;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t", 57);
@@ -5063,7 +7055,25 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467547_2()
         {
-            String code = @"         def foo()        {            return = a + 7;        }        def bar()        {            return = 3;        }        def ding()        {            return = a < 100? foo: bar;        }        a = 10;        t = ding();        z=t()        a = 50;";
+            String code = @"
+ 
+        def foo()
+        {
+            return = a + 7;
+        }
+        def bar()
+        {
+            return = 3;
+        }
+        def ding()
+        {
+            return = a < 100? foo: bar;
+        }
+        a = 10;
+        t = ding();
+        z=t()
+        a = 50;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t", 57);
@@ -5073,7 +7083,25 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467547_3()
         {
-            String code = @"         def foo()        {            return = a + 7;        }        def bar()        {            return = 3;        }        def ding(a)        {            return = a < 100? foo: bar;        }        a = 10;        t = ding(a);        z=t();        a = 50;";
+            String code = @"
+ 
+        def foo()
+        {
+            return = a + 7;
+        }
+        def bar()
+        {
+            return = 3;
+        }
+        def ding(a)
+        {
+            return = a < 100? foo: bar;
+        }
+        a = 10;
+        t = ding(a);
+        z=t();
+        a = 50;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 57);
@@ -5083,7 +7111,26 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467547_4()
         {
-            String code = @"         class B            { 	            x3 : int ;			            constructor B(a) 	            {			            x3 = a;	            }	            }            def foo ( b1 : B )            {                return = b1.x3;            }            b1 = B.B( 1 );            d1 = foo;            e1 = d1(b1);";
+            String code = @"
+ 
+        class B
+            { 
+	            x3 : int ;
+		
+	            constructor B(a) 
+	            {	
+		            x3 = a;
+	            }
+	
+            }
+            def foo ( b1 : B )
+            {
+                return = b1.x3;
+            }
+            b1 = B.B( 1 );
+            d1 = foo;
+            e1 = d1(b1);
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("e1", 1);
@@ -5093,7 +7140,26 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467547_5()
         {
-            String code = @"         class B            { 	            x3 : int ;			            constructor B(a) 	            {			            x3 = a;	            }	            }            def foo ( b1 : B )            {                return = b1.x3;            }            b1 = B.B( 1 );            d1 = foo;            e1 = d1(b1);";
+            String code = @"
+ 
+        class B
+            { 
+	            x3 : int ;
+		
+	            constructor B(a) 
+	            {	
+		            x3 = a;
+	            }
+	
+            }
+            def foo ( b1 : B )
+            {
+                return = b1.x3;
+            }
+            b1 = B.B( 1 );
+            d1 = foo;
+            e1 = d1(b1);
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("e1", 1);
@@ -5103,7 +7169,30 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467547_6()
         {
-            String code = @"         def foo()        {            return = a + 7;        }        def bar()        {            return = 3;        }        def ding(a)        {            return = a < 100? foo: bar;        }z;a;        [Imperative]        {            a = 10;            t = ding(a);            z=t();            a = 50;        }";
+            String code = @"
+ 
+        def foo()
+        {
+            return = a + 7;
+        }
+        def bar()
+        {
+            return = 3;
+        }
+        def ding(a)
+        {
+            return = a < 100? foo: bar;
+        }
+z;
+a;
+        [Imperative]
+        {
+            a = 10;
+            t = ding(a);
+            z=t();
+            a = 50;
+        }
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 57);
@@ -5113,7 +7202,30 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T91_1467547_7()
         {
-            String code = @"         def foo()        {            return = a + 7;        }        def bar()        {            return = 3;        }        def ding(a)        {            return = a < 100? foo: bar;        }z;a;        [Associative]        {            a = 10;            t = ding(a);            z=t();            a = 50;        }";
+            String code = @"
+ 
+        def foo()
+        {
+            return = a + 7;
+        }
+        def bar()
+        {
+            return = 3;
+        }
+        def ding(a)
+        {
+            return = a < 100? foo: bar;
+        }
+z;
+a;
+        [Associative]
+        {
+            a = 10;
+            t = ding(a);
+            z=t();
+            a = 50;
+        }
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 57);
@@ -5123,7 +7235,17 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T92_Test_Update_Propagation_In_Self_Update_Thru_Inline_Condition()
         {
-            String code = @"class A{    static X : int;}c = 0;A.X = 1;b = A.X + 1;c = c + b;A.X = false ? 43 : A.X;";
+            String code = @"
+class A
+{
+    static X : int;
+}
+c = 0;
+A.X = 1;
+b = A.X + 1;
+c = c + b;
+A.X = false ? 43 : A.X;
+";
             string errmsg = "DNL-1467636 Self update should not trigger update propagation";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", 2);
@@ -5133,7 +7255,12 @@ test = b1.y;
         [Category("SmokeTest")]
         public void T93_Test_Update_Propagation()
         {
-            String code = @"a = 0;b = 1;a = a + b;b = b;";
+            String code = @"
+a = 0;
+b = 1;
+a = a + b;
+b = b;
+";
             string errmsg = "DNL-1467636 Self update should not trigger update propagation";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1);

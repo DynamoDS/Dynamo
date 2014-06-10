@@ -119,7 +119,7 @@ namespace ProtoTestFx
 
             StackValue svData = POP_helper(instruction, out blockId, out dimensions);
 
-            if (instruction.op1.optype == AddressType.Register)
+            if (instruction.op1.IsRegister)
                 return;
 
             SymbolNode symbolNode = GetSymbolNode(blockId, (int)instruction.op2.opdata, (int)instruction.op1.opdata);
@@ -164,7 +164,7 @@ namespace ProtoTestFx
             //if (callrLineNo != Constants.kInvalidIndex)
             {
                 SymbolNode symbolNode = null;
-                if (ProtoCore.DSASM.AddressType.StaticMemVarIndex == instruction.op1.optype)
+                if (instruction.op1.IsStaticVariableIndex)
                 {
                     symbolNode = exe.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata];
                 }
