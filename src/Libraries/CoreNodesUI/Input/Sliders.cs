@@ -26,7 +26,7 @@ namespace Dynamo.Nodes
     {
         public DoubleSlider()
         {
-            Value = 50;
+            Value = 0;
             Min = 0;
             Max = 100;
         }
@@ -258,7 +258,7 @@ namespace Dynamo.Nodes
 
             Min = 0;
             Max = 100;
-            Value = 50;
+            Value = 0;
         }
 
         private int _max;
