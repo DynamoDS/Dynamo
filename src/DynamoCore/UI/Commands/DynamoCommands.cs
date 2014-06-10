@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -12,6 +13,7 @@ namespace Dynamo.ViewModels
     {
         // Automation related data members.
         private AutomationSettings automationSettings = null;
+        
 
         #region Automation Related Methods
 
@@ -80,6 +82,21 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
+
+        public string ExecuteMessageFromSocket(string message, string sessionId)
+        {
+            try
+            {
+                dynSettings.Controller.SessionId = sessionId;
+                RecordableCommand command = RecordableCommand.Deserialize(message);
+                Application.Current.Dispatcher.Invoke(() => ExecuteCommand(command));
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return null;
+        }
 
         #region The Actual Command Handlers (Private)
 

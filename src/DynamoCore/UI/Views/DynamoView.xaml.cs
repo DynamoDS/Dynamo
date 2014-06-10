@@ -1,17 +1,20 @@
 //#define __NO_SAMPLES_MENU
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
-using System.Diagnostics;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -19,16 +22,15 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
+using Dynamo.Services;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoWebServer;
+using DynamoWebServer.Responses;
 using String = System.String;
-using System.Windows.Data;
-using Dynamo.UI.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using Dynamo.Services;
 
 namespace Dynamo.Controls
 {
@@ -56,7 +58,7 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public static Application MakeSandboxAndRun(string commandFilePath)
+        public static Application MakeSandboxAndRun(string commandFilePath, bool turnOnServer)
         {
             var controller = DynamoController.MakeSandbox(commandFilePath);
             var app = new Application();
@@ -66,6 +68,35 @@ namespace Dynamo.Controls
             ui.DataContext = controller.DynamoViewModel;
             controller.UIDispatcher = ui.Dispatcher;
 
+            if (turnOnServer)
+            {
+                var webSocketServer = new WebServer();
+                webSocketServer.Start();
+                webSocketServer.ReceivedMessage += new MessageEventHandler(dynSettings.Controller.DynamoViewModel.ExecuteMessageFromSocket);
+                webSocketServer.Info += (infoMessage) =>
+                {
+                    if (dynSettings.DynamoLogger != null)
+                        dynSettings.DynamoLogger.Log(infoMessage);
+                };
+                webSocketServer.Error += (errorMessage) =>
+                {
+                    if (dynSettings.DynamoLogger != null)
+                        dynSettings.DynamoLogger.LogError(errorMessage);
+                };
+
+                dynSettings.Controller.RequestComputationCompleted += (nodes) =>
+                {
+                    // TODO: Send nodes instead of nodes GUIDs
+                    List<Guid> guidsList = nodes.Select(nodeModel => nodeModel.GUID).ToList();
+
+                    webSocketServer.SendResponse(new ComputationResponse()
+                    {
+                        Status = ResponceStatuses.Success,
+                        Nodes = guidsList.ToArray()
+                    }, dynSettings.Controller.SessionId);
+                };
+            }
+
             app.Run(ui);
 
             return app;
@@ -73,7 +104,7 @@ namespace Dynamo.Controls
 
         public DynamoView()
         {
-            tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
+            tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -295,7 +326,7 @@ namespace Dynamo.Controls
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private UI.Views.AboutWindow _aboutWindow;
@@ -345,7 +376,7 @@ namespace Dynamo.Controls
 
                 if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
             }
-            
+
             _searchPkgsView.Focus();
             _pkgSearchVM.RefreshAndSearchAsync();
         }
@@ -416,7 +447,7 @@ namespace Dynamo.Controls
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
         }
-        
+
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             var prompt = new CrashPrompt(args);
@@ -798,13 +829,13 @@ namespace Dynamo.Controls
         {
             Point popupLocation = new Point(targetSize.Width - popupSize.Width, targetSize.Height);
 
-            CustomPopupPlacement placement1 = 
+            CustomPopupPlacement placement1 =
                 new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Vertical);
 
             CustomPopupPlacement placement2 =
                 new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Horizontal);
 
-            CustomPopupPlacement[] ttplaces = 
+            CustomPopupPlacement[] ttplaces =
                 new CustomPopupPlacement[] { placement1, placement2 };
             return ttplaces;
         }
@@ -851,7 +882,7 @@ namespace Dynamo.Controls
         }
 
         private void SlideWindowToIncludeTab(int tabSelected)
-        {            
+        {
             int newSlidingWindowSize = GetSlidingWindowSize();
 
             if (newSlidingWindowSize == 0)
@@ -963,7 +994,7 @@ namespace Dynamo.Controls
 
         }
 
-		private void Button_MouseEnter(object sender, MouseEventArgs e)
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -978,7 +1009,7 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-		private void Button_Click(object sender, EventArgs e)
+        private void Button_Click(object sender, EventArgs e)
         {
             SearchView sv = (SearchView)this.sidebarGrid.Children[0];
             if (sv.Visibility == Visibility.Collapsed)
@@ -1001,7 +1032,7 @@ namespace Dynamo.Controls
             //this.collapsedSidebar.Visibility = Visibility.Collapsed;
         }
 
-		private void Button_MouseLeave(object sender, MouseEventArgs e)
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -1027,7 +1058,7 @@ namespace Dynamo.Controls
             this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
             this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
             this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
-            
+
             this.horizontalSplitter.Width = double.NaN;
             SearchView sv = (SearchView)this.sidebarGrid.Children[0];
             sv.Visibility = Visibility.Collapsed;
@@ -1065,12 +1096,12 @@ namespace Dynamo.Controls
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             _vm.IsMouseDown = true;
-		}
+        }
 
         private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             _vm.IsMouseDown = false;
-		}
+        }
 
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
@@ -1081,7 +1112,7 @@ namespace Dynamo.Controls
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
-       
+
         private void RunButton_OnClick(object sender, RoutedEventArgs e)
         {
             dynSettings.ReturnFocusToSearch();
@@ -1103,7 +1134,7 @@ namespace Dynamo.Controls
                 {
                     _vm.OpenCommand.Execute(files[0]);
                 }
-                
+
             }
 
             e.Handled = true;

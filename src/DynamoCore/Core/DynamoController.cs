@@ -17,14 +17,14 @@ using Dynamo.PackageManager;
 using Dynamo.Services;
 using Dynamo.TestInfrastructure;
 using Dynamo.UI;
+using Dynamo.UI.Prompts;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
-using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using Dynamo.UI.Prompts;
+using String = System.String;
 
 namespace Dynamo
 {
@@ -84,13 +84,14 @@ namespace Dynamo
         public IPreferences PreferenceSettings { get; set; }
         public IVisualizationManager VisualizationManager { get; set; }
         public DebugSettings DebugSettings { get; set; }
+        public string SessionId { get; set; }
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public static bool IsTestMode 
+        public static bool IsTestMode
         {
             get { return testing; }
             set { testing = value; }
@@ -200,6 +201,15 @@ namespace Dynamo
         }
 
 
+        public event Action<List<NodeModel>> RequestComputationCompleted;
+        public void OnComputationCompleted(List<NodeModel> nodes)
+        {
+            if (RequestComputationCompleted != null)
+            {
+                RequestComputationCompleted(nodes);
+            }
+        }
+
         #endregion
 
         #region Constructor and Initialization
@@ -215,21 +225,15 @@ namespace Dynamo
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
             {
-                
-                controller = new DynamoController("None", updateManager,
-                    new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
-
-                controller.DynamoViewModel = new DynamoViewModel(controller, null);
+                commandFilePath = null;
             }
-            else
-            {
-                controller = new DynamoController("None", updateManager,
+            controller = new DynamoController("None", updateManager,
                  new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-                controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
-            }
+            controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
 
             controller.VisualizationManager = new VisualizationManager();
+
             return controller;
         }
 
@@ -251,7 +255,7 @@ namespace Dynamo
 
             //DynamoLoader.ClearCachedAssemblies();
             //DynamoLoader.LoadNodeModels();
-            
+
         }
 
         /// <summary>
@@ -272,7 +276,7 @@ namespace Dynamo
             InstrumentationLogger.Start();
 
             PreferenceSettings = preferences;
-            ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
             SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
@@ -282,12 +286,12 @@ namespace Dynamo
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
 
             //create the model
-            DynamoModel = new DynamoModel ();
+            DynamoModel = new DynamoModel();
             DynamoModel.AddHomeWorkspace();
             DynamoModel.CurrentWorkspace = DynamoModel.HomeSpace;
             DynamoModel.CurrentWorkspace.X = 0;
@@ -298,7 +302,7 @@ namespace Dynamo
             string pluginsPath = Path.Combine(directory, "definitions");
 
             CustomNodeManager = new CustomNodeManager(pluginsPath);
-            
+
             SearchViewModel = new SearchViewModel();
 
             dynSettings.PackageLoader = new PackageLoader();
@@ -359,7 +363,7 @@ namespace Dynamo
 
         void updateManager_ShutdownRequested(object sender, EventArgs e)
         {
-            UIDispatcher.Invoke((Action) delegate
+            UIDispatcher.Invoke((Action)delegate
             {
                 ShutDown(true);
                 UpdateManager.HostApplicationBeginQuit(this, e);
@@ -469,7 +473,7 @@ namespace Dynamo
                 dynSettings.DynamoLogger.Log(
 "Beginning engine reset");
 
-                
+
                 Reset();
 
 
@@ -513,5 +517,5 @@ namespace Dynamo
             return true;
         }
     }
-    
+
 }
