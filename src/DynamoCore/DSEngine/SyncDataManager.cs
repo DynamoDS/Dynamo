@@ -44,7 +44,7 @@ namespace Dynamo.DSEngine
                 states.Remove(key);
             }
      
-            states.Keys.ToList().ForEach(key => states[key] = State.NoChange);
+            states.Keys.ToList().ForEach(key => states[key] = State.Clean);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Dynamo.DSEngine
 
         internal enum State
         {
-            NoChange,
+            Clean,
             Added,
             Modified,
             Deleted
