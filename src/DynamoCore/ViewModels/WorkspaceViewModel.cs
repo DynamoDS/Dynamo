@@ -895,15 +895,24 @@ namespace Dynamo.ViewModels
         {
             if (_model.Nodes.Count == 0)
                 return;
-            
-            var graph = new GraphLayout.Graph();
 
+            var graph = new GraphLayout.Graph();
+            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            
             foreach (NodeModel x in _model.Nodes)
+            {
                 graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
+                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+            }
 
             foreach (ConnectorModel x in _model.Connectors)
+            {
                 graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
+                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+            }
 
+            _model.RecordModelsForModification(new List<ModelBase>(_model.Nodes));
+            
             // Sugiyama algorithm steps
             graph.RemoveCycles();
             graph.AssignLayers();
