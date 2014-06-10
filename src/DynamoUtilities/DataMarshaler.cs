@@ -18,7 +18,7 @@ namespace Dynamo.Utilities
 
         public DataMarshaler()
         {
-            RegisterMarshaler((IEnumerable e) => e.Cast<object>().Select(Marshal));
+            //RegisterMarshaler((IEnumerable e) => e.Cast<object>().Select(Marshal));
             RegisterMarshaler((IList e) => e.Cast<object>().Select(Marshal).ToList());
             RegisterMarshaler(
                 (IDictionary dict) =>
@@ -80,15 +80,17 @@ namespace Dynamo.Utilities
             if (marshalers.TryGetValue(targetType, out marshaler) || cache.TryGetValue(targetType, out marshaler))
                 return marshaler(obj);
 
-            var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(typeof(object), x => x);
+            // Only deal with marshalers that can operator on the target type
+            var applicable = marshalers.Where(pair => pair.Key.IsAssignableFrom(targetType));
+
+            if (!applicable.Any())
+                return obj;
 
             // Find the marshaler that operates on the closest base type of the target type.
             var dispatchedMarshaler =
-                // Only deal with marshalers that can operator on the target type
-                marshalers.Where(pair => pair.Key.IsAssignableFrom(targetType))
-                    .Aggregate(
-                        defaultMarshaler, // used if none are found
-                        (acc, next) => acc.Key.IsAssignableFrom(next.Key) ? next : acc); // always keep the more specific marshaler
+                applicable.Aggregate(
+                    // always keep the more specific marshaler
+                    (current, next) => current.Key.IsAssignableFrom(next.Key) ? next : current);
 
             // Cache the marshaler so we don't keep doing this lookup
             cache[targetType] = dispatchedMarshaler.Value;
