@@ -22,6 +22,7 @@
     <REVITAPI  Condition=" '$(REVITAPI)' == '' ">C:\Program Files\Autodesk\Revit Architecture 2015</REVITAPI>
     <REVITAPI Condition=" !Exists('$(REVITAPI)') ">C:\Program Files\Autodesk\Revit 2015</REVITAPI>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
+    <REVIT_VERSION>Revit_2015</REVIT_VERSION>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
