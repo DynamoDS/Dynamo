@@ -36,6 +36,14 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void ResetStates()
         {
+            // Remove all thoses deleted nodes, so if a node is deleted and undo,
+            // its state is "Added" instead of "Modified".
+            var deletedKeys = states.Keys.Where(k => states[k] == State.Deleted).ToList();
+            foreach (var key in deletedKeys)
+            {
+                states.Remove(key);
+            }
+     
             states.Keys.ToList().ForEach(key => states[key] = State.NoChange);
         }
 
