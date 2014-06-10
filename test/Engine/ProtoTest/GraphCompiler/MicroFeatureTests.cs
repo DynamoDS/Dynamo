@@ -32,7 +32,7 @@ using ProtoCore.DSASM;
         // TODO Jun: Integrate this helper function into the reflection system
         private List<Obj> GetArrayElements(ProtoCore.Mirror.RuntimeMirror mirror, StackValue svArrayPointer)
         {
-            Assert.IsTrue(svArrayPointer.optype == ProtoCore.DSASM.AddressType.ArrayPointer);
+            Assert.IsTrue(svArrayPointer.IsArray);
             Obj array = new Obj(svArrayPointer);
             return mirror.GetUtils().GetArrayElements(array);
         }
@@ -1814,8 +1814,8 @@ using ProtoCore.DSASM;
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("I268435458");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
-            //Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
+            //Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -2447,7 +2447,7 @@ using ProtoCore.DSASM;
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("I268435458");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -2809,7 +2809,7 @@ using ProtoCore.DSASM;
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var3");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -3236,7 +3236,7 @@ using ProtoCore.DSASM;
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("var1");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -4504,7 +4504,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var2");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -4572,7 +4572,7 @@ b = 20;</Content>
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var1");
             Assert.IsTrue(mirror.GetData().GetStackValue().opdata == 0);
             mirror = liveRunner.QueryNodeValue("Var2");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -4684,7 +4684,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var2");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -4936,7 +4936,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var4");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -5195,7 +5195,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var2");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -5367,7 +5367,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var2");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -7031,7 +7031,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var3");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -7200,7 +7200,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var3");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -8811,11 +8811,11 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var5");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
             mirror = liveRunner.QueryNodeValue("Var4");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
             mirror = liveRunner.QueryNodeValue("c");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -10220,7 +10220,7 @@ b = 20;</Content>
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var4");
             Assert.IsTrue(mirror.GetData().GetStackValue().opdata == 1);
             ProtoCore.Mirror.RuntimeMirror mirror2 = liveRunner.QueryNodeValue("Var3");
-            Assert.IsTrue(mirror2.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror2.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -11933,7 +11933,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror2 = liveRunner.QueryNodeValue("Var3");
-            Assert.IsTrue(mirror2.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror2.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -26530,7 +26530,7 @@ b=1..2;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("x");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
             Assert.IsTrue((Int64)mirror.GetData().GetStackValue().opdata == 0);
         }
 
@@ -28490,7 +28490,7 @@ b = 20;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("a");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -30713,7 +30713,7 @@ List<SynchronizeData> ls = GraphToDSCompiler.GraphUtilities.GetSDList(code)
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("a");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
             //Assert.IsTrue((Int64)mirror.GetData().GetStackValue().opdata == 1);
         }
 
@@ -32645,7 +32645,7 @@ a[0]=3;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("a");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -37225,7 +37225,7 @@ _temp_4b7331cec248421390edcc6ded208409 =2..5;</Content>
             foreach (SynchronizeData sd in ls)
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var3");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
         }
 
         [Test, Ignore]
@@ -38747,7 +38747,7 @@ a=Var3;</Content>
             int count = graphcompiler.Graph.nodeList.Count;
             //Assert.IsTrue(count == 2);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var2");
-            Assert.IsTrue(mirror.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetData().GetStackValue().IsNull);
             List<SynchronizeData> ls2 = GraphToDSCompiler.GraphUtilities.GetSDList(testPath + "T118_IDE_1942_2.xml");
             foreach (SynchronizeData sd2 in ls2)
                 liveRunner.UpdateGraph(sd2);
@@ -38756,7 +38756,7 @@ a=Var3;</Content>
             count = graphcompiler.Graph.nodeList.Count;
             //Assert.IsTrue(count == 1);
             ProtoCore.Mirror.RuntimeMirror mirror2 = liveRunner.QueryNodeValue("Var2");
-            Assert.IsTrue(mirror2.GetData().GetStackValue().optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror2.GetData().GetStackValue().IsNull);
             ProtoCore.Mirror.RuntimeMirror mirror3 = liveRunner.QueryNodeValue("Var3");
             Assert.IsTrue(mirror3.GetData().GetStackValue().opdata == 1);
         }

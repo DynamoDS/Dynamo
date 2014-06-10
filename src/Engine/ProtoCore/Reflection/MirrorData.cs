@@ -120,7 +120,7 @@ namespace ProtoCore
             /// <returns></returns>
             private ClassMirror GetClass()
             {
-                if (svData.optype != DSASM.AddressType.Pointer)
+                if (!svData.IsPointer)
                     return null;
 
                 return new ClassMirror(svData, this.core);
@@ -175,7 +175,7 @@ namespace ProtoCore
                     case AddressType.Int:
                         return sv.opdata;
                     case AddressType.Double:
-                        return sv.opdata_d;
+                        return sv.RawDoubleValue;
                     case AddressType.Boolean:
                         return sv.opdata != 0;
                     case AddressType.Char:
@@ -211,7 +211,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return svData.optype == AddressType.Null;
+                    return svData.IsNull;
                 }
             }
 
@@ -222,7 +222,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return svData.optype == AddressType.ArrayPointer;
+                    return svData.IsArray;
                 }
             }
         }
