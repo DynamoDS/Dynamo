@@ -61,8 +61,8 @@ f;
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 35);
             Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 35);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 5);
-            Assert.IsTrue(mirror.GetValue("w").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("f").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("w").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("f").DsasmValue.IsNull);
         }
 
         [Test]
@@ -93,7 +93,7 @@ f;
             Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 5);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 5);
             Assert.IsTrue((Int64)mirror.GetValue("w").Payload == 10);
-            Assert.IsTrue(mirror.GetValue("f").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("f").DsasmValue.IsNull);
         }
 
         [Test]

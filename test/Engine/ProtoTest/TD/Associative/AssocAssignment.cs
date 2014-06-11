@@ -52,7 +52,7 @@ namespace ProtoTest.TD.Associative
     a = b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
         }
 
@@ -68,8 +68,8 @@ namespace ProtoTest.TD.Associative
 }";
                 ExecutionMirror mirror = thisTest.RunScriptSource(src);
                 // expected "StatementUsedInAssignment" warning
-                Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-                Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+                Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
+                Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
             });
         }
 
@@ -175,7 +175,7 @@ e;
             Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 4);
             Assert.IsTrue((Int64)mirror.GetValue("f").Payload == 8);
             Assert.IsTrue((Int64)mirror.GetValue("g1").Payload == 3);
-            Assert.IsTrue(mirror.GetValue("g3").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("g3").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("d").Payload == 4);
             Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 0);
             Assert.IsTrue((Int64)mirror.GetValue("e").Payload == 0);
@@ -598,9 +598,9 @@ y1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
-            Assert.IsTrue(mirror.GetValue("y").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("y").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("x1").Payload == 1);
-            Assert.IsTrue(mirror.GetValue("y1").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("y1").DsasmValue.IsNull);
         }
 
         [Test]
@@ -656,9 +656,9 @@ y1;
             Assert.IsTrue((Int64)mirror.GetValue("a1").Payload == -3);
             Assert.IsTrue((Int64)mirror.GetValue("b1").Payload == -1);
             Assert.IsTrue((Int64)mirror.GetValue("c1").Payload == 0);
-            Assert.IsTrue(mirror.GetValue("d1").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("e1").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("f1").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("d1").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("e1").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("f1").DsasmValue.IsNull);
         }
         [Ignore]
         public void T29_Defect_1449887()
@@ -843,7 +843,7 @@ _c;
 	c = null + 2;
  }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
         }
 
         [Test]
@@ -872,7 +872,7 @@ _c;
  a = b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -885,7 +885,7 @@ _c;
  a = b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
         }
 
@@ -901,7 +901,7 @@ _c;
 	d = c * b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("d").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("d").DsasmValue.IsNull);
         }
 
         [Test]
@@ -956,7 +956,7 @@ _c;
 	x = 1 + y;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("x").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("x").DsasmValue.IsNull);
         }
 
         [Test]
@@ -969,7 +969,7 @@ _c;
 	a = 4 + true;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1012,9 +1012,9 @@ d;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
+            Assert.IsTrue(mirror.GetValue("c").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("d").Payload == 3);
 
         }

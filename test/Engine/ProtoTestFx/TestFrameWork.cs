@@ -335,7 +335,7 @@ namespace ProtoTestFx.TD
         {
             if (expectedObject == null)
             {
-                if (dsObject.DsasmValue.optype != ProtoCore.DSASM.AddressType.Null)
+                if (!dsObject.DsasmValue.IsNull)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be null, but it isn't.\n{2}", dsVariable, TestFrameWork.BuildIndicesString(indices), TestFrameWork.mErrorMessage));
                 }
@@ -343,7 +343,7 @@ namespace ProtoTestFx.TD
             }
 
             Type expectedType = expectedObject.GetType();
-            if (dsObject.DsasmValue.optype == ProtoCore.DSASM.AddressType.Null && expectedObject != null)
+            if (dsObject.DsasmValue.IsNull && expectedObject != null)
             {
                 Assert.Fail(String.Format("\tThe value of {0} was null, but wasn't expected to be.\n{1}", dsVariable, mErrorMessage));
                 
@@ -478,8 +478,7 @@ namespace ProtoTestFx.TD
             {
                 StackValue sv = testMirror.GetRawFirstValue(dsVariable);
 
-                if (sv.optype != ProtoCore.DSASM.AddressType.ArrayPointer &&
-                    sv.optype != ProtoCore.DSASM.AddressType.Pointer)
+                if (!sv.IsArray && !sv.IsPointer)
                 {
                     if (referencCount != 0)
                     {

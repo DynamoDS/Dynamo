@@ -117,7 +117,7 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
@@ -141,7 +141,7 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
@@ -166,7 +166,7 @@ namespace DSCore
     }
 
     ///<search>cross</search>
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
@@ -310,19 +310,19 @@ namespace DSCore
 
     [NodeName("List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
-    [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True or False.")]
+    [NodeDescription("Filters a sequence by a given condition such that for an arbitrary element \"x,\" condition(x) = True or False.")]
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
         public Filter()
         {
             InPortData.Add(new PortData("list", "List to filter"));
-            InPortData.Add(new PortData("p(x)", "Predicate"));
+            InPortData.Add(new PortData("condition", "Predicate used to determine if an element is filtered in or out."));
 
             OutPortData.Add(
-                new PortData("in", "List containing all elements \"x\" where p(x) = True"));
+                new PortData("in", "List containing all elements \"x\" where condition(x) = True"));
             OutPortData.Add(
-                new PortData("out", "List containing all elements \"x\" where p(x) = False"));
+                new PortData("out", "List containing all elements \"x\" where condition(x) = False"));
 
             RegisterAllPorts();
         }
@@ -348,6 +348,35 @@ namespace DSCore
                     {
                         ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(1) }
                     })
+            };
+        }
+    }
+
+    [NodeName("ReplaceByCondition")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
+    [NodeDescription("Replaces an object with a given substitute if the original object satisfies a given condition.")]
+    [IsDesignScriptCompatible]
+    public class Replace : NodeModel
+    {
+        public Replace()
+        {
+            InPortData.Add(new PortData("item", "Item to potentially be replaced"));
+            InPortData.Add(new PortData("replaceWith", "Object to replace with"));
+            InPortData.Add(new PortData("condition", "Predicate used to determine if it should be replaced."));
+
+            OutPortData.Add(new PortData("var", "If condition(item) = True, then \"replaceWith\" is returned. Otherwise \"item\" is returned unaltered."));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            return new[]
+            {
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildFunctionCall("__Replace", inputAstNodes))
             };
         }
     }
