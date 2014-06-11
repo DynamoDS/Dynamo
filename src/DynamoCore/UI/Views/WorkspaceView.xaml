@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Dynamo.Controls" 
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI.Controls" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="OnMouseLeftButtonDown"
@@ -110,58 +111,16 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Height="Auto">
-            <Canvas Width="56"
-                    Height="30"
-                    Margin="4,4,0,4">
-                <Canvas.Clip>
-                    <RectangleGeometry Rect="0,0,56,30" />
-                </Canvas.Clip>
-                <Image Name="geomsViewButton"
-                       Width="56"
-                       MouseEnter="OnViewButtonMouseEnter"
-                       MouseLeave="OnViewButtonMouseLeave"
-                       MouseLeftButtonDown="OnViewButtonMouseDown"
-                       MouseLeftButtonUp="OnViewButtonMouseUp"
-                       Source="/DynamoCore;component/UI/Images/canvas_button_geom_view.png">
-                    <Image.RenderTransform>
-                        <TranslateTransform>
-                            <TranslateTransform.Y>
-                                <Binding Path="DataContext.CanNavigateBackground"
-                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                                         Converter="{StaticResource ViewButtonStateConverter}"
-                                         ConverterParameter="geomsViewButton">
-                                </Binding>
-                            </TranslateTransform.Y>
-                        </TranslateTransform>
-                    </Image.RenderTransform>
-                </Image>
-            </Canvas>
-            <Canvas Width="55"
-                    Height="30"
-                    Margin="0,4,4,4">
-                <Canvas.Clip>
-                    <RectangleGeometry Rect="0,0,55,30" />
-                </Canvas.Clip>
-                <Image Name="nodesViewButton"
-                       Width="55"
-                       MouseEnter="OnViewButtonMouseEnter"
-                       MouseLeave="OnViewButtonMouseLeave"
-                       MouseLeftButtonDown="OnViewButtonMouseDown"
-                       MouseLeftButtonUp="OnViewButtonMouseUp"
-                       Source="/DynamoCore;component/UI/Images/canvas_button_node_view.png">
-                    <Image.RenderTransform>
-                        <TranslateTransform>
-                            <TranslateTransform.Y>
-                                <Binding Path="DataContext.CanNavigateBackground"
-                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                                         Converter="{StaticResource ViewButtonStateConverter}"
-                                         ConverterParameter="nodesViewButton">
-                                </Binding>
-                            </TranslateTransform.Y>
-                        </TranslateTransform>
-                    </Image.RenderTransform>
-                </Image>
-            </Canvas>
+            <ui:CanvasCheckBox Width="56"
+                               Height="30"
+                               Margin="4,4,0,4"
+                               ImageStrip="/DynamoCore;component/UI/Images/canvas_button_geom_view.png">
+            </ui:CanvasCheckBox>
+            <ui:CanvasCheckBox Width="55"
+                               Height="30"
+                               Margin="0,4,4,4"
+                               ImageStrip="/DynamoCore;component/UI/Images/canvas_button_node_view.png">
+            </ui:CanvasCheckBox>
         </StackPanel>
     </Grid>
 </UserControl>
