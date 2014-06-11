@@ -749,8 +749,10 @@ limitations under the License.
     <Resource Include="UI\Images\AboutWindow\logo_about.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\canvas_button_geom_view.png" />
-    <Resource Include="UI\Images\canvas_button_node_view.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
