@@ -108,7 +108,7 @@ namespace DSCore.File
     [NodeDescription("Allows you to select a directory on the system to get its path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN -3382 [IsVisibleInDynamoLibrary(false)]
     public class Directory : FileSystemBrowser
     {
         public Directory() : base("Directory") { }

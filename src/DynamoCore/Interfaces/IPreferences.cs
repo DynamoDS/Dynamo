@@ -1,4 +1,6 @@
-﻿using Dynamo.Models;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Dynamo.Models;
 using DynamoUnits;
 
 namespace Dynamo.Interfaces
@@ -19,6 +21,8 @@ namespace Dynamo.Interfaces
         double WindowY { get; set; }
         double WindowH { get; set; }
         double WindowW { get; set; }
+        int MaxNumRecentFiles { get; set; }
+        List<string> RecentFiles { get; set; }
 
         /// <summary>
         /// Save PreferenceSettings in XML File Path if possible,
