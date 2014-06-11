@@ -547,6 +547,19 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
 
     case WM_ERASEBKGND:
         return 0L; // Avoid erasing background to flickering during sizing.
+
+    case WM_SIZE:
+        {
+            if (mpGraphicsContext != nullptr)
+            {
+                auto pCamera = mpGraphicsContext->GetDefaultCamera();
+                if (pCamera != nullptr) {
+                    pCamera->ResizeViewport(LOWORD(lParam), HIWORD(lParam));
+                    return 0L; // Message processed.
+                }
+            }
+            break;
+        }
     }
 
     return ::DefWindowProc(hWnd, msg, wParam, lParam);

@@ -185,10 +185,13 @@ namespace Dynamorph { namespace OpenGL {
 
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration);
+        virtual void ResizeViewportCore(int width, int height);
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox);
         virtual Dynamorph::ITrackBall* GetTrackBallCore() const;
 
     private:
+        void ConfigureInternal(const CameraConfiguration* pConfiguration);
+
         glm::mat4 mModelMatrix;
         glm::mat4 mViewMatrix;
         glm::mat4 mProjMatrix;

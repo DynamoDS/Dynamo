@@ -113,32 +113,17 @@ void Camera::SetModelTransformation(glm::mat4& model)
 
 void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
 {
-    glm::vec3 eye(
-        pConfiguration->eye[0],
-        pConfiguration->eye[1],
-        pConfiguration->eye[2]);
+    ConfigureInternal(pConfiguration);
+}
 
-    glm::vec3 center(
-        pConfiguration->center[0],
-        pConfiguration->center[1],
-        pConfiguration->center[2]);
+void Camera::ResizeViewportCore(int width, int height)
+{
+    CameraConfiguration configuration;
+    this->GetConfiguration(configuration);
 
-    glm::vec3 up(
-        pConfiguration->up[0],
-        pConfiguration->up[1],
-        pConfiguration->up[2]);
-
-    this->mViewMatrix = glm::lookAt(eye, center, up);
-
-    const float w = ((float) pConfiguration->viewportWidth);
-    const float h = ((float) pConfiguration->viewportHeight);
-
-    this->mProjMatrix = glm::perspective(
-        pConfiguration->fieldOfView, w / h,
-        pConfiguration->nearClippingPlane,
-        pConfiguration->farClippingPlane);
-
-    this->mConfiguration = *pConfiguration;
+    configuration.viewportWidth = width;
+    configuration.viewportHeight = height;
+    this->ConfigureInternal(&configuration);
 }
 
 void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
@@ -172,4 +157,34 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
 Dynamorph::ITrackBall* Camera::GetTrackBallCore() const
 {
     return (const_cast<Camera *>(this))->mpTrackBall;
+}
+
+void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration)
+{
+    glm::vec3 eye(
+        pConfiguration->eye[0],
+        pConfiguration->eye[1],
+        pConfiguration->eye[2]);
+
+    glm::vec3 center(
+        pConfiguration->center[0],
+        pConfiguration->center[1],
+        pConfiguration->center[2]);
+
+    glm::vec3 up(
+        pConfiguration->up[0],
+        pConfiguration->up[1],
+        pConfiguration->up[2]);
+
+    this->mViewMatrix = glm::lookAt(eye, center, up);
+
+    const float w = ((float) pConfiguration->viewportWidth);
+    const float h = ((float) pConfiguration->viewportHeight);
+
+    this->mProjMatrix = glm::perspective(
+        pConfiguration->fieldOfView, w / h,
+        pConfiguration->nearClippingPlane,
+        pConfiguration->farClippingPlane);
+
+    this->mConfiguration = *pConfiguration;
 }
