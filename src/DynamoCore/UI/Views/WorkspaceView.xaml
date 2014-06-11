@@ -124,7 +124,15 @@
                        MouseLeftButtonUp="OnViewButtonMouseUp"
                        Source="/DynamoCore;component/UI/Images/canvas_button_geom_view.png">
                     <Image.RenderTransform>
-                        <TranslateTransform />
+                        <TranslateTransform>
+                            <TranslateTransform.Y>
+                                <Binding Path="DataContext.CanNavigateBackground"
+                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                                         Converter="{StaticResource ViewButtonStateConverter}"
+                                         ConverterParameter="geomsViewButton">
+                                </Binding>
+                            </TranslateTransform.Y>
+                        </TranslateTransform>
                     </Image.RenderTransform>
                 </Image>
             </Canvas>
@@ -142,7 +150,15 @@
                        MouseLeftButtonUp="OnViewButtonMouseUp"
                        Source="/DynamoCore;component/UI/Images/canvas_button_node_view.png">
                     <Image.RenderTransform>
-                        <TranslateTransform />
+                        <TranslateTransform>
+                            <TranslateTransform.Y>
+                                <Binding Path="DataContext.CanNavigateBackground"
+                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                                         Converter="{StaticResource ViewButtonStateConverter}"
+                                         ConverterParameter="nodesViewButton">
+                                </Binding>
+                            </TranslateTransform.Y>
+                        </TranslateTransform>
                     </Image.RenderTransform>
                 </Image>
             </Canvas>

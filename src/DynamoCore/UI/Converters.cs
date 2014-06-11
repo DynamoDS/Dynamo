@@ -1089,6 +1089,59 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ViewButtonStateConverter : IValueConverter
+    {
+        private enum ViewButtonId
+        {
+            Geometry, Node
+        }
+
+        private enum ViewButtonState
+        {
+            NormalIndex, HoverOverIndex, ClickedIndex, ActiveIndex
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var canNavigateBackground = ((bool)value);
+            ViewButtonState state = ViewButtonState.NormalIndex;
+
+            var callingViewButton = GetCallingViewButton(parameter as string);
+            if (callingViewButton == ViewButtonId.Geometry)
+            {
+                if (canNavigateBackground)
+                    state = ViewButtonState.ActiveIndex;
+            }
+            else if (callingViewButton == ViewButtonId.Node)
+            {
+                if (canNavigateBackground == false)
+                    state = ViewButtonState.ActiveIndex;
+            }
+
+            double invButtonHeight = -1.0 * Configurations.ButtonHeight;
+            return ((int)state) * invButtonHeight;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        private ViewButtonId GetCallingViewButton(string parameter)
+        {
+            if (string.IsNullOrEmpty(parameter) == false)
+            {
+                if (parameter.Equals("geomsViewButton"))
+                    return ViewButtonId.Geometry;
+                else if (parameter.Equals("nodesViewButton"))
+                    return ViewButtonId.Node;
+            }
+
+            var message = "View button element name not specified in XAML";
+            throw new ArgumentException(message);
+        }
+    }
+
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

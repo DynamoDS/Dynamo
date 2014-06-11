@@ -807,6 +807,7 @@ namespace Dynamo.Views
 
         internal void UpdateViewButtonVisuals()
         {
+            return;
             bool isInGeometryView = false;
             if (dynSettings.Controller.DynamoViewModel.CanNavigateBackground)
                 isInGeometryView = true;
