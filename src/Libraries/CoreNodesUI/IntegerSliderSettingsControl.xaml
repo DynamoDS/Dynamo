@@ -17,22 +17,20 @@
     </UserControl.Resources>
 
     <Grid>
-        <Expander>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"></RowDefinition>
-                    <RowDefinition Height="30"></RowDefinition>
-                </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
 
-                <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center"></Label>
-                <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center"></Label>
-                <nodes:DynamoTextBox Name="MinTb" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>
-                <nodes:DynamoTextBox Name="MaxTb" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"/>
-            </Grid>
-        </Expander>
+            <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center"></Label>
+            <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center"></Label>
+            <nodes:DynamoTextBox Name="MinTb" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>
+            <nodes:DynamoTextBox Name="MaxTb" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"/>
+        </Grid>
     </Grid>
 </UserControl>

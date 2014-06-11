@@ -446,6 +446,8 @@ namespace Dynamo.Models
                 }
             }
 
+            dynSettings.Controller.DynamoViewModel.AddToRecentFiles(xmlPath);
+
             dynSettings.Controller.IsUILocked = false;
 
             //clear the clipboard to avoid copying between dyns

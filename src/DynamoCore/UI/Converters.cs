@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -1333,7 +1334,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source->target
-            if (value == null) 
+            if (value == null)
                 return "No file selected.";
 
             const int maxChars = 30;
@@ -1342,10 +1343,24 @@ namespace Dynamo.Controls
             if (string.IsNullOrEmpty(str))
                 return "No file selected.";
 
-            if (str.Length > maxChars)
+            // if the number of directories deep exceeds threshold
+            if (str.Length - str.Replace(@"\", "").Length >= 5)
             {
-                return str.Substring(0, 10) + "..."
-                    + str.Substring(str.Length - maxChars + 10, maxChars - 10);
+                var root = Path.GetPathRoot(str);
+                var name = Path.GetFileName(str);
+
+                var dirInfo = new DirectoryInfo(Path.GetDirectoryName(str));
+
+                var collapsed = new[]
+                {
+                    root + "...",
+                    dirInfo.Parent.Parent.Name,
+                    dirInfo.Parent.Name,
+                    dirInfo.Name,
+                    name
+                };
+
+                return string.Join(@"\", collapsed);
             }
 
             return str;
@@ -1353,7 +1368,6 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //target->source
             return HttpUtility.UrlEncode(value.ToString());
         }
     }
