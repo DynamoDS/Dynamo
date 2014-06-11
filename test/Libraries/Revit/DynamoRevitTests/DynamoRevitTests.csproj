@@ -72,9 +72,8 @@
       <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="RevitTestFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\extern\RevitTestFramework\RevitTestFramework.dll</HintPath>
+    <Reference Include="RevitTestFrameworkTypes">
+      <HintPath>..\..\..\..\extern\RevitTestFramework\RevitTestFrameworkTypes.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

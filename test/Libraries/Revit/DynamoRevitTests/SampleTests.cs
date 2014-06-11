@@ -9,7 +9,6 @@ using DSCoreNodesUI;
 using DSCore.File;
 using Revit.Elements;
 using RTF.Framework;
-using RTF.Framework;
 
 namespace Dynamo.Tests
 {
