@@ -1160,14 +1160,6 @@
                 <ControlTemplate TargetType="{x:Type dynui:CanvasCheckBox}">
                     <Grid>
                         <Canvas>
-                            <Canvas.Width>
-                                <Binding Path="Width"
-                                         RelativeSource="{RelativeSource TemplatedParent}" />
-                            </Canvas.Width>
-                            <Canvas.Height>
-                                <Binding Path="Height"
-                                         RelativeSource="{RelativeSource TemplatedParent}" />
-                            </Canvas.Height>
                             <Canvas.Clip>
                                 <RectangleGeometry>
                                     <RectangleGeometry.Rect>
