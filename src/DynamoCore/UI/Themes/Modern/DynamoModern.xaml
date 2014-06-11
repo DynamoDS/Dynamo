@@ -1180,9 +1180,26 @@
                                     </RectangleGeometry.Rect>
                                 </RectangleGeometry>
                             </Canvas.Clip>
-                            <Image Name="canvasButtonImage">
+                            <Image Name="buttonStateImage">
+                                <Image.Width>
+                                    <Binding Path="Width"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </Image.Width>
                                 <Image.Source>
-                                    <Binding Path="ImageStrip"
+                                    <Binding Path="StateImage"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </Image.Source>
+                                <Image.RenderTransform>
+                                    <TranslateTransform />
+                                </Image.RenderTransform>
+                            </Image>
+                            <Image Name="buttonCheckImage">
+                                <Image.Width>
+                                    <Binding Path="Width"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </Image.Width>
+                                <Image.Source>
+                                    <Binding Path="CheckImage"
                                              RelativeSource="{RelativeSource TemplatedParent}" />
                                 </Image.Source>
                                 <Image.RenderTransform>
@@ -1196,19 +1213,17 @@
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
                                         <DoubleAnimation x:Name="hoverOverAnimation"
-                                            Storyboard.TargetName="canvasButtonImage"
+                                                         Storyboard.TargetName="buttonStateImage"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                         Duration="0">
-                                        </DoubleAnimation>
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <DoubleAnimation x:Name="pressedAnimation"
-                                                         Storyboard.TargetName="canvasButtonImage"
+                                                         Storyboard.TargetName="buttonStateImage"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                         Duration="0">
-                                        </DoubleAnimation>
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled" />
@@ -1217,21 +1232,12 @@
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
                                         <DoubleAnimation x:Name="checkedAnimation"
-                                                         Storyboard.TargetName="canvasButtonImage"
+                                                         Storyboard.TargetName="buttonCheckImage"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                         Duration="0">
-                                        </DoubleAnimation>
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
-                                <VisualState x:Name="Unchecked">
-                                    <Storyboard>
-                                        <DoubleAnimation x:Name="normalAnimation"
-                                                         Storyboard.TargetName="canvasButtonImage"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                         Duration="0">
-                                        </DoubleAnimation>
-                                    </Storyboard>
-                                </VisualState>
+                                <VisualState x:Name="Unchecked" />
                                 <VisualState x:Name="Indeterminate" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>

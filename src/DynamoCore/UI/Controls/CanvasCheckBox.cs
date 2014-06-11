@@ -17,21 +17,25 @@ namespace Dynamo.UI.Controls
 {
     public class CanvasCheckBox : CheckBox
     {
-        // static CanvasCheckBox()
-        // {
-        //     DefaultStyleKeyProperty.OverrideMetadata(typeof(CanvasCheckBox),
-        //         new FrameworkPropertyMetadata(typeof(CanvasCheckBox)));
-        // }
+        public static readonly DependencyProperty StateImageProperty =
+            DependencyProperty.Register("StateImage", typeof(ImageSource),
+            typeof(CanvasCheckBox), new UIPropertyMetadata(null));
 
-        public ImageSource ImageStrip
+        public static readonly DependencyProperty CheckImageProperty =
+            DependencyProperty.Register("CheckImage", typeof(ImageSource),
+            typeof(CanvasCheckBox), new UIPropertyMetadata(null));
+
+        public ImageSource StateImage
         {
-            get { return (ImageSource)GetValue(ImageStripProperty); }
-            set { SetValue(ImageStripProperty, value); }
+            get { return (ImageSource)GetValue(StateImageProperty); }
+            set { SetValue(StateImageProperty, value); }
         }
 
-        public static readonly DependencyProperty ImageStripProperty =
-            DependencyProperty.Register("ImageStrip", typeof(ImageSource),
-            typeof(CanvasCheckBox), new UIPropertyMetadata(null));
+        public ImageSource CheckImage
+        {
+            get { return (ImageSource)GetValue(CheckImageProperty); }
+            set { SetValue(CheckImageProperty, value); }
+        }
 
         /// <summary>
         /// You can't use dynamic resource references or data binding expressions
@@ -49,7 +53,6 @@ namespace Dynamo.UI.Controls
         {
             var animationNames = new string[]
             {
-                "normalAnimation",
                 "hoverOverAnimation",
                 "pressedAnimation",
                 "checkedAnimation"
@@ -57,10 +60,9 @@ namespace Dynamo.UI.Controls
 
             var offsetValues = new double[]
             {
-                0.0 * this.Height,
                 -1.0 * this.Height,
                 -2.0 * this.Height,
-                -3.0 * this.Height
+                -1.0 * this.Height
             };
 
             for (int index = 0; index < animationNames.Length; ++index)
