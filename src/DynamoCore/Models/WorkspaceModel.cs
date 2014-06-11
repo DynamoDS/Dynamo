@@ -824,6 +824,7 @@ namespace Dynamo.Models
         {
             model.LastSaved = DateTime.Now;
             model.HasUnsavedChanges = false;
+            dynSettings.Controller.DynamoViewModel.AddToRecentFiles(model.FileName);
         }
 
         private void MarkUnsaved(

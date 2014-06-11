@@ -230,6 +230,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowAboutWindowCommand { get; set; }
         public DelegateCommand CheckForUpdateCommand { get; set; }
         public DelegateCommand SetNumberFormatCommand { get; set; }
+        public DelegateCommand OpenRecentCommand { get; set; }
 
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
@@ -502,6 +503,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private ObservableCollection<string> recentFiles =
+            new ObservableCollection<string>();
+        public ObservableCollection<string> RecentFiles
+        {
+            get { return recentFiles; }
+            set
+            {
+                recentFiles = value;
+                RaisePropertyChanged("RecentFiles");
+            }
+        }
+
         //public bool AlternateDrawingContextAvailable
         //{
         //    get { return dynSettings.Controller.VisualizationManager.AlternateDrawingContextAvailable; }
@@ -662,6 +675,7 @@ namespace Dynamo.ViewModels
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
+            OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
 
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
@@ -687,6 +701,12 @@ namespace Dynamo.ViewModels
 
                     dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
                 }
+            };
+
+            this.RecentFiles = new ObservableCollection<string>( Controller.PreferenceSettings.RecentFiles );
+            this.RecentFiles.CollectionChanged += (sender, args) =>
+            {
+                Controller.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
             };
 
             UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
@@ -792,6 +812,23 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("Workspaces");
         }
 
+        internal void AddToRecentFiles(string path)
+        {
+            if (path == null) return;
+
+            if (RecentFiles.Contains(path))
+            {
+                RecentFiles.Remove(path);
+            }
+
+            RecentFiles.Insert(0, path);
+
+            if (RecentFiles.Count > Controller.PreferenceSettings.MaxNumRecentFiles)
+            {
+                RecentFiles = new ObservableCollection<string>(RecentFiles.Take(Controller.PreferenceSettings.MaxNumRecentFiles));
+            }
+        }
+
         public FileDialog GetSaveDialog(WorkspaceModel workspace)
         {
             FileDialog fileDialog = new SaveFileDialog
@@ -818,6 +855,17 @@ namespace Dynamo.ViewModels
             fileDialog.Filter = fltr;
 
             return fileDialog;
+        }
+
+        public void OpenRecent(object path)
+        {
+            var p = path as string;
+            this.Model.Open(p);
+        }
+
+        public bool CanOpenRecent(object path)
+        {
+            return true;
         }
 
         public virtual bool RunInDebug
