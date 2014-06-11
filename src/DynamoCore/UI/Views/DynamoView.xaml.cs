@@ -29,8 +29,6 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
-using Dynamo.Views;
-using System.Collections.Specialized;
 
 namespace Dynamo.Controls
 {
@@ -248,7 +246,6 @@ namespace Dynamo.Controls
 
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
-            _vm.PropertyChanged += OnViewModelPropertyChanged;
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             _vm.PostUiActivationCommand.Execute(null);
 
@@ -414,22 +411,10 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
-        }
-
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "CanNavigateBackground":
-                    var wsv = Dynamo.Nodes.Utilities.FindVisualChild<dynWorkspaceView>(this);
-                    if (wsv != null)
-                        wsv.UpdateViewButtonVisuals();
-                    break;
-            }
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)

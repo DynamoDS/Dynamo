@@ -14,7 +14,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.UI;
-using System.Windows.Media.Imaging;
 
 namespace Dynamo.Views
 {
@@ -675,7 +674,6 @@ namespace Dynamo.Views
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
             WorkBench.owningWorkspace = this;
-            UpdateViewButtonVisuals();
         }
 
         private PortViewModel PortFromHitTestResult(DependencyObject depObject)

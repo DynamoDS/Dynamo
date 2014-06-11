@@ -12,8 +12,6 @@ using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;
 using System.Web;
-using System.Windows.Media;
-using System.Windows;
 
 namespace Dynamo.Nodes
 {
@@ -595,24 +593,6 @@ namespace Dynamo.Nodes
             });
 
             return indexOfSeparator >= 0;
-        }
-
-        internal static ChildType FindVisualChild<ChildType>(DependencyObject obj)
-            where ChildType : DependencyObject
-        {
-            var childrenCount = VisualTreeHelper.GetChildrenCount(obj);
-            for (int childIndex = 0; childIndex < childrenCount; childIndex++)
-            {
-                var child = VisualTreeHelper.GetChild(obj, childIndex);
-                if (child != null && (child is ChildType))
-                    return child as ChildType;
-
-                ChildType childOfChild = FindVisualChild<ChildType>(child);
-                if (childOfChild != null)
-                    return childOfChild;
-            }
-
-            return null;
         }
     }
 
