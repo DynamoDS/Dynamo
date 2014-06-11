@@ -116,12 +116,21 @@
                                Margin="4,4,0,4"
                                StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-geom-states.png"
                                CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-geom-check.png">
+                <ui:CanvasCheckBox.IsChecked>
+                    <Binding Path="DataContext.CanNavigateBackground"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:CanvasCheckBox.IsChecked>
             </ui:CanvasCheckBox>
             <ui:CanvasCheckBox Width="55"
                                Height="30"
                                Margin="0,4,4,4"
                                StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-node-states.png"
                                CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-node-check.png">
+                <ui:CanvasCheckBox.IsChecked>
+                    <Binding Path="DataContext.CanNavigateBackground"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                             Converter="{StaticResource InverseBooleanConverter}"/>
+                </ui:CanvasCheckBox.IsChecked>
             </ui:CanvasCheckBox>
         </StackPanel>
     </Grid>
