@@ -117,7 +117,7 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
@@ -141,7 +141,7 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
@@ -166,7 +166,7 @@ namespace DSCore
     }
 
     ///<search>cross</search>
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
