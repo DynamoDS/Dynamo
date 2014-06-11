@@ -1142,6 +1142,23 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ViewButtonClipRectConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new System.Windows.Rect()
+            {
+                Width = ((double)values[0]),
+                Height = ((double)values[1])
+            };
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
