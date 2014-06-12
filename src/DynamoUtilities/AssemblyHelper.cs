@@ -8,28 +8,39 @@ namespace Dynamo.Utilities
     public static class AssemblyHelper
     {
         /// <summary>
-        /// Attempts to resolve an assembly from the dll directory.
+        /// Handler to the ApplicationDomain's AssemblyResolve event.
+        /// If an assembly's location cannot be resolved, an exception is
+        /// thrown. Failure to resolve an assembly will leave Dynamo in 
+        /// a bad state, so we should throw an exception here which gets caught 
+        /// by our unhandled exception handler and presents the crash dialogue.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
         public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
-            // First check the core path
-            string assemblyPath = Path.Combine(DynamoPaths.MainExecPath, new AssemblyName(args.Name).Name + ".dll");
-            if (File.Exists(assemblyPath))
+            try
             {
-                return Assembly.LoadFrom(assemblyPath);
-            }
+                // First check the core path
+                string assemblyPath = Path.Combine(DynamoPaths.MainExecPath, new AssemblyName(args.Name).Name + ".dll");
+                if (File.Exists(assemblyPath))
+                {
+                    return Assembly.LoadFrom(assemblyPath);
+                }
 
-            // Then check the dll path
-            assemblyPath = Path.Combine(DynamoPaths.Asm, new AssemblyName(args.Name).Name + ".dll");
-            if (File.Exists(assemblyPath))
+                // Then check the dll path
+                assemblyPath = Path.Combine(DynamoPaths.Asm, new AssemblyName(args.Name).Name + ".dll");
+                if (File.Exists(assemblyPath))
+                {
+                    return Assembly.LoadFrom(assemblyPath);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
             {
-                return Assembly.LoadFrom(assemblyPath);
+                throw new Exception(string.Format("There location of the assembly, {0} could not be resolved for loading.", args.Name), ex);
             }
-
-            return null;
         }
 
         public static Version GetDynamoVersion()
