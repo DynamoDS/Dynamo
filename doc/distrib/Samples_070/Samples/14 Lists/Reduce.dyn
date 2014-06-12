@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.21332" X="73.1517667740967" Y="-2004.6609055519" zoom="0.779617142869681" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.25080" X="-92.151765135796" Y="-1189.28827900811" zoom="0.862759073432669" Description="" Category="" Name="Home">
   <Elements>
     <DSCore.Reduce type="DSCore.Reduce" guid="94497bdd-30b4-46a5-8482-5b8bd8433ecd" nickname="List.Reduce" x="421.748091297043" y="1454.69197436483" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1f214f11-dc55-42c9-8f11-8d97debe34b4" nickname="+" x="168.684723367066" y="1454.20381151695" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
