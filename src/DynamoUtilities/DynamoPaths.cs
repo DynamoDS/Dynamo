@@ -12,25 +12,53 @@ namespace DynamoUtilities
     /// </summary>
     public static class DynamoPaths
     {
-
+        /// <summary>
+        /// The main execution path of Dynamo. This is the directory
+        /// which contains DynamoCore.dll
+        /// </summary>
         public static string MainExecPath { get; set; }
+
+        /// <summary>
+        /// The definitions folder, which contains custom nodes
+        /// created by the user.
+        /// </summary>
         public static string Definitions { get; set; }
+
+        /// <summary>
+        /// The packages folder, which contains pacakages downloaded
+        /// with the package manager.
+        /// </summary>
         public static string Packages { get; set; }
+
+        /// <summary>
+        /// The UI folder, which contains the UI resources.
+        /// </summary>
         public static string Ui { get; set; }
+
+        /// <summary>
+        /// The ASM folder which contains LibG and the 
+        /// ASM binaries.
+        /// </summary>
         public static string Asm { get; set; }
 
         // All 'nodes' folders.
         public static HashSet<string> Nodes { get; set; } 
 
-        public static void SetupDynamoPaths(string corePath)
+        /// <summary>
+        /// Provided a main execution path, find other Dynamo paths
+        /// relatively. This operation should be called only once at
+        /// the beginning of a Dynamo session.
+        /// </summary>
+        /// <param name="mainExecPath">The main execution directory of Dynamo.</param>
+        public static void SetupDynamoPaths(string mainExecPath)
         {
-            if (Directory.Exists(corePath))
+            if (Directory.Exists(mainExecPath))
             {
-                MainExecPath = corePath;
+                MainExecPath = mainExecPath;
             }
             else
             {
-                throw new Exception(string.Format("The specified core path: {0}, does not exist.", corePath));
+                throw new Exception(string.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
             Definitions = Path.Combine(MainExecPath, "definitions");
