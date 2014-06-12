@@ -1239,15 +1239,12 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type dynui:ImageButton}">
+    <Style x:Key="{x:Type dynui:ImageButton}"
+           TargetType="{x:Type dynui:ImageButton}">
         <Setter Property="SnapsToDevicePixels"
                 Value="true" />
         <Setter Property="OverridesDefaultStyle"
                 Value="true" />
-        <Setter Property="MinHeight"
-                Value="23" />
-        <Setter Property="MinWidth"
-                Value="75" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dynui:ImageButton}">
@@ -1287,8 +1284,22 @@
                                                       To="Pressed" />
                                 </VisualStateGroup.Transitions>
                                 <VisualState x:Name="Normal" />
-                                <VisualState x:Name="MouseOver" />
-                                <VisualState x:Name="Pressed" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="hoverOverAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="pressedAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
                                 <VisualState x:Name="Disabled" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>

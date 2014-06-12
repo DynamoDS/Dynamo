@@ -15,19 +15,6 @@ using System.Windows.Shapes;
 
 namespace Dynamo.UI.Controls
 {
-    public class ImageButton : Button
-    {
-        public static readonly DependencyProperty StateImageProperty =
-            DependencyProperty.Register("StateImage", typeof(ImageSource),
-            typeof(ImageCheckBox), new UIPropertyMetadata(null));
-
-        public ImageSource StateImage
-        {
-            get { return (ImageSource)GetValue(StateImageProperty); }
-            set { SetValue(StateImageProperty, value); }
-        }
-    }
-
     public class ImageCheckBox : CheckBox
     {
         public static readonly DependencyProperty StateImageProperty =
@@ -64,26 +51,52 @@ namespace Dynamo.UI.Controls
         /// 
         public override void OnApplyTemplate()
         {
-            var animationNames = new string[]
-            {
-                "hoverOverAnimation",
-                "pressedAnimation",
-                "checkedAnimation"
-            };
+            var animationOffsets = new Dictionary<string, double>();
+            animationOffsets.Add("hoverOverAnimation", -1.0 * this.Height);
+            animationOffsets.Add("pressedAnimation", -2.0 * this.Height);
+            animationOffsets.Add("checkedAnimation", -1.0 * this.Height);
 
-            var offsetValues = new double[]
+            foreach (var offset in animationOffsets)
             {
-                -1.0 * this.Height,
-                -2.0 * this.Height,
-                -1.0 * this.Height
-            };
-
-            for (int index = 0; index < animationNames.Length; ++index)
-            {
-                var animation = Template.FindName(animationNames[index], this);
+                var animation = Template.FindName(offset.Key, this);
                 var doubleAnimation = animation as DoubleAnimation;
                 if (doubleAnimation != null)
-                    doubleAnimation.To = offsetValues[index];
+                    doubleAnimation.To = offset.Value;
+            }
+
+            base.OnApplyTemplate();
+        }
+    }
+
+    public class ImageButton : Button
+    {
+        public static readonly DependencyProperty StateImageProperty =
+            DependencyProperty.Register("StateImage", typeof(ImageSource),
+            typeof(ImageButton), new UIPropertyMetadata(null));
+
+        public ImageSource StateImage
+        {
+            get { return (ImageSource)GetValue(StateImageProperty); }
+            set { SetValue(StateImageProperty, value); }
+        }
+
+        /// <summary>
+        /// For detailed explaination of why we need this,
+        /// see "ImageCheckBox.OnApplyTemplate" method above.
+        /// </summary>
+        /// 
+        public override void OnApplyTemplate()
+        {
+            var animationOffsets = new Dictionary<string, double>();
+            animationOffsets.Add("hoverOverAnimation", -1.0 * this.Height);
+            animationOffsets.Add("pressedAnimation", -2.0 * this.Height);
+
+            foreach(var offset in animationOffsets)
+            {
+                var animation = Template.FindName(offset.Key, this);
+                var doubleAnimation = animation as DoubleAnimation;
+                if (doubleAnimation != null)
+                    doubleAnimation.To = offset.Value;
             }
 
             base.OnApplyTemplate();
