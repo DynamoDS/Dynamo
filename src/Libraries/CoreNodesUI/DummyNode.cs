@@ -202,11 +202,7 @@ namespace DSCoreNodesUI
             get { return this.GetDescription(); }
             set { base.Description = value; }
         }
-        /*
-        public override string GetType(){
-            return oldInfo.Name;
-        }
-        */
+
         public int InputCount { get; private set; }
         public int OutputCount { get; private set; }
         public string LegacyNodeName { get; private set; }

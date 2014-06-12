@@ -793,7 +793,7 @@ namespace Dynamo.Models
                 var message = "Argument value must be equal or larger than zero";
                 throw new ArgumentException(message, "inportCount/outportCount");
             }
-            
+
             var dummyNodeName = "DSCoreNodesUI.DummyNode";
             XmlDocument document = element.OwnerDocument;
             XmlElement dummy = document.CreateElement(dummyNodeName);
