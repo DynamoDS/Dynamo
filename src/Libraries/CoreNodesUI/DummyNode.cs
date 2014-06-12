@@ -60,7 +60,9 @@ namespace DSCoreNodesUI
 
             if (nodeElement.ChildNodes != null) 
             {
-                this.OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
+                foreach (XmlNode childNode in nodeElement.ChildNodes)
+                    if (childNode.Name.Equals("OriginalNodeContent"))
+                        this.OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
             }
             
             var legacyAsm = nodeElement.Attributes["legacyAssembly"];
@@ -94,49 +96,63 @@ namespace DSCoreNodesUI
         {
             if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
-                //dump all the information into memory
+                //Dump all the information into memory
+
                 nodeElement.SetAttribute("inputCount", this.InputCount.ToString());
                 nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
                 nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
                 nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
                 nodeElement.SetAttribute("nodeNature", this.NodeNature.ToString());
 
-                XmlElement originalNode = xmlDoc.CreateElement("OriginalNodeContent");
-                XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(this.OriginalNodeContent.Name);
-
-                foreach (XmlAttribute attribute in this.OriginalNodeContent.Attributes)
-                    nodeContent.SetAttribute(attribute.Name, attribute.Value);
-
-                for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
+                if(this.OriginalNodeContent != null)
                 {
-                    XmlNode child = nodeElement.ChildNodes[i];
-                    nodeContent.AppendChild(child.CloneNode(true));
-                }
+                    XmlElement originalNode = xmlDoc.CreateElement("OriginalNodeContent");
+                    XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(this.OriginalNodeContent.Name);
 
-                originalNode.AppendChild(nodeContent);
-                nodeElement.AppendChild(originalNode);
+                    foreach (XmlAttribute attribute in this.OriginalNodeContent.Attributes)
+                        nodeContent.SetAttribute(attribute.Name, attribute.Value);
+
+                    for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
+                    {
+                        XmlNode child = nodeElement.ChildNodes[i];
+                        nodeContent.AppendChild(child.CloneNode(true));
+                    }
+
+                    originalNode.AppendChild(nodeContent);
+                    nodeElement.AppendChild(originalNode);
+                }
             }
 
             if (context == SaveContext.File)
             {
                 //When save files, only save the original node's content, 
                 //instead of saving the dummy node.
-                XmlElement originalNode = nodeElement.OwnerDocument.CreateElement(this.OriginalNodeContent.Name);
-                foreach (XmlAttribute attribute in this.OriginalNodeContent.Attributes)
-                    originalNode.SetAttribute(attribute.Name, attribute.Value);
-
-                //overwrite the guid/x/y value of the original node.
-                originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
-                originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
-                originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
-
-                for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
+                if (this.OriginalNodeContent != null)
                 {
-                    XmlNode child = nodeElement.ChildNodes[i];
-                    originalNode.AppendChild(child.CloneNode(true));
-                }
+                    XmlElement originalNode = nodeElement.OwnerDocument.CreateElement(this.OriginalNodeContent.Name);
+                    foreach (XmlAttribute attribute in this.OriginalNodeContent.Attributes)
+                        originalNode.SetAttribute(attribute.Name, attribute.Value);
 
-                nodeElement.ParentNode.ReplaceChild(originalNode, nodeElement);
+                    //overwrite the guid/x/y value of the original node.
+                    originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
+                    originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
+                    originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
+
+                    for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
+                    {
+                        XmlNode child = nodeElement.ChildNodes[i];
+                        originalNode.AppendChild(child.CloneNode(true));
+                    }
+
+                    nodeElement.ParentNode.ReplaceChild(originalNode, nodeElement);
+                }
+                else {
+                    nodeElement.SetAttribute("inputCount", this.InputCount.ToString());
+                    nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
+                    nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
+                    nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
+                    nodeElement.SetAttribute("nodeNature", this.NodeNature.ToString());
+                }
             }
         }
 
