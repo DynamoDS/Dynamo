@@ -13,7 +13,10 @@ using String = System.String;
 namespace Dynamo.Utilities
 {
     /// <summary>
-    ///     Handles loading various types of elements into Dynamo at startup
+    /// The DynamoLoader is responsible for loading custom nodes and
+    /// types which derive from NodeModel. For information
+    /// about package loading see the PackageLoader. For information
+    /// about loading other libraries, see LibraryServices.
     /// </summary>
     public class DynamoLoader
     {
