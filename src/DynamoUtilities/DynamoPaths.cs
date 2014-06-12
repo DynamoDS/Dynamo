@@ -46,6 +46,7 @@ namespace DynamoUtilities
             // Only register the core nodes directory
             Nodes.Add(Path.Combine(MainExecPath, "nodes"));
 
+#if DEBUG
             var sb = new StringBuilder();
             sb.AppendLine(string.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(string.Format("Definitions: {0}", Definitions));
@@ -55,6 +56,8 @@ namespace DynamoUtilities
             Nodes.ToList().ForEach(n=>sb.AppendLine(string.Format("Nodes: {0}", n)));
             
             Debug.WriteLine(sb);
+#endif
+
         }
     }
 }
