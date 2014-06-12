@@ -16,7 +16,7 @@ namespace Dynamo.Utilities
         public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
             // First check the core path
-            string assemblyPath = Path.Combine(DynamoPaths.Core, new AssemblyName(args.Name).Name + ".dll");
+            string assemblyPath = Path.Combine(DynamoPaths.MainExecPath, new AssemblyName(args.Name).Name + ".dll");
             if (File.Exists(assemblyPath))
             {
                 return Assembly.LoadFrom(assemblyPath);

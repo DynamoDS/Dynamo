@@ -13,7 +13,7 @@ namespace DynamoUtilities
     public static class DynamoPaths
     {
 
-        public static string Core { get; set; }
+        public static string MainExecPath { get; set; }
         public static string Definitions { get; set; }
         public static string Packages { get; set; }
         public static string Ui { get; set; }
@@ -26,17 +26,17 @@ namespace DynamoUtilities
         {
             if (Directory.Exists(corePath))
             {
-                Core = corePath;
+                MainExecPath = corePath;
             }
             else
             {
                 throw new Exception(string.Format("The specified core path: {0}, does not exist.", corePath));
             }
 
-            Definitions = Path.Combine(Core, "definitions");
-            Packages = Path.Combine(Core , "dynamo_packages");
-            Asm = Path.Combine(Core, "dll");
-            Ui = Path.Combine(Core , "UI");
+            Definitions = Path.Combine(MainExecPath, "definitions");
+            Packages = Path.Combine(MainExecPath , "dynamo_packages");
+            Asm = Path.Combine(MainExecPath, "dll");
+            Ui = Path.Combine(MainExecPath , "UI");
 
             if (Nodes == null)
             {
@@ -44,10 +44,10 @@ namespace DynamoUtilities
             }
 
             // Only register the core nodes directory
-            Nodes.Add(Path.Combine(Core, "nodes"));
+            Nodes.Add(Path.Combine(MainExecPath, "nodes"));
 
             var sb = new StringBuilder();
-            sb.AppendLine(string.Format("Core: {0}", Core));
+            sb.AppendLine(string.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(string.Format("Definitions: {0}", Definitions));
             sb.AppendLine(string.Format("Packages: {0}", Packages));
             sb.AppendLine(string.Format("Ui: {0}", Asm));

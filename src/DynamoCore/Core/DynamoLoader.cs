@@ -148,7 +148,7 @@ namespace Dynamo.Utilities
                 DynamoPaths.Nodes.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
-            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPaths.Core, "DynamoCore.dll"));
+            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPaths.MainExecPath, "DynamoCore.dll"));
 
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {

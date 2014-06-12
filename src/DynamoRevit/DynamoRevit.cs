@@ -156,7 +156,7 @@ namespace Dynamo.Applications
             //Add an assembly load step for the System.Windows.Interactivity assembly
             //Revit owns a version of this as well. Adding our step here prevents a duplicative
             //load of the dll at a later time.
-            var interactivityPath = Path.Combine(DynamoPaths.Core, "System.Windows.Interactivity.dll");
+            var interactivityPath = Path.Combine(DynamoPaths.MainExecPath, "System.Windows.Interactivity.dll");
             if (File.Exists(interactivityPath))
             {
                 Assembly.LoadFrom(interactivityPath);
