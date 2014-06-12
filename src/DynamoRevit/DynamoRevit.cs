@@ -24,13 +24,13 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
 using Dynamo.UpdateManager;
+using DynamoUtilities;
 using RevitServices.Elements;
 using RevitServices.Transactions;
 using RevitServices.Persistence;
 
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
-using Rectangle = System.Drawing.Rectangle;
 using RevThread = RevitServices.Threading;
 using System.IO;
 
@@ -50,6 +50,18 @@ namespace Dynamo.Applications
         {
             try
             {
+                // The executing assembly will be in Revit_20xx, so 
+                // we have to walk up one level. Unfortunately, we
+                // can't use DynamoPaths here because those are not
+                // initialized until the controller is constructed.
+                var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                DynamoPaths.SetupDynamoPaths(Path.GetFullPath(assDir + @"\.."));
+                
+                //add an additional node processing folder
+                DynamoPaths.Nodes.Add(Path.Combine(assDir, "nodes"));
+
+                AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+
                 ControlledApplication = application.ControlledApplication;
 
                 RevThread.IdlePromise.RegisterIdle(application);
@@ -138,15 +150,17 @@ namespace Dynamo.Applications
                     Debugger.Launch();
                 }
             }
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
+
             AppDomain.CurrentDomain.AssemblyResolve += Analyze.Render.AssemblyHelper.ResolveAssemblies;
 
             //Add an assembly load step for the System.Windows.Interactivity assembly
             //Revit owns a version of this as well. Adding our step here prevents a duplicative
             //load of the dll at a later time.
-            var assLoc = Assembly.GetExecutingAssembly().Location;
-            var interactivityPath = Path.Combine(Path.GetDirectoryName(assLoc), "System.Windows.Interactivity.dll");
-            var interactivityAss = Assembly.LoadFrom(interactivityPath);
+            var interactivityPath = Path.Combine(DynamoPaths.MainExecPath, "System.Windows.Interactivity.dll");
+            if (File.Exists(interactivityPath))
+            {
+                Assembly.LoadFrom(interactivityPath);
+            }
 
             DynamoRevitApp.dynamoButton.Enabled = false;
 
@@ -237,7 +251,9 @@ namespace Dynamo.Applications
             BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
             var updateManager = new UpdateManager.UpdateManager(logger);
-            var dynamoController = new DynamoController_Revit(updater, context, updateManager);
+
+            var corePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
+            var dynamoController = new DynamoController_Revit(updater, context, updateManager, corePath);
 
             // Generate a view model to be the data context for the view
             dynamoController.DynamoViewModel = new DynamoRevitViewModel(dynamoController, null);
@@ -382,7 +398,7 @@ namespace Dynamo.Applications
             view.Closed -= dynamoView_Closed;
             DocumentManager.Instance.CurrentUIApplication.ViewActivating -= Application_ViewActivating;
 
-            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
             AppDomain.CurrentDomain.AssemblyResolve -= Analyze.Render.AssemblyHelper.ResolveAssemblies;
 
             ((DynamoLogger) dynSettings.DynamoLogger).Dispose();

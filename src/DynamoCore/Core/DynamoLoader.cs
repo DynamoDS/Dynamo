@@ -7,16 +7,25 @@ using Dynamo.Models;
 using System.Reflection;
 using System.IO;
 using Autodesk.DesignScript.Runtime;
+using DynamoUtilities;
 using String = System.String;
 
 namespace Dynamo.Utilities
 {
     /// <summary>
-    ///     Handles loading various types of elements into Dynamo at startup
+    /// The DynamoLoader is responsible for loading custom nodes and
+    /// types which derive from NodeModel. For information
+    /// about package loading see the PackageLoader. For information
+    /// about loading other libraries, see LibraryServices.
     /// </summary>
-    internal class DynamoLoader
+    public class DynamoLoader
     {
         private static string _dynamoDirectory = "";
+        public static HashSet<string> SearchPaths = new HashSet<string>();
+        public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
+        public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded =
+            new Dictionary<string, List<Type>>();
+
         public static string GetDynamoDirectory()
         {
             if (String.IsNullOrEmpty(_dynamoDirectory))
@@ -27,94 +36,9 @@ namespace Dynamo.Utilities
             return _dynamoDirectory;
         }
 
-        public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
-
-        public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded =
-            new Dictionary<string, List<Type>>();
-
         internal static void LoadPackages()
         {
             dynSettings.PackageLoader.LoadPackages();
-        }
-
-        /// <summary>
-        ///     Enumerate local library assemblies and add them to DynamoController's
-        ///     dictionaries and search.  
-        /// </summary>
-        internal static void LoadBuiltinTypes()
-        {
-            string location = GetDynamoDirectory();
-
-            #region determine assemblies to load
-
-            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
-            var allLoadedAssemblies = new Dictionary<string, Assembly>();
-
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                try
-                {
-                    allLoadedAssembliesByPath[assembly.Location] = assembly;
-                    allLoadedAssemblies[assembly.FullName] = assembly;
-                }
-                catch { }
-            }
-
-            IEnumerable<string> allDynamoAssemblyPaths = 
-                SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
-                           .Aggregate(
-                                Directory.GetFiles(location, "*.dll") as IEnumerable<string>, 
-                                Enumerable.Concat);
-
-            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
-            {
-                Assembly result;
-                allLoadedAssemblies.TryGetValue(args.Name, out result);
-                return result;
-            });
-
-            AppDomain.CurrentDomain.AssemblyResolve += resolver;
-
-            foreach (var assemblyPath in allDynamoAssemblyPaths)
-            {
-                var fn = Path.GetFileName(assemblyPath);
-
-                if (fn == null)
-                    continue;
-
-                if (LoadedAssemblyNames.Contains(fn))
-                    continue;
-
-                LoadedAssemblyNames.Add(fn);
-
-                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-                else
-                {
-                    try
-                    {
-                        var assembly = Assembly.LoadFrom(assemblyPath);
-                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly);
-                    }
-                    catch (BadImageFormatException)
-                    {
-                        //swallow these warnings.
-                    }
-                    catch (Exception e)
-                    {
-                        dynSettings.DynamoLogger.Log(e);
-                    }
-                }
-            }
-
-#if USE_DSENGINE
-            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
-#endif
-            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
-
-            #endregion
-
         }
 
         /// <summary>
@@ -124,8 +48,6 @@ namespace Dynamo.Utilities
         /// </summary>
         internal static void LoadNodeModels()
         {
-            string location = Path.Combine(GetDynamoDirectory(), "nodes");
-
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
 
@@ -146,13 +68,10 @@ namespace Dynamo.Utilities
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
             List<string> allDynamoAssemblyPaths =
-                SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
-                           .Aggregate(
-                                Directory.GetFiles(location, "*.dll") as IEnumerable<string>,
-                                Enumerable.Concat).ToList();
+                DynamoPaths.Nodes.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
-            allDynamoAssemblyPaths.Add(Path.Combine(GetDynamoDirectory(), "DynamoCore.dll"));
+            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPaths.MainExecPath, "DynamoCore.dll"));
 
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {
@@ -391,13 +310,6 @@ namespace Dynamo.Utilities
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
 
             return loadedNodes;
-        }
-
-        public static HashSet<string> SearchPaths = new HashSet<string>();
-
-        internal static void AddBinarySearchPath(string p)
-        {
-            SearchPaths.Add(p);
         }
 
         internal static void ClearCachedAssemblies()

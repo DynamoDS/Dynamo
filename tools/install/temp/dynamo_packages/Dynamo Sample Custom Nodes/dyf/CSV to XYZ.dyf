@@ -1,0 +1,38 @@
+<dynWorkspace X="0" Y="0" Name="CSV to XYZ" Category="Input/Output.File" ID="e7fc0854-482e-4f60-9a09-2bb527cf2c16">
+  <dynElements>
+    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="13468dab-9934-4501-8bfa-f206ed95a92c" nickname="Read File" x="228.591097960211" y="28.3456675480573" />
+    <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" nickname="Split String" x="351.112230336607" y="78.2439929069093" />
+    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="123b16a4-3c87-451b-9915-d220fe5a58b9" nickname="String" x="250" y="164.518540669856">
+      <System.String value="%0a" />
+    </Dynamo.Nodes.dynStringInput>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="5b3baf3e-1147-453b-82ee-43b156060664" nickname="Parse List of Lists" x="491.418583340328" y="10.4761904761905">
+      <ID value="1f47466b-a6c8-49d1-a54e-eb901d971738" />
+      <Name value="Parse List of Lists" />
+      <Inputs>
+        <Input value="list" />
+        <Input value="multiplier" />
+      </Inputs>
+      <Outputs>
+        <Output value="xyz" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="fac66523-ae94-4c49-a5cc-07736fde9bbb" nickname="Variable" x="0" y="0">
+      <Symbol value="path" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="eb6307b6-5dab-4348-97fa-040a006fb91c" nickname="Variable" x="0" y="80">
+      <Symbol value="multiplier" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="122d517b-8a35-4f9f-a026-d2a1eae76d6d" nickname="Output" x="660.863027784772" y="0">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.dynOutput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="13468dab-9934-4501-8bfa-f206ed95a92c" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" start_index="0" end="5b3baf3e-1147-453b-82ee-43b156060664" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="123b16a4-3c87-451b-9915-d220fe5a58b9" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="5b3baf3e-1147-453b-82ee-43b156060664" start_index="0" end="122d517b-8a35-4f9f-a026-d2a1eae76d6d" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="fac66523-ae94-4c49-a5cc-07736fde9bbb" start_index="0" end="13468dab-9934-4501-8bfa-f206ed95a92c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="eb6307b6-5dab-4348-97fa-040a006fb91c" start_index="0" end="5b3baf3e-1147-453b-82ee-43b156060664" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
