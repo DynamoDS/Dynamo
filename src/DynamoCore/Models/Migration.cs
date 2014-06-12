@@ -793,7 +793,7 @@ namespace Dynamo.Models
                 var message = "Argument value must be equal or larger than zero";
                 throw new ArgumentException(message, "inportCount/outportCount");
             }
-            XmlElement d = (XmlElement)element.Clone();
+            
             var dummyNodeName = "DSCoreNodesUI.DummyNode";
             XmlDocument document = element.OwnerDocument;
             XmlElement dummy = document.CreateElement(dummyNodeName);
@@ -806,7 +806,15 @@ namespace Dynamo.Models
             dummy.SetAttribute("inputCount", inportCount.ToString());
             dummy.SetAttribute("outputCount", outportCount.ToString());
             dummy.SetAttribute("nodeNature", "Deprecated");
-            dummy.AppendChild(d);
+
+            XmlElement originalNode = document.CreateElement("OriginalNodeContent");
+
+            //clone a copy of the original node
+            XmlElement nodeContent = (XmlElement)element.Clone();
+
+            //append the original node content as a child of the dummy node
+            originalNode.AppendChild(nodeContent);
+            dummy.AppendChild(originalNode);
 
             return dummy;
         }

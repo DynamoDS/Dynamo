@@ -58,8 +58,11 @@ namespace DSCoreNodesUI
             this.OutputCount = Int32.Parse(outputCount.Value);
             this.LegacyNodeName = legacyName.Value;
 
-            this.oldInfo = (XmlElement)nodeElement.FirstChild;
-
+            if (nodeElement.ChildNodes != null) 
+            {
+                this.OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
+            }
+            
             var legacyAsm = nodeElement.Attributes["legacyAssembly"];
             if (legacyAsm != null)
                 this.LegacyAssembly = legacyAsm.Value;
@@ -91,43 +94,49 @@ namespace DSCoreNodesUI
         {
             if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
+                //dump all the information into memory
                 nodeElement.SetAttribute("inputCount", this.InputCount.ToString());
                 nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
                 nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
                 nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
                 nodeElement.SetAttribute("nodeNature", this.NodeNature.ToString());
 
-                XmlElement xyzx = nodeElement.OwnerDocument.CreateElement(this.oldInfo.Name);
+                XmlElement originalNode = xmlDoc.CreateElement("OriginalNodeContent");
+                XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(this.OriginalNodeContent.Name);
 
-                foreach (XmlAttribute attribute in this.oldInfo.Attributes)
-                    xyzx.SetAttribute(attribute.Name, attribute.Value);
+                foreach (XmlAttribute attribute in this.OriginalNodeContent.Attributes)
+                    nodeContent.SetAttribute(attribute.Name, attribute.Value);
 
-                for (int i = 0; i < this.oldInfo.ChildNodes.Count; i++)
+                for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
                 {
                     XmlNode child = nodeElement.ChildNodes[i];
-                    xyzx.AppendChild(child.CloneNode(true));
+                    nodeContent.AppendChild(child.CloneNode(true));
                 }
 
-                nodeElement.AppendChild(xyzx);
+                originalNode.AppendChild(nodeContent);
+                nodeElement.AppendChild(originalNode);
             }
 
             if (context == SaveContext.File)
             {
-                XmlElement xyz = nodeElement.OwnerDocument.CreateElement(this.oldInfo.Name);
-                foreach (XmlAttribute attribute in this.oldInfo.Attributes)
-                    xyz.SetAttribute(attribute.Name, attribute.Value);
+                //When save files, only save the original node's content, 
+                //instead of saving the dummy node.
+                XmlElement originalNode = nodeElement.OwnerDocument.CreateElement(this.OriginalNodeContent.Name);
+                foreach (XmlAttribute attribute in this.OriginalNodeContent.Attributes)
+                    originalNode.SetAttribute(attribute.Name, attribute.Value);
 
-                xyz.SetAttribute("guid", nodeElement.GetAttribute("guid"));
-                xyz.SetAttribute("x", nodeElement.GetAttribute("x"));
-                xyz.SetAttribute("y", nodeElement.GetAttribute("y"));
+                //overwrite the guid/x/y value of the original node.
+                originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
+                originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
+                originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
 
-                for (int i = 0; i < this.oldInfo.ChildNodes.Count; i++)
+                for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
                 {
                     XmlNode child = nodeElement.ChildNodes[i];
-                    xyz.AppendChild(child.CloneNode(true));
+                    originalNode.AppendChild(child.CloneNode(true));
                 }
 
-                nodeElement.ParentNode.ReplaceChild(xyz, nodeElement);
+                nodeElement.ParentNode.ReplaceChild(originalNode, nodeElement);
             }
         }
 
@@ -203,6 +212,6 @@ namespace DSCoreNodesUI
         public string LegacyNodeName { get; private set; }
         public string LegacyAssembly { get; private set; }
         public Nature NodeNature { get; private set; }
-        public XmlElement oldInfo { get; private set; }
+        public XmlElement OriginalNodeContent { get; private set; }
     }
 }
