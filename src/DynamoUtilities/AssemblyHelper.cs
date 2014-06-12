@@ -40,15 +40,8 @@ namespace Dynamo.Utilities
 
         public static Assembly LoadLibG()
         {
-            var libG = Assembly.LoadFrom(GetLibGPath());
+            var libG = Assembly.LoadFrom(DynamoPaths.Asm);
             return libG;
-        }
-
-        public static string GetLibGPath()
-        {
-            string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
-            string libGPath = Path.Combine(dll_dir, "LibG.Managed.dll");
-            return libGPath;
         }
     }
 }
