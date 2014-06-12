@@ -15,6 +15,19 @@ using System.Windows.Shapes;
 
 namespace Dynamo.UI.Controls
 {
+    public class ImageButton : Button
+    {
+        public static readonly DependencyProperty StateImageProperty =
+            DependencyProperty.Register("StateImage", typeof(ImageSource),
+            typeof(ImageCheckBox), new UIPropertyMetadata(null));
+
+        public ImageSource StateImage
+        {
+            get { return (ImageSource)GetValue(StateImageProperty); }
+            set { SetValue(StateImageProperty, value); }
+        }
+    }
+
     public class ImageCheckBox : CheckBox
     {
         public static readonly DependencyProperty StateImageProperty =
