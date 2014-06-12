@@ -145,10 +145,10 @@ limitations under the License.
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
-    <Compile Include="UI\Controls\CanvasCheckBox.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Controls\ImageBasedControls.cs" />
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>CrashPrompt.xaml</DependentUpon>

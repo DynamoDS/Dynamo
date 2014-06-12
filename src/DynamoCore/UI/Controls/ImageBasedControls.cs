@@ -15,15 +15,15 @@ using System.Windows.Shapes;
 
 namespace Dynamo.UI.Controls
 {
-    public class CanvasCheckBox : CheckBox
+    public class ImageCheckBox : CheckBox
     {
         public static readonly DependencyProperty StateImageProperty =
             DependencyProperty.Register("StateImage", typeof(ImageSource),
-            typeof(CanvasCheckBox), new UIPropertyMetadata(null));
+            typeof(ImageCheckBox), new UIPropertyMetadata(null));
 
         public static readonly DependencyProperty CheckImageProperty =
             DependencyProperty.Register("CheckImage", typeof(ImageSource),
-            typeof(CanvasCheckBox), new UIPropertyMetadata(null));
+            typeof(ImageCheckBox), new UIPropertyMetadata(null));
 
         public ImageSource StateImage
         {

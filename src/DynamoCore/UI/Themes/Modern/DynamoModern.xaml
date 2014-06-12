@@ -1147,8 +1147,8 @@
         </Setter>
     </Style>
 
-    <Style x:Key="{x:Type dynui:CanvasCheckBox}"
-           TargetType="{x:Type dynui:CanvasCheckBox}">
+    <Style x:Key="{x:Type dynui:ImageCheckBox}"
+           TargetType="{x:Type dynui:ImageCheckBox}">
         <Setter Property="SnapsToDevicePixels"
                 Value="true" />
         <Setter Property="OverridesDefaultStyle"
@@ -1157,7 +1157,7 @@
                 Value="{DynamicResource CheckBoxFocusVisual}" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type dynui:CanvasCheckBox}">
+                <ControlTemplate TargetType="{x:Type dynui:ImageCheckBox}">
                     <Grid>
                         <Canvas>
                             <Canvas.Clip>
