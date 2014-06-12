@@ -48,6 +48,14 @@ namespace Revit.Elements
             }
         }
 
+        /// <summary>
+        /// Get the underlying triangular Mesh from the Topography
+        /// </summary>
+        public Autodesk.DesignScript.Geometry.Mesh Mesh
+        {
+            get { return Geometry().OfType<Autodesk.DesignScript.Geometry.Mesh>().First(); }
+        }
+
         #endregion
 
         #region private constructors

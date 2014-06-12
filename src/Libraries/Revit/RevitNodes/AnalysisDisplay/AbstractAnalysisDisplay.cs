@@ -21,7 +21,7 @@ namespace Revit.AnalysisDisplay
     /// Note: We're using the user facing name from Revit (Analysis Display), rather than the same name that the Revit API
     /// uses (Spatial Field)
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]    
+//    [IsVisibleInDynamoLibrary(false)]    - removing as per MAGN-3382
     [SupressImportIntoVM]
     public abstract class AbstractAnalysisDisplay : IDisposable
     {
