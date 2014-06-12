@@ -76,7 +76,24 @@ namespace DSIronPython
         /// </summary>
         public static DataMarshaler InputMarshaler
         {
-            get { return inputMarshaler ?? (inputMarshaler = new DataMarshaler()); }
+            get
+            {
+                if (inputMarshaler == null)
+                {
+                    inputMarshaler = new DataMarshaler();
+                    inputMarshaler.RegisterMarshaler(
+                        delegate(IList lst)
+                        {
+                            var pyList = new IronPython.Runtime.List();
+                            foreach (var item in lst.Cast<object>().Select(inputMarshaler.Marshal))
+                            {
+                                pyList.Add(item);
+                            }
+                            return pyList;
+                        });
+                }
+                return inputMarshaler;
+            }
         }
 
         /// <summary>
