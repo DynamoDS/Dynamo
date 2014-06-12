@@ -58,6 +58,8 @@ namespace DSCoreNodesUI
             this.OutputCount = Int32.Parse(outputCount.Value);
             this.LegacyNodeName = legacyName.Value;
 
+            this.oldInfo = (XmlElement)nodeElement.FirstChild;
+
             var legacyAsm = nodeElement.Attributes["legacyAssembly"];
             if (legacyAsm != null)
                 this.LegacyAssembly = legacyAsm.Value;
@@ -87,11 +89,46 @@ namespace DSCoreNodesUI
         protected override void SaveNode(XmlDocument xmlDoc,
             XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("inputCount", this.InputCount.ToString());
-            nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
-            nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
-            nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
-            nodeElement.SetAttribute("nodeNature", this.NodeNature.ToString());
+            if (context == SaveContext.Copy || context == SaveContext.Undo)
+            {
+                nodeElement.SetAttribute("inputCount", this.InputCount.ToString());
+                nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
+                nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
+                nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
+                nodeElement.SetAttribute("nodeNature", this.NodeNature.ToString());
+
+                XmlElement xyzx = nodeElement.OwnerDocument.CreateElement(this.oldInfo.Name);
+
+                foreach (XmlAttribute attribute in this.oldInfo.Attributes)
+                    xyzx.SetAttribute(attribute.Name, attribute.Value);
+
+                for (int i = 0; i < this.oldInfo.ChildNodes.Count; i++)
+                {
+                    XmlNode child = nodeElement.ChildNodes[i];
+                    xyzx.AppendChild(child.CloneNode(true));
+                }
+
+                nodeElement.AppendChild(xyzx);
+            }
+
+            if (context == SaveContext.File)
+            {
+                XmlElement xyz = nodeElement.OwnerDocument.CreateElement(this.oldInfo.Name);
+                foreach (XmlAttribute attribute in this.oldInfo.Attributes)
+                    xyz.SetAttribute(attribute.Name, attribute.Value);
+
+                xyz.SetAttribute("guid", nodeElement.GetAttribute("guid"));
+                xyz.SetAttribute("x", nodeElement.GetAttribute("x"));
+                xyz.SetAttribute("y", nodeElement.GetAttribute("y"));
+
+                for (int i = 0; i < this.oldInfo.ChildNodes.Count; i++)
+                {
+                    XmlNode child = nodeElement.ChildNodes[i];
+                    xyz.AppendChild(child.CloneNode(true));
+                }
+
+                nodeElement.ParentNode.ReplaceChild(xyz, nodeElement);
+            }
         }
 
         #region SerializeCore/DeserializeCore
@@ -156,11 +193,16 @@ namespace DSCoreNodesUI
             get { return this.GetDescription(); }
             set { base.Description = value; }
         }
-
+        /*
+        public override string GetType(){
+            return oldInfo.Name;
+        }
+        */
         public int InputCount { get; private set; }
         public int OutputCount { get; private set; }
         public string LegacyNodeName { get; private set; }
         public string LegacyAssembly { get; private set; }
         public Nature NodeNature { get; private set; }
+        public XmlElement oldInfo { get; private set; }
     }
 }
