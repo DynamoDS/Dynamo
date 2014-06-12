@@ -253,7 +253,10 @@ namespace DSCore
         /// <search>insert,add,item,end</search>
         public static IList AddItemToEnd(object item, IList list)
         {
-            return new ArrayList(list) { item };
+            return new ArrayList(list) //Clone original list
+            {
+                item //Add item to the end of cloned list.
+            };
         }
 
         /// <summary>
