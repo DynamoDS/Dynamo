@@ -31,6 +31,7 @@ Dynamorph, morph the heck out of your design.
 - [ ] Handle node deletion to clear geometry data
 
 ##### Miscellaneous Tasks #####
+- [x] Move shader source to external files
 - [ ] Introduce "normal matrix" into [Phong shader](http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/renderer.js)
 - [ ] Translate directly into GeometryData as interleaved
 - [ ] Factor mpNodeGeometries, mpGeomsOnDepthLevel out of Visualizer
@@ -40,7 +41,6 @@ Dynamorph, morph the heck out of your design.
 - [ ] Fix: Dynamorph relaunch problem
 - [ ] Fix: Closing Dynamo does not close Dynamorph
 - [ ] Fix: Update methods to take BoundingBox & (not *)
-- [ ] Move shader source to external files
 - [ ] Remove normal computation in GetTriangleGeometries
 - [ ] Implement logging mechanism
 - [ ] Incorporate [debugging facility](http://www.opengl.org/registry/specs/ARB/debug_output.txt) provided by OpenGL
