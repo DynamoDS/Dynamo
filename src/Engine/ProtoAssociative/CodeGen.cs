@@ -6676,13 +6676,10 @@ namespace ProtoAssociative
                     }
                 };
 
-                bool isVars = (inlineConditionalNode.TrueExpression is IdentifierNode) &&
-                    (inlineConditionalNode.FalseExpression is IdentifierNode);
-
                 // As SSA conversion is enabled, we have got the values of
                 // true and false branch, so it isn't necessary to create 
                 // language blocks.
-                if (isVars && core.Options.IsDeltaExecution && core.Options.GenerateSSA)
+                if (core.Options.IsDeltaExecution && core.Options.GenerateSSA)
                 {
                     core.DebugProps.breakOptions = oldOptions;
                     core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
