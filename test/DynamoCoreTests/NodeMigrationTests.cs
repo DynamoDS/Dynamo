@@ -8,6 +8,7 @@ using Dynamo.Nodes;
 using NUnit.Framework;
 using DSCoreNodesUI;
 using Dynamo.Utilities;
+using System.Xml;
 
 namespace Dynamo.Tests
 {
@@ -1982,6 +1983,78 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.NickName.Contains("Excel")));
         }
 
+        [Test]
+        public void TestSaveDontCorruptForUnresolvedNodes()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\migration");
+            var oldPath = Path.Combine(exPath, @"TestSaveDontCorruptForUnresolvedNodes.dyn");
+            OpenModel(oldPath);
+
+            var newPath = this.GetNewFileNameOnTempPath("dyn");
+            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+
+            Assert.IsTrue(res);
+            Assert.IsTrue(File.Exists(newPath));
+
+            XmlDocument docOld = new XmlDocument();
+            docOld.Load(oldPath);
+            XmlDocument docNew = new XmlDocument();
+            docNew.Load(newPath);
+
+            XmlNodeList oldNodes = docOld.GetElementsByTagName("DSRevitNodesUI.ElementTypes");
+            XmlNodeList newNodes = docNew.GetElementsByTagName("DSRevitNodesUI.ElementTypes");
+            if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
+            {
+                Assert.Fail("the content of the unresolved node has been changed after saving");
+            }
+
+            oldNodes = docOld.GetElementsByTagName("Dynamo.Nodes.DSFunction");
+            newNodes = docNew.GetElementsByTagName("Dynamo.Nodes.DSFunction");
+            if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
+            {
+                Assert.Fail("the content of the unresolved node has been changed after saving");
+            }
+            if (!oldNodes[1].InnerXml.Equals(newNodes[1].InnerXml))
+            {
+                Assert.Fail("the content of the unresolved node has been changed after saving");
+            }
+        }
+
+
+        [Test]
+        public void TestSaveDontCorruptForDeprecatedNodes()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\migration");
+            var oldPath = Path.Combine(exPath, @"TestSaveDontCorruptForDeprecatedNodes.dyn");
+            OpenModel(oldPath);
+
+            var newPath = this.GetNewFileNameOnTempPath("dyn");
+            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+
+            Assert.IsTrue(res);
+            Assert.IsTrue(File.Exists(newPath));
+
+            XmlDocument docOld = new XmlDocument();
+            docOld.Load(oldPath);
+            XmlDocument docNew = new XmlDocument();
+            docNew.Load(newPath);
+
+            XmlNodeList oldNodes = docOld.GetElementsByTagName("Dynamo.Nodes.Now");
+            XmlNodeList newNodes = docNew.GetElementsByTagName("Dynamo.Nodes.Now");
+            if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
+            {
+                Assert.Fail("the content of the deprecated node has been changed after saving");
+            }
+
+            oldNodes = docOld.GetElementsByTagName("Dynamo.Nodes.Future");
+            newNodes = docNew.GetElementsByTagName("Dynamo.Nodes.Future");
+            if (!oldNodes[0].InnerXml.Equals(newNodes[0].InnerXml))
+            {
+                Assert.Fail("the content of the deprecated node has been changed after saving");
+            }
+        }
         #endregion
 
         #region Private Helper Methods
