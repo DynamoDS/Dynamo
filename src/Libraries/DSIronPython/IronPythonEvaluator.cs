@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Data.SqlClient;
-using System.Dynamic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using IronPython.Hosting;
-using IronPython.Runtime;
+
 using Microsoft.Scripting.Hosting;
 
 namespace DSIronPython
