@@ -301,7 +301,6 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     {
         CameraConfiguration camConfig;
-        camConfig.SetEyePoint(10.0f, 15.0f, 20.0f);
         camConfig.SetCenterPoint(0.0f, 0.0f, 0.0f);
         camConfig.SetUpVector(0.0f, 1.0f, 0.0f);
         camConfig.viewportWidth = width;

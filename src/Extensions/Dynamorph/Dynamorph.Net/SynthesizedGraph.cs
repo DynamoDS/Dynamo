@@ -11,7 +11,7 @@ namespace Dynamorph
         internal static readonly double HorzGap = 32.0;
         internal static readonly double VertGap = 16.0;
         internal static readonly double NodeWidth = 128.0;
-        internal static readonly double NodeHeight = 8.0;
+        internal static readonly double NodeHeight = 12.0;
         internal static readonly double HorzSpace = ((2 * HorzGap) + NodeWidth);
     }
 
@@ -35,7 +35,9 @@ namespace Dynamorph
 
         internal double UpdateNodeLayout(double nodeTopCoord)
         {
-            var portCount = Math.Max(this.InputCount, this.OutputCount);
+            // Pick the biggest between input and output count. And if that is 
+            // zero, then we will default to 1 so that the node will not be tiny.
+            var portCount = Math.Max(1, Math.Max(this.InputCount, this.OutputCount));
             var height = ((portCount + 1) * Config.NodeHeight);
 
             var left = (Config.HorzGap + (Config.HorzSpace * Depth));
