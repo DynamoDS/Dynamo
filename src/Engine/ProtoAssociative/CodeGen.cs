@@ -6681,37 +6681,9 @@ namespace ProtoAssociative
                 // language blocks.
                 if (core.Options.IsDeltaExecution && core.Options.GenerateSSA)
                 {
-                    core.DebugProps.breakOptions = oldOptions;
-                    core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
-                    {
-                        StartInclusive = new ProtoCore.CodeModel.CodePoint
-                        {
-                            LineNo = Constants.kInvalidIndex,
-                            CharNo = Constants.kInvalidIndex
-                        },
-
-                        EndExclusive = new ProtoCore.CodeModel.CodePoint
-                        {
-                            LineNo = Constants.kInvalidIndex,
-                            CharNo = Constants.kInvalidIndex
-                        }
-                    };
-
                     inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
                     inlineCall.FormalArguments.Add(inlineConditionalNode.TrueExpression);
                     inlineCall.FormalArguments.Add(inlineConditionalNode.FalseExpression);
-
-                    // Save the pc and store it after the call
-                    EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, AssociativeSubCompilePass.kUnboundIdentifier);
-                    EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, AssociativeSubCompilePass.kNone, parentNode);
-
-                    // Need to restore those settings.
-                    if (graphNode != null)
-                    {
-                        graphNode.isInlineConditional = isInlineConditionalFlag;
-                        graphNode.updateBlock.startpc = startPC;
-                        graphNode.isReturn = isReturn;
-                    }
                 }
                 else
                 {
@@ -6722,15 +6694,14 @@ namespace ProtoAssociative
                     bExprTrue.RightNode = inlineConditionalNode.TrueExpression;
 
                     LanguageBlockNode langblockT = new LanguageBlockNode();
-                    int trueBlockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                    int trueBlockId = Constants.kInvalidIndex;
                     langblockT.codeblock.language = ProtoCore.Language.kAssociative;
                     langblockT.codeblock.fingerprint = "";
                     langblockT.codeblock.version = "";
                     core.AssocNode = bExprTrue;
                     EmitDynamicLanguageBlockNode(langblockT, bExprTrue, ref inferedType, ref trueBlockId, graphNode, AssociativeSubCompilePass.kNone);
                     core.AssocNode = null;
-                    ProtoCore.AST.AssociativeAST.DynamicBlockNode dynBlockT = new ProtoCore.AST.AssociativeAST.DynamicBlockNode(trueBlockId);
-
+                    DynamicBlockNode dynBlockT = new DynamicBlockNode(trueBlockId);
 
                     // False condition language block
                     BinaryExpressionNode bExprFalse = new BinaryExpressionNode();
@@ -6739,46 +6710,46 @@ namespace ProtoAssociative
                     bExprFalse.RightNode = inlineConditionalNode.FalseExpression;
 
                     LanguageBlockNode langblockF = new LanguageBlockNode();
-                    int falseBlockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                    int falseBlockId = Constants.kInvalidIndex;
                     langblockF.codeblock.language = ProtoCore.Language.kAssociative;
                     langblockF.codeblock.fingerprint = "";
                     langblockF.codeblock.version = "";
                     core.AssocNode = bExprFalse;
                     EmitDynamicLanguageBlockNode(langblockF, bExprFalse, ref inferedType, ref falseBlockId, graphNode, AssociativeSubCompilePass.kNone);
                     core.AssocNode = null;
-                    ProtoCore.AST.AssociativeAST.DynamicBlockNode dynBlockF = new ProtoCore.AST.AssociativeAST.DynamicBlockNode(falseBlockId);
-
-                    core.DebugProps.breakOptions = oldOptions;
-                    core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
-                    {
-                        StartInclusive = new ProtoCore.CodeModel.CodePoint
-                        {
-                            LineNo = Constants.kInvalidIndex,
-                            CharNo = Constants.kInvalidIndex
-                        },
-
-                        EndExclusive = new ProtoCore.CodeModel.CodePoint
-                        {
-                            LineNo = Constants.kInvalidIndex,
-                            CharNo = Constants.kInvalidIndex
-                        }
-                    };
+                    DynamicBlockNode dynBlockF = new DynamicBlockNode(falseBlockId);
 
                     inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
                     inlineCall.FormalArguments.Add(dynBlockT);
                     inlineCall.FormalArguments.Add(dynBlockF);
+                }
 
-                    // Save the pc and store it after the call
-                    EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, AssociativeSubCompilePass.kUnboundIdentifier);
-                    EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, AssociativeSubCompilePass.kNone, parentNode);
-
-                    // Need to restore those settings.
-                    if (graphNode != null)
+                core.DebugProps.breakOptions = oldOptions;
+                core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
+                {
+                    StartInclusive = new ProtoCore.CodeModel.CodePoint
                     {
-                        graphNode.isInlineConditional = isInlineConditionalFlag;
-                        graphNode.updateBlock.startpc = startPC;
-                        graphNode.isReturn = isReturn;
+                        LineNo = Constants.kInvalidIndex,
+                        CharNo = Constants.kInvalidIndex
+                    },
+
+                    EndExclusive = new ProtoCore.CodeModel.CodePoint
+                    {
+                        LineNo = Constants.kInvalidIndex,
+                        CharNo = Constants.kInvalidIndex
                     }
+                };
+
+                // Save the pc and store it after the call
+                EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, AssociativeSubCompilePass.kUnboundIdentifier);
+                EmitFunctionCallNode(inlineCall, ref inferedType, false, graphNode, AssociativeSubCompilePass.kNone, parentNode);
+
+                // Need to restore those settings.
+                if (graphNode != null)
+                {
+                    graphNode.isInlineConditional = isInlineConditionalFlag;
+                    graphNode.updateBlock.startpc = startPC;
+                    graphNode.isReturn = isReturn;
                 }
             }
         }
