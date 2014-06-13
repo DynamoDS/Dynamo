@@ -331,8 +331,25 @@ namespace Revit.Elements
         /// </summary>
         public object[] Geometry()
         {
-            var res = InternalGeometry().Select(x => x.Convert()).ToArray();
-            return res;
+            var converted = new List<object>();
+
+            foreach (var geometryObject in InternalGeometry())
+            {
+                try
+                {
+                    var convert = geometryObject.Convert();
+                    if (convert != null)
+                    {
+                        converted.Add(convert);
+                    }
+                }
+                catch (Exception)
+                {
+                    // we catch all geometry conversion exceptions
+                }
+            }
+
+            return converted.ToArray();
         }
 
         [SupressImportIntoVM]

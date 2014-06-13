@@ -145,6 +145,7 @@ limitations under the License.
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="UI\Controls\CanvasCheckBox.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -750,6 +751,12 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\AboutWindow\logo_about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

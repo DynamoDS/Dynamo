@@ -1,0 +1,41 @@
+<Workspace Version="0.6.3.25815" X="14.708404669589" Y="77.7175772026249" zoom="0.671033868566963" Description="Creates a skymodel and environment for daylight render, returns the environment object" Category="Misc" Name="Create Skymodel and Environment" ID="73df1c1c-627e-4047-898e-49641f1678ca">
+  <Elements>
+    <Dynamo.Nodes.SkymodelType type="Dynamo.Nodes.SkymodelType" guid="0ef80422-1bbb-41cf-813d-1725bf9bef8c" nickname="Skymodel Type" x="384.90804141627" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="0" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="aa5fa45e-a8fd-41cf-9917-773529047a67" nickname="Input" x="260.460087523735" y="223.383930984044" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="DNI" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a3508c6e-9421-4678-aec7-df3bde9163e0" nickname="Input" x="242.213309632004" y="339.845537729838" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="GHI" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="66a86744-8c11-40e6-a475-179d779d867d" nickname="Input" x="252" y="116.190441247043" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="DHI" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.MakeDaylightingSkyModel type="Dynamo.Nodes.MakeDaylightingSkyModel" guid="33a85356-b27a-4696-88d3-9a7baf5bed02" nickname="Daylighting SkyModel" x="850.079709439581" y="215.99049293382" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+    </Dynamo.Nodes.MakeDaylightingSkyModel>
+    <Dynamo.Nodes.MakeDaylightingEnvironmentData type="Dynamo.Nodes.MakeDaylightingEnvironmentData" guid="99a59d24-4ce1-417c-a209-0f471eccff67" nickname="Daylighting Environment" x="1235.64772864252" y="71.1928830269628" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b3960b4a-1976-4158-8fbe-d6d7e4433bd3" nickname="Input" x="1028.80413817787" y="387.242871168118" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="loc x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d8c0bc8a-7a8b-4cde-9d4b-5a351baf97c1" nickname="Input" x="1029.03883636475" y="449.015417725154" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="loc y" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c66a8dc6-dbd2-4abe-a7cd-054392c1e4ed" nickname="Input" x="1029.03883636475" y="525.939720984861" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="datatime object" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0ef80422-1bbb-41cf-813d-1725bf9bef8c" start_index="0" end="33a85356-b27a-4696-88d3-9a7baf5bed02" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aa5fa45e-a8fd-41cf-9917-773529047a67" start_index="0" end="33a85356-b27a-4696-88d3-9a7baf5bed02" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a3508c6e-9421-4678-aec7-df3bde9163e0" start_index="0" end="33a85356-b27a-4696-88d3-9a7baf5bed02" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66a86744-8c11-40e6-a475-179d779d867d" start_index="0" end="33a85356-b27a-4696-88d3-9a7baf5bed02" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33a85356-b27a-4696-88d3-9a7baf5bed02" start_index="0" end="99a59d24-4ce1-417c-a209-0f471eccff67" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b3960b4a-1976-4158-8fbe-d6d7e4433bd3" start_index="0" end="99a59d24-4ce1-417c-a209-0f471eccff67" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d8c0bc8a-7a8b-4cde-9d4b-5a351baf97c1" start_index="0" end="99a59d24-4ce1-417c-a209-0f471eccff67" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c66a8dc6-dbd2-4abe-a7cd-054392c1e4ed" start_index="0" end="99a59d24-4ce1-417c-a209-0f471eccff67" end_index="3" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

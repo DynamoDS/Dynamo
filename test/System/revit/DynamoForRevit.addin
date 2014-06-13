@@ -2,7 +2,7 @@
 <RevitAddIns>
   <AddIn Type="Application">
     <Name>Dynamo For Revit</Name>
-    <Assembly>..\..\..\bin\AnyCPU\Debug\DynamoRevitDS.dll</Assembly>
+    <Assembly>..\..\..\bin\AnyCPU\Debug\Revit_2014\DynamoRevitDS.dll</Assembly>
     <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>
     <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
     <VendorId>ADSK</VendorId>

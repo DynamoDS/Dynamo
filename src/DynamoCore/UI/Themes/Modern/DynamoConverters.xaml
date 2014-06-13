@@ -86,6 +86,8 @@
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter"/>
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter"/>
+    <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
+    <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
     <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter"/>
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>

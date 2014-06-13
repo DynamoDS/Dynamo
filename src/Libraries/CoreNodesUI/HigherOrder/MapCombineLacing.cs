@@ -43,7 +43,9 @@ namespace DSCore
 
     public abstract class CombinatorNode : VariableInputNode
     {
-        protected CombinatorNode()
+        private readonly int minPorts;
+
+        protected CombinatorNode() : this(3)
         {
             InPortData.Add(new PortData("comb", "Combinator"));
             InPortData.Add(new PortData("list1", "List #1"));
@@ -52,6 +54,11 @@ namespace DSCore
             OutPortData.Add(new PortData("combined", "Combined lists"));
 
             RegisterAllPorts();
+        }
+
+        protected CombinatorNode(int minPorts)
+        {
+            this.minPorts = minPorts;
         }
 
         protected override string GetInputName(int index)
@@ -66,7 +73,7 @@ namespace DSCore
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 3)
+            if (InPortData.Count > minPorts)
                 base.RemoveInput();
         }
     }
@@ -94,12 +101,15 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
+        public ForEach() : base(2) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -258,13 +268,19 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
+        private readonly PortData reductorPort;
+
         public Reduce()
         {
-            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an arbitrary item in the list being reduced, second is the current accumulated value, result is the new accumulated value."));
-            InPortData.Add(new PortData("a", "Starting accumulated value, to be passed into the first call to the Reductor function."));
+            reductorPort = new PortData(
+                "reductor",
+                "Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.");
+
+            InPortData.Add(reductorPort);
+            InPortData.Add(new PortData("seed", "Starting accumulated value, to be passed into the first call to the Reductor function."));
             InPortData.Add(new PortData("list1", "List #1"));
 
-            OutPortData.Add(new PortData("", "Result"));
+            OutPortData.Add(new PortData("reduced", "Reduced lists"));
 
             RegisterAllPorts();
         }
@@ -272,7 +288,36 @@ namespace DSCore
         protected override void RemoveInput()
         {
             if (InPortData.Count > 3)
+            {
                 base.RemoveInput();
+                //UpdateReductorPort();
+            }
+        }
+
+        protected override void AddInput()
+        {
+            base.AddInput();
+            //UpdateReductorPort();
+        }
+
+        private void UpdateReductorPort()
+        {
+            if (InPortData.Count > 6) 
+                reductorPort.NickName = "f(x1, x2, ... xN, a)";
+            else
+            {
+                if (InPortData.Count == 3) 
+                    reductorPort.NickName = "f(x, a)";
+                else
+                {
+                    reductorPort.NickName = "f("
+                        + string.Join(
+                            ", ",
+                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                        + ", a)";
+                }
+            }
+            RegisterAllPorts();
         }
 
         protected override string GetInputName(int index)
@@ -298,6 +343,97 @@ namespace DSCore
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
                         "__Reduce",
+                        new List<AssociativeNode>
+                        {
+                            inputAstNodes[0],
+                            inputAstNodes[1],
+                            AstFactory.BuildExprList(inputAstNodes.Skip(2).ToList())
+                        }))
+            };
+        }
+    }
+
+    [NodeName("List.Scan")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
+    [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values.")]
+    [IsDesignScriptCompatible]
+    public class ScanList : VariableInputNode
+    {
+        private readonly PortData reductorPort;
+
+        public ScanList()
+        {
+            reductorPort = new PortData(
+                "reductor",
+                "Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.");
+
+            InPortData.Add(reductorPort);
+            InPortData.Add(new PortData("seed", "Starting accumulated value, to be passed into the first call to the Reductor function."));
+            InPortData.Add(new PortData("list1", "List #1"));
+
+            OutPortData.Add(new PortData("scanned", "Scanned lists"));
+
+            RegisterAllPorts();
+        }
+
+        protected override void RemoveInput()
+        {
+            if (InPortData.Count > 3)
+            {
+                base.RemoveInput();
+                //UpdateReductorPort();
+            }
+        }
+
+        protected override void AddInput()
+        {
+            base.AddInput();
+            //UpdateReductorPort();
+        }
+
+        private void UpdateReductorPort()
+        {
+            if (InPortData.Count > 6)
+                reductorPort.NickName = "f(x1, x2, ... xN, a)";
+            else
+            {
+                if (InPortData.Count == 3)
+                    reductorPort.NickName = "f(x, a)";
+                else
+                {
+                    reductorPort.NickName = "f("
+                        + string.Join(
+                            ", ",
+                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                        + ", a)";
+                }
+            }
+            RegisterAllPorts();
+        }
+
+        protected override string GetInputName(int index)
+        {
+            return "list" + index;
+        }
+
+        protected override string GetInputTooltip(int index)
+        {
+            return "List" + index;
+        }
+
+        protected override int GetInputIndex()
+        {
+            return InPortData.Count - 1;
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            return new[]
+            {
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildFunctionCall(
+                        "__Scan",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],

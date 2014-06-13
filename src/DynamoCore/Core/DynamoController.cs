@@ -21,6 +21,7 @@ using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
+using DynamoUtilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -212,19 +213,21 @@ namespace Dynamo
 
             var updateManager = new UpdateManager.UpdateManager(logger);
 
+            var corePath =
+                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
             {
-                
                 controller = new DynamoController("None", updateManager,
-                    new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+                    new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load(), corePath);
 
                 controller.DynamoViewModel = new DynamoViewModel(controller, null);
             }
             else
             {
                 controller = new DynamoController("None", updateManager,
-                 new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+                 new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load(), corePath);
 
                 controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
             }
@@ -258,8 +261,10 @@ namespace Dynamo
         ///     Class constructor
         /// </summary>
         public DynamoController(string context, IUpdateManager updateManager,
-            IWatchHandler watchHandler, IPreferences preferences)
+            IWatchHandler watchHandler, IPreferences preferences, string corePath)
         {
+            DynamoPaths.SetupDynamoPaths(corePath);
+
             DebugSettings = new DebugSettings();
 
             IsCrashing = false;
@@ -293,12 +298,14 @@ namespace Dynamo
             DynamoModel.CurrentWorkspace.X = 0;
             DynamoModel.CurrentWorkspace.Y = 0;
 
+            // Set the DynamoCore path
+
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
 
             CustomNodeManager = new CustomNodeManager(pluginsPath);
-            
+
             SearchViewModel = new SearchViewModel();
 
             dynSettings.PackageLoader = new PackageLoader();
