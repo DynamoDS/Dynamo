@@ -286,7 +286,7 @@ namespace Dynamo.ViewModels
 
         public bool CanShowInfoBubble
         {
-            get { return stateMachine.CurrentState == StateMachine.State.None; }
+            get { return stateMachine.IsInIdleState; }
         }
 
         public Action FindNodesFromElements { get; set; }

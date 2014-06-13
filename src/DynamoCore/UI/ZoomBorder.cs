@@ -172,8 +172,7 @@ namespace Dynamo.Controls
 
         private bool IsInPanMode()
         {
-            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
-            return vm.CurrentState == WorkspaceViewModel.StateMachine.State.PanMode;
+            return ((DataContext as WorkspaceViewModel).IsPanning);
         }
 
         #endregion

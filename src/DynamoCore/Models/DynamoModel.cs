@@ -898,16 +898,11 @@ namespace Dynamo.Models
 
             WorkspaceViewModel wvm = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
 
-            if (wvm.CurrentState == WorkspaceViewModel.StateMachine.State.Connection)
-            {
-                if (node == wvm.ActiveConnector.ActiveStartPort.Owner)
-                    wvm.CancelActiveState();
-            }
+            if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
+                wvm.CancelActiveState();
 
             if (NodeDeleted != null)
-            {
                 NodeDeleted(node);
-            }
         }
 
         /// <summary>

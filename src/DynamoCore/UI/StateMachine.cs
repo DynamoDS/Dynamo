@@ -26,10 +26,12 @@ namespace Dynamo.ViewModels
         private ConnectorViewModel activeConnector = null;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
-        internal StateMachine.State CurrentState
-        {
-            get { return stateMachine.CurrentState; }
-        }
+        internal bool IsInIdleState { get { return stateMachine.IsInIdleState; } }
+        internal bool IsSelecting { get { return stateMachine.IsSelecting; } }
+        internal bool IsDragging { get { return stateMachine.IsDragging; } }
+        internal bool IsConnecting { get { return stateMachine.IsConnecting; } }
+        internal bool IsPanning { get { return stateMachine.IsPanning; } }
+        internal bool IsOrbiting { get { return stateMachine.IsOrbiting; } }
 
         internal ConnectorViewModel ActiveConnector
         {
@@ -398,7 +400,7 @@ namespace Dynamo.ViewModels
             ///     - Mouse cursor changed, disable all node interaction
             /// </summary>
 
-            internal enum State
+            private enum State
             {
                 None,
                 WindowSelection,
@@ -417,7 +419,41 @@ namespace Dynamo.ViewModels
 
             #region Public Class Properties
 
-            internal State CurrentState
+            internal bool IsInIdleState
+            {
+                get { return this.currentState == State.None; }
+            }
+
+            internal bool IsSelecting
+            {
+                get { return this.currentState == State.WindowSelection; }
+            }
+
+            internal bool IsDragging
+            {
+                get
+                {
+                    return this.currentState == State.DragSetup ||
+                        this.currentState == State.NodeReposition;
+                }
+            }
+
+            internal bool IsConnecting
+            {
+                get { return this.currentState == State.Connection; }
+            }
+
+            internal bool IsPanning
+            {
+                get { return this.currentState == State.PanMode; }
+            }
+
+            internal bool IsOrbiting
+            {
+                get { return true; }
+            }
+
+            private State CurrentState
             {
                 get { return this.currentState; }
             }
