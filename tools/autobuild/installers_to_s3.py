@@ -32,7 +32,7 @@ def main():
 
 # S3 ##############################
 
-def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev_build=false):
+def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev_build=False):
 
 	try:
 
