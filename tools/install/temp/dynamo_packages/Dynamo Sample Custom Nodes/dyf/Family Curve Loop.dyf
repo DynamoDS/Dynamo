@@ -1,0 +1,58 @@
+<!--
+Copyright Autodesk, Inc. 2012. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<dynWorkspace X="-266" Y="41" Name="Family Curve Loop" Category="Revit.Family Creation" ID="1408b2d9-d8d8-4e2b-8f85-8a48b862ac99">
+  <dynElements>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="91273b7c-ced2-447a-b2d2-30d5d6e30248" nickname="Number" x="164.148106904232" y="137.536191536748">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="f0e55720-761f-46ed-8911-f61b5cd16d39" nickname="Number" x="166.102449888641" y="190.442650334076">
+      <System.Double value="1" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynXYZ type="Dynamo.Elements.dynXYZ" guid="99db10d7-4fd9-47d4-a96f-0565592fbe70" nickname="XYZ" x="304.050668151448" y="81.923719376392" />
+    <Dynamo.Elements.dynXYZ type="Dynamo.Elements.dynXYZ" guid="d9a5a8fd-1fa5-4e21-9866-f372a881ec6a" nickname="XYZ" x="313.75556792873" y="186.055122494432" />
+    <Dynamo.Elements.dynPlane type="Dynamo.Elements.dynPlane" guid="3c4fbb65-6742-42b8-bf5a-123078ae275a" nickname="Plane" x="483.588530066815" y="91.1971046770601" />
+    <Dynamo.Elements.dynSketchPlane type="Dynamo.Elements.dynSketchPlane" guid="8b327aa0-b36a-4dae-a23b-df4f0315cbcf" nickname="Sketch Plane" x="662.444320712695" y="104.56013363029" />
+    <Dynamo.Elements.dynModelCurve type="Dynamo.Elements.dynModelCurve" guid="a0709d13-f6bf-4e73-b77c-a9283acfe2a6" nickname="Model Curve" x="722.120824053452" y="177.148106904232" />
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="f0b1e538-5360-4eda-b772-29eae5d48633" nickname="Variable" x="34.8301781737193" y="13.1096881959911">
+      <Symbol value="Z" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="5c13ed6a-e71c-4ac9-b404-be52d879ac78" nickname="Variable" x="35.2394209354121" y="296.642538975501">
+      <Symbol value="fi" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynMap type="Dynamo.Elements.dynMap" guid="00d031b8-eb41-462e-9cb5-51ff97fc7174" nickname="Map" x="797.370824053452" y="284.5" />
+    <Dynamo.Elements.dynCurveRef type="Dynamo.Elements.dynCurveRef" guid="2308eec1-e554-4eb1-86be-50ab371ce7f7" nickname="CurveElement Reference" x="903.620824053452" y="181.75" />
+    <Dynamo.Elements.dynCurvesFromFamilyInstance type="Dynamo.Elements.dynCurvesFromFamilyInstance" guid="5968ef3f-fd3c-4665-b9c3-d284c31b6d24" nickname="Curves from Family" x="409.120824053452" y="383.25" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="91273b7c-ced2-447a-b2d2-30d5d6e30248" start_index="0" end="d9a5a8fd-1fa5-4e21-9866-f372a881ec6a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="91273b7c-ced2-447a-b2d2-30d5d6e30248" start_index="0" end="d9a5a8fd-1fa5-4e21-9866-f372a881ec6a" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="91273b7c-ced2-447a-b2d2-30d5d6e30248" start_index="0" end="99db10d7-4fd9-47d4-a96f-0565592fbe70" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="91273b7c-ced2-447a-b2d2-30d5d6e30248" start_index="0" end="99db10d7-4fd9-47d4-a96f-0565592fbe70" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f0e55720-761f-46ed-8911-f61b5cd16d39" start_index="0" end="d9a5a8fd-1fa5-4e21-9866-f372a881ec6a" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="99db10d7-4fd9-47d4-a96f-0565592fbe70" start_index="0" end="3c4fbb65-6742-42b8-bf5a-123078ae275a" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d9a5a8fd-1fa5-4e21-9866-f372a881ec6a" start_index="0" end="3c4fbb65-6742-42b8-bf5a-123078ae275a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="3c4fbb65-6742-42b8-bf5a-123078ae275a" start_index="0" end="8b327aa0-b36a-4dae-a23b-df4f0315cbcf" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="8b327aa0-b36a-4dae-a23b-df4f0315cbcf" start_index="0" end="a0709d13-f6bf-4e73-b77c-a9283acfe2a6" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a0709d13-f6bf-4e73-b77c-a9283acfe2a6" start_index="0" end="00d031b8-eb41-462e-9cb5-51ff97fc7174" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f0b1e538-5360-4eda-b772-29eae5d48633" start_index="0" end="99db10d7-4fd9-47d4-a96f-0565592fbe70" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="5c13ed6a-e71c-4ac9-b404-be52d879ac78" start_index="0" end="5968ef3f-fd3c-4665-b9c3-d284c31b6d24" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="00d031b8-eb41-462e-9cb5-51ff97fc7174" start_index="0" end="2308eec1-e554-4eb1-86be-50ab371ce7f7" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="5968ef3f-fd3c-4665-b9c3-d284c31b6d24" start_index="0" end="00d031b8-eb41-462e-9cb5-51ff97fc7174" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes>
+    <Dynamo.Elements.dynNote text="connect to family instance" x="422.620824053452" y="439.25" />
+  </dynNotes>
+</dynWorkspace>

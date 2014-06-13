@@ -230,7 +230,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Adds an item to the beginning of the list.
+        ///     Adds an item to the beginning of a list.
         /// </summary>
         /// <param name="item">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
@@ -243,6 +243,20 @@ namespace DSCore
             var newList = new ArrayList { item };
             newList.AddRange(list);
             return newList;
+        }
+
+        /// <summary>
+        /// Adds an item to the end of a list.
+        /// </summary>
+        /// <param name="item">Item to be added.</param>
+        /// <param name="list">List to add on to.</param>
+        /// <search>insert,add,item,end</search>
+        public static IList AddItemToEnd(object item, IList list)
+        {
+            return new ArrayList(list) //Clone original list
+            {
+                item //Add item to the end of cloned list.
+            };
         }
 
         /// <summary>

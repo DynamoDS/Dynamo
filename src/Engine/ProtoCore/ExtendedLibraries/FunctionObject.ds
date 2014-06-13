@@ -129,16 +129,15 @@ def Apply(functionObject: _FunctionObject, param: var[]..[])
 
 def ApplyList(functionObject: _FunctionObject, params: var[]..[])
 {
-	return = [Imperative]
-	{
-		_count = Count(params);
-		_result = functionObject;
-		for(_i in 0.._count-1)
-		{
-			_result = Apply(_result, params[_i]);
-		}
-		return = _result;
-	}
+    return = [Imperative]
+    {
+        _result = functionObject;
+        for(p in params)
+        {
+            _result = Apply(_result, p);
+        }
+        return = _result;
+    }
 }
 
 def __Compose(funcs : _FunctionObject[])
@@ -176,17 +175,17 @@ def MaximumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
 
 def __Replace(list: var, with: var, predicate: _FunctionObject)
 {
-	return = [Imperative]
-	{
-		if (Apply(predicate, list))
-		{
-			return = with;
-		}
-		else
-		{
-			return = list;
-		}
-	};
+    return = [Imperative]
+    {
+        if (Apply(predicate, list))
+        {
+            return = with;
+        }
+        else
+        {
+            return = list;
+        }
+    };
 }
 
 def __Filter(list: var[]..[], predicate: _FunctionObject)
@@ -245,7 +244,7 @@ def __Combine(func : _FunctionObject, lists : var[]..[])
 
 def __Map(func : _FunctionObject, arg : var[]..[])
 {
-	return = __Combine(func, { arg });
+    return = __Combine(func, { arg });
 }
 
 def __LaceShortest(func : _FunctionObject, lists : var[]..[])
@@ -311,6 +310,29 @@ def __LaceLongest(func : _FunctionObject, lists : var[]..[])
     };
 }
 
+def __ApplyNested(fs: var[]..[], xs: var[]..[], amt: int)
+{
+    return = [Imperative]
+    {
+        result = { };
+        if (amt == 0)
+        {
+            for(x in xs)
+            {
+                result[Count(result)] = Apply(fs, x);
+            }
+        }
+        else
+        {
+            for(f in fs)
+            {
+                result[Count(result)] = __ApplyNested(f, xs, amt-1);
+            }
+        }
+        return = result;
+    };
+}
+
 def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
 {
     return = [Imperative]
@@ -320,50 +342,56 @@ def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
         {
             return = lists;
         }
-        
-        argLists = { };
-        for(item in lists[0])
+
+        results = func;
+        nesting = 0;
+
+        for(list in lists)
         {
-            argLists[Count(argLists)] = { item };
+            results = __ApplyNested(results, list, nesting);
+            nesting = nesting + 1;
         }
 
-        if (count > 1)
-        {
-            nextLists = { };
-            
-            if (count == 2)
-            {
-                nextLists = { lists[1] };
-            }
-            else
-            {
-                nextLists = lists[1..count - 1];
-            }
-            
-            for(list in nextLists)
-            {
-                newArgs = { };
-                for(item in list)
-                {
-                    for(argList in argLists)
-                    {
-                        newArgs[Count(newArgs)] = Concat(argList, { item });
-                    }
-                }
-                argLists = newArgs;
-            }
-        }
-        
-        results = { };
-        for(args in argLists)
-        {
-            results[Count(results)] = ApplyList(func, args);
-        }
         return = results;
     };
 }
 
-def __Reduce(accumulator : _FunctionObject, seed: var, lists : var[]..[])
+def __Scan(accumulator: _FunctionObject, seed: var[]..[], lists: var[]..[])
+{
+	return = [Imperative]
+    {
+        if (lists == null)
+        {
+            return = seed;
+        }
+
+		//HACK: Transpose({{}}) returns { { null } }
+
+		noEmpties = { };
+		for (list in lists)
+		{
+			if (Count(list) > 0)
+				noEmpties[Count(noEmpties)] = list;
+		}
+		lists = noEmpties;
+
+        argLists = Transpose(lists);
+        _acc = seed;
+        
+		result = { _acc };
+
+        for(argList in argLists)
+        {
+            argList[Count(argList)] = _acc;
+            _acc = ApplyList(accumulator, argList);
+			result[Count(result)] = _acc;
+        }
+        
+        return = result;
+    };
+}
+
+def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -372,18 +400,27 @@ def __Reduce(accumulator : _FunctionObject, seed: var, lists : var[]..[])
             return = seed;
         }
 
-		argLists = Transpose(lists);
-        
+		//HACK: Transpose({{}}) returns { { null } }
+
+		noEmpties = { };
+		for (list in lists)
+		{
+			if (Count(list) > 0)
+				noEmpties[Count(noEmpties)] = list;
+		}
+		lists = noEmpties;
+
+        argLists = Transpose(lists);
         _acc = seed;
-        for (_index in 0..(Count(argLists) - 1))
+        
+        for(argList in argLists)
         {
-			argList = argLists[_index];
-			argList[Count(argList)] = _acc;
+            argList[Count(argList)] = _acc;
             _acc = ApplyList(accumulator, argList);
         }
         
         return = _acc;
-    }
+    };
 }
 
 def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
@@ -397,7 +434,7 @@ def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
             _keys[_index] = Apply(keyProjector, list[_index]);
         }
         return = Sorting.sortByKey(list, _keys);
-    }
+    };
 }
 
 /*
@@ -445,7 +482,7 @@ def SortByComparsion(list : var[]..[], comparer:_FunctionObject)
         }
         
         return = Concat(Concat(SortByComparsion(_leftList, comparer), { list[_last] }), SortByComparsion(_rightList, comparer));
-    }
+    };
 }
 */
 
@@ -488,7 +525,7 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
         }
         
         return = _finalGroupedList;
-    }
+    };
 }
 
 def TrueForAll(list: var[]..[], predicate: _FunctionObject)
@@ -518,7 +555,7 @@ def TrueForAll(list: var[]..[], predicate: _FunctionObject)
         }
 
         return = true;
-    }
+    };
 }
 
 def TrueForAny(list: var[]..[], predicate: _FunctionObject)
@@ -548,7 +585,7 @@ def TrueForAny(list: var[]..[], predicate: _FunctionObject)
         }
 
         return = false;
-    }
+    };
 }
 
 def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
@@ -560,7 +597,7 @@ def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
             return = null;
         }
 
-		argLists = Transpose(lists);
+        argLists = Transpose(lists);
 
         _count = Count(argLists);
         if (_count == 0)
@@ -570,10 +607,10 @@ def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
 
         _index = 0;
 
-		for (_i in 0..(_count - 1))
+        for (_i in 0..(_count - 1))
         {
             _value = argLists[_i];
             ApplyList(functionObject, _value);
         }
-    }
+    };
 }
