@@ -19,6 +19,7 @@ using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.UpdateManager;
+using DynamoUtilities;
 using Greg;
 using Revit.Elements;
 using RevitServices.Elements;
@@ -40,12 +41,13 @@ namespace Dynamo
         /// </summary>
         private Assembly singleSignOnAssembly;
 
-        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager)
+        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager, string corePath)
             : base(
                 context,
                 updateManager,
                 new RevitWatchHandler(),
-                Dynamo.PreferenceSettings.Load())
+                Dynamo.PreferenceSettings.Load(),
+                corePath)
         {
             Updater = updater;
 
@@ -73,8 +75,10 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
-            EngineController.ImportLibrary("RevitNodes.dll");
-            EngineController.ImportLibrary("SimpleRaaS.dll");
+            var revitPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\RevitNodes.dll");
+            var raasPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\SimpleRaaS.dll");
+            EngineController.ImportLibrary(revitPath);
+            EngineController.ImportLibrary(raasPath);
             
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
@@ -95,6 +99,7 @@ namespace Dynamo
             };
 
             Runner = new DynamoRunner_Revit(this);
+
         }
 
         public RevitServicesUpdater Updater { get; private set; }
