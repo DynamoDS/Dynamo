@@ -91,6 +91,7 @@
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="NodeGeometries.h" />
     <ClInclude Include="OpenGL Files\OpenInterfaces.h" />
+    <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -114,6 +115,13 @@
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\phong.frag" />
+    <None Include="Resources\Shaders\phong.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

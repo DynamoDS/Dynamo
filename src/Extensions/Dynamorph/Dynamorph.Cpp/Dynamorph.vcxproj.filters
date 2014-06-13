@@ -16,6 +16,12 @@
     <Filter Include="OpenGL Files">
       <UniqueIdentifier>{c112c69e-dd2c-4441-85ab-e5d22b85d27d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shader Files">
+      <UniqueIdentifier>{0f07b726-b993-4224-9bf5-2df2884de242}</UniqueIdentifier>
+      <ParseFiles>false</ParseFiles>
+      <SourceControlFiles>False</SourceControlFiles>
+      <Extensions>vert;frag;</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -35,6 +41,9 @@
     </ClInclude>
     <ClInclude Include="NodeGeometries.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\resource.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,5 +71,18 @@
     <ClCompile Include="NodeGeometries.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\phong.frag">
+      <Filter>Resource Files\Shader Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\phong.vert">
+      <Filter>Resource Files\Shader Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
