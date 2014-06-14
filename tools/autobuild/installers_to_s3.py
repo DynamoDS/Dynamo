@@ -16,6 +16,7 @@ def main():
 	parser.add_option("-r", "--root", dest="root", help="The root directory of the dynamo project.", metavar="FILE", default="E:/Dynamo")
 	parser.add_option("-p", "--prefix", dest="prefix", help="The prefix on the filename for the object.", metavar="FILE", default="DynamoDailyInstall")
 	parser.add_option("-d", "--nodate", dest="include_date", action="store_false", default=True, help="Add the date as a suffix to the filename.")
+	parser.add_option("-dev", "--dev", dest="is_dev_build", action="store_true", help="This is a development build.")
 
 	(options, args) = parser.parse_args()
 
@@ -31,7 +32,7 @@ def main():
 
 # S3 ##############################
 
-def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date):
+def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev_build=False):
 
 	try:
 
@@ -40,7 +41,7 @@ def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date):
 
 		for file in os.listdir('temp'):
 		  if fnmatch.fnmatch( file, '*.exe'):
-		  	dynamo_s3.upload_daily( form_path( ['temp', file] ), prefix, include_date )
+		  	dynamo_s3.upload_daily( form_path( ['temp', file] ), prefix, include_date, is_dev_build)
 
 	except Exception:
 		print 'There was an exception uploading to s3.'

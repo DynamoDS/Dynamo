@@ -149,7 +149,7 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Int:
                     return val.opdata.ToString();
                 case AddressType.Double:
-                    return val.opdata_d.ToString(core.Options.FormatToPrintFloatingPoints);
+                    return val.RawDoubleValue.ToString(core.Options.FormatToPrintFloatingPoints);
                 case AddressType.Null:
                     return "null";
                 case AddressType.Pointer:
@@ -186,7 +186,7 @@ namespace ProtoCore.DSASM.Mirror
             string str = "";
             for (int n = 0; n < heap.Heaplist[strptr].VisibleSize; ++n)
             {
-                if (heap.Heaplist[strptr].Stack[n].optype != AddressType.Char)
+                if (!heap.Heaplist[strptr].Stack[n].IsChar)
                 {
                     break;
                 }
@@ -334,7 +334,7 @@ namespace ProtoCore.DSASM.Mirror
                         arrayElements.Append(", ");
 
                 StackValue sv = hs.Stack[n];
-                if (sv.optype == AddressType.ArrayPointer)
+                if (sv.IsArray)
                 {
                     arrayElements.Append(GetPointerTrace((int)sv.opdata, heap, langblock, pointers, forPrint));
                 }
@@ -381,7 +381,7 @@ namespace ProtoCore.DSASM.Mirror
                     StackValue key = keyValuePair.Key;
                     StackValue value = keyValuePair.Value;
 
-                    if (key.optype == AddressType.ArrayPointer)
+                    if (key.IsArray)
                     {
                         arrayElements.Append(GetPointerTrace((int)key.opdata, heap, langblock, pointers, forPrint));
                     }
@@ -392,7 +392,7 @@ namespace ProtoCore.DSASM.Mirror
 
                     arrayElements.Append("=");
 
-                    if (value.optype == AddressType.ArrayPointer)
+                    if (value.IsArray)
                     {
                         arrayElements.Append(GetPointerTrace((int)value.opdata, heap, langblock, pointers, forPrint));
                     }
@@ -696,7 +696,7 @@ namespace ProtoCore.DSASM.Mirror
         // there is no need to look up that symbol again
         public string GetType(Obj obj)
         {
-            if (obj.DsasmValue.optype == AddressType.Pointer)
+            if (obj.DsasmValue.IsPointer)
             {
                 return core.ClassTable.ClassNodes[(int)obj.DsasmValue.metaData.type].name;
             }
@@ -741,7 +741,7 @@ namespace ProtoCore.DSASM.Mirror
             try
             {
                 StackValue sv = MirrorTarget.Core.watchStack[n];
-                if (sv.optype != AddressType.Invalid)
+                if (!sv.IsInvalid)
                 {
                     retVal = Unpack(MirrorTarget.Core.watchStack[n], MirrorTarget.rmem.Heap, core);
                 }
@@ -962,7 +962,7 @@ namespace ProtoCore.DSASM.Mirror
             else
                 sv = rmem.GetStackData(block, index, classcope);
 
-            if (sv.optype == AddressType.Invalid)
+            if (sv.IsInvalid)
                 throw new UninitializedVariableException { Name = name };
 
             return Unpack(sv);
@@ -971,7 +971,7 @@ namespace ProtoCore.DSASM.Mirror
         // traverse an class type object to get its property
         public Dictionary<string, Obj> GetProperties(Obj obj, bool excludeStatic = false)
         {
-            if (obj == null || obj.DsasmValue.optype != AddressType.Pointer)
+            if (obj == null || !obj.DsasmValue.IsPointer)
                 return null;
 
             Dictionary<string, Obj> ret = new Dictionary<string, Obj>();
@@ -987,10 +987,10 @@ namespace ProtoCore.DSASM.Mirror
                 StackValue val = svs[index];
 
                 // check if the members are primitive type
-                if (val.optype == AddressType.Pointer &&
+                if (val.IsPointer &&
                     core.Heap.Heaplist[(int)val.opdata].Stack.Length == 1 &&
-                    core.Heap.Heaplist[(int)val.opdata].Stack[0].optype != AddressType.Pointer &&
-                    core.Heap.Heaplist[(int)val.opdata].Stack[0].optype != AddressType.ArrayPointer)
+                    !core.Heap.Heaplist[(int)val.opdata].Stack[0].IsPointer &&
+                    !core.Heap.Heaplist[(int)val.opdata].Stack[0].IsArray)
                     val = core.Heap.Heaplist[(int)val.opdata].Stack[0];
 
                 ret[name] = Unpack(val);
@@ -1002,7 +1002,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public List<string> GetPropertyNames(Obj obj)
         {
-            if (obj == null || obj.DsasmValue.optype != AddressType.Pointer)
+            if (obj == null || !obj.DsasmValue.IsPointer)
                 return null;
 
             List<string> ret = new List<string>();
@@ -1021,7 +1021,7 @@ namespace ProtoCore.DSASM.Mirror
         // traverse an array Obj return its member
         public List<Obj> GetArrayElements(Obj obj)
         {
-            if ( obj == null || obj.DsasmValue.optype != AddressType.ArrayPointer)
+            if ( obj == null || !obj.DsasmValue.IsArray)
                 return null;
 
             return core.Heap.Heaplist[(int)obj.DsasmValue.opdata].Stack.Select(x => Unpack(x)).ToList();
@@ -1079,7 +1079,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public string GetFirstNameFromValue(StackValue v)
         {
-            if (v.optype != AddressType.Pointer)
+            if (!v.IsPointer)
                 throw new ArgumentException("SV to highlight must be a pointer");
 
             ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
@@ -1206,7 +1206,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Double:
                     {
-                        double data = val.opdata_d;
+                        double data = val.RawDoubleValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, Type =
@@ -1304,7 +1304,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Double:
                     {
-                        double data = val.opdata_d;
+                        double data = val.RawDoubleValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1404,7 +1404,7 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Double:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata_d, 
+                        Payload = val.RawDoubleValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
                     };
                     break;
@@ -1538,7 +1538,7 @@ namespace ProtoCore.DSASM.Mirror
             // check for null first
             if (dotNetObj == null)
             {
-                if (dsObj.DsasmValue.optype == AddressType.Null)
+                if (dsObj.DsasmValue.IsNull)
                     return true;
                 else
                     return false;

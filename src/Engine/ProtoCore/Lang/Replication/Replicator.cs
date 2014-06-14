@@ -485,7 +485,7 @@ namespace ProtoCore.Lang.Replication
                         StackValue target = basicList[index];
                         StackValue reducedSV = StackValue.Null;
 
-                        if (StackUtils.IsArray(target))
+                        if (target.IsArray)
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
@@ -542,7 +542,7 @@ namespace ProtoCore.Lang.Replication
                     StackValue target = basicList[index];
                     StackValue reducedSV = StackValue.Null;
 
-                    if (StackUtils.IsArray(target))
+                    if (target.IsArray)
                     {
 
                         //Array arr = formalParams[index].Payload as Array;
@@ -626,7 +626,7 @@ namespace ProtoCore.Lang.Replication
                         StackValue target = reducedParamTypes[index];
                         StackValue reducedSV = StackValue.Null;
 
-                        if (StackUtils.IsArray(target))
+                        if (target.IsArray)
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
@@ -662,7 +662,7 @@ namespace ProtoCore.Lang.Replication
                     StackValue target = reducedParamTypes[index];
                     StackValue reducedSV;
 
-                    if (StackUtils.IsArray(target))
+                    if (target.IsArray)
                     {
                         //ProtoCore.DSASM.Mirror.DsasmArray arr = formalParams[index].Payload as ProtoCore.DSASM.Mirror.DsasmArray;
                         HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], core);
@@ -930,7 +930,7 @@ namespace ProtoCore.Lang.Replication
                 "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
 
             //PERF(Luke): Could be non-recursive
-            if (!StackUtils.IsArray(sv))
+            if (!sv.IsArray)
                 return 0;
 
             int maxReduction = 0;

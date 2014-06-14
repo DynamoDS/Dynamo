@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.UI;
 using Autodesk.DesignScript.Runtime;
+using Brush = System.Drawing.Brush;
 
 namespace Dynamo.Nodes
 {
@@ -26,7 +27,7 @@ namespace Dynamo.Nodes
     {
         public DoubleSlider()
         {
-            Value = 50;
+            Value = 0;
             Min = 0;
             Max = 100;
         }
@@ -63,15 +64,23 @@ namespace Dynamo.Nodes
         /// <param name="nodeUI">UI view that we can customize the UI of.</param>
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            BuildSliderUI(nodeUI, this, Value, SerializeValue(), 
+                            new DoubleSliderSettingsControl(){ DataContext = this }, new DoubleDisplay());
+        }
+
+        internal static void BuildSliderUI(dynNodeView nodeUI, NodeModel nodeModel,
+            double value, string serializedValue, UIElement sliderSettingsControl, 
+            IValueConverter numberDisplayConverter  )
+        {
             //add a slider control to the input grid of the control
-            var tbSlider = new DynamoSlider(this)
+            var tbSlider = new DynamoSlider(nodeModel)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Height = Configurations.PortHeightInPixels,
                 MinWidth = 150,
                 TickPlacement = TickPlacement.None,
-                Value = Value
+                Value = value
             };
 
             tbSlider.PreviewMouseUp += delegate
@@ -79,40 +88,71 @@ namespace Dynamo.Nodes
                 dynSettings.ReturnFocusToSearch();
             };
 
-            // input value textbox
-            var valtb = new DynamoTextBox(SerializeValue())
+            // build grid for input and expander
+            var textBoxExpanderGrid = new Grid()
             {
-                MinWidth = Configurations.DoubleSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                MinWidth = 150
             };
+
+            textBoxExpanderGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            textBoxExpanderGrid.ColumnDefinitions.Add(new ColumnDefinition()
+            {
+                Width = new GridLength(29)
+            });
+
+            // input value textbox
+            var valtb = new DynamoTextBox(serializedValue);
+
+            Grid.SetColumn(valtb, 0);
+            textBoxExpanderGrid.Children.Add(valtb);
+
+            var exp = new Expander();
+            exp.Padding = new Thickness(4, 0, 0, 0);
+            Grid.SetColumn(exp, 1);
+            textBoxExpanderGrid.Children.Add(exp);
 
             var sliderSp = new StackPanel()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            sliderSp.Children.Add(valtb);
+            sliderSp.Children.Add(textBoxExpanderGrid);
 
-            sliderSp.Children.Add(new DoubleSliderSettingsControl() { DataContext = this });
+            // min max control
+            var minMaxControl = sliderSettingsControl;
+            minMaxControl.Visibility = Visibility.Collapsed;
+            sliderSp.Children.Add(minMaxControl);
+
+            // expander modifies visibility of min/max
+            exp.Expanded += (sender, args) =>
+            {
+                minMaxControl.Visibility = Visibility.Visible;
+            };
+
+            exp.Collapsed += (sender, args) =>
+            {
+                minMaxControl.Visibility = Visibility.Collapsed;
+            };
+
             nodeUI.inputGrid.Children.Add(tbSlider);
             nodeUI.PresentationGrid.Children.Add(sliderSp);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
-            
-            tbSlider.DataContext = this;
-            valtb.DataContext = this;
+
+            tbSlider.DataContext = nodeModel;
+            valtb.DataContext = nodeModel;
 
             // value input
             valtb.BindToProperty(
-                new Binding("Value") { Mode = BindingMode.TwoWay, Converter = new DoubleDisplay() });
+                new Binding("Value") { Mode = BindingMode.TwoWay, Converter = numberDisplayConverter });
 
             // slider value 
-            var sliderBinding = new Binding("Value") { Mode = BindingMode.TwoWay, Source = this, };
+            var sliderBinding = new Binding("Value") { Mode = BindingMode.TwoWay, Source = nodeModel };
             tbSlider.SetBinding(RangeBase.ValueProperty, sliderBinding);
 
             // max slider value
             var bindingMaxSlider = new Binding("Max")
             {
                 Mode = BindingMode.OneWay,
-                Source = this,
+                Source = nodeModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tbSlider.SetBinding(RangeBase.MaximumProperty, bindingMaxSlider);
@@ -121,7 +161,7 @@ namespace Dynamo.Nodes
             var bindingMinSlider = new Binding("Min")
             {
                 Mode = BindingMode.OneWay,
-                Source = this,
+                Source = nodeModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tbSlider.SetBinding(RangeBase.MinimumProperty, bindingMinSlider);
@@ -258,7 +298,7 @@ namespace Dynamo.Nodes
 
             Min = 0;
             Max = 100;
-            Value = 50;
+            Value = 0;
         }
 
         private int _max;
@@ -293,68 +333,11 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //add a slider control to the input grid of the control
-            var tbSlider = new DynamoSlider(this)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                MinWidth = 150,
-                TickPlacement = TickPlacement.BottomRight,
-                TickFrequency = 1,
-                IsSnapToTickEnabled = true
-            };
-
-            tbSlider.PreviewMouseUp += delegate
-            {
-                dynSettings.ReturnFocusToSearch();
-            };
-
-            // input value textbox
-            var valtb = new DynamoTextBox
-            {
-                MinWidth = Configurations.IntegerSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-            };
-
-            var sliderSp = new StackPanel()
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-            sliderSp.Children.Add(valtb);
-            sliderSp.Children.Add(new IntegerSliderSettingsControl() {DataContext = this});
-
-            nodeUI.inputGrid.Children.Add(tbSlider);
-            nodeUI.PresentationGrid.Children.Add(sliderSp);
-            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
-
-            tbSlider.DataContext = this;
-            valtb.DataContext = this;
-
-            // value input
-            valtb.BindToProperty(
-                new Binding("Value") { Mode = BindingMode.TwoWay, Converter = new IntegerDisplay() });
-
-            // slider value 
-            var sliderBinding = new Binding("Value") { Mode = BindingMode.TwoWay, Source = this, };
-            tbSlider.SetBinding(RangeBase.ValueProperty, sliderBinding);
-
-            // max slider value
-            var bindingMaxSlider = new Binding("Max")
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tbSlider.SetBinding(RangeBase.MaximumProperty, bindingMaxSlider);
-
-            // min slider value
-            var bindingMinSlider = new Binding("Min")
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tbSlider.SetBinding(RangeBase.MinimumProperty, bindingMinSlider);
+            DoubleSlider.BuildSliderUI(nodeUI, this, Value, SerializeValue(),
+                new IntegerSliderSettingsControl()
+                {
+                    DataContext = this
+                }, new IntegerDisplay());
         }
 
         protected override bool UpdateValueCore(string name, string value)

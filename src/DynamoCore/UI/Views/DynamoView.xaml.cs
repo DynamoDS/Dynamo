@@ -242,7 +242,7 @@ namespace Dynamo.Controls
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
             // If first run, Collect Info Prompt will appear
-            UsageReportingManager.Instance.CheckIsFirstRun();
+            UsageReportingManager.Instance.CheckIsFirstRun(this);
 
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);

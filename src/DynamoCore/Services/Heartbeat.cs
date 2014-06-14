@@ -23,6 +23,13 @@ namespace Dynamo.Services
         private DateTime startTime;
         private Thread heartbeatThread;
 
+        // We need to play nicely with the background thread and ask politely 
+        // when the application is shutting down. Whenever this event is raised,
+        // the thread loop exits, causing the thread to terminate. Since garbage
+        // collector does not collect an unreferenced thread, setting "instance"
+        // to "null" will not help release the thread.
+        // 
+        private AutoResetEvent shutdownEvent = new AutoResetEvent(false);
 
         private Heartbeat()
         {
@@ -30,6 +37,13 @@ namespace Dynamo.Services
             heartbeatThread = new Thread(this.ExecThread);
             heartbeatThread.IsBackground = true;
             heartbeatThread.Start();
+        }
+
+        private void DestroyInternal()
+        {
+            shutdownEvent.Set(); // Signal the shutdown event... 
+            heartbeatThread.Join(); // ... wait for thread to end.
+            heartbeatThread = null;
         }
 
         public static Heartbeat GetInstance()
@@ -43,6 +57,17 @@ namespace Dynamo.Services
             return instance;
         }
 
+        public static void DestroyInstance()
+        {
+            lock (typeof(Heartbeat))
+            {
+                if (instance != null)
+                {
+                    instance.DestroyInternal();
+                    instance = null;
+                }
+            }
+        }
 
         private void ExecThread()
         {
@@ -54,9 +79,9 @@ namespace Dynamo.Services
                 {
                     InstrumentationLogger.LogInfo("VersionInfo", GetVersionString());
 
+                    var difference = DateTime.Now.Subtract(startTime).TotalSeconds;
                     InstrumentationLogger.FORCE_LogInfo("Heartbeat-Uptime-s",
-                                                  DateTime.Now.Subtract(startTime)
-                                                          .TotalSeconds.ToString(CultureInfo.InvariantCulture));
+                        difference.ToString(CultureInfo.InvariantCulture));
 
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
@@ -69,11 +94,16 @@ namespace Dynamo.Services
                 {
                     Debug.WriteLine("Exception in Heartbeat " + e);
                 }
-                Thread.Sleep(HEARTBEAT_INTERVAL_MS);
 
-
+                // The following call will return "true" if the event is 
+                // signaled, which can only happen when "DestroyInternal" 
+                // is called as the application is shutting down. Otherwise,
+                // when the wait time ellapsed, the loop continues to log 
+                // the next set of information.
+                // 
+                if (shutdownEvent.WaitOne(HEARTBEAT_INTERVAL_MS))
+                    break;
             }
-
         }
 
         private string GetVersionString()

@@ -50,5 +50,37 @@ namespace DSIronPythonTests
 
             Assert.AreEqual("functions rule!", output("functions"));
         }
+
+        [Test]
+        public void DataMarshaling_Output()
+        {
+            var marshaler = DSIronPython.IronPythonEvaluator.OutputMarshaler;
+            marshaler.RegisterMarshaler((string s) => s.Length);
+
+            const string script = "OUT = ['', ' ', '  ']";
+
+            object output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
+                script,
+                new ArrayList(),
+                new ArrayList());
+
+            Assert.AreEqual(new[] { 0, 1, 2 }, output);
+        }
+
+        [Test]
+        public void DataMarshaling_Input()
+        {
+            var marshaler = DSIronPython.IronPythonEvaluator.InputMarshaler;
+            marshaler.RegisterMarshaler((string s) => s.Length);
+
+            const string script = "OUT = sum(IN)";
+
+            object output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
+                script,
+                new ArrayList { "IN" },
+                new ArrayList { new ArrayList { " ", "  " } });
+
+            Assert.AreEqual(3, output);
+        }
     }
 }
