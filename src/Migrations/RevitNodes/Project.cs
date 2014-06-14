@@ -106,8 +106,8 @@ namespace Dynamo.Nodes
             var oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
             var faceInConnector = data.FindFirstConnector(oldInPort1);
 
-            data.ReconnectToPort(ptInConnector, oldInPort0);
-            data.ReconnectToPort(faceInConnector, oldInPort1);
+            data.ReconnectToPort(ptInConnector, oldInPort1);
+            data.ReconnectToPort(faceInConnector, oldInPort0);
 
             #endregion
 
@@ -122,8 +122,8 @@ namespace Dynamo.Nodes
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
                     data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Curve.ParameterAtPoint",
-                    "Curve.ParameterAtPoint@Point");
+                    "Surface.UVParameterAtPoint",
+                    "Surface.UVParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
                 var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
