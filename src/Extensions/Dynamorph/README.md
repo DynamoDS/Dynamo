@@ -42,7 +42,6 @@ Dynamorph, morph the heck out of your design.
 - [ ] Merge multiple RenderPackage into one vertex buffer
 - [ ] Fix: Dynamorph relaunch problem
 - [ ] Fix: Closing Dynamo does not close Dynamorph
-- [ ] Fix: Update methods to take BoundingBox & (not *)
 - [ ] Implement logging mechanism
 - [ ] Incorporate [debugging facility](http://www.opengl.org/registry/specs/ARB/debug_output.txt) provided by OpenGL
 - [ ] Display OpenGL logs in Dynamorph window
@@ -54,6 +53,7 @@ Dynamorph, morph the heck out of your design.
 ##### Obsolete Tasks #####
 - [x] Implement saving of tessellated data to bin file
 - [x] Implement loading of tessellated data from file
+- [x] Fix: Update methods to take BoundingBox & (not *)
 
 
 ## Screenshot Of The Day ##

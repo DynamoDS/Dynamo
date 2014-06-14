@@ -18,6 +18,7 @@ namespace Dynamorph
     class IVertexBuffer;
     class GeometryData;
     class NodeGeometries;
+    class BoundingBox;
 
     public ref class UpdateGeometryParam
     {
@@ -67,9 +68,11 @@ namespace Dynamorph
         void Uninitialize(void);
         void UpdateNodeGeometries(NodeGeomsType^ geometries);
         void AssociateToDepthValues(NodeDepthsType^ depths);
+        void GetGeometriesAtDepth(int depth, std::vector<NodeGeometries *>& geometries);
+        void GetBoundingBox(std::vector<NodeGeometries *>& geometries, BoundingBox& box);
         void RequestFrameUpdate(void);
         void RenderWithBlendingFactor(void);
-        void RenderGeometriesAtDepth(int depth, float alpha);
+        void RenderGeometries(const std::vector<NodeGeometries *>& geometries, float alpha);
         LRESULT ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam);
         LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

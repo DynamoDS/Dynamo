@@ -383,6 +383,28 @@ void Visualizer::AssociateToDepthValues(NodeDepthsType^ depths)
     }
 }
 
+void Visualizer::GetGeometriesAtDepth(int depth, std::vector<NodeGeometries *>& geometries)
+{
+    auto pInnerList = mpGeomsOnDepthLevel->at(depth);
+    auto iterator = pInnerList->begin();
+    for (; iterator != pInnerList->end(); ++iterator)
+    {
+        auto found = mpNodeGeometries->find(*iterator);
+        if (found != mpNodeGeometries->end())
+            geometries.push_back(found->second);
+    }
+}
+
+void Visualizer::GetBoundingBox(std::vector<NodeGeometries *>& geometries, BoundingBox& box)
+{
+    auto iterator = geometries.begin();
+    for (; iterator != geometries.end(); ++iterator) {
+        BoundingBox boundingBox;
+        (*iterator)->GetBoundingBox(&boundingBox);
+        box.EvaluateBox(boundingBox);
+    }
+}
+
 void Visualizer::RequestFrameUpdate(void)
 {
     ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
@@ -400,37 +422,46 @@ void Visualizer::RenderWithBlendingFactor(void)
     lower = ((lower < 0) ? 0 : lower);
     upper = ((upper > maxIndex) ? maxIndex : upper);
 
+    std::vector<NodeGeometries *> lowerGeoms, upperGeoms;
+    GetGeometriesAtDepth(lower, lowerGeoms);
+    if (lower != upper)
+        GetGeometriesAtDepth(upper, upperGeoms);
+
+    if (lowerGeoms.size() <= 0 && (upperGeoms.size() <= 0))
+        return; // No geometry to render with these settings.
+
+    float integralPart = 0.0f;
+    float alpha = std::modf(mBlendingFactor, &integralPart);
+
+    BoundingBox lowerBox, upperBox;
+    GetBoundingBox(lowerGeoms, lowerBox);
+    GetBoundingBox(upperGeoms, upperBox);
+    lowerBox.Interpolate(upperBox, alpha);
+
     mpGraphicsContext->EnableAlphaBlend();
     mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
 
-    // Apply camera transformation.
+    // Fit the camera to the bounding box, and apply transformation.
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
+    pCamera->FitToBoundingBox(&lowerBox);
     mpShaderProgram->ApplyTransformation(pCamera);
 
     // Render lower level node geometries.
-    float integralPart = 0.0f;
-    float alpha = std::modf(mBlendingFactor, &integralPart);
-    RenderGeometriesAtDepth(lower, 1.0f - alpha);
-    if (lower != upper) { // At 0.0 or 1.0 ends.
+    RenderGeometries(lowerGeoms, 1.0f - alpha);
+    if (upperGeoms.size() > 0) { // At 0.0 or 1.0 ends.
         mpGraphicsContext->ClearDepthBuffer();
-        RenderGeometriesAtDepth(upper, alpha);
+        RenderGeometries(upperGeoms, alpha);
     }
 }
 
-void Visualizer::RenderGeometriesAtDepth(int depth, float alpha)
+void Visualizer::RenderGeometries(
+    const std::vector<NodeGeometries *>& geometries, float alpha)
 {
     mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
 
-    auto pInnerList = mpGeomsOnDepthLevel->at(depth);
-    auto iterator = pInnerList->begin();
-    for (; iterator != pInnerList->end(); ++iterator)
-    {
-        auto found = mpNodeGeometries->find(*iterator);
-        if (found != mpNodeGeometries->end()) {
-            auto pNodeGeometries = found->second;
-            pNodeGeometries->Render(mpGraphicsContext);
-        }
-    }
+    auto iterator = geometries.begin();
+    for (; iterator != geometries.end(); ++iterator)
+        (*iterator)->Render(mpGraphicsContext);
 }
 
 LRESULT Visualizer::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam)

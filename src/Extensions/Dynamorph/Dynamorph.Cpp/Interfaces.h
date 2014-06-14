@@ -219,12 +219,25 @@ namespace Dynamorph
 
         void Interpolate(const BoundingBox& other, float factor)
         {
-            mBox[0] += ((other.mBox[0] - mBox[0]) * factor);
-            mBox[1] += ((other.mBox[1] - mBox[1]) * factor);
-            mBox[2] += ((other.mBox[2] - mBox[2]) * factor);
-            mBox[3] += ((other.mBox[3] - mBox[3]) * factor);
-            mBox[4] += ((other.mBox[4] - mBox[4]) * factor);
-            mBox[5] += ((other.mBox[5] - mBox[5]) * factor);
+            if (this->mInitialized == false)
+            {
+                if (other.mInitialized == false)
+                    throw new std::exception("'Interpolate' cannot be called now");
+
+                this->EvaluateBox(other);
+                return;
+            }
+
+            if (other.mInitialized != false)
+            {
+                // Only interpolate if other box is initialized.
+                mBox[0] += ((other.mBox[0] - mBox[0]) * factor);
+                mBox[1] += ((other.mBox[1] - mBox[1]) * factor);
+                mBox[2] += ((other.mBox[2] - mBox[2]) * factor);
+                mBox[3] += ((other.mBox[3] - mBox[3]) * factor);
+                mBox[4] += ((other.mBox[4] - mBox[4]) * factor);
+                mBox[5] += ((other.mBox[5] - mBox[5]) * factor);
+            }
         }
 
         void EvaluateBox(const BoundingBox& other)

@@ -137,6 +137,7 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     auto halfFov = configuration.fieldOfView * 0.5f;
     auto halfFovRadian = halfFov * glm::pi<float>() / 180.0f;
     auto distance = std::fabsf(radius / std::sinf(halfFovRadian));
+    configuration.farClippingPlane = distance + radius;
 
     // Obtain the inversed view vector.
     float vx, vy, vz;
