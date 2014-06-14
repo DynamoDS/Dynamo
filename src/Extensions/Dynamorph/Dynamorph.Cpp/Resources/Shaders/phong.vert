@@ -11,15 +11,15 @@ out vec4 vertColor;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
+uniform mat4 normalMatrix;
 
 void main(void)
 {
-    vec4 modelPos = vec4(inPosition, 1.0);
-    gl_Position = proj * view * model * modelPos;
+    vec4 viewPos = view * model * vec4(inPosition, 1.0);
+    gl_Position = proj * viewPos;
     
-    // Compute varying parameters
-    vec4 viewPos = view * model * modelPos;
+    // Compute parameters for fragment shader
     vertPosition = vec3(viewPos) / viewPos.w;
     vertColor = inColor;
-    vertNormal = normalize(inNormal);
+    vertNormal = vec3(normalMatrix * vec4(inNormal, 0.0));
 }

@@ -143,8 +143,8 @@ namespace Dynamorph
         CameraConfiguration()
         {
             memset(this, 0, sizeof(CameraConfiguration));
-            eye[0] = -10.0f;
-            eye[1] = eye[2] = 10.0f;
+            eye[1] = 5.0f;
+            eye[0] = eye[2] = 10.0f;
             center[0] = center[1] = center[2] = 0.0f;
             up[1] = 1.0f; // Default up-vector is Y-axis
 
@@ -333,7 +333,7 @@ namespace Dynamorph
 
     enum class TransMatrix
     {
-        Model, View, Projection
+        Model, View, Projection, Normal
     };
 
     class IShaderProgram

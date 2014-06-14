@@ -82,6 +82,7 @@ ShaderProgram::ShaderProgram(
     mModelMatrixUniform(0),
     mViewMatrixUniform(0),
     mProjMatrixUniform(0),
+    mNormMatrixUniform(0),
     mpVertexShader(pVertexShader),
     mpFragmentShader(pFragmentShader)
 {
@@ -156,6 +157,9 @@ void ShaderProgram::BindTransformMatrixCore(TransMatrix transform, const std::st
     case Dynamorph::TransMatrix::Projection:
         mProjMatrixUniform = index;
         break;
+    case Dynamorph::TransMatrix::Normal:
+        mNormMatrixUniform = index;
+        break;
     }
 }
 
@@ -171,4 +175,8 @@ void ShaderProgram::ApplyTransformationCore(const ICamera* pCamera) const
     GL::glUniformMatrix4fv(mModelMatrixUniform, 1, GL_FALSE, glm::value_ptr(model));
     GL::glUniformMatrix4fv(mViewMatrixUniform, 1, GL_FALSE, glm::value_ptr(view));
     GL::glUniformMatrix4fv(mProjMatrixUniform, 1, GL_FALSE, glm::value_ptr(proj));
+
+    glm::mat4 modelView(view * model);
+    glm::mat4 normal = glm::transpose(glm::inverse(modelView));
+    GL::glUniformMatrix4fv(mNormMatrixUniform, 1, GL_FALSE, glm::value_ptr(normal));
 }

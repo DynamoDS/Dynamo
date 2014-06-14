@@ -32,7 +32,9 @@ Dynamorph, morph the heck out of your design.
 
 ##### Miscellaneous Tasks #####
 - [x] Move shader source to external files
-- [ ] Introduce "normal matrix" into [Phong shader](http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/renderer.js)
+- [x] Introduce "normal matrix" into [Phong shader](http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/renderer.js)
+- [x] Remove normal computation in GetTriangleGeometries
+- [x] Update aspect ratio when window is sized
 - [ ] Translate directly into GeometryData as interleaved
 - [ ] Factor mpNodeGeometries, mpGeomsOnDepthLevel out of Visualizer
 - [ ] Fix: Line segment with 0 vertex should be filtered
@@ -41,15 +43,13 @@ Dynamorph, morph the heck out of your design.
 - [ ] Fix: Dynamorph relaunch problem
 - [ ] Fix: Closing Dynamo does not close Dynamorph
 - [ ] Fix: Update methods to take BoundingBox & (not *)
-- [ ] Remove normal computation in GetTriangleGeometries
 - [ ] Implement logging mechanism
 - [ ] Incorporate [debugging facility](http://www.opengl.org/registry/specs/ARB/debug_output.txt) provided by OpenGL
 - [ ] Display OpenGL logs in Dynamorph window
-- [ ] Update aspect ratio when window is sized
 - [ ] Implement mini-ball for tightest bounding box
 - [ ] Add GLM licence terms to EULA and ReadMe.md
 - [ ] Implement hit testing for graph visuals
-- [ ] Fix: Wrong child node count with adjacent edges
+- [ ] Fix: Wrong upstream node count with adjacent edges
 
 ##### Obsolete Tasks #####
 - [x] Implement saving of tessellated data to bin file

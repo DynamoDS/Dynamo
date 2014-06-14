@@ -238,6 +238,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpShaderProgram->BindTransformMatrix(TransMatrix::Model, "model");
     mpShaderProgram->BindTransformMatrix(TransMatrix::View, "view");
     mpShaderProgram->BindTransformMatrix(TransMatrix::Projection, "proj");
+    mpShaderProgram->BindTransformMatrix(TransMatrix::Normal, "normalMatrix");
     mAlphaParamIndex = mpShaderProgram->GetShaderParameterIndex("alpha");
 
     auto pCamera = mpGraphicsContext->GetDefaultCamera();

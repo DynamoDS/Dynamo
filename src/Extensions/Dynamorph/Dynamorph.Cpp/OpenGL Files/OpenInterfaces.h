@@ -253,6 +253,7 @@ namespace Dynamorph { namespace OpenGL {
         GLint mModelMatrixUniform;
         GLint mViewMatrixUniform;
         GLint mProjMatrixUniform;
+        GLint mNormMatrixUniform;
         VertexShader* mpVertexShader;
         FragmentShader* mpFragmentShader;
     };
