@@ -1,0 +1,100 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using DynamoCrypto;
+using NDesk.Options;
+
+namespace SignDynamo
+{
+    class Program
+    {
+        private static byte[] publicBlob = null;
+        private static byte[] privateBlob = null;
+        private static string installerPath;
+        private const string keyContainerName = "Dynamo";
+
+        static void Main(string[] args)
+        {
+            if (!ParseArguments(args))
+            {
+                Console.WriteLine("Press any key to quit.");
+                Console.ReadKey();
+            }
+
+            privateBlob = Utils.FindCertificateAndGetPrivateKey(keyContainerName);
+            if (privateBlob == null)
+            {
+                Console.WriteLine("Press any key to quit.");
+                Console.ReadKey();
+            }
+
+            var sigPath = Path.Combine(Path.GetDirectoryName(installerPath),
+                Path.GetFileNameWithoutExtension(installerPath) + ".sig");
+
+            Utils.SignFile(installerPath, sigPath, privateBlob);
+
+            bool ok = Utils.VerifyFile(installerPath, sigPath, publicBlob);
+        }
+
+        private static bool ParseArguments(IEnumerable<string> args)
+        {
+            var showHelp = false;
+
+            var p = new OptionSet
+            {
+                {"i:|installer","The path to the installer to sign.", v=> installerPath = v},
+                {"h|help", "Show this message and exit.", v=> showHelp = v != null}
+            };
+
+            var notParsed = new List<string>();
+
+            const string helpMessage = "Try 'SignDynamo --help' for more information.";
+
+            try
+            {
+                notParsed = p.Parse(args);
+            }
+            catch (OptionException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(helpMessage);
+                return false;
+            }
+
+            if (notParsed.Count > 0)
+            {
+                Console.WriteLine(String.Join(" ", notParsed.ToArray()));
+                return false;
+            }
+
+            if (showHelp)
+            {
+                ShowHelp(p);
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(installerPath))
+            {
+                Console.WriteLine("You must specify a path to an installer to be signed when using the -s flag.");
+                return false;
+            }
+
+            if (!File.Exists(installerPath))
+            {
+                Console.Write("The specified installer path does not exist.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void ShowHelp(OptionSet p)
+        {
+            Console.WriteLine("Usage: SignDynamo [OPTIONS]");
+            Console.WriteLine("Generate a signature file for a dynamo installer.");
+            Console.WriteLine();
+            Console.WriteLine("Options:");
+            p.WriteOptionDescriptions(Console.Out);
+        }
+    }
+}
