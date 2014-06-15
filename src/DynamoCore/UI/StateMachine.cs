@@ -73,6 +73,11 @@ namespace Dynamo.ViewModels
             stateMachine.RequestTogglePanMode();
         }
 
+        internal void RequestToggleOrbitMode()
+        {
+            stateMachine.RequestToggleOrbitMode();
+        }
+
         internal void CancelActiveState()
         {
             stateMachine.CancelActiveState();
@@ -395,11 +400,6 @@ namespace Dynamo.ViewModels
 
             #region Private Class Data Members
 
-            /// <summary>
-            /// PanMode: Left mouse button will be use for panning instead
-            ///     - Mouse cursor changed, disable all node interaction
-            /// </summary>
-
             private enum State
             {
                 None,
@@ -407,7 +407,8 @@ namespace Dynamo.ViewModels
                 DragSetup,
                 NodeReposition,
                 Connection,
-                PanMode
+                PanMode,
+                OrbitMode
             }
 
             private bool ignoreMouseClick = false;
@@ -450,7 +451,7 @@ namespace Dynamo.ViewModels
 
             internal bool IsOrbiting
             {
-                get { return true; }
+                get { return this.currentState == State.OrbitMode; }
             }
 
             private State CurrentState
@@ -491,6 +492,20 @@ namespace Dynamo.ViewModels
                     SetCurrentState(State.PanMode);
             }
 
+            /// <summary>
+            /// The owning WorkspaceViewModel calls this method in an attempt to
+            /// place the StateMachine into view orbiting mode. Note that as a 
+            /// result of calling this method, the StateMachine may be kicked
+            /// out of its existing state.
+            /// </summary>
+            internal void RequestToggleOrbitMode()
+            {
+                if (currentState == State.OrbitMode)
+                    SetCurrentState(State.None);
+                else
+                    SetCurrentState(State.OrbitMode);
+            }
+
             private void SetCurrentState(State newState)
             {
                 if (newState == this.currentState)
@@ -526,6 +541,11 @@ namespace Dynamo.ViewModels
                         break;
 
                     case State.PanMode:
+                        cursorToUse = CursorSet.HandPan;
+                        owningWorkspace.IsCursorForced = true;
+                        break;
+
+                    case State.OrbitMode:
                         cursorToUse = CursorSet.HandPan;
                         owningWorkspace.IsCursorForced = true;
                         break;
@@ -604,6 +624,11 @@ namespace Dynamo.ViewModels
                     var c = CursorLibrary.GetCursor(CursorSet.HandPanActive);
                     owningWorkspace.CurrentCursor = c;
                 }
+                else if (this.currentState == State.OrbitMode)
+                {
+                    var c = CursorLibrary.GetCursor(CursorSet.HandPanActive);
+                    owningWorkspace.CurrentCursor = c;
+                }
 
                 if (returnFocusToSearch != false)
                     dynSettings.ReturnFocusToSearch();
@@ -636,6 +661,11 @@ namespace Dynamo.ViewModels
                 else if (this.currentState == State.PanMode)
                 {
                     // Change cursor back to Pan
+                    var c = CursorLibrary.GetCursor(CursorSet.HandPan);
+                    owningWorkspace.CurrentCursor = c;
+                }
+                else if (this.currentState == State.OrbitMode)
+                {
                     var c = CursorLibrary.GetCursor(CursorSet.HandPan);
                     owningWorkspace.CurrentCursor = c;
                 }
