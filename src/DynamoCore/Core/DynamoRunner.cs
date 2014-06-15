@@ -16,8 +16,14 @@ namespace Dynamo.Core
         private readonly DynamoController controller = dynSettings.Controller;
 
         private bool cancelSet = false;
-        private int? execInternval = null; 
-        
+        private int? execInterval = null;
+
+        public int? ExecutionInterval
+        {
+            get { return execInterval; }
+            set { execInterval = value; }
+        }
+
         public void CancelAsync()
         {
             cancelSet = true;
@@ -37,9 +43,9 @@ namespace Dynamo.Core
         /// </summary>
         public static Object runControlMutex = new object();
 
-        public void RunExpression(int? executionInterval = null)
+        public void RunExpression()
         {
-            this.execInternval = executionInterval;
+            //this.execInterval = executionInterval;
 
             lock (runControlMutex)
             {
@@ -104,10 +110,10 @@ namespace Dynamo.Core
                 if (ec.HasPendingGraphSyncData)
                     Evaluate();
 
-                if (execInternval == null)
+                if (execInterval == null)
                     break;
 
-                var sleep = execInternval.Value;
+                var sleep = execInterval.Value;
                 Thread.Sleep(sleep);
             }
             while (!cancelSet);

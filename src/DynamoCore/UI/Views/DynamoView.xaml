@@ -1130,7 +1130,9 @@
                       Content="Run Automatically" FontSize="11" IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
                       IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-
+                    
+                    <controls:ExecutionTimerControl VerticalAlignment="Center"/>
+                    
                     <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"

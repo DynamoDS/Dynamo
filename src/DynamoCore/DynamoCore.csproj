@@ -146,6 +146,9 @@ limitations under the License.
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
     <Compile Include="UI\Controls\CanvasCheckBox.cs" />
+    <Compile Include="UI\Controls\ExecutionTimerControl.xaml.cs">
+      <DependentUpon>ExecutionTimerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -474,6 +477,10 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Controls\ExecutionTimerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
