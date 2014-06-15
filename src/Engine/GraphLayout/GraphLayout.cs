@@ -8,7 +8,7 @@ namespace GraphLayout
 {
     public class Graph
     {
-        public int MaxLayerHeight = 15;
+        public int MaxLayerHeight = 20;
         public double HorizontalNodeDistance = 100;
         public double VerticalNodeDistance = 30;
         public double Infinite = 1000000;
@@ -334,19 +334,60 @@ namespace GraphLayout
 
         /// <summary>
         /// Sugiyama step 4: Assign Coordinates
+        /// Vertical coordinates for the nodes in a layer is assigned right after the
+        /// order of nodes in that particular layer is determined.
         /// </summary>
         public void AssignCoordinates(List<Node> layer)
         {
-            layer = layer.OrderBy(x => x.Y).ToList();
-            
-            double topY = 0;
+            // Assign vertical coordinates to the main nodes
+            List<Node> nodes = layer.Where(x => x.Y < Infinite).OrderBy(x => x.Y).ToList();
 
-            foreach (Node n in layer)
+            double minDistance = Infinite;
+            int minNodeIndex = -1;
+            for (int i = 1; i < nodes.Count; i++)
             {
-                // Avoid vertical node overlapping
-                if (n.Y < topY) n.Y = topY;
+                double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
+                if (distance < VerticalNodeDistance)
+                {
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        minNodeIndex = i;
+                    }
+                }
+            }
 
-                topY = n.Y + n.Height + VerticalNodeDistance;
+            while (minNodeIndex > -1)
+            {
+                nodes[minNodeIndex].Y += 1;
+                nodes[minNodeIndex - 1].Y -= 1;
+
+                minDistance = Infinite;
+                minNodeIndex = -1;
+                for (int i = 1; i < nodes.Count; i++)
+                {
+                    double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
+                    if (distance < VerticalNodeDistance)
+                    {
+                        if (distance < minDistance)
+                        {
+                            minDistance = distance;
+                            minNodeIndex = i;
+                        }
+                    }
+                }
+            }
+
+            // Assign vertical coordinates to the rest of the nodes
+            double lastY = (nodes.Count == 0) ? 0 :
+                nodes.Last().Y + nodes.Last().Height + VerticalNodeDistance;
+
+            nodes = layer.Where(x => x.Y >= Infinite).ToList();
+
+            foreach (Node n in nodes)
+            {
+                n.Y = lastY;
+                lastY += n.Height + VerticalNodeDistance;
             }
 
             foreach (Node n in layer)
