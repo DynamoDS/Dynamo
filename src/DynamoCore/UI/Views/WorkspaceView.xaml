@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI.Controls"
+             xmlns:views="clr-namespace:Dynamo.Views"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -144,6 +145,53 @@
             </Canvas.ContextMenu>
 
         </Canvas>
+
+        <StackPanel Name="viewControlPanel"
+                    Orientation="Vertical"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top">
+
+            <ui:ImageButton Width="30"
+                            Height="28"
+                            StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-fit-view-states.png"
+                            Command="{Binding Path=FitViewCommand}">
+            </ui:ImageButton>
+
+            <ui:ImageRepeatButton Width="30"
+                                  Height="24"
+                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-in-states.png"
+                                  Command="{Binding Path=ZoomInCommand}">
+            </ui:ImageRepeatButton>
+
+            <ui:ImageRepeatButton Width="30"
+                                  Height="28"
+                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-out-states.png"
+                                  Command="{Binding Path=ZoomOutCommand}">
+            </ui:ImageRepeatButton>
+
+            <ui:ImageCheckBox Width="30"
+                              Height="30"
+                              StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-pan-states.png"
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-pan-check.png"
+                              Command="{Binding Path=TogglePanCommand}">
+                <ui:ImageCheckBox.IsChecked>
+                    <Binding Path="IsPanning"
+                             Mode="OneWay" />
+                </ui:ImageCheckBox.IsChecked>
+            </ui:ImageCheckBox>
+
+            <ui:ImageCheckBox Width="30"
+                              Height="30"
+                              StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-states.png"
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-check.png"
+                              Command="{Binding Path=ToggleOrbitCommand}">
+                <ui:ImageCheckBox.IsChecked>
+                    <Binding Path="IsOrbiting"
+                             Mode="OneWay" />
+                </ui:ImageCheckBox.IsChecked>
+            </ui:ImageCheckBox>
+
+        </StackPanel>
 
         <StackPanel Name="statusBarPanel"
                     Orientation="Horizontal"

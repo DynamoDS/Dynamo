@@ -26,12 +26,13 @@ namespace Dynamo.ViewModels
         private ConnectorViewModel activeConnector = null;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
-        internal bool IsInIdleState { get { return stateMachine.IsInIdleState; } }
-        internal bool IsSelecting { get { return stateMachine.IsSelecting; } }
-        internal bool IsDragging { get { return stateMachine.IsDragging; } }
-        internal bool IsConnecting { get { return stateMachine.IsConnecting; } }
-        internal bool IsPanning { get { return stateMachine.IsPanning; } }
-        internal bool IsOrbiting { get { return stateMachine.IsOrbiting; } }
+        // These properties need to be public for data-binding to work.
+        public bool IsInIdleState { get { return stateMachine.IsInIdleState; } }
+        public bool IsSelecting { get { return stateMachine.IsSelecting; } }
+        public bool IsDragging { get { return stateMachine.IsDragging; } }
+        public bool IsConnecting { get { return stateMachine.IsConnecting; } }
+        public bool IsPanning { get { return stateMachine.IsPanning; } }
+        public bool IsOrbiting { get { return stateMachine.IsOrbiting; } }
 
         internal ConnectorViewModel ActiveConnector
         {
