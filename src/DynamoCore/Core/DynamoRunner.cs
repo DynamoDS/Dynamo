@@ -3,10 +3,8 @@ using System.Diagnostics;
 using System.Threading;
 using DSNodeServices;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Core
 {
