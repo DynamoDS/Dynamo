@@ -71,11 +71,13 @@ namespace Dynamo.ViewModels
         internal void RequestTogglePanMode()
         {
             stateMachine.RequestTogglePanMode();
+            RaisePropertyChanged("IsPanning");
         }
 
         internal void RequestToggleOrbitMode()
         {
             stateMachine.RequestToggleOrbitMode();
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal void CancelActiveState()

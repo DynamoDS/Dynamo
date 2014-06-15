@@ -827,6 +827,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ToggleOrbit(object o)
+        {
+            RequestToggleOrbitMode();
+        }
+
+        private bool CanToggleOrbit(object o)
+        {
+            return true;
+        }
+
         private void FindById(object id)
         {
             try

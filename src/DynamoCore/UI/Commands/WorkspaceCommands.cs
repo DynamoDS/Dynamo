@@ -17,6 +17,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _fitViewCommand;
         private DelegateCommand _resetFitViewToggleCommand;
         private DelegateCommand _togglePanCommand;
+        private DelegateCommand _toggleOrbitCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
@@ -141,6 +142,16 @@ namespace Dynamo.ViewModels
                 if (_togglePanCommand == null)
                     _togglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
                 return _togglePanCommand;
+            }
+        }
+
+        public DelegateCommand ToggleOrbitCommand
+        {
+            get
+            {
+                if (_toggleOrbitCommand == null)
+                    _toggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
+                return _toggleOrbitCommand;
             }
         }
 

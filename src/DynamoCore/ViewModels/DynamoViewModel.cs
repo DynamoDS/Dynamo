@@ -195,6 +195,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
         public DelegateCommand TogglePanCommand { get; set; }
+        public DelegateCommand ToggleOrbitCommand { get; set; }
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
@@ -640,6 +641,7 @@ namespace Dynamo.ViewModels
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
@@ -1497,7 +1499,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 #endif
-        public void TogglePan(object parameter)
+        internal void TogglePan(object parameter)
         {
             CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);
         }
@@ -1505,6 +1507,16 @@ namespace Dynamo.ViewModels
         internal bool CanTogglePan(object parameter)
         {
             return CurrentSpaceViewModel.TogglePanCommand.CanExecute(parameter);
+        }
+
+        internal void ToggleOrbit(object parameter)
+        {
+            CurrentSpaceViewModel.ToggleOrbitCommand.Execute(parameter);
+        }
+
+        internal bool CanToggleOrbit(object parameter)
+        {
+            return CurrentSpaceViewModel.ToggleOrbitCommand.CanExecute(parameter);
         }
 
         public void Escape(object parameter)

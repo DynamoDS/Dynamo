@@ -45,7 +45,7 @@
                           Height="30"
                           StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-states.png"
                           CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-check.png"
-                          Command="{Binding Path=TogglePanCommand}">
+                          Command="{Binding Path=ToggleOrbitCommand}">
             <ui:ImageCheckBox.IsChecked>
                 <Binding Path="DataContext.IsOrbiting"
                          Mode="OneWay"
