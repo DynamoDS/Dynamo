@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -87,12 +88,50 @@ namespace Dynamo.UI.Controls
         /// 
         public override void OnApplyTemplate()
         {
+            System.Windows.Controls.Primitives.RepeatButton a;
+
             var animationOffsets = new Dictionary<string, double>();
             animationOffsets.Add("hoverOverAnimation", -1.0 * this.Height);
             animationOffsets.Add("pressedAnimation", -2.0 * this.Height);
             animationOffsets.Add("disabledAnimation", -3.0 * this.Height);
 
             foreach(var offset in animationOffsets)
+            {
+                var animation = Template.FindName(offset.Key, this);
+                var doubleAnimation = animation as DoubleAnimation;
+                if (doubleAnimation != null)
+                    doubleAnimation.To = offset.Value;
+            }
+
+            base.OnApplyTemplate();
+        }
+    }
+
+    public class ImageRepeatButton : RepeatButton
+    {
+        public static readonly DependencyProperty StateImageProperty =
+            DependencyProperty.Register("StateImage", typeof(ImageSource),
+            typeof(ImageRepeatButton), new UIPropertyMetadata(null));
+
+        public ImageSource StateImage
+        {
+            get { return (ImageSource)GetValue(StateImageProperty); }
+            set { SetValue(StateImageProperty, value); }
+        }
+
+        /// <summary>
+        /// For detailed explaination of why we need this,
+        /// see "ImageCheckBox.OnApplyTemplate" method above.
+        /// </summary>
+        /// 
+        public override void OnApplyTemplate()
+        {
+            var animationOffsets = new Dictionary<string, double>();
+            animationOffsets.Add("hoverOverAnimation", -1.0 * this.Height);
+            animationOffsets.Add("pressedAnimation", -2.0 * this.Height);
+            animationOffsets.Add("disabledAnimation", -3.0 * this.Height);
+
+            foreach (var offset in animationOffsets)
             {
                 var animation = Template.FindName(offset.Key, this);
                 var doubleAnimation = animation as DoubleAnimation;
