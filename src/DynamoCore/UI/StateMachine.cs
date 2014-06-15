@@ -72,12 +72,22 @@ namespace Dynamo.ViewModels
         internal void RequestTogglePanMode()
         {
             stateMachine.RequestTogglePanMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
             RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal void RequestToggleOrbitMode()
         {
             stateMachine.RequestToggleOrbitMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
             RaisePropertyChanged("IsOrbiting");
         }
 

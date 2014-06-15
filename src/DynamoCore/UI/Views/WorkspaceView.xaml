@@ -148,6 +148,7 @@
 
         <StackPanel Name="viewControlPanel"
                     Orientation="Vertical"
+                    Margin="4"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top">
 
@@ -189,6 +190,11 @@
                     <Binding Path="IsOrbiting"
                              Mode="OneWay" />
                 </ui:ImageCheckBox.IsChecked>
+                <ui:ImageCheckBox.Visibility>
+                    <Binding Path="DataContext.CanNavigateBackground"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.Visibility>
             </ui:ImageCheckBox>
 
         </StackPanel>

@@ -43,7 +43,6 @@ namespace Dynamo.Views
         }
 
         private Dynamo.Controls.DragCanvas WorkBench = null;
-        private ZoomAndPanControl zoomAndPanControl = null;
 
         private PortViewModel snappedPort = null;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
@@ -228,14 +227,6 @@ namespace Dynamo.Views
 
                 ViewModel.Loaded();
             }
-
-            // outerCanvas.Children.Remove(zoomAndPanControl);
-            // zoomAndPanControl = new ZoomAndPanControl(DataContext as WorkspaceViewModel);
-            // Canvas.SetRight(zoomAndPanControl, 10);
-            // Canvas.SetTop(zoomAndPanControl, 10);
-            // Canvas.SetZIndex(zoomAndPanControl, 8000);
-            // zoomAndPanControl.Focusable = false;
-            // outerCanvas.Children.Add(zoomAndPanControl);
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
