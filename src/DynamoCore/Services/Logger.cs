@@ -13,30 +13,42 @@ namespace Dynamo.Services
     /// </summary>
     public class InstrumentationLogger
     {
+        private static string userID = GetUserID();
+        private static string sessionID = Guid.NewGuid().ToString();
+        private static Log loggerImpl;
+
         public static void Start()
         {
             userID = GetUserID();
             sessionID = Guid.NewGuid().ToString();
             loggerImpl = new Log("Dynamo", userID, sessionID);
-            heartbeat = Heartbeat.GetInstance();
 
+            // The following starts the heartbeat, do not remove this 
+            // because of the unreferenced "heartbeat" variable.
+            var heartbeat = Heartbeat.GetInstance();
         }
 
+        public static void End()
+        {
+            // Heartbeat internally refers to the InstrumentationLogger (hence,
+            // the "loggerImpl"), so we must destroy the heartbeat thread before
+            // the rest of clean-up happens.
+            Heartbeat.DestroyInstance();
 
-       static string userID = GetUserID();
-       static string sessionID = Guid.NewGuid().ToString();
+            userID = null;
+            sessionID = null;
 
+            if (loggerImpl != null)
+            {
+                loggerImpl.Dispose();
+                loggerImpl = null;
+            }
+        }
 
         private static bool LoggingEnabled
         {
             get { return UsageReportingManager.Instance.IsUsageReportingApproved; }
         }
-
-
-       //private static bool loggingEnabled = true;
-        private static Log loggerImpl;
-        private static Heartbeat heartbeat;
-
 
         private static String GetUserID()
         {

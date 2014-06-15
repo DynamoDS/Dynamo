@@ -139,15 +139,15 @@ namespace ProtoFFI
                 var op = hs.Stack[idx];
                 if (opType == AddressType.Double)
                 {
-                    elements.Add(op.opdata_d);
+                    elements.Add(op.RawDoubleValue);
                 }
                 else if (opType == AddressType.Int)
                 {
-                    elements.Add((int)op.opdata);
+                    elements.Add(op.RawIntValue);
                 }
                 else if (opType == AddressType.Boolean)
                 {
-                    elements.Add(op.opdata == 0 ? true : false);
+                    elements.Add(op.RawIntValue == 0 ? true : false);
                 }
             }
 
@@ -327,25 +327,25 @@ namespace ProtoFFI
                 int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
                 StackValue o = dsi.runtime.rmem.GetAtRelative(relative);
 
-                if (o.optype == ProtoCore.DSASM.AddressType.Int)
+                if (o.IsInteger)
                 {
                     if (mArgTypes[i].Name == "double")
                     {
                         //  if the function expects a double and we have passed an int
                         //  in an int then promote it to be a double!
                         //
-                        parameters.Add(o.opdata_d);
+                        parameters.Add((double)o.RawIntValue);
                     }
                     else
                     {
-                        parameters.Add(o.opdata);
+                        parameters.Add(o.RawIntValue);
                     }
                 }
-                else if (o.optype == ProtoCore.DSASM.AddressType.Double)
+                else if (o.IsDouble)
                 {
-                    parameters.Add(o.opdata_d);
+                    parameters.Add(o.RawDoubleValue);
                 }
-                else if (o.optype == ProtoCore.DSASM.AddressType.ArrayPointer)
+                else if (o.IsArray)
                 {
                     int size = 0;
                     object array = GetArray(o, dsi, out size);

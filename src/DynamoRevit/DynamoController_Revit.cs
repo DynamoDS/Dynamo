@@ -19,6 +19,7 @@ using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.UpdateManager;
+using DynamoUtilities;
 using Greg;
 using Revit.Elements;
 using RevitServices.Elements;
@@ -40,12 +41,13 @@ namespace Dynamo
         /// </summary>
         private Assembly singleSignOnAssembly;
 
-        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager)
+        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager, string corePath)
             : base(
                 context,
                 updateManager,
                 new RevitWatchHandler(),
-                Dynamo.PreferenceSettings.Load())
+                Dynamo.PreferenceSettings.Load(),
+                corePath)
         {
             Updater = updater;
 
@@ -73,15 +75,30 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
-            EngineController.ImportLibrary("RevitNodes.dll");
-            EngineController.ImportLibrary("SimpleRaaS.dll");
+            var revitPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\RevitNodes.dll");
+            var raasPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\SimpleRaaS.dll");
+            EngineController.ImportLibrary(revitPath);
+            EngineController.ImportLibrary(raasPath);
             
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
+            //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((IList<Element> elements) => elements.Select(e=>e.ToDSType(true)));
 
             // Turn off element binding during iron python script execution
             IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
             IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
+
+            // register UnwrapElement method in ironpython
+            IronPythonEvaluator.EvaluationBegin += (a, b, scope, d, e) =>
+            {
+                var marshaler = new DataMarshaler();
+                marshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
+
+                Func<WrappedElement, object> unwrap = marshaler.Marshal;
+                scope.SetVariable("UnwrapElement", unwrap);
+            };
+
+            Runner = new DynamoRunner_Revit(this);
 
         }
 
@@ -220,6 +237,16 @@ namespace Dynamo
                     "Dynamo no longer has an active document. Please open a document.",
                     WarningLevel.Error);
             }
+            else
+            {
+                // If Dynamo's active UI document's document is the one that was just closed
+                // then set Dynamo's active UI document to whatever revit says is active.
+                if (DocumentManager.Instance.CurrentUIDocument.Document == null)
+                {
+                    DocumentManager.Instance.CurrentUIDocument =
+                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                }
+            }
         }
 
         /// <summary>
@@ -281,15 +308,8 @@ namespace Dynamo
             OnRevitDocumentChanged();
         }
 
-        protected override void OnRunCancelled(bool error)
-        {
-            base.OnRunCancelled(error);
 
-            if (transaction != null && transaction.Status == TransactionStatus.Started)
-                transaction.CancelTransaction();
-        }
-
-        protected override void OnEvaluationCompleted(object sender, EventArgs e)
+        public override void OnEvaluationCompleted(object sender, EventArgs e)
         {
             //Cleanup Delegate
             Action cleanup = delegate
@@ -356,7 +376,7 @@ namespace Dynamo
             cleanup();
             rename();
             TransactionManager.Instance.ForceCloseTransaction();
-            
+
             base.OnEvaluationCompleted(sender, e);
         }
 
@@ -404,30 +424,6 @@ namespace Dynamo
             //}
         }
 
-        protected override void Evaluate()
-        {
-            //DocumentManager.Instance.CurrentDBDocument = DocumentManager.Instance.CurrentUIDocument.Document;
-
-            if (DynamoViewModel.RunInDebug)
-            {
-                TransMode = TransactionMode.Debug; //Debug transaction control
-                dynSettings.DynamoLogger.Log("Running expression in debug.");
-            }
-            else
-            {
-                // As we use a generic function node to represent all functions,
-                // we don't know if a node has something to do with Revit or 
-                // not, neither we know that the re-execution of a dirty node
-                // will trigger the update for a Revit related node. Now just
-                // run the execution in the idle thread until we find out a 
-                // way to control the execution.
-                TransMode = TransactionMode.Automatic; //Automatic transaction control
-                Debug.WriteLine("Adding a run to the idle stack.");
-            }
-
-            //Run in idle thread no matter what
-            RevThread.IdlePromise.ExecuteOnIdleSync(base.Evaluate);
-        }
         
         public override void ResetEngine()
         {
@@ -462,7 +458,7 @@ namespace Dynamo
 
         #region Revit Transaction Management
 
-        private TransactionHandle transaction;
+        internal TransactionHandle transaction;
 
         public TransactionWrapper TransactionWrapper { get; private set; }
 

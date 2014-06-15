@@ -3982,6 +3982,7 @@ namespace ProtoAssociative
             }
 
             ResolveFinalNodeRefs();
+            ResolveSSADependencies();
 
             if (codeBlock.parent == null)  // top-most langauge block
             {
@@ -4094,77 +4095,6 @@ namespace ProtoAssociative
                 }
             }
             return isAllocated;
-            //int symbolIndex = Constants.kInvalidIndex;
-            //symbol = null;
-            //isAccessible = false;
-
-            //if (classScope != Constants.kGlobalScope)
-            //{
-            //    if ((int)ProtoCore.PrimitiveType.kTypeVoid == classScope)
-            //    {
-            //        return false;
-            //    }
-            //    ClassNode thisClass = core.ClassTable.list[classScope];
-
-            //    bool hasThisSymbol;
-            //    AddressType addressType;
-            //    symbolIndex = thisClass.GetSymbolIndex(name, classScope, functionScope, out hasThisSymbol, out addressType);
-
-            //    if (Constants.kInvalidIndex != symbolIndex)
-            //    {
-            //        // It is static member, then get node from code block
-            //        if (AddressType.StaticMemVarIndex == addressType)
-            //        {
-            //            symbol = core.CodeBlockList[0].symbolTable.symbolList[symbolIndex];
-            //        }
-            //        else
-            //        {
-            //            symbol = thisClass.symbols.symbolList[symbolIndex];
-            //        }
-
-            //        isAccessible = true;
-            //    }
-
-            //    if (hasThisSymbol)
-            //    {
-            //        return true;
-            //    }
-            //    else
-            //    {
-            //        symbolIndex = codeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-            //        if (symbolIndex != Constants.kInvalidIndex)
-            //        {
-            //            symbol = codeBlock.symbolTable.symbolList[symbolIndex];
-            //            isAccessible = true;
-            //            return true;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    if (functionScope != Constants.kGlobalScope)
-            //    {
-            //        symbol = core.GetSymbolInFunction(name, Constants.kGlobalScope, functionScope, codeBlock);
-            //        if (symbol != null)
-            //        {
-            //            isAccessible = true;
-            //            return true;
-            //        }
-            //    }
-
-            //    CodeBlock searchBlock = codeBlock;
-            //    while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
-            //    {
-            //        symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-            //        if (symbolIndex != Constants.kInvalidIndex)
-            //        {
-            //            symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-            //            isAccessible = true;
-            //            return true;
-            //        }
-            //        searchBlock = searchBlock.parent;
-            //    }
-            //}
         }
 
         private bool EmitReplicationGuideForIdentifier(IdentifierNode t)
@@ -7378,8 +7308,41 @@ namespace ProtoAssociative
 
             ProtoCore.Type type = new ProtoCore.Type();
         }
-
         
+        /// <summary>
+        /// Associate the SSA'd graphnodes to the final assignment graphnode
+        /// 
+        /// Given:
+        ///     a = b + c   ->  t0 = a
+        ///                     t1 = b
+        ///                     t2 = t0 + t1
+        ///                     a = t2
+        ///                     
+        /// Store the SSA graphnodes:
+        ///     t0, t1, t2
+        ///     
+        /// in the final graphnode 
+        ///     a = t2;
+        ///     
+        /// </summary>
+        private void ResolveSSADependencies()
+        {
+            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in codeBlock.instrStream.dependencyGraph.GraphList)
+            {
+                if (graphNode != null && graphNode.IsSSANode())
+                {
+                    if (graphNode.lastGraphNode != null)
+                    {
+                        SymbolNode dependentSymbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
+                        if (!graphNode.lastGraphNode.symbolListWithinExpression.Contains(dependentSymbol))
+                        {
+                            graphNode.lastGraphNode.symbolListWithinExpression.Add(dependentSymbol);
+                        }
+                    }
+                }
+            }
+        }
+
         //
         //  proc ResolveFinalNodeRefs()
         //      foreach graphnode in graphnodeList

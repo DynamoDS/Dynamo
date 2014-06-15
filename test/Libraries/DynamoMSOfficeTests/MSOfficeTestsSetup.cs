@@ -10,7 +10,7 @@ namespace Dynamo.Tests
         [SetUp]
         public void Setup()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
         }
 
         [TearDown]

@@ -750,5 +750,35 @@ namespace Dynamo.Tests
             degrees = Convert.ToDouble(converter.Convert("3,14159", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
             Assert.AreEqual(180.0, degrees, 0.01);
         }
+
+        [Test]
+        public void Defect_MAGN_3166()
+        {
+            // Create the node with given information.
+            var nodeGuid = Guid.NewGuid();
+            var vm = this.Controller.DynamoViewModel;
+            vm.ExecuteCommand(new DynCmd.CreateNodeCommand(nodeGuid,
+                "DSCore.List.Join@var[]..[]", 0, 0, true, false));
+
+            // The node sound be found, and it should be a DSVarArgFunction.
+            var workspace = this.Controller.DynamoModel.CurrentWorkspace;
+            var node = workspace.NodeFromWorkspace(nodeGuid);
+            Assert.IsNotNull(node);
+            Assert.IsNotNull(node as DSVarArgFunction);
+
+            // Delete the node and ensure it is gone.
+            vm.ExecuteCommand(new DynCmd.DeleteModelCommand(nodeGuid));
+            node = workspace.NodeFromWorkspace(nodeGuid);
+            Assert.IsNull(node);
+
+            // Perform undo operation.
+            var undoOperation = DynCmd.UndoRedoCommand.Operation.Undo;
+            vm.ExecuteCommand(new DynCmd.UndoRedoCommand(undoOperation));
+
+            // Now that deletion is undone, ensure the node exists.
+            node = workspace.NodeFromWorkspace(nodeGuid);
+            Assert.IsNotNull(node);
+            Assert.IsNotNull(node as DSVarArgFunction);
+        }
     }
 }

@@ -824,6 +824,7 @@ namespace Dynamo.Models
         {
             model.LastSaved = DateTime.Now;
             model.HasUnsavedChanges = false;
+            dynSettings.Controller.DynamoViewModel.AddToRecentFiles(model.FileName);
         }
 
         private void MarkUnsaved(
@@ -1074,10 +1075,13 @@ namespace Dynamo.Models
             }
 
 #if USE_DSENGINE
-            if (typeName.Equals("Dynamo.Nodes.DSFunction"))
+            if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
+                typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
             {
-                // For DSFunction node type, the type name is actually embedded 
-                // within "name" attribute (e.g. UV.ByCoordinates@double,double).
+                // For DSFunction and DSVarArgFunction node types, the type name
+                // is actually embedded within "name" attribute (for an example,
+                // "UV.ByCoordinates@double,double").
+                // 
                 typeName = modelData.Attributes["name"].Value;
             }
 #endif

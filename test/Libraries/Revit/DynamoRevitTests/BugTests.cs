@@ -1,17 +1,8 @@
-﻿using System;
-using System.IO;
-using Dynamo.Nodes;
-using Dynamo.Selection;
-using System.Linq;
+﻿using System.IO;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using System.Collections.Generic;
-using Dynamo.DSEngine;
-using ProtoCore.Mirror;
-using System.Collections;
 using Dynamo.Models;
-using DSCoreNodesUI;
-using DSCore.File;
+using RTF.Framework;
 
 namespace Dynamo.Tests
 {
@@ -19,7 +10,7 @@ namespace Dynamo.Tests
     class BugTests:DynamoRevitUnitTestBase
     {
         [Test]
-        [TestModelAttribute(@".\Bugs\MAGN_66.rfa")]
+        [TestModel(@".\Bugs\MAGN_66.rfa")]
         public void MAGN_66()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-66
@@ -52,8 +43,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
@@ -73,10 +64,29 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(20, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(23, model.CurrentWorkspace.Connectors.Count);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+
+            // Check for Walls Creation
+            var walls = "b7392d1d-6333-4bed-b10d-7b83520d2c3e";
+            AssertPreviewCount(walls, 6);
+
+            // I will un-comment this code once Ian fix the issue with Document.IsFamilyDocument 
+            //var wallinst = GetPreviewValueAtIndex(walls, 3) as Floor;
+            //Assert.IsNotNull(wallinst);
+            //Assert.IsNotNullOrEmpty(wallinst.Name);
+
+            // Check for Floor Creation
+            var floors = "25392912-b625-4020-8dd1-81923c5e4823";
+            AssertPreviewCount(floors, 6);
+
+            // I will un-comment this code once Ian fix the issue with Document.IsFamilyDocument 
+            //var floorInst = GetPreviewValueAtIndex(floors, 3) as Floor;
+            //Assert.IsNotNull(floorInst);
+            //Assert.IsNotNullOrEmpty(floorInst.Name);
+
         }
 
         [Test]
@@ -94,8 +104,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }

@@ -10,7 +10,7 @@ namespace Dynamo.Tests
         [SetUp]
         public void RunBeforeAllTests()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
         }
 
         [TearDown]

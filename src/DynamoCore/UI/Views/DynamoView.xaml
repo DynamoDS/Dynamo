@@ -140,6 +140,12 @@
         <KeyBinding Key="D0"
                     Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="P"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.TogglePanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+        <KeyBinding Key="F5"
+                    Command="{Binding Path=DataContext.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                    CommandParameter="{Binding Path=DataContext.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
     </Window.InputBindings>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True" PreviewMouseDown="Window_PreviewMouseDown" PreviewMouseUp="Window_PreviewMouseUp">
@@ -208,6 +214,17 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
+                        </MenuItem>
+                        <Separator />
+                        
+                        <MenuItem Header="_Recent Files" ItemsSource="{Binding RecentFiles}">
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="Header" Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
+                                    <Setter Property="Command" Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
+                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
                         </MenuItem>
                         <Separator />
                         <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt + F4" Focusable="False"/>
@@ -281,20 +298,21 @@
                     </MenuItem>
 
                     <MenuItem Header="_Libraries" Name="LibraryManagerMenu" Focusable="False" IsEnabled="True">
-                        <MenuItem Focusable="False" Header="_Import Library (EXPERIMENTAL)..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
+                        <MenuItem Focusable="False" Header="_Import Library..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
                     </MenuItem>
                     
                     <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
                         <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
-                        <!--<MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />-->
-                        <!--<MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />-->
+                        <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
+                        <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
                     </MenuItem>
 
                     <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Header="_Enable usability data reporting"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   Focusable="False"/>
                         <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
@@ -330,7 +348,7 @@
                         <MenuItem Focusable="False" Header="Render Precision">
                             <StackPanel Orientation="Horizontal" Width="Auto">
                                 <TextBlock Text="Low" Margin="0,0,10,0"></TextBlock>
-                                <Slider Width ="100" Minimum="12" Maximum="512" Value="{Binding MaxGridLines, Mode=TwoWay}"></Slider>
+                                <Slider Width ="100" Minimum="12" Maximum="512" Value="{Binding MaxTesselationDivisions, Mode=TwoWay}"></Slider>
                                 <TextBlock Text="High" Margin="10,0,0,0"></TextBlock>
                             </StackPanel>
                         </MenuItem>
@@ -410,8 +428,12 @@
             when Navigate Background 3D Preview is set to true.
         -->
         <!--Workspace-->
-        <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3"
+        <Border Margin="0"
+                BorderBrush="Black"
+                BorderThickness="0"
+                Name="border"
+                Grid.Row="2"
+                Grid.Column="2"
                 SizeChanged="Workspace_SizeChanged">
 
             <Grid AllowDrop="True" Drop="DynamoView_OnDrop">
@@ -993,9 +1015,6 @@
                     </TabControl.ContentTemplate>
 
                 </TabControl>
-                <Grid Name="InfoBubbleGrid"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left" />
             </Grid>
 
         </Border>
@@ -1099,11 +1118,12 @@
                     Click="RunButton_OnClick"
                     Command="{Binding RunExpressionCommand}"
                     CommandParameter="{Binding Path=RunInDebug}"
+                    ToolTip="Run Workflow (F5)"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                    <!--<Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
 
-                      Command="{Binding CancelRunCommand}" Margin="5"/>
+                      Command="{Binding CancelRunCommand}" Margin="5"/>-->
 
                     <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"

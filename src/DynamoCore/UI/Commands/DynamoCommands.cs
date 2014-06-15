@@ -73,6 +73,9 @@ namespace Dynamo.ViewModels
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
 
+            if (dynSettings.Controller.DebugSettings.VerboseLogging)
+                dynSettings.DynamoLogger.Log("Command: " + command);
+
             command.Execute(this);
         }
 
@@ -100,7 +103,9 @@ namespace Dynamo.ViewModels
 
         private void MutateTestImpl()
         {
-            dynSettings.Controller.MutateTestInternal();
+
+            var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(controller);
+            mutatorDriver.RunMutationTests();
         }
 
         private void CreateNodeImpl(CreateNodeCommand command)
@@ -265,5 +270,6 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
+
     }
 }

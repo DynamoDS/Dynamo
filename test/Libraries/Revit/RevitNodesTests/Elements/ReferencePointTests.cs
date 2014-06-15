@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Autodesk.DesignScript.Geometry;
-using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
+using RTF.Framework;
 
 namespace DSRevitNodesTests
 {
@@ -10,7 +10,7 @@ namespace DSRevitNodesTests
     internal class ReferencePointTests : RevitNodeTestBase
     {
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModel(@".\empty.rfa")]
         public void ByCoordinates_ValidInput()
         {
             var pt = ReferencePoint.ByCoordinates(0, -10, 23.1);

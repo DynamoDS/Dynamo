@@ -806,6 +806,16 @@ namespace Dynamo.Models
             dummy.SetAttribute("inputCount", inportCount.ToString());
             dummy.SetAttribute("outputCount", outportCount.ToString());
             dummy.SetAttribute("nodeNature", "Deprecated");
+
+            XmlElement originalNode = document.CreateElement("OriginalNodeContent");
+
+            //clone a copy of the original node
+            XmlElement nodeContent = (XmlElement)element.Clone();
+
+            //append the original node content as a child of the dummy node
+            originalNode.AppendChild(nodeContent);
+            dummy.AppendChild(originalNode);
+
             return dummy;
         }
 

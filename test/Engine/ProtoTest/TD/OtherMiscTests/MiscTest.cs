@@ -119,7 +119,9 @@ sqrt_20;
         public void BasicAssign()
         {
             string code =
-                @"a = 16;b = 42;c = a + b;";
+                @"a = 16;
+b = 42;
+c = a + b;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 16);
             thisTest.Verify("b", 42);
@@ -219,7 +221,14 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
         public void TestArray()
         {
             String code =
-@"a;[Associative]{	a = {1001.1,1002, true};    x = a[0];    y = a[1];    z = a[2];}";
+@"a;
+[Associative]
+{
+	a = {1001.1,1002, true};
+    x = a[0];
+    y = a[1];
+    z = a[2];
+}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] expectedA = { 1001.1, 1002, true };
             thisTest.Verify("a", expectedA);
@@ -231,7 +240,8 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
         public void DefectVerification()
         {
             String code =
-@"a =null;";
+@"a =null;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object test = null;
             thisTest.Verify("a", test);
@@ -242,7 +252,22 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
         public void DemoTest_Create1DArray()
         {
             String code =
-@"def Create1DArray(numberOfItemInArray : int)    {        start = 0.0;        end = 10.0;        stepSize = 10/(numberOfItemInArray-1);        return = 0.0..10..stepSize;            }b = 10.0;a = 0.0;numberOfItemInArray = 3;c = b/(numberOfItemInArray-1);d = a..b..c;result = Create1DArray (3);";
+@"def Create1DArray(numberOfItemInArray : int)
+    {
+        start = 0.0;
+        end = 10.0;
+        stepSize = 10/(numberOfItemInArray-1);
+        return = 0.0..10..stepSize;
+    
+    
+    }
+b = 10.0;
+a = 0.0;
+numberOfItemInArray = 3;
+c = b/(numberOfItemInArray-1);
+d = a..b..c;
+result = Create1DArray (3);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] test = { 0.0, 5.0, 10.0 };
             thisTest.Verify("result", test);
@@ -253,7 +278,37 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
         public void DemoTest_Create2DArray()
         {
             String code =
-@"def Create1DArray(numberOfItemInArray : int)    {        stepSize = 10.0/(numberOfItemInArray-1);        return = 0.0..10.0..stepSize;    }def Create2DArray(rows : int, columns : int)        {           result = [Imperative]       {       arrayRows = Create1DArray(rows);       counter = 0;       while( counter < rows)       {           arrayRows[counter] = Create1DArray(columns);           counter = counter + 1;       }              return = arrayRows;       }        return = result;        }OneD = Create1DArray(5);TwoD = Create2DArray(2,2);TwoD0 = TwoD[0];TwoD1 = TwoD[1];";
+@"def Create1DArray(numberOfItemInArray : int)
+    {
+        stepSize = 10.0/(numberOfItemInArray-1);
+        return = 0.0..10.0..stepSize;
+    }
+def Create2DArray(rows : int, columns : int)
+    
+    {
+    
+    
+   result = [Imperative]
+       {
+       arrayRows = Create1DArray(rows);
+       counter = 0;
+       while( counter < rows)
+       {
+           arrayRows[counter] = Create1DArray(columns);
+           counter = counter + 1;
+       }
+       
+       return = arrayRows;
+       }
+    
+    return = result;
+        
+}
+OneD = Create1DArray(5);
+TwoD = Create2DArray(2,2);
+TwoD0 = TwoD[0];
+TwoD1 = TwoD[1];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object[] expected = { 0.0, 10.0 };
             thisTest.Verify("TwoD0", expected);
@@ -265,7 +320,26 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
         public void DemoTest_Count()
         {
             String code =
-@"def Count(inputArray : double[]){	numberOfItemsInArray = [Imperative]	{		index = 0;		for (item in inputArray)		{			index = index + 1;		}				return = index;	}		return = numberOfItemsInArray;}input1 = {0.0, 10.0, 20.0, 30.0, 50.0};input2 = {10.0, 20};result1 = Count(input1);result2 = Count(input2);";
+@"def Count(inputArray : double[])
+{
+	numberOfItemsInArray = [Imperative]
+	{
+		index = 0;
+		for (item in inputArray)
+		{
+			index = index + 1;
+		}
+		
+		return = index;
+	}
+	
+	return = numberOfItemsInArray;
+}
+input1 = {0.0, 10.0, 20.0, 30.0, 50.0};
+input2 = {10.0, 20};
+result1 = Count(input1);
+result2 = Count(input2);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result1", 5);
             thisTest.Verify("result2", 2);
@@ -275,16 +349,44 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
         public void TempTest()
         {
             String code =
-@"input1d = {0.0, 10.0, 20.0, 30.0, 50.0};input2d = {{10, 20},{30,40}};input2dJagged = {{10.0, 20},{null,40}, {true}, {0}};inputDouble = 10.0;inputNull = null;inputInteger = 1;inputBool = true;";
+@"
+input1d = {0.0, 10.0, 20.0, 30.0, 50.0};
+input2d = {{10, 20},{30,40}};
+input2dJagged = {{10.0, 20},{null,40}, {true}, {0}};
+inputDouble = 10.0;
+inputNull = null;
+inputInteger = 1;
+inputBool = true;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object inputDouble = 10.0;
             object inputInteger = 1;
             object inputBool = true;
             object[] input1d = { 0.0, 10.0, 20.0, 30.0, 50.0 };
-            object[][] input2d =             {             new object [] { 10, 20 },             new object [] { 30, 40 }             };
-            object[][] input2dNegative =            {             new object [] { 10, 21 },             new object [] { 30, 40 }             };
-            object[][] input2dJagged =            {             new object [] { 10.0, 20},             new object [] { null, 40 },            new object [] { true },            new object [] { 0}            };
-            object[][] input2dJaggedNegative =            {             new object [] { 10.0},             new object [] { null, 40 },            new object [] { true },            new object [] { 0}            };
+            object[][] input2d = 
+            { 
+            new object [] { 10, 20 }, 
+            new object [] { 30, 40 } 
+            };
+            object[][] input2dNegative =
+            { 
+            new object [] { 10, 21 }, 
+            new object [] { 30, 40 } 
+            };
+            object[][] input2dJagged =
+            { 
+            new object [] { 10.0, 20}, 
+            new object [] { null, 40 },
+            new object [] { true },
+            new object [] { 0}
+            };
+            object[][] input2dJaggedNegative =
+            { 
+            new object [] { 10.0}, 
+            new object [] { null, 40 },
+            new object [] { true },
+            new object [] { 0}
+            };
             //Positive Test
             thisTest.Verify("input1d", input1d);
             thisTest.Verify("input2d", input2d);
@@ -502,7 +604,11 @@ testFoo2 = foo();";
         {
             //Assert.Fail("1466857 - Sprint 23 : rev 2486 : Dynamic variable update issue"); 
             String code =
-                @"                a = 2;                b = a;                a = 5;                ";
+                @"
+                a = 2;
+                b = a;
+                a = 5;
+                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetValue("a");
             Obj o2 = mirror.GetValue("b");
@@ -724,15 +830,18 @@ return = t;
         public void TestFrameWork_IntDouble_1467413()
         {
             String code =
-            @"                a = 1.0;                b=1;            ";
+            @"
+                a = 1.0;
+                b=1;
+            ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1.0);
             thisTest.Verify("b", 1);
-            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Double);
-            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Int);
-            Assert.IsTrue(mirror.GetValue("b", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Int);
-            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Double);
+            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.IsDouble);
+            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.IsInteger);
+            Assert.IsTrue(mirror.GetValue("b", 0).DsasmValue.IsInteger);
+            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.IsDouble);
 
             //thisTest.Verify("b", 1.0);
         }
@@ -741,7 +850,10 @@ return = t;
         public void TestFrameWork_IntDouble_Array_1467413()
         {
             String code =
-            @"                a = {1.0,2.0};                b={1,2};            ";
+            @"
+                a = {1.0,2.0};
+                b={1,2};
+            ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new object[] { 1.0, 2.0 });
@@ -756,7 +868,10 @@ return = t;
         public void TestKeyword_reserved_1467551()
         {
             String code =
-            @"                a = 2;                base=1;            ";
+            @"
+                a = 2;
+                base=1;
+            ";
             string errmsg = "";
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
@@ -770,7 +885,13 @@ return = t;
         public void TestKeyword_reserved_1467551_2()
         {
             String code =
-            @"                [Associative]                {                a = 2;                base=1;                }            ";
+            @"
+                [Associative]
+                {
+                a = 2;
+                base=1;
+                }
+            ";
             string errmsg = "";
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
@@ -783,7 +904,13 @@ return = t;
         public void TestKeyword_reserved_1467551_3()
         {
             String code =
-            @"                [Imperative]                {                a = 2;                base=1;                }            ";
+            @"
+                [Imperative]
+                {
+                a = 2;
+                base=1;
+                }
+            ";
             string errmsg = "";
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
@@ -797,7 +924,11 @@ return = t;
         public void TestKeyword_reserved_1467551_4()
         {
             String code =
-            @"                import(""ProtoGeometry.dll"");                wcs = CoordinateSystem.WCS;                base = Cylinder.ByRadiusHeight(wcs, 10, 5);            ";
+            @"
+                import(""ProtoGeometry.dll"");
+                wcs = CoordinateSystem.WCS;
+                base = Cylinder.ByRadiusHeight(wcs, 10, 5);
+            ";
             string errmsg = "";
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
@@ -810,7 +941,9 @@ return = t;
         public void functionNotFound_1467444()
         {
             String code =
-            @"                a = foo();            ";
+            @"
+                a = foo();
+            ";
             string errmsg = "";
 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -822,7 +955,18 @@ return = t;
         public void functionNotFound_1467444_2()
         {
             String code =
-            @"               z=[Imperative]               {                        def AnotherFunction(test:int)                        {                            result = test * test;                            return = result;                            }                        x = Function(5);                        return = x;               }                                ";
+            @"
+               z=[Imperative]
+               {
+                        def AnotherFunction(test:int)
+                        {
+                            result = test * test;
+                            return = result;    
+                        }
+                        x = Function(5);
+                        return = x;
+               }
+                                ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);

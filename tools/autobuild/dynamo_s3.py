@@ -15,10 +15,14 @@ def report_progress( bytes_so_far, total_bytes ):
 	
 	print "Upload progress: %.2f mb / %.2f mb ( %.2f percent )" % (mb(bytes_so_far), mb(total_bytes), 100 * float(bytes_so_far)/total_bytes)
 
-def upload_daily(fn, prefix, include_date):
+def upload_daily(fn, prefix, include_date, is_dev_build):
 
 	s3 = boto.connect_s3()
-	b = s3.get_bucket('dyn-builds-data')
+
+	if is_dev_build:
+		b = s3.get_bucket('dyn-builds-dev')
+	else:
+		b = s3.get_bucket('dyn-builds-data')
 
 	k = Key(b)
 	

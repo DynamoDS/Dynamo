@@ -83,7 +83,7 @@ namespace Dynamo.ViewModels
                 searchText = value;
                 RaisePropertyChanged("SearchText");
                 //DynamoCommands.SearchCommand.Execute();
-                SearchAndUpdateResults();
+                //SearchAndUpdateResults();
             }
         }
 

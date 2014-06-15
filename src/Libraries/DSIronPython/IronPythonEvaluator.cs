@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Data.SqlClient;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using IronPython.Hosting;
-using IronPython.Runtime;
+
 using Microsoft.Scripting.Hosting;
 
 namespace DSIronPython
@@ -73,12 +72,38 @@ namespace DSIronPython
         /// <summary>
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
-        public static DataMarshaler InputMarshaler = new DataMarshaler();
+        public static DataMarshaler InputMarshaler
+        {
+            get
+            {
+                if (inputMarshaler == null)
+                {
+                    inputMarshaler = new DataMarshaler();
+                    inputMarshaler.RegisterMarshaler(
+                        delegate(IList lst)
+                        {
+                            var pyList = new IronPython.Runtime.List();
+                            foreach (var item in lst.Cast<object>().Select(inputMarshaler.Marshal))
+                            {
+                                pyList.Add(item);
+                            }
+                            return pyList;
+                        });
+                }
+                return inputMarshaler;
+            }
+        }
 
         /// <summary>
         ///     Data Marshaler for all data coming out of a Python node.
         /// </summary>
-        public static DataMarshaler OutputMarshaler = new DataMarshaler();
+        public static DataMarshaler OutputMarshaler
+        {
+            get { return outputMarshaler ?? (outputMarshaler = new DataMarshaler()); }
+        }
+
+        private static DataMarshaler inputMarshaler;
+        private static DataMarshaler outputMarshaler;
 
         #endregion
 

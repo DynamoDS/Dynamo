@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,10 +23,13 @@ namespace DynamoCoreUITests
     {
         private void Init(IUpdateManager updateManager)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+
+            var corePath =
+                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             Controller = new DynamoController("None", updateManager,
-                new DefaultWatchHandler(), new PreferenceSettings());
+                new DefaultWatchHandler(), new PreferenceSettings(), corePath);
             DynamoController.IsTestMode = true;
             Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
             Controller.VisualizationManager = new VisualizationManager();

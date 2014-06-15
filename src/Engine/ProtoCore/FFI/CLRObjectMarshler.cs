@@ -156,13 +156,13 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.opdata_d > MaxValue || dsObject.opdata_d < MinValue)
+            if (dsObject.RawDoubleValue > MaxValue || dsObject.RawDoubleValue < MinValue)
             {
-                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kFFIInvalidCast, dsObject.opdata_d, type.Name, MinValue, MaxValue);
+                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, message);
             }
 
-            return CastToDouble(dsObject.opdata_d);
+            return CastToDouble(dsObject.RawDoubleValue);
         }
     }
 
@@ -265,7 +265,7 @@ namespace ProtoFFI
 
             ICollection collection = null;
             //If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
-            if (dsObject.optype != AddressType.ArrayPointer)
+            if (!dsObject.IsArray)
             {
                 Validity.Assert(typeof(IEnumerable).IsAssignableFrom(expectedCLRType));
                 object obj = primitiveMarshaler.UnMarshal(dsObject, context, dsi, elementType);
@@ -611,7 +611,7 @@ namespace ProtoFFI
         /// <returns></returns>
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedCLRType)
         {
-            if (dsObject.optype == AddressType.Null)
+            if (dsObject.IsNull)
                 return null;
 
             //Get the correct marshaler to unmarshal
@@ -620,7 +620,7 @@ namespace ProtoFFI
                 return marshaler.UnMarshal(dsObject, context, dsi, expectedCLRType);
 
             //The dsObject must be of pointer type
-            Validity.Assert(dsObject.optype == AddressType.Pointer, string.Format("Operand type {0} not supported for marshalling", dsObject.optype));
+            Validity.Assert(dsObject.IsPointer, string.Format("Operand type {0} not supported for marshalling", dsObject.optype));
 
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
@@ -1164,7 +1164,7 @@ namespace ProtoFFI
         private object CreateCLRObject(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type type)
         {
             //Must be a user defined type, and expecting a var object
-            if (type == typeof(object) && dsObject.optype == AddressType.Pointer)
+            if (type == typeof(object) && dsObject.IsPointer)
             {
                 //TOD: Fix GC issue, don't know how/when this will get GCed??
                 dsi.runtime.rmem.Heap.IncRefCount(dsObject);

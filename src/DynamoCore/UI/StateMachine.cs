@@ -56,6 +56,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandleMouseMove(sender, mouseCursor);
         }
 
+        internal bool HandleFocusChanged(object sender, bool focused)
+        {
+            return stateMachine.HandleFocusChanged(sender, focused);
+        }
+
         internal bool HandlePortClicked(PortViewModel portViewModel)
         {
             return stateMachine.HandlePortClicked(portViewModel);
@@ -676,6 +681,12 @@ namespace Dynamo.ViewModels
                 IInputElement element = sender as IInputElement;
                 Point mouseCursor = e.GetPosition(element);
                 return HandleMouseMove(sender, mouseCursor);
+            }
+
+            internal bool HandleFocusChanged(object sender, bool focused)
+            {
+                CancelActiveState();
+                return true; // Handled.
             }
 
             internal bool HandlePortClicked(PortViewModel portViewModel)
