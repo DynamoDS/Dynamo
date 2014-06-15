@@ -289,11 +289,18 @@ namespace ProtoCore.Lang
                         }
 
                         StackValue svTrue = formalParameters[1];
-                        Validity.Assert(svTrue.IsInteger);
-
                         StackValue svFalse = formalParameters[2];
-                        Validity.Assert(svFalse.IsInteger);
 
+                        // If run in delta execution environment, we don't 
+                        // create language blocks for true and false branch, 
+                        // so directly return the value.
+                        if (core.Options.IsDeltaExecution)
+                        {
+                            return svCondition.RawBooleanValue ? svTrue : svFalse;
+                        }
+
+                        Validity.Assert(svTrue.IsInteger);
+                        Validity.Assert(svFalse.IsInteger);
                         int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
 
                         ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
