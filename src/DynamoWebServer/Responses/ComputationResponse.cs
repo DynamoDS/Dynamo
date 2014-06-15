@@ -7,9 +7,11 @@ namespace DynamoWebServer.Responses
     {
         public Guid[] Nodes { get; set; }
 
+        public string NodesInJson { get; set; }
+
         public override string GetResponse()
         {
-            return JsonConvert.SerializeObject(Nodes);
+            return NodesInJson;
         }
     }
 }

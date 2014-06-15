@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -28,8 +29,6 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoWebServer;
-using DynamoWebServer.Responses;
 using String = System.String;
 
 namespace Dynamo.Controls
@@ -70,31 +69,7 @@ namespace Dynamo.Controls
 
             if (turnOnServer)
             {
-                var webSocketServer = new WebServer();
-                webSocketServer.Start();
-                webSocketServer.ReceivedMessage += new MessageEventHandler(dynSettings.Controller.DynamoViewModel.ExecuteMessageFromSocket);
-                webSocketServer.Info += (infoMessage) =>
-                {
-                    if (dynSettings.DynamoLogger != null)
-                        dynSettings.DynamoLogger.Log(infoMessage);
-                };
-                webSocketServer.Error += (errorMessage) =>
-                {
-                    if (dynSettings.DynamoLogger != null)
-                        dynSettings.DynamoLogger.LogError(errorMessage);
-                };
-
-                dynSettings.Controller.RequestComputationCompleted += (nodes) =>
-                {
-                    // TODO: Send nodes instead of nodes GUIDs
-                    List<Guid> guidsList = nodes.Select(nodeModel => nodeModel.GUID).ToList();
-
-                    webSocketServer.SendResponse(new ComputationResponse()
-                    {
-                        Status = ResponceStatuses.Success,
-                        Nodes = guidsList.ToArray()
-                    }, dynSettings.Controller.SessionId);
-                };
+                dynSettings.EnableServer();
             }
 
             app.Run(ui);

@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using System.Web.Script.Serialization;
-using System.Reflection;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Serialization;
@@ -33,7 +27,14 @@ namespace Dynamo.ViewModels
             // See property for more details.
             protected bool redundant = false;
 
+            /// <summary>
+            /// Settings that is used for serializing commands
+            /// </summary>
             static JsonSerializerSettings jsonSettings;
+            
+            /// <summary>
+            /// Initialize commands serializing settings
+            /// </summary>
             static RecordableCommand()
             {
                 jsonSettings = new JsonSerializerSettings()
@@ -286,6 +287,10 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
+        /// <summary>
+        /// This class is base for those RecordableCommands that should have 
+        /// Guid NodeId that causes the problems during deserialization
+        /// </summary>
         [DataContract]
         public abstract class HasNodeIDCommand : RecordableCommand
         {
@@ -313,6 +318,10 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// This class is base for those RecordableCommands that should have 
+        /// Guid ModelGuid that causes the problems during deserialization
+        /// </summary>
         [DataContract]
         public abstract class HasModelGuidCommand : RecordableCommand
         {
@@ -809,17 +818,6 @@ namespace Dynamo.ViewModels
                 return new SelectInRegionCommand(region, isCrossSelection);
             }
 
-            /*protected static RecordableCommand DeserializeCoreFromDynamic(dynamic jsonObj)
-            {
-                double x = Convert.ToDouble(jsonObj["X"]);
-                double y = Convert.ToDouble(jsonObj["Y"]);
-                double width = Convert.ToDouble(jsonObj["Width"]);
-                double height = Convert.ToDouble(jsonObj["Height"]);
-                bool isCrossSelection = Convert.ToBoolean(jsonObj["IsCrossSelection"]);
-                Rect region = new Rect(x, y, width, height);
-                return new SelectInRegionCommand(region, isCrossSelection);
-            }*/
-
             #endregion
 
             #region Public Command Properties
@@ -848,12 +846,6 @@ namespace Dynamo.ViewModels
                 helper.SetAttribute("Height", Region.Height);
                 helper.SetAttribute("IsCrossSelection", IsCrossSelection);
             }
-
-            /*protected override string SerializeCore()
-            {
-                return string.Format("IsCrossSelection: '{0}', Tag: '{1}', X: '{2}', Y: '{3}', Width: '{4}', Height: '{5}'",
-                    IsCrossSelection, Tag, Region.X, Region.Y, Region.Width, Region.Height);
-            }*/
 
             #endregion
         }
@@ -1331,5 +1323,40 @@ namespace Dynamo.ViewModels
 
             #endregion
         }
+
+        // Template for creating new recordable command.
+        // [DataContract]
+        // public class XxxYyyCommand : RecordableCommand
+        // {
+        //     #region Public Class Methods
+        // 
+        //     internal XxxYyyCommand()
+        //     {
+        //     }
+        // 
+        //     internal static XxxYyyCommand DeserializeCore(XmlElement element)
+        //     {
+        //         throw new NotImplementedException();
+        //     }
+        // 
+        //     #endregion
+        // 
+        //     #region Public Command Properties
+        //     #endregion
+        // 
+        //     #region Protected Overridable Methods
+        // 
+        //     protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+        //     {
+        //         throw new NotImplementedException();
+        //     }
+        // 
+        //     protected override void SerializeCore(XmlElement element)
+        //     {
+        //         throw new NotImplementedException();
+        //     }
+        // 
+        //     #endregion
+        // }
     }
 }

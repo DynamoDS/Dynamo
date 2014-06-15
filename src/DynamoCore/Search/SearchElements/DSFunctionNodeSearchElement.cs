@@ -17,6 +17,11 @@ namespace Dynamo.Search.SearchElements
         private FunctionDescriptor _functionItem;
         private string _displayString;
 
+        /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public override string CreatingName { get { return this._functionItem != null ? this._functionItem.MangledName : this.Name; } }
+
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem) :
             base(displayString, functionItem.Description, new List<string> { })
         {
@@ -27,25 +32,6 @@ namespace Dynamo.Search.SearchElements
         public override NodeSearchElement Copy()
         {
             return new DSFunctionNodeSearchElement(_displayString, _functionItem);
-        }
-
-        /// <summary>
-        /// Executes the element in search, this is what happens when the user 
-        /// hits enter in the SearchView.</summary>
-        public override void Execute()
-        {
-            // create node
-            var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, this._functionItem.MangledName, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
         }
 
         public override bool Equals(object obj)
