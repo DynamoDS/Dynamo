@@ -37,6 +37,9 @@ namespace Dynamo.UI
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
 
+        // Node/geometry view buttons in the canvas
+        public static readonly double ButtonHeight = 30.0;
+
         // Double Clicking
         // Maximum distance allowed between first and second click to be accepted as a double click
         public static readonly int DoubleClickAcceptableDistance = 10; // in pixel
