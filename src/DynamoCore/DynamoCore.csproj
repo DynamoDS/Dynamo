@@ -214,9 +214,6 @@ limitations under the License.
     <Compile Include="UI\Views\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
-      <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
@@ -574,10 +571,6 @@ limitations under the License.
     <Page Include="UI\Views\PreviewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\ZoomAndPanControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Views\DynamoView.xaml">
       <SubType>Designer</SubType>
