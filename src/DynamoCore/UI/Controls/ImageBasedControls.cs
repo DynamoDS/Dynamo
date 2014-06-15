@@ -90,6 +90,7 @@ namespace Dynamo.UI.Controls
             var animationOffsets = new Dictionary<string, double>();
             animationOffsets.Add("hoverOverAnimation", -1.0 * this.Height);
             animationOffsets.Add("pressedAnimation", -2.0 * this.Height);
+            animationOffsets.Add("disabledAnimation", -3.0 * this.Height);
 
             foreach(var offset in animationOffsets)
             {

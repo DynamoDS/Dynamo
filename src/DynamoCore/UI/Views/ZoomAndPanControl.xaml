@@ -12,19 +12,19 @@
 
     <StackPanel>
         <ui:ImageButton Width="30"
-                        Height="30"
+                        Height="28"
                         StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-fit-view-states.png"
                         Command="{Binding Path=FitViewCommand}">
         </ui:ImageButton>
 
         <ui:ImageButton Width="30"
-                        Height="30"
+                        Height="24"
                         StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-in-states.png"
                         Command="{Binding Path=ZoomInCommand}">
         </ui:ImageButton>
 
         <ui:ImageButton Width="30"
-                        Height="30"
+                        Height="28"
                         StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-out-states.png"
                         Command="{Binding Path=ZoomOutCommand}">
         </ui:ImageButton>
