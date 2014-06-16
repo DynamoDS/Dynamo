@@ -1501,22 +1501,22 @@ namespace Dynamo.ViewModels
 #endif
         internal void TogglePan(object parameter)
         {
-            CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);
+            CurrentSpaceViewModel.RequestTogglePanMode();
         }
 
         internal bool CanTogglePan(object parameter)
         {
-            return CurrentSpaceViewModel.TogglePanCommand.CanExecute(parameter);
+            return true;
         }
 
         internal void ToggleOrbit(object parameter)
         {
-            CurrentSpaceViewModel.ToggleOrbitCommand.Execute(parameter);
+            CurrentSpaceViewModel.RequestToggleOrbitMode();
         }
 
         internal bool CanToggleOrbit(object parameter)
         {
-            return CurrentSpaceViewModel.ToggleOrbitCommand.CanExecute(parameter);
+            return true;
         }
 
         public void Escape(object parameter)

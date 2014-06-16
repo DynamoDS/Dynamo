@@ -450,7 +450,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void SelectAll(object parameter)
+        internal void SelectAll(object parameter)
         {
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
@@ -813,26 +813,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanResetFitViewToggle(object o)
-        {
-            return true;
-        }
-
-        private void TogglePan(object o)
-        {
-            RequestTogglePanMode();
-        }
-
-        private bool CanTogglePan(object o)
-        {
-            return true;
-        }
-
-        private void ToggleOrbit(object o)
-        {
-            RequestToggleOrbitMode();
-        }
-
-        private bool CanToggleOrbit(object o)
         {
             return true;
         }

@@ -173,8 +173,11 @@
             <ui:ImageCheckBox Width="30"
                               Height="30"
                               StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-pan-states.png"
-                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-pan-check.png"
-                              Command="{Binding Path=TogglePanCommand}">
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-pan-check.png">
+                <ui:ImageCheckBox.Command>
+                    <Binding Path="DataContext.TogglePanCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
                     <Binding Path="IsPanning"
                              Mode="OneWay" />
@@ -184,8 +187,11 @@
             <ui:ImageCheckBox Width="30"
                               Height="30"
                               StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-states.png"
-                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-check.png"
-                              Command="{Binding Path=ToggleOrbitCommand}">
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-check.png">
+                <ui:ImageCheckBox.Command>
+                    <Binding Path="DataContext.ToggleOrbitCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
                     <Binding Path="IsOrbiting"
                              Mode="OneWay" />

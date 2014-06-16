@@ -135,26 +135,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand TogglePanCommand
-        {
-            get
-            {
-                if (_togglePanCommand == null)
-                    _togglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
-                return _togglePanCommand;
-            }
-        }
-
-        public DelegateCommand ToggleOrbitCommand
-        {
-            get
-            {
-                if (_toggleOrbitCommand == null)
-                    _toggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
-                return _toggleOrbitCommand;
-            }
-        }
-
         public DelegateCommand FindByIdCommand
         {
             get
