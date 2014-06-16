@@ -34,7 +34,7 @@ namespace Revit.GeometryConversion
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            converted = performHostUnitConversion ? converted.ConvertToUserFacingUnits() : converted;
+            converted = performHostUnitConversion ? converted.ConvertToDynamoUnits() : converted;
 
             // If possible, add a geometry reference for downstream Element creation
             var revitRef = revitCurve.Reference;
@@ -62,14 +62,14 @@ namespace Revit.GeometryConversion
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            return performHostUnitConversion ? converted.ConvertToUserFacingUnits() : converted;
+            return performHostUnitConversion ? converted.ConvertToDynamoUnits() : converted;
         }
 
         public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.PolyLine geom,
             bool performHostUnitConversion = true)
         {
             var converted = PolyCurve.ByPoints(geom.GetCoordinates().Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z)).ToArray());
-            return performHostUnitConversion ? converted.ConvertToUserFacingUnits() : converted;
+            return performHostUnitConversion ? converted.ConvertToDynamoUnits() : converted;
         }
 
         #region Conversions

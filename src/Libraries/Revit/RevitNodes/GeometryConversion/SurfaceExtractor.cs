@@ -38,7 +38,7 @@ namespace Revit.GeometryConversion
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.CylindricalFace face, IEnumerable<PolyCurve> edgeLoops)
         {
-            // Note: Internal representation of the cone
+            // Note: Internal representation of the cylinder
             // S(u, v) = Origin + cos(u)*Radius[0] + sin(u)*Radius[1] + v*Axis
 
             edgeLoops = edgeLoops.ToList();

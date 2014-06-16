@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Runtime;
+using Autodesk.Revit.DB;
+using DynamoUnits;
 
 namespace Revit.GeometryConversion
 {
     [SupressImportIntoVM]
     public static class UnitConverter
     {
-        public static double ProtoToHostFactor = 1;
-        public static double HostToProtoFactor = 1;
+        public static readonly double DynamoToHostFactor = Length.FromDouble(1.0).ConvertToHostUnits();
+        public static readonly double HostToDynamoFactor = 1 / Length.FromDouble(1.0).ConvertToHostUnits();
 
         /// <summary>
         /// Convert from Feet (Revit API internal units) to whatever the user facing units are
@@ -18,7 +20,7 @@ namespace Revit.GeometryConversion
         /// <typeparam name="T"></typeparam>
         /// <param name="geometry"></param>
         /// <returns></returns>
-        public static T ConvertToUserFacingUnits<T>(this T geometry)
+        public static T ConvertToDynamoUnits<T>(this T geometry)
             where T : Autodesk.DesignScript.Geometry.Geometry
         {
             if (geometry == null)
@@ -26,7 +28,7 @@ namespace Revit.GeometryConversion
                 throw new ArgumentNullException("geometry");
             }
 
-            return (T)geometry.Scale(ProtoToHostFactor);
+            return (T)geometry.Scale(HostToDynamoFactor);
         }
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace Revit.GeometryConversion
         /// <typeparam name="T"></typeparam>
         /// <param name="geometry"></param>
         /// <returns></returns>
-        public static T ConvertToRevitInternalUnits<T>(this T geometry)
+        public static T ConvertToHostUnits<T>(this T geometry)
             where T : Autodesk.DesignScript.Geometry.Geometry
         {
             if (geometry == null)
@@ -43,7 +45,7 @@ namespace Revit.GeometryConversion
                 throw new ArgumentNullException("geometry");
             }
 
-            return (T)geometry.Scale(HostToProtoFactor);
+            return (T)geometry.Scale(DynamoToHostFactor);
         }
     }
 

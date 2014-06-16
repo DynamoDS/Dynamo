@@ -16,7 +16,7 @@ namespace Revit.GeometryConversion
         {
             var pts = mesh.Vertices.Select(x => x.ToPoint());
 
-            pts = performHostUnitConversion ? pts.Select(x => x.ConvertToUserFacingUnits()) : pts;
+            pts = performHostUnitConversion ? pts.Select(x => x.ConvertToDynamoUnits()) : pts;
 
             var tris = Enumerable.Range(0, mesh.NumTriangles)
                 .Select(mesh.get_Triangle)
