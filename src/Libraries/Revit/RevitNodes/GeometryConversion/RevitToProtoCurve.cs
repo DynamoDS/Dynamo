@@ -18,18 +18,24 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class RevitToProtoCurve
     {
-        /// <summary>
-        /// An extension method to convert a Revit Curve to a ProtoGeometry Curve.  Note that Bound Revit curves will be returned in trimmed form.
-        /// </summary>
-        /// <param name="revitCurve"></param>
-        /// <returns></returns>
-        public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve revitCurve)
+        public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve revitCurve, 
+            bool performHostUnitConversion = true)
         {
-            if (revitCurve == null) throw new ArgumentNullException("revitCurve");
+            if (revitCurve == null)
+            {
+                throw new ArgumentNullException("revitCurve");
+            }
 
             dynamic dyCrv = revitCurve;
             Autodesk.DesignScript.Geometry.Curve converted = RevitToProtoCurve.Convert(dyCrv);
-            
+
+            if (converted == null)
+            {
+                throw new Exception("An unexpected failure occurred when attempting to convert the curve");
+            }
+
+            converted = performHostUnitConversion ? converted.ConvertToRevitInternalUnits() : converted;
+
             // If possible, add a geometry reference for downstream Element creation
             var revitRef = revitCurve.Reference;
             if (revitRef != null)
@@ -40,17 +46,30 @@ namespace Revit.GeometryConversion
             return converted;
         }
 
-        public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.CurveArray revitCurves)
+        public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.CurveArray revitCurves, 
+            bool performHostUnitConversion = true)
         {
-            if (revitCurves == null) throw new ArgumentNullException("revitCurves");
+            if (revitCurves == null)
+            {
+                throw new ArgumentNullException("revitCurves");
+            }
 
             var protoCurves = revitCurves.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType());
-            return PolyCurve.ByJoinedCurves(protoCurves.ToArray());
+            var converted = PolyCurve.ByJoinedCurves(protoCurves.ToArray());
+
+            if (converted == null)
+            {
+                throw new Exception("An unexpected failure occurred when attempting to convert the curve");
+            }
+
+            return performHostUnitConversion ? converted.ConvertToRevitInternalUnits() : converted;
         }
 
-        public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.PolyLine geom)
+        public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.PolyLine geom,
+            bool performHostUnitConversion = true)
         {
-            return PolyCurve.ByPoints(geom.GetCoordinates().Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z)).ToArray());
+            var converted = PolyCurve.ByPoints(geom.GetCoordinates().Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z)).ToArray());
+            return performHostUnitConversion ? converted.ConvertToRevitInternalUnits() : converted;
         }
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.NurbSpline crv)

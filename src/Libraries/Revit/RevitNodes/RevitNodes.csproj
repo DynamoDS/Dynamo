@@ -119,6 +119,7 @@
     <Compile Include="GeometryConversion\RevitToProtoFace.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
+    <Compile Include="GeometryConversion\UnitConversion.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
     <Compile Include="GeometryReferences\ElementGeometryReference.cs" />
     <Compile Include="GeometryReferences\ElementFaceReference.cs" />
