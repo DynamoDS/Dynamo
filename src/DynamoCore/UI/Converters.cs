@@ -1569,7 +1569,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Source to the binding target.
-            return value != null ? value.ToString() : "null";
+            return value != null ? value.ToString() : "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

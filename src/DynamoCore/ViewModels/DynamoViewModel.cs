@@ -590,7 +590,7 @@ namespace Dynamo.ViewModels
             set
             {
                 Controller.Runner.ExecutionInterval = value;
-                RaisePropertyChanged("IsExecIntervalEnabled");
+                RaisePropertyChanged("ExecutionInterval");
             }
         }
 
