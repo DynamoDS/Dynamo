@@ -36,6 +36,12 @@
                                       ShowViewCube="False" CameraRotationMode="Turntable"
                                       IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" 
                                       ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
+            <HelixToolkit:HelixViewport3D.PanGesture2>
+                <Binding Path="DataContext.IsPanning"
+                         Mode="OneWay"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                         Converter="{StaticResource BackgroundPreviewGestureConverter}" />
+            </HelixToolkit:HelixViewport3D.PanGesture2>
             <HelixToolkit:HelixViewport3D.RotateGesture2>
                 <Binding Path="DataContext.IsOrbiting"
                          Mode="OneWay"
