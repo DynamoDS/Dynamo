@@ -372,20 +372,19 @@ namespace Dynamo.ViewModels
 
         public bool WatchPreviewHitTest
         {
-            get { return ( WatchEscapeIsDown || CanNavigateBackground ); }
+            // This is directly opposite of "ShouldBeHitTestVisible".
+            get { return (WatchEscapeIsDown || CanNavigateBackground); }
+        }
+
+        public bool ShouldBeHitTestVisible
+        {
+            // This is directly opposite of "WatchPreviewHitTest".
+            get { return (!WatchEscapeIsDown && (!CanNavigateBackground)); }
         }
 
         public bool IsHomeSpace
         {
             get { return dynSettings.Controller.DynamoModel.CurrentWorkspace == dynSettings.Controller.DynamoModel.HomeSpace; }
-        }
-
-        public bool ShouldBeHitTestVisible
-        {
-            get
-            {
-                return !WatchEscapeIsDown;
-            }
         }
 
         public bool FullscreenWatchShowing
@@ -1536,6 +1535,12 @@ namespace Dynamo.ViewModels
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanEscape(object parameter)

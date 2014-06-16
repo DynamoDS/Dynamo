@@ -652,27 +652,17 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape)
-                return;
-
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-
-            _vm.WatchEscapeIsDown = true;
+            if (e.Key == Key.Escape)
+                _vm.WatchEscapeIsDown = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape)
-                return;
-
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-
-            _vm.WatchEscapeIsDown = false;
-            _vm.EscapeCommand.Execute(null);
+            if (e.Key == Key.Escape)
+            {
+                _vm.WatchEscapeIsDown = false;
+                _vm.EscapeCommand.Execute(null);
+            }
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
