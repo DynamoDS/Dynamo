@@ -21,6 +21,7 @@ using ProtoCore.AST.ImperativeAST;
 using System.Windows.Controls.Primitives;
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
+using System.Windows.Input;
 
 namespace Dynamo.Controls
 {
@@ -1101,6 +1102,24 @@ namespace Dynamo.Controls
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BackgroundPreviewGestureConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // When background 3D navigation is turned on (DynamoViewModel.CanNavigateBackground 
+            // is set to "true"), then left mouse dragging will be orbiting the 3D view. Otherwise 
+            // left clicking will do nothing to the view.
+            // 
+            bool isOrbiting = ((bool)value);
+            return new MouseGesture(isOrbiting ? MouseAction.LeftClick : MouseAction.None);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

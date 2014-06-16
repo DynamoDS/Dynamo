@@ -455,6 +455,8 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
+        public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
+        public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
 
         public ConnectorType ConnectorType
         {
@@ -1502,6 +1504,12 @@ namespace Dynamo.ViewModels
         internal void TogglePan(object parameter)
         {
             CurrentSpaceViewModel.RequestTogglePanMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanTogglePan(object parameter)
@@ -1512,6 +1520,12 @@ namespace Dynamo.ViewModels
         internal void ToggleOrbit(object parameter)
         {
             CurrentSpaceViewModel.RequestToggleOrbitMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanToggleOrbit(object parameter)
