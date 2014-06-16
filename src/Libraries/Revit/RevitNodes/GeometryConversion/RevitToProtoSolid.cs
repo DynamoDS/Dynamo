@@ -17,7 +17,7 @@ namespace Revit.GeometryConversion
             var srfs = solid.Faces.Cast<Autodesk.Revit.DB.Face>().Select(x => x.ToProtoType(false));
             var converted = Solid.ByJoinedSurfaces( srfs );
 
-            return performHostUnitConversion ? converted.ConvertToRevitInternalUnits() : converted;
+            return performHostUnitConversion ? converted.ConvertToUserFacingUnits() : converted;
         }
     }
 }

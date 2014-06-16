@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Runtime;
 namespace Revit.GeometryConversion
 {
     [SupressImportIntoVM]
-    public static class UnitConversion
+    public static class UnitConverter
     {
         public static double ProtoToHostFactor = 1;
         public static double HostToProtoFactor = 1;

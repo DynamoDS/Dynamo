@@ -34,7 +34,7 @@ namespace Revit.GeometryConversion
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            converted = performHostUnitConversion ? converted.ConvertToRevitInternalUnits() : converted;
+            converted = performHostUnitConversion ? converted.ConvertToUserFacingUnits() : converted;
 
             // If possible, add a geometry reference for downstream Element creation
             var revitRef = revitCurve.Reference;
@@ -62,15 +62,17 @@ namespace Revit.GeometryConversion
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            return performHostUnitConversion ? converted.ConvertToRevitInternalUnits() : converted;
+            return performHostUnitConversion ? converted.ConvertToUserFacingUnits() : converted;
         }
 
         public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.PolyLine geom,
             bool performHostUnitConversion = true)
         {
             var converted = PolyCurve.ByPoints(geom.GetCoordinates().Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z)).ToArray());
-            return performHostUnitConversion ? converted.ConvertToRevitInternalUnits() : converted;
+            return performHostUnitConversion ? converted.ConvertToUserFacingUnits() : converted;
         }
+
+        #region Conversions
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.NurbSpline crv)
         {
@@ -191,5 +193,8 @@ namespace Revit.GeometryConversion
             return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(), crv.ZVector.ToVector(),
                 crv.GetEndPoint(0).ToPoint(), crv.Pitch, (crv.Height/crv.Pitch)*360.0);
         }
+
+        #endregion
+
     }
 }
