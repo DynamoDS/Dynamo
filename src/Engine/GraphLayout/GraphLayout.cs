@@ -413,7 +413,7 @@ namespace GraphLayout
             ReversedLayers.Reverse();
 
             double previousLayerX = 0;
-            double offsetY = Nodes.OrderBy(x => x.Y).First().Y;
+            double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
 
             foreach (List<Node> layer in Layers)
             {
@@ -423,7 +423,6 @@ namespace GraphLayout
                     x.X = previousLayerX;
 
                 previousLayerX = layer.First().X + layerWidth + HorizontalNodeDistance;
-
 
                 double maxY = (layer.Min(x => x.Y) >= Infinite) ?
                     0 : layer.Min(x => x.Y);
