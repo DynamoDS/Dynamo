@@ -13,10 +13,17 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class ScopedNodeTest : DSEvaluationUnitTest
     {
-        string testFolder { get { return Path.Combine(GetTestDirectory(), "core", "scopednode"); } }
+        private string TestFolder
+        {
+            get
+            {
+                return Path.Combine(GetTestDirectory(), "core", "scopednode"); 
+                
+            }
+        }
 
         // test class
-        private class TwoScopedInputs: ScopedNodeModel
+        private sealed class TwoScopedInputs: ScopedNodeModel
         {
             public TwoScopedInputs()
             {
@@ -40,48 +47,53 @@ namespace Dynamo.Tests
             //         n5 in its scope (for input port 1)
             // For s2, s1, n6, n7 in its scope for input port 0
             DynamoModel model = Controller.DynamoModel;
-            Func<string, CodeBlockNodeModel> createCBN = 
+            Func<string, CodeBlockNodeModel> createCbn = 
                 s => new CodeBlockNodeModel(s, Guid.NewGuid(), model.CurrentWorkspace, 0, 0);
 
-            var cbn1 = createCBN("n1;");
+            var cbn1 = createCbn("n1;");
 
-            var cbn2 = createCBN("n2;");
+            var cbn2 = createCbn("n2;");
             cbn2.ConnectInput(0, 0, cbn1);
 
-            var cbn3 = createCBN("n3;");
+            var cbn3 = createCbn("n3;");
 
-            var cbn4 = createCBN("n4=x+y;");
+            var cbn4 = createCbn("n4=x+y;");
             cbn4.ConnectInput(0, 0, cbn2);
             cbn4.ConnectInput(1, 0, cbn3);
 
-            var cbn5 = createCBN("n5;");
+            var cbn5 = createCbn("n5;");
 
             var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
             s1.ConnectInput(1, 0, cbn5);
 
-            var scopedNodes = s1.GetScopedChildren(0);
+            var scopedNodes = s1.GetInScopeNodesForInport(0).ToList();
             Assert.AreEqual(4, scopedNodes.Count());
             Assert.IsTrue(scopedNodes.Contains(cbn1));
             Assert.IsTrue(scopedNodes.Contains(cbn2));
             Assert.IsTrue(scopedNodes.Contains(cbn3));
             Assert.IsTrue(scopedNodes.Contains(cbn4));
 
-            scopedNodes = s1.GetScopedChildren(1);
+            scopedNodes = s1.GetInScopeNodesForInport(1).ToList();
             Assert.AreEqual(1, scopedNodes.Count());
             Assert.IsTrue(scopedNodes.Contains(cbn5));
 
-            var cbn6 = createCBN("n6;");
+            var cbn6 = createCbn("n6;");
             cbn6.ConnectInput(0, 0, s1);
 
-            var cbn7 = createCBN("n7;");
+            var cbn7 = createCbn("n7;");
             cbn7.ConnectInput(0, 0, cbn6);
 
             var s2 = new TwoScopedInputs();
             s2.ConnectInput(0, 0, cbn7);
 
-            scopedNodes = s2.GetScopedChildren(0);
-            Assert.AreEqual(3, scopedNodes.Count());
+            scopedNodes = s2.GetInScopeNodesForInport(0).ToList();
+            Assert.AreEqual(8, scopedNodes.Count());
+            Assert.IsTrue(scopedNodes.Contains(cbn1));
+            Assert.IsTrue(scopedNodes.Contains(cbn2));
+            Assert.IsTrue(scopedNodes.Contains(cbn3));
+            Assert.IsTrue(scopedNodes.Contains(cbn4));
+            Assert.IsTrue(scopedNodes.Contains(cbn5));
             Assert.IsTrue(scopedNodes.Contains(cbn6));
             Assert.IsTrue(scopedNodes.Contains(cbn7));
             Assert.IsTrue(scopedNodes.Contains(s1));
@@ -98,27 +110,27 @@ namespace Dynamo.Tests
             // 
             // For s1, none is in its scope 
             DynamoModel model = Controller.DynamoModel;
-            Func<string, CodeBlockNodeModel> createCBN =
+            Func<string, CodeBlockNodeModel> createCbn =
                 s => new CodeBlockNodeModel(s, Guid.NewGuid(), model.CurrentWorkspace, 0, 0);
 
-            var cbn1 = createCBN("n1;");
+            var cbn1 = createCbn("n1;");
 
-            var cbn2 = createCBN("n2;");
+            var cbn2 = createCbn("n2;");
             cbn2.ConnectInput(0, 0, cbn1);
 
-            var cbn3 = createCBN("n3;");
+            var cbn3 = createCbn("n3;");
 
-            var cbn4 = createCBN("n4=x+y;");
+            var cbn4 = createCbn("n4=x+y;");
             cbn4.ConnectInput(0, 0, cbn2);
             cbn4.ConnectInput(1, 0, cbn3);
 
-            var cbn5 = createCBN("n5;");
+            var cbn5 = createCbn("n5;");
             cbn5.ConnectInput(0, 0, cbn4);
 
             var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
 
-            var scopedNodes = s1.GetScopedChildren(0);
+            var scopedNodes = s1.GetInScopeNodesForInport(0);
             Assert.AreEqual(0, scopedNodes.Count());
         }
 
@@ -133,27 +145,27 @@ namespace Dynamo.Tests
             // 
             // For s1, n3, n4 are in its scope
             DynamoModel model = Controller.DynamoModel;
-            Func<string, CodeBlockNodeModel> createCBN =
+            Func<string, CodeBlockNodeModel> createCbn =
                 s => new CodeBlockNodeModel(s, Guid.NewGuid(), model.CurrentWorkspace, 0, 0);
 
-            var cbn1 = createCBN("n1;");
+            var cbn1 = createCbn("n1;");
 
-            var cbn2 = createCBN("n2;");
+            var cbn2 = createCbn("n2;");
             cbn2.ConnectInput(0, 0, cbn1);
 
-            var cbn3 = createCBN("n3;");
+            var cbn3 = createCbn("n3;");
 
-            var cbn4 = createCBN("n4=x+y;");
+            var cbn4 = createCbn("n4=x+y;");
             cbn4.ConnectInput(0, 0, cbn2);
             cbn4.ConnectInput(1, 0, cbn3);
 
-            var cbn5 = createCBN("n5;");
+            var cbn5 = createCbn("n5;");
             cbn5.ConnectInput(0, 0, cbn2);
 
             var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
 
-            var scopedNodes = s1.GetScopedChildren(0);
+            var scopedNodes = s1.GetInScopeNodesForInport(0).ToList();
             Assert.AreEqual(2, scopedNodes.Count());
             Assert.IsTrue(scopedNodes.Contains(cbn3));
             Assert.IsTrue(scopedNodes.Contains(cbn4));

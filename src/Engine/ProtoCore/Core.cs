@@ -147,9 +147,9 @@ namespace ProtoCore
         public Options()
         {
 
-            DumpByteCode = false;
-            Verbose = false;
-            DumpIL = false;
+            DumpByteCode = true;
+            Verbose = true;
+            DumpIL = true;
 
             GenerateSSA = true;
             ExecuteSSA = true;

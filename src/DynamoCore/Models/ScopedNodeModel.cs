@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Nodes;
 
 namespace Dynamo.Models
 {
@@ -13,15 +14,22 @@ namespace Dynamo.Models
     {
         private bool IsNodeInScope(NodeModel node, IEnumerable<NodeModel> scopes)
         {
+            if (node is Symbol)
+            {
+                return false;
+            }
+
             foreach (var index in Enumerable.Range(0, node.OutPortData.Count))
             {
                 HashSet<Tuple<int, NodeModel>> outputTuples = null;
-                if (TryGetOutput(index, out outputTuples))
+                if (!TryGetOutput(index, out outputTuples))
                 {
-                    if (!outputTuples.All(t => scopes.Contains(t.Item2)))
-                    {
-                        return false;
-                    }
+                    continue;
+                }
+
+                if (!outputTuples.All(t => scopes.Contains(t.Item2)))
+                {
+                    return false;
                 }
             }
 
@@ -44,7 +52,7 @@ namespace Dynamo.Models
         /// downstream nodes are in this node's scope.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<NodeModel> GetScopedChildren(int portIndex)
+        public IEnumerable<NodeModel> GetInScopeNodesForInport(int portIndex)
         {
             // The related test cases are in test fixture ScopedNodeTest.
 
@@ -66,14 +74,9 @@ namespace Dynamo.Models
                 scopedNodes.Add(inputNode);
             }
 
-            while (workingList.Count() > 0)
+            while (workingList.Any())
             {
                 var currentNode = workingList.Dequeue();
-                if (currentNode is ScopedNodeModel)
-                {
-                    continue;
-                }
-
                 foreach (int index in Enumerable.Range(0, currentNode.InPortData.Count))
                 {
                     if (currentNode.TryGetInput(index, out inputTuple))
@@ -89,6 +92,28 @@ namespace Dynamo.Models
             }
 
             return scopedNodes.Skip(1);
+        }
+
+        /// <summary>
+        /// Return all nodes that are in the scope of this node.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<NodeModel> GetInScopeNodes()
+        {
+            var inScopedNodes = new List<NodeModel>();
+
+            foreach (int index in Enumerable.Range(0, InPortData.Count))
+            {
+                if (!IsScopedInPort(index))
+                {
+                    continue;
+                }
+
+                var inScopedNodesForInport = GetInScopeNodesForInport(index);
+                inScopedNodes.AddRange(inScopedNodesForInport);
+            }
+
+            return inScopedNodes;
         }
     }
 }

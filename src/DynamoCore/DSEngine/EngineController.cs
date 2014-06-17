@@ -177,7 +177,7 @@ namespace Dynamo.DSEngine
                 var activeNodes = nodes.Where(n => n.State != ElementState.Error);
 
                 if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, true);
+                    astBuilder.CompileToAstNodes(activeNodes, true, false);
 
                 return VerifyGraphSyncData();
             }

@@ -46,7 +46,7 @@ namespace Dynamo.Tests
             model.Open(openPath);
 
             AstBuilder builder = new AstBuilder(null);
-            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
+            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false, false);
             string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
             Console.WriteLine(code);
         }

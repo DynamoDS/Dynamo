@@ -182,13 +182,33 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="isDeltaExecution"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool isForCustomNode)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
-            IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
 
+            // If it is built for custom node, it is not in delta execution 
+            // mode, so nodes includes all nodes in the custom node workspace. 
+            // 
+            // Now iterate all candiates and excludes nodes those are in the 
+            // scope of some ScopedNodeModel, these excluded nodes will be 
+            // compiled in ScopedNodeModel.
+            if (isForCustomNode)
+            {
+                HashSet<NodeModel> topScopedNodes = new HashSet<NodeModel>(nodes);
+                foreach (var node in nodes)
+                {
+                    if (node is ScopedNodeModel)
+                    {
+                        var scopedNodes = (node as ScopedNodeModel).GetInScopeNodes();
+                        topScopedNodes.ExceptWith(scopedNodes);
+                    }
+                }
+                nodes = topScopedNodes;
+            }
+
+            IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
             if (isDeltaExecution)
             {
                 sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
@@ -222,7 +242,7 @@ namespace Dynamo.DSEngine
             OnAstNodeBuilding(def.FunctionId);
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
+            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false, true));
 
             if (outputs.Count > 1)
             {
