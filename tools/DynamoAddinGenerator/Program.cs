@@ -101,7 +101,8 @@ namespace DynamoAddinGenerator
                     "<FullClassName>{2}</FullClassName>\n" +
                     "<VendorId>Dynamo</VendorId>\n" +
                     "<VendorDescription>Dynamo</VendorDescription>\n" +
-                    "</AddIn>\n",
+                    "</AddIn>\n" +
+                    "</RevitAddIns>",
                     data.AssemblyPath, data.Id, data.ClassName
                     );
 
