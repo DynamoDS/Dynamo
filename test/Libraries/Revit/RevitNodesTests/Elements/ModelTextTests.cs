@@ -6,22 +6,8 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelTextTests : RevitNodeTestBase
+    public class ModelTextTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-            base.Setup();
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-            base.TearDown();
-        }
-
         [Test]
         public void ByTextSketchPlaneAndPosition_ValidArgs()
         {

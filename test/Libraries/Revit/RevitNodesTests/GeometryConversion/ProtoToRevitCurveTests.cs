@@ -9,18 +9,12 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class ProtoToRevitCurveTests : RevitNodeTestBase
+    internal class ProtoToRevitCurveTests : GeometricRevitNodeTest
     {
         [SetUp]
         public override void Setup()
         {
-           HostFactory.Instance.StartUp(); 
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
+            Console.WriteLine("hi");
         }
 
         [Test]

@@ -7,7 +7,7 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Conversion
 {
     [TestFixture]
-    class BoundingBoxTests : ProtoGeometryTest
+    class BoundingBoxTests : GeometricRevitNodeTest
     {
 
         [Test]

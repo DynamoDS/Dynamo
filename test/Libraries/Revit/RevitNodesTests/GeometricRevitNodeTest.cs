@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class ProtoGeometryTest : RevitNodeTestBase
+    public class GeometricRevitNodeTest : RevitNodeTestBase
     {
         [SetUp]
         public override void Setup()

@@ -8,20 +8,8 @@ using RTF.Framework;
 namespace DSRevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class RevitToProtoFaceTests : RevitNodeTestBase
+    internal class RevitToProtoFaceTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-        }
-
         [Test]
         [TestModel(@".\Solids.rfa")]
         public void AllSolidsConvert()

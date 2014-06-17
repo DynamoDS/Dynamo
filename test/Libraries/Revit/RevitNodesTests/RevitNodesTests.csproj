@@ -113,12 +113,16 @@
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoFaceTests.cs" />
-    <Compile Include="GeometryTests.cs" />
+    <Compile Include="GeometrySanityCheck.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtoGeometryTest.cs" />
+    <Compile Include="GeometricRevitNodeTest.cs" />
     <Compile Include="RevitNodeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>

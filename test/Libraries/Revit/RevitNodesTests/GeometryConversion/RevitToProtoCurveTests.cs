@@ -9,20 +9,8 @@ using RTF.Framework;
 namespace DSRevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoCurveTests : RevitNodeTestBase
+    public class RevitToProtoCurveTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-        }
-
         [Test]
         [TestModel(@".\empty.rfa")]
         public void NurbSpline_Rational()

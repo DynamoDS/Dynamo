@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Reflection;
+
+using NUnit.Framework;
 using RevitServices.Transactions;
 
 namespace DSRevitNodesTests
@@ -9,9 +12,17 @@ namespace DSRevitNodesTests
     /// </summary>
     public class RevitNodeTestBase
     {
+        private static bool SetupResolver = false;
+
         [SetUp]
         public virtual void Setup()
         {
+            if (!SetupResolver)
+            {
+                AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.ResolveAssembly;
+                SetupResolver = true;
+            }
+
             // create the transaction manager object
             TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
