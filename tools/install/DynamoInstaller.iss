@@ -66,8 +66,8 @@ Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoes
 Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 
 ;AddinGenerator
-Source: temp\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
-Source: temp\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
 
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
