@@ -39,7 +39,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var bspline = NurbsCurve.ByControlPoints(pts, 3);
 
-            var revitCurve = bspline.ToRevitType();
+            var revitCurve = bspline.ToRevitType(false);
 
             Assert.NotNull(revitCurve);
             Assert.IsAssignableFrom<Autodesk.Revit.DB.NurbSpline>(revitCurve);
@@ -48,8 +48,6 @@ namespace DSRevitNodesTests.GeometryConversion
 
             Assert.AreEqual( bspline.Degree, revitSpline.Degree );
             Assert.AreEqual( bspline.ControlPoints().Count(), revitSpline.CtrlPoints.Count);
-
-            // ClosestPointTo fails in ProtoGeometry
 
             var tessPts = revitSpline.Tessellate();
 
@@ -72,7 +70,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var pl = Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(o, n);
             var ellipseArc = EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, 10, 5, 45, 90);
 
-            var revitCurve = ellipseArc.ToRevitType();
+            var revitCurve = ellipseArc.ToRevitType(false);
 
             Assert.NotNull(revitCurve);
             Assert.IsAssignableFrom<Autodesk.Revit.DB.Ellipse>(revitCurve);
@@ -107,7 +105,7 @@ namespace DSRevitNodesTests.GeometryConversion
                 Point.ByCoordinates(1, 2, 3), radius,
                 Vector.ByCoordinates(0,0,1));
 
-            var revitCurve = circ.ToRevitType();
+            var revitCurve = circ.ToRevitType(false);
 
             Assert.NotNull(revitCurve);
 
@@ -128,7 +126,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var circ = Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle(Point.ByCoordinates(1, 2, 3), 4,
                 0.4, 1.3, Vector.ByCoordinates(1, 2, 3));
 
-            var revitCurve = circ.ToRevitType();
+            var revitCurve = circ.ToRevitType(false);
 
             Assert.NotNull(revitCurve);
 
@@ -150,7 +148,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             Console.WriteLine(line.PointAtParameter(0.5).ToXyz());
 
-            var revitCurve = line.ToRevitType();
+            var revitCurve = line.ToRevitType(false);
 
             Assert.NotNull(revitCurve);
 
@@ -174,7 +172,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var helix = Autodesk.DesignScript.Geometry.Helix.ByAxis(sp, z, s, p, a);
 
-            var revitCurve = helix.ToRevitType();
+            var revitCurve = helix.ToRevitType(false);
 
             Assert.NotNull(revitCurve);
 
@@ -199,7 +197,7 @@ namespace DSRevitNodesTests.GeometryConversion
                 Vector.YAxis(), Vector.XAxis().Reverse());
             var ellipse = Autodesk.DesignScript.Geometry.Ellipse.ByCoordinateSystemRadii(cs, 10, 5);
 
-            var revitCurve = ellipse.ToRevitType();
+            var revitCurve = ellipse.ToRevitType(false);
 
             Assert.NotNull(revitCurve);
 

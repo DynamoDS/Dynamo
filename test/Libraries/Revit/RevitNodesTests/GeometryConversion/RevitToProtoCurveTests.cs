@@ -42,7 +42,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitSpline = Autodesk.Revit.DB.NurbSpline.Create(pts, wts);
 
-            var protoCurve = revitSpline.ToProtoType();
+            var protoCurve = revitSpline.ToProtoType(false);
 
             Assert.NotNull(protoCurve);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
@@ -89,7 +89,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitSpline = Autodesk.Revit.DB.HermiteSpline.Create(pts, false, ts);
 
-            var protoCurve = revitSpline.ToProtoType();
+            var protoCurve = revitSpline.ToProtoType(false);
 
             Assert.NotNull(protoCurve);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
@@ -123,7 +123,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var rl = Autodesk.Revit.DB.Line.CreateBound(s, e);
 
-            var pc = rl.ToProtoType();
+            var pc = rl.ToProtoType(false);
 
 
             Assert.NotNull(pc);
@@ -150,7 +150,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var re = Autodesk.Revit.DB.Arc.Create(o, r, sp, ep, x, y);
 
-            var pc = re.ToProtoType();
+            var pc = re.ToProtoType(false);
 
             Assert.NotNull(pc);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Arc>(pc);
@@ -186,7 +186,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var re = Autodesk.Revit.DB.Ellipse.Create(c, rx, ry, x, y, sp, ep);
             re.MakeBound(sp, ep);
 
-            var pc = re.ToProtoType();
+            var pc = re.ToProtoType(false);
 
             Assert.NotNull(pc);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.EllipseArc>(pc);
@@ -227,7 +227,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var re = Autodesk.Revit.DB.Ellipse.Create(c, rx, ry, x, y, sp, ep);
             re.MakeBound(sp, ep);
 
-            var pc = re.ToProtoType();
+            var pc = re.ToProtoType(false);
             Assert.NotNull(pc);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Ellipse>(pc);
             var pa = (Autodesk.DesignScript.Geometry.Ellipse) pc;
