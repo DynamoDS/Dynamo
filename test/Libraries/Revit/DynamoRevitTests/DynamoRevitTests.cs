@@ -50,15 +50,15 @@ namespace Dynamo.Tests
             //get the test path
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\revit\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\revit\");
             _testPath = Path.GetFullPath(testsLoc);
 
             //get the samples path
-            string samplesLoc = Path.Combine(assDir, @"..\..\..\doc\distrib\Samples\");
+            string samplesLoc = Path.Combine(assDir, @"..\..\..\..\doc\distrib\Samples\");
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(assDir, @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
+            string defsLoc = Path.Combine(assDir, @"..\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
