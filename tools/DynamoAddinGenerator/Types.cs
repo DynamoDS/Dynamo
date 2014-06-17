@@ -14,6 +14,9 @@ namespace DynamoAddinGenerator
         public static string dynamo_07x = Path.Combine(Environment.SpecialFolder.ProgramFiles.ToString(), "Dynamo 0.7");
     }
 
+    /// <summary>
+    /// A container with information about a revit product.
+    /// </summary>
     public class DynamoRevitProduct : IRevitProduct
     {
         public string ProductName { get; set; }
@@ -30,6 +33,9 @@ namespace DynamoAddinGenerator
         }
     }
 
+    /// <summary>
+    /// A container with information about a Dynamo install.
+    /// </summary>
     public class DynamoInstall : IDynamoInstall
     {
         public string Folder { get; set; }
@@ -40,6 +46,9 @@ namespace DynamoAddinGenerator
         }
     }
 
+    /// <summary>
+    /// A collection of dynamo installs.
+    /// </summary>
     public class DynamoInstallCollection : IDynamoInstallCollection
     {
         /// <summary>
@@ -85,6 +94,9 @@ namespace DynamoAddinGenerator
         }
     }
 
+    /// <summary>
+    /// A container for data for creating an addin.
+    /// </summary>
     public class DynamoAddinData : IDynamoAddinData
     {
         public string AssemblyPath { get; set; }
@@ -128,6 +140,9 @@ namespace DynamoAddinGenerator
         }
     }
 
+    /// <summary>
+    /// A collection of Revit products.
+    /// </summary>
     public class RevitProductCollection : IRevitProductCollection
     {
         public List<IRevitProduct> Products { get; set; }
