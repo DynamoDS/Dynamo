@@ -8,245 +8,93 @@ namespace DynamoAddinGenerator
 {
     class Program
     {
-        private const string addinName = "Dynamo.addin";
-        private const string versionSelectorName = "DynamoVersionSelector.addin";
-
-        private static string dynamo_063 = @"C:\Autodesk\Dynamo";
-        private static string dynamo_071_x86 = Path.Combine(Environment.SpecialFolder.ProgramFilesX86.ToString(),"Dynamo071");
-        private static string dynamo_071_bad = Path.Combine(Environment.SpecialFolder.ProgramFiles.ToString(),"Dynamo071");
-        private static string dynamo_post_071 = Path.Combine(Environment.SpecialFolder.ProgramFiles.ToString(), "Dynamo");
-
         static void Main(string[] args)
         {
-            var installedProds = GetInstalledProducts();
-
-            var prods = GetValidProducts(installedProds).ToList();
-
-            if (!prods.Any())
+            var allProducts = RevitProductUtility.GetAllInstalledRevitProducts();
+            var prodColl = new RevitProductCollection(allProducts.Select(x=>new DynamoRevitProduct(x)));
+            if (!prodColl.Products.Any())
             {
                 Console.WriteLine("There were no Revit products found.");
                 return;
             }
 
-            DeleteAddins();
-
-            
-
-            var dynamos = GetInstalledDynamos();
-
-            // Search each addin path for an existing Dynamo.addin
-            // These are from installs without multiple versions
-            GenerateAddins(prods, dynamos);
-        }
-
-        private static IEnumerable<IRevitProduct> GetInstalledProducts()
-        {
-            var installedProds = RevitProductUtility.GetAllInstalledRevitProducts()
-                .ToList()
-                .Select(p => new DynamoRevitProduct(p));
-
-            return installedProds;
-        }
-
-        private static bool HasDynamo063Install()
-        {
-            if (Directory.Exists(dynamo_063))
+            var installs = DynamoInstallCollection.FindDynamoInstalls();
+            var dynamoColl = new DynamoInstallCollection(installs);
+            if (!dynamoColl.Installs.Any())
             {
-                return true;
-            }
-            return false;
-        }
-
-        private static bool HasDynamo071BadInstall()
-        {
-            if (Directory.Exists(dynamo_071_bad))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private static bool HasDynamo071InstallInx86()
-        {
-            if (Directory.Exists(dynamo_071_x86))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private static bool HasDynamo071Install()
-        {
-            if (Directory.Exists(dynamo_post_071))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private static IEnumerable<IDynamoInstall> GetInstalledDynamos()
-        {
-            var dynamos = new List<IDynamoInstall>();
-
-            if (HasDynamo063Install())
-            {
-                
+                Console.WriteLine("There were no Dynamo installations found.");
+                return;
             }
 
-            if (HasDynamo071BadInstall())
-            {
-                
-            }
+            DeleteExistingAddins(prodColl);
 
-            if (HasDynamo071InstallInx86())
-            {
-                
-            }
-
-            if (HasDynamo071Install())
-            {
-                
-            }
-
-            return dynamos;
-        }
-
-        internal static IEnumerable<IRevitProduct> GetValidProducts(IEnumerable<IRevitProduct> products)
-        {
-            var validProds = new List<IRevitProduct>();
-
-            foreach (var prod in products)
-            {
-                if (prod.VersionString == RevitVersion.Revit2011.ToString() ||
-                    prod.VersionString == RevitVersion.Revit2012.ToString() ||
-                    prod.VersionString == RevitVersion.Revit2013.ToString())
-                {
-                    continue;
-                }
-
-                validProds.Add(prod);
-            }
-
-            return validProds;
-        }
-
-        internal static void BackupOldAddins(IEnumerable<IRevitProduct> products)
-        {
-            foreach (var product in products)
-            {
-                var oldAddinPath = Path.Combine(product.AddinPath, "Dynamo.addin");
-                var newAddinPath = Path.Combine(product.AddinPath, "Dynamo.OLD");
-
-                if (File.Exists(oldAddinPath))
-                {
-                    File.Move(oldAddinPath,newAddinPath);
-                }
-            }
+            GenerateAddins(prodColl, dynamoColl);
         }
 
         /// <summary>
         /// Deletes all existing Dynamo addins.
+        /// This method will delete addins like Dynamo.addin and 
+        /// DynamoVersionSelector.addin
         /// </summary>
-        internal static void DeleteAddins()
+        internal static void DeleteExistingAddins(IRevitProductCollection products)
         {
-            
+            foreach (var product in products.Products)
+            {
+                var dynamoAddin = Path.Combine(product.AddinsFolder, "Dynamo.addin");
+                var versionSelectorAddin = Path.Combine(product.AddinsFolder, "VersionSelection.addin");
+
+                if (File.Exists(dynamoAddin))
+                {
+                    File.Delete(dynamoAddin);
+                }
+
+                if (File.Exists(versionSelectorAddin))
+                {
+                    File.Delete(versionSelectorAddin);
+                }
+            }
         }
 
         /// <summary>
-        /// Generates new Dynamo addins.
+        /// Generate new addin files for all applicable
+        /// versions of Revit.
         /// </summary>
         /// <param name="products">A collection of revit installs.</param>
         /// <param name="dynamos">A collection of dynamo installs.</param>
-        internal static void GenerateAddins(IEnumerable<IRevitProduct> products, IEnumerable<IDynamoInstall> dynamos)
+        internal static void GenerateAddins(IRevitProductCollection products, IDynamoInstallCollection dynamos)
         {
-            // If there is only one version of revit installed, we will
-            // create a Dynamo.addin, and return.
-            if (products.Count() == 1)
+            foreach (var prod in products.Products)
             {
-                // Generate a dynamo.addin and return
-                GenerateDynamoAddin(products.FirstOrDefault());
-                return;
-            }
-
-            // If there are multiple versions of Revit installed, we will
-            // create a DynamoVersionSelector.addin.
-            foreach (var prod in products)
-            {
-                GenerateVersionSelectorAddin(prod);
+                var addinData = new DynamoAddinData(prod, dynamos.GetLatest());
+                GenerateDynamoAddin(addinData);
             }
         }
 
         /// <summary>
-        /// Generate a single-version Dynamo addin.
+        /// Generate a Dynamo.addin file.
         /// </summary>
-        /// <param name="product"></param>
-        internal static void GenerateDynamoAddin(IRevitProduct product)
+        /// <param name="data">An object containing data about the addin.</param>
+        internal static void GenerateDynamoAddin(IDynamoAddinData data)
         {
-            
-            
-        }
-
-        /// <summary>
-        /// Generate a multiple-version Dynamo addin.
-        /// </summary>
-        /// <param name="product"></param>
-        internal static void GenerateVersionSelectorAddin(IRevitProduct product)
-        {
-
-            
-        }
-    }
-
-    public class DynamoRevitProduct : IRevitProduct
-    {
-        public string ProductName { get; set; }
-        public string AddinPath { get; set; }
-        public string InstallLocation { get; set; }
-        public string VersionString { get; set; }
-        public string CurrentDynamoAddinPath { get; set; }
-
-        public DynamoRevitProduct(RevitProduct product)
-        {
-            ProductName = product.Name;
-            AddinPath = product.AllUsersAddInFolder;
-            InstallLocation = product.InstallLocation;
-            VersionString = product.Version.ToString();
-
-            var oldAddinPath = Path.Combine(AddinPath, "Dynamo.addin");
-            var newAddinPath = Path.Combine(AddinPath, "DynamoVersionSelector.addin");
-
-            if (File.Exists(oldAddinPath))
+            using (var tw = new StreamWriter(data.AddinPath, false))
             {
-                CurrentDynamoAddinPath = oldAddinPath;
-            }
-            else if (File.Exists(newAddinPath))
-            {
-                CurrentDynamoAddinPath = newAddinPath;
+                var addin = String.Format(
+                    "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n" +
+                    "<RevitAddIns>\n" +
+                    "<AddIn Type=\"Application\">\n" +
+                    "<Name>Dynamo Dynamo For Revit</Name>\n" +
+                    "<Assembly>\"{0}\"</Assembly>\n" +
+                    "<AddInId>{1}</AddInId>\n" +
+                    "<FullClassName>{2}</FullClassName>\n" +
+                    "<VendorId>Dynamo</VendorId>\n" +
+                    "<VendorDescription>Dynamo</VendorDescription>\n" +
+                    "</AddIn>\n",
+                    data.AssemblyPath, data.Id, data.ClassName
+                    );
+
+                tw.Write(addin);
+                tw.Flush();
             }
         }
-    }
-
-    public class DynamoInstall:IDynamoInstall
-    {
-        public string Path { get; set; }
-
-        public DynamoInstall(string path)
-        {
-            Path = path;
-        }
-    }
-
-    public interface IRevitProduct
-    {
-        string ProductName { get; set; }
-        string AddinPath { get; set; }
-        string InstallLocation { get; set; }
-        string VersionString { get; set; }
-        string CurrentDynamoAddinPath { get; set; }
-    }
-
-    public interface IDynamoInstall
-    {
-        string Path { get; set; }
     }
 }
