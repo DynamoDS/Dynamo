@@ -389,8 +389,6 @@ namespace Dynamo
             ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
         }
 
-
-
         public virtual void ResetEngine()
         {
             if (EngineController != null)
@@ -458,7 +456,6 @@ namespace Dynamo
             return (dynSettings.Controller != null);
         }
 
-        
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)

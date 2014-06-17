@@ -1563,4 +1563,28 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class StringToExecutionIntervalConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Source to the binding target.
+            return value != null ? value.ToString() : "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Binding target to source.
+            try
+            {
+                int? interval = int.Parse(value.ToString());
+
+                return interval < 0 ? null : interval;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+    }
 }

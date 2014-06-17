@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Dynamo.Controls.ExecutionTimerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             mc:Ignorable="d" 
+             Width="Auto"
+             Height="Auto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+            <StackPanel>
+                <WrapPanel>
+                    <CheckBox Content="Use Execution Interval" Margin="5" VerticalAlignment="Center" IsChecked="{Binding IsExecIntervalEnabled}"/>
+                    <TextBox Name="IntervalTb" Text="{Binding ExecutionInterval, Converter={StaticResource StringToExecutionIntervalConverter}, UpdateSourceTrigger=Explicit}" 
+                             VerticalAlignment="Center" Width="90" Margin="10,0,5,0" IsEnabled="{Binding IsExecIntervalEnabled}"
+                             KeyUp="UIElement_OnKeyUp"/>
+                </WrapPanel>
+            </StackPanel>
+    </Grid>
+    
+</UserControl>

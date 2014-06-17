@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using DSNodeServices;
-using Dynamo.DSEngine;
+
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Core
 {
@@ -21,15 +16,18 @@ namespace Dynamo.Core
         private readonly DynamoController controller = dynSettings.Controller;
 
         private bool cancelSet = false;
-        private int? execInternval = null; 
-        
+        private int? execInterval = null;
+
+        public int? ExecutionInterval
+        {
+            get { return execInterval; }
+            set { execInterval = value; }
+        }
+
         public void CancelAsync()
         {
             cancelSet = true;
         }
-
-
-
 
         #region Running
 
@@ -45,10 +43,9 @@ namespace Dynamo.Core
         /// </summary>
         public static Object runControlMutex = new object();
 
-
-        public void RunExpression(int? executionInterval = null)
+        public void RunExpression()
         {
-            this.execInternval = executionInterval;
+            //this.execInterval = executionInterval;
 
             lock (runControlMutex)
             {
@@ -72,12 +69,6 @@ namespace Dynamo.Core
                 var traceData = controller.DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
                 controller.DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
                 controller.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
-
-                controller.EngineController.GenerateGraphSyncData(controller.DynamoViewModel.Model.HomeSpace.Nodes);
-
-                //No additional work needed
-                if (!controller.EngineController.HasPendingGraphSyncData)
-                    return;
 
                 //We are now considered running
                 Running = true;
@@ -113,12 +104,16 @@ namespace Dynamo.Core
         {
             do
             {
-                Evaluate();
+                var ec = dynSettings.Controller.EngineController;
 
-                if (execInternval == null)
+                ec.GenerateGraphSyncData(dynSettings.Controller.DynamoModel.HomeSpace.Nodes);
+                if (ec.HasPendingGraphSyncData)
+                    Evaluate();
+
+                if (execInterval == null)
                     break;
 
-                var sleep = execInternval.Value;
+                var sleep = execInterval.Value;
                 Thread.Sleep(sleep);
             }
             while (!cancelSet);
@@ -139,7 +134,6 @@ namespace Dynamo.Core
                 controller.DynamoViewModel.RunEnabled = true;
             }
         }
-
 
         protected virtual void Evaluate()
         {
@@ -236,10 +230,6 @@ namespace Dynamo.Core
             //dynSettings.Controller.DynamoLogger.Log("Run cancelled. Error: " + error);
         }
 
-        
-
         #endregion
-
-
     }
 }

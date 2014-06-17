@@ -566,6 +566,34 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsExecIntervalEnabled
+        {
+            get { return Controller.Runner.ExecutionInterval != null; }
+            set
+            {
+                if (value)
+                {
+                    Controller.Runner.ExecutionInterval = 1000;
+                }
+                else
+                {
+                    Controller.Runner.ExecutionInterval = null;
+                }
+
+                RaisePropertyChanged("IsExecIntervalEnabled");
+            }
+        }
+
+        public int? ExecutionInterval
+        {
+            get { return Controller.Runner.ExecutionInterval; }
+            set
+            {
+                Controller.Runner.ExecutionInterval = value;
+                RaisePropertyChanged("ExecutionInterval");
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
