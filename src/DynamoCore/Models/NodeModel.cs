@@ -1550,7 +1550,7 @@ namespace Dynamo.Models
             try
             {
                 var vm = dynSettings.Controller.VisualizationManager;
-                gi.Tessellate(p, -1.0, vm.MaxGridLines);
+                gi.Tessellate(p, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
             }
             catch (Exception)
             {
