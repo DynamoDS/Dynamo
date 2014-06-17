@@ -698,16 +698,16 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            if (targetType != typeof(bool))
+            if (targetType != typeof(bool) && (targetType != typeof(bool?)))
                 throw new InvalidOperationException("The target must be a boolean");
 
-            return !(bool)value;
+            return !((bool)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            throw new NotSupportedException();
+            return !((bool)value);
         }
 
         #endregion
@@ -1075,6 +1075,36 @@ namespace Dynamo.Controls
         }
     }
 
+    public class NavigationToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var canNavigateBackground = ((bool)value);
+            return (canNavigateBackground ? 0.1 : 1.0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ViewButtonClipRectConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new System.Windows.Rect()
+            {
+                Width = ((double)values[0]),
+                Height = ((double)values[1])
+            };
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class LacingToVisibilityConverter : IValueConverter
     {

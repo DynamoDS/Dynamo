@@ -124,10 +124,7 @@ namespace Dynamo
             set { alternateContextName = value; }
         }
 
-        public int MaxGridLines { get; set; }
-
-
-
+        public int MaxTesselationDivisions { get; set; }
 
         public Object CurrentTaskIdMutex = new object();
         public long CurrentTaskId
@@ -222,7 +219,7 @@ namespace Dynamo
 
         public VisualizationManager()
         {
-            MaxGridLines = 12;
+            MaxTesselationDivisions = 128;
 
             controller = dynSettings.Controller;
             renderManager = new RenderManager(controller);

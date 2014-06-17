@@ -13,7 +13,10 @@ using String = System.String;
 namespace Dynamo.Utilities
 {
     /// <summary>
-    ///     Handles loading various types of elements into Dynamo at startup
+    /// The DynamoLoader is responsible for loading custom nodes and
+    /// types which derive from NodeModel. For information
+    /// about package loading see the PackageLoader. For information
+    /// about loading other libraries, see LibraryServices.
     /// </summary>
     public class DynamoLoader
     {
@@ -37,86 +40,6 @@ namespace Dynamo.Utilities
         {
             dynSettings.PackageLoader.LoadPackages();
         }
-
-        /// <summary>
-        ///     Enumerate local library assemblies and add them to DynamoController's
-        ///     dictionaries and search.  
-        /// </summary>
-//        internal static void LoadBuiltinTypes()
-//        {
-//            string location = GetDynamoDirectory();
-
-//            #region determine assemblies to load
-
-//            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
-//            var allLoadedAssemblies = new Dictionary<string, Assembly>();
-
-//            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-//            {
-//                try
-//                {
-//                    allLoadedAssembliesByPath[assembly.Location] = assembly;
-//                    allLoadedAssemblies[assembly.FullName] = assembly;
-//                }
-//                catch { }
-//            }
-
-//            IEnumerable<string> allDynamoAssemblyPaths = 
-//                SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
-//                           .Aggregate(
-//                                Directory.GetFiles(location, "*.dll") as IEnumerable<string>, 
-//                                Enumerable.Concat);
-
-//            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
-//            {
-//                Assembly result;
-//                allLoadedAssemblies.TryGetValue(args.Name, out result);
-//                return result;
-//            });
-
-//            AppDomain.CurrentDomain.AssemblyResolve += resolver;
-
-//            foreach (var assemblyPath in allDynamoAssemblyPaths)
-//            {
-//                var fn = Path.GetFileName(assemblyPath);
-
-//                if (fn == null)
-//                    continue;
-
-//                if (LoadedAssemblyNames.Contains(fn))
-//                    continue;
-
-//                LoadedAssemblyNames.Add(fn);
-
-//                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-//                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-//                else
-//                {
-//                    try
-//                    {
-//                        var assembly = Assembly.LoadFrom(assemblyPath);
-//                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
-//                        LoadNodesFromAssembly(assembly);
-//                    }
-//                    catch (BadImageFormatException)
-//                    {
-//                        //swallow these warnings.
-//                    }
-//                    catch (Exception e)
-//                    {
-//                        dynSettings.DynamoLogger.Log(e);
-//                    }
-//                }
-//            }
-
-//#if USE_DSENGINE
-//            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
-//#endif
-//            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
-
-//            #endregion
-
-//        }
 
         /// <summary>
         /// Load all types which inherit from NodeModel whose assemblies are located in
@@ -148,7 +71,7 @@ namespace Dynamo.Utilities
                 DynamoPaths.Nodes.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
-            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPaths.Core, "DynamoCore.dll"));
+            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPaths.MainExecPath, "DynamoCore.dll"));
 
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {

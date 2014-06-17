@@ -12,31 +12,59 @@ namespace DynamoUtilities
     /// </summary>
     public static class DynamoPaths
     {
+        /// <summary>
+        /// The main execution path of Dynamo. This is the directory
+        /// which contains DynamoCore.dll
+        /// </summary>
+        public static string MainExecPath { get; set; }
 
-        public static string Core { get; set; }
+        /// <summary>
+        /// The definitions folder, which contains custom nodes
+        /// created by the user.
+        /// </summary>
         public static string Definitions { get; set; }
+
+        /// <summary>
+        /// The packages folder, which contains pacakages downloaded
+        /// with the package manager.
+        /// </summary>
         public static string Packages { get; set; }
+
+        /// <summary>
+        /// The UI folder, which contains the UI resources.
+        /// </summary>
         public static string Ui { get; set; }
+
+        /// <summary>
+        /// The ASM folder which contains LibG and the 
+        /// ASM binaries.
+        /// </summary>
         public static string Asm { get; set; }
 
         // All 'nodes' folders.
         public static HashSet<string> Nodes { get; set; } 
 
-        public static void SetupDynamoPaths(string corePath)
+        /// <summary>
+        /// Provided a main execution path, find other Dynamo paths
+        /// relatively. This operation should be called only once at
+        /// the beginning of a Dynamo session.
+        /// </summary>
+        /// <param name="mainExecPath">The main execution directory of Dynamo.</param>
+        public static void SetupDynamoPaths(string mainExecPath)
         {
-            if (Directory.Exists(corePath))
+            if (Directory.Exists(mainExecPath))
             {
-                Core = corePath;
+                MainExecPath = mainExecPath;
             }
             else
             {
-                throw new Exception(string.Format("The specified core path: {0}, does not exist.", corePath));
+                throw new Exception(string.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-            Definitions = Path.Combine(Core, "definitions");
-            Packages = Path.Combine(Core , "dynamo_packages");
-            Asm = Path.Combine(Core, "dll");
-            Ui = Path.Combine(Core , "UI");
+            Definitions = Path.Combine(MainExecPath, "definitions");
+            Packages = Path.Combine(MainExecPath , "dynamo_packages");
+            Asm = Path.Combine(MainExecPath, "dll");
+            Ui = Path.Combine(MainExecPath , "UI");
 
             if (Nodes == null)
             {
@@ -44,10 +72,11 @@ namespace DynamoUtilities
             }
 
             // Only register the core nodes directory
-            Nodes.Add(Path.Combine(Core, "nodes"));
+            Nodes.Add(Path.Combine(MainExecPath, "nodes"));
 
+#if DEBUG
             var sb = new StringBuilder();
-            sb.AppendLine(string.Format("Core: {0}", Core));
+            sb.AppendLine(string.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(string.Format("Definitions: {0}", Definitions));
             sb.AppendLine(string.Format("Packages: {0}", Packages));
             sb.AppendLine(string.Format("Ui: {0}", Asm));
@@ -55,6 +84,8 @@ namespace DynamoUtilities
             Nodes.ToList().ForEach(n=>sb.AppendLine(string.Format("Nodes: {0}", n)));
             
             Debug.WriteLine(sb);
+#endif
+
         }
     }
 }

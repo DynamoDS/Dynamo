@@ -536,12 +536,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxGridLines
+        public int MaxTesselationDivisions
         {
-            get { return Controller.VisualizationManager.MaxGridLines; }
+            get { return Controller.VisualizationManager.MaxTesselationDivisions; }
             set
             {
-                Controller.VisualizationManager.MaxGridLines = value;
+                Controller.VisualizationManager.MaxTesselationDivisions = value;
                 Controller.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }

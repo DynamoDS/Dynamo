@@ -75,8 +75,8 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
-            var revitPath = Path.Combine(DynamoPaths.Core, @"Revit_2014\RevitNodes.dll");
-            var raasPath = Path.Combine(DynamoPaths.Core, @"Revit_2014\SimpleRaaS.dll");
+            var revitPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\RevitNodes.dll");
+            var raasPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\SimpleRaaS.dll");
             EngineController.ImportLibrary(revitPath);
             EngineController.ImportLibrary(raasPath);
             

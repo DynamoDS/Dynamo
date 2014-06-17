@@ -1,0 +1,25 @@
+<Workspace Version="0.7.0.28875" X="268.460090239707" Y="-136.009691770261" zoom="1.130842140625" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCoreNodesUI.Logic.If type="DSCoreNodesUI.Logic.If" guid="5c361523-865a-4ec3-8745-04e832481737" nickname="If" x="235" y="150.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="2255f76b-65d1-445d-9d80-143888aa6a0e" nickname="Code Block" x="15" y="184" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="43;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="0009a8a1-3a71-443e-b92c-feb61af5de1f" nickname="Code Block" x="32" y="318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="144;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="fd8a3e39-4ae6-451e-b3de-373ae689a404" nickname="Code Block" x="219.338631785988" y="329.553950120994" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{true, false, false, true};" ShouldFocus="false" />
+    <DSCore.Map type="DSCore.Map" guid="82a84012-1c28-4fe1-a38e-4c751e5a2077" nickname="List.Map" x="618.526380093348" y="365.590795439642" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.Map type="DSCore.Map" guid="ab4e17e1-0065-441a-97f2-9210d968a9ee" nickname="List.Map" x="605.187459017977" y="737.87971612606" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="12911d6c-3dc3-4dac-ba1d-463417cabf76" nickname="Code Block" x="205.999710710617" y="701.842870807413" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{1,2,3,4};" ShouldFocus="false" />
+    <DSCoreNodesUI.Logic.If type="DSCoreNodesUI.Logic.If" guid="08e3a4cf-0cb2-4324-8ad3-8f6de0607cee" nickname="If" x="221.661078924629" y="522.788920686418" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="2ca3b034-b374-488f-9f06-64057007373a" nickname="Code Block" x="18.6610789246294" y="690.288920686418" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="42;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="9f0b9ed3-eec4-437d-87cc-da07c808ebff" nickname="Code Block" x="1.66107892462935" y="556.288920686418" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="false;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5c361523-865a-4ec3-8745-04e832481737" start_index="0" end="82a84012-1c28-4fe1-a38e-4c751e5a2077" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2255f76b-65d1-445d-9d80-143888aa6a0e" start_index="0" end="5c361523-865a-4ec3-8745-04e832481737" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0009a8a1-3a71-443e-b92c-feb61af5de1f" start_index="0" end="5c361523-865a-4ec3-8745-04e832481737" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd8a3e39-4ae6-451e-b3de-373ae689a404" start_index="0" end="82a84012-1c28-4fe1-a38e-4c751e5a2077" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="12911d6c-3dc3-4dac-ba1d-463417cabf76" start_index="0" end="ab4e17e1-0065-441a-97f2-9210d968a9ee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="08e3a4cf-0cb2-4324-8ad3-8f6de0607cee" start_index="0" end="ab4e17e1-0065-441a-97f2-9210d968a9ee" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2ca3b034-b374-488f-9f06-64057007373a" start_index="0" end="08e3a4cf-0cb2-4324-8ad3-8f6de0607cee" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9f0b9ed3-eec4-437d-87cc-da07c808ebff" start_index="0" end="08e3a4cf-0cb2-4324-8ad3-8f6de0607cee" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

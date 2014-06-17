@@ -51,36 +51,9 @@ namespace ProtoTestConsoleRunner
             core.Options.Verbose = false;
 #endif
 
-#if __RUN_TESTFILE
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            ExecutionMirror mirror = runner.LoadAndExecute(@"D:\jun\AutodeskResearch\git\designscript\Scripts\jun.ds", core);
-#else
-            // Insert test cases here
-
-            //ProtoTest.LiveRunner.MicroFeatureTests test = new ProtoTest.LiveRunner.MicroFeatureTests();
-            //test.Setup();
-            //test.TestPythonCodeExecution();
-
-            ProtoTest.Associative.MicroFeatureTests test = new ProtoTest.Associative.MicroFeatureTests();
-            test.Setup();
-           test.TestUpdateRedefinition01();
-
-            //IntegrationTests.IncrementingTraceTests test = new IntegrationTests.IncrementingTraceTests();
-            //test.Setup();
-            //test.IntermediateValueIncrementerIDTestUpdate1DReplicated();
-
-            //ProtoFFITests.CSFFIDispose test = new ProtoFFITests.CSFFIDispose();
-            //test.Setup();
-            //test.IntermediateValueIncrementerIDTestUpdate1DReplicated();
-           // test.Dispose_FFITarget_Overridden();
-
-            //ProtoTest.EventTests.PropertyChangedNotifyTest test = new ProtoTest.EventTests.PropertyChangedNotifyTest();
-            //test.Setup();
-            //test.RunPropertyChangedNegative();
-            
-
-#endif
+            ExecutionMirror mirror = runner.LoadAndExecute(@"c:\project\github\test.ds", core);
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
