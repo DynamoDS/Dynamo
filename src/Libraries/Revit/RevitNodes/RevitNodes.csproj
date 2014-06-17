@@ -23,7 +23,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
+    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,7 +33,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
+    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -55,10 +55,12 @@
     </Reference>
     <Reference Include="ProtoGeometry">
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
@@ -152,6 +154,7 @@
     <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>NodeServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\CoreNodes\CoreNodes.csproj">
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>

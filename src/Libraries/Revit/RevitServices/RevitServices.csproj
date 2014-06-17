@@ -35,7 +35,7 @@ limitations under the License.
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
+    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,7 +43,7 @@ limitations under the License.
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
+    <OutputPath>$(OutputPath)\$(REVIT_VERSION)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -82,6 +82,7 @@ limitations under the License.
     <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
       <Name>NodeServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
