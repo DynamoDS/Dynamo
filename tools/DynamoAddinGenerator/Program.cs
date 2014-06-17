@@ -39,17 +39,27 @@ namespace DynamoAddinGenerator
         {
             foreach (var product in products.Products)
             {
-                var dynamoAddin = Path.Combine(product.AddinsFolder, "Dynamo.addin");
-                var versionSelectorAddin = Path.Combine(product.AddinsFolder, "VersionSelection.addin");
+                Console.WriteLine("Deleting addins in {0}", product.AddinsFolder);
 
+                var dynamoAddin = Path.Combine(product.AddinsFolder, "Dynamo.addin");
                 if (File.Exists(dynamoAddin))
                 {
                     File.Delete(dynamoAddin);
+                    Console.WriteLine("Deleted addin in {0}", dynamoAddin);
                 }
 
-                if (File.Exists(versionSelectorAddin))
+                dynamoAddin = Path.Combine(product.AddinsFolder, "DynamoRevitVersionSelector.addin");
+                if (File.Exists(dynamoAddin))
                 {
-                    File.Delete(versionSelectorAddin);
+                    File.Delete(dynamoAddin);
+                    Console.WriteLine("Deleting addins in {0}", dynamoAddin);
+                }
+
+                dynamoAddin = Path.Combine(product.AddinsFolder, "DynamoVersionSelector.addin");
+                if (File.Exists(dynamoAddin))
+                {
+                    File.Delete(dynamoAddin);
+                    Console.WriteLine("Deleting addins in {0}", dynamoAddin);
                 }
             }
         }
@@ -64,6 +74,8 @@ namespace DynamoAddinGenerator
         {
             foreach (var prod in products.Products)
             {
+                Console.WriteLine("Generating addins in {0}", prod.AddinsFolder);
+
                 var addinData = new DynamoAddinData(prod, dynamos.GetLatest());
                 GenerateDynamoAddin(addinData);
             }
@@ -75,6 +87,8 @@ namespace DynamoAddinGenerator
         /// <param name="data">An object containing data about the addin.</param>
         internal static void GenerateDynamoAddin(IDynamoAddinData data)
         {
+            Console.WriteLine("Generating addin {0}", data.AddinPath);
+
             using (var tw = new StreamWriter(data.AddinPath, false))
             {
                 var addin = String.Format(

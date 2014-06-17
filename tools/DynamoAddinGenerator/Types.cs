@@ -9,9 +9,9 @@ namespace DynamoAddinGenerator
     public static class DynamoVersions
     {
         public static string dynamo_063 = @"C:\Autodesk\Dynamo\Core";
-        public static string dynamo_071_a = Path.Combine(Environment.SpecialFolder.ProgramFilesX86.ToString(), "Dynamo071");
-        public static string dynamo_071_b = Path.Combine(Environment.SpecialFolder.ProgramFiles.ToString(), "Dynamo071");
-        public static string dynamo_07x = Path.Combine(Environment.SpecialFolder.ProgramFiles.ToString(), "Dynamo 0.7");
+        public static string dynamo_071_a = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Dynamo071");
+        public static string dynamo_071_b = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Dynamo071");
+        public static string dynamo_07x = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Dynamo 0.7");
     }
 
     /// <summary>
@@ -77,12 +77,12 @@ namespace DynamoAddinGenerator
 
             if (Directory.Exists(DynamoVersions.dynamo_071_b))
             {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_063));
+                installs.Add(new DynamoInstall(DynamoVersions.dynamo_071_b));
             }
 
             if (Directory.Exists(DynamoVersions.dynamo_07x))
             {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_063));
+                installs.Add(new DynamoInstall(DynamoVersions.dynamo_07x));
             }
 
             return installs;
