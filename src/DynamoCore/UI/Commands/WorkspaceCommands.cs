@@ -21,7 +21,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
-        private DelegateCommand _runGraphLayoutCommand;
+        private DelegateCommand _graphAutolayCommand;
         private DelegateCommand _pauseVisualizationManagerUpdateCommand;
         private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
 
@@ -35,13 +35,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand RunGraphLayoutCommand
+        public DelegateCommand GraphAutolayCommand
         {
             get
             {
-                if (_runGraphLayoutCommand == null)
-                    _runGraphLayoutCommand = new DelegateCommand(RunGraphLayout, CanRunGraphLayout);
-                return _runGraphLayoutCommand;
+                if (_graphAutolayCommand == null)
+                    _graphAutolayCommand = new DelegateCommand(GraphAutolay, CanGraphAutolay);
+                return _graphAutolayCommand;
             }
         }
 

@@ -891,7 +891,7 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void RunGraphLayout(object o)
+        private void GraphAutolay(object o)
         {
             if (_model.Nodes.Count == 0)
                 return;
@@ -934,7 +934,7 @@ namespace Dynamo.ViewModels
             FitViewCommand.Execute(null);
         }
 
-        private bool CanRunGraphLayout(object o)
+        private bool CanGraphAutolay(object o)
         {
             return true;
         }

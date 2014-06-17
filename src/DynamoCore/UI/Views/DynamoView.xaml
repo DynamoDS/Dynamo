@@ -65,7 +65,7 @@
                                 Command="{Binding Path=DataContext.InsertPausePlaybackCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="L"
                                 Modifiers="Control"
-                                Command="{Binding Path=DataContext.RunGraphLayoutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                                Command="{Binding Path=DataContext.GraphAutolayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Tab"
                                 Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
@@ -256,7 +256,7 @@
                             <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute" Focusable="False"/>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Focusable="False" Header="_Autolay Nodes" Command="{Binding RunGraphLayoutCommand}" Name="GraphLayout" InputGestureText="Ctrl + L"/>
+                        <MenuItem Focusable="False" Header="_Autolay Nodes" Command="{Binding GraphAutolayCommand}" Name="GraphAutolay" InputGestureText="Ctrl + L"/>
                     </MenuItem>
 
                     <MenuItem Header="_View" Name="viewMenu" Focusable="False">

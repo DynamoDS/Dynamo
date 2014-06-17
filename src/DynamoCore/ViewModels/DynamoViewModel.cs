@@ -154,7 +154,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
         public DelegateCommand SaveRecordedCommand { get; set; }
         public DelegateCommand InsertPausePlaybackCommand { get; set; }
-        public DelegateCommand RunGraphLayoutCommand { get; set; }
+        public DelegateCommand GraphAutolayCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
         public DelegateCommand ShowInstalledPackagesCommand { get; set; }
@@ -599,7 +599,7 @@ namespace Dynamo.ViewModels
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
-            RunGraphLayoutCommand = new DelegateCommand(RunGraphLayout, CanRunGraphLayout);
+            GraphAutolayCommand = new DelegateCommand(GraphAutolay, CanGraphAutolay);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
@@ -1142,12 +1142,12 @@ namespace Dynamo.ViewModels
             return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
         }
 
-        public void RunGraphLayout(object parameter)
+        public void GraphAutolay(object parameter)
         {
-            this.CurrentSpaceViewModel.RunGraphLayoutCommand.Execute(parameter);
+            this.CurrentSpaceViewModel.GraphAutolayCommand.Execute(parameter);
         }
 
-        internal bool CanRunGraphLayout(object parameter)
+        internal bool CanGraphAutolay(object parameter)
         {
             return true;
         }
