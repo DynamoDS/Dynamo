@@ -143,10 +143,9 @@ namespace Dynamorph
         CameraConfiguration()
         {
             memset(this, 0, sizeof(CameraConfiguration));
-            eye[1] = 5.0f;
-            eye[0] = eye[2] = 10.0f;
+            eyePoint[0] = eyePoint[1] = eyePoint[2] = 1.0f;
             center[0] = center[1] = center[2] = 0.0f;
-            up[1] = 1.0f; // Default up-vector is Y-axis
+            upVector[1] = 1.0f; // Default up-vector is Y-axis
 
             viewportWidth = 1280;
             viewportHeight = 720;
@@ -157,9 +156,9 @@ namespace Dynamorph
 
         void SetEyePoint(float x, float y, float z)
         {
-            eye[0] = x;
-            eye[1] = y;
-            eye[2] = z;
+            eyePoint[0] = x;
+            eyePoint[1] = y;
+            eyePoint[2] = z;
         }
 
         void SetCenterPoint(float x, float y, float z)
@@ -171,22 +170,23 @@ namespace Dynamorph
 
         void SetUpVector(float x, float y, float z)
         {
-            up[0] = x;
-            up[1] = y;
-            up[2] = z;
+            upVector[0] = x;
+            upVector[1] = y;
+            upVector[2] = z;
         }
 
         void GetViewDirection(float& x, float& y, float& z)
         {
-            x = 1.0f; // center[0] - eye[0];
-            y = 1.0f; // center[1] - eye[1];
-            z = 1.0f; // center[2] - eye[2];
+            // Always viewing origin.
+            x = 0.0f - eyePoint[0];
+            y = 0.0f - eyePoint[1];
+            z = 0.0f - eyePoint[2];
         }
 
         // View matrix.
-        float eye[3];
+        float eyePoint[3];
         float center[3];
-        float up[3];
+        float upVector[3];
 
         // Projection matrix.
         int viewportWidth;

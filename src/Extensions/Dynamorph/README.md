@@ -35,7 +35,6 @@ Dynamorph, morph the heck out of your design.
 - [x] Introduce "normal matrix" into [Phong shader](http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/renderer.js)
 - [x] Remove normal computation in GetTriangleGeometries
 - [x] Update aspect ratio when window is sized
-- [ ] Replace "CameraConfiguration::eye" with "viewDirection"
 - [ ] Translate directly into GeometryData as interleaved
 - [ ] Factor mpNodeGeometries, mpGeomsOnDepthLevel out of Visualizer
 - [ ] Fix: Line segment with 0 vertex should be filtered
@@ -55,6 +54,7 @@ Dynamorph, morph the heck out of your design.
 ##### Obsolete Tasks #####
 - [x] Implement saving of tessellated data to bin file
 - [x] Implement loading of tessellated data from file
+- [x] Replace "CameraConfiguration::eye" with "viewDirection"
 
 
 ## Screenshot Of The Day ##

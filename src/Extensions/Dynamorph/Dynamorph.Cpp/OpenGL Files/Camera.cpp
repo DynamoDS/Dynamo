@@ -145,7 +145,7 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     glm::vec3 inversedViewDir(-vx, -vy, -vz);
     inversedViewDir = glm::normalize(inversedViewDir);
 
-    // Compute the new eye point based on direction and center.
+    // Compute the new eye point based on direction and origin.
     glm::vec3 eye = inversedViewDir * distance;
 
     // Update the configuration and reconfigure the camera.
@@ -161,22 +161,23 @@ Dynamorph::ITrackBall* Camera::GetTrackBallCore() const
 
 void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration)
 {
-    glm::vec3 eye(
-        pConfiguration->eye[0],
-        pConfiguration->eye[1],
-        pConfiguration->eye[2]);
+    glm::vec3 eyePoint(
+        pConfiguration->eyePoint[0],
+        pConfiguration->eyePoint[1],
+        pConfiguration->eyePoint[2]);
 
     glm::vec3 center(
         pConfiguration->center[0],
         pConfiguration->center[1],
         pConfiguration->center[2]);
 
-    glm::vec3 up(
-        pConfiguration->up[0],
-        pConfiguration->up[1],
-        pConfiguration->up[2]);
+    glm::vec3 upVector(
+        pConfiguration->upVector[0],
+        pConfiguration->upVector[1],
+        pConfiguration->upVector[2]);
 
-    this->mViewMatrix = glm::lookAt(eye, glm::vec3(0.0f), up);
+    // The view is always looking at the origin from "eyePoint".
+    this->mViewMatrix = glm::lookAt(eyePoint, glm::vec3(0.0f), upVector);
 
     const float w = ((float) pConfiguration->viewportWidth);
     const float h = ((float) pConfiguration->viewportHeight);
