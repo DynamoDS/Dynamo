@@ -26,7 +26,11 @@ namespace Dynamo.Interfaces
         /// </summary>
         string AlternateContextName { get; set; }
 
-        int MaxGridLines { get; set; }
+        /// <summary>
+        /// The maximum number of divisions in any direction of an analytical surface 
+        /// tesselation
+        /// </summary>
+        int MaxTesselationDivisions { get; set; }
 
         /// <summary>
         /// Aggregates all upstream geometry for the given node then sends

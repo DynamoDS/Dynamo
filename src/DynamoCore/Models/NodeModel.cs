@@ -1536,7 +1536,7 @@ namespace Dynamo.Models
             try
             {
 
-                graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxGridLines);
+                graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
                 package.Tag = tag;
             }
             catch (Exception e)
