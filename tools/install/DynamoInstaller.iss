@@ -15,7 +15,7 @@ VersionInfoCompany=Autodesk
 VersionInfoDescription=Dynamo 0.7.1
 VersionInfoTextVersion=Dynamo 0.7.1
 VersionInfoCopyright=
-DefaultDirName={pf64}\Dynamo071
+DefaultDirName={pf64}\Dynamo 0.7
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo0.7.1
@@ -56,8 +56,6 @@ Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritere
 Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
-Source: Extra\DynamoAddinsRestore.bat; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-Source: Extra\DynamoAddinsBackup.bat; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
 ;Revit 2014
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014
@@ -66,6 +64,10 @@ Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skip
 ;Revit 2015
 Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
+
+;AddinGenerator
+Source: temp\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: temp\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
 
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
@@ -91,10 +93,7 @@ Type: filesandordirs; Name: {app}\dll
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 Filename: "{app}\InstallASMForDynamo.exe";
-Filename: "{app}\DynamoAddinsBackup.bat";
-
-[UninstallRun]
-Filename: "{app}\DynamoAddinsRestore.bat";
+Filename: "{app}\DynamoAddinGenerator.exe";
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
@@ -199,8 +198,6 @@ begin
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
-var
-  AddInFileContents: String;
 begin
   if (CurStep=ssInstall) then
   begin
@@ -208,39 +205,6 @@ begin
     begin
       UnInstallOldVersion();
     end;
-  end;
-
-  if CurStep = ssPostInstall then
-  begin
-
-	{ CREATE NEW ADDIN FILE }
-	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
-	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
-  AddInFileContents := AddInFileContents + '    <Name>Dynamo For Revit</Name>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitVersionSelector.dll</Assembly>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.VersionLoader</FullClassName>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
-	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
-  AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
-	
-    if (WizardForm.ComponentsList.Checked[1]) then
-    begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\DynamoVersionSelector.addin'), AddInFileContents, False);
-    end;
-
-    if (WizardForm.ComponentsList.Checked[2]) then
-    begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2015\DynamoVersionSelector.addin'), AddInFileContents, False);
-    end;
-
-    if (WizardForm.ComponentsList.Checked[3]) then
-    begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSelector.addin'), AddInFileContents, False);
-    end;
-
   end;
 end;
 

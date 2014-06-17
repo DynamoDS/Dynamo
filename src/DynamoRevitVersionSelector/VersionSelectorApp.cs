@@ -64,7 +64,8 @@ namespace Dynamo.Applications
             // now we have a default path, but let's look at
             // the load path file to see what was last selected
             var cachedPath = string.Empty;
-            var fileLoc = Utils.GetVersionSaveFileLocation();
+            var fileLoc = Utils.GetVersionSaveFileLocation(
+                application.ControlledApplication.VersionName);
 
             if (File.Exists(fileLoc))
             {
@@ -103,7 +104,7 @@ namespace Dynamo.Applications
         {
             var loadPath = Path.Combine(VersionLoader.BasePath, "DynamoRevit.dll");
 
-            Utils.WriteToFile(loadPath);
+            Utils.WriteToFile(loadPath, commandData.Application.Application.VersionName);
 
             Utils.ShowRestartMessage(FileVersionInfo.GetVersionInfo(loadPath).FileVersion);
 
@@ -119,7 +120,7 @@ namespace Dynamo.Applications
         {
             var loadPath = Path.Combine(VersionLoader.BetaPath, "DynamoRevitDS.dll");
 
-            Utils.WriteToFile(loadPath);
+            Utils.WriteToFile(loadPath, commandData.Application.Application.VersionName);
 
             Utils.ShowRestartMessage(FileVersionInfo.GetVersionInfo(loadPath).FileVersion);
 
@@ -129,9 +130,9 @@ namespace Dynamo.Applications
 
     internal class Utils
     {
-        internal static void WriteToFile(string loadPath)
+        internal static void WriteToFile(string loadPath, string versionName)
         {
-            var path = GetVersionSaveFileLocation();
+            var path = GetVersionSaveFileLocation(versionName);
 
             if (File.Exists(path))
             {
@@ -147,7 +148,7 @@ namespace Dynamo.Applications
         /// <summary>
         /// Return PreferenceSettings Default XML File Path if possible
         /// </summary>
-        internal static string GetVersionSaveFileLocation()
+        internal static string GetVersionSaveFileLocation(string versionName)
         {
             try
             {
@@ -160,7 +161,7 @@ namespace Dynamo.Applications
                 if (Directory.Exists(appDataFolder) == false)
                     Directory.CreateDirectory(appDataFolder);
 
-                return (Path.Combine(appDataFolder, "DynamoDllForLoad.txt"));
+                return (Path.Combine(appDataFolder, string.Format("DynamoDllForLoad_{0}.txt",versionName)));
             }
             catch (Exception)
             {
