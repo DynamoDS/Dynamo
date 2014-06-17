@@ -9,8 +9,8 @@
     <ProjectGuid>{CEA31792-BA09-431B-8ECE-E2F0354B2150}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ASMGeometryTests</RootNamespace>
-    <AssemblyName>ASMGeometryTests</AssemblyName>
+    <RootNamespace>WorkflowTests</RootNamespace>
+    <AssemblyName>WorkflowTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeometryTests.cs" />
+    <Compile Include="ComplexTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
