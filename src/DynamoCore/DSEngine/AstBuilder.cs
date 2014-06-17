@@ -199,11 +199,17 @@ namespace Dynamo.DSEngine
                 HashSet<NodeModel> topScopedNodes = new HashSet<NodeModel>(nodes);
                 foreach (var node in nodes)
                 {
-                    if (node is ScopedNodeModel)
+                    var scopedNode = node as ScopedNodeModel;
+                    // Here we put strong limitation on ScopedNodeModel. 
+                    // Unless a ScopedNodeModel has all connected inputs, it won't
+                    // compile its children in its own scope.
+                    if (scopedNode == null || !scopedNode.HasUnconnectedInput())
                     {
-                        var scopedNodes = (node as ScopedNodeModel).GetInScopeNodes();
-                        topScopedNodes.ExceptWith(scopedNodes);
+                        continue;
                     }
+
+                    var nodesInItsScope = scopedNode.GetInScopeNodes();
+                    topScopedNodes.ExceptWith(nodesInItsScope);
                 }
                 nodes = topScopedNodes;
             }
