@@ -39,27 +39,36 @@ namespace DynamoAddinGenerator
         {
             foreach (var product in products.Products)
             {
-                Console.WriteLine("Deleting addins in {0}", product.AddinsFolder);
-
-                var dynamoAddin = Path.Combine(product.AddinsFolder, "Dynamo.addin");
-                if (File.Exists(dynamoAddin))
+                try
                 {
-                    File.Delete(dynamoAddin);
-                    Console.WriteLine("Deleted addin in {0}", dynamoAddin);
+                    Console.WriteLine("Deleting addins in {0}", product.AddinsFolder);
+
+                    var dynamoAddin = Path.Combine(product.AddinsFolder, "Dynamo.addin");
+                    if (File.Exists(dynamoAddin))
+                    {
+                        Console.WriteLine("Deleting addin {0}", dynamoAddin);
+                        File.Delete(dynamoAddin);
+                    }
+
+                    dynamoAddin = Path.Combine(product.AddinsFolder, "DynamoRevitVersionSelector.addin");
+                    if (File.Exists(dynamoAddin))
+                    {
+                        Console.WriteLine("Deleting addin {0}", dynamoAddin);
+                        File.Delete(dynamoAddin);
+                    }
+
+                    dynamoAddin = Path.Combine(product.AddinsFolder, "DynamoVersionSelector.addin");
+                    if (File.Exists(dynamoAddin))
+                    {
+                        Console.WriteLine("Deleting addin {0}", dynamoAddin);
+                        File.Delete(dynamoAddin);
+                    }
                 }
-
-                dynamoAddin = Path.Combine(product.AddinsFolder, "DynamoRevitVersionSelector.addin");
-                if (File.Exists(dynamoAddin))
+                catch (Exception ex)
                 {
-                    File.Delete(dynamoAddin);
-                    Console.WriteLine("Deleting addins in {0}", dynamoAddin);
-                }
-
-                dynamoAddin = Path.Combine(product.AddinsFolder, "DynamoVersionSelector.addin");
-                if (File.Exists(dynamoAddin))
-                {
-                    File.Delete(dynamoAddin);
-                    Console.WriteLine("Deleting addins in {0}", dynamoAddin);
+                    Console.WriteLine("There as an error deleting an addin {0}", product.AddinsFolder);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
                 }
             }
         }
