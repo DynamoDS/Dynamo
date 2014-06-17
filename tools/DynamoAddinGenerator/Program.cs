@@ -95,7 +95,7 @@ namespace DynamoAddinGenerator
                     "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n" +
                     "<RevitAddIns>\n" +
                     "<AddIn Type=\"Application\">\n" +
-                    "<Name>Dynamo Dynamo For Revit</Name>\n" +
+                    "<Name>Dynamo For Revit</Name>\n" +
                     "<Assembly>\"{0}\"</Assembly>\n" +
                     "<AddInId>{1}</AddInId>\n" +
                     "<FullClassName>{2}</FullClassName>\n" +
