@@ -105,7 +105,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitsUI", "Libraries\UnitsU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "DynamoUtilitiesTests\DynamoUtilitiesTests.csproj", "{AB735028-22B0-4083-9CC5-805C582818EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASMGeometryTests", "..\test\Libraries\GeometryTests\ASMGeometryTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowTests", "..\test\Libraries\WorlflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -185,12 +185,6 @@ Global
 		{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{126C6420-C7A2-43B0-8B08-206C6C4C1348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{126C6420-C7A2-43B0-8B08-206C6C4C1348}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{126C6420-C7A2-43B0-8B08-206C6C4C1348}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E1177DB-5E4F-4E2E-82E7-902437E56AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E1177DB-5E4F-4E2E-82E7-902437E56AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E1177DB-5E4F-4E2E-82E7-902437E56AED}.Release|Any CPU.ActiveCfg = Release|Any CPU

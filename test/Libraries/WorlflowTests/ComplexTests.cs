@@ -8,19 +8,19 @@ using Autodesk.DesignScript.Geometry;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class GeometryTests : DSEvaluationUnitTest
+    class WorkflowTests : DSEvaluationUnitTest
     {
         // Note: Only add test cases those are related to ASM Geometry.
         // Always create a region while creating tests for new Geometry type.
 
         #region Solid Tests
         [Test]
-        public void RandomModel_V3()
+        public void TestSolidSweep()
         {
             // This will test user workflow which contains many nodes, final output is Solid using
             // sweep.
             DynamoModel model = Controller.DynamoModel;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\ASMGeometry\RandomModel_V3.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\RandomModel_V3.dyn");
             
             RunModel(openPath);
 
