@@ -198,8 +198,6 @@ begin
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
-var
-  AddInFileContents: String;
 begin
   if (CurStep=ssInstall) then
   begin
