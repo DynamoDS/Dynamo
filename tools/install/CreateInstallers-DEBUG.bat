@@ -1,1 +1,1 @@
-CreateInstallers.bat Debug
+%~dp0\CreateInstallers.bat Debug
