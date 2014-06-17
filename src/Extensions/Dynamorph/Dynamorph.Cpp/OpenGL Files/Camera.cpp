@@ -146,12 +146,11 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     inversedViewDir = glm::normalize(inversedViewDir);
 
     // Compute the new eye point based on direction and center.
-    glm::vec3 center(boxCenter[0], boxCenter[1], boxCenter[2]);
-    glm::vec3 eye = (center + (inversedViewDir * distance));
+    glm::vec3 eye = inversedViewDir * distance;
 
     // Update the configuration and reconfigure the camera.
     configuration.SetEyePoint(eye.x, eye.y, eye.z);
-    configuration.SetCenterPoint(center.x, center.y, center.z);
+    configuration.SetCenterPoint(boxCenter[0], boxCenter[1], boxCenter[2]);
     this->Configure(&configuration);
 }
 
@@ -177,7 +176,7 @@ void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration)
         pConfiguration->up[1],
         pConfiguration->up[2]);
 
-    this->mViewMatrix = glm::lookAt(eye, center, up);
+    this->mViewMatrix = glm::lookAt(eye, glm::vec3(0.0f), up);
 
     const float w = ((float) pConfiguration->viewportWidth);
     const float h = ((float) pConfiguration->viewportHeight);

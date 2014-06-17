@@ -169,9 +169,15 @@ void ShaderProgram::ApplyTransformationCore(const ICamera* pCamera) const
     if (pCameraInternal == nullptr)
         return;
 
+    Dynamorph::CameraConfiguration config;
+    pCameraInternal->GetConfiguration(config);
+    glm::vec3 offset(-config.center[0], -config.center[1], -config.center[2]);
+    glm::mat4 moveToCenter = glm::translate(glm::mat4(1.0f), offset);
+
     glm::mat4 model, view, proj;
     pCameraInternal->GetMatrices(model, view, proj);
 
+    model = model * moveToCenter;
     GL::glUniformMatrix4fv(mModelMatrixUniform, 1, GL_FALSE, glm::value_ptr(model));
     GL::glUniformMatrix4fv(mViewMatrixUniform, 1, GL_FALSE, glm::value_ptr(view));
     GL::glUniformMatrix4fv(mProjMatrixUniform, 1, GL_FALSE, glm::value_ptr(proj));

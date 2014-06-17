@@ -178,9 +178,9 @@ namespace Dynamorph
 
         void GetViewDirection(float& x, float& y, float& z)
         {
-            x = center[0] - eye[0];
-            y = center[1] - eye[1];
-            z = center[2] - eye[2];
+            x = 1.0f; // center[0] - eye[0];
+            y = 1.0f; // center[1] - eye[1];
+            z = 1.0f; // center[2] - eye[2];
         }
 
         // View matrix.
