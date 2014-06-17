@@ -56,8 +56,6 @@ Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritere
 Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
-Source: Extra\DynamoAddinsRestore.bat; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-Source: Extra\DynamoAddinsBackup.bat; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
 ;Revit 2014
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014
@@ -69,6 +67,7 @@ Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skip
 
 ;AddinGenerator
 Source: temp\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: temp\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
 
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore

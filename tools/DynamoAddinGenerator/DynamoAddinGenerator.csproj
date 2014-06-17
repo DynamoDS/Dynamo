@@ -39,7 +39,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAddInUtility">
+    <Reference Include="RevitAddInUtility, Version=2015.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\RevitAddInUtility.dll</HintPath>
     </Reference>
     <Reference Include="System" />
