@@ -67,6 +67,9 @@ Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skip
 Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 
+;AddinGenerator
+Source: temp\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
+
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
@@ -91,10 +94,7 @@ Type: filesandordirs; Name: {app}\dll
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 Filename: "{app}\InstallASMForDynamo.exe";
-Filename: "{app}\DynamoAddinsBackup.bat";
-
-[UninstallRun]
-Filename: "{app}\DynamoAddinsRestore.bat";
+Filename: "{app}\DynamoAddinGenerator.exe";
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
