@@ -15,7 +15,6 @@ namespace Dynamorph
     {
         internal enum BrushIndex
         {
-            NodeFillColor,
             NodeBorderColor,
             NodeTextColor,
 
@@ -23,32 +22,13 @@ namespace Dynamorph
             SliderFill,
             SliderDivider,
 
-            Lime,
-            Green,
-            Emerald,
-            Teal,
-            Cyan,
-            Cobalt,
-            Indigo,
-            Violet,
-            Pink,
-            Magenta,
-            Crimson,
-            Red,
-            Orange,
-            Amber,
-            Yellow,
-            Brown,
-            Olive,
-            Steel,
-            Mauve,
-            Taupe,
+            NodeColorStart,
+            NodeColorCount = 10,
         }
 
         static GraphResources()
         {
             Brushes = new List<SolidColorBrush>();
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(0xcb, 0xc6, 0xbe))); // NodeFillColor
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0x5e, 0x5c, 0x5a))); // NodeBorderColor
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00))); // NodeTextColor
 
@@ -56,26 +36,13 @@ namespace Dynamorph
             Brushes.Add(new SolidColorBrush(Color.FromRgb(104, 104, 104)));    // SliderFill
             Brushes.Add(new SolidColorBrush(Color.FromRgb(30, 30, 30)));       // SliderDivider
 
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(164, 196, 0)));   // Lime
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(96, 169, 23)));   // Green
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(0, 138, 0)));     // Emerald
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(0, 171, 169)));   // Teal
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(27, 161, 226)));  // Cyan
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(0, 80, 239)));    // Cobalt
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(106, 0, 255)));   // Indigo
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(170, 0, 255)));   // Violet
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(244, 114, 208))); // Pink
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(216, 0, 115)));   // Magenta
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(162, 0, 37)));    // Crimson
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(229, 20, 0)));    // Red    
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(250, 104, 0)));   // Orange
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(240, 163, 10)));  // Amber
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(227, 200, 0)));   // Yellow
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(130, 90, 44)));   // Brown
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(109, 135, 100))); // Olive
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(100, 118, 135))); // Steel
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(118, 96, 138)));  // Mauve
-            Brushes.Add(new SolidColorBrush(Color.FromRgb(135, 121, 78)));  // Taupe
+            int count = ((int)BrushIndex.NodeColorCount);
+            double degree = 0, unitAngle = 360.0 / count;
+            for (int index = 0; index < count; ++index, degree += unitAngle)
+            {
+                Color color = Utilities.HsvToRgb(degree, 0.5, 1.0);
+                Brushes.Add(new SolidColorBrush(color));
+            }
 
             Brushes.ForEach(b => b.Freeze());
         }
@@ -85,12 +52,10 @@ namespace Dynamorph
             return Brushes[(int)index];
         }
 
-        internal static SolidColorBrush Pen(int index)
+        internal static SolidColorBrush NodeColor(int index)
         {
-            int start = ((int)BrushIndex.Lime);
-            int end = ((int)BrushIndex.Taupe);
-            int count = end - start + 1;
-
+            int start = ((int)BrushIndex.NodeColorStart);
+            int count = ((int)BrushIndex.NodeColorCount);
             return Brushes[(start + (index % count))];
         }
 
@@ -401,10 +366,10 @@ namespace Dynamorph
                 boundingBox.Union(rect);
 
                 var bi = GraphResources.BrushIndex.NodeBorderColor;
-                var fi = GraphResources.BrushIndex.NodeFillColor;
                 var bp = new Pen(GraphResources.Brush(bi), 1.0);
                 rect.Offset(-0.5, -0.5);
-                drawingContext.DrawRectangle(GraphResources.Brush(fi), bp, rect);
+                var fi = GraphResources.NodeColor(node.NodeIndex);
+                drawingContext.DrawRectangle(fi, bp, rect);
 
                 FormattedText ft = new FormattedText(node.Name, CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight, typeface, 10.0, textBrush)
@@ -465,7 +430,7 @@ namespace Dynamorph
 
                 AddBezier(pathFigure, startPoints[index], endPoints[index]);
                 pathGeometry.Figures.Add(pathFigure);
-                var pb = GraphResources.Pen(index);
+                var pb = GraphResources.NodeColor(index);
                 drawingContext.DrawGeometry(null, new Pen(pb, 2.0), pathGeometry);
             }
 

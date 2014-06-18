@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Dynamorph
 {
@@ -45,6 +46,11 @@ namespace Dynamorph
             return height;
         }
 
+        internal void UpdateNodeIndex(int index)
+        {
+            this.NodeIndex = index;
+        }
+
         internal Point GetInputPoint(int index)
         {
             var offset = ((index + 1) * Config.NodeHeight);
@@ -59,6 +65,7 @@ namespace Dynamorph
 
         #region Public Class Properties
 
+        internal int NodeIndex { get; private set; }
         internal int Depth { get; set; }
         internal int DisplayRow { get; set; }
         internal int UpstreamNodeCount { get; set; }
@@ -150,7 +157,7 @@ namespace Dynamorph
             }
 
             // Update the node positioning on canvas.
-            int depth = -1;
+            int depth = -1, index = 0;
             double nodeTopCoord = Config.VertGap;
             foreach (var node in this.nodes)
             {
@@ -160,10 +167,10 @@ namespace Dynamorph
                     nodeTopCoord = Config.VertGap;
                 }
 
+                node.UpdateNodeIndex(index++);
                 double height = node.UpdateNodeLayout(nodeTopCoord);
                 nodeTopCoord = nodeTopCoord + height + Config.VertGap;
             }
-
         }
 
         internal IEnumerable<string> NodesNotInGraph(SynthesizedGraph otherGraph)

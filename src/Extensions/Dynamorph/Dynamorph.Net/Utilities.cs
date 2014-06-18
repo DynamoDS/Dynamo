@@ -72,5 +72,19 @@ namespace Dynamorph
             b = ((((b < 0) ? 0 : b) > 255) ? 255 : b);
             return Color.FromArgb(255, ((byte)r), ((byte)g), ((byte)b));
         }
+
+        /// <summary>
+        /// Call this method to create an inversed color of the original.
+        /// </summary>
+        /// <param name="color">The color to inverse</param>
+        /// <returns>The inversed color</returns>
+        /// 
+        internal static Color Inverse(Color color)
+        {
+            int r = color.R ^ 0xff;
+            int g = color.G ^ 0xff;
+            int b = color.B ^ 0xff;
+            return Color.FromArgb(255, ((byte)r), ((byte)g), ((byte)b));
+        }
     }
 }
