@@ -38,7 +38,7 @@ namespace DSCoreNodesUI.Logic
                                                                     List<AssociativeNode> inputAstNodes)
         {
             AstBuilder astBuilder = new AstBuilder(null);
-            var nodes = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
+            var nodes = GetInScopeNodesForInport(branch).Where(n => !(n is Symbol));
             var astNodes = astBuilder.CompileToAstNodes(nodes, false, false).ToList();
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes.Select(n => n.ToImperativeAST()).ToList();

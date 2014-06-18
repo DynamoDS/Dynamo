@@ -55,14 +55,19 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Get all nodes that in its input ports's scope. A node is in its 
-        /// scope if it is one of this nodes' upstream nodes. Flag checkEscape 
-        /// specifies if need to exclude nodes that one of their downstream 
-        /// nodes are not in the scope.
+        /// scope if it is one of this nodes' upstream nodes. 
         /// </summary>
         /// <param name="portIndex">Inport index</param>
-        /// <param name="checkEscape"></param>
+        /// <param name="checkEscape">
+        /// Specifies if need to exclude nodes that one of their downstream
+        /// nodes are not in the scope
+        /// </param>
+        /// <param name="isInclusive">
+        /// If one of its upstream node is ScopedNodeModel, if need to include 
+        /// all upstream nodes of that node.
+        /// </param>
         /// <returns></returns>
-        public IEnumerable<NodeModel> GetInScopeNodesForInport(int portIndex, bool checkEscape = true)
+        public IEnumerable<NodeModel> GetInScopeNodesForInport(int portIndex, bool checkEscape = true, bool isInclusive = true)
         {
             // The related test cases are in DynmoTest.ScopedNodeTest.
             var scopedNodes = new HashSet<NodeModel>();
@@ -87,6 +92,11 @@ namespace Dynamo.Models
             while (workingList.Any())
             {
                 var currentNode = workingList.Dequeue();
+                if (!isInclusive && currentNode is ScopedNodeModel)
+                {
+                    continue;
+                }
+
                 foreach (int index in Enumerable.Range(0, currentNode.InPortData.Count))
                 {
                     if (currentNode.TryGetInput(index, out inputTuple))
@@ -105,12 +115,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Return all nodes that are in the scope of this node. Flag checkEsacpe
-        /// specifies if need to exclude nodes that one of their downstream
+        /// Return all nodes that are in the scope of this node. 
         /// nodes are not in the scope.
         /// </summary>
+        /// <param name="checkEscape">
+        /// Specifies if need to exclude nodes that one of their downstream
+        /// nodes are not in the scope
+        /// </param>
+        /// <param name="isInclusive">
+        /// If one of its upstream node is ScopedNodeModel, if need to include 
+        /// all upstream nodes of that node.
+        /// </param>
         /// <returns></returns>
-        public IEnumerable<NodeModel> GetInScopeNodes(bool checkEscape = true)
+        public IEnumerable<NodeModel> GetInScopeNodes(bool checkEscape = true, bool isInclusive = true)
         {
             var inScopedNodes = new List<NodeModel>();
 
@@ -121,7 +138,7 @@ namespace Dynamo.Models
                     continue;
                 }
 
-                var inScopedNodesForInport = GetInScopeNodesForInport(index, checkEscape);
+                var inScopedNodesForInport = GetInScopeNodesForInport(index, checkEscape, isInclusive);
                 inScopedNodes.AddRange(inScopedNodesForInport);
             }
 
