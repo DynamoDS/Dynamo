@@ -40,17 +40,17 @@ namespace DynamoAddinGenerator
         public void DynamoInstallCollection_OldAndNewInstalls_Latest()
         {
             var dynamo1 = new DynamoInstall(DynamoVersions.dynamo_063);
-            var dynamo2 = new DynamoInstall(DynamoVersions.dynamo_071_a);
+            var dynamo2 = new DynamoInstall(DynamoVersions.dynamo_071_x86);
 
             var installColl = new DynamoInstallCollection(new List<DynamoInstall>{dynamo1,dynamo2});
 
-            Assert.AreEqual(installColl.GetLatest().Folder, DynamoVersions.dynamo_071_a);
+            Assert.AreEqual(installColl.GetLatest().Folder, DynamoVersions.dynamo_071_x86);
         }
 
         [Test]
         public void DynamoInstallCollection_NewInstalls_Latest()
         {
-            var dynamo1 = new DynamoInstall(DynamoVersions.dynamo_071_a);
+            var dynamo1 = new DynamoInstall(DynamoVersions.dynamo_071_x86);
             var dynamo2 = new DynamoInstall(DynamoVersions.dynamo_07x);
 
             var installColl = new DynamoInstallCollection(new List<DynamoInstall> { dynamo1, dynamo2 });
@@ -75,12 +75,12 @@ namespace DynamoAddinGenerator
         public void AddinData_071a()
         {
             var prod = CreateRevit2014();
-            var latest = MockDynamoInstall(DynamoVersions.dynamo_071_a);
+            var latest = MockDynamoInstall(DynamoVersions.dynamo_071_x86);
 
             var addinData = new DynamoAddinData(prod, latest);
 
             Assert.AreEqual(addinData.AddinPath, Path.Combine(prod.AddinsFolder, "Dynamo.addin"));
-            Assert.AreEqual(addinData.AssemblyPath, Path.Combine(DynamoVersions.dynamo_071_a, "Revit_2014\\DynamoRevitVersionSelector.dll"));
+            Assert.AreEqual(addinData.AssemblyPath, Path.Combine(DynamoVersions.dynamo_071_x86, "Revit_2014\\DynamoRevitVersionSelector.dll"));
             Assert.AreEqual(addinData.ClassName, "Dynamo.Applications.VersionLoader");
         }
 
@@ -88,12 +88,12 @@ namespace DynamoAddinGenerator
         public void AddinData_071b_2014()
         {
             var prod = CreateRevit2014();
-            var latest = MockDynamoInstall(DynamoVersions.dynamo_071_b);
+            var latest = MockDynamoInstall(DynamoVersions.dynamo_071_x64);
 
             var addinData = new DynamoAddinData(prod, latest);
 
             Assert.AreEqual(addinData.AddinPath, Path.Combine(prod.AddinsFolder, "Dynamo.addin"));
-            Assert.AreEqual(addinData.AssemblyPath, Path.Combine(DynamoVersions.dynamo_071_b, "Revit_2014\\DynamoRevitVersionSelector.dll"));
+            Assert.AreEqual(addinData.AssemblyPath, Path.Combine(DynamoVersions.dynamo_071_x64, "Revit_2014\\DynamoRevitVersionSelector.dll"));
             Assert.AreEqual(addinData.ClassName, "Dynamo.Applications.VersionLoader");
         }
 
@@ -116,7 +116,7 @@ namespace DynamoAddinGenerator
             var existingProds = SomeValidProducts();
             var prods = new RevitProductCollection(existingProds);
 
-            var dynamo1 = new DynamoInstall(DynamoVersions.dynamo_071_a);
+            var dynamo1 = new DynamoInstall(DynamoVersions.dynamo_071_x86);
             var dynamo2 = new DynamoInstall(DynamoVersions.dynamo_07x);
             var dynamos = new DynamoInstallCollection(new List<DynamoInstall> { dynamo1, dynamo2 });
 
