@@ -14,7 +14,7 @@ namespace Dynamo.Models
     public class ScopedNodeModel: NodeModel
     {
         /// <summary>
-        /// If all nodes that the node outputs to are in scopes.
+        /// If all nodes that the node outputs to are in scopes list.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="scopes"></param>
@@ -44,8 +44,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Specify if upstream nodes that connected to specified inport should
-        /// be compiled in the scope or not. 
+        /// Specify if the corresponding inport has scope or not. 
         /// </summary>
         /// <param name="portIndex"></param>
         /// <returns></returns>
@@ -56,8 +55,9 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Get all nodes that in its input ports's scope. A node is in its 
-        /// scope if it is one of its upstream nodes and all of that node's 
-        /// downstream nodes are in this node's scope.
+        /// scope if it is one of this nodes' upstream nodes. Flag checkEscape 
+        /// specifies if need to exclude nodes that one of their downstream 
+        /// nodes are not in the scope.
         /// </summary>
         /// <param name="portIndex">Inport index</param>
         /// <param name="checkEscape"></param>
@@ -105,7 +105,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Return all nodes that are in the scope of this node.
+        /// Return all nodes that are in the scope of this node. Flag checkEsacpe
+        /// specifies if need to exclude nodes that one of their downstream
+        /// nodes are not in the scope.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<NodeModel> GetInScopeNodes(bool checkEscape = true)
@@ -126,11 +128,26 @@ namespace Dynamo.Models
             return inScopedNodes;
         }
 
+        /// <summary>
+        /// Similar to NodeModel.BuildOutputAst(). When compiled to AST, for
+        /// ScopedNodeModel this method will be called when all requirements are
+        /// satisfied. The derived class needs to implement this method to 
+        /// compile its children into some scopes.
+        /// </summary>
+        /// <param name="inputAstNodes"></param>
+        /// <returns></returns>
         public virtual IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
         {
             throw new NotImplementedException("BuildOutputAstInScope");
         }
 
+        /// <summary>
+        /// Similar to NodeModel.BuildAst(). When compiled to AST, for 
+        /// ScopedNodeModel this method will be called when all requirements
+        /// are satisfied. 
+        /// </summary>
+        /// <param name="inputAstNodes"></param>
+        /// <returns></returns>
         internal virtual IEnumerable<AssociativeNode> BuildAstInScope(List<AssociativeNode> inputAstNodes)
         {
             OnBuilt();

@@ -122,7 +122,19 @@ namespace ProtoCore.AssociativeGraph
         public int modBlkUID { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNode> dimensionNodeList { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNodeRef> updateNodeRefList { get; set; }
-        public bool isDirty { get; set; }
+
+        private bool _isDirty;
+        public bool isDirty
+        {
+            get
+            {
+                return _isDirty;
+            }
+            set
+            {
+                _isDirty = value;
+            }
+        }
         public bool isReturn { get; set; }
         public int procIndex { get; set; }      // Function that this graph resides in
         public int classIndex { get; set; }     // Class index that this graph resides in
