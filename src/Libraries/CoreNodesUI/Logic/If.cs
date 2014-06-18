@@ -33,61 +33,15 @@ namespace DSCoreNodesUI.Logic
             //TODO: Default Values
         }
 
-        private FunctionDefinitionNode CreateFunctionDef(IEnumerable<string> parameters,
-                                                         List<AssociativeNode> innerFunctionDefs,
-                                                         int branch,
-                                                         List<AssociativeNode> inputAstNodes)
+        private List<ProtoCore.AST.ImperativeAST.ImperativeNode> GetAstsForBranch(
+                                                                    int branch, 
+                                                                    List<AssociativeNode> inputAstNodes)
         {
             AstBuilder astBuilder = new AstBuilder(null);
-            var nodesInBranch = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
-            var astNodes = astBuilder.CompileToAstNodes(nodesInBranch, false, false);
-
-            var astNodesInBranch = new List<AssociativeNode>();
-            SplitFunctionNodesFromAsts(astNodes, astNodesInBranch, innerFunctionDefs);
-            astNodesInBranch.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
-
-            var functionBody = new CodeBlockNode();
-            functionBody.Body.Add(AstFactory.BuildReturnStatement(
-                new LanguageBlockNode
-                {
-                    codeblock = new LanguageCodeBlock(Language.kImperative),
-                    CodeBlockNode = new ProtoCore.AST.ImperativeAST.CodeBlockNode
-                    {
-                        Body = astNodesInBranch.Select(n => n.ToImperativeAST()).ToList()
-                    }
-                }));
-
-            var varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
-
-            var funcionDef = new FunctionDefinitionNode
-            {
-                Name = "IF_" + this.GUID.ToString().Replace("-", string.Empty) + "_" + branch.ToString(),
-                Signature = new ArgumentSignatureNode
-                {
-                    Arguments = parameters.Select(param => AstFactory.BuildParamNode(param, varType)).ToList()
-                },
-                FunctionBody = functionBody,
-                ReturnType = varType 
-            };
-
-            return funcionDef;
-        }
-
-        private void SplitFunctionNodesFromAsts(List<AssociativeNode> allAstNodes,
-                                                List<AssociativeNode> astNodes,
-                                                List<AssociativeNode> functionNodes)
-        {
-            foreach (var astNode in allAstNodes)
-            {
-                if (astNode is FunctionDefinitionNode)
-                {
-                    functionNodes.Add(astNode);
-                }
-                else
-                {
-                    astNodes.Add(astNode);
-                }
-            }
+            var nodes = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
+            var astNodes = astBuilder.CompileToAstNodes(nodes, false, false).ToList();
+            astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
+            return astNodes.Select(n => n.ToImperativeAST()).ToList();
         }
 
         /// <summary>
@@ -103,18 +57,9 @@ namespace DSCoreNodesUI.Logic
 
         public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
         {
-            var inputNodes = this.GetInScopeNodes(false).OfType<Symbol>().ToList();
-            var paramNames = inputNodes.Select(x => string.IsNullOrEmpty(x.InputSymbol) ? x.AstIdentifierBase : x.InputSymbol);
-
-            List<AssociativeNode> innerFuncs = new List<AssociativeNode>();
-
             //Create a new function definition for true and false branch
-            var trueFunc = CreateFunctionDef(paramNames, innerFuncs, 1, inputAstNodes);
-            var falseFunc = CreateFunctionDef(paramNames, innerFuncs, 2, inputAstNodes);
-
-            var parameters = paramNames.Select(x => new ProtoCore.AST.ImperativeAST.IdentifierNode(x))
-                                       .Cast<ProtoCore.AST.ImperativeAST.ImperativeNode>()
-                                       .ToList(); 
+            var astsInTrueBranch = GetAstsForBranch(1, inputAstNodes);
+            var astsInFalseBranch = GetAstsForBranch(2, inputAstNodes);
 
             var lhs = GetAstIdentifierForOutputIndex(0);
             var rhs = new LanguageBlockNode
@@ -127,39 +72,17 @@ namespace DSCoreNodesUI.Logic
                           new ProtoCore.AST.ImperativeAST.IfStmtNode
                           {
                              IfExprNode = inputAstNodes[0].ToImperativeAST(),
-                             IfBody = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>
-                             {
-                                 new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
-                                     new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                                     new ProtoCore.AST.ImperativeAST.FunctionCallNode()
-                                     {
-                                        Function = new ProtoCore.AST.ImperativeAST.IdentifierNode(trueFunc.Name),
-                                        FormalArguments = parameters
-                                     },
-                                     ProtoCore.DSASM.Operator.assign)
-                             }
+                             IfBody = astsInTrueBranch,
+                             ElseBody = astsInFalseBranch
                          },
-
-                         new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
-                             new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                             new ProtoCore.AST.ImperativeAST.FunctionCallNode()
-                             {
-                                Function = new ProtoCore.AST.ImperativeAST.IdentifierNode(falseFunc.Name),
-                                FormalArguments = parameters
-                             },
-                             ProtoCore.DSASM.Operator.assign)
                      }
                 }
             };
             var assignment = AstFactory.BuildAssignment(lhs, rhs);
-
-            List<AssociativeNode> finalAsts = new List<AssociativeNode>();
-            finalAsts.AddRange(innerFuncs);
-            finalAsts.Add(trueFunc);
-            finalAsts.Add(falseFunc);
-            finalAsts.Add(assignment);
-
-            return finalAsts;
+            return new AssociativeNode[] 
+            {
+                assignment
+            };
         }  
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
