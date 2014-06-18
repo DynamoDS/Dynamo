@@ -189,6 +189,7 @@ void Visualizer::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
 
 Visualizer::Visualizer() : 
     mAlphaParamIndex(-1),
+    mColorParamIndex(-1),
     mBlendingFactor(0.0f),
     mpNodeGeometries(nullptr),
     mpGeomsOnDepthLevel(nullptr),
@@ -240,6 +241,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpShaderProgram->BindTransformMatrix(TransMatrix::Projection, "proj");
     mpShaderProgram->BindTransformMatrix(TransMatrix::Normal, "normalMatrix");
     mAlphaParamIndex = mpShaderProgram->GetShaderParameterIndex("alpha");
+    mColorParamIndex = mpShaderProgram->GetShaderParameterIndex("colorOverride");
 
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     {
@@ -455,7 +457,9 @@ void Visualizer::RenderWithBlendingFactor(void)
 void Visualizer::RenderGeometries(
     const std::vector<NodeGeometries *>& geometries, float alpha)
 {
+    float c[] = { 1.0f, 0.0f, 0.5f, 1.0f };
     mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
+    mpShaderProgram->SetParameter(mColorParamIndex, &c[0], 4);
 
     auto iterator = geometries.begin();
     for (; iterator != geometries.end(); ++iterator)

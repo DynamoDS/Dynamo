@@ -12,6 +12,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 uniform mat4 normalMatrix;
+uniform vec4 colorOverride;
 
 void main(void)
 {
@@ -20,6 +21,6 @@ void main(void)
     
     // Compute parameters for fragment shader
     vertPosition = vec3(viewPos) / viewPos.w;
-    vertColor = inColor;
+    vertColor = inColor * colorOverride;
     vertNormal = vec3(normalMatrix * vec4(inNormal, 0.0));
 }

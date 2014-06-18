@@ -84,6 +84,7 @@ namespace Dynamorph
         IGraphicsContext* mpGraphicsContext;
 
         int mAlphaParamIndex;
+        int mColorParamIndex;
         float mBlendingFactor;
         IShaderProgram* mpShaderProgram;
 
