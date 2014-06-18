@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore;
+using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CodeBlockNode = ProtoCore.AST.AssociativeAST.CodeBlockNode;
@@ -38,7 +38,7 @@ namespace DSCoreNodesUI.Logic
                                                          int branch)
         {
             AstBuilder astBuilder = new AstBuilder(null);
-            var nodesInBranch = GetInScopeNodesForInport(branch);
+            var nodesInBranch = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
             var astNodes = astBuilder.CompileToAstNodes(nodesInBranch, false, false);
 
             var astNodesInBranch = new List<AssociativeNode>();
@@ -80,15 +80,20 @@ namespace DSCoreNodesUI.Logic
             }
         }
 
-        protected override bool IsScopedInPort(int portIndex)
+        /// <summary>
+        /// Specify if upstream nodes that connected to specified inport should
+        /// be compiled in the scope or not. 
+        /// </summary>
+        /// <param name="portIndex"></param>
+        /// <returns></returns>
+        protected override bool IsScopedInport(int portIndex)
         {
             return portIndex == 1 || portIndex == 2;
         }
 
-        private IEnumerable<AssociativeNode> BuildNodesInScope(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
         {
-            var workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
-            var inputNodes = workspace.Nodes.OfType<Symbol>().ToList();
+            var inputNodes = this.GetInScopeNodes(false).OfType<Symbol>().ToList();
             var paramNames = inputNodes.Select(x => string.IsNullOrEmpty(x.InputSymbol) ? x.AstIdentifierBase : x.InputSymbol);
 
             List<AssociativeNode> innerFuncs = new List<AssociativeNode>();
@@ -103,16 +108,44 @@ namespace DSCoreNodesUI.Logic
             var falseRet = AstFactory.BuildReturnStatement(inputAstNodes[2]);
             falseFunc.FunctionBody.Body.Add(falseRet);
 
-            var parameters = inputNodes.Select(x => AstFactory.BuildIdentifier(x.AstIdentifierBase))
-                                       .Cast<AssociativeNode>()
+            var parameters = paramNames.Select(x => new ProtoCore.AST.ImperativeAST.IdentifierNode(x))
+                                       .Cast<ProtoCore.AST.ImperativeAST.ImperativeNode>()
                                        .ToList(); 
 
             var lhs = GetAstIdentifierForOutputIndex(0);
-            var rhs = new InlineConditionalNode
+            var rhs = new LanguageBlockNode
             {
-                ConditionExpression = inputAstNodes[0],
-                TrueExpression = AstFactory.BuildFunctionCall(trueFunc.Name, parameters),
-                FalseExpression = AstFactory.BuildFunctionCall(falseFunc.Name, parameters),
+                codeblock = new LanguageCodeBlock(Language.kImperative),
+                CodeBlockNode = new ProtoCore.AST.ImperativeAST.CodeBlockNode
+                {
+                    Body = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>
+                    {
+                          new ProtoCore.AST.ImperativeAST.IfStmtNode
+                          {
+                             IfExprNode = inputAstNodes[0].ToImperativeAST(),
+                             IfBody = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>
+                             {
+                                 new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
+                                     new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
+                                     new ProtoCore.AST.ImperativeAST.FunctionCallNode()
+                                     {
+                                        Function = new ProtoCore.AST.ImperativeAST.IdentifierNode(trueFunc.Name),
+                                        FormalArguments = parameters
+                                     },
+                                     ProtoCore.DSASM.Operator.assign)
+                             }
+                         },
+
+                         new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
+                             new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
+                             new ProtoCore.AST.ImperativeAST.FunctionCallNode()
+                             {
+                                Function = new ProtoCore.AST.ImperativeAST.IdentifierNode(falseFunc.Name),
+                                FormalArguments = parameters
+                             },
+                             ProtoCore.DSASM.Operator.assign)
+                     }
+                }
             };
             var assignment = AstFactory.BuildAssignment(lhs, rhs);
 
@@ -127,9 +160,6 @@ namespace DSCoreNodesUI.Logic
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (dynSettings.Controller.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel)
-                return BuildNodesInScope(inputAstNodes);
-
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
 

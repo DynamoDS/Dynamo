@@ -138,7 +138,15 @@ namespace Dynamo.DSEngine
                 "Shouldn't have null nodes in the AST list");
 #endif
 
-            IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
+            IEnumerable<AssociativeNode> astNodes = null;
+            if (!isDeltaExecution && node is ScopedNodeModel)
+            {
+                astNodes = (node as ScopedNodeModel).BuildAstInScope(inputAstNodes);
+            }
+            else
+            {
+                astNodes = node.BuildAst(inputAstNodes);
+            }
             
             if (dynSettings.Controller.DebugSettings.VerboseLogging)
             {
@@ -187,7 +195,6 @@ namespace Dynamo.DSEngine
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
-
             // If it is built for custom node, it is not in delta execution 
             // mode, so nodes includes all nodes in the custom node workspace. 
             // 
@@ -201,9 +208,9 @@ namespace Dynamo.DSEngine
                 {
                     var scopedNode = node as ScopedNodeModel;
                     // Here we put strong limitation on ScopedNodeModel. 
-                    // Unless a ScopedNodeModel has all connected inputs, it won't
-                    // compile its children in its own scope.
-                    if (scopedNode == null || !scopedNode.HasUnconnectedInput())
+                    // Unless a ScopedNodeModel has all connected inputs, it 
+                    // won't compile its children in its own scope.
+                    if (scopedNode == null || scopedNode.HasUnconnectedInput())
                     {
                         continue;
                     }
