@@ -8,8 +8,8 @@ using ProtoCore.AST.AssociativeAST;
 namespace Dynamo.Models
 {
     /// <summary>
-    /// ScopedNodeModel will be put all its children inside its scope so that 
-    /// they won't get compiled in global scope.
+    /// ScopedNodeModel will put its children in its scope so that they won't 
+    /// get compiled in global scope.
     /// </summary>
     public class ScopedNodeModel: NodeModel
     {
