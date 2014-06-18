@@ -36,12 +36,18 @@ namespace Dynamorph
             Brushes.Add(new SolidColorBrush(Color.FromRgb(104, 104, 104)));    // SliderFill
             Brushes.Add(new SolidColorBrush(Color.FromRgb(30, 30, 30)));       // SliderDivider
 
-            int count = ((int)BrushIndex.NodeColorCount);
-            double degree = 0, unitAngle = 360.0 / count;
-            for (int index = 0; index < count; ++index, degree += unitAngle)
+            // Put colors directly opposite right next to each other for contrast.
+            int count = ((int)BrushIndex.NodeColorCount), half = count / 2;
+            double unitAngle = 360.0 / count;
+            for (int index = 0; index < half; index++)
             {
-                Color color = Utilities.HsvToRgb(degree, 0.5, 1.0);
-                Brushes.Add(new SolidColorBrush(color));
+                double degree0 = index * unitAngle;
+                double degree1 = ((index + half) * unitAngle);
+
+                var color0 = Utilities.HsvToRgb(degree0, 0.5, 1.0);
+                var color1 = Utilities.HsvToRgb(degree1, 0.5, 1.0);
+                Brushes.Add(new SolidColorBrush(color0));
+                Brushes.Add(new SolidColorBrush(color1));
             }
 
             Brushes.ForEach(b => b.Freeze());
