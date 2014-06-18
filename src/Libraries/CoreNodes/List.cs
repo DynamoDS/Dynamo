@@ -87,7 +87,7 @@ namespace DSCore
         ///     If false: Any ranges with out of bounds indices are ommitted.</param>
         /// <returns name="lists">Sublists of the given list.</returns>
         /// <search>sublists,build sublists</search>
-        public static IList Sublists(IList list, IList ranges, int offset, bool keepIncomplete = true)
+        public static IList Sublists(IList list, IList ranges, int offset)
         {
             var result = new ArrayList();
             int len = list.Count;
