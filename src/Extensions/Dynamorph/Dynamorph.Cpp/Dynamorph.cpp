@@ -148,10 +148,10 @@ void Visualizer::BlendGeometryLevels(float blendingFactor)
     RequestFrameUpdate(); // Update window.
 }
 
-void Visualizer::UpdateNodeGeometries(UpdateGeometryParam^ geometryParam)
+void Visualizer::UpdateNodeDetails(NodeDetailsType^ nodeDetails)
 {
-    UpdateNodeGeometries(geometryParam->Geometries);
-    AssociateToDepthValues(geometryParam->Depth);
+    UpdateNodeGeometries(nodeDetails);
+    AssociateToDepthValues(nodeDetails);
     RequestFrameUpdate(); // Update window.
 }
 
@@ -299,13 +299,17 @@ void Visualizer::Uninitialize(void)
     }
 }
 
-void Visualizer::UpdateNodeGeometries(NodeGeomsType^ geometries)
+void Visualizer::UpdateNodeGeometries(NodeDetailsType^ nodeDetails)
 {
     BoundingBox outerBoundingBox;
 
-    for each(KeyValuePair<System::String^, IRenderPackage^> geometry in geometries)
+    for each (KeyValuePair<System::String^, NodeDetails^>^ detail in nodeDetails)
     {
-        System::String^ nodeId = geometry.Key->ToLower();
+        auto pRenderPackage = detail->Value->RenderPackage;
+        if (pRenderPackage == nullptr)
+            continue;
+
+        System::String^ nodeId = detail->Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
         NodeGeometries* pNodeGeometries = nullptr;
@@ -322,7 +326,6 @@ void Visualizer::UpdateNodeGeometries(NodeGeomsType^ geometries)
                 (identifier, pNodeGeometries));
         }
 
-        auto pRenderPackage = geometry.Value;
         PointGeometryData pointData(pRenderPackage->PointVertices->Count / 3);
         if (GetPointGeometries(pRenderPackage, pointData))
         {
@@ -357,15 +360,15 @@ void Visualizer::UpdateNodeGeometries(NodeGeomsType^ geometries)
     pCamera->FitToBoundingBox(&outerBoundingBox);
 }
 
-void Visualizer::AssociateToDepthValues(NodeDepthsType^ depths)
+void Visualizer::AssociateToDepthValues(NodeDetailsType^ nodeDetails)
 {
     mpGeomsOnDepthLevel->clear();
 
     int maxDepth = -1; // Determine the maximum number of levels required.
-    for each (KeyValuePair<System::String^, int>^ depth in depths)
+    for each (KeyValuePair<System::String^, NodeDetails^>^ detail in nodeDetails)
     {
-        if (depth->Value > maxDepth)
-            maxDepth = depth->Value;
+        if (detail->Value->Depth > maxDepth)
+            maxDepth = detail->Value->Depth;
     }
 
     if (maxDepth < 0) // There seems to be no depth values.
@@ -375,11 +378,11 @@ void Visualizer::AssociateToDepthValues(NodeDepthsType^ depths)
     for (int index = 0; index <= maxDepth; ++index)
         mpGeomsOnDepthLevel->push_back(new std::vector<std::wstring>());
 
-    for each (KeyValuePair<System::String^, int>^ depth in depths)
+    for each (KeyValuePair<System::String^, NodeDetails^>^ detail in nodeDetails)
     {
-        System::String^ nodeId = depth->Key->ToLower();
+        System::String^ nodeId = detail->Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
-        (mpGeomsOnDepthLevel->at(depth->Value))->push_back(identifier);
+        (mpGeomsOnDepthLevel->at(detail->Value->Depth))->push_back(identifier);
     }
 }
 

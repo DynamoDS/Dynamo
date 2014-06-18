@@ -8,9 +8,6 @@
 namespace Gen = System::Collections::Generic;
 namespace Ds = Autodesk::DesignScript::Interfaces;
 
-typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, int>> NodeDepthsType;
-typedef Gen::Dictionary<System::String^, Ds::IRenderPackage^> NodeGeomsType;
-
 namespace Dynamorph
 {
     class IGraphicsContext;
@@ -57,29 +54,7 @@ namespace Dynamorph
         Ds::IRenderPackage^ renderPackage;
     };
 
-    public ref class UpdateGeometryParam
-    {
-    public:
-        UpdateGeometryParam(NodeDepthsType^ depths, NodeGeomsType^ geometries)
-        {
-            this->depths = depths;
-            this->geometries = geometries;
-        }
-
-        property NodeDepthsType^ Depth
-        {
-            NodeDepthsType^ get() { return this->depths; }
-        }
-
-        property NodeGeomsType^ Geometries
-        {
-            NodeGeomsType^ get() { return this->geometries; }
-        }
-
-    private:
-        NodeDepthsType^ depths;
-        NodeGeomsType^ geometries;
-    };
+    typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, NodeDetails^>> NodeDetailsType;
 
     public ref class Visualizer
     {
@@ -94,7 +69,7 @@ namespace Dynamorph
         // Public class methods.
         HWND GetWindowHandle(void);
         void BlendGeometryLevels(float blendingFactor);
-        void UpdateNodeGeometries(UpdateGeometryParam^ geometryParam);
+        void UpdateNodeDetails(NodeDetailsType^ nodeDetails);
         void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
 
     private:
@@ -103,8 +78,8 @@ namespace Dynamorph
         Visualizer();
         void Initialize(HWND hWndParent, int width, int height);
         void Uninitialize(void);
-        void UpdateNodeGeometries(NodeGeomsType^ geometries);
-        void AssociateToDepthValues(NodeDepthsType^ depths);
+        void UpdateNodeGeometries(NodeDetailsType^ nodeDetails);
+        void AssociateToDepthValues(NodeDetailsType^ nodeDetails);
         void GetGeometriesAtDepth(int depth, std::vector<NodeGeometries *>& geometries);
         void GetBoundingBox(std::vector<NodeGeometries *>& geometries, BoundingBox& box);
         void RequestFrameUpdate(void);

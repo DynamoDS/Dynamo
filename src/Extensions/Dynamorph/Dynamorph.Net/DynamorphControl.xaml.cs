@@ -70,8 +70,16 @@ namespace Dynamorph
             if (visualizer != null && (visualizer.CurrentVisualizer != null))
             {
                 var depths = this.currentGraph.GetNodeDepths();
-                var param = new UpdateGeometryParam(depths, geometries);
-                visualizer.CurrentVisualizer.UpdateNodeGeometries(param);
+                var details = new Dictionary<string, NodeDetails>();
+
+                foreach (var depth in depths)
+                {
+                    IRenderPackage geometry = null;
+                    geometries.TryGetValue(depth.Key, out geometry);
+                    details.Add(depth.Key, new NodeDetails(depth.Value, geometry));
+                }
+
+                visualizer.CurrentVisualizer.UpdateNodeDetails(details);
             }
         }
 
