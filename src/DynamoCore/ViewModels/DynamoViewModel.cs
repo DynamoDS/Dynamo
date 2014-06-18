@@ -154,7 +154,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
         public DelegateCommand SaveRecordedCommand { get; set; }
         public DelegateCommand InsertPausePlaybackCommand { get; set; }
-        public DelegateCommand GraphAutolayCommand { get; set; }
+        public DelegateCommand GraphAutoLayoutCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
         public DelegateCommand ShowInstalledPackagesCommand { get; set; }
@@ -599,7 +599,7 @@ namespace Dynamo.ViewModels
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
-            GraphAutolayCommand = new DelegateCommand(GraphAutolay, CanGraphAutolay);
+            GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
@@ -1142,12 +1142,12 @@ namespace Dynamo.ViewModels
             return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
         }
 
-        public void GraphAutolay(object parameter)
+        public void DoGraphAutoLayout(object parameter)
         {
-            this.CurrentSpaceViewModel.GraphAutolayCommand.Execute(parameter);
+            this.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(parameter);
         }
 
-        internal bool CanGraphAutolay(object parameter)
+        internal bool CanDoGraphAutoLayout(object parameter)
         {
             return true;
         }
