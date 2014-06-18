@@ -70,6 +70,7 @@ namespace Dynamorph
             if (visualizer != null && (visualizer.CurrentVisualizer != null))
             {
                 var depths = this.currentGraph.GetNodeDepths();
+                var colors = this.currentGraph.GetNodeColors();
                 var details = new Dictionary<string, NodeDetails>();
 
                 foreach (var depth in depths)
@@ -77,6 +78,14 @@ namespace Dynamorph
                     IRenderPackage geometry = null;
                     geometries.TryGetValue(depth.Key, out geometry);
                     details.Add(depth.Key, new NodeDetails(depth.Value, geometry));
+                }
+
+                double inv = 1.0 / 255.0;
+                foreach (var color in colors)
+                {
+                    var c = color.Value;
+                    var nodeDetails = details[color.Key];
+                    nodeDetails.SetColor(c.R * inv, c.G * inv, c.B * inv);
                 }
 
                 visualizer.CurrentVisualizer.UpdateNodeDetails(details);

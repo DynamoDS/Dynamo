@@ -189,6 +189,18 @@ namespace Dynamorph
             return depths;
         }
 
+        internal IEnumerable<KeyValuePair<string, Color>> GetNodeColors()
+        {
+            var depths = new Dictionary<string, Color>();
+            foreach (var node in this.nodes)
+            {
+                var brush = GraphResources.NodeColor(node.NodeIndex);
+                depths.Add(node.Identifier, brush.Color);
+            }
+
+            return depths;
+        }
+
         #endregion
 
         #region Class Properties

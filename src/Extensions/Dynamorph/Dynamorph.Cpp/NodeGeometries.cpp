@@ -7,6 +7,8 @@ using namespace Dynamorph;
 
 NodeGeometries::NodeGeometries(const std::wstring& nodeId) : mNodeId(nodeId)
 {
+    mNodeRgbaColor[0] = mNodeRgbaColor[1] = 1.0f;
+    mNodeRgbaColor[2] = mNodeRgbaColor[3] = 1.0f;
 }
 
 NodeGeometries::~NodeGeometries(void)
@@ -29,6 +31,22 @@ void NodeGeometries::ClearVertexBuffers(void)
 
     mVertexBuffers.clear();
     mBoundingBox.Invalidate();
+}
+
+void NodeGeometries::GetColor(float* pRgbaColor) const
+{
+    pRgbaColor[0] = mNodeRgbaColor[0];
+    pRgbaColor[1] = mNodeRgbaColor[1];
+    pRgbaColor[2] = mNodeRgbaColor[2];
+    pRgbaColor[3] = mNodeRgbaColor[3];
+}
+
+void NodeGeometries::SetColor(float red, float green, float blue, float alpha)
+{
+    mNodeRgbaColor[0] = red;
+    mNodeRgbaColor[1] = green;
+    mNodeRgbaColor[2] = blue;
+    mNodeRgbaColor[3] = alpha;
 }
 
 void NodeGeometries::AppendVertexBuffer(IVertexBuffer* pVertexBuffer)

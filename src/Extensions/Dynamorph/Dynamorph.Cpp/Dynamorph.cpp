@@ -350,6 +350,12 @@ void Visualizer::UpdateNodeGeometries(NodeDetailsType^ nodeDetails)
             pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
         }
 
+        // Set the color of this node.
+        float r = ((float)detail->Value->Red);
+        float g = ((float)detail->Value->Green);
+        float b = ((float)detail->Value->Blue);
+        pNodeGeometries->SetColor(r, g, b, 1.0f);
+
         // Finally, determine the bounding box for these geometries.
         BoundingBox boundingBox;
         pNodeGeometries->GetBoundingBox(&boundingBox);
@@ -460,13 +466,17 @@ void Visualizer::RenderWithBlendingFactor(void)
 void Visualizer::RenderGeometries(
     const std::vector<NodeGeometries *>& geometries, float alpha)
 {
-    float c[] = { 1.0f, 0.0f, 0.5f, 1.0f };
     mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
-    mpShaderProgram->SetParameter(mColorParamIndex, &c[0], 4);
 
+    float rgbaColor[4] = { 0 };
     auto iterator = geometries.begin();
     for (; iterator != geometries.end(); ++iterator)
-        (*iterator)->Render(mpGraphicsContext);
+    {
+        auto pNodeGeometries = *iterator;
+        pNodeGeometries->GetColor(&rgbaColor[0]);
+        mpShaderProgram->SetParameter(mColorParamIndex, &rgbaColor[0], 4);
+        pNodeGeometries->Render(mpGraphicsContext);
+    }
 }
 
 LRESULT Visualizer::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam)
