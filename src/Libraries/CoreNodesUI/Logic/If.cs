@@ -35,7 +35,8 @@ namespace DSCoreNodesUI.Logic
 
         private FunctionDefinitionNode CreateFunctionDef(IEnumerable<string> parameters,
                                                          List<AssociativeNode> innerFunctionDefs,
-                                                         int branch)
+                                                         int branch,
+                                                         List<AssociativeNode> inputAstNodes)
         {
             AstBuilder astBuilder = new AstBuilder(null);
             var nodesInBranch = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
@@ -43,9 +44,18 @@ namespace DSCoreNodesUI.Logic
 
             var astNodesInBranch = new List<AssociativeNode>();
             SplitFunctionNodesFromAsts(astNodes, astNodesInBranch, innerFunctionDefs);
+            astNodesInBranch.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(astNodesInBranch);
+            functionBody.Body.Add(AstFactory.BuildReturnStatement(
+                new LanguageBlockNode
+                {
+                    codeblock = new LanguageCodeBlock(Language.kImperative),
+                    CodeBlockNode = new ProtoCore.AST.ImperativeAST.CodeBlockNode
+                    {
+                        Body = astNodesInBranch.Select(n => n.ToImperativeAST()).ToList()
+                    }
+                }));
 
             var varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
 
@@ -98,15 +108,9 @@ namespace DSCoreNodesUI.Logic
 
             List<AssociativeNode> innerFuncs = new List<AssociativeNode>();
 
-            //Create a new function definition for true branch
-            var trueFunc = CreateFunctionDef(paramNames, innerFuncs, 1);
-            var trueRet = AstFactory.BuildReturnStatement(inputAstNodes[1]);
-            trueFunc.FunctionBody.Body.Add(trueRet);
-
-            //Create a new function definition for true branch
-            var falseFunc = CreateFunctionDef(paramNames, innerFuncs, 2);
-            var falseRet = AstFactory.BuildReturnStatement(inputAstNodes[2]);
-            falseFunc.FunctionBody.Body.Add(falseRet);
+            //Create a new function definition for true and false branch
+            var trueFunc = CreateFunctionDef(paramNames, innerFuncs, 1, inputAstNodes);
+            var falseFunc = CreateFunctionDef(paramNames, innerFuncs, 2, inputAstNodes);
 
             var parameters = paramNames.Select(x => new ProtoCore.AST.ImperativeAST.IdentifierNode(x))
                                        .Cast<ProtoCore.AST.ImperativeAST.ImperativeNode>()
