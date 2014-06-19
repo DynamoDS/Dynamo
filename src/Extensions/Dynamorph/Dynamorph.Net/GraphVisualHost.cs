@@ -17,6 +17,7 @@ namespace Dynamorph
         {
             NodeBorderColor,
             NodeTextColor,
+            EdgeOutlineColor,
 
             SliderEdge,
             SliderFill,
@@ -31,6 +32,7 @@ namespace Dynamorph
             Brushes = new List<SolidColorBrush>();
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0x5e, 0x5c, 0x5a))); // NodeBorderColor
             Brushes.Add(new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00))); // NodeTextColor
+            Brushes.Add(new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33))); // EdgeOutlineColor
 
             Brushes.Add(new SolidColorBrush(Color.FromRgb(62, 62, 66)));       // SliderEdge
             Brushes.Add(new SolidColorBrush(Color.FromRgb(104, 104, 104)));    // SliderFill
@@ -413,31 +415,40 @@ namespace Dynamorph
             if (graph == null || (graph.Edges.Any() == false))
                 return; // There is no graph or it has no edges.
 
-            var startPoints = new PointCollection();
-            var endPoints = new PointCollection();
-
             var nodes = graph.Nodes;
+            var edgeData = new List<Tuple<int, Point, Point>>();
+
             foreach (var edge in graph.Edges)
             {
                 var startNode = nodes.First(n => n.Identifier == edge.StartNodeId);
                 var endNode = nodes.First(n => n.Identifier == edge.EndNodeId);
-                startPoints.Add(startNode.GetOutputPoint(edge.StartIndex));
-                endPoints.Add(endNode.GetInputPoint(edge.EndIndex));
+
+                edgeData.Add(new Tuple<int, Point, Point>(startNode.NodeIndex,
+                    startNode.GetOutputPoint(edge.StartIndex),
+                    endNode.GetInputPoint(edge.EndIndex)));
             }
 
+            // Edge outline in darker color (before drawing the fill).
+            var eb = GraphResources.Brush(GraphResources.BrushIndex.EdgeOutlineColor);
+
             var drawingContext = edgeVisuals.RenderOpen();
-            for (int index = 0; index < startPoints.Count; ++index)
+            foreach (var data in edgeData)
             {
                 PathGeometry pathGeometry = new PathGeometry();
                 PathFigure pathFigure = new PathFigure()
                 {
-                    StartPoint = startPoints[index]
+                    StartPoint = data.Item2
                 };
 
-                AddBezier(pathFigure, startPoints[index], endPoints[index]);
+                AddBezier(pathFigure, data.Item2, data.Item3);
                 pathGeometry.Figures.Add(pathFigure);
-                var pb = GraphResources.NodeColor(index);
-                drawingContext.DrawGeometry(null, new Pen(pb, 2.0), pathGeometry);
+                var pb = GraphResources.NodeColor(data.Item1);
+                drawingContext.DrawGeometry(null, new Pen(eb, 3.5), pathGeometry);
+                drawingContext.DrawGeometry(null, new Pen(pb, 1.5), pathGeometry);
+
+                var jointPen = new Pen(eb, 1.0);
+                drawingContext.DrawEllipse(pb, jointPen, data.Item2, 4.0, 4.0);
+                drawingContext.DrawEllipse(pb, jointPen, data.Item3, 4.0, 4.0);
             }
 
             drawingContext.Close();

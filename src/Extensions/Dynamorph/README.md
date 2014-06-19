@@ -60,5 +60,5 @@ Dynamorph, morph the heck out of your design.
 ## Screenshot Of The Day ##
 This is the latest screenshot of Dynamorph. It will be updated as and when there is any visible change to Dynamorph to reflect the latest development.
 
-#### SynthesizedGraph nodes now aligned to leaf nodes! :) ####
+#### SynthesizedGraph nodes, edges and joints with better color scheme! :) ####
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Recharge_Ben/src/Extensions/Dynamorph/dynamorph-screen.png)
