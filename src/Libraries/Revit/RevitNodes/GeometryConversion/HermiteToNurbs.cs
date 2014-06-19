@@ -136,7 +136,7 @@ namespace Revit.GeometryConversion
                 }
             }
 
-            return pPoints.Select(x => x.ToPoint()).ToArray();
+            return pPoints.Select(x => x.ToPoint(false)).ToArray();
         }
 
         private static double[] Symmetric(double[] pX)

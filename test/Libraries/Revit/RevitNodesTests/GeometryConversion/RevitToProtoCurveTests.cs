@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.Revit.DB;
+
 using Revit.GeometryConversion;
 using NUnit.Framework;
 using RTF.Framework;
@@ -11,6 +13,50 @@ namespace DSRevitNodesTests.GeometryConversion
     [TestFixture]
     public class RevitToProtoCurveTests : GeometricRevitNodeTest
     {
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void ToProtoType_ExtensionMethod_DoesExpectedUnitConversion()
+        {
+            var pts = new List<Autodesk.Revit.DB.XYZ>()
+            {
+                new Autodesk.Revit.DB.XYZ(1,0,0),
+                new Autodesk.Revit.DB.XYZ(1,1,0),
+                new Autodesk.Revit.DB.XYZ(0,1,0),
+                new Autodesk.Revit.DB.XYZ(0,2,0)
+            };
+
+            var wts = new List<double>()
+            {
+                1, Math.Sqrt(2)/2, 1, 1
+            };
+
+            var revitSpline = Autodesk.Revit.DB.NurbSpline.Create(pts, wts);
+
+            var protoCurve = revitSpline.ToProtoType();
+
+            Assert.NotNull(protoCurve);
+            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
+
+            var protoSpline = (Autodesk.DesignScript.Geometry.NurbsCurve)protoCurve;
+
+            Assert.AreEqual(revitSpline.Degree, protoSpline.Degree);
+
+            Assert.IsTrue(protoSpline.IsRational);
+            Assert.AreEqual(revitSpline.CtrlPoints.Count, protoSpline.ControlPoints().Count());
+            Assert.AreEqual(revitSpline.Weights.Cast<double>().Count(), protoSpline.Weights().Length);
+
+            // We scale the tesselation for comparison
+            var feetToMeters = 0.3048;
+            var tessPtsProto = revitSpline.Tessellate().Select(x => x.ToPoint().Scale(feetToMeters)).Cast<Autodesk.DesignScript.Geometry.Point>();
+
+            // assert the tesselation is very close to original curve
+            foreach (var pt in tessPtsProto)
+            {
+                var closestPt = protoSpline.GetClosestPoint(pt);
+                Assert.Less(closestPt.DistanceTo(pt), 1e-6);
+            }
+        }
+
         [Test]
         [TestModel(@".\empty.rfa")]
         public void NurbSpline_Rational()

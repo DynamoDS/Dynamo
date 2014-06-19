@@ -13,6 +13,47 @@ namespace DSRevitNodesTests.GeometryConversion
     {
         [Test]
         [TestModel(@".\empty.rfa")]
+        public void ToRevitType_ExtensionMethod_DoesExpectedUnitConversion()
+        {
+            // testing 
+            var pts = new[]
+            {
+                Point.ByCoordinates(10,2,3)
+                , Point.ByCoordinates(0,2,2)
+                , Point.ByCoordinates(10,4,8)
+                , Point.ByCoordinates(10,2,8)
+                , Point.ByCoordinates(5,5,5)
+            };
+
+            var bspline = NurbsCurve.ByControlPoints(pts, 3);
+
+            // do scaling for check
+            var metersToFeet = 1/0.3048;
+            var bsplineScaled = (NurbsCurve)bspline.Scale(metersToFeet);
+
+            // by default, performs conversion
+            var revitCurve = bspline.ToRevitType();
+
+            Assert.NotNull(revitCurve);
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.NurbSpline>(revitCurve);
+
+            var revitSpline = (Autodesk.Revit.DB.NurbSpline)revitCurve;
+
+            Assert.AreEqual(bsplineScaled.Degree, revitSpline.Degree);
+            Assert.AreEqual(bsplineScaled.ControlPoints().Count(), revitSpline.CtrlPoints.Count);
+
+            var tessPts = revitSpline.Tessellate();
+
+            //assert the tesselation is very close to original curve
+            foreach (var pt in tessPts)
+            {
+                var closestPt = bsplineScaled.GetClosestPoint(pt.ToPoint());
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+            }
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
         public void NurbsCurve_Basic()
         {
 

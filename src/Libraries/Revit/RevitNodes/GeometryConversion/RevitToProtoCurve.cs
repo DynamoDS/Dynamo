@@ -76,7 +76,7 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.NurbSpline crv)
         {
-            var convert = NurbsCurve.ByControlPointsWeightsKnots(crv.CtrlPoints.Select(x => x.ToPoint()).ToArray(), 
+            var convert = NurbsCurve.ByControlPointsWeightsKnots(crv.CtrlPoints.Select(x => x.ToPoint(false)).ToArray(), 
                 crv.Weights.Cast<double>().ToArray(), crv.Knots.Cast<double>().ToArray(), crv.Degree );
 
             if (!crv.IsBound) return convert;
@@ -142,7 +142,7 @@ namespace Revit.GeometryConversion
         private static Autodesk.DesignScript.Geometry.Line Convert(Autodesk.Revit.DB.Line crv)
         {
             return Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
-                 crv.GetEndPoint(0).ToPoint(), crv.GetEndPoint(1).ToPoint());
+                 crv.GetEndPoint(0).ToPoint(false), crv.GetEndPoint(1).ToPoint(false));
         }
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Arc crv)
@@ -152,18 +152,18 @@ namespace Revit.GeometryConversion
 
             if ( isCircle )
             {
-                return Circle.ByCenterPointRadiusNormal(crv.Center.ToPoint(), crv.Radius, crv.Normal.ToVector());
+                return Circle.ByCenterPointRadiusNormal(crv.Center.ToPoint(false), crv.Radius, crv.Normal.ToVector(false));
             }
 
-            return Arc.ByCenterPointStartPointSweepAngle(crv.Center.ToPoint(), crv.GetEndPoint(0).ToPoint(),
-                (crv.GetEndParameter(1) - crv.GetEndParameter(0))*180/Math.PI, crv.Normal.ToVector());
+            return Arc.ByCenterPointStartPointSweepAngle(crv.Center.ToPoint(false), crv.GetEndPoint(0).ToPoint(false),
+                (crv.GetEndParameter(1) - crv.GetEndParameter(0))*180/Math.PI, crv.Normal.ToVector(false));
         }
 
         private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.PolyLine crv)
         {
             return
                 Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(
-                    crv.GetCoordinates().Select(x => x.ToPoint()).ToArray(), 1);
+                    crv.GetCoordinates().Select(x => x.ToPoint(false)).ToArray(), 1);
         }
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Ellipse crv)
@@ -173,8 +173,8 @@ namespace Revit.GeometryConversion
 
             if (!isComplete)
             {
-                var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(),
-                    crv.XDirection.ToVector(), crv.YDirection.ToVector());
+                var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false),
+                    crv.XDirection.ToVector(false), crv.YDirection.ToVector(false));
 
                 var s = crv.GetEndParameter(0).ToDegrees();
                 var e = crv.GetEndParameter(1).ToDegrees();
@@ -182,8 +182,8 @@ namespace Revit.GeometryConversion
                 return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, crv.RadiusX, crv.RadiusY, s, e - s);
             }
 
-            return Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(crv.Center.ToPoint(),
-                (crv.XDirection*crv.RadiusX).ToVector(), (crv.YDirection*crv.RadiusY).ToVector());
+            return Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(crv.Center.ToPoint(false),
+                (crv.XDirection*crv.RadiusX).ToVector(false), (crv.YDirection*crv.RadiusY).ToVector(false));
         }
 
         private static Autodesk.DesignScript.Geometry.Helix Convert(Autodesk.Revit.DB.CylindricalHelix crv)
@@ -191,13 +191,13 @@ namespace Revit.GeometryConversion
             if (crv.IsRightHanded)
             {
                 // a negative pitch and axis vector produces helix in opposite direction
-                return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(), (-1.0 * crv.ZVector).ToVector(),
-                    crv.GetEndPoint(0).ToPoint(), -crv.Pitch, (crv.Height / crv.Pitch) * 360.0);
+                return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(false), (-1.0 * crv.ZVector).ToVector(false),
+                    crv.GetEndPoint(0).ToPoint(false), -crv.Pitch, (crv.Height / crv.Pitch) * 360.0);
             }
 
             // clockwise is default
-            return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(), crv.ZVector.ToVector(),
-                crv.GetEndPoint(0).ToPoint(), crv.Pitch, (crv.Height/crv.Pitch)*360.0);
+            return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(false), crv.ZVector.ToVector(false),
+                crv.GetEndPoint(0).ToPoint(false), crv.Pitch, (crv.Height/crv.Pitch)*360.0);
         }
 
         #endregion

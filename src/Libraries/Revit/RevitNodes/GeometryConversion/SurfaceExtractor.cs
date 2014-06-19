@@ -21,8 +21,8 @@ namespace Revit.GeometryConversion
         {
             edgeLoops = edgeLoops.ToList();
 
-            var x = face.get_Vector(0).ToVector();
-            var y = face.get_Vector(1).ToVector();
+            var x = face.get_Vector(0).ToVector(false);
+            var y = face.get_Vector(1).ToVector(false);
 
             // Construct planar surface larger than the biggest edge loop
             var or = edgeLoops.First().StartPoint; // don't use origin provided by revit, could be anywhere
@@ -44,11 +44,11 @@ namespace Revit.GeometryConversion
             edgeLoops = edgeLoops.ToList();
 
             // Get some data from the face
-            var axis = face.Axis.ToVector();
-            var x = face.get_Radius(0).ToVector();
-            var y = face.get_Radius(1).ToVector();
+            var axis = face.Axis.ToVector(false);
+            var x = face.get_Radius(0).ToVector(false);
+            var y = face.get_Radius(1).ToVector(false);
             var rad = x.Length;
-            var oax = face.Origin.ToPoint();
+            var oax = face.Origin.ToPoint(false);
 
             // project closest point on edge loop onto axis
             // this gives a more reliable origin as the revit origin
@@ -81,10 +81,10 @@ namespace Revit.GeometryConversion
             edgeLoops = edgeLoops.ToList();
 
             // Get some data from the face
-            var axis = face.Axis.ToVector();
-            var x = face.get_Radius(0).ToVector();
-            var y = face.get_Radius(1).ToVector();
-            var tipPt = face.Origin.ToPoint();
+            var axis = face.Axis.ToVector(false);
+            var x = face.get_Radius(0).ToVector(false);
+            var y = face.get_Radius(1).ToVector(false);
+            var tipPt = face.Origin.ToPoint(false);
             var ang = face.HalfAngle;
 
             // We use the max length in order to help find the lowest possible base point for the cone
@@ -135,7 +135,7 @@ namespace Revit.GeometryConversion
 
                 for (var j = 0; j < numU; j++)
                 {
-                    ptArr[i][j] = points[count++].ToPoint();
+                    ptArr[i][j] = points[count++].ToPoint(false);
                 }
             }
 
@@ -155,8 +155,8 @@ namespace Revit.GeometryConversion
 
                 for (var j = 0; j < numU; j++)
                 {
-                    uTangentsArr[i][j] = uTangents[count].ToVector();
-                    vTangentsArr[i][j] = vTangents[count].ToVector();
+                    uTangentsArr[i][j] = uTangents[count].ToVector(false);
+                    vTangentsArr[i][j] = vTangents[count].ToVector(false);
                     count++;
                 }
             }
@@ -173,10 +173,10 @@ namespace Revit.GeometryConversion
             var md = face.MixedDerivs;
             Vector[] mds =
             {
-                md[0].ToVector(), 
-                md[numU - 1].ToVector(), 
-                md[(md.Count - 1) - (numU-1)].ToVector(),
-                md[md.Count - 1].ToVector()
+                md[0].ToVector(false), 
+                md[numU - 1].ToVector(false), 
+                md[(md.Count - 1) - (numU-1)].ToVector(false),
+                md[md.Count - 1].ToVector(false)
             };
 
             return NurbsSurface.ByPointsTangentsKnotsDerivatives(   ptArr, 
@@ -192,11 +192,11 @@ namespace Revit.GeometryConversion
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RevolvedFace face, IEnumerable<PolyCurve> edgeLoops)
         {
-            var crv = face.Curve.ToProtoType();
-            var axis = face.Axis.ToVector();
-            var o = face.Origin.ToVector();
-            var x = face.get_Radius(0).ToVector();
-            var y = face.get_Radius(1).ToVector();
+            var crv = face.Curve.ToProtoType(false);
+            var axis = face.Axis.ToVector(false);
+            var o = face.Origin.ToVector(false);
+            var x = face.get_Radius(0).ToVector(false);
+            var y = face.get_Radius(1).ToVector(false);
 
             // Note: The profile curve is represented in the coordinate system of the revolve
             //       so we need to transform it into the global coordinate system
@@ -210,8 +210,8 @@ namespace Revit.GeometryConversion
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RuledFace face, IEnumerable<PolyCurve> edgeLoops)
         {
-            var c0 = face.get_Curve(0).ToProtoType();
-            var c1 = face.get_Curve(1).ToProtoType();
+            var c0 = face.get_Curve(0).ToProtoType(false);
+            var c1 = face.get_Curve(1).ToProtoType(false);
 
             return Surface.ByLoft(new[] {c0, c1});
         }

@@ -11,8 +11,15 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class UnitConverter
     {
-        public static readonly double DynamoToHostFactor = Length.FromDouble(1.0).ConvertToHostUnits();
-        public static readonly double HostToDynamoFactor = 1 / Length.FromDouble(1.0).ConvertToHostUnits();
+        public static double DynamoToHostFactor
+        {
+            get { return Length.FromDouble(1.0).ConvertToHostUnits(); }
+        }
+
+        public static double HostToDynamoFactor
+        {
+            get { return 1 / DynamoToHostFactor; }
+        }
 
         /// <summary>
         /// Convert from Feet (Revit API internal units) to whatever the user facing units are

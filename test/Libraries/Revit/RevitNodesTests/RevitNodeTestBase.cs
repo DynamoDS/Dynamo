@@ -10,7 +10,7 @@ namespace DSRevitNodesTests
     /// Base class for units tests of Revit nodes.
     /// 
     /// </summary>
-    public abstract class RevitNodeTestBase
+    public class RevitNodeTestBase
     {
         public RevitNodeTestBase()
         {

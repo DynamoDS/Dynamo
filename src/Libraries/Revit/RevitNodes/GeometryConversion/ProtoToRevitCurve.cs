@@ -57,8 +57,8 @@ namespace Revit.GeometryConversion
         {
             if (crv.Degree == 1 && crv.ControlPoints().Length == 2 && !crv.IsRational)
             {
-                return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints()[0].ToXyz(), 
-                    crv.ControlPoints()[1].ToXyz());
+                return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints()[0].ToXyz(false), 
+                    crv.ControlPoints()[1].ToXyz(false));
             }
 
             if (crv.Degree <= 2)
@@ -78,14 +78,14 @@ namespace Revit.GeometryConversion
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
             // convert
-            var center = arc.CenterPoint.ToXyz();
-            var sp = arc.StartPoint.ToXyz();
+            var center = arc.CenterPoint.ToXyz(false);
+            var sp = arc.StartPoint.ToXyz(false);
 
             // get the xaxis of the arc base plane
             var x = (sp - center).Normalize();
 
             // get a second vector in the plane
-            var vecY = (arc.PointAtParameter(0.1).ToXyz() - center);
+            var vecY = (arc.PointAtParameter(0.1).ToXyz(false) - center);
 
             // get the normal to the plane
             var n2 = x.CrossProduct(vecY).Normalize();
@@ -100,14 +100,14 @@ namespace Revit.GeometryConversion
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
             // convert
-            var center = circ.CenterPoint.ToXyz();
-            var sp = circ.StartPoint.ToXyz();
+            var center = circ.CenterPoint.ToXyz(false);
+            var sp = circ.StartPoint.ToXyz(false);
 
             // get the xaxis of the arc base plane normalized
             var x = (sp - center).Normalize();
 
             // get a second vector in the plane
-            var vecY = (circ.PointAtParameter(0.1).ToXyz() - center);
+            var vecY = (circ.PointAtParameter(0.1).ToXyz(false) - center);
 
             // get the normal to the plane
             var n2 = x.CrossProduct(vecY).Normalize();
@@ -121,14 +121,14 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.Revit.DB.Line Convert(Autodesk.DesignScript.Geometry.Line line)
         {
-            return Autodesk.Revit.DB.Line.CreateBound(line.StartPoint.ToXyz(), line.EndPoint.ToXyz());
+            return Autodesk.Revit.DB.Line.CreateBound(line.StartPoint.ToXyz(false), line.EndPoint.ToXyz(false));
         }
 
         private static Autodesk.Revit.DB.CylindricalHelix Convert(Autodesk.DesignScript.Geometry.Helix crv)
         {
-            var sp = crv.StartPoint.ToXyz();
-            var ap = crv.AxisPoint.ToXyz();
-            var ad = crv.AxisDirection.ToXyz().Normalize();
+            var sp = crv.StartPoint.ToXyz(false);
+            var ap = crv.AxisPoint.ToXyz(false);
+            var ad = crv.AxisDirection.ToXyz(false).Normalize();
             var x = (sp - ap).Normalize();
             var p = crv.Pitch;
             var a = crv.Angle.ToRadians();
@@ -138,9 +138,9 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.Ellipse crv)
         {
-            var center = crv.CenterPoint.ToXyz();
-            var x = crv.MajorAxis.ToXyz().Normalize();
-            var y = crv.MinorAxis.ToXyz().Normalize();
+            var center = crv.CenterPoint.ToXyz(false);
+            var x = crv.MajorAxis.ToXyz(false).Normalize();
+            var y = crv.MinorAxis.ToXyz(false).Normalize();
             var xw = crv.MajorAxis.Length;
             var yw = crv.MinorAxis.Length;
 
@@ -151,9 +151,9 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.EllipseArc crv)
         {
-            var center = crv.CenterPoint.ToXyz();
-            var x = crv.MajorAxis.ToXyz().Normalize();
-            var y = crv.MinorAxis.ToXyz().Normalize();
+            var center = crv.CenterPoint.ToXyz(false);
+            var x = crv.MajorAxis.ToXyz(false).Normalize();
+            var y = crv.MinorAxis.ToXyz(false).Normalize();
             var xw = crv.MajorAxis.Length;
             var yw = crv.MinorAxis.Length;
             var sa = crv.StartAngle.ToRadians();

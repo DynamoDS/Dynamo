@@ -1,16 +1,28 @@
 ﻿using Autodesk.DesignScript.Geometry;
+
+using DynamoUnits;
+
 using NUnit.Framework;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public abstract class GeometricRevitNodeTest : RevitNodeTestBase
+    public class GeometricRevitNodeTest : RevitNodeTestBase
     {
         [SetUp]
-        public void SetUpHostFactory()
+        public void SetUp()
         {
             AssemblyResolver.Setup();
+
             HostFactory.Instance.StartUp();
+            SetUpHostUnits();
+        }
+
+        private void SetUpHostUnits()
+        {
+            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
         }
 
         [TearDown]
