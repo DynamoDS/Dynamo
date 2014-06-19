@@ -76,6 +76,7 @@
     <Compile Include="AnalysisDisplay\PointAnalysisDisplayTests.cs" />
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplayTests.cs" />
     <Compile Include="ApproximateAssertExtensions.cs" />
+    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Elements\AbstractElementTests.cs" />
     <Compile Include="Elements\AdaptiveComponentTests.cs" />
     <Compile Include="Elements\CurveByPointsTests.cs" />
@@ -119,15 +120,6 @@
     <Compile Include="RevitNodeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
-      <Name>DynamoUtilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodesUI\RevitNodesUI.csproj">
       <Project>{75940acc-3708-4526-8d91-7e3365baf682}</Project>
       <Name>RevitNodesUI</Name>

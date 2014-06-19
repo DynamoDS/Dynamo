@@ -11,12 +11,6 @@ namespace DSRevitNodesTests.GeometryConversion
     [TestFixture]
     internal class ProtoToRevitCurveTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            Console.WriteLine("hi");
-        }
-
         [Test]
         [TestModel(@".\empty.rfa")]
         public void NurbsCurve_Basic()

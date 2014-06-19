@@ -4,20 +4,19 @@ using NUnit.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class GeometricRevitNodeTest : RevitNodeTestBase
+    public abstract class GeometricRevitNodeTest : RevitNodeTestBase
     {
         [SetUp]
-        public override void Setup()
+        public void SetUpHostFactory()
         {
+            AssemblyResolver.Setup();
             HostFactory.Instance.StartUp();
-            base.Setup();
         }
 
         [TearDown]
-        public override void TearDown()
+        public void ShutDownHostFactory()
         {
             HostFactory.Instance.ShutDown();
-            base.TearDown();
         }
 
     }

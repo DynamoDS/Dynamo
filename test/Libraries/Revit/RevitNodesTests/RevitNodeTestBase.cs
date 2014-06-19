@@ -10,19 +10,16 @@ namespace DSRevitNodesTests
     /// Base class for units tests of Revit nodes.
     /// 
     /// </summary>
-    public class RevitNodeTestBase
+    public abstract class RevitNodeTestBase
     {
-        private static bool SetupResolver = false;
+        public RevitNodeTestBase()
+        {
+            AssemblyResolver.Setup();
+        }
 
         [SetUp]
-        public virtual void Setup()
+        public virtual void SetupTransactionManager()
         {
-            if (!SetupResolver)
-            {
-                AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.ResolveAssembly;
-                SetupResolver = true;
-            }
-
             // create the transaction manager object
             TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
@@ -31,7 +28,7 @@ namespace DSRevitNodesTests
         }
 
         [TearDown]
-        public virtual void TearDown()
+        public virtual void ShutDownTransactionManager()
         {
             // Automatic transaction strategy requires that we 
             // close the transaction if it hasn't been closed by 

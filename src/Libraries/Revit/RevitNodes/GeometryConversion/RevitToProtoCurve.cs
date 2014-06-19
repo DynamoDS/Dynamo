@@ -100,6 +100,9 @@ namespace Revit.GeometryConversion
             var nsp = Math.Abs(fsp - sp) / fd;
             var nep = Math.Abs(fsp - ep) / fd;
 
+            // if there's no trimming to do, avoid it
+            if (Math.Abs(nsp) < 1e-6 && Math.Abs(1 - nep) < 1e-6) return convert;
+
             return convert.ParameterTrim(nsp, nep);
         }
 
@@ -128,6 +131,9 @@ namespace Revit.GeometryConversion
             // get the normalized parameters for trim
             var nsp = Math.Abs(fsp - sp)/fd;
             var nep = Math.Abs(fsp - ep)/fd;
+
+            // if there's no trimming to do, avoid it
+            if (Math.Abs(nsp) < 1e-6 && Math.Abs(1 - nep) < 1e-6) return convert;
 
             return convert.ParameterTrim(nsp, nep);
 
