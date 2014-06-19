@@ -9,6 +9,7 @@ import os
 import fnmatch
 import dynamo_s3
 from optparse import OptionParser
+import traceback
 
 def main():
 
@@ -44,7 +45,8 @@ def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev
 		  	dynamo_s3.upload_daily( form_path( ['temp', file] ), prefix, include_date, is_dev_build)
 
 	except Exception:
-		print 'There was an exception uploading to s3.'
+		print 'There was an exception uploading to s3:'
+		print traceback.format_exc()
 	finally:
 		rm_dir('temp')
 	
