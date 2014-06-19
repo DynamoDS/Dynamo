@@ -56,7 +56,6 @@ namespace Dynamo.Applications
 
                 ControlledApplication = application.ControlledApplication;
 
-                RevThread.IdlePromise.RegisterIdle(application);
                 TransactionManager.SetupManager(new AutomaticTransactionStrategy());
                 ElementBinder.IsEnabled = true;
 
@@ -156,6 +155,8 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            RevThread.IdlePromise.RegisterIdle(revit.Application);
+
             if (revit.JournalData != null &&
                 revit.JournalData.ContainsKey("debug"))
             {
