@@ -280,6 +280,7 @@ namespace Dynamorph { namespace OpenGL {
         void Render(void) const;
 
     protected:
+        virtual PrimitiveType GetPrimitiveTypeCore() const;
         virtual void LoadDataCore(const GeometryData& geometries);
         virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox);
 

@@ -406,6 +406,11 @@ namespace Dynamorph
         {
         }
 
+        PrimitiveType GetPrimitiveType() const
+        {
+            return this->GetPrimitiveTypeCore();
+        }
+
         void LoadData(const GeometryData& geometries)
         {
             this->LoadDataCore(geometries);
@@ -417,6 +422,7 @@ namespace Dynamorph
         }
 
     protected:
+        virtual PrimitiveType GetPrimitiveTypeCore() const = 0;
         virtual void LoadDataCore(const GeometryData& geometries) = 0;
         virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox) = 0;
     };

@@ -58,6 +58,11 @@ void VertexBuffer::Render(void) const
     }
 }
 
+Dynamorph::IVertexBuffer::PrimitiveType VertexBuffer::GetPrimitiveTypeCore() const
+{
+    return this->mPrimitiveType;
+}
+
 void VertexBuffer::LoadDataCore(const GeometryData& geometries)
 {
     EnsureVertexBufferCreation();
