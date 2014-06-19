@@ -108,10 +108,6 @@ namespace DSCore
                     else
                         subrange = new List<int> { Convert.ToInt32(item) };
 
-                    // skip subrange if exceeds the list
-                    //if (start + subrange.Max() >= len)
-                    //    continue;
-
                     row.AddRange(
                         subrange.Where(idx => start + idx < len).Select(idx => list[start + idx]));
                 }
@@ -122,24 +118,6 @@ namespace DSCore
 
             return result;
         }
-
-        //private static IList SublistsHelper(IList list, IEnumerable ranges, int start)
-        //{
-        //    var row = new ArrayList();
-        //    foreach (object item in ranges)
-        //    {
-        //        if (item is IEnumerable)
-        //        {
-        //            row.Add(SublistsHelper(list, item as IEnumerable, start));
-        //        }
-        //        else
-        //        {
-        //            var idx = (int)item;
-        //            row.Add(list[start + idx]);
-        //        }
-        //    }
-        //    return row;
-        //}
 
         /// <summary>
         ///     Sorts a list using the built-in natural ordering.
