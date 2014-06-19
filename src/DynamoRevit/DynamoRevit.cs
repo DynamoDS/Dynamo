@@ -50,15 +50,7 @@ namespace Dynamo.Applications
         {
             try
             {
-                // The executing assembly will be in Revit_20xx, so 
-                // we have to walk up one level. Unfortunately, we
-                // can't use DynamoPaths here because those are not
-                // initialized until the controller is constructed.
-                var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                DynamoPaths.SetupDynamoPaths(Path.GetFullPath(assDir + @"\.."));
-                
-                //add an additional node processing folder
-                DynamoPaths.Nodes.Add(Path.Combine(assDir, "nodes"));
+                SetupDynamoPaths();
 
                 AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
@@ -102,6 +94,28 @@ namespace Dynamo.Applications
                 MessageBox.Show(ex.ToString());
                 return Result.Failed;
             }
+        }
+
+        private static void SetupDynamoPaths()
+        {
+            // The executing assembly will be in Revit_20xx, so 
+            // we have to walk up one level. Unfortunately, we
+            // can't use DynamoPaths here because those are not
+            // initialized until the controller is constructed.
+            var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            // Add the Revit_20xx folder for assembly resolution
+            DynamoPaths.AddResolutionPath(assDir);
+            
+            // Setup the core paths
+            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
+
+            // Add Revit-specific paths for loading.
+            DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "RevitNodes.dll"));
+            DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "SimpleRaaS.dll"));
+
+            //add an additional node processing folder
+            DynamoPaths.Nodes.Add(Path.Combine(assDir, "nodes"));
         }
 
         /// <summary>
