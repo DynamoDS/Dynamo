@@ -97,6 +97,7 @@ namespace Dynamorph
 
         int mAlphaParamIndex;
         int mColorParamIndex;
+        int mControlParamsIndex;
         float mBlendingFactor;
         IShaderProgram* mpShaderProgram;
 

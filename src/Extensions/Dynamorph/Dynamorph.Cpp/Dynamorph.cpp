@@ -190,6 +190,7 @@ void Visualizer::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
 Visualizer::Visualizer() : 
     mAlphaParamIndex(-1),
     mColorParamIndex(-1),
+    mControlParamsIndex(-1),
     mBlendingFactor(0.0f),
     mpNodeGeometries(nullptr),
     mpGeomsOnDepthLevel(nullptr),
@@ -242,6 +243,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpShaderProgram->BindTransformMatrix(TransMatrix::Normal, "normalMatrix");
     mAlphaParamIndex = mpShaderProgram->GetShaderParameterIndex("alpha");
     mColorParamIndex = mpShaderProgram->GetShaderParameterIndex("colorOverride");
+    mControlParamsIndex = mpShaderProgram->GetShaderParameterIndex("controlParams");
 
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     {
@@ -468,14 +470,23 @@ void Visualizer::RenderGeometries(
 {
     mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
 
-    float rgbaColor[4] = { 0 };
+    float rgbaColor[4] = { 0 }, controlParams[4] = { 0 };
     auto iterator = geometries.begin();
     for (; iterator != geometries.end(); ++iterator)
     {
         auto pNodeGeometries = *iterator;
         pNodeGeometries->GetColor(&rgbaColor[0]);
         mpShaderProgram->SetParameter(mColorParamIndex, &rgbaColor[0], 4);
-        pNodeGeometries->Render(mpGraphicsContext);
+
+        // Draw primitives of lower dimensionality first (e.g. points and lines).
+        controlParams[0] = 1.0f;
+        mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
+        pNodeGeometries->Render(mpGraphicsContext, Dimensionality::Low);
+
+        // Draw primitives of higher dimensionality later (e.g. points and lines).
+        controlParams[0] = 3.0f;
+        mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
+        pNodeGeometries->Render(mpGraphicsContext, Dimensionality::High);
     }
 }
 
