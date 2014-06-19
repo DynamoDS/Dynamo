@@ -69,11 +69,27 @@ void NodeGeometries::AppendVertexBuffer(IVertexBuffer* pVertexBuffer)
     this->mBoundingBox.EvaluateBox(boundingBox);
 }
 
-void NodeGeometries::Render(IGraphicsContext* pGraphicsContext) const
+void NodeGeometries::Render(IGraphicsContext* pGraphicsContext, Dimensionality dimensionality) const
 {
     auto iterator = mVertexBuffers.begin();
     for (; iterator != mVertexBuffers.end(); ++iterator)
-        pGraphicsContext->RenderVertexBuffer(*iterator);
+    {
+        auto pVertexBuffer = *iterator;
+        switch (pVertexBuffer->GetPrimitiveType())
+        {
+        case IVertexBuffer::PrimitiveType::Point:
+        case IVertexBuffer::PrimitiveType::LineStrip:
+            if (dimensionality == Dimensionality::High)
+                return;
+            break;
+        case IVertexBuffer::PrimitiveType::Triangle:
+            if (dimensionality == Dimensionality::Low)
+                return;
+            break;
+        }
+
+        pGraphicsContext->RenderVertexBuffer(pVertexBuffer);
+    }
 }
 
 void NodeGeometries::GetBoundingBox(BoundingBox* pBoundingBox) const

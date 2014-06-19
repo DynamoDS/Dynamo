@@ -8,6 +8,11 @@ namespace Dynamorph
 {
     class IGraphicsContext;
 
+    enum class Dimensionality
+    {
+        Low, High
+    };
+
     class NodeGeometries
     {
     public:
@@ -19,7 +24,7 @@ namespace Dynamorph
         void GetColor(float* pRgbaColor) const;
         void SetColor(float red, float green, float blue, float alpha);
         void AppendVertexBuffer(IVertexBuffer* pVertexBuffer);
-        void Render(IGraphicsContext* pGraphicsContext) const;
+        void Render(IGraphicsContext* pGraphicsContext, Dimensionality dimensionality) const;
         void GetBoundingBox(BoundingBox* pBoundingBox) const;
 
     private:
