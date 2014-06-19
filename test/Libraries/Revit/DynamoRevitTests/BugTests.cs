@@ -3,6 +3,7 @@ using Dynamo.Utilities;
 using NUnit.Framework;
 using Dynamo.Models;
 using RTF.Framework;
+using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.Tests
 {
@@ -135,6 +136,43 @@ namespace Dynamo.Tests
             // below node should have an error because there is no selection for Floor Type.
             NodeModel nodeModel = workspace.NodeFromWorkspace("cc38d11d-cda2-4294-81dc-119776af7338");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
+
+        }
+        [Test]
+        [TestModel(@".\Bugs\MAGN-3620_topo.rvt")]
+        public void MAGN_3620()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3620
+
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN-3620_Elementgeometry.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            // Check for all Elements Creation
+            var allElements = "c3d4e57e-2292-4d18-a603-30467df92d3f";
+            AssertPreviewCount(allElements, 15);
+
+            // Verification of Curve creation.
+            var polyCurve = GetPreviewValueAtIndex(allElements, 1) as PolyCurve;
+            Assert.IsNotNull(polyCurve);
+            Assert.IsTrue(polyCurve.IsClosed);
+
+            // Verify last geometry is Mesh
+            var mesh = GetPreviewValueAtIndex(allElements, 14) as Mesh;
+            Assert.IsNotNull(mesh);
+
 
         }
     }
