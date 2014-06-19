@@ -28,18 +28,21 @@ namespace Dynamo.Utilities
                     return Assembly.LoadFrom(assemblyPath);
                 }
 
-                // Then check the dynamo revit path
-                assemblyPath = Path.Combine(DynamoPaths.DynamoRevit, new AssemblyName(args.Name).Name + ".dll");
-                if (File.Exists(assemblyPath))
-                {
-                    return Assembly.LoadFrom(assemblyPath);
-                }
-
                 // Then check the dll path
                 assemblyPath = Path.Combine(DynamoPaths.Asm, new AssemblyName(args.Name).Name + ".dll");
                 if (File.Exists(assemblyPath))
                 {
                     return Assembly.LoadFrom(assemblyPath);
+                }
+
+                // Then check all additional resolution paths
+                foreach (var addPath in DynamoPaths.AdditionalResolutionPaths)
+                {
+                    assemblyPath = Path.Combine(addPath, new AssemblyName(args.Name).Name + ".dll");
+                    if (File.Exists(assemblyPath))
+                    {
+                        return Assembly.LoadFrom(assemblyPath);
+                    }
                 }
 
                 return null;

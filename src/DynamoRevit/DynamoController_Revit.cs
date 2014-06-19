@@ -75,11 +75,6 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
-            var revitPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\RevitNodes.dll");
-            var raasPath = Path.Combine(DynamoPaths.MainExecPath, @"Revit_2014\SimpleRaaS.dll");
-            EngineController.ImportLibrary(revitPath);
-            EngineController.ImportLibrary(raasPath);
-            
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
             //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((IList<Element> elements) => elements.Select(e=>e.ToDSType(true)));
