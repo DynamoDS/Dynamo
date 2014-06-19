@@ -44,6 +44,8 @@ namespace DynamoUtilities
         // All 'nodes' folders.
         public static HashSet<string> Nodes { get; set; } 
 
+        public static string DynamoRevit { get; set; }
+
         /// <summary>
         /// Provided a main execution path, find other Dynamo paths
         /// relatively. This operation should be called only once at
@@ -65,6 +67,7 @@ namespace DynamoUtilities
             Packages = Path.Combine(MainExecPath , "dynamo_packages");
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
+            DynamoRevit = Path.Combine(MainExecPath, "Revit_2015");
 
             if (Nodes == null)
             {
