@@ -1602,9 +1602,10 @@ namespace ProtoAssociative
             AssociativeSubCompilePass subPass = AssociativeSubCompilePass.kNone,                 
             ProtoCore.AST.Node bnode = null)
         {
+            ProcedureNode procNode = null;
             if (node is FunctionDotCallNode)
             {
-                return TraverseDotFunctionCall(node, 
+                procNode = TraverseDotFunctionCall(node, 
                                                parentNode, 
                                                lefttype, 
                                                depth, 
@@ -1612,6 +1613,9 @@ namespace ProtoAssociative
                                                subPass, 
                                                bnode as BinaryExpressionNode,
                                                ref inferedType);
+
+                GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+                return procNode;
             }
 
             var arglist = new List<ProtoCore.Type>();
@@ -1632,7 +1636,7 @@ namespace ProtoAssociative
                     var classNode = nodeBuilder.BuildIdentfier(procName);
                     var dotCallNode = CoreUtils.GenerateCallDotNode(classNode, rhsFNode, core);
 
-                    return TraverseDotFunctionCall(dotCallNode, 
+                    procNode = TraverseDotFunctionCall(dotCallNode, 
                                                    parentNode, 
                                                    lefttype, 
                                                    depth, 
@@ -1640,6 +1644,8 @@ namespace ProtoAssociative
                                                    subPass, 
                                                    bnode as BinaryExpressionNode,
                                                    ref inferedType);
+                    GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+                    return procNode;
                 }
             }
 
@@ -1680,7 +1686,6 @@ namespace ProtoAssociative
                 }
             }
 
-            ProcedureNode procNode = null;
             int type = Constants.kInvalidIndex;
 
             // Check for the actual method, not the dot method
@@ -1710,6 +1715,7 @@ namespace ProtoAssociative
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
 
                         EmitPushNull();
+                        GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
                         return procNode;
                     }
 
@@ -1725,10 +1731,6 @@ namespace ProtoAssociative
 
                 if (isAllocated) 
                 {
-                    // not checking the type against function pointer, as the 
-                    // type could be var
-                    procName = Constants.kFunctionPointerCall;
-
                     // The graph node always depends on this function pointer
                     if (null != graphNode)
                     {
@@ -1736,6 +1738,12 @@ namespace ProtoAssociative
                         dependentNode.PushSymbolReference(symbolnode);
                         graphNode.PushDependent(dependentNode);
                     }
+
+                    GenerateCallsiteIdentifierForGraphNode(graphNode, procName);
+
+                    // not checking the type against function pointer, as the 
+                    // type could be var
+                    procName = Constants.kFunctionPointerCall;
                 }
             }
 
@@ -1781,6 +1789,7 @@ namespace ProtoAssociative
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
+                            GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
                             return procNode;
                         }
                     }
@@ -1803,6 +1812,7 @@ namespace ProtoAssociative
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col );
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
+                        GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
                         return procNode;
                     }
                 }
@@ -1990,7 +2000,9 @@ namespace ProtoAssociative
                     inferedType.UID = (int)PrimitiveType.kTypeVar;
                 }
             }
-
+                
+            GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+            
             return procNode;
         }
 
@@ -3997,6 +4009,9 @@ namespace ProtoAssociative
             }
 
             this.localCodeBlockNode = codeBlockNode;
+
+            // Reset the callsite guids in preparation for the next compilation
+            core.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
         }
@@ -6276,6 +6291,7 @@ namespace ProtoAssociative
             }
 
             ProtoCore.DSASM.ProcedureNode procNode = TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, subPass, parentNode);
+
             emitReplicationGuide = emitReplicationGuideFlag;
             if (graphNode != null)
             {
@@ -7991,7 +8007,6 @@ namespace ProtoAssociative
                     graphNode.OriginalAstID = bnode.OriginalAstID; 
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
-                    graphNode.guid = core.SSASubscript_GUID;
                     graphNode.guid = bnode.guid;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;

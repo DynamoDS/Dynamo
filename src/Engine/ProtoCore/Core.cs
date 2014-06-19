@@ -1125,7 +1125,14 @@ namespace ProtoCore
         public bool EnableCallsiteExecutionState { get; set; }
         public CallsiteExecutionState csExecutionState { get; set; }
 
-        public Dictionary<int, CallSite> CallsiteCache { get; set; }
+        public Dictionary<string, CallSite> CallsiteCache { get; set; }
+
+        /// <summary>
+        /// This is a mapping of the current guid and number of callsites (function calls) that appear within that guid.
+        /// Language only execution contains only 1 guid for the entire program.
+        /// Execution within a visual programming host means 1 guid per node, where 1 node contains a set of DS code.
+        /// </summary>
+        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
         public List<ProtoCore.AST.AssociativeAST.AssociativeNode> CachedSSANodes { get; set; }
 
 
@@ -1688,10 +1695,12 @@ namespace ProtoCore
             {
                 csExecutionState = new CallsiteExecutionState();
             }
-            CallsiteCache = new Dictionary<int, CallSite>();
+
+            CallsiteCache = new Dictionary<string, CallSite>();
             CachedSSANodes = new List<AssociativeNode>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
             ASTToCallSiteMap = new Dictionary<int, CallSite>();
+            CallsiteGuidMap = new Dictionary<Guid, int>();
 
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
 
@@ -1747,7 +1756,7 @@ namespace ProtoCore
                 // Get a list of GraphNode objects that correspond to this node.
                 var graphNodeIds = graphNodes.
                     Where(gn => gn.guid == nodeGuid).
-                    Select(gn => gn.UID);
+                    Select(gn => gn.CallSiteIdentifier);
 
                 if (graphNodeIds.Count() <= 0)
                     continue;
@@ -2559,7 +2568,7 @@ namespace ProtoCore
                                           FunctionTable, 
                                           Options.ExecutionMode);
             }
-            else if (!CallsiteCache.TryGetValue(graphNode.UID, out csInstance))
+            else if (!CallsiteCache.TryGetValue(graphNode.CallSiteIdentifier, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
                 var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
@@ -2570,7 +2579,7 @@ namespace ProtoCore
                                           Options.ExecutionMode,
                                           traceData);
 
-                CallsiteCache.Add(graphNode.UID, csInstance);
+                CallsiteCache.Add(graphNode.CallSiteIdentifier, csInstance);
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
                 ASTToCallSiteMap[graphNode.AstID] = csInstance;
 
