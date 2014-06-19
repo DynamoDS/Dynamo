@@ -15,8 +15,6 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public bool IsModifier;
 
-        public bool IsLiteral = false;
-
         protected AssociativeNode() { }
 
         protected AssociativeNode(AssociativeNode rhs) : base(rhs)
@@ -479,13 +477,11 @@ namespace ProtoCore.AST.AssociativeAST
 
         public IntNode(Int64 value)
         {
-            this.IsLiteral = true;
             Value = value;
         }
 
         public IntNode(IntNode rhs) : base(rhs)
         {
-            this.IsLiteral = true;
             Value = rhs.Value;
         }
 
@@ -513,14 +509,12 @@ namespace ProtoCore.AST.AssociativeAST
 
         public DoubleNode(double value)
         {
-            this.IsLiteral = true;
             Value = value;
         }
 
         public DoubleNode(DoubleNode rhs)
             : base(rhs)
         {
-            this.IsLiteral = true;
             Value = rhs.Value;
         }
 
@@ -551,14 +545,12 @@ namespace ProtoCore.AST.AssociativeAST
 
         public BooleanNode(bool value)
         {
-            this.IsLiteral = true;
             Value = value;
         }
 
         public BooleanNode(BooleanNode rhs)
             : base(rhs)
         {
-            this.IsLiteral = true;
             Value = rhs.Value;
         }
 
@@ -592,12 +584,10 @@ namespace ProtoCore.AST.AssociativeAST
         public string value { get; set; }
         public CharNode()
         {
-            this.IsLiteral = true;
             value = string.Empty;
         }
         public CharNode(CharNode rhs)
         {
-            this.IsLiteral = true;
             value = rhs.value;
         }
 
@@ -629,13 +619,11 @@ namespace ProtoCore.AST.AssociativeAST
         public string value { get; set; }
         public StringNode()
         {
-            this.IsLiteral = true;
             value = string.Empty;
         }
         public StringNode(StringNode rhs)
             : base(rhs)
         {
-            this.IsLiteral = true;
             value = rhs.value;
         }
 
@@ -664,11 +652,6 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class NullNode : AssociativeNode
     {
-        public NullNode()
-        {
-            this.IsLiteral = true;
-        }
-
         public override bool Equals(object other)
         {
             return other is NullNode;
@@ -782,26 +765,11 @@ namespace ProtoCore.AST.AssociativeAST
 
                 if (Enum.TryParse(nameWithoutPrefix, out op))
                 {
-                    bool needsParens = !FormalArguments[0].IsLiteral;
-                    if (needsParens)
-                        buf.Append("(");
-
                     buf.Append(FormalArguments[0]);
-
-                    if (needsParens)
-                        buf.Append(")");
-
 
                     buf.Append(" " + Op.GetOpSymbol(op) + " ");
 
-                    needsParens = !FormalArguments[1].IsLiteral;
-                    if (needsParens)
-                        buf.Append("(");
-
                     buf.Append(FormalArguments[1]);
-
-                    if (needsParens)
-                        buf.Append(")");
                 }
                 else if (Enum.TryParse(nameWithoutPrefix, out uop))
                 {
@@ -1581,6 +1549,7 @@ namespace ProtoCore.AST.AssociativeAST
             modBlkUID = Constants.kInvalidIndex;
             OriginalAstID = ID;
             guid = System.Guid.Empty;
+
             LeftNode = left;
             Optr = optr;
             RightNode = right;
@@ -1604,6 +1573,30 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
+        }
+
+        /// <summary>
+        /// Create a Binary assignment node from a given lhs identifier and given right node
+        /// with line and col properties of rhs node
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        public BinaryExpressionNode(IdentifierNode lhs, AssociativeNode rhs)
+            : base(rhs)
+        {
+            isSSAAssignment = false;
+            isSSAPointerAssignment = false;
+            isSSAFirstAssignment = false;
+            isMultipleAssign = false;
+            exprUID = Constants.kInvalidIndex;
+            modBlkUID = Constants.kInvalidIndex;
+            OriginalAstID = ID;
+            guid = System.Guid.Empty;
+           
+            Optr = Operator.assign;
+            LeftNode = lhs;
+            RightNode = NodeUtils.Clone(rhs);
+            
         }
 
         public override bool Equals(object other)
