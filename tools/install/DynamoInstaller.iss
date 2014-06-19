@@ -19,7 +19,7 @@ DefaultDirName={pf64}\Dynamo 0.7
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo0.7.1
-SetupIconFile=Extra\logo_square_32x32.ico
+SetupIconFile=Extra\DynamoInstaller.ico
 Compression=lzma
 SolidCompression=true
 RestartIfNeededByRun=false
@@ -27,7 +27,7 @@ FlatComponentsList=false
 ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
-UninstallDisplayIcon={app}\logo_square_32x32.ico
+UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName=Dynamo 0.7.1
 UsePreviousAppDir=no
 
@@ -72,6 +72,9 @@ Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwr
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+
+;Icon
+Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
 
 ;UI
 Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
