@@ -139,7 +139,14 @@ namespace Dynamo.DSEngine
 #endif
 
             IEnumerable<AssociativeNode> astNodes = null;
-            if (!isDeltaExecution && node is ScopedNodeModel)
+            bool buildAstInScope = false;
+            if (!isDeltaExecution)
+            {
+                var scopedNode = node as ScopedNodeModel;
+                buildAstInScope = scopedNode != null && !scopedNode.HasUnconnectedInput();
+            }
+
+            if (buildAstInScope)
             {
                 astNodes = (node as ScopedNodeModel).BuildAstInScope(inputAstNodes);
             }
