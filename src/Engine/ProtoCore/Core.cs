@@ -1125,7 +1125,7 @@ namespace ProtoCore
         public bool EnableCallsiteExecutionState { get; set; }
         public CallsiteExecutionState csExecutionState { get; set; }
 
-        public Dictionary<string, CallSite> CallsiteCache { get; set; }
+        public IDictionary<string, CallSite> CallsiteCache { get; set; }
 
         /// <summary>
         /// This is a mapping of the current guid and number of callsites (function calls) that appear within that guid.
@@ -1756,7 +1756,7 @@ namespace ProtoCore
                 // Get a list of GraphNode objects that correspond to this node.
                 var graphNodeIds = graphNodes.
                     Where(gn => gn.guid == nodeGuid).
-                    Select(gn => gn.CallSiteIdentifier);
+                    Select(gn => gn.CallsiteIdentifier);
 
                 if (graphNodeIds.Count() <= 0)
                     continue;
@@ -2568,7 +2568,7 @@ namespace ProtoCore
                                           FunctionTable, 
                                           Options.ExecutionMode);
             }
-            else if (!CallsiteCache.TryGetValue(graphNode.CallSiteIdentifier, out csInstance))
+            else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
                 var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
@@ -2579,7 +2579,7 @@ namespace ProtoCore
                                           Options.ExecutionMode,
                                           traceData);
 
-                CallsiteCache.Add(graphNode.CallSiteIdentifier, csInstance);
+                CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
                 ASTToCallSiteMap[graphNode.AstID] = csInstance;
 

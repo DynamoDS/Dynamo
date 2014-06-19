@@ -1614,7 +1614,10 @@ namespace ProtoAssociative
                                                bnode as BinaryExpressionNode,
                                                ref inferedType);
 
-                GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+                if (graphNode != null && procNode != null)
+                {
+                    GenerateCallsiteIdentifierForGraphNode(graphNode, procNode.name);
+                }
                 return procNode;
             }
 
@@ -1644,7 +1647,10 @@ namespace ProtoAssociative
                                                    subPass, 
                                                    bnode as BinaryExpressionNode,
                                                    ref inferedType);
-                    GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+                    if (graphNode != null && procNode != null)
+                    {
+                        GenerateCallsiteIdentifierForGraphNode(graphNode, procNode.name);
+                    }
                     return procNode;
                 }
             }
@@ -1715,7 +1721,10 @@ namespace ProtoAssociative
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
 
                         EmitPushNull();
-                        GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+                        if (graphNode != null && procNode != null)
+                        {
+                            GenerateCallsiteIdentifierForGraphNode(graphNode, procNode.name);
+                        }
                         return procNode;
                     }
 
@@ -1737,9 +1746,9 @@ namespace ProtoAssociative
                         GraphNode dependentNode = new GraphNode();
                         dependentNode.PushSymbolReference(symbolnode);
                         graphNode.PushDependent(dependentNode);
-                    }
 
-                    GenerateCallsiteIdentifierForGraphNode(graphNode, procName);
+                        GenerateCallsiteIdentifierForGraphNode(graphNode, procName);
+                    }
 
                     // not checking the type against function pointer, as the 
                     // type could be var
@@ -1789,7 +1798,10 @@ namespace ProtoAssociative
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
-                            GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+                            if (graphNode != null && procNode != null)
+                            {
+                                GenerateCallsiteIdentifierForGraphNode(graphNode, procNode.name);
+                            }
                             return procNode;
                         }
                     }
@@ -1812,7 +1824,10 @@ namespace ProtoAssociative
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col );
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
-                        GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+                        if (graphNode != null && procNode != null)
+                        {
+                            GenerateCallsiteIdentifierForGraphNode(graphNode, procNode.name);
+                        }
                         return procNode;
                     }
                 }
@@ -2000,8 +2015,11 @@ namespace ProtoAssociative
                     inferedType.UID = (int)PrimitiveType.kTypeVar;
                 }
             }
-                
-            GenerateCallsiteIdentifierForGraphNode(graphNode, procNode);
+
+            if (graphNode != null && procNode != null)
+            {
+                GenerateCallsiteIdentifierForGraphNode(graphNode, procNode.name);
+            }
             
             return procNode;
         }

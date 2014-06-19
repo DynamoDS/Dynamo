@@ -154,18 +154,6 @@ namespace ProtoCore
             ssaPointerList = new List<AST.AssociativeAST.AssociativeNode>();
         }
 
-        /// <summary>
-        /// Generates unique identifier for the callsite associated with the graphnode
-        /// </summary>
-        /// <param name="graphNode"></param>
-        /// <param name="procNode"></param>
-        protected void GenerateCallsiteIdentifierForGraphNode(AssociativeGraph.GraphNode graphNode, ProcedureNode procNode)
-        {
-            if (procNode != null)
-            {
-                GenerateCallsiteIdentifierForGraphNode(graphNode, procNode.name);
-            }
-        }
 
         /// <summary>
         /// Generates unique identifier for the callsite associated with the graphnode
@@ -174,11 +162,6 @@ namespace ProtoCore
         /// <param name="procNode"></param>
         protected void GenerateCallsiteIdentifierForGraphNode(AssociativeGraph.GraphNode graphNode, string procName)
         {
-            if (graphNode == null)
-            {
-                return;
-            }
-
             // This instance count in which the function appears lexically in the current guid
             // This must be stored and incremented
             int functionCallInstance = 0;
@@ -195,7 +178,6 @@ namespace ProtoCore
             else
             {
                 // Increment the current count
-                //callInstance = core.CallsiteGuidMap[graphNode.guid];
                 functionCallInstance = ++core.CallsiteGuidMap[graphNode.guid];
             }
 
@@ -210,7 +192,7 @@ namespace ProtoCore
             // TODO Jun: Address this in MAGN-????
             // The current limitation is retrieving the cached trace data for multiple callsites in a single CBN
             // Callsites in a node and the first callsite in a CBN work fine
-            graphNode.CallSiteIdentifier = callsiteIdentifier;
+            graphNode.CallsiteIdentifier = callsiteIdentifier;
         }
 
         protected ProtoCore.DSASM.AddressType GetOpType(ProtoCore.PrimitiveType type)
