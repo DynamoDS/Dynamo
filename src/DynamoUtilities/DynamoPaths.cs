@@ -12,6 +12,9 @@ namespace DynamoUtilities
     /// </summary>
     public static class DynamoPaths
     {
+        private static List<string> preloadLibaries = new List<string>();
+        private static List<string> addResolvePaths = new List<string>();
+
         /// <summary>
         /// The main execution path of Dynamo. This is the directory
         /// which contains DynamoCore.dll
@@ -42,9 +45,26 @@ namespace DynamoUtilities
         public static string Asm { get; set; }
 
         // All 'nodes' folders.
-        public static HashSet<string> Nodes { get; set; } 
+        public static HashSet<string> Nodes { get; set; }
 
-        public static string DynamoRevit { get; set; }
+        /// <summary>
+        /// Libraries to be preloaded by library services.
+        /// </summary>
+        public static List<string> PreloadLibraries
+        {
+            get { return preloadLibaries; }
+            set { preloadLibaries = value; }
+        }
+
+        /// <summary>
+        /// Additional paths that should be searched during
+        /// assembly resolution
+        /// </summary>
+        public static List<string> AdditionalResolutionPaths
+        {
+            get { return addResolvePaths; }
+            set { addResolvePaths = value; }
+        }
 
         /// <summary>
         /// Provided a main execution path, find other Dynamo paths
@@ -52,7 +72,8 @@ namespace DynamoUtilities
         /// the beginning of a Dynamo session.
         /// </summary>
         /// <param name="mainExecPath">The main execution directory of Dynamo.</param>
-        public static void SetupDynamoPaths(string mainExecPath)
+        /// <param name="preloadLibraries">A list of libraries to preload.</param>
+        public static void SetupDynamoPathsCore(string mainExecPath)
         {
             if (Directory.Exists(mainExecPath))
             {
@@ -67,7 +88,6 @@ namespace DynamoUtilities
             Packages = Path.Combine(MainExecPath , "dynamo_packages");
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
-            DynamoRevit = Path.Combine(MainExecPath, "Revit_2014");
 
             if (Nodes == null)
             {
@@ -89,6 +109,49 @@ namespace DynamoUtilities
             Debug.WriteLine(sb);
 #endif
 
+            PreloadLibraries = new List<string>();
+            AdditionalResolutionPaths = new List<string>();
+
+            var preloadLibraries = new List<string>
+            {
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "Optimize.ds",
+                "DynamoUnits.dll",
+                "Tessellation.dll"
+            };
+
+            foreach (var lib in preloadLibraries)
+            {
+                AddPreloadLibrary(lib);
+            }
+        }
+
+        /// <summary>
+        /// Add a library for preloading with a check.
+        /// </summary>
+        /// <param name="path"></param>
+        public static void AddPreloadLibrary(string path)
+        {
+            if (!PreloadLibraries.Contains(path))
+            {
+                PreloadLibraries.Add(path);
+            }
+        }
+
+        /// <summary>
+        /// Adds a library for resolution with a check.
+        /// </summary>
+        /// <param name="path"></param>
+        public static void AddResolutionPath(string path)
+        {
+            if (!AdditionalResolutionPaths.Contains(path))
+            {
+                AdditionalResolutionPaths.Add(path);
+            }
         }
     }
 }

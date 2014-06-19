@@ -263,7 +263,7 @@ namespace Dynamo
         public DynamoController(string context, IUpdateManager updateManager,
             IWatchHandler watchHandler, IPreferences preferences, string corePath)
         {
-            DynamoPaths.SetupDynamoPaths(corePath);
+            DynamoPaths.SetupDynamoPathsCore(corePath);
 
             DebugSettings = new DebugSettings();
 
