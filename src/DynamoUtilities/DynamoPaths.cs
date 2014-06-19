@@ -67,7 +67,7 @@ namespace DynamoUtilities
             Packages = Path.Combine(MainExecPath , "dynamo_packages");
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
-            DynamoRevit = Path.Combine(MainExecPath, "Revit_2015");
+            DynamoRevit = Path.Combine(MainExecPath, "Revit_2014");
 
             if (Nodes == null)
             {
