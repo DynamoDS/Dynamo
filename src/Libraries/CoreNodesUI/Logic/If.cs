@@ -38,8 +38,11 @@ namespace DSCoreNodesUI.Logic
                                                                     List<AssociativeNode> inputAstNodes)
         {
             AstBuilder astBuilder = new AstBuilder(null);
+
+            // Get all upstream nodes and then remove nodes that are not 
             var nodes = GetInScopeNodesForInport(branch).Where(n => !(n is Symbol));
-            var astNodes = astBuilder.CompileToAstNodes(nodes, false, false).ToList();
+            nodes = ScopedNodeModel.RemoveInScopedNodeFrom(nodes);
+            var astNodes = astBuilder.CompileToAstNodes(nodes, false, false);
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes.Select(n => n.ToImperativeAST()).ToList();
         }
@@ -52,33 +55,75 @@ namespace DSCoreNodesUI.Logic
         /// <returns></returns>
         protected override bool IsScopedInport(int portIndex)
         {
-            return portIndex == 1 || portIndex == 2;
+            return portIndex == 0 || portIndex == 1 || portIndex == 2;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
         {
-            //Create a new function definition for true and false branch
+            // This function will compile IF node to the following format:
+            //
+            //     v = [Associative]
+            //     {
+            //         return = [Imperative]
+            //         {
+            //             conditions...
+            //             if (cond) { 
+            //                 ...
+            //             }
+            //             else {
+            //                 ...
+            //             }
+            //         }
+            //     }
+            //
+            // The reason for outer associative language block is, if there are
+            // some nested if nodes, as the language doesn't allow to nested
+            // imperative block directly inside an imperative block, we have to
+            // pass the language context to all children nodes, and children
+            // may generate different structure even they are the same node.
+            // 
+            // As the langauge allows to nest associative block in global 
+            // (associative) block, adding this extra associative language 
+            // coudl avoid some troubles in context analysis.
+            var conditions = GetAstsForBranch(0, inputAstNodes);
+            // remove last return statement
+            conditions.RemoveAt(conditions.Count - 1);
+
             var astsInTrueBranch = GetAstsForBranch(1, inputAstNodes);
             var astsInFalseBranch = GetAstsForBranch(2, inputAstNodes);
 
-            var lhs = GetAstIdentifierForOutputIndex(0);
-            var rhs = new LanguageBlockNode
+            var body = conditions;
+            var ifelseStatement = new ProtoCore.AST.ImperativeAST.IfStmtNode()
+            {
+                IfExprNode = inputAstNodes[0].ToImperativeAST(),
+                IfBody = astsInTrueBranch,
+                ElseBody = astsInFalseBranch
+            };
+            body.Add(ifelseStatement);
+
+            var innerImperativeBlock = new LanguageBlockNode
             {
                 codeblock = new LanguageCodeBlock(Language.kImperative),
                 CodeBlockNode = new ProtoCore.AST.ImperativeAST.CodeBlockNode
                 {
-                    Body = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>
-                    {
-                          new ProtoCore.AST.ImperativeAST.IfStmtNode
-                          {
-                             IfExprNode = inputAstNodes[0].ToImperativeAST(),
-                             IfBody = astsInTrueBranch,
-                             ElseBody = astsInFalseBranch
-                         },
-                     }
+                    Body = body
                 }
             };
-            var assignment = AstFactory.BuildAssignment(lhs, rhs);
+
+            var outerAssociativeBlock = new LanguageBlockNode
+            {
+                codeblock = new LanguageCodeBlock(Language.kAssociative),
+                CodeBlockNode = new CodeBlockNode
+                {
+                    Body = new List<AssociativeNode>
+                    {
+                        AstFactory.BuildReturnStatement(innerImperativeBlock)
+                    }
+                }
+            };
+            var thisVariable = GetAstIdentifierForOutputIndex(0);
+            var assignment = AstFactory.BuildAssignment(thisVariable, outerAssociativeBlock);
+
             return new AssociativeNode[] 
             {
                 assignment

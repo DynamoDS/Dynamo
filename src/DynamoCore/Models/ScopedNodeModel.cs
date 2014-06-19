@@ -146,6 +146,30 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Iterate over nodes and remove all nodes that are in the scope of
+        /// some scoped node. So all returned nodes are in global scope.
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public static IEnumerable<NodeModel> RemoveInScopedNodeFrom(IEnumerable<NodeModel> nodes)
+        {
+            HashSet<NodeModel> topScopedNodes = new HashSet<NodeModel>(nodes);
+            foreach (var node in nodes)
+            {
+                var scopedNode = node as ScopedNodeModel;
+                if (scopedNode == null || scopedNode.HasUnconnectedInput())
+                {
+                    continue;
+                }
+
+                var nodesInItsScope = scopedNode.GetInScopeNodes();
+                topScopedNodes.ExceptWith(nodesInItsScope);
+            }
+
+            return topScopedNodes;
+        }
+
+        /// <summary>
         /// Similar to NodeModel.BuildOutputAst(). When compiled to AST, for
         /// ScopedNodeModel this method will be called when all requirements are
         /// satisfied. The derived class needs to implement this method to 

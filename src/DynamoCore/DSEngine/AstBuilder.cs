@@ -203,22 +203,7 @@ namespace Dynamo.DSEngine
             // compiled in ScopedNodeModel.
             if (isForCustomNode)
             {
-                HashSet<NodeModel> topScopedNodes = new HashSet<NodeModel>(nodes);
-                foreach (var node in nodes)
-                {
-                    var scopedNode = node as ScopedNodeModel;
-                    // Here we put strong limitation on ScopedNodeModel. 
-                    // Unless a ScopedNodeModel has all connected inputs, it 
-                    // won't compile its children in its own scope.
-                    if (scopedNode == null || scopedNode.HasUnconnectedInput())
-                    {
-                        continue;
-                    }
-
-                    var nodesInItsScope = scopedNode.GetInScopeNodes();
-                    topScopedNodes.ExceptWith(nodesInItsScope);
-                }
-                nodes = topScopedNodes;
+                nodes = ScopedNodeModel.RemoveInScopedNodeFrom(nodes);
             }
 
             IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
