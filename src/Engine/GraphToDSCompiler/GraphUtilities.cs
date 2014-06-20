@@ -999,7 +999,6 @@ namespace GraphToDSCompiler
             foreach (string s in expr)
                 compiled.Add(s);
 
-            int index = 0;
             for (int i = 0; i < compiled.Count(); i++)
             {
                 if (compiled[i].StartsWith("\n"))
@@ -1021,7 +1020,7 @@ namespace GraphToDSCompiler
 
                     if (!IsNotAssigned(newStatement))
                     {
-                        string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
                         newStatement = name + " = " + newStatement;
                     }
                     compiled[i] = newlines + newStatement;
@@ -1030,13 +1029,13 @@ namespace GraphToDSCompiler
                 {
                     if (!IsNotAssigned(compiled[i]))
                     {
-                        string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
                         compiled[i] = name + " = " + compiled[i];
                     }
                 }
             }
             string newCode = string.Empty;
-            compiled.ForEach(x => newCode += x + "\n");
+            compiled.ForEach(x => newCode += x);
             CodeBlockNode commentNode = null;
            
             try
@@ -1464,7 +1463,7 @@ namespace GraphToDSCompiler
                 foreach (var i in parseParams.ParsedNodes)
                 {
                     if (i is AssociativeNode)
-                        nodes.Add(i as AssociativeNode);
+                        nodes.Add(NodeUtils.Clone(i as AssociativeNode));
                 }
                 codeblock.Body.AddRange(nodes);
 
