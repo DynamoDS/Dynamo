@@ -2,6 +2,8 @@
 using System.Reflection;
 
 using NUnit.Framework;
+
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace DSRevitNodesTests
@@ -25,6 +27,12 @@ namespace DSRevitNodesTests
 
             // Tests do not run from idle thread.
             TransactionManager.Instance.DoAssertInIdleThread = false;
+        }
+
+        [SetUp]
+        public virtual void DisableElementBinder()
+        {
+            ElementBinder.IsEnabled = false;
         }
 
         [TearDown]
