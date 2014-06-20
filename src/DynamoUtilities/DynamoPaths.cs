@@ -90,6 +90,16 @@ namespace DynamoUtilities
             Definitions = Path.Combine(appData, "definitions");
             Packages = Path.Combine(appData, "packages");
 
+            if (!Directory.Exists(Definitions))
+            {
+                Directory.CreateDirectory(Definitions);
+            }
+
+            if (!Directory.Exists(Packages))
+            {
+                Directory.CreateDirectory(Packages);
+            }
+
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
 
