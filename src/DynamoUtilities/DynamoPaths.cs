@@ -122,11 +122,7 @@ namespace DynamoUtilities
             
             Debug.WriteLine(sb);
 #endif
-
-            PreloadLibraries = new List<string>();
-            AdditionalResolutionPaths = new List<string>();
-
-            var preloadLibraries = new List<string>
+            var coreLibs = new List<string>
             {
                 "ProtoGeometry.dll",
                 "DSCoreNodes.dll",
@@ -138,7 +134,7 @@ namespace DynamoUtilities
                 "Tessellation.dll"
             };
 
-            foreach (var lib in preloadLibraries)
+            foreach (var lib in coreLibs)
             {
                 AddPreloadLibrary(lib);
             }
@@ -162,9 +158,9 @@ namespace DynamoUtilities
         /// <param name="path"></param>
         public static void AddPreloadLibrary(string path)
         {
-            if (!PreloadLibraries.Contains(path))
+            if (!preloadLibaries.Contains(path))
             {
-                PreloadLibraries.Add(path);
+                preloadLibaries.Add(path);
             }
         }
 
@@ -174,9 +170,9 @@ namespace DynamoUtilities
         /// <param name="path"></param>
         public static void AddResolutionPath(string path)
         {
-            if (!AdditionalResolutionPaths.Contains(path))
+            if (!addResolvePaths.Contains(path))
             {
-                AdditionalResolutionPaths.Add(path);
+                addResolvePaths.Add(path);
             }
         }
     }
