@@ -3,12 +3,15 @@ using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
 
+using RTF.Framework;
+
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
     public class ModelTextTests : GeometricRevitNodeTest
     {
         [Test]
+        [TestModel(@".\withModelText.rfa")]
         public void ByTextSketchPlaneAndPosition_ValidArgs()
         {
             var origin = Point.ByCoordinates(1, 2, 3);
@@ -30,6 +33,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\withModelText.rfa")]
         public void ByTextSketchPlaneAndPosition_BadArgs()
         {
             var origin = Point.ByCoordinates(1, 2, 3);
