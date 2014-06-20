@@ -843,7 +843,10 @@ namespace GraphToDSCompiler
                 ProtoCore.AST.AssociativeAST.AssociativeNode n = node as ProtoCore.AST.AssociativeAST.AssociativeNode;
                 ProtoCore.Utils.Validity.Assert(n != null);
 
+                // Append the temporaries only if it is not a function def or class decl
+                bool isFunctionOrClassDef = n is ProtoCore.AST.AssociativeAST.FunctionDefinitionNode || n is ProtoCore.AST.AssociativeAST.ClassDeclNode;
 
+                // Handle non Binary expression nodes separately
                 if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
                 {
                     core.BuildStatus.LogSemanticError("Modifier Blocks are not supported currently.");
@@ -855,18 +858,15 @@ namespace GraphToDSCompiler
                 else if (n is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
                 {
                     core.BuildStatus.LogSemanticError("Language blocks are not supported in CodeBlock Nodes.");
-                }
-
-                // Append the temporaries only if it is not a function def or class decl
-                bool isFunctionOrClassDef = n is ProtoCore.AST.AssociativeAST.FunctionDefinitionNode || n is ProtoCore.AST.AssociativeAST.ClassDeclNode;
-
-                if (isFunctionOrClassDef)
+                }                
+                else if (isFunctionOrClassDef)
                 {
                     // Add node as it is
                     astNodes.Add(node);
                 }
                 else
                 {
+                    // Handle temporary naming for temporary Binary exp. nodes and non-assignment nodes
                     BinaryExpressionNode ben = node as BinaryExpressionNode;
                     if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
                     {
@@ -894,6 +894,7 @@ namespace GraphToDSCompiler
             }            
             return astNodes;
         }
+
 
         /// <summary>
         /// 
