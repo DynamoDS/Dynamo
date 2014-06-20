@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DynamoUtilities
@@ -85,7 +86,12 @@ namespace DynamoUtilities
             }
 
             Definitions = Path.Combine(MainExecPath, "definitions");
-            Packages = Path.Combine(MainExecPath , "dynamo_packages");
+
+            // Find the version of DynamoCore
+            var dynCore = Path.Combine(MainExecPath, "DynamoCore.dll");
+            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
+            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            Packages = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo", dynVersion, "dynamo_packages");
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
 
