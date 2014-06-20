@@ -16,8 +16,8 @@ IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 (
 	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\nodes %cwd%\temp\bin\Revit_2014\nodes
 )
 IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015 (
-	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 %cwd%\temp\bin\Revit_2015 *.dll *.xml *.config -XF *Tests.dll
-	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\nodes %cwd%\temp\bin\Revit_2014\nodes
+	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015 %cwd%\temp\bin\Revit_2015 *.dll *.xml *.config -XF *Tests.dll
+	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\nodes %cwd%\temp\bin\Revit_2015\nodes
 )
 
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin License.rtf
