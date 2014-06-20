@@ -177,8 +177,6 @@ namespace Dynamo.Applications
                 Assembly.LoadFrom(interactivityPath);
             }
 
-            DynamoRevitApp.dynamoButton.Enabled = false;
-
             try
             {
                 #region default level
@@ -243,6 +241,9 @@ namespace Dynamo.Applications
 
                         revit.Application.ViewActivating += Application_ViewActivating;
                     });
+
+                // Disable the Dynamo button to prevent a re-run
+                DynamoRevitApp.dynamoButton.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -252,6 +253,8 @@ namespace Dynamo.Applications
                 dynSettings.DynamoLogger.LogError(ex.Message);
                 dynSettings.DynamoLogger.LogError(ex.StackTrace);
                 dynSettings.DynamoLogger.LogError("Dynamo log ended " + DateTime.Now);
+
+                DynamoRevitApp.dynamoButton.Enabled = true;
 
                 return Result.Failed;
             }

@@ -12,6 +12,9 @@ using System.Windows.Input;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
+
+using DynamoUtilities;
+
 using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
@@ -592,15 +595,11 @@ namespace Dynamo.PackageManager
                 var fi = new FileInfo(dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.FileName);
                 fDialog.InitialDirectory = fi.DirectoryName;
             }
-            else // use the samples directory, if it exists
+            else // use the definitions directory
             {
-                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
-                string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string path = Path.Combine(location, "definitions");
-
-                if (Directory.Exists(path))
+                if (Directory.Exists(DynamoPaths.Definitions))
                 {
-                    fDialog.InitialDirectory = path;
+                    fDialog.InitialDirectory = DynamoPaths.Definitions;
                 }
             }
 

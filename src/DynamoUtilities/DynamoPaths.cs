@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DynamoUtilities
@@ -84,8 +85,21 @@ namespace DynamoUtilities
                 throw new Exception(string.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-            Definitions = Path.Combine(MainExecPath, "definitions");
-            Packages = Path.Combine(MainExecPath , "dynamo_packages");
+            var appData = GetDynamoAppDataFolder(MainExecPath);
+
+            Definitions = Path.Combine(appData, "definitions");
+            Packages = Path.Combine(appData, "packages");
+
+            if (!Directory.Exists(Definitions))
+            {
+                Directory.CreateDirectory(Definitions);
+            }
+
+            if (!Directory.Exists(Packages))
+            {
+                Directory.CreateDirectory(Packages);
+            }
+
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
 
@@ -128,6 +142,18 @@ namespace DynamoUtilities
             {
                 AddPreloadLibrary(lib);
             }
+        }
+
+        private static string GetDynamoAppDataFolder(string basePath)
+        {
+            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
+            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
+            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var appData = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Dynamo",
+                dynVersion);
+            return appData;
         }
 
         /// <summary>
