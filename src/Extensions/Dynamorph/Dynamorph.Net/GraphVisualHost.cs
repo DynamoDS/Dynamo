@@ -24,7 +24,7 @@ namespace Dynamorph
             SliderDivider,
 
             NodeColorStart,
-            NodeColorCount = 10,
+            NodeColorCount = 16,
         }
 
         static GraphResources()
@@ -38,18 +38,30 @@ namespace Dynamorph
             Brushes.Add(new SolidColorBrush(Color.FromRgb(104, 104, 104)));    // SliderFill
             Brushes.Add(new SolidColorBrush(Color.FromRgb(30, 30, 30)));       // SliderDivider
 
-            // Put colors directly opposite right next to each other for contrast.
-            int count = ((int)BrushIndex.NodeColorCount), half = count / 2;
+            // Generate a series of colors. First we start off with even indices,
+            // and then followed by odd indices. That will result in neighbouring
+            // colors skipping "2 x unitAngle", creating better contrast. The 
+            // reason direct opposite color is not used: if there are three nodes 
+            // or more on the same column, then the third node will have a color 
+            // that is too close to the first node. With the following color 
+            // generation, the third node will end up having a color that is quite
+            // far away from the first node, giving a better contrast.
+            // 
+            int count = ((int)BrushIndex.NodeColorCount);
             double unitAngle = 360.0 / count;
-            for (int index = 0; index < half; index++)
-            {
-                double degree0 = index * unitAngle;
-                double degree1 = ((index + half) * unitAngle);
 
-                var color0 = Utilities.HsvToRgb(degree0, 0.5, 1.0);
-                var color1 = Utilities.HsvToRgb(degree1, 0.5, 1.0);
-                Brushes.Add(new SolidColorBrush(color0));
-                Brushes.Add(new SolidColorBrush(color1));
+            for (int index = 0; index < count; index += 2) // Even indices
+            {
+                double degree = index * unitAngle;
+                var color = Utilities.HsvToRgb(degree, 0.5, 1.0);
+                Brushes.Add(new SolidColorBrush(color));
+            }
+
+            for (int index = 1; index < count; index += 2) // Odd indices
+            {
+                double degree = index * unitAngle;
+                var color = Utilities.HsvToRgb(degree, 0.5, 1.0);
+                Brushes.Add(new SolidColorBrush(color));
             }
 
             Brushes.ForEach(b => b.Freeze());
