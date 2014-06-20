@@ -85,13 +85,11 @@ namespace DynamoUtilities
                 throw new Exception(string.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-            Definitions = Path.Combine(MainExecPath, "definitions");
+            var appData = GetDynamoAppDataFolder(MainExecPath);
 
-            // Find the version of DynamoCore
-            var dynCore = Path.Combine(MainExecPath, "DynamoCore.dll");
-            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
-            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
-            Packages = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo", dynVersion, "packages");
+            Definitions = Path.Combine(appData, "definitions");
+            Packages = Path.Combine(appData, "packages");
+
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
 
@@ -134,6 +132,18 @@ namespace DynamoUtilities
             {
                 AddPreloadLibrary(lib);
             }
+        }
+
+        private static string GetDynamoAppDataFolder(string basePath)
+        {
+            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
+            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
+            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var appData = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Dynamo",
+                dynVersion);
+            return appData;
         }
 
         /// <summary>
