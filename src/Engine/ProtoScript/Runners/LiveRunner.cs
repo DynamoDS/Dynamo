@@ -1479,23 +1479,13 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private void ResetVMForExecution()
-        {
-            runnerCore.ResetForExecution();
-        }
-
-        private void ResetVMForDeltaExecution()
-        {
-            runnerCore.ResetForDeltaExecution();
-        }
-
         /// <summary>
         /// Resets few states in the core to prepare the core for a new
         /// delta code compilation and execution
         /// </summary>
-        private void ResetForDeltaASTExecution()
+        private void ResetForDeltaExecution()
         {
-            runnerCore.ResetForDeltaASTExecution();
+            runnerCore.ResetForDeltaExecution();
         }
 
         /// <summary>
@@ -1539,7 +1529,7 @@ namespace ProtoScript.Runners
                 System.Diagnostics.Debug.WriteLine("SyncInternal => " + code);
             }
 
-            ResetForDeltaASTExecution();
+            ResetForDeltaExecution();
             bool succeeded = CompileAndExecute(code);
 
             if (succeeded)
@@ -1565,7 +1555,7 @@ namespace ProtoScript.Runners
                 System.Diagnostics.Debug.WriteLine(code);
             }
 
-            ResetForDeltaASTExecution();
+            ResetForDeltaExecution();
             bool succeeded = CompileAndExecute(dispatchASTList);
 
             if (succeeded)
@@ -1581,7 +1571,7 @@ namespace ProtoScript.Runners
 
             if (syncData == null)
             {
-                ResetForDeltaASTExecution();
+                ResetForDeltaExecution();
                 return;
             }
 
@@ -1605,7 +1595,7 @@ namespace ProtoScript.Runners
 
             if (string.IsNullOrEmpty(code))
             {
-                ResetForDeltaASTExecution();
+                ResetForDeltaExecution();
                 return;
             }
             else
