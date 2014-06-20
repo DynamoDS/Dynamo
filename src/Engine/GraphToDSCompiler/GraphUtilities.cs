@@ -831,11 +831,11 @@ namespace GraphToDSCompiler
                 core.ResetForPrecompilation();
 
                 // Use manual parsing for invalid functional associative statement errors like for "a+b;"
-                return StringParse(expression, postfixGuid);
+                return ParseNonAssignments(expression, postfixGuid);
             }
         }
 
-        private static IEnumerable<ProtoCore.AST.Node> StringParse(string expression, string postfixGuid)
+        private static IEnumerable<ProtoCore.AST.Node> ParseNonAssignments(string expression, string postfixGuid)
         {
             List<string> compiled = new List<string>();
 
