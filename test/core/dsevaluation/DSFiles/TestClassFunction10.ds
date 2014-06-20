@@ -1,0 +1,1 @@
+class A  {       x : int;    constructor Create(p : B)    {       x = p.a;     }}    class B{    a : int;    constructor Create(p : A)    {        a = p.x;    }}    aa = 2;

@@ -1,0 +1,1 @@
+    class A    {        x : var;        constructor A()        {            x = 1;        }	    def Get : int()        {            return = 10;        }    }        class B extends A    {        constructor B()        {            x = 2;        }    }    ptrA = A.A();    ax = ptrA.x;    ptrB = B.B();    bx = ptrB.x;

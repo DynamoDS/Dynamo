@@ -1,0 +1,12 @@
+
+r = [Imperative]
+{
+    a = {};
+    x = 0;
+    for (v in a) 
+    {
+        x = x + v;
+    }
+    return = x;
+}
+

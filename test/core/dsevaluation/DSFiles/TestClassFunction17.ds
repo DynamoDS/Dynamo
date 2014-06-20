@@ -1,0 +1,1 @@
+class A{    constructor A() {}    def foo() { return = 1; }    def foo(i:int) { return = 10; }}class B{    constructor B() {}    def foo() { return = 2; }    def foo(i:int) { return = 20; }}p = B.B();a = p.foo();b = p.foo(1);

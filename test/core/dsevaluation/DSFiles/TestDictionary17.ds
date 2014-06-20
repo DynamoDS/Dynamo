@@ -1,0 +1,10 @@
+
+a = {1, 2, 3};
+a[true] = 21;
+b = {1, 2, 3};
+b[false] = 21;
+
+def foo(x, y) { return = x + y; }
+sum = foo(a, b);
+r = sum[3];
+

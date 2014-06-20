@@ -1,0 +1,10 @@
+
+a = [Imperative]
+{
+    b = {};
+    b["xyz"] = 42;
+    return = b;
+}
+
+r = a["xyz"];
+

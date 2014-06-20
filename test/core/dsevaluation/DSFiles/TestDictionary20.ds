@@ -1,0 +1,6 @@
+
+        a = {1, 2, 3};
+a[true] = 41;
+a["x"] = "foo";
+r = Count(GetValues(a));
+

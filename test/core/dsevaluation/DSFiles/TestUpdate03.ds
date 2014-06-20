@@ -1,0 +1,1 @@
+def f : int(p : int){    a = 10;    b = a;    a = p;    return = b;}x = 20;y = f(x);x = 40;                

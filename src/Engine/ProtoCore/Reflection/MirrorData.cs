@@ -103,7 +103,7 @@ namespace ProtoCore
             ///  Retrieve the stack value for this mirror
             /// </summary>
             /// <returns></returns>
-            [System.Obsolete("Use Data property of this class")]
+            //[System.Obsolete("Use Data property of this class")]
             public StackValue GetStackValue()
             {
                 return svData;
@@ -224,6 +224,23 @@ namespace ProtoCore
                 {
                     return svData.IsArray;
                 }
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns>
+            public override bool Equals(object obj)
+            {
+                if (object.ReferenceEquals(obj, this))
+                    return true;
+
+                MirrorData data = obj as MirrorData;
+                if (null == data)
+                    return false;
+
+                return StackUtils.CompareStackValues(this.svData, data.svData, this.core, data.core);
             }
         }
     }

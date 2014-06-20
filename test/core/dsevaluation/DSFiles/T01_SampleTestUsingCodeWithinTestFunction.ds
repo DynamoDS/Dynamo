@@ -1,0 +1,5 @@
+variable;[Associative]
+                {
+	                variable = 5;
+                }
+                

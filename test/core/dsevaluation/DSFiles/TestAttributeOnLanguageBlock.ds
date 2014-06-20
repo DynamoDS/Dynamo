@@ -1,0 +1,18 @@
+class TestAttribute
+{
+	constructor TestAttribute()
+	{}
+}
+class VisibilityAttribute
+{
+	x : var;
+	constructor VisibilityAttribute(_x : var)
+	{
+		x = _x;
+	}
+}
+[Imperative, version="###", Visibility(11), fingerprint="FS54", Test] 
+{
+	a = 19;
+}
+

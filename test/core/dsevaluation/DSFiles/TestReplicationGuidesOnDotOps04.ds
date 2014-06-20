@@ -1,0 +1,1 @@
+class C{    def f(a : int)    {        return = 10;    }}p = {C.C(), C.C()};x = p<1>.f({1,2}<2>);y = x[0];z = x[1];

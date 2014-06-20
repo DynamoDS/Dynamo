@@ -1,0 +1,1 @@
+                    gx = 100;                    def f : int()                    {                        return = gx;                    }                    i = f();                

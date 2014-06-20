@@ -1,0 +1,9 @@
+
+def f(i:int, j:int)
+{
+    return = i + j;
+}
+
+a = 1..3;
+b = 2..3;
+c = f(a<1L>,b<2>);

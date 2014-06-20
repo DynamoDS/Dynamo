@@ -1,0 +1,1 @@
+class A{    a : int;    }a1 = A.A();a1.a = 1;b = a1.a; // Should only update oncea1.a = 10;                

@@ -1,0 +1,1 @@
+def f(){    return = { 1, 2 };}def g(){    return = { 3, 4 };}x = f()<1> + g()<2>;a = x[0];b = x[1];

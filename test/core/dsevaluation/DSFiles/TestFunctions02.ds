@@ -1,0 +1,1 @@
+        temp;[Associative]{     def test2 : int(b : int)    {        return = b;    }                    def test : int(a : int)    {        return = a + test2(5);    }                   temp = test(2);}

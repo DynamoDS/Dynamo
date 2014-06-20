@@ -1,0 +1,8 @@
+
+strs = {"x", true, 'b'};
+arr = {};
+arr[strs] = {11, 13, 17};
+r1 = arr["x"];
+r2 = arr[true];
+r3 = arr['b'];
+

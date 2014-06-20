@@ -1,0 +1,1 @@
+class A{    x:int = 1;}t:A = A.A();r1 = t;t = 3;

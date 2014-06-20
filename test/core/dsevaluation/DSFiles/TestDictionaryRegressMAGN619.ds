@@ -1,0 +1,5 @@
+
+a[null]=5;
+c=Count(a);
+r = a[null];
+

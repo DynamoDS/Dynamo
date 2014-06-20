@@ -1,0 +1,1 @@
+class Line{    x : int;    constructor Line(i : int)    {        x = i;    }    def Trim()    {        return = Line.Line(x - 1);           }}myline = Line.Line(10);myline = myline.Trim();myline = myline.Trim();length = myline.x;                

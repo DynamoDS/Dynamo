@@ -1,0 +1,2 @@
+import("FFITarget.dll");
+a = {25, 36, 49};r = Minimal.Sqrt(a);

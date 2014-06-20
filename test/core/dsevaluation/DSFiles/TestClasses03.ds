@@ -1,0 +1,1 @@
+    class A    {        x : var;        constructor A()        {            x = 0;        }	    def Get : int()        {            return = 10;        }    }    class B extends A    {        constructor B()        {        }    }    p = B.B();    x = p.Get();

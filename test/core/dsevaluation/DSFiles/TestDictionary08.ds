@@ -1,0 +1,7 @@
+
+arr = {{1, 2}, {3, 4}};
+arr[1]["xyz"] = 42;
+arr[1][true] = 42;
+r1 = arr[1]["xyzxyzxyz"];
+r2 = arr[1][true];
+

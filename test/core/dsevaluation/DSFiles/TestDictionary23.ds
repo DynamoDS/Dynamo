@@ -1,0 +1,14 @@
+
+r = [Imperative]
+{
+    a = {1, 5, 7};
+    a["x"] = 9;
+    a[true] = 11;
+    x = 0; 
+    for (v in a) 
+    {
+        x = x + v;
+    }
+    return = x;
+}
+

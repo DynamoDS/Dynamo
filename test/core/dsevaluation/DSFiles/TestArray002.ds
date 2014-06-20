@@ -1,0 +1,1 @@
+b;[Associative]{     def foo : int (a : int[])    {                   return = a[0];    }                arr = {100, 200};                b = foo(arr);}

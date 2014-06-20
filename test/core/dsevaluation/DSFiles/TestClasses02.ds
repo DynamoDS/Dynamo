@@ -1,0 +1,1 @@
+	class vector2D	{		mx : var;		my : var;				constructor vector2D(px : int, py : int)		{			mx = px; 			// Copy mx to my with px's value			my = mx; 		}	}	v1 = vector2D.vector2D(100,20);	x = v1.mx;	y = v1.my;

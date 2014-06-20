@@ -1,0 +1,1 @@
+class A{    x:int = 1;    def foo()    {        p:int = 3;        p = false;        return = p;    }}a = A.A();r = a.foo();

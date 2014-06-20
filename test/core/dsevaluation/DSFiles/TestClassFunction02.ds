@@ -1,0 +1,1 @@
+    class Obj    {        val : var;	    def sum : int (p : int)        {            return = p + 10;        }        constructor Obj()        {            val = sum(2);        }    }    p = Obj.Obj();    x = p.val;

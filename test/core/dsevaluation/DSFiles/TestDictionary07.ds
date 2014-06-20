@@ -1,0 +1,9 @@
+
+strs = {"x", true, 'b'};
+arr = {};
+arr[strs] = {11, 13, 17};
+values = arr[strs];
+r1 = values[0];
+r2 = values[1];
+r3 = values[2];
+

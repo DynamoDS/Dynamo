@@ -1,0 +1,1 @@
+[Imperative]{    arr1 = {true, false};    arr2 = {1, 2, 3};    arr3 = {false, true};    t = arr2[1][0];}

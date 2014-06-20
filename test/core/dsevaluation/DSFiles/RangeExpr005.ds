@@ -1,0 +1,1 @@
+b;c;d;e;f;                        [Associative]                        {	                        a = 0..15..~4;                            b = a[0];	                        c = a[1];	                        d = a[2];	                        e = a[3];                              f = a[4];                                                   }                        

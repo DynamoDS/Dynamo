@@ -1,0 +1,1 @@
+class point{    x : var;    y : var;    constructor point()    {        x = 10;        y = 20;    }    def _Dispose : int()    {        x = 100;        return = null;    }}def f : int(){    p = point.point();    p2 = p;    return = p.x;}i = f();n = point.point();                

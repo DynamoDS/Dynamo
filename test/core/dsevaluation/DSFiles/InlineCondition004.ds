@@ -1,0 +1,1 @@
+def f(i : int){    return = i + 1;}def g(){    return = 1;}a = {10,0,10};t = 1;b = a > t ? f(10) : g();x = b[0];y = b[1];z = b[2];                        

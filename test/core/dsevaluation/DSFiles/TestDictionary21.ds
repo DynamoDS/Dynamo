@@ -1,0 +1,7 @@
+
+        a = {1, 2, 3};
+a[true] = 41;
+a["x"] = "foo";
+r1 = ContainsKey(a, "x");
+r2 = ContainsKey(a, true);
+

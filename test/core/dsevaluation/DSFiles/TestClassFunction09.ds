@@ -1,0 +1,1 @@
+class MyPoint{	mX : double;	mY : double;	mZ : double;                                constructor ByXY (x : double, y : double)    {		mX = x;		mY = y;		mZ = 0.0;    }			constructor ByYZ (y : double, z : double)    {		mX = 0.0;		mY = y;		mZ = z;    }}    p = MyPoint.ByYZ (100.0,200.0);	x = p.mX;	y = p.mY;	z = p.mZ;

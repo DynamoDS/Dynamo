@@ -1,0 +1,10 @@
+
+class A
+{
+}
+a = A();
+arr = {};
+arr[a] = 41;
+arr[a] = 42;
+r = arr[a];
+

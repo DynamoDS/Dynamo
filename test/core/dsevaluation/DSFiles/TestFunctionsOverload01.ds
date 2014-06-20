@@ -1,0 +1,1 @@
+test1;test2;[Associative]{    def m1 : int( s : int )		{		return = s * 2;	}    def m1 : int( s: int, y : int )    {        return = s * y;    }    test1 = m1(5);    test2 = m1(5, 10);}

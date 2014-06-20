@@ -1,0 +1,2 @@
+import("ProtoGeometry.dll");
+def CreatePoint : Point(x : int, y : int, z : int){	return = Point.ByCoordinates(x, y, z);}def getx : double(p : Point){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                

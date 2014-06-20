@@ -1,0 +1,1 @@
+class f{	x : var;	y : var;	constructor f()	{		x = 1;			y = 2;		}}p = f.f();i = p.x;p.y = 1000;                

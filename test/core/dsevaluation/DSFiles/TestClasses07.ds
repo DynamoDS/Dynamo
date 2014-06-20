@@ -1,0 +1,1 @@
+  class vector2D{	mx : var[];	constructor vector2D()	{		mx = {10,20}; 	}    def ModifyMe : int()    {        mx[1] = 64;        return = mx[1];    }}p = vector2D.vector2D();x = p.ModifyMe();
