@@ -23,7 +23,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             foreach (var solid in allSolidsInDoc)
             {
-                var asmSolid = solid.ToProtoType();
+                var asmSolid = solid.ToProtoType(false);
 
                 asmSolid.Volume.ShouldBeApproximately(solid.Volume);
                 asmSolid.Area.ShouldBeApproximately(solid.SurfaceArea);

@@ -31,7 +31,7 @@ namespace Revit.GeometryConversion
 
         public static Autodesk.Revit.DB.XYZ ToXyz(this Autodesk.DesignScript.Geometry.Point pt, bool convertUnits = true)
         {
-            if (convertUnits) pt = pt.ConvertToHostUnits();
+            if (convertUnits) pt = pt.InHostUnits();
             return new XYZ(pt.X, pt.Y, pt.Z);
         }
 
@@ -111,7 +111,7 @@ namespace Revit.GeometryConversion
         public static Autodesk.DesignScript.Geometry.Point ToPoint(this XYZ xyz, bool convertUnits = true)
         {
             var pt = Autodesk.DesignScript.Geometry.Point.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
-            return convertUnits ? pt.ConvertToDynamoUnits() : pt;
+            return convertUnits ? pt.InDynamoUnits() : pt;
         }
 
         public static Autodesk.DesignScript.Geometry.Point ToProtoType(this Autodesk.Revit.DB.Point point, bool convertUnits = true)

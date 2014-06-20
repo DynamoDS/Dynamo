@@ -34,7 +34,7 @@ namespace Revit.GeometryConversion
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            converted = performHostUnitConversion ? converted.ConvertToDynamoUnits() : converted;
+            converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
 
             // If possible, add a geometry reference for downstream Element creation
             var revitRef = revitCurve.Reference;
@@ -54,7 +54,7 @@ namespace Revit.GeometryConversion
                 throw new ArgumentNullException("revitCurves");
             }
 
-            var protoCurves = revitCurves.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType());
+            var protoCurves = revitCurves.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType(false));
             var converted = PolyCurve.ByJoinedCurves(protoCurves.ToArray());
 
             if (converted == null)
@@ -62,14 +62,14 @@ namespace Revit.GeometryConversion
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            return performHostUnitConversion ? converted.ConvertToDynamoUnits() : converted;
+            return performHostUnitConversion ? converted.InDynamoUnits() : converted;
         }
 
         public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.PolyLine geom,
             bool performHostUnitConversion = true)
         {
             var converted = PolyCurve.ByPoints(geom.GetCoordinates().Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z)).ToArray());
-            return performHostUnitConversion ? converted.ConvertToDynamoUnits() : converted;
+            return performHostUnitConversion ? converted.InDynamoUnits() : converted;
         }
 
         #region Conversions
@@ -159,11 +159,10 @@ namespace Revit.GeometryConversion
                 (crv.GetEndParameter(1) - crv.GetEndParameter(0))*180/Math.PI, crv.Normal.ToVector(false));
         }
 
-        private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.PolyLine crv)
+        private static Autodesk.DesignScript.Geometry.PolyCurve Convert(Autodesk.Revit.DB.PolyLine crv)
         {
             return
-                Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(
-                    crv.GetCoordinates().Select(x => x.ToPoint(false)).ToArray(), 1);
+                Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(crv.GetCoordinates().Select(x => x.ToPoint(false)));
         }
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Ellipse crv)

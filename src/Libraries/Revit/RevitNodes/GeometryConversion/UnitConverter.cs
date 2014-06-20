@@ -22,12 +22,14 @@ namespace Revit.GeometryConversion
         }
 
         /// <summary>
-        /// Convert from Feet (Revit API internal units) to whatever the user facing units are
+        /// Convert from Revit API internal units (feet) to Dynamo internal units (meters) 
+        /// 
+        /// Can be used simply as geometry.InDynamoUnits() as the type is constrained
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="geometry"></param>
         /// <returns></returns>
-        public static T ConvertToDynamoUnits<T>(this T geometry)
+        public static T InDynamoUnits<T>(this T geometry)
             where T : Autodesk.DesignScript.Geometry.Geometry
         {
             if (geometry == null)
@@ -39,12 +41,14 @@ namespace Revit.GeometryConversion
         }
 
         /// <summary>
-        /// Convert from user facing units to Feet (Revit API internal units)
+        /// Convert from Dynamo internal units (meters) to Revit API internal units (feet)
+        /// 
+        /// Can be used simply as geometry.InHostUnits()
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="geometry"></param>
         /// <returns></returns>
-        public static T ConvertToHostUnits<T>(this T geometry)
+        public static T InHostUnits<T>(this T geometry)
             where T : Autodesk.DesignScript.Geometry.Geometry
         {
             if (geometry == null)

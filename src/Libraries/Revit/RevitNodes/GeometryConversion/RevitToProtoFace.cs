@@ -29,7 +29,7 @@ namespace Revit.GeometryConversion
 
             if (converted == null) return null;
 
-            converted = performHostUnitConversion ? converted.ConvertToDynamoUnits() : converted;
+            converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
 
             var revitRef = revitFace.Reference;
             return revitRef != null ? ElementFaceReference.AddTag(converted, revitRef) : converted;

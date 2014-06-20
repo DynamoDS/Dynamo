@@ -16,7 +16,7 @@ namespace Revit.GeometryConversion
         public static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv,
             bool performHostUnitConversion = true)
         {
-            crv = performHostUnitConversion ? crv.ConvertToHostUnits() : crv;
+            crv = performHostUnitConversion ? crv.InHostUnits() : crv;
 
             dynamic dyCrv = crv;
             Autodesk.Revit.DB.Curve converted = ProtoToRevitCurve.Convert(dyCrv);
@@ -37,14 +37,14 @@ namespace Revit.GeometryConversion
                 throw new Exception("The input PolyCurve must be closed");
             }
 
-            pcrv = performHostUnitConversion ? pcrv.ConvertToHostUnits() : pcrv;
+            pcrv = performHostUnitConversion ? pcrv.InHostUnits() : pcrv;
 
             var cl = new CurveLoop();
             var crvs = pcrv.Curves();
 
             foreach (Autodesk.DesignScript.Geometry.Curve curve in crvs)
             {
-                Autodesk.Revit.DB.Curve converted = curve.ToNurbsCurve().ToRevitType();
+                Autodesk.Revit.DB.Curve converted = curve.ToNurbsCurve().ToRevitType(false);
                 cl.Append(converted);
             }
 
@@ -66,7 +66,7 @@ namespace Revit.GeometryConversion
                 throw new Exception("Could not convert the curve to a Revit curve because it is less than or equal to degree 2.");
             }
 
-            return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlPoints().ToXyzs(),
+            return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlPoints().ToXyzs(false),
                 crv.Weights(),
                 crv.Knots(),
                 crv.Degree,

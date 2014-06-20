@@ -116,7 +116,7 @@ namespace Revit.Elements
             }
 
             // transform geometry from dynamo unit system (m) to revit (ft)
-            geometries = geometries.Select(x => x.ConvertToHostUnits()).ToArray();
+            geometries = geometries.Select(x => x.InHostUnits()).ToArray();
 
             var translation = Vector.ByCoordinates(0, 0, 0);
             Robustify(ref geometries, ref translation);
@@ -141,7 +141,7 @@ namespace Revit.Elements
             }
 
             // transform geometry from dynamo unit system (m) to revit (ft)
-            geometry = geometry.ConvertToHostUnits();
+            geometry = geometry.InHostUnits();
 
             var translation = Vector.ByCoordinates(0, 0, 0);
             Robustify(ref geometry, ref translation);
