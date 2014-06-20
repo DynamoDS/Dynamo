@@ -739,94 +739,6 @@ namespace GraphToDSCompiler
             }
         }
 
-        /// <summary>
-        /// Parses DS sourcecode
-        /// 1. Checks for syntax
-        /// 2. Preseves sourcecode comments
-        /// 3. Appends a temporary assignment variable "%t=" to a statement, if the statement is non-assignement
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="parseSuccess"></param>
-        /// <returns></returns>
-        private static List<string> ParseCore(string expression, ref bool parseSuccess)
-        {
-            List<string> compiled = new List<string>();
-
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node codeBlockNode = Parse(expression, out commentNode);
-            parseSuccess = true;
-            List<ProtoCore.AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
-            Validity.Assert(nodes != null);
-
-            int cNodeNum = 0;
-            if (nodes.Count == 0)
-            {
-                InsertCommentsInCode(null, null, commentNode, ref cNodeNum, ref compiled, expression);
-                return compiled;
-            }
-            
-            foreach (var node in nodes)
-            {
-                ProtoCore.AST.AssociativeAST.AssociativeNode n = node as ProtoCore.AST.AssociativeAST.AssociativeNode;
-                ProtoCore.Utils.Validity.Assert(n != null);
-
-                
-                if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
-                {
-                    core.BuildStatus.LogSemanticError("Modifier Blocks are not supported currently.");
-                }
-                else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
-                {
-                    core.BuildStatus.LogSemanticError("Import statements are not supported in CodeBlock Nodes.");
-                }
-                else if (n is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
-                {
-                    core.BuildStatus.LogSemanticError("Language blocks are not supported in CodeBlock Nodes.");
-                }
-
-
-                string stmt = string.Empty; 
-
-                // Append the temporaries only if it is not a function def or class decl
-                bool isFunctionOrClassDef = n is ProtoCore.AST.AssociativeAST.FunctionDefinitionNode || n is ProtoCore.AST.AssociativeAST.ClassDeclNode;
-
-                if (isFunctionOrClassDef)
-                {
-                    ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(new List<ProtoCore.AST.AssociativeAST.AssociativeNode>{ n });
-                    stmt = codegen.GenerateCode();
-                }
-                else
-                {
-                    ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(new List<ProtoCore.AST.AssociativeAST.AssociativeNode>{ n });
-                    stmt = codegen.GenerateCode();
-                    ProtoCore.AST.AssociativeAST.BinaryExpressionNode ben = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                    if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
-                    {
-                        ProtoCore.AST.AssociativeAST.IdentifierNode lNode = ben.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                        if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
-                        {
-                            stmt = stmt.Replace(ProtoCore.DSASM.Constants.kTempProcConstant, "%t");
-                        }
-                    }
-                    else
-                    {
-                        // These nodes are non-assignment nodes
-                        // When parsed by CodeGenDS, non-assignment nodes do not contain a terminate line ";\n"
-                        // Append it here
-                        stmt = "%t =" + stmt + ProtoCore.DSASM.Constants.termline;
-                    }
-                }
-
-                compiled.Add(stmt);
-                
-                InsertCommentsInCode(stmt, node, commentNode, ref cNodeNum, ref compiled, expression);
-                
-            }
-            InsertCommentsInCode(null, null, commentNode, ref cNodeNum, ref compiled, expression);
-
-            return compiled;
-        }
-
         private static IEnumerable<ProtoCore.AST.Node> ParseUserCodeCore(string expression, string postfixGuid, ref bool parseSuccess)
         {
             List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
@@ -895,44 +807,6 @@ namespace GraphToDSCompiler
             return astNodes;
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="compiled"></param>
-        /// <param name="errors"></param>
-        public static void CompileExpression(string expression, out List<string> compiled)
-        {
-            expression = expression.Replace("\r\n", "\n");
-            int oldIndex = 0;
-            compiled = new List<string>();
-
-            bool parseSuccess = false;
-
-            if (expression == null)
-                return;
-
-            try
-            {
-                compiled = ParseCore(expression, ref parseSuccess);
-            }
-            catch 
-            {
-                // For modifier blocks, language blocks, etc. that are currently ignored
-                if(parseSuccess)
-                    return;
-
-                // For invalid functional associative statement errors like for "a+b;"
-                // Reset core above as we don't wish to propagate these errors - pratapa
-                core.ResetForPrecompilation();
-
-                compiled = GenerateStatements(expression);
-                               
-                return;
-            }
-        }
-
         private static IEnumerable<ProtoCore.AST.Node> ParseUserCode(string expression, string postfixGuid)
         {
             IEnumerable<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
@@ -956,39 +830,9 @@ namespace GraphToDSCompiler
                 // Reset core above as we don't wish to propagate these errors - pratapa
                 core.ResetForPrecompilation();
 
-                // For invalid functional associative statement errors like for "a+b;"
+                // Use manual parsing for invalid functional associative statement errors like for "a+b;"
                 return StringParse(expression, postfixGuid);
             }
-        }
-
-        private static List<string> GenerateStatements(string expression)
-        {
-
-            List<string> compiled = new List<string>();
-            
-            string[] expr = GetStatementsString(expression);
-            foreach (string s in expr)
-                compiled.Add(s);
-            
-            for (int i = 0; i < compiled.Count(); i++)
-            {
-                if (compiled[i].StartsWith("\n"))
-                {
-                    string newlines = string.Empty;
-                    int lastPosButOne = 0;
-                    string original = compiled[i];
-                    for (int j = 0; j < original.Length; j++)
-                    {
-                        if (!original[j].Equals('\n')) { lastPosButOne = j; break; } else newlines += original[j];
-                    }
-                    string newStatement = original.Substring(lastPosButOne);
-                    if (!IsNotAssigned(newStatement)) newStatement = "%t =" + newStatement;
-                    compiled[i] = newlines + newStatement;
-                }
-                else
-                    if (!IsNotAssigned(compiled[i])) compiled[i] = "%t =" + compiled[i];
-            }
-            return compiled;
         }
 
         private static IEnumerable<ProtoCore.AST.Node> StringParse(string expression, string postfixGuid)
@@ -1397,6 +1241,7 @@ namespace GraphToDSCompiler
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
+            // Parse code to generate AST and add temporaries to non-assignment nodes
             IEnumerable<ProtoCore.AST.Node> astNodes = ParseUserCode(parseParams.OriginalCode, postfixGuid);
             
             // Catch the syntax errors and errors for unsupported 
