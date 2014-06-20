@@ -44,8 +44,8 @@ namespace Dynamo.Nodes
             string referencePointId = MigrationManager.GetGuidFromXmlElement(referencePoint);
 
             XmlElement pointAtParameter = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "RevitNodes.dll",
-                "Face.PointAtParameter", "Face.PointAtParameter@double,double");
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "Surface.PointAtParameter", "Surface.PointAtParameter@double,double");
             migrationData.AppendNode(pointAtParameter);
             string pointAtParameterId = MigrationManager.GetGuidFromXmlElement(pointAtParameter);
 

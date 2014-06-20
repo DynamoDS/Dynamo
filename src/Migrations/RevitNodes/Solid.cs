@@ -106,7 +106,7 @@ namespace Dynamo.Nodes
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Curve.ExtrudeAsSolid",
-                "Curve.ExtrudeAsSolid@Vector,double");
+                "Curve.ExtrudeAsSolid@Autodesk.DesignScript.Geometry.Vector,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 

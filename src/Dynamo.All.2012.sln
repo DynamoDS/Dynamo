@@ -104,6 +104,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitsUI", "Libraries\UnitsUI\UnitsUI.csproj", "{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLayout", "Engine\GraphLayout\GraphLayout.csproj", "{C2595B04-856D-40AE-8B99-4804C7A70708}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "DynamoUtilitiesTests\DynamoUtilitiesTests.csproj", "{AB735028-22B0-4083-9CC5-805C582818EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowTests", "..\test\Libraries\WorlflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
