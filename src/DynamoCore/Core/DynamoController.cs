@@ -299,10 +299,7 @@ namespace Dynamo
             DynamoModel.CurrentWorkspace.Y = 0;
 
             // custom node loader
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            CustomNodeManager = new CustomNodeManager(pluginsPath);
+            CustomNodeManager = new CustomNodeManager(DynamoPaths.Definitions);
 
             SearchViewModel = new SearchViewModel();
 
