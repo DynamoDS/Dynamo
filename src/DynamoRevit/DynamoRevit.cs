@@ -105,13 +105,13 @@ namespace Dynamo.Applications
 
             // Add the Revit_20xx folder for assembly resolution
             DynamoPaths.AddResolutionPath(assDir);
-            
-            // Setup the core paths
-            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
 
             // Add Revit-specific paths for loading.
             DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "RevitNodes.dll"));
             DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "SimpleRaaS.dll"));
+
+            // Setup the core paths
+            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
 
             //add an additional node processing folder
             DynamoPaths.Nodes.Add(Path.Combine(assDir, "nodes"));
