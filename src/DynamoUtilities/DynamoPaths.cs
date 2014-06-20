@@ -91,7 +91,7 @@ namespace DynamoUtilities
             var dynCore = Path.Combine(MainExecPath, "DynamoCore.dll");
             var fvi = FileVersionInfo.GetVersionInfo(dynCore);
             var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
-            Packages = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo", dynVersion, "dynamo_packages");
+            Packages = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo", dynVersion, "packages");
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
 
