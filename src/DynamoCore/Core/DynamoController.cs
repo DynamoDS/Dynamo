@@ -298,8 +298,6 @@ namespace Dynamo
             DynamoModel.CurrentWorkspace.X = 0;
             DynamoModel.CurrentWorkspace.Y = 0;
 
-            // Set the DynamoCore path
-
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
