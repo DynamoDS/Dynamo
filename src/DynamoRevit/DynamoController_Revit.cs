@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
@@ -14,7 +13,6 @@ using Autodesk.Revit.UI.Events;
 using DSIronPython;
 using DSNodeServices;
 using Dynamo.Applications;
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
@@ -59,6 +57,14 @@ namespace Dynamo
                 Application_DocumentOpened;
             DocumentManager.Instance.CurrentUIApplication.ViewActivated += Revit_ViewActivated;
 
+            // Set the intitial document.
+            if (DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument != null)
+            {
+                DocumentManager.Instance.CurrentUIDocument =
+                       DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+            }
+
             TransactionWrapper = TransactionManager.Instance.TransactionWrapper;
             TransactionWrapper.TransactionStarted += TransactionManager_TransactionCommitted;
             TransactionWrapper.TransactionCancelled += TransactionManager_TransactionCancelled;
@@ -68,9 +74,15 @@ namespace Dynamo
             ElementNameStore = new Dictionary<ElementId, string>();
 
             EngineController.ImportLibrary("RevitNodes.dll");
-
+            EngineController.ImportLibrary("SimpleRaaS.dll");
+            
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
-            //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(false));
+            IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
+
+            // Turn off element binding during iron python script execution
+            IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
+            IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
+
         }
 
         public RevitServicesUpdater Updater { get; private set; }
@@ -168,42 +180,65 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        /// Handler for Revit's DocumentOpened event.
+        /// This handler is called when a document is opened, but NOT when
+        /// a document is created from a template.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Application_DocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
-            //when a document is opened 
-            if (DocumentManager.Instance.CurrentUIDocument != null)
+            // If the current document is null, for instance if there are
+            // no documents open, then set the current document, and 
+            // present a message telling us where Dynamo is pointing.
+            if (DocumentManager.Instance.CurrentUIDocument == null)
             {
+                DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
                 DynamoViewModel.RunEnabled = true;
                 ResetForNewDocument();
             }
         }
 
+        /// <summary>
+        /// Handler for Revit's DocumentClosed event.
+        /// This handler is called when a document is closed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Application_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
-            //Disable running against revit without a document
-            if (DocumentManager.Instance.CurrentDBDocument == null)
+            // If the active UI document is null, it means that all views have been 
+            // closed from all document. Clear our reference, present a warning,
+            // and disable running.
+            if (DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument == null)
             {
+                DocumentManager.Instance.CurrentUIDocument = null;
                 DynamoViewModel.RunEnabled = false;
                 dynSettings.DynamoLogger.LogWarning(
-                    "Dynamo no longer has an active document.",
-                    WarningLevel.Moderate);
+                    "Dynamo no longer has an active document. Please open a document.",
+                    WarningLevel.Error);
             }
-            else
-            {
-                DynamoViewModel.RunEnabled = true;
-                dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
-            }
-
-            ResetForNewDocument();
         }
 
+        /// <summary>
+        /// Handler for Revit's ViewActivated event.
+        /// This handler is called when a view is activated. It is called
+        /// after the ViewActivating event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Revit_ViewActivated(object sender, ViewActivatedEventArgs e)
         {
-            //if Dynamo doesn't have a view, then latch onto this one
-            if (DocumentManager.Instance.CurrentUIDocument != null)
+            // If there is no active document, then set it to whatever
+            // document has just been activated
+            if (DocumentManager.Instance.CurrentUIDocument == null)
             {
-                dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
-                ResetForNewDocument();
+                DocumentManager.Instance.CurrentUIDocument =
+                DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+
+                DynamoViewModel.RunEnabled = true;
             }
         }
 
@@ -231,7 +266,8 @@ namespace Dynamo
         {
             if (dynSettings.Controller != null)
             {
-                dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x => x.ResetOldValue());
+                foreach (var node in DynamoModel.Nodes)
+                    node.ResetOldValue();
 
                 foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
                 {
@@ -255,7 +291,6 @@ namespace Dynamo
 
         protected override void OnEvaluationCompleted(object sender, EventArgs e)
         {
-
             //Cleanup Delegate
             Action cleanup = delegate
             {

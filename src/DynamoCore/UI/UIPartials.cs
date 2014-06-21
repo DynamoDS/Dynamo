@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
 
     public partial class Sublists
     {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox
@@ -233,6 +233,11 @@ namespace Dynamo.Nodes
         {
             //override in child classes
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
     public partial class DoubleInput
@@ -285,6 +290,11 @@ namespace Dynamo.Nodes
             }
 
             return base.UpdateValueCore(name, value);
+        }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
         }
     }
 
@@ -642,6 +652,11 @@ namespace Dynamo.Nodes
                     //rehook the binding
                     OnRequestBindingRehook(EventArgs.Empty);
                 });
+        }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
         }
     }
 

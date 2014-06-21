@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Threading;
 using DSNodeServices;
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -20,7 +21,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
-using NUnit.Framework;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.UI.Prompts;
@@ -77,6 +77,7 @@ namespace Dynamo
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
         public IVisualizationManager VisualizationManager { get; set; }
+        public DebugSettings DebugSettings { get; set; }
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -239,6 +240,8 @@ namespace Dynamo
         public DynamoController(string context, IUpdateManager updateManager,
             IWatchHandler watchHandler, IPreferences preferences)
         {
+            DebugSettings = new DebugSettings();
+
             IsCrashing = false;
 
             dynSettings.Controller = this;
@@ -370,11 +373,11 @@ namespace Dynamo
 
         public void RunExpression(int? executionInterval = null)
         {
-            //dynSettings.DynamoLogger.LogWarning("Running expression", WarningLevel.Mild);
-
             //If we're already running, do nothing.
             if (Running)
+            {
                 return;
+            }
 
             // If there is preloaded trace data, send that along to the current
             // LiveRunner instance. Here we make sure it is done exactly once 
@@ -449,8 +452,8 @@ namespace Dynamo
 
                 OnRunCancelled(true);
 
-                if (IsTestMode)
-                    Assert.Fail(ex.Message + ":" + ex.StackTrace);
+                if (IsTestMode) // Throw exception for NUnit.
+                    throw new Exception(ex.Message + ":" + ex.StackTrace);
             }
             finally
             {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Core;
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
@@ -49,7 +51,15 @@ namespace Dynamo.DSEngine
 
         public RuntimeMirror GetMirror(string var)
         {
-            return liveRunner.InspectNodeValue(var);
+           
+
+            var mirror = liveRunner.InspectNodeValue(var);
+
+            if (dynSettings.Controller.DebugSettings.VerboseLogging)
+                dynSettings.DynamoLogger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
+
+            return mirror;
+
         }
 
         /// <summary>
@@ -58,6 +68,10 @@ namespace Dynamo.DSEngine
         /// <param name="graphData"></param>
         public void UpdateGraph(GraphSyncData graphData)
         {
+            if (dynSettings.Controller.DebugSettings.VerboseLogging)
+                dynSettings.DynamoLogger.Log("LRS.UpdateGraph: " + graphData);
+
+
             liveRunner.UpdateGraph(graphData);
         }
 

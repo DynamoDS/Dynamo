@@ -401,6 +401,18 @@ namespace ProtoFFI
                 if (SupressesImport(f))
                     continue;
 
+                //Supress if defined in super-type
+                if (isDerivedClass)
+                {
+                    FieldInfo[] supertypeFields = baseType.GetFields();
+
+                    if (supertypeFields.Any(superF => superF.Name == f.Name))
+                    {
+                        continue;
+                    }
+                }
+
+
                 VarDeclNode variable = ParseFieldDeclaration(f);
                 if (null == variable)
                     continue;
@@ -1128,6 +1140,14 @@ namespace ProtoFFI
                         mModules.Add(name, module);
                     }
                 }
+                catch (BadImageFormatException exception)
+                {
+                    //This probably wasn't a .NET dll
+                    System.Diagnostics.Debug.WriteLine(exception.Message);
+                    System.Diagnostics.Debug.WriteLine(exception.StackTrace);
+                    throw new System.Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));   
+                }
+
                 catch (System.Exception exception)
                 {
                     // If the exception is having HRESULT of 0x80131515, then perhaps we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
@@ -1135,7 +1155,7 @@ namespace ProtoFFI
                     // 
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Fail to load file: {0}.", name));
+                    throw new System.Exception(string.Format("Fail to load library: {0}.", name));
                 }
             }
 

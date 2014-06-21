@@ -69,7 +69,6 @@
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
     <Compile Include="Logic.cs" />
-    <Compile Include="Function.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />

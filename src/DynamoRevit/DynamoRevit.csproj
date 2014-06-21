@@ -48,8 +48,8 @@
     <NoWarn>618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoRaaS">
-      <HintPath>..\..\extern\DynamoRaaS\DynamoRaaS.dll</HintPath>
+    <Reference Include="DynamoRaaSHelper">
+      <HintPath>..\..\extern\DynamoRaaS\DynamoRaaSHelper.dll</HintPath>
     </Reference>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -61,9 +61,6 @@
     </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="JobMonitor">
-      <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -79,6 +76,7 @@
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -116,8 +114,6 @@
     <Compile Include="RevitUtils.cs" />
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
-    <Compile Include="Nodes\Selection.cs" />
-    <Compile Include="Nodes\Transaction.cs" />
     <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\DynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\Particle.cs" />
@@ -198,7 +194,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DynamoRaaS\RevitRaaS.dll.config" "$(OutputPath)"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DynamoRaaS\RevitRaaS.dll.config" "$(OutputPath)"
+copy /Y "$(SolutionDir)..\extern\DynamoRaaS\DynamoRaaS.dll" "$(OutputPath)\nodes\DynamoRaaS.dll"
+copy /Y "$(SolutionDir)..\extern\DynamoRaaS\SimpleRaaS.dll" "$(OutputPath)"
+copy /Y "$(SolutionDir)..\extern\DynamoRaaS\JobMonitor.dll" "$(OutputPath)"
+copy /Y "$(SolutionDir)..\extern\DynamoRaaS\RevitRaaS.dll" "$(OutputPath)"
+copy /Y "$(SolutionDir)..\extern\DynamoRaaS\SDF.dll" "$(OutputPath)"
+copy /Y "$(SolutionDir)..\extern\DynamoRaaS\*_DynamoCustomization.xml" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

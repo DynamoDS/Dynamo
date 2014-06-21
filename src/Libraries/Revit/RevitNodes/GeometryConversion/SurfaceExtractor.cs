@@ -205,7 +205,7 @@ namespace Revit.GeometryConversion
 
             crv = (Autodesk.DesignScript.Geometry.Curve) crv.Transform(revolveCs, globalCs);
 
-            return Surface.ByRevolve(crv, o.AsPoint(), axis.Normalized(), 0, 360);
+            return Surface.ByRevolve(crv, o.AsPoint(), axis.Normalized(), 0, 360).FlipNormalDirection();
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RuledFace face, IEnumerable<PolyCurve> edgeLoops)

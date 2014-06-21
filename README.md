@@ -1,16 +1,16 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
-Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and the programmers alike. It gives users the ability to visually script behavior, define custom nodes, and script using Python.
+Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
 Dynamo runs as an addin on top of Autodesk Revit, extending the parametric functionality already provided.
 
 ## Contributors ##
 
 * [Ian Keough](https://github.com/ikeough): Started the project, main developer.
-* [Stephen Elliott](https://github.com/Steell): VM, language, and node developer. Functional programming specialist.
+* [Steve Elliott](https://github.com/Steell): VM, language, and node developer. Functional programming specialist.
 * [Peter Boyer](https://github.com/pboyer): Package manager and geometry developer.
 * [Lev Lipkin](https://github.com/LevL): Revit node designer, Revit interaction specialist.
 * [Matt Jezyk](https://github.com/tatlin): Product management, requirements gathering, and node designer.
-* [Zach Kron](https://github.com/kronz): Project management and requirements gathering.
+* [Zach Kron](https://github.com/kronz): Product management and requirements gathering.
 * [Luke Church](https://github.com/lukechurch): Software Architecture, Programming UX specialist.
 * [Aparajit Pratap](https://github.com/aparajit-pratap): Node and UI developer.
 * [Ben Goh](https://github.com/Benglin): UI developer.
@@ -22,6 +22,7 @@ Dynamo runs as an addin on top of Autodesk Revit, extending the parametric funct
 * [Yu Ke](https://github.com/ke-yu): Langauge and VM developer.
 * [Randy Ma](https://github.com/Randy-Ma): Geometry developer.
 * [Patrick Tierney](https://github.com/hlp): Geometry developer.
+* [Colin McCrone' (https://github.com/mccrone): Technology Evangelist, Education, Requirements 
 
 
 Dynamo has been developed based on feedback from several parties including Arup, KPF, Buro Happold, Autodesk, and students and faculty at the USC School of Architecture.
@@ -32,6 +33,14 @@ Dynamo has been developed based on feedback from several parties including Arup,
 The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014, and Autodesk Project Vasari Beta 3. 
 
 ## Releases ##
+
+###0.7.1###
+- Package Manager is Back
+- 0.6.3 files will be upgraded to 0.7 format
+- Experimental Library Loading
+- Stability Improvments
+- Revit Element created and Selected during a session will be rememebered in later sessions.
+- Visualization Performance improvments
 
 ###0.7.0###
 This is an alpha quality release which represents a significant refactoring of the underlying code.  There are some notable (temporary) restricitions to the functionality that is available in 0.6.3, and major enhancements to others. To allow users to continue work with 0.6.3 while exploring 0.7.0, this release can be installed side by side with older releases.  

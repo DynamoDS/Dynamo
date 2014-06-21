@@ -46,7 +46,7 @@ namespace ProtoCore
             public const string kFFIFailedToObtainThisObject = "Failed to obtain this object for '{0}.{1}'.";
             public const string kFFIFailedToObtainObject = "Failed to obtain object '{0}' for '{1}.{2}'.";
             public const string kFFIInvalidCast = "'{0}' is being cast to '{1}', but the allowed range is [{2}..{3}].";
-            public const string kDeferencingNonPointer = "Deferencing a non-pointer.";
+            public const string kDeferencingNonPointer = "Dereferencing a non-pointer.";
             public const string kFailToConverToPointer = "Converting other things to pointer is not allowed.";
             public const string kFailToConverToNull = "Converting other things to null is not allowed.";
             public const string kFailToConverToFunction = "Converting other things to function pointer is not allowed.";

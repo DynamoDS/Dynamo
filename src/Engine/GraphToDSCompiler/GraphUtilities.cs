@@ -739,6 +739,15 @@ namespace GraphToDSCompiler
             }
         }
 
+        /// <summary>
+        /// Parses DS sourcecode
+        /// 1. Checks for syntax
+        /// 2. Preseves sourcecode comments
+        /// 3. Appends a temporary assignment variable "%t=" to a statement, if the statement is non-assignement
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="parseSuccess"></param>
+        /// <returns></returns>
         private static List<string> ParseCore(string expression, ref bool parseSuccess)
         {
             List<string> compiled = new List<string>();
@@ -788,21 +797,23 @@ namespace GraphToDSCompiler
                 }
                 else
                 {
-                    stmt = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(expression, node);
-
+                    ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(new List<ProtoCore.AST.AssociativeAST.AssociativeNode>{ n });
+                    stmt = codegen.GenerateCode();
                     ProtoCore.AST.AssociativeAST.BinaryExpressionNode ben = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
                     if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
                     {
                         ProtoCore.AST.AssociativeAST.IdentifierNode lNode = ben.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
                         {
-                            stmt = "%t =" + stmt;
+                            stmt = stmt.Replace(ProtoCore.DSASM.Constants.kTempProcConstant, "%t");
                         }
                     }
                     else
                     {
                         // These nodes are non-assignment nodes
-                        stmt = "%t =" + stmt;
+                        // When parsed by CodeGenDS, non-assignment nodes do not contain a terminate line ";\n"
+                        // Append it here
+                        stmt = "%t =" + stmt + ProtoCore.DSASM.Constants.termline;
                     }
                 }
 
