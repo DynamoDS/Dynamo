@@ -2388,6 +2388,44 @@ r3 = 'h' + 1;";
         }
 
         [Test]
+        public void TestrecusionWithNestedFunction01()
+        {
+            string code =
+@"def if_1(x)
+{
+    return = 1;
+}
+
+def if_2(x)
+{
+    v1 = x - 1;
+    v2 = foo(v1);
+    v3 = x * v2;
+    return = v3;
+}
+
+def foo(x)
+{
+    c = x <= 1;
+
+    v = [Imperative]
+    {
+        if (c)
+        {
+            return = if_1(x);
+        }
+        return = if_2(x);
+    }
+
+    return = v;
+}
+
+r = foo(3);";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 6);
+        }
+
+        [Test]
         public void TestContextInject01()
         {
             ProtoScript.Runners.ProtoRunner runner = new ProtoScript.Runners.ProtoRunner();
