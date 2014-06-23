@@ -66,8 +66,8 @@ Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoes
 Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 
 ;AddinGenerator
-Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
-Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2014 DynamoForRevit2015
 
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
@@ -203,14 +203,33 @@ begin
     end;
 end;
 
+function UpdateAddins() : Integer;
+var
+    iResultCode: Integer;
+begin
+  Result := 0;
+  if Exec(ExpandConstant('{app}\DynamoAddinGenerator.exe'), '', '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+    Result := 0
+  else
+    Result := 1
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep=ssInstall) then
-  begin
-    if (IsUpgrade()) then
     begin
-      UnInstallOldVersion();
+      if (IsUpgrade()) then
+      begin
+        UnInstallOldVersion();
+      end;
     end;
-  end;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+   if (CurUninstallStep=usPostUninstall) then
+    begin
+        UpdateAddins();
+    end;
 end;
 
