@@ -78,6 +78,7 @@
     <Compile Include="Elements\FloorTests.cs" />
     <Compile Include="Elements\FloorTypeTests.cs" />
     <Compile Include="Elements\GridTests.cs" />
+    <Compile Include="Elements\ImportInstanceTests.cs" />
     <Compile Include="Elements\LevelTests.cs" />
     <Compile Include="Elements\MaterialTests.cs" />
     <Compile Include="Elements\ModelTextTests.cs" />
