@@ -83,7 +83,7 @@ Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 ;Other Custom Nodes
-Source: temp\definitions\*; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\0.7\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo071.addin"
