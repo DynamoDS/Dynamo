@@ -891,6 +891,54 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        private void DoGraphAutoLayout(object o)
+        {
+            if (_model.Nodes.Count == 0)
+                return;
+
+            var graph = new GraphLayout.Graph();
+            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            
+            foreach (NodeModel x in _model.Nodes)
+            {
+                graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
+                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+            }
+
+            foreach (ConnectorModel x in _model.Connectors)
+            {
+                graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
+                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+            }
+
+            _model.RecordModelsForModification(new List<ModelBase>(_model.Nodes));
+            
+            // Sugiyama algorithm steps
+            graph.RemoveCycles();
+            graph.AssignLayers();
+            graph.OrderNodes();
+            
+            // Assign coordinates to node models
+            graph.NormalizeGraphPosition();
+            foreach (var x in _model.Nodes)
+            {
+                var id = x.GUID;
+                x.X = graph.FindNode(id).X;
+                x.Y = graph.FindNode(id).Y;
+                x.ReportPosition();
+            }
+
+            // Fit view to the new graph layout
+            DynamoSelection.Instance.ClearSelection();
+            ResetFitViewToggle(null);
+            FitViewCommand.Execute(null);
+        }
+
+        private bool CanDoGraphAutoLayout(object o)
+        {
+            return true;
+        }
+
         /// <summary>
         ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
         ///     first in order to obtain the name and category for the new node, 

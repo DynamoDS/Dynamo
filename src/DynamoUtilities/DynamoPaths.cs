@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DynamoUtilities
@@ -12,6 +13,9 @@ namespace DynamoUtilities
     /// </summary>
     public static class DynamoPaths
     {
+        private static List<string> preloadLibaries = new List<string>();
+        private static List<string> addResolvePaths = new List<string>();
+
         /// <summary>
         /// The main execution path of Dynamo. This is the directory
         /// which contains DynamoCore.dll
@@ -42,7 +46,26 @@ namespace DynamoUtilities
         public static string Asm { get; set; }
 
         // All 'nodes' folders.
-        public static HashSet<string> Nodes { get; set; } 
+        public static HashSet<string> Nodes { get; set; }
+
+        /// <summary>
+        /// Libraries to be preloaded by library services.
+        /// </summary>
+        public static List<string> PreloadLibraries
+        {
+            get { return preloadLibaries; }
+            set { preloadLibaries = value; }
+        }
+
+        /// <summary>
+        /// Additional paths that should be searched during
+        /// assembly resolution
+        /// </summary>
+        public static List<string> AdditionalResolutionPaths
+        {
+            get { return addResolvePaths; }
+            set { addResolvePaths = value; }
+        }
 
         /// <summary>
         /// Provided a main execution path, find other Dynamo paths
@@ -50,7 +73,8 @@ namespace DynamoUtilities
         /// the beginning of a Dynamo session.
         /// </summary>
         /// <param name="mainExecPath">The main execution directory of Dynamo.</param>
-        public static void SetupDynamoPaths(string mainExecPath)
+        /// <param name="preloadLibraries">A list of libraries to preload.</param>
+        public static void SetupDynamoPathsCore(string mainExecPath)
         {
             if (Directory.Exists(mainExecPath))
             {
@@ -61,8 +85,21 @@ namespace DynamoUtilities
                 throw new Exception(string.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-            Definitions = Path.Combine(MainExecPath, "definitions");
-            Packages = Path.Combine(MainExecPath , "dynamo_packages");
+            var appData = GetDynamoAppDataFolder(MainExecPath);
+
+            Definitions = Path.Combine(appData, "definitions");
+            Packages = Path.Combine(appData, "packages");
+
+            if (!Directory.Exists(Definitions))
+            {
+                Directory.CreateDirectory(Definitions);
+            }
+
+            if (!Directory.Exists(Packages))
+            {
+                Directory.CreateDirectory(Packages);
+            }
+
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
 
@@ -85,7 +122,58 @@ namespace DynamoUtilities
             
             Debug.WriteLine(sb);
 #endif
+            var coreLibs = new List<string>
+            {
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "Optimize.ds",
+                "DynamoUnits.dll",
+                "Tessellation.dll"
+            };
 
+            foreach (var lib in coreLibs)
+            {
+                AddPreloadLibrary(lib);
+            }
+        }
+
+        private static string GetDynamoAppDataFolder(string basePath)
+        {
+            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
+            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
+            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var appData = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Dynamo",
+                dynVersion);
+            return appData;
+        }
+
+        /// <summary>
+        /// Add a library for preloading with a check.
+        /// </summary>
+        /// <param name="path"></param>
+        public static void AddPreloadLibrary(string path)
+        {
+            if (!preloadLibaries.Contains(path))
+            {
+                preloadLibaries.Add(path);
+            }
+        }
+
+        /// <summary>
+        /// Adds a library for resolution with a check.
+        /// </summary>
+        /// <param name="path"></param>
+        public static void AddResolutionPath(string path)
+        {
+            if (!addResolvePaths.Contains(path))
+            {
+                addResolvePaths.Add(path);
+            }
         }
     }
 }
