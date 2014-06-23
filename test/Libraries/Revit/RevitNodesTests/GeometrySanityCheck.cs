@@ -1,11 +1,14 @@
 ﻿using Autodesk.DesignScript.Geometry;
+
+using DSRevitNodesTests;
+
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSCoreNodesTests
 {
     [TestFixture]
-    class GeometryTests
+    class GeometrySanityCheck : GeometricRevitNodeTest
     {
         /// <summary>
         /// Example of calling ProtoGeometry methods from C#
@@ -15,8 +18,6 @@ namespace DSCoreNodesTests
         [Test]
         public void NurbsCurve()
         {
-            HostFactory.Instance.StartUp();
-
             // create spline
             var pts = new Autodesk.DesignScript.Geometry.Point[]
             {
@@ -41,8 +42,6 @@ namespace DSCoreNodesTests
 
             var closestPoint0 = spline.GetClosestPoint(expectedPoint0);
             Assert.AreEqual(0, expectedPoint0.DistanceTo(closestPoint0), 1e-6);
-
-            HostFactory.Instance.ShutDown();
         }
 
     }
