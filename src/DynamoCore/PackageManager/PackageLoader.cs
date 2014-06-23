@@ -3,22 +3,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Dynamo.Nodes;
+
 using Dynamo.Utilities;
-using Greg.Requests;
-using RestSharp;
+using DynamoUtilities;
 
 
 namespace Dynamo.PackageManager
 {
     public class PackageLoader
     {
-
-        public static string DefaultRelativePackagesDirectory = "dynamo_packages";
         public string RootPackagesDirectory { get; private set; }
 
-        public PackageLoader() : this( Path.Combine (DynamoLoader.GetDynamoDirectory(), DefaultRelativePackagesDirectory) )
+        public PackageLoader() : this( Path.Combine (DynamoLoader.GetDynamoDirectory(), DynamoPaths.Packages) )
         {
         }
 

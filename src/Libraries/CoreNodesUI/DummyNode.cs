@@ -114,7 +114,8 @@ namespace DSCoreNodesUI
 
                     for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
                     {
-                        XmlNode child = nodeElement.ChildNodes[i];
+                        XmlNode child = 
+                            nodeContent.OwnerDocument.ImportNode(this.OriginalNodeContent.ChildNodes[i], true);
                         nodeContent.AppendChild(child.CloneNode(true));
                     }
 
@@ -140,7 +141,8 @@ namespace DSCoreNodesUI
 
                     for (int i = 0; i < this.OriginalNodeContent.ChildNodes.Count; i++)
                     {
-                        XmlNode child = nodeElement.ChildNodes[i];
+                        XmlNode child =
+                            originalNode.OwnerDocument.ImportNode(this.OriginalNodeContent.ChildNodes[i], true);
                         originalNode.AppendChild(child.CloneNode(true));
                     }
 

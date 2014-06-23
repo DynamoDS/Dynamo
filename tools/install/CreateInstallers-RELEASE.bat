@@ -1,1 +1,1 @@
-CreateInstallers.bat Release
+%~dp0\CreateInstallers.bat Release

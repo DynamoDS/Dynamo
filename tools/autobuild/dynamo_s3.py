@@ -26,9 +26,10 @@ def upload_daily(fn, prefix, include_date, is_dev_build):
 
 	k = Key(b)
 	
-	key = 'daily/' + prefix + date_string() + '.exe' if include_date else 'daily/' + prefix + '.exe' 
+	key = 'daily/' + prefix + '.' + date_string() + '.exe' if include_date else 'daily/' + prefix + '.exe' 
 	
 	k.key = os.path.basename( key )
+
 	k.set_contents_from_filename(fn, cb = report_progress, num_cb = 40)
 
 

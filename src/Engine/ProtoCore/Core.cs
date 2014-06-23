@@ -987,7 +987,6 @@ namespace ProtoCore
         public Dictionary<Language, Executive> Executives { get; private set; }
 
         public Executive CurrentExecutive { get; private set; }
-        public Stack<ExceptionRegistration> stackActiveExceptionRegistration { get; set; }
         public int GlobOffset { get; set; }
         public int GlobHeapOffset { get; set; }
         public int BaseOffset { get; set; }
@@ -1067,21 +1066,6 @@ namespace ProtoCore
             ContextDataManager.GetInstance(this).AddData(data);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="data"></param>
-        //public void AddContextData(IEnumerable<IContextData> data)
-        //{
-        //    if (data == null)
-        //        return;
-
-        //    if (null == mCotextManager)
-        //        mCotextManager = new ContextDataManager(this);
-
-        //    mCotextManager.AddData(data);
-        //}
-
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
         public List<List<ProtoCore.ReplicationGuide>> replicationGuides;
@@ -1098,8 +1082,6 @@ namespace ProtoCore
 
         public DebugProperties DebugProps;
         
-        //public Stack<List<ProtoCore.AssociativeGraph.GraphNode>> stackNodeExecutedSameTimes { get; set; }
-        //public Stack<AssociativeGraph.GraphNode> stackExecutingGraphNodes { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
 
         // Continuation properties used for Serial mode execution and Debugging of Replicated calls
@@ -1201,38 +1183,6 @@ namespace ProtoCore
             }
         }
 
-        [Obsolete("This is only used in obsolete live runner")]
-        public void LogErrorInGlobalMap(Core.ErrorType type, string msg, string fileName = null, int line = -1, int col = -1, 
-            BuildData.WarningID buildId = BuildData.WarningID.kDefault, RuntimeData.WarningID runtimeId = RuntimeData.WarningID.kDefault)
-        {
-            ulong location = (((ulong)line) << 32 | ((uint)col));
-            Core.ErrorEntry newError = new Core.ErrorEntry
-            {
-                Type = type,
-                FileName = fileName,
-                Message = msg,
-                Line = line,
-                Col = col,
-                BuildId = buildId,
-                RuntimeId = runtimeId
-            };
-
-            if (this.LocationErrorMap.ContainsKey(location))
-            {
-                ProtoCore.Core.ErrorEntry error = this.LocationErrorMap[location];
-
-                // If there is a warning, replace it with an error
-                if (error.Type == Core.ErrorType.Warning && type == Core.ErrorType.Error)
-                {
-                    this.LocationErrorMap[location] = newError;
-                }
-            }
-            else
-            {
-                this.LocationErrorMap.Add(location, newError);
-            }
-        }
-
         public void NotifyExecutionEvent(ExecutionStateEventArgs.State state)
         {
             switch (state)
@@ -1315,71 +1265,9 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Reset properties for recompilation
-        /// Generated instructions for imported libraries are preserved. 
-        /// This means they are just reloaded, not regenerated
+        /// Reset the VM state for delta execution.
         /// </summary>
-        private void ResetDeltaCompile()
-        {
-            if (CodeBlockList.Count <= 0)
-                return;
-
-            var globalBlock = CodeBlockList[0];
-            var instructionStream = globalBlock.instrStream;
-            var graph = globalBlock.instrStream.dependencyGraph;
-
-            // Preserve only the instructions of libraries that were previously 
-            // loaded. Other instructions need to be removed and regenerated
-            int count = instructionStream.instrList.Count - deltaCompileStartPC;
-            instructionStream.instrList.RemoveRange(deltaCompileStartPC, count);
-
-            // Remove graphnodes from this range
-            // TODO Jun: Optimize this - determine which graphnodes need to be removed during compilation
-            int removeGraphnodesFrom = Constants.kInvalidIndex;
-            for (int n = 0; n < graph.GraphList.Count; ++n)
-            {
-                var graphNode = graph.GraphList[n];
-                if (graphNode.updateBlock.startpc >= deltaCompileStartPC)
-                {
-                    removeGraphnodesFrom = n;
-                    break;
-                }
-            }
-
-            if (ProtoCore.DSASM.Constants.kInvalidIndex != removeGraphnodesFrom)
-            {
-                count = graph.GraphList.Count - removeGraphnodesFrom;
-
-                int classIndex = graph.GraphList[removeGraphnodesFrom].classIndex;
-                int procIndex = graph.GraphList[removeGraphnodesFrom].procIndex;
-
-                // TODO Jun: Find the better way to remove the graphnodes from the nodemap
-                // Does getting the classindex and proindex of the first node sufficient?
-                graph.RemoveNodesFromScope(classIndex, procIndex);
-
-                // Remove the graphnodes from them main list
-                graph.GraphList.RemoveRange(removeGraphnodesFrom, count);
-            }
-            else
-            {
-                // @keyu: This is for the first run. Just simply remove 
-                // global graph node from the map to avoid they are marked
-                // as dirty at the next run.
-                graph.RemoveNodesFromScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
-            }
-
-            // Jun this is where the temp solutions starts for implementing language blocks in delta execution
-            for (int n = 1; n < CodeBlockList.Count; ++n)
-            {
-                CodeBlockList[n].instrStream.instrList.Clear();
-            }
-        }
-
-        // @keyu: ResetDeltaExection() resets everything so that the core will 
-        // compile new code and execute it, but in some cases we dont want to 
-        // compile code, just re-execute the existing code, therefore only some 
-        // states need to be reset.
-        public void ResetForExecution()
+        public void ResetForDeltaExecution()
         {
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
@@ -1395,136 +1283,7 @@ namespace ProtoCore
 
             // Remove inactive graphnodes in the list
             GraphNodeCallList.RemoveAll(g => !g.isActive);
-        }
-
-        public void ResetForDeltaASTExecution()
-        {
-            ResetForExecution();
             ExprInterpreterExe = null;
-        }
-
-        // Comment Jun:
-        // The core is reused on delta execution
-        // These are properties that need to be reset on subsequent executions
-        // All properties require reset except for the runtime memory
-        public void ResetForDeltaExecution()
-        {
-            ClassIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-
-
-            watchClassScope = ProtoCore.DSASM.Constants.kInvalidIndex;
-            watchFunctionScope = ProtoCore.DSASM.Constants.kInvalidIndex;
-            watchBaseOffset = 0;
-            watchStack = new List<StackValue>();
-            watchSymbolList = new List<SymbolNode>();
-            watchFramePointer = ProtoCore.DSASM.Constants.kInvalidIndex;
-
-            ID = FIRST_CORE_ID;
-
-            //recurtion
-            recursivePoint = new List<FunctionCounter>();
-            funcCounterTable = new List<FunctionCounter>();
-            calledInFunction = false;
-
-            //GlobOffset = 0;
-            GlobHeapOffset = 0;
-            BaseOffset = 0;
-            GraphNodeUID = 0;
-            RunningBlock = 0;
-            //CodeBlockList = new List<DSASM.CodeBlock>();
-            CompleteCodeBlockList = new List<DSASM.CodeBlock>();
-            DSExecutable = new ProtoCore.DSASM.Executable();
-
-            AssocNode = null;
-
-
-            //
-            //
-            // Comment Jun: Delta execution should not reset the class tables as they are preserved
-            //
-            //      FunctionTable = new Lang.FunctionTable();
-            //      ClassTable = new DSASM.ClassTable();
-            //      TypeSystem = new TypeSystem();
-            //      TypeSystem.SetClassTable(ClassTable);
-            //      ProcNode = null;
-            //      ProcTable = new DSASM.ProcedureTable(ProtoCore.DSASM.Constants.kGlobalScope);
-            //
-            //      CodeBlockList = new List<DSASM.CodeBlock>();
-            //
-            //
-
-            //      CodeBlockIndex = 0;
-            //      RuntimeTableIndex = 0;
-
-            //
-
-            // Comment Jun:
-            // Disable SSA for the previous graphcompiler as it clashes with the way code recompilation behaves
-            // SSA is enabled for the new graph strategy of delta compilation and execution
-            Options.GenerateSSA = false;
-
-
-            //Initialize the function pointer table
-            FunctionPointerTable = new DSASM.FunctionPointerTable();
-
-            //Initialize the dynamic string table and dynamic function table
-            DynamicVariableTable = new DSASM.DynamicVariableTable();
-            DynamicFunctionTable = new DSASM.DynamicFunctionTable();
-            replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
-
-            ExceptionHandlingManager = new ExceptionHandlingManager();
-            startPC = ProtoCore.DSASM.Constants.kInvalidIndex;
-
-            if (Options.SuppressBuildOutput)
-            {
-                //  don't log any of the build related messages
-                //  just accumulate them in relevant containers with
-                //  BuildStatus object
-                //
-                BuildStatus = new BuildStatus(this, false, false, false);
-            }
-            else
-            {
-                BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
-            }
-            RuntimeStatus = new RuntimeStatus(this);
-
-            //SSASubscript = 0;
-            ExpressionUID = 0;
-            ModifierBlockUID = 0;
-            ModifierStateSubscript = 0;
-
-            ExprInterpreterExe = null;
-            ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
-            assocCodegen = null;
-            FunctionCallDepth = 0;
-
-            // Default execution log is Console.Out.
-            this.ExecutionLog = Console.Out;
-            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
-
-            DebugProps = new DebugProperties();
-            InterpreterProps = new Stack<InterpreterProperties>();
-            stackActiveExceptionRegistration = new Stack<ExceptionRegistration>();
-
-            ExecutiveProvider = new ExecutiveProvider();
-            ParsingMode = ProtoCore.ParseMode.Normal;
-
-            // Reset PC dictionary containing PC to line/col map
-            if (codeToLocation != null)
-                codeToLocation.Clear();
-
-            if (LocationErrorMap != null)
-                LocationErrorMap.Clear();
-
-            if (AstNodeList != null)
-                AstNodeList.Clear();
-
-            ResetDeltaCompile();
-
-            DeltaCodeBlockIndex = 0;
-            ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
         public void ResetForPrecompilation()
@@ -1536,15 +1295,6 @@ namespace ProtoCore
             //Initialize the dynamic string table and dynamic function table
             DynamicVariableTable = new DSASM.DynamicVariableTable();
             DynamicFunctionTable = new DSASM.DynamicFunctionTable();
-
-            // If the previous compilation for import resulted in a build error, 
-            // ignore it and continue compiling other import statements
-            /*if (BuildStatus.ErrorCount > 0)
-            {
-                ImportHandler = null;
-                CodeBlockList.Clear();
-                CompleteCodeBlockList.Clear();
-            }*/
 
             if (Options.SuppressBuildOutput)
             {
@@ -1620,7 +1370,6 @@ namespace ProtoCore
             DynamicFunctionTable = new DSASM.DynamicFunctionTable();
             replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
 
-            ExceptionHandlingManager = new ExceptionHandlingManager();
             startPC = ProtoCore.DSASM.Constants.kInvalidIndex;
 
             deltaCompileStartPC = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1656,10 +1405,7 @@ namespace ProtoCore
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
 
             DebugProps = new DebugProperties();
-            //stackNodeExecutedSameTimes = new Stack<List<AssociativeGraph.GraphNode>>();
-            //stackExecutingGraphNodes = new Stack<AssociativeGraph.GraphNode>();
             InterpreterProps = new Stack<InterpreterProperties>();
-            stackActiveExceptionRegistration = new Stack<ExceptionRegistration>();
 
             ExecutiveProvider = new ExecutiveProvider();
 
@@ -1877,8 +1623,6 @@ namespace ProtoCore
         public int ModifierBlockUID { get; set; }
         public int ModifierStateSubscript { get; set; }
 
-        public ExceptionHandlingManager ExceptionHandlingManager { get; set; }
-
         private int tempVarId = 0;
         private int tempLanguageId = 0;
 
@@ -1944,75 +1688,6 @@ namespace ProtoCore
         {
             ResetAll(options);
         }
-
-        /// <summary>
-        /// Split the virutal machine, creating a new machine with the new ID
-        /// </summary>
-        /// <param name="newID"></param>w 
-        /// <returns></returns>
-        public Core Split(int newID)
-        {
-            Core secondCore = new Core(Options);
-            secondCore.ID = newID;
-
-            secondCore.AsmOutput = AsmOutput;
-            secondCore.AsmOutputIdents = AsmOutputIdents;
-            secondCore.AssocNode = AssocNode;
-            secondCore.BaseOffset = BaseOffset;
-            secondCore.Breakpoints = new List<Instruction>(Breakpoints);
-            secondCore.BuildStatus = BuildStatus; //For now just retarget the build infomration to same output
-
-            //@TODO(Luke) Should these be deep cloned? They will need to be fixed before we do any form of dynamic
-            //code injection
-
-            //Simple shallow copy
-            secondCore.ClassIndex = ClassIndex;
-            secondCore.ClassTable = ClassTable;
-            secondCore.CodeBlockIndex = CodeBlockIndex;
-            secondCore.CodeBlockList = CodeBlockList;
-            secondCore.CompleteCodeBlockList = CompleteCodeBlockList;
-            secondCore.CurrentDSFileName = CurrentDSFileName;
-            secondCore.CurrentExecutive = CurrentExecutive;
-            secondCore.DebugProps = DebugProps;
-            secondCore.DynamicFunctionTable = DynamicFunctionTable;
-            secondCore.DynamicVariableTable = DynamicVariableTable;
-            secondCore.DSExecutable = DSExecutable;
-            secondCore.Executives = Executives;
-            secondCore.ExpressionUID = ExpressionUID;
-            secondCore.FunctionPointerTable = FunctionPointerTable;
-            secondCore.FunctionTable = FunctionTable;
-            secondCore.GlobHeapOffset = GlobHeapOffset;
-            secondCore.GlobOffset = GlobOffset;
-            secondCore.InferedType = InferedType;
-            secondCore.Langverify = Langverify;
-            secondCore.ModifierBlockUID = ModifierBlockUID;
-            secondCore.ProcNode = ProcNode;
-            secondCore.ProcTable = ProcTable;
-            secondCore.RunningBlock = RunningBlock;
-            secondCore.RuntimeTableIndex = RuntimeTableIndex;
-            secondCore.SSASubscript = SSASubscript;
-            secondCore.Script = Script;
-            secondCore.TypeSystem = TypeSystem;
-            secondCore.tempVarId = tempVarId;
-            secondCore.tempLanguageId = tempLanguageId;
-            secondCore.Configurations = Configurations;
-
-            //Deep copy
-            secondCore.Heap = Heap.Clone();
-            secondCore.Rmem = Rmem; //@Todo(Luke): This will have to change
-
-
-            //Custom
-            secondCore.ExceptionHandlingManager = new ExceptionHandlingManager();
-            secondCore.ReasonForExecutionSuspend = ReasonForExecutionSuspend.VMSplit;
-
-            secondCore.RuntimeStatus = RuntimeStatus; //@Todo(Luke): This will have to change
-            secondCore.StopWatch = secondCore.StopWatch; //@Todo(Luke): This will have to change
-
-            return secondCore;
-
-        }
-
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)
         {
@@ -2107,75 +1782,33 @@ namespace ProtoCore
                     stillInsideFunction = false;
 
                 searchBlock = searchBlock.parent;
-                if (null != searchBlock)
+                if (null == searchBlock)
                 {
-                    // Continue searching
-                    if (stillInsideFunction)
-                    {
-                        // we are still inside a function, first search the local variable defined in this function 
-                        // if not found, then search the enclosing block by specifying the function index as -1
-                        symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
+                    return null;
+                }
 
-                        // this check is to avoid unnecessary search
-                        // for example if we have a for loop inside an imperative block which is further inside a function
-                        // when we are searching inside the for loop or language block, there is no need to search twice
-                        // we need to search twice only when we are searching directly inside the function, 
-                        if (function != ProtoCore.DSASM.Constants.kInvalidIndex &&
-                            searchBlock.procedureTable != null &&
-                            searchBlock.procedureTable.procList.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
-                            symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
+                // Continue searching
+                if (stillInsideFunction)
+                {
+                    // we are still inside a function, first search the local variable defined in this function 
+                    // if not found, then search the enclosing block by specifying the function index as -1
+                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
 
-                            symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, ProtoCore.DSASM.Constants.kInvalidIndex);
+                    // this check is to avoid unnecessary search
+                    // for example if we have a for loop inside an imperative block which is further inside a function
+                    // when we are searching inside the for loop or language block, there is no need to search twice
+                    // we need to search twice only when we are searching directly inside the function, 
+                    if (function != ProtoCore.DSASM.Constants.kInvalidIndex &&
+                        searchBlock.procedureTable != null &&
+                        searchBlock.procedureTable.procList.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
+                        symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
 
-                    }
-                    else
-                    {
                         symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, ProtoCore.DSASM.Constants.kInvalidIndex);
-                    }
+
                 }
                 else
                 {
-                    // End of nested blocks
-
-                    /*
-                    // Not found? Look at the class scope
-                    if (ProtoCore.DSASM.Constants.kInvalidIndex != classscope)
-                    {
-                        // Look at the class members and base class members
-                        bool hasSymbol = false;
-                        ProtoCore.DSASM.AddressType addrType =  DSASM.AddressType.Invalid;
-                        ProtoCore.DSASM.ClassNode cnode = classTable.list[classscope];
-                        symbolIndex = cnode.GetFirstVisibleSymbol(name, classscope, function, out hasSymbol, out addrType);
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != symbolIndex)
-                        {
-                            if (addrType == DSASM.AddressType.StaticMemVarIndex)
-                            {
-                                return codeBlockList[0].symbolTable.symbolList[symbolIndex];
-                            }
-                            else
-                            {
-                                return classTable.list[classscope].symbols.symbolList[symbolIndex];
-                            }
-                        }
-
-                        // Look at the class constructors and functions
-                        symbolIndex = classTable.list[classscope].symbols.IndexOf(name, classscope, function);
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != symbolIndex)
-                        {
-                            return classTable.list[classscope].symbols.symbolList[symbolIndex];
-                        }
-                    }
-
-
-                    // Not found? Look at the global scope
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kGlobalScope);
-                    if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
-                    {
-                        return null;
-                    }
-                    break;
-                     * */
-                    return null;
+                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, ProtoCore.DSASM.Constants.kInvalidIndex);
                 }
             }
             return searchBlock.symbolTable.symbolList[symbolIndex];
