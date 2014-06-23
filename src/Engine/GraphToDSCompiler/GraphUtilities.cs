@@ -756,7 +756,7 @@ namespace GraphToDSCompiler
                 ProtoCore.Utils.Validity.Assert(n != null);
 
                 // Append the temporaries only if it is not a function def or class decl
-                bool isFunctionOrClassDef = n is ProtoCore.AST.AssociativeAST.FunctionDefinitionNode || n is ProtoCore.AST.AssociativeAST.ClassDeclNode;
+                bool isFunctionOrClassDef = n is FunctionDefinitionNode || n is ClassDeclNode;
 
                 // Handle non Binary expression nodes separately
                 if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
@@ -878,13 +878,13 @@ namespace GraphToDSCompiler
                     }
                 }
             }
-            string newCode = string.Empty;
-            compiled.ForEach(x => newCode += x);
+            StringBuilder newCode = new StringBuilder();
+            compiled.ForEach(x => newCode.Append(x));
             CodeBlockNode commentNode = null;
            
             try
             {
-                ProtoCore.AST.Node codeBlockNode = Parse(newCode, out commentNode);
+                ProtoCore.AST.Node codeBlockNode = Parse(newCode.ToString(), out commentNode);
                 return ParserUtils.GetAstNodes(codeBlockNode);
             }
             catch (Exception)
@@ -1307,8 +1307,10 @@ namespace GraphToDSCompiler
                 List<AssociativeNode> nodes = new List<AssociativeNode>();
                 foreach (var i in parseParams.ParsedNodes)
                 {
-                    if (i is AssociativeNode)
-                        nodes.Add(NodeUtils.Clone(i as AssociativeNode));
+                    AssociativeNode assocNode = i as AssociativeNode;
+
+                    if (assocNode != null)
+                        nodes.Add(NodeUtils.Clone(assocNode));  
                 }
                 codeblock.Body.AddRange(nodes);
 
