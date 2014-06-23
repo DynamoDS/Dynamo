@@ -98,6 +98,9 @@ Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; Wo
 Filename: "{app}\InstallASMForDynamo.exe";
 Filename: "{app}\DynamoAddinGenerator.exe";
 
+[UninstallRun]
+Filename: "{app}\DynamoAddinGenerator.exe"
+
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
 
