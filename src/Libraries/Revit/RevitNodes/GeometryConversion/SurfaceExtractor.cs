@@ -7,8 +7,11 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 
+using MathNet.Numerics.Distributions;
+
 namespace Revit.GeometryConversion
 {
+
     /// <summary>
     /// This class is required to extract the underlying surface representation from a Revit Face.
     /// All Face types are supported.
@@ -193,6 +196,7 @@ namespace Revit.GeometryConversion
         public static Surface ExtractSurface(Autodesk.Revit.DB.RevolvedFace face, IEnumerable<PolyCurve> edgeLoops)
         {
             var crv = face.Curve.ToProtoType(false);
+
             var axis = face.Axis.ToVector(false);
             var o = face.Origin.ToVector(false);
             var x = face.get_Radius(0).ToVector(false);
@@ -203,9 +207,27 @@ namespace Revit.GeometryConversion
             var revolveCs = CoordinateSystem.Identity();
             var globalCs = CoordinateSystem.ByOriginVectors(o.AsPoint(), x, y);
 
-            crv = (Autodesk.DesignScript.Geometry.Curve) crv.Transform(revolveCs, globalCs);
+            var crvTrf = (Autodesk.DesignScript.Geometry.Curve)crv.Transform(revolveCs, globalCs);
 
-            return Surface.ByRevolve(crv, o.AsPoint(), axis.Normalized(), 0, 360).FlipNormalDirection();
+            var srf =
+                Surface.ByRevolve(crvTrf, o.AsPoint(), axis.Normalized(), 0, 360)
+                    .FlipNormalDirection();
+
+            var ptOnSrf = srf.PointAtParameter(0.5, 0.5);
+            var projRes = face.Project(ptOnSrf.ToXyz());
+
+            if (projRes == null) return srf;
+
+            var uvOnFace = projRes.UVPoint;
+
+            var normOnFace = face.ComputeNormal(uvOnFace).ToVector();
+            var normOnSrf = srf.NormalAtParameter(0.5, 0.5);
+
+            // if the normal is reversed, reverse the surface
+            if (normOnFace.Dot(normOnSrf) < 0) return srf.FlipNormalDirection();
+
+            return srf;
+
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RuledFace face, IEnumerable<PolyCurve> edgeLoops)
