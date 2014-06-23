@@ -1096,6 +1096,12 @@ namespace Dynamo.ViewModels
 
             CanNavigateBackground = !CanNavigateBackground;
 
+            if (CanNavigateBackground)
+                AnalyticsIntegration.LogScreen("Geometry");
+            else
+                AnalyticsIntegration.LogScreen("Nodes");
+
+
             if (!CanNavigateBackground)
             {
                 // Return focus back to Search View (Search Field)

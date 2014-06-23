@@ -50,7 +50,7 @@ namespace Dynamo.Services
             get { return UsageReportingManager.Instance.IsUsageReportingApproved; }
         }
 
-        private static String GetUserID()
+        public static String GetUserID()
         {
             // The name of the key must include a valid root.
             const string userRoot = "HKEY_CURRENT_USER";
