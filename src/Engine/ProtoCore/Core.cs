@@ -1128,9 +1128,10 @@ namespace ProtoCore
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
 
         /// <summary>
-        /// This is a mapping of the current guid and number of callsites (function calls) that appear within that guid.
+        /// This is a mapping of the current guid and number of callsites that appear within that guid.
         /// Language only execution contains only 1 guid for the entire program.
         /// Execution within a visual programming host means 1 guid per node, where 1 node contains a set of DS code.
+        /// Each of the callsite instances are mapped to a guid and an instance count.
         /// </summary>
         public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
         public List<ProtoCore.AST.AssociativeAST.AssociativeNode> CachedSSANodes { get; set; }

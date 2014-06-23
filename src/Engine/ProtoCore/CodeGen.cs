@@ -168,7 +168,7 @@ namespace ProtoCore
 
 
             // Cache this function call instance count 
-            // This is the count in which this function appears lexically in the program
+            // This is the count of the number of times in which this callsite appears in the program
             int callInstance = 0;
             if (!core.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
             {
@@ -178,7 +178,8 @@ namespace ProtoCore
             else
             {
                 // Increment the current count
-                functionCallInstance = ++core.CallsiteGuidMap[graphNode.guid];
+                core.CallsiteGuidMap[graphNode.guid]++;
+                functionCallInstance = core.CallsiteGuidMap[graphNode.guid];
             }
 
             // Build the unique ID for a callsite 
@@ -189,9 +190,9 @@ namespace ProtoCore
                 "_Instance" + functionCallInstance.ToString() + 
                 "_" + graphNode.guid.ToString();
 
-            // TODO Jun: Address this in MAGN-????
+            // TODO Jun: Address this in MAGN-3774
             // The current limitation is retrieving the cached trace data for multiple callsites in a single CBN
-            // Callsites in a node and the first callsite in a CBN work fine
+            // after modifying the lines of code.
             graphNode.CallsiteIdentifier = callsiteIdentifier;
         }
 
