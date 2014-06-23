@@ -160,14 +160,20 @@
 
             <ui:ImageRepeatButton Width="30"
                                   Height="24"
-                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-in-states.png"
-                                  Command="{Binding Path=ZoomInCommand}">
+                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-in-states.png">
+                <ui:ImageRepeatButton.Command>
+                    <Binding Path="DataContext.ZoomInCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageRepeatButton.Command>
             </ui:ImageRepeatButton>
 
             <ui:ImageRepeatButton Width="30"
                                   Height="28"
-                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-out-states.png"
-                                  Command="{Binding Path=ZoomOutCommand}">
+                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-out-states.png">
+                <ui:ImageRepeatButton.Command>
+                    <Binding Path="DataContext.ZoomOutCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageRepeatButton.Command>
             </ui:ImageRepeatButton>
 
             <ui:ImageCheckBox Width="30"

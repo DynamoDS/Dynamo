@@ -103,28 +103,6 @@ namespace Dynamo.ViewModels
 
         }
 
-        public DelegateCommand ZoomInCommand
-        {
-            get
-            {
-                if (_zoomInCommand == null)
-                    _zoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
-                return _zoomInCommand;
-            }
-
-        }
-
-        public DelegateCommand ZoomOutCommand
-        {
-            get
-            {
-                if (_zoomOutCommand == null)
-                    _zoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
-                return _zoomOutCommand;
-            }
-
-        }
-
         public DelegateCommand FitViewCommand
         {
             get

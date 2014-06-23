@@ -269,9 +269,28 @@ namespace Dynamo.ViewModels
             get { return _model.Zoom; }
         }
 
-        public bool ZoomEnabled
+        public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }
+        }
+
+        public bool CanZoomOut
+        {
+            get { return CanZoom(-Configurations.ZoomIncrement); }
+        }
+
+        internal void ZoomInInternal()
+        {
+            var args = new ZoomEventArgs(Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
+        }
+
+        internal void ZoomOutInternal()
+        {
+            var args = new ZoomEventArgs(-Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
         }
 
         public bool CanFindNodesFromElements
@@ -434,8 +453,6 @@ namespace Dynamo.ViewModels
                 case "Zoom":
                     OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
                     RaisePropertyChanged("Zoom");
-                    ZoomInCommand.RaiseCanExecuteChanged();
-                    ZoomOutCommand.RaiseCanExecuteChanged();
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
@@ -719,28 +736,6 @@ namespace Dynamo.ViewModels
         private bool CanCreateNodeFromSelection(object parameter)
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
-        }
-
-        private void ZoomIn(object o)
-        {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(Configurations.ZoomIncrement));
-            ResetFitViewToggle(o);
-        }
-
-        private bool CanZoomIn(object o)
-        {
-            return CanZoom(Configurations.ZoomIncrement);
-        }
-
-        private void ZoomOut(object o)
-        {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-Configurations.ZoomIncrement));
-            ResetFitViewToggle(o);
-        }
-
-        private bool CanZoomOut(object o)
-        {
-            return CanZoom(-Configurations.ZoomIncrement);
         }
 
         private bool CanZoom(double zoom)

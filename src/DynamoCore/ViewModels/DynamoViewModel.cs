@@ -1455,22 +1455,24 @@ namespace Dynamo.ViewModels
 
         public void ZoomIn(object parameter)
         {
-            CurrentSpaceViewModel.ZoomInCommand.Execute(parameter);
+            CurrentSpaceViewModel.ZoomInInternal();
+            ZoomInCommand.RaiseCanExecuteChanged();
         }
 
         internal bool CanZoomIn(object parameter)
         {
-            return CurrentSpaceViewModel.ZoomInCommand.CanExecute(parameter);
+            return CurrentSpaceViewModel.CanZoomIn;
         }
 
         public void ZoomOut(object parameter)
         {
-            CurrentSpaceViewModel.ZoomOutCommand.Execute(parameter);
+            CurrentSpaceViewModel.ZoomOutInternal();
+            ZoomOutCommand.RaiseCanExecuteChanged();
         }
 
         internal bool CanZoomOut(object parameter)
         {
-            return CurrentSpaceViewModel.ZoomOutCommand.CanExecute(parameter);
+            return CurrentSpaceViewModel.CanZoomOut;
         }
 
         public void FitView(object parameter)
