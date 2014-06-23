@@ -153,6 +153,54 @@ namespace Revit.Interactivity
             return faceRef;
         }
 
+        public static List<Reference> RequestFacesReferenceSelection(string message)
+        {
+            var doc = DocumentManager.Instance.CurrentUIDocument;
+
+            Selection choices = doc.Selection;
+
+            choices.Elements.Clear();
+
+            dynSettings.DynamoLogger.Log(message);
+
+            List<Reference> faceRefs = (List<Reference>)doc.Selection.PickObjects(ObjectType.Face);
+
+            return faceRefs;
+        }
+
+        public static List<Reference> RequestFacesReferenceSelectionAdd(string message, List<string> storedReferenceStrings)
+        {
+            var doc = DocumentManager.Instance.CurrentUIDocument;
+
+            Selection choices = doc.Selection;
+
+            choices.Elements.Clear();
+            
+            List<Reference> storedFaceRefs = new List<Reference>();
+
+            dynSettings.DynamoLogger.Log(message);
+
+            if (storedReferenceStrings != null)
+            {
+                foreach (var storedRef in storedReferenceStrings)
+                {
+                    var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, storedRef);
+                    var geob = DocumentManager.Instance.CurrentDBDocument.GetElement(geometryReference);
+                    choices.Elements.Add(geob);
+                    storedFaceRefs.Add(geometryReference);
+                }
+            }
+
+            List<Reference> faceRefs = (List<Reference>)doc.Selection.PickObjects(ObjectType.Face);
+            
+            foreach (var face in faceRefs)
+            {
+                storedFaceRefs.Add(face);
+            }
+
+            return storedFaceRefs;
+        }
+
         public static Reference RequestEdgeReferenceSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
