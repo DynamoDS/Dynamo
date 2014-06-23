@@ -25,7 +25,6 @@ namespace Dynamo.Nodes
     public abstract class DSSelectionBase : NodeModel, IWpfNode
     {
         protected bool _canSelect = true;
-        protected bool _canAdd = true;
         protected string _selectionText ="";
         protected string _selectionMessage;
         protected string _selectButtonContent;
@@ -59,8 +58,6 @@ namespace Dynamo.Nodes
             }
         }
 
-
-
         /// <summary>
         /// The content of the selection button.
         /// </summary>
@@ -90,8 +87,6 @@ namespace Dynamo.Nodes
                     CanSelect = true; //...and re-enable it once selection has finished.
                 });
         }
-
-
 
         /// <summary>
         /// Override this to perform custom selection logic.
