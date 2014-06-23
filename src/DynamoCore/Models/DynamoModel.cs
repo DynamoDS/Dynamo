@@ -1262,7 +1262,7 @@ namespace Dynamo.Models
                         dynSettings.DynamoLogger.Log(message);
                     }
 
-                    //Hardcode the file version to 0.6.0.0. The file whoes version is 0.7.0.x
+                    //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
                     //needs to be forced to be migrated. The version number needs to be changed from
                     //0.7.0.x to 0.6.0.0.
                     if (fileVersion == new Version(0, 7, 0, 0))
