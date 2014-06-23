@@ -243,6 +243,23 @@ namespace Dynamo.Controls
         {
             if (_vm.CanNavigateBackground == false)
                 return;
+
+            switch (e.ViewOperation)
+            {
+                case ViewOperationEventArgs.Operation.FitView:
+                    background_preview.View.ZoomExtents();
+                    break;
+
+                case ViewOperationEventArgs.Operation.ZoomIn:
+                    var camera1 = background_preview.View.CameraController;
+                    camera1.Zoom(background_preview.View.ZoomSensitivity * 0.5);
+                    break;
+
+                case ViewOperationEventArgs.Operation.ZoomOut:
+                    var camera2 = background_preview.View.CameraController;
+                    camera2.Zoom(-background_preview.View.ZoomSensitivity * 0.5);
+                    break;
+            }
         }
 
         private void DynamoView_Loaded(object sender, EventArgs e)
