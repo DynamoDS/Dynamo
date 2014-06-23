@@ -54,8 +54,8 @@ namespace Revit.Elements
         {
             get
             {
-                return
-                    this.Geometry().Cast<Autodesk.DesignScript.Geometry.Point>();
+                DocumentManager.Regenerate();
+                return Geometry().Cast<Autodesk.DesignScript.Geometry.Point>();
             }
         }
 
