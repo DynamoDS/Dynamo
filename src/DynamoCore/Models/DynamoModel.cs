@@ -145,6 +145,21 @@ namespace Dynamo.Models
         }
     }
 
+    public class ViewOperationEventArgs : EventArgs
+    {
+        public enum Operation
+        {
+            FitView, ZoomIn, ZoomOut
+        }
+
+        public ViewOperationEventArgs(Operation operation)
+        {
+            this.ViewOperation = operation;
+        }
+
+        public Operation ViewOperation { get; private set; }
+    }
+
     public class PointEventArgs : EventArgs
     {
         public Point Point { get; set; }

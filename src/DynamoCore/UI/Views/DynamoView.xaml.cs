@@ -239,6 +239,12 @@ namespace Dynamo.Controls
             Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
+        void _vm_RequestViewOperation(ViewOperationEventArgs e)
+        {
+            if (_vm.CanNavigateBackground == false)
+                return;
+        }
+
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
             // If first run, Collect Info Prompt will appear
@@ -247,6 +253,7 @@ namespace Dynamo.Controls
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
+            _vm.RequestViewOperation += _vm_RequestViewOperation;
             _vm.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();

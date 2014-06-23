@@ -28,6 +28,8 @@ namespace Dynamo.ViewModels
 
     public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
 
+    public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
+
     public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
         #region events
@@ -124,6 +126,15 @@ namespace Dynamo.ViewModels
             if (RequestsFunctionNamePrompt != null)
             {
                 RequestsFunctionNamePrompt(this, e);
+            }
+        }
+
+        public event RequestViewOperationHandler RequestViewOperation;
+        public void OnRequestViewOperation(ViewOperationEventArgs e)
+        {
+            if (RequestViewOperation != null)
+            {
+                RequestViewOperation(e);
             }
         }
 
@@ -1455,6 +1466,13 @@ namespace Dynamo.ViewModels
 
         internal void ZoomIn(object parameter)
         {
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.ZoomIn;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
             CurrentSpaceViewModel.ZoomInInternal();
             ZoomInCommand.RaiseCanExecuteChanged();
         }
@@ -1466,6 +1484,13 @@ namespace Dynamo.ViewModels
 
         private void ZoomOut(object parameter)
         {
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.ZoomOut;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
             CurrentSpaceViewModel.ZoomOutInternal();
             ZoomOutCommand.RaiseCanExecuteChanged();
         }
@@ -1477,6 +1502,13 @@ namespace Dynamo.ViewModels
 
         private void FitView(object parameter)
         {
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.FitView;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
             CurrentSpaceViewModel.FitViewInternal();
         }
 
