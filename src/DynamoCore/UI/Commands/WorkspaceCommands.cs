@@ -12,9 +12,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
-        private DelegateCommand _zoomInCommand;
-        private DelegateCommand _zoomOutCommand;
-        private DelegateCommand _fitViewCommand;
         private DelegateCommand _resetFitViewToggleCommand;
         private DelegateCommand _togglePanCommand;
         private DelegateCommand _toggleOrbitCommand;
@@ -99,17 +96,6 @@ namespace Dynamo.ViewModels
                 if(_setZoomCommand == null)
                     _setZoomCommand = new DelegateCommand(SetZoom, CanSetZoom);
                 return _setZoomCommand;
-            }
-
-        }
-
-        public DelegateCommand FitViewCommand
-        {
-            get
-            {
-                if (_fitViewCommand == null)
-                    _fitViewCommand = new DelegateCommand(FitView, CanFitView);
-                return _fitViewCommand;
             }
         }
 

@@ -761,7 +761,8 @@ namespace Dynamo.ViewModels
         }
 
         private bool _fitViewActualZoomToggle = false;
-        private void FitView(object o)
+
+        internal void FitViewInternal()
         {
             // Get the offset and focus width & height (zoom if 100%)
             double minX, maxX, minY, maxY;
@@ -795,11 +796,6 @@ namespace Dynamo.ViewModels
                 : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
 
             OnRequestZoomToFitView(this, zoomArgs);
-        }
-
-        private bool CanFitView(object o)
-        {
-            return true;
         }
 
         private void ResetFitViewToggle(object o)
@@ -916,7 +912,7 @@ namespace Dynamo.ViewModels
             // Fit view to the new graph layout
             DynamoSelection.Instance.ClearSelection();
             ResetFitViewToggle(null);
-            FitViewCommand.Execute(null);
+            FitViewInternal();
         }
 
         private bool CanDoGraphAutoLayout(object o)

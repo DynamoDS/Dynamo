@@ -154,8 +154,11 @@
 
             <ui:ImageButton Width="30"
                             Height="28"
-                            StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-fit-view-states.png"
-                            Command="{Binding Path=FitViewCommand}">
+                            StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-fit-view-states.png">
+                <ui:ImageButton.Command>
+                    <Binding Path="DataContext.FitViewCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageButton.Command>
             </ui:ImageButton>
 
             <ui:ImageRepeatButton Width="30"

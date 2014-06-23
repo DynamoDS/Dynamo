@@ -1419,7 +1419,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void Pan(object parameter)
+        internal void Pan(object parameter)
         {
             Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", _model.CurrentWorkspace.X, _model.CurrentWorkspace.Y, _model.CurrentWorkspace.Zoom));
             var panType = parameter.ToString();
@@ -1448,41 +1448,41 @@ namespace Dynamo.ViewModels
             CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(parameter);
         }
 
-        internal bool CanPan(object parameter)
+        private bool CanPan(object parameter)
         {
             return true;
         }
 
-        public void ZoomIn(object parameter)
+        internal void ZoomIn(object parameter)
         {
             CurrentSpaceViewModel.ZoomInInternal();
             ZoomInCommand.RaiseCanExecuteChanged();
         }
 
-        internal bool CanZoomIn(object parameter)
+        private bool CanZoomIn(object parameter)
         {
             return CurrentSpaceViewModel.CanZoomIn;
         }
 
-        public void ZoomOut(object parameter)
+        private void ZoomOut(object parameter)
         {
             CurrentSpaceViewModel.ZoomOutInternal();
             ZoomOutCommand.RaiseCanExecuteChanged();
         }
 
-        internal bool CanZoomOut(object parameter)
+        private bool CanZoomOut(object parameter)
         {
             return CurrentSpaceViewModel.CanZoomOut;
         }
 
-        public void FitView(object parameter)
+        private void FitView(object parameter)
         {
-            CurrentSpaceViewModel.FitViewCommand.Execute(parameter);
+            CurrentSpaceViewModel.FitViewInternal();
         }
 
-        internal bool CanFitView(object parameter)
+        private bool CanFitView(object parameter)
         {
-            return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
+            return true;
         }
 
 #if USE_DSENGINE
