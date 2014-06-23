@@ -39,7 +39,7 @@ namespace Revit.GeometryConversion
         {
             return face.EdgeLoops.Cast<EdgeArray>()
                 .Select(x => x.Cast<Autodesk.Revit.DB.Edge>())
-                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType()).ToArray())
+                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)).ToArray())
                 .Select(PolyCurve.ByJoinedCurves)
                 .ToList();
         }
