@@ -69,6 +69,11 @@ namespace DynamoUtilities
         public static string Logs { get; set; }
 
         /// <summary>
+        /// The Dynamo folder in AppData
+        /// </summary>
+        public static string AppData { get; set; }
+
+        /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
         /// </summary>
@@ -96,21 +101,21 @@ namespace DynamoUtilities
                 throw new Exception(string.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-            var appData = GetDynamoAppDataFolder(MainExecPath);
+            AppData = GetDynamoAppDataFolder(MainExecPath);
 
-            Logs = Path.Combine(appData, "Logs");
+            Logs = Path.Combine(AppData, "Logs");
             if (!Directory.Exists(Logs))
             {
                 Directory.CreateDirectory(Logs);
             }
 
-            UserDefinitions = Path.Combine(appData, "definitions");
+            UserDefinitions = Path.Combine(AppData, "definitions");
             if (!Directory.Exists(UserDefinitions))
             {
                 Directory.CreateDirectory(UserDefinitions);
             }
 
-            Packages = Path.Combine(appData, "packages");
+            Packages = Path.Combine(AppData, "packages");
             if (!Directory.Exists(Packages))
             {
                 Directory.CreateDirectory(Packages);
