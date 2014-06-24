@@ -35,13 +35,17 @@ The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014,
 ## Releases ##
 
 ###0.7.1 Pre-Release###
-- Package Manager is Back
-- 0.6.3 files will be upgraded to 0.7 format
+- Package Manager is back
+- [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
 - Library Loading (Experimental)
 - Stability Improvments
 - Revit Elements created and Selected during a session will be rememebered in later sessions.
 - Visualization Performance improvments
-- Navigation Improvements
+- 3d/Graph Navigation Improvements
+- Automated graph organization
+- Node UI Enhancements
+- Preview Bubble overhaul
+- New Sample content
 
 ###0.7.0###
 This is an alpha quality release which represents a significant refactoring of the underlying code.  There are some notable (temporary) restricitions to the functionality that is available in 0.6.3, and major enhancements to others. To allow users to continue work with 0.6.3 while exploring 0.7.0, this release can be installed side by side with older releases.  
