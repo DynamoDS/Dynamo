@@ -93,6 +93,35 @@ namespace DSRevitNodesTests.GeometryConversion
 
         [Test]
         [TestModel(@".\empty.rfa")]
+        public void NurbsCurve_ProvidesGoodApproximationForDegree2Curve()
+        {
+            var pts = new[]
+            {
+                Point.ByCoordinates(0, 0, 0)
+                , Point.ByCoordinates(0, 1, 1)
+                , Point.ByCoordinates(0, 1, 0)
+            };
+
+            var bspline = NurbsCurve.ByPoints(pts, 2);
+            var revitCurve = bspline.ToRevitType(false);
+
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.NurbSpline>(revitCurve);
+
+            var revitSpline = (Autodesk.Revit.DB.NurbSpline)revitCurve;
+            Assert.AreEqual(3, revitSpline.Degree);
+            var tessPts = revitSpline.Tessellate().Select(x => x.ToPoint(false));
+
+            //assert the tesselation is very close to original curve
+            foreach (var pt in tessPts)
+            {
+                var closestPt = bspline.GetClosestPoint(pt);
+                Assert.Less( closestPt.DistanceTo(pt), 1e-6 );
+            }
+
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
         public void EllipseArc_Basic()
         {
             var o = Point.ByCoordinates(1, 2, 3);
