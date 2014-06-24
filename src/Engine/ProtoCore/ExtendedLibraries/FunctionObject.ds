@@ -122,6 +122,107 @@ class _ComposedFunctionObject extends _FunctionObject
     }
 }
 
+def Wasteland(size:int)
+{
+	result[0..(size*size)-1] = false;
+	return = result;
+}
+
+def EternalLife(cells: bool[], size: int, toGeometry: _FunctionObject, render: _FunctionObject)
+{
+	return = [Imperative]
+	{
+		while (true)
+		{
+			rendered = RenderLife(cells, size, toGeometry);
+			Apply(render, rendered);
+			cells = Life(cells, size);
+		}
+	};
+}
+
+def RenderLife(cells: bool[], size: int, renderFunc: _FunctionObject)
+{
+	return = [Imperative]
+	{
+		result = {};
+		rIdx = 0;
+		count = Count(cells);
+		x = 0;
+		y = 0;
+		for (idx in 0..count-1)
+		{
+			if (x >= size)
+			{
+				x = 0;
+				y = y + 1;
+			}
+
+			if (cells[idx])
+			{
+				result[rIdx] = ApplyList(renderFunc, { x, y });
+				rIdx = rIdx + 1;
+			}
+
+			x = x + 1;
+		}
+		return = result;
+	};
+}
+
+def Life(cells: bool[], size: int)
+{
+	return = [Imperative]
+	{
+		result = {};
+		count = Count(cells);
+		offsets = {-1 - size, -1 * size, 1 - size, -1, 1, size - 1, size, 1 + size};
+		for (idx in 0..count-1)
+		{
+			neighbors = 0;
+			
+			for (o in offsets)
+			{
+				adjacentIdx = (idx+o)%(size*size);
+				if (adjacentIdx < 0)
+				{
+					adjacentIdx = adjacentIdx * -1;
+				}
+				if (cells[adjacentIdx])
+				{
+					neighbors = neighbors + 1;
+				}
+			}
+
+			if (neighbors == 3)
+			{
+				result[idx] = true;
+			}
+			else if (neighbors == 2)
+			{
+				result[idx] = cells[idx];
+			}
+			else
+			{
+				result[idx] = false;
+			}
+		}
+		return = result;
+	};
+}
+
+def Forever(func: _FunctionObject, init: var[]..[], reporter: _FunctionObject)
+{
+	return = [Imperative]
+	{
+		while (true)
+		{
+			Apply(reporter, init);
+			init = Apply(func, init);
+		}
+	}
+}
+
 def Apply(functionObject: _FunctionObject, param: var[]..[])
 {
     return = functionObject.DoEvaluation(param);

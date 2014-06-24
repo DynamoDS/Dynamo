@@ -96,7 +96,7 @@ namespace Dynamo.Nodes
         private void RenderData(object data)
         {
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID.ToString()));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID.ToString(), -1));
         }
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
