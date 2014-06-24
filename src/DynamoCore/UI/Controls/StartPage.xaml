@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignWidth="640"
              d:DesignHeight="480">
-    <Grid Background="White">
-
+    <Grid Name="startPageGrid"
+          Background="White">
     </Grid>
 </UserControl>

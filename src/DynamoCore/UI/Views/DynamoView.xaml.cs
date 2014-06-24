@@ -234,6 +234,40 @@ namespace Dynamo.Controls
             shortcutBarGrid.Children.Add(shortcutBar);
         }
 
+        /// <summary>
+        /// These lines of codes create an instance of StartPage object, insert
+        /// it under the main grid. The same thing can easily be achieved in XAML,
+        /// but the cost that comes with creating a new start page will be large.
+        /// The start-page object internally creates a whole bunch of other stuff,
+        /// so if it part of the main XAML, then the cost will always be incurred,
+        /// even if user opts to not show start-screen for each launch. Having the
+        /// creation in a separate method that is optionally called, this cost can
+        /// be completely avoided in cases that start-screen is not required.
+        /// </summary>
+        /// 
+        private void InitializeStartPage()
+        {
+            if (DynamoController.IsTestMode) // No start screen in unit testing.
+                return;
+
+            StartPage startPage = new StartPage();
+            startPage.SetValue(Grid.RowProperty, 2);
+            startPage.SetValue(Grid.RowSpanProperty, 4);
+            startPage.SetValue(Grid.ColumnProperty, 0);
+            startPage.SetValue(Grid.ColumnSpanProperty, 3);
+
+            var visibilityBinding = new Binding("ShowStartPage")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this.DataContext,
+                Converter = new BooleanToVisibilityConverter(),
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+
+            startPage.SetBinding(UIElement.VisibilityProperty, visibilityBinding);
+            mainGrid.Children.Add(startPage);
+        }
+
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
             Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
@@ -253,6 +287,7 @@ namespace Dynamo.Controls
             dynSettings.DynamoLogger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
+            InitializeStartPage();
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();

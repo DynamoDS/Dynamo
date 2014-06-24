@@ -139,6 +139,7 @@ namespace Dynamo.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
         private bool canNavigateBackground = false;
+        private bool showStartPage = false;
         private bool _watchEscapeIsDown = false;
 
         public DelegateCommand OpenCommand { get; set; }
@@ -356,6 +357,17 @@ namespace Dynamo.ViewModels
         public bool IsUILocked
         {
             get { return dynSettings.Controller.IsUILocked; }
+        }
+
+        public bool ShowStartPage
+        {
+            get { return this.showStartPage; }
+
+            private set
+            {
+                showStartPage = value;
+                RaisePropertyChanged("ShowStartPage");
+            }
         }
 
         public bool WatchEscapeIsDown
@@ -589,6 +601,9 @@ namespace Dynamo.ViewModels
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
+
+            // Start page should not show up during test mode.
+            this.ShowStartPage = !DynamoController.IsTestMode;
 
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
