@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using ProtoCore.Mirror;
@@ -127,9 +129,6 @@ namespace Dynamo
 
                     keeperId = (ElementId)method.Invoke(null, argsM);
 
-                    //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
-                    //                                       ElementId.InvalidElementId);
-
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
         }
@@ -175,6 +174,12 @@ namespace Dynamo
                     if (curve != null)
                     {
                         geoms.Add(curve.ToRevitType());
+                    }
+
+                    var surf = data.Data as Surface;
+                    if (surf != null)
+                    {
+                        geoms.AddRange(surf.ToRevitType());
                     }
                 }
                 catch (Exception ex)
