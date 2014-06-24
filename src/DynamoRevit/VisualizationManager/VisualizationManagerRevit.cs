@@ -91,7 +91,7 @@ namespace Dynamo
         {
             Type geometryElementType = typeof(GeometryElement);
             MethodInfo[] geometryElementTypeMethods =
-                geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+                geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
             MethodInfo method =
                 geometryElementTypeMethods.FirstOrDefault(x => x.Name == "SetForTransientDisplay");
