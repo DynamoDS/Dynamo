@@ -132,9 +132,15 @@ def EternalLife(cells: bool[], size: int, toGeometry: _FunctionObject, render: _
 {
 	return = [Imperative]
 	{
+		generations = 0;
 		while (true)
 		{
 			rendered = RenderLife(cells, size, toGeometry);
+			if (Count(rendered) == 0)
+			{
+				return = generations;
+			}
+			generations = generations + 1;
 			Apply(render, rendered);
 			cells = Life(cells, size);
 		}
