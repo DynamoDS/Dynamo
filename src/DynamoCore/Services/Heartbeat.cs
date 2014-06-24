@@ -77,6 +77,9 @@ namespace Dynamo.Services
             {
                 try
                 {
+                    AnalyticsIntegration.LogEvent("ApplicationLifeCycle", "Heartbeat");
+
+
                     InstrumentationLogger.LogInfo("VersionInfo", GetVersionString());
 
                     var difference = DateTime.Now.Subtract(startTime).TotalSeconds;
