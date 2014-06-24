@@ -71,7 +71,7 @@ namespace DynamoUtilities
         /// <summary>
         /// The Dynamo folder in AppData
         /// </summary>
-        public static string AppData { get; set; }
+        public static string AppData { get; set;}
 
         /// <summary>
         /// Additional paths that should be searched during

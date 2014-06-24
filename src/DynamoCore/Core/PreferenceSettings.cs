@@ -211,9 +211,6 @@ namespace Dynamo
         {
             try
             {
-                string appDataFolder = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.ApplicationData);
-
                 return (Path.Combine(DynamoPaths.AppData, DYNAMO_SETTINGS_FILE));
             }
             catch (Exception)
