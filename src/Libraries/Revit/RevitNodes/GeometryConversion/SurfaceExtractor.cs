@@ -5,9 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
-using Autodesk.Revit.DB;
-
-using MathNet.Numerics.Distributions;
 
 namespace Revit.GeometryConversion
 {
