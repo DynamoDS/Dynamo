@@ -778,6 +778,11 @@ namespace GraphToDSCompiler
                     BinaryExpressionNode ben = node as BinaryExpressionNode;
                     if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
                     {
+                        ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
+                        if (mNode != null)
+                        {
+                            core.BuildStatus.LogSemanticError("Modifier Blocks are not supported currently.");
+                        }
                         IdentifierNode lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
                         {
