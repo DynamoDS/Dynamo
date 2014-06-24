@@ -139,7 +139,7 @@ namespace DynamoUtilities
             var coreLibs = new List<string>
             {
                 "ProtoGeometry.dll",
-                @"nodes\DSCoreNodes.dll",
+                "DSCoreNodes.dll",
                 "DSOffice.dll",
                 "DSIronPython.dll",
                 "FunctionObject.ds",
