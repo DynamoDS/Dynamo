@@ -89,6 +89,17 @@ namespace Dynamo.Tests
             AssertPreviewValue("fbc947fb-460b-49b9-8460-b223bffb63d5", new string[] { "abcd", "efgh" });
         }
 
+        [Test]
+        public void TestConcatStringInListMap()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatStringInListMap.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("a105ad39-9b1c-44aa-a2cb-37866ea48dd0", new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
+        }
+
         #endregion
 
         #region substring test cases  
