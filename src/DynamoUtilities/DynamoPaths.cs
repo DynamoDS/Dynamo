@@ -64,6 +64,11 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// The Logs folder.
+        /// </summary>
+        public static string Logs { get; set; }
+
+        /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
         /// </summary>
@@ -93,14 +98,19 @@ namespace DynamoUtilities
 
             var appData = GetDynamoAppDataFolder(MainExecPath);
 
-            UserDefinitions = Path.Combine(appData, "definitions");
-            Packages = Path.Combine(appData, "packages");
+            Logs = Path.Combine(appData, "Logs");
+            if (!Directory.Exists(Logs))
+            {
+                Directory.CreateDirectory(Logs);
+            }
 
+            UserDefinitions = Path.Combine(appData, "definitions");
             if (!Directory.Exists(UserDefinitions))
             {
                 Directory.CreateDirectory(UserDefinitions);
             }
 
+            Packages = Path.Combine(appData, "packages");
             if (!Directory.Exists(Packages))
             {
                 Directory.CreateDirectory(Packages);
