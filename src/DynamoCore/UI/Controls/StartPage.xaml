@@ -3,10 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignWidth="640"
-             d:DesignHeight="480">
+             d:DesignHeight="480"
+             Margin="0,-1,0,0">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid Name="startPageGrid"
           Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="21"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border Background="#232323"
+                BorderThickness="0,1,0,1"
+                BorderBrush="#404040" />
+        <Border Background="#353535"
+                BorderThickness="1,0,1,1"
+                BorderBrush="#404040"
+                Width="200"
+                HorizontalAlignment="Left" />
+        <TextBlock Margin="8,0,0,0"
+                   FontSize="11"
+                   FontFamily="{StaticResource OpenSansRegular}"
+                   Text="Start"
+                   Foreground="#888888"
+                   VerticalAlignment="Center" />
     </Grid>
 </UserControl>
