@@ -632,7 +632,8 @@ namespace Dynamo.Nodes
         private AssociativeNode CreateFunctionObject(
             AssociativeNode functionNode, List<AssociativeNode> inputs)
         {
-            var paramNumNode = new IntNode(Definition.Parameters.Count());
+            // var paramNumNode = new IntNode(Definition.Parameters.Count());
+            var paramNumNode = new IntNode(this.GetInputIndex());
             var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
             var arguments = AstFactory.BuildExprList(inputs);
             var inputParams = new List<AssociativeNode>
@@ -641,7 +642,7 @@ namespace Dynamo.Nodes
                 paramNumNode,
                 positionNode,
                 arguments,
-                AstFactory.BuildBooleanNode(true)
+                AstFactory.BuildBooleanNode(false)
             };
 
             return AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
@@ -653,7 +654,7 @@ namespace Dynamo.Nodes
 
             string function = Definition.Name;
             AssociativeNode rhs;
-
+            /*
             var paramCount = Definition.Parameters.Count();
             var packId = "__var_arg_pack_" + GUID;
             resultAst.Add(
@@ -665,6 +666,7 @@ namespace Dynamo.Nodes
                 inputAstNodes.Take(paramCount - 1)
                              .Concat(new[] { AstFactory.BuildIdentifier(packId) })
                              .ToList();
+            */
 
             switch (Definition.Type)
             {
