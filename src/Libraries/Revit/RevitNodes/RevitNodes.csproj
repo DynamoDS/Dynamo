@@ -119,12 +119,13 @@
     <Compile Include="GeometryConversion\RevitToProtoFace.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
+    <Compile Include="GeometryConversion\UnitConverter.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
     <Compile Include="GeometryReferences\ElementGeometryReference.cs" />
     <Compile Include="GeometryReferences\ElementFaceReference.cs" />
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />
     <Compile Include="Elements\Family.cs" />
-    <Compile Include="GeometryConversion\Extensions.cs" />
+    <Compile Include="GeometryConversion\GeometryPrimitiveConverter.cs" />
     <Compile Include="GeometryReferences\RayBounce.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Elements\Parameter.cs" />

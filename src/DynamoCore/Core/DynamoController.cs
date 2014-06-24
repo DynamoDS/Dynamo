@@ -299,7 +299,7 @@ namespace Dynamo
             DynamoModel.CurrentWorkspace.Y = 0;
 
             // custom node loader
-            CustomNodeManager = new CustomNodeManager(DynamoPaths.Definitions);
+            CustomNodeManager = new CustomNodeManager(DynamoPaths.UserDefinitions);
 
             SearchViewModel = new SearchViewModel();
 

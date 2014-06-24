@@ -206,6 +206,7 @@ namespace Revit.Elements
         /// Wrap an existing Element in the associated DS type
         /// </summary>
         /// <param name="grid"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static Grid FromExisting(Autodesk.Revit.DB.Grid grid, bool isRevitOwned)
         {

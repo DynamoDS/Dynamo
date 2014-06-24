@@ -10,22 +10,8 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class SectionViewTests : RevitNodeTestBase
+    class SectionViewTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-            base.Setup();
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-            base.TearDown();
-        }
-
         [Test]
         [TestModel(@".\Empty.rvt")]
         public void ByBoundingBox_ValidArgs()

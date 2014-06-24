@@ -8,6 +8,9 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
 using Dynamo.ViewModels;
+
+using DynamoUtilities;
+
 using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -81,6 +84,7 @@ namespace Dynamo.Utilities
         {
             SearchPath = new ObservableCollection<string> { searchPath };
             NodeInfos = new ObservableDictionary<Guid, CustomNodeInfo>();
+            AddDirectoryToSearchPath(DynamoPaths.CommonDefinitions);
         }
 
         /// <summary> 

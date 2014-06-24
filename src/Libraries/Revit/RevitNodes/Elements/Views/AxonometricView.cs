@@ -129,8 +129,8 @@ namespace Revit.Elements.Views
         /// Create a Revit Axonometric (isometric) View from an Eye position, 
         /// a target position, and either an Element or BoundingBox.
         /// </summary>
-        /// <param name="eyePoint">A Point representing the eye point.</param>
-        /// <param name="target">A Point representing the target of view.</param>
+        /// <param name="eyePoint">A Point representing the eye point in meters.</param>
+        /// <param name="target">A Point representing the target of view in meters.</param>
         /// <param name="element">This argument cannot be null, and it has to be either a 
         /// Revit.Elements.Element or  Revit.GeometryObjectsBoundingBox.</param>
         /// <param name="name">The name of the view.</param>
@@ -183,8 +183,8 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Create a Revit Axonometric (isometric) View from an Eye position and target position and Element
         /// </summary>
-        /// <param name="eyePoint"></param>
-        /// <param name="target"></param>
+        /// <param name="eyePoint">Eye point in meters</param>
+        /// <param name="target">Target of view in meters</param>
         /// <param name="element"></param>
         /// <param name="name"></param>
         /// <param name="isolateElement"></param>
@@ -211,15 +211,15 @@ namespace Revit.Elements.Views
                 throw new ArgumentNullException("name");
 
 
-            return new AxonometricView(eyePoint.ToXyz(), target.ToXyz(), element.InternalElement, name, isolateElement);
+            return new AxonometricView(eyePoint.ToXyz(true), target.ToXyz(true), element.InternalElement, name, isolateElement);
         }
 
         /// <summary>
         /// Create a Revit Axonometric (isometric) View from an Eye position and target position and Bounding Box
         /// </summary>
-        /// <param name="eyePoint"></param>
-        /// <param name="target"></param>
-        /// <param name="boundingBox"></param>
+        /// <param name="eyePoint">Eye point in meters</param>
+        /// <param name="target">Target of view in meters</param>
+        /// <param name="boundingBox">Bounding box represented in meters</param>
         /// <param name="name"></param>
         /// <param name="isolateElement"></param>
         /// <returns></returns>
@@ -239,7 +239,7 @@ namespace Revit.Elements.Views
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            return new AxonometricView(eyePoint.ToXyz(), target.ToXyz(), boundingBox.ToRevitType(), name, isolateElement);
+            return new AxonometricView(eyePoint.ToXyz(true), target.ToXyz(true), boundingBox.ToRevitType(true), name, isolateElement);
         }
 
         #endregion

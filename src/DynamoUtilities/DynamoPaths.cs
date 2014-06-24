@@ -26,7 +26,13 @@ namespace DynamoUtilities
         /// The definitions folder, which contains custom nodes
         /// created by the user.
         /// </summary>
-        public static string Definitions { get; set; }
+        public static string UserDefinitions { get; set; }
+
+        /// <summary>
+        /// The definitions folder which contains custom nodes
+        /// available to all users.
+        /// </summary>
+        public static string CommonDefinitions { get; set; }
 
         /// <summary>
         /// The packages folder, which contains pacakages downloaded
@@ -87,17 +93,25 @@ namespace DynamoUtilities
 
             var appData = GetDynamoAppDataFolder(MainExecPath);
 
-            Definitions = Path.Combine(appData, "definitions");
+            UserDefinitions = Path.Combine(appData, "definitions");
             Packages = Path.Combine(appData, "packages");
 
-            if (!Directory.Exists(Definitions))
+            if (!Directory.Exists(UserDefinitions))
             {
-                Directory.CreateDirectory(Definitions);
+                Directory.CreateDirectory(UserDefinitions);
             }
 
             if (!Directory.Exists(Packages))
             {
                 Directory.CreateDirectory(Packages);
+            }
+
+            var commonData = GetDynamoCommonDataFolder(MainExecPath);
+
+            CommonDefinitions = Path.Combine(commonData, "definitions");
+            if (!Directory.Exists(CommonDefinitions))
+            {
+                Directory.CreateDirectory(CommonDefinitions);
             }
 
             Asm = Path.Combine(MainExecPath, "dll");
@@ -114,7 +128,7 @@ namespace DynamoUtilities
 #if DEBUG
             var sb = new StringBuilder();
             sb.AppendLine(string.Format("MainExecPath: {0}", MainExecPath));
-            sb.AppendLine(string.Format("Definitions: {0}", Definitions));
+            sb.AppendLine(string.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(string.Format("Packages: {0}", Packages));
             sb.AppendLine(string.Format("Ui: {0}", Asm));
             sb.AppendLine(string.Format("Asm: {0}", Ui));
@@ -150,6 +164,18 @@ namespace DynamoUtilities
                 "Dynamo",
                 dynVersion);
             return appData;
+        }
+
+        private static string GetDynamoCommonDataFolder(string basePath)
+        {
+            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
+            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
+            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var progData = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "Dynamo",
+                dynVersion);
+            return progData;
         }
 
         /// <summary>
