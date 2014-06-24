@@ -766,11 +766,7 @@ namespace GraphToDSCompiler
                 else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
                 {
                     core.BuildStatus.LogSemanticError("Import statements are not supported in CodeBlock Nodes.");
-                }
-                else if (n is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
-                {
-                    core.BuildStatus.LogSemanticError("Language blocks are not supported in CodeBlock Nodes.");
-                }                
+                }            
                 else if (isFunctionOrClassDef)
                 {
                     // Add node as it is
