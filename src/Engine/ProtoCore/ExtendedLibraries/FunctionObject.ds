@@ -142,7 +142,7 @@ def EternalLife(cells: bool[], size: int, toGeometry: _FunctionObject, render: _
 			}
 			generations = generations + 1;
 			Apply(render, rendered);
-			cells = Life(cells, size);
+			cells = Life.Step(cells, size);
 		}
 	};
 }

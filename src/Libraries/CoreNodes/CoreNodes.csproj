@@ -68,6 +68,7 @@
     <Compile Include="Compare.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
+    <Compile Include="Life.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
