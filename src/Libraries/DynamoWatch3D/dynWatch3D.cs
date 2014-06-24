@@ -73,7 +73,7 @@ namespace Dynamo.Nodes
             WatchIsResizable = true;
         }
 
-        private IEnumerable<IGraphicItem> UnpackRenderData(object data)
+        private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
         {
             if (data is IGraphicItem)
                 yield return data as IGraphicItem;
@@ -85,7 +85,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        private RenderPackage PackageRenderData(IGraphicItem gItem)
+        private static RenderPackage PackageRenderData(IGraphicItem gItem)
         {
             var renderPackage = new RenderPackage();
             gItem.Tessellate(renderPackage, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
