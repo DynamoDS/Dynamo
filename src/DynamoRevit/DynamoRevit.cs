@@ -65,7 +65,7 @@ namespace Dynamo.Applications
                 dynamoButton =
                         (PushButton)ribbonPanel.AddItem(
                             new PushButtonData(
-                                "Dynamo 0.7 Alpha",
+                                "Dynamo 0.7",
                                 res.GetString("App_Name"),
                                 assemblyName,
                                 "Dynamo.Applications.DynamoRevit"));
