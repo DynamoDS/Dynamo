@@ -88,7 +88,7 @@ namespace Dynamo.Nodes
         private RenderPackage PackageRenderData(IGraphicItem gItem)
         {
             var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, dynSettings.Controller.VisualizationManager.MaxGridLines);
+            gItem.Tessellate(renderPackage, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
             renderPackage.ItemsCount++;
             return renderPackage;
         }
