@@ -37,13 +37,11 @@ namespace Dynamo.Applications
                 loadPath = path06x;
                 versions.Add(FileVersionInfo.GetVersionInfo(path06x).FileVersion);
             }
+
             if (File.Exists(path07x))
             {
+                loadPath = path07x;
                 versions.Add(FileVersionInfo.GetVersionInfo(path07x).FileVersion);
-                if(!File.Exists(path06x))
-                {
-                    loadPath = path07x;
-                }
             }
 
             // If there are multiple versions installed, then create
