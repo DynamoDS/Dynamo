@@ -101,6 +101,83 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract class DSSelectionsBase : DSSelectionBase
+    {
+        protected bool _canAdd = true;
+        protected bool _canRemove = true;
+
+        /// <summary>
+        /// Whether or not the Add button is enabled in the UI.
+        /// </summary>
+        public bool CanAdd
+        {
+            get { return _canAdd; }
+            set
+            {
+                _canAdd = value;
+                RaisePropertyChanged("CanAdd");
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Remove button is enabled in the UI.
+        /// </summary>
+        public bool CanRemove
+        {
+            get { return _canRemove; }
+            set
+            {
+                _canRemove = value;
+                RaisePropertyChanged("CanRemove");
+            }
+        }
+
+        /// <summary>
+        /// Handler for the add button's Click event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void addButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Disable the button once it's been clicked...
+            CanAdd = false;
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
+                delegate
+                {
+                    OnAddClick();
+                    CanAdd = true; //...and re-enable it once selection has finished.
+                });
+        }
+
+        /// <summary>
+        /// Handler for the remove button's Click event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void removeButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Disable the button once it's been clicked...
+            CanRemove = false;
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
+                delegate
+                {
+                    OnRemoveClick();
+                    CanRemove = true; //...and re-enable it once selection has finished.
+                });
+        }
+
+        /// <summary>
+        /// Override this to add selections to the current selection.
+        /// </summary>
+        protected abstract void OnAddClick();
+
+        /// <summary>
+        /// Override this to remove selections to the current selection.
+        /// </summary>
+        protected abstract void OnRemoveClick();
+
+    }
+
     public abstract class DSElementSelection : DSSelectionBase 
     {
         protected Func<string, ElementId> SelectionAction;
@@ -583,14 +660,14 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class DSReferencesSelection : DSSelectionBase
+    public abstract class DSReferencesSelection : DSSelectionsBase
     {
         protected List<Reference> selected;
         protected List<string> selectedUniqueIds;
         protected Document selectionOwner;
-        protected Func<string, List<Reference>> selectionAction;
+        protected Func<string, List<Reference>> newSelectionAction;
         protected Func<string, List<string>, List<Reference>> addSelectionAction;
-
+        protected Func<string, List<string>, List<Reference>> removeSelectionAction;
 
         /// <summary>
         /// The Element which is selected.
@@ -601,9 +678,9 @@ namespace Dynamo.Nodes
             set
             {
                 bool dirty = value != null;
-
                 selected = value;
                 selectionOwner = DocumentManager.Instance.CurrentDBDocument;
+
                 if (selected != null)
                 {
                     selectedUniqueIds = selected.Select(x => x.ConvertToStableRepresentation(selectionOwner)).ToList();
@@ -640,10 +717,14 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected DSReferencesSelection(Func<string, List<Reference>> selectOrChangeAction, Func<string, List<string>, List<Reference>> addAction, string message)
+        protected DSReferencesSelection(Func<string, List<Reference>> selectionAction, 
+                                        Func<string, List<string>, List<Reference>> addAction, 
+                                        Func<string, List<string>, List<Reference>> removeAction,
+                                        string message)
         {
-            selectionAction = selectOrChangeAction;
+            newSelectionAction = selectionAction;
             addSelectionAction = addAction;
+            removeSelectionAction = removeAction;
             _selectionMessage = message;
 
             OutPortData.Add(new PortData("References", "The geometry references."));
@@ -669,7 +750,7 @@ namespace Dynamo.Nodes
             if (selected == null || !enumerable.Any()) return;
 
             var doc = DocumentManager.Instance.CurrentDBDocument;
-            //if (enumerable.Contains(doc.GetElement(Selected).UniqueId))
+
             if (selected.Any(p => enumerable.Contains(doc.GetElement(p.ElementId).UniqueId)))
             {
                 RequiresRecalc = true;
@@ -690,7 +771,6 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //add a button to the inputGrid on the dynElement
             var selectButton = new DynamoNodeButton()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -708,6 +788,15 @@ namespace Dynamo.Nodes
             };
             addButton.Click += addButton_Click;
 
+            var removeButton = new DynamoNodeButton()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
+                Content = "Remove",
+            };
+            removeButton.Click += removeButton_Click;
+
             var tb = new TextBox
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -721,18 +810,22 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
             nodeUI.inputGrid.Children.Add(tb);
             nodeUI.inputGrid.Children.Add(selectButton);
             nodeUI.inputGrid.Children.Add(addButton);
+            nodeUI.inputGrid.Children.Add(removeButton);
 
             System.Windows.Controls.Grid.SetRow(selectButton, 0);
             System.Windows.Controls.Grid.SetRow(addButton, 1);
-            System.Windows.Controls.Grid.SetRow(tb, 2);
+            System.Windows.Controls.Grid.SetRow(removeButton, 2);
+            System.Windows.Controls.Grid.SetRow(tb, 3);
 
             tb.DataContext = this;
             selectButton.DataContext = this;
             addButton.DataContext = this;
+            removeButton.DataContext = this;
 
             var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
             {
@@ -758,20 +851,15 @@ namespace Dynamo.Nodes
                 Mode = BindingMode.TwoWay,
             };
             addButton.SetBinding(Button.IsEnabledProperty, addButtonEnabledBinding);
+
+            var removeButtonEnabledBinding = new System.Windows.Data.Binding("CanRemove")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            removeButton.SetBinding(Button.IsEnabledProperty, removeButtonEnabledBinding);
         }
 
         #endregion
-
-        internal void addButton_Click(object sender, RoutedEventArgs e)
-        {
-            CanAdd = false;
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
-                delegate
-                {
-                    OnAddClick();
-                    CanAdd = true; //...and re-enable it once selection has finished.
-                });
-        }
 
         /// <summary>
         /// Callback when selection button is clicked. 
@@ -782,7 +870,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedReferences = selectionAction(_selectionMessage);
+                SelectedReferences = newSelectionAction(_selectionMessage);
                 RaisePropertyChanged("SelectionText");
                 RaisePropertyChanged("SelectedReferences");
 
@@ -798,20 +886,51 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected void OnAddClick()
+        /// <summary>
+        /// Callback when add button is clicked. 
+        /// Calls the add action, and adds the ElementId(s) of the selected objects
+        /// to the existing list of References.
+        /// </summary>
+        protected override void OnAddClick()
         {
             try
             {
                 //call the delegate associated with a selection type
                 SelectedReferences = addSelectionAction(_selectionMessage, selectedUniqueIds);
                 RaisePropertyChanged("SelectionText");
+                RaisePropertyChanged("SelectedReferences");
 
                 RequiresRecalc = true;
             }
             catch (OperationCanceledException)
             {
-                CanSelect = true;
                 CanAdd = true;
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log(e);
+            }
+        }
+
+        /// <summary>
+        /// Callback when add button is clicked. 
+        /// Calls the remove action, and removes the ElementId(s) of the selected objects
+        /// to the existing list of References.
+        /// </summary>
+        protected override void OnRemoveClick()
+        {
+            try
+            {
+                //call the delegate associated with a selection type
+                SelectedReferences = removeSelectionAction(_selectionMessage, selectedUniqueIds);
+                RaisePropertyChanged("SelectionText");
+                RaisePropertyChanged("SelectedReferences");
+
+                RequiresRecalc = true;
+            }
+            catch (OperationCanceledException)
+            {
+                CanRemove = true;
             }
             catch (Exception e)
             {
@@ -885,21 +1004,6 @@ namespace Dynamo.Nodes
                 }
             }
         }
-
-        #region properties
-        /// <summary>
-        /// Whether or not the Add button is enabled in the UI.
-        /// </summary>
-        public bool CanAdd
-        {
-            get { return _canAdd; }
-            set
-            {
-                _canAdd = value;
-                RaisePropertyChanged("CanAdd");
-            }
-        }
-        #endregion
     }
 
     public abstract class DSElementsSelection : DSSelectionBase
@@ -1263,7 +1367,10 @@ namespace Dynamo.Nodes
         }
 
         public DSFacesSelection()
-            : base(SelectionHelper.RequestFacesReferenceSelection, SelectionHelper.RequestFacesReferenceSelectionAdd, "Select faces.") { }
+            : base(SelectionHelper.RequestFacesReferenceSelection, 
+                   SelectionHelper.RequestFacesReferenceSelectionAdd, 
+                   SelectionHelper.RequestFacesReferenceSelectionRemove,
+                   "Select faces.") { }
     }
 
     [NodeName("Select Edge")]
