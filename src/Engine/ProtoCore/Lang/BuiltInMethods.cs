@@ -83,7 +83,7 @@ namespace ProtoCore.Lang
             "%dot",                     // kDot
             "Equals",                   // kEquals
             "GetElapsedTime",           // kGetElapsedTime
-            "%get_type",                // kGetType
+            Constants.kGetTypeMethodName,// kGetType
             "Flatten",                  // kFlatten
             "ImportData",               // kImportData
             "IndexOf",                  // kIndexOf
@@ -116,12 +116,12 @@ namespace ProtoCore.Lang
             "SortIndexByValue",         // kSortIndexByValueWithMode
             "Sort",                     // kSortPointer
             "Reorder",                  // kReorder
-            "%generate_range",          // kGenerateRange
+            Constants.kFunctionRangeExpression, // kGenerateRange
             "Sum",                      // kSum
             "ToString",                 // kToString
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
-            "%inlineconditional",       // kInlineConditional
+            Constants.kInlineConditionalMethodName,
             "Break",                    // kBreak
             "GetKeys",                  // kGetKeys    
             "GetValues",                // kGetValues    
@@ -201,7 +201,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kConcat,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -265,7 +265,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kAllFalse,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -276,7 +276,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kAllTrue,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -287,7 +287,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kIsHomogeneous,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -410,7 +410,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("type", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
                     },
                     ID = BuiltInMethods.MethodID.kRemoveIfNot,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382  MethodAttributes = new MethodAttributes(true), 
                 },
 
                 new BuiltInMethod
@@ -582,7 +582,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValue,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),  
                 },
 
                 new BuiltInMethod
@@ -594,7 +594,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true), 
                 },
 
                 new BuiltInMethod
@@ -616,7 +616,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kIsUniformDepth,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -627,7 +627,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kIsRectangular,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 }, 
 
                 new BuiltInMethod
@@ -638,7 +638,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kNormalizeDepth,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -650,7 +650,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("rank", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kNormalizeDepthWithRank,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 }, 
 
                 new BuiltInMethod
@@ -836,7 +836,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = MethodID.kGetKeys,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -847,7 +847,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = MethodID.kGetValues,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
@@ -859,7 +859,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = MethodID.kRemoveKey,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MethodAttributes = new MethodAttributes(true), MAGN-3382
                 },
 
                 new BuiltInMethod
@@ -871,7 +871,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = MethodID.kContainsKey,
-                    MethodAttributes = new MethodAttributes(true),
+                    //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod

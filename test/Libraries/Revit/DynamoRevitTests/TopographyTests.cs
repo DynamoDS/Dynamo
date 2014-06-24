@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using RTF.Framework;
 
 namespace Dynamo.Tests
 {

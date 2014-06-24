@@ -165,6 +165,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override bool ForceReExecuteOfNode
+        {
+            get { return true; }
+        }
+
         #region protected constructors
 
         protected DSElementSelection(Func<string, ElementId> action, string message)
@@ -1018,7 +1023,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a UV on a face.")]
     [IsDesignScriptCompatible]
-    [IsVisibleInDynamoLibrary(false)]
+    //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     public class DSUVOnElementSelection : DSReferenceSelection
     {
         public override string SelectionText

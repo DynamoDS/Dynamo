@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace Revit.Transaction
@@ -12,6 +9,18 @@ namespace Revit.Transaction
     public class Transaction
     {
         private Transaction() { }
+
+        /// <summary>
+        /// Start a transaction if neccesssary, returning
+        /// whatever was passed in.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static object Start(object input)
+        {
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+            return input;
+        }
 
         /// <summary>
         ///     Ends the current Dynamo transaction, returning whatever was

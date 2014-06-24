@@ -217,104 +217,6 @@ namespace ProtoCore.DSASM
     
     public static class StackUtils
     {
-        public static bool IsTrue(StackValue operand)
-        {
-            return operand.optype == AddressType.Boolean &&
-                   operand.opdata != 0;
-        }
-
-        public static bool IsArray(StackValue operand)
-        {
-            return operand.optype == AddressType.ArrayPointer;
-        }
-
-        public static bool IsNull(StackValue operand)
-        {
-            return operand.optype == AddressType.Null;
-        }
-
-        public static bool IsString(StackValue operand)
-        {
-            return operand.optype == AddressType.String;
-        }
-
-        public static bool IsNumeric(StackValue operand)
-        {
-            return operand.optype == AddressType.Int ||
-                   operand.optype == AddressType.Double;
-        }
-
-        public static bool IsValidPointer(StackValue operand)
-        {
-            return operand.optype == AddressType.Pointer &&
-                   operand.opdata != ProtoCore.DSASM.Constants.kInvalidIndex;
-        }
-
-        public static StackValue AsBoolean(this StackValue operand, Core core)
-        {
-            switch (operand.optype)
-            {
-                case AddressType.Boolean:
-                case AddressType.Int:
-                    return StackValue.BuildBoolean(operand.opdata != 0);
-                case AddressType.Null:
-                    return StackValue.Null; //BuildBoolean(false);
-                case AddressType.Double:
-                    bool b = !(Double.IsNaN(operand.opdata_d) || operand.opdata_d.Equals(0.0));
-                    return StackValue.BuildBoolean(b);
-                case AddressType.Pointer:
-                    return StackValue.BuildBoolean(true);
-                case AddressType.String:
-                    if (ArrayUtils.GetElementSize(operand, core) == 0)
-                    {
-                        return StackValue.BuildBoolean(false);
-                    }
-                    return StackValue.BuildBoolean(true);
-
-                case AddressType.Char:
-                    if (EncodingUtils.ConvertInt64ToCharacter(operand.opdata)==0)
-                    {
-                        return StackValue.BuildBoolean(false);
-                    }
-                    return StackValue.BuildBoolean(true); 
-                default:
-                    return StackValue.Null;
-            }
-        }
-
-        public static StackValue AsDouble(this StackValue operand)
-        {
-            switch (operand.optype)
-            {
-                case AddressType.Int:
-                    return StackValue.BuildDouble(operand.opdata);
-                case AddressType.Double:
-                    return StackValue.BuildDouble(operand.opdata_d);
-                default:
-                    return StackValue.Null;
-            }
-        }
-
-        public static StackValue AsInt(this StackValue operand)
-        {
-            switch (operand.optype)
-            {
-                case AddressType.Int:
-                    return operand;
-                case AddressType.Double:
-                    return StackValue.BuildInt((Int64)Math.Round(operand.opdata_d, 0, MidpointRounding.AwayFromZero));
-                default:
-                    return StackValue.Null;
-            }
-        }
-
-        public static bool IsReferenceType(this StackValue operand)
-        {
-            return (operand.optype == AddressType.ArrayPointer ||
-                    operand.optype == AddressType.Pointer ||
-                    operand.optype == AddressType.String) && ProtoCore.DSASM.Constants.kInvalidIndex != operand.opdata;
-        }
-
         //this method compares the values of the stack variables passed
         public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core c1, Core c2, ProtoCore.Runtime.Context context = null)
         {
@@ -326,9 +228,12 @@ namespace ProtoCore.DSASM
                 case AddressType.Char:
                     return sv1.opdata == sv2.opdata;
                 case AddressType.Double:
-                    if(Double.IsInfinity(sv1.opdata_d) && Double.IsInfinity(sv2.opdata_d))
+                    var value1 = sv1.RawDoubleValue;
+                    var value2 = sv2.RawDoubleValue;
+
+                    if(Double.IsInfinity(value1) && Double.IsInfinity(value2))
                         return true;
-                    return MathUtils.Equals(sv1.opdata_d, sv2.opdata_d);
+                    return MathUtils.Equals(value1, value2);
                 case AddressType.Boolean:
                     return (sv1.opdata > 0 && sv2.opdata > 0) || (sv1.opdata == 0 && sv2.opdata == 0);
                 case AddressType.ArrayPointer:
@@ -424,31 +329,6 @@ namespace ProtoCore.DSASM
             else
             {
                 return false;
-            }
-        }
-
-        public static bool Equals(this StackValue lhs, StackValue rhs)
-        {
-            if (lhs.optype != rhs.optype)
-            {
-                return false;
-            }
-
-            switch (lhs.optype)
-            {
-                case AddressType.Int:
-                case AddressType.Char:
-                    return lhs.opdata == rhs.opdata;
-
-                case AddressType.Double:
-                    return MathUtils.Equals(lhs.opdata_d, rhs.opdata_d);
-
-                case AddressType.Boolean:
-                    return (lhs.opdata > 0 && rhs.opdata > 0) || (lhs.opdata == 0 && rhs.opdata ==0);
-                case AddressType.Pointer:
-                    return lhs.opdata == rhs.opdata && lhs.metaData.type == rhs.metaData.type;
-                default:
-                    return lhs.opdata == rhs.opdata;
             }
         }
 

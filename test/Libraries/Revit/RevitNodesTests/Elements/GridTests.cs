@@ -1,12 +1,12 @@
 ﻿using Autodesk.DesignScript.Geometry;
-using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
+using RTF.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    class GridTests : ProtoGeometryTest
+    class GridTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

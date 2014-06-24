@@ -2,30 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
-using Dynamo.Tests;
+using Autodesk.Revit.DB;
+
 using Revit.GeometryConversion;
 using NUnit.Framework;
+using RTF.Framework;
 
 namespace DSRevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoCurveTests : RevitNodeTestBase
+    public class RevitToProtoCurveTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-        }
-
         [Test]
         [TestModel(@".\empty.rfa")]
-        public void NurbSpline_Rational()
+        public void ToProtoType_ExtensionMethod_DoesExpectedUnitConversion()
         {
             var pts = new List<Autodesk.Revit.DB.XYZ>()
             {
@@ -47,6 +37,50 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.NotNull(protoCurve);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
 
+            var protoSpline = (Autodesk.DesignScript.Geometry.NurbsCurve)protoCurve;
+
+            Assert.AreEqual(revitSpline.Degree, protoSpline.Degree);
+
+            Assert.IsTrue(protoSpline.IsRational);
+            Assert.AreEqual(revitSpline.CtrlPoints.Count, protoSpline.ControlPoints().Count());
+            Assert.AreEqual(revitSpline.Weights.Cast<double>().Count(), protoSpline.Weights().Length);
+
+            // We scale the tesselation for comparison
+            var feetToMeters = 0.3048;
+            var tessPtsProto = revitSpline.Tessellate().Select(x => x.ToPoint(false).Scale(feetToMeters)).Cast<Autodesk.DesignScript.Geometry.Point>();
+
+            // assert the tesselation is very close to original curve
+            foreach (var pt in tessPtsProto)
+            {
+                var closestPt = protoSpline.GetClosestPoint(pt);
+                Assert.Less(closestPt.DistanceTo(pt), 1e-6);
+            }
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void NurbSpline_Rational()
+        {
+            var pts = new List<Autodesk.Revit.DB.XYZ>()
+            {
+                new Autodesk.Revit.DB.XYZ(1,0,0),
+                new Autodesk.Revit.DB.XYZ(1,1,0),
+                new Autodesk.Revit.DB.XYZ(0,1,0),
+                new Autodesk.Revit.DB.XYZ(0,2,0)
+            };
+
+            var wts = new List<double>()
+            {
+                1, Math.Sqrt(2)/2, 1, 1
+            };
+
+            var revitSpline = Autodesk.Revit.DB.NurbSpline.Create(pts, wts);
+
+            var protoCurve = revitSpline.ToProtoType(false);
+
+            Assert.NotNull(protoCurve);
+            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
+
             var protoSpline = (Autodesk.DesignScript.Geometry.NurbsCurve) protoCurve;
 
             Assert.AreEqual(revitSpline.Degree, protoSpline.Degree);
@@ -63,8 +97,8 @@ namespace DSRevitNodesTests.GeometryConversion
             // what's the best tolerance to use here?
             foreach (var pt in tessPts)
             {
-                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint());
-                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint(false));
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             }
         }
 
@@ -89,7 +123,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitSpline = Autodesk.Revit.DB.HermiteSpline.Create(pts, false, ts);
 
-            var protoCurve = revitSpline.ToProtoType();
+            var protoCurve = revitSpline.ToProtoType(false);
 
             Assert.NotNull(protoCurve);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
@@ -108,8 +142,8 @@ namespace DSRevitNodesTests.GeometryConversion
             // what's the best tolerance to use here?
             foreach (var pt in tessPts)
             {
-                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint());
-                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint(false));
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             }
 
         }
@@ -123,7 +157,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var rl = Autodesk.Revit.DB.Line.CreateBound(s, e);
 
-            var pc = rl.ToProtoType();
+            var pc = rl.ToProtoType(false);
 
 
             Assert.NotNull(pc);
@@ -132,8 +166,8 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var pl = (Autodesk.DesignScript.Geometry.Line) pc;
 
-            Assert.AreEqual(rl.GetEndPoint(0).ToPoint(), pl.StartPoint );
-            Assert.AreEqual(rl.GetEndPoint(1).ToPoint(), pl.EndPoint );
+            Assert.AreEqual(rl.GetEndPoint(0).ToPoint(false), pl.StartPoint );
+            Assert.AreEqual(rl.GetEndPoint(1).ToPoint(false), pl.EndPoint );
 
         }
 
@@ -150,7 +184,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var re = Autodesk.Revit.DB.Arc.Create(o, r, sp, ep, x, y);
 
-            var pc = re.ToProtoType();
+            var pc = re.ToProtoType(false);
 
             Assert.NotNull(pc);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Arc>(pc);
@@ -166,8 +200,8 @@ namespace DSRevitNodesTests.GeometryConversion
             //// assert the tesselation is very close to original curve
             //foreach (var pt in tessPts)
             //{
-            //    var closestPt = pa.ClosestPointTo(pt.ToPoint());
-            //    Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+            //    var closestPt = pa.ClosestPointTo(pt.ToPoint(false));
+            //    Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             //}
         }
 
@@ -186,7 +220,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var re = Autodesk.Revit.DB.Ellipse.Create(c, rx, ry, x, y, sp, ep);
             re.MakeBound(sp, ep);
 
-            var pc = re.ToProtoType();
+            var pc = re.ToProtoType(false);
 
             Assert.NotNull(pc);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.EllipseArc>(pc);
@@ -207,8 +241,8 @@ namespace DSRevitNodesTests.GeometryConversion
             // assert the tesselation is very close to original curve
             foreach (var pt in tessPts)
             {
-                var closestPt = pa.GetClosestPoint(pt.ToPoint());
-                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+                var closestPt = pa.GetClosestPoint(pt.ToPoint(false));
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             }
         }
 
@@ -227,7 +261,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var re = Autodesk.Revit.DB.Ellipse.Create(c, rx, ry, x, y, sp, ep);
             re.MakeBound(sp, ep);
 
-            var pc = re.ToProtoType();
+            var pc = re.ToProtoType(false);
             Assert.NotNull(pc);
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Ellipse>(pc);
             var pa = (Autodesk.DesignScript.Geometry.Ellipse) pc;
@@ -247,8 +281,8 @@ namespace DSRevitNodesTests.GeometryConversion
             //// assert the tesselation is very close to original curve
             //foreach (var pt in tessPts)
             //{
-            //    var closestPt = pa.ClosestPointTo(pt.ToPoint());
-            //    Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+            //    var closestPt = pa.ClosestPointTo(pt.ToPoint(false));
+            //    Assert.Less(closestPt.DistanceTo(pt.ToPoint(false)), 1e-6);
             //}
         }
 

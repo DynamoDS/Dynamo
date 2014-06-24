@@ -5,6 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Dynamo.Utilities;
+
+using DynamoUtilities;
+
 using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
@@ -74,12 +77,8 @@ namespace Dynamo.PackageManager
 
         private string BuildInstallDirectoryString()
         {
-            // assembly_path/dynamo_packages/package_name
-
-            Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
-            string location = Path.GetDirectoryName(dynamoAssembly.Location);
-            return Path.Combine(location, "dynamo_packages") + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
-
+            // <user>/appdata/roaming/packages/package_name
+            return DynamoPaths.Packages + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
         }
 
         public bool Extract( out Package pkg )

@@ -81,6 +81,11 @@ namespace Revit.Elements
 
         #endregion
 
+        /// <summary>
+        /// Import Geometry from a SAT file.  The SAT file is assumed to be in Feet.
+        /// </summary>
+        /// <param name="pathToFile">The path to the SAT file</param>
+        /// <returns></returns>
         public static ImportInstance BySATFile(string pathToFile)
         {
 
@@ -110,19 +115,17 @@ namespace Revit.Elements
                 throw new ArgumentNullException("geometries");
             }
 
-            // Create a temp file name to export to
-            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+            // transform geometry from dynamo unit system (m) to revit (ft)
+            geometries = geometries.Select(x => x.InHostUnits()).ToArray();
 
             var translation = Vector.ByCoordinates(0, 0, 0);
-
             Robustify(ref geometries, ref translation);
 
-            if (!Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn))
-            {
-                throw new Exception("Failed to import geometry.");
-            }
+            // Export to temporary file
+            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+            var exported_fn = Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn);
 
-            return new ImportInstance(fn, translation.ToXyz());
+            return new ImportInstance(exported_fn, translation.ToXyz());
         }
 
         /// <summary>
@@ -137,18 +140,17 @@ namespace Revit.Elements
                 throw new ArgumentNullException("geometry");
             }
 
-            // Create a temp file name to export to
-            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+            // transform geometry from dynamo unit system (m) to revit (ft)
+            geometry = geometry.InHostUnits();
 
             var translation = Vector.ByCoordinates(0, 0, 0);
             Robustify(ref geometry, ref translation);
 
-            if (!geometry.ExportToSAT(fn))
-            {
-                throw new Exception("Failed to import geometry.");
-            }
+            // Export to temporary file
+            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+            var exported_fn = geometry.ExportToSAT(fn);
 
-            return new ImportInstance(fn, translation.ToXyz());
+            return new ImportInstance(exported_fn, translation.ToXyz());
         }
 
 

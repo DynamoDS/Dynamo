@@ -291,7 +291,7 @@ namespace ProtoFFI
                 {
                     Type paramType = paraminfos[i].ParameterType;
                     object param = null;
-                    if (opArg.optype == AddressType.DefaultArg)
+                    if (opArg.IsDefaultArgument)
                         param = Type.Missing;
                     else 
                         param = marshaller.UnMarshal(opArg, c, dsi, paramType);
@@ -299,7 +299,16 @@ namespace ProtoFFI
                     //null is passed for a value type, so we must return null 
                     //rather than interpreting any value from null. fix defect 1462014 
                     if (!paramType.IsGenericType && paramType.IsValueType && param == null)
-                        throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                    {
+                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                        dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation,
+                            string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                        
+                            return null;
+                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                        
+                    }
 
                     parameters.Add(param);
                 }
@@ -401,9 +410,9 @@ namespace ProtoFFI
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogSemanticError(ErrorString(ex.InnerException));
+                    dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kDefault, ErrorString(ex.InnerException));
                 }
-                dsi.LogSemanticError(ErrorString(ex));
+                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kDefault, ErrorString(ex));
             }
 
             return dsRetValue;
@@ -459,7 +468,9 @@ namespace ProtoFFI
 
             StackValue propValue = (StackValue)retVal;
             StackValue thisObject = dsi.runtime.rmem.Stack.Last();
-            if (StackUtils.IsValidPointer(thisObject) && StackUtils.IsReferenceType(propValue))
+
+            bool isValidPointer = thisObject.IsPointer && thisObject.opdata != Constants.kInvalidIndex;
+            if (isValidPointer && propValue.IsReferenceType)
             {
                 int classIndex = (int)thisObject.metaData.type;
                 if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)

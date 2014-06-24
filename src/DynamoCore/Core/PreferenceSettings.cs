@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Documents;
 using System.Xml.Serialization;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -35,6 +39,7 @@ namespace Dynamo
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
+
         public string NumberFormat
         {
             get { return _numberFormat; }
@@ -53,6 +58,19 @@ namespace Dynamo
                 _lengthUnit = value;
                 RaisePropertyChanged("LengthUnit");
             }
+        }
+
+        public int MaxNumRecentFiles
+        {
+            get { return 10; }
+            set { }
+        }
+
+        private List<string> _recentFiles = new List<string>();
+        public List<string> RecentFiles
+        {
+            get { return _recentFiles; }
+            set { _recentFiles = value; }
         }
 
         public DynamoAreaUnit AreaUnit
@@ -75,8 +93,17 @@ namespace Dynamo
             }
         }
 
+        public double WindowX { get; set; }
+        public double WindowY { get; set; }
+        public double WindowW { get; set; }
+        public double WindowH { get; set; }
+
         public PreferenceSettings()
         {
+            WindowH = 768;
+            WindowW = 1024;
+            WindowY = 0.0;
+            WindowX = 0.0;
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;

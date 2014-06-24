@@ -1,14 +1,14 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
-using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
+using RTF.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class AdaptiveComponentTests : ProtoGeometryTest
+    class AdaptiveComponentTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\AdaptiveComponents.rfa")]

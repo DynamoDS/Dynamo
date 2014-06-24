@@ -63,7 +63,7 @@ namespace ProtoCore.Utils
                 foreach (StackValue sv in heapElement.Stack)
                 {
                     // Is it a pointer
-                    if (sv.IsReferenceType())
+                    if (sv.IsReferenceType)
                     {
                         // Check if the current element in the heap points to the original pointer
                         if (sv.opdata == HeapID)

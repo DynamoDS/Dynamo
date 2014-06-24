@@ -3,12 +3,15 @@ using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 
+using RTF.Framework;
+
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FloorTests : RevitNodeTestBase
+    public class FloorTests : GeometricRevitNodeTest
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByOutlineTypeAndLevel_ValidArgs()
         {
             var elevation = 100;
@@ -29,6 +32,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByOutlineTypeAndLevel_NullArgument()
         {
             var elevation = 100;
@@ -44,7 +48,6 @@ namespace DSRevitNodesTests.Elements
 
             var floorType = FloorType.ByName("Generic - 12\"");
 
-            Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(null, floorType, level));
             Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(outline, null, level));
             Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(outline, floorType, null));
         }

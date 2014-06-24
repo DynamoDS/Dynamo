@@ -124,8 +124,12 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
+    <Compile Include="Core\DynamoRunner.cs" />
+    <Compile Include="Core\TimeStampOrdering.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
+    <Compile Include="DSEngine\SyncDataManager.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
@@ -137,6 +141,11 @@ limitations under the License.
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
+    <Compile Include="TestInfrastructure\AbstractMutator.cs" />
+    <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="UI\Controls\CanvasCheckBox.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -212,6 +221,7 @@ limitations under the License.
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
+    <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
@@ -359,6 +369,7 @@ limitations under the License.
     <Compile Include="VisualizationManager\octree\Vector3d.cs" />
     <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
+    <Compile Include="VisualizationManager\RenderManager.cs" />
     <Compile Include="VisualizationManager\STLExport.cs" />
     <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
@@ -423,6 +434,11 @@ limitations under the License.
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
+      <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
+      <Name>GraphLayout</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
@@ -736,6 +752,12 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\AboutWindow\logo_about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

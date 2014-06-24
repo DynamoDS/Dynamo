@@ -1,13 +1,13 @@
 ﻿using Autodesk.DesignScript.Geometry;
-using Dynamo.Tests;
 using Revit.Elements;
 using Revit.GeometryConversion;
 using NUnit.Framework;
+using RTF.Framework;
 
 namespace DSRevitNodesTests.Conversion
 {
     [TestFixture]
-    class BoundingBoxTests : ProtoGeometryTest
+    class BoundingBoxTests : GeometricRevitNodeTest
     {
 
         [Test]
@@ -24,8 +24,8 @@ namespace DSRevitNodesTests.Conversion
             var max = bbox.MaxPoint;
             var min = bbox.MinPoint;
 
-            max.AssertShouldBeApproximately(Point.ByCoordinates(15, 16, 32));
-            min.AssertShouldBeApproximately(Point.ByCoordinates(-15, -14, 2));
+            max.AssertShouldBeApproximately(Point.ByCoordinates(15, 16, 32).InDynamoUnits());
+            min.AssertShouldBeApproximately(Point.ByCoordinates(-15, -14, 2).InDynamoUnits());
 
         }
 

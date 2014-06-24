@@ -8,6 +8,9 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
 using Dynamo.ViewModels;
+
+using DynamoUtilities;
+
 using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -81,6 +84,7 @@ namespace Dynamo.Utilities
         {
             SearchPath = new ObservableCollection<string> { searchPath };
             NodeInfos = new ObservableDictionary<Guid, CustomNodeInfo>();
+            AddDirectoryToSearchPath(DynamoPaths.CommonDefinitions);
         }
 
         /// <summary> 
@@ -871,6 +875,16 @@ namespace Dynamo.Utilities
                     }
 
                     el.DisableReporting();
+
+                    // This is to fix MAGN-3648. Method reference in CBN that gets 
+                    // loaded before method definition causes a CBN to be left in 
+                    // a warning state. This is to clear such warnings and set the 
+                    // node to "Dead" state (correct value of which will be set 
+                    // later on with a call to "EnableReporting" below). Please 
+                    // refer to the defect for details and other possible fixes.
+                    // 
+                    if (el.State == ElementState.Warning && (el is CodeBlockNodeModel))
+                        el.State = ElementState.Dead;
 
                     el.IsVisible = isVisible;
                     el.IsUpstreamVisible = isUpstreamVisible;

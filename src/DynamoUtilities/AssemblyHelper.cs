@@ -1,25 +1,56 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using DynamoUtilities;
 
 namespace Dynamo.Utilities
 {
     public static class AssemblyHelper
     {
         /// <summary>
-        /// Attempts to resolve an assembly from the dll directory.
+        /// Handler to the ApplicationDomain's AssemblyResolve event.
+        /// If an assembly's location cannot be resolved, an exception is
+        /// thrown. Failure to resolve an assembly will leave Dynamo in 
+        /// a bad state, so we should throw an exception here which gets caught 
+        /// by our unhandled exception handler and presents the crash dialogue.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
-            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
-            if (!File.Exists(assemblyPath))
+            try
+            {
+                // First check the core path
+                string assemblyPath = Path.Combine(DynamoPaths.MainExecPath, new AssemblyName(args.Name).Name + ".dll");
+                if (File.Exists(assemblyPath))
+                {
+                    return Assembly.LoadFrom(assemblyPath);
+                }
+
+                // Then check the dll path
+                assemblyPath = Path.Combine(DynamoPaths.Asm, new AssemblyName(args.Name).Name + ".dll");
+                if (File.Exists(assemblyPath))
+                {
+                    return Assembly.LoadFrom(assemblyPath);
+                }
+
+                // Then check all additional resolution paths
+                foreach (var addPath in DynamoPaths.AdditionalResolutionPaths)
+                {
+                    assemblyPath = Path.Combine(addPath, new AssemblyName(args.Name).Name + ".dll");
+                    if (File.Exists(assemblyPath))
+                    {
+                        return Assembly.LoadFrom(assemblyPath);
+                    }
+                }
+
                 return null;
-            Assembly assembly = Assembly.LoadFrom(assemblyPath);
-            return assembly;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("There location of the assembly, {0} could not be resolved for loading.", args.Name), ex);
+            }
         }
 
         public static Version GetDynamoVersion()
@@ -30,15 +61,8 @@ namespace Dynamo.Utilities
 
         public static Assembly LoadLibG()
         {
-            var libG = Assembly.LoadFrom(GetLibGPath());
+            var libG = Assembly.LoadFrom(DynamoPaths.Asm);
             return libG;
-        }
-
-        public static string GetLibGPath()
-        {
-            string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
-            string libGPath = Path.Combine(dll_dir, "LibG.Managed.dll");
-            return libGPath;
         }
     }
 }
