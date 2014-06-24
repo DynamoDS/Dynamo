@@ -41,9 +41,6 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\..\..\extern\mathnet-numerics-build\debug\Net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
