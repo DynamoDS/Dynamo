@@ -632,7 +632,6 @@ namespace Dynamo.Nodes
         private AssociativeNode CreateFunctionObject(
             AssociativeNode functionNode, List<AssociativeNode> inputs)
         {
-            // var paramNumNode = new IntNode(Definition.Parameters.Count());
             var paramNumNode = new IntNode(this.GetInputIndex());
             var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
             var arguments = AstFactory.BuildExprList(inputs);
@@ -642,6 +641,8 @@ namespace Dynamo.Nodes
                 paramNumNode,
                 positionNode,
                 arguments,
+                // false means at runtime we will pack all inputs into a single
+                // array and pass that array to the real function
                 AstFactory.BuildBooleanNode(false)
             };
 
@@ -654,19 +655,23 @@ namespace Dynamo.Nodes
 
             string function = Definition.Name;
             AssociativeNode rhs;
-            /*
-            var paramCount = Definition.Parameters.Count();
-            var packId = "__var_arg_pack_" + GUID;
-            resultAst.Add(
-                AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(packId),
-                    AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList())));
 
-            inputAstNodes =
-                inputAstNodes.Take(paramCount - 1)
-                             .Concat(new[] { AstFactory.BuildIdentifier(packId) })
-                             .ToList();
-            */
+            // All inputs are provided, then we should pack all inputs into
+            // a single array. 
+            if (!HasUnconnectedInput())
+            {
+                var paramCount = Definition.Parameters.Count();
+                var packId = "__var_arg_pack_" + GUID;
+                resultAst.Add(
+                    AstFactory.BuildAssignment(
+                        AstFactory.BuildIdentifier(packId),
+                        AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList())));
+
+                inputAstNodes =
+                    inputAstNodes.Take(paramCount - 1)
+                                 .Concat(new[] { AstFactory.BuildIdentifier(packId) })
+                                 .ToList();
+            }
 
             switch (Definition.Type)
             {
