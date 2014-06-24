@@ -487,7 +487,7 @@ namespace Dynamo.DSEngine
         private readonly List<string> preloadLibraries = new List<string>
         {
             "ProtoGeometry.dll",
-            "DSCoreNodes.dll",
+            @"nodes\DSCoreNodes.dll",
             "DSOffice.dll",
             "DSIronPython.dll",
             "FunctionObject.ds",
