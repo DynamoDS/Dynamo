@@ -19,7 +19,7 @@ DefaultDirName={pf64}\Dynamo 0.7
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo0.7.1
-SetupIconFile=Extra\logo_square_32x32.ico
+SetupIconFile=Extra\DynamoInstaller.ico
 Compression=lzma
 SolidCompression=true
 RestartIfNeededByRun=false
@@ -27,7 +27,7 @@ FlatComponentsList=false
 ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
-UninstallDisplayIcon={app}\logo_square_32x32.ico
+UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName=Dynamo 0.7.1
 UsePreviousAppDir=no
 
@@ -66,12 +66,15 @@ Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoes
 Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 
 ;AddinGenerator
-Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
-Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2014 DynamoForRevit2015
 
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+
+;Icon
+Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
 
 ;UI
 Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
@@ -80,7 +83,7 @@ Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 ;Other Custom Nodes
-Source: temp\definitions\*; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\0.7\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo071.addin"
@@ -94,6 +97,9 @@ Type: filesandordirs; Name: {app}\dll
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 Filename: "{app}\InstallASMForDynamo.exe";
 Filename: "{app}\DynamoAddinGenerator.exe";
+
+[UninstallRun]
+Filename: "{app}\DynamoAddinGenerator.exe"
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
@@ -197,14 +203,33 @@ begin
     end;
 end;
 
+function UpdateAddins() : Integer;
+var
+    iResultCode: Integer;
+begin
+  Result := 0;
+  if Exec(ExpandConstant('{app}\DynamoAddinGenerator.exe'), '', '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+    Result := 0
+  else
+    Result := 1
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep=ssInstall) then
-  begin
-    if (IsUpgrade()) then
     begin
-      UnInstallOldVersion();
+      if (IsUpgrade()) then
+      begin
+        UnInstallOldVersion();
+      end;
     end;
-  end;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+   if (CurUninstallStep=usPostUninstall) then
+    begin
+        UpdateAddins();
+    end;
 end;
 

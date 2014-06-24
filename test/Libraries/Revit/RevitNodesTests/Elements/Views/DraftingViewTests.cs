@@ -8,22 +8,8 @@ using RTF.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class DraftingViewTests : RevitNodeTestBase
+    class DraftingViewTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-            base.Setup();
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-            base.TearDown();
-        }
-
         [Test]
         [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()

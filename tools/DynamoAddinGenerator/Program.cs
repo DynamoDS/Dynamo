@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using Autodesk.RevitAddIns;
 
 namespace DynamoAddinGenerator
@@ -118,6 +120,13 @@ namespace DynamoAddinGenerator
                 tw.Write(addin);
                 tw.Flush();
             }
+
+            // Grant everyone permissions to delete this addin.
+            //http://stackoverflow.com/questions/5298905/add-everyone-privilege-to-folder-using-c-net/5398398#5398398
+            var sec = File.GetAccessControl(data.AddinPath);
+            var everyone = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+            sec.AddAccessRule(new FileSystemAccessRule(everyone, FileSystemRights.FullControl, AccessControlType.Allow));
+            File.SetAccessControl(data.AddinPath, sec);
         }
     }
 }

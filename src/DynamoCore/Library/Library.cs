@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+
+using DynamoUtilities;
+
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
@@ -484,18 +487,6 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private readonly List<string> preloadLibraries = new List<string>
-        {
-            "ProtoGeometry.dll",
-            "DSCoreNodes.dll",
-            "DSOffice.dll",
-            "DSIronPython.dll",
-            "FunctionObject.ds",
-            "Optimize.ds",
-            "DynamoUnits.dll",
-            "Tessellation.dll"
-        };
-
         private List<string> libraries;
 
         private LibraryServices()
@@ -571,7 +562,7 @@ namespace Dynamo.DSEngine
         private void PreloadLibraries()
         {
             GraphUtilities.Reset();
-            libraries = preloadLibraries.ToList();
+            libraries = DynamoPaths.PreloadLibraries;
             GraphUtilities.PreloadAssembly(libraries);
         }
 

@@ -9,7 +9,6 @@ namespace DSRevitNodesTests.Elements
     [TestFixture]
     public class LevelTests : RevitNodeTestBase
     {
-
         [Test]
         [TestModel(@".\empty.rfa")]
         public void ByElevationAndName_ValidArgs()

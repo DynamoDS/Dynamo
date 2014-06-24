@@ -185,5 +185,31 @@ namespace Dynamo.Tests
             AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.00001);
             AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.0000000000000001);
         }
+
+        [Test]
+        public void Defect_MAGN_3648()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3648
+
+            DynamoModel model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3648.dyn");
+
+            OpenModel(openPath);
+
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count and for error as well.
+            string nodeID = "e378c03e-4aae-4bde-b4c5-f16a6bed358f";
+            var cbn = model.CurrentWorkspace.NodeFromWorkspace(nodeID);
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+
+            AssertPreviewValue(nodeID, 1);
+
+        }
     }
 }

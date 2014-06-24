@@ -9,6 +9,7 @@ import os
 import fnmatch
 import dynamo_s3
 from optparse import OptionParser
+import traceback
 
 def main():
 
@@ -16,12 +17,11 @@ def main():
 	parser.add_option("-r", "--root", dest="root", help="The root directory of the dynamo project.", metavar="FILE", default="E:/Dynamo")
 	parser.add_option("-p", "--prefix", dest="prefix", help="The prefix on the filename for the object.", metavar="FILE", default="DynamoDailyInstall")
 	parser.add_option("-d", "--nodate", dest="include_date", action="store_false", default=True, help="Add the date as a suffix to the filename.")
-	parser.add_option("-v", "--dev", dest="dev_build", action="store_true", help="This is a development build.")
+	parser.add_option("-v", "--dev", dest="dev_build", action="store_true", default=False, help="This is a development build.")
 
 	(options, args) = parser.parse_args()
 
 	repo_root = options.root
-	is_dev_build = options.dev_build
 	installer_dir =  form_path( [repo_root, 'tools/install'] )
 	installer_bin_dir = 'Installers'
 
@@ -29,11 +29,11 @@ def main():
 	print installer_dir
 	print installer_bin_dir
 	
-	publish_to_s3( installer_dir, installer_bin_dir, options.prefix, options.include_date )
+	publish_to_s3( installer_dir, installer_bin_dir, options.prefix, options.include_date, options.dev_build )
 
 # S3 ##############################
 
-def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev_build=False):
+def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev_build):
 
 	try:
 
@@ -45,7 +45,8 @@ def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev
 		  	dynamo_s3.upload_daily( form_path( ['temp', file] ), prefix, include_date, is_dev_build)
 
 	except Exception:
-		print 'There was an exception uploading to s3.'
+		print 'There was an exception uploading to s3:'
+		print traceback.format_exc()
 	finally:
 		rm_dir('temp')
 	
