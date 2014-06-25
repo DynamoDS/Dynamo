@@ -211,7 +211,7 @@ namespace Dynamo
         {
             try
             {
-                return (Path.Combine(DynamoPaths.AppData, DYNAMO_SETTINGS_FILE));
+                return (Path.Combine(DynamoPathManager.Instance.AppData, DYNAMO_SETTINGS_FILE));
             }
             catch (Exception)
             {

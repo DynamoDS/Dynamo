@@ -3,61 +3,61 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace DynamoUtilities
 {
     /// <summary>
-    /// DynamoPaths stores paths to dynamo libraries and assets.
+    /// DynamoPathManager stores paths to dynamo libraries and assets.
     /// </summary>
-    public static class DynamoPaths
+    public class DynamoPathManager
     {
-        private static List<string> preloadLibaries = new List<string>();
-        private static List<string> addResolvePaths = new List<string>();
+        private List<string> preloadLibaries = new List<string>();
+        private List<string> addResolvePaths = new List<string>();
+        private static DynamoPathManager instance;
 
         /// <summary>
         /// The main execution path of Dynamo. This is the directory
         /// which contains DynamoCore.dll
         /// </summary>
-        public static string MainExecPath { get; set; }
+        public string MainExecPath { get; set; }
 
         /// <summary>
         /// The definitions folder, which contains custom nodes
         /// created by the user.
         /// </summary>
-        public static string UserDefinitions { get; set; }
+        public string UserDefinitions { get; set; }
 
         /// <summary>
         /// The definitions folder which contains custom nodes
         /// available to all users.
         /// </summary>
-        public static string CommonDefinitions { get; set; }
+        public string CommonDefinitions { get; set; }
 
         /// <summary>
         /// The packages folder, which contains pacakages downloaded
         /// with the package manager.
         /// </summary>
-        public static string Packages { get; set; }
+        public string Packages { get; set; }
 
         /// <summary>
         /// The UI folder, which contains the UI resources.
         /// </summary>
-        public static string Ui { get; set; }
+        public string Ui { get; set; }
 
         /// <summary>
         /// The ASM folder which contains LibG and the 
         /// ASM binaries.
         /// </summary>
-        public static string Asm { get; set; }
+        public string Asm { get; set; }
 
         // All 'nodes' folders.
-        public static HashSet<string> Nodes { get; set; }
+        public HashSet<string> Nodes { get; set; }
 
         /// <summary>
         /// Libraries to be preloaded by library services.
         /// </summary>
-        public static List<string> PreloadLibraries
+        public List<string> PreloadLibraries
         {
             get { return preloadLibaries; }
             set { preloadLibaries = value; }
@@ -66,21 +66,26 @@ namespace DynamoUtilities
         /// <summary>
         /// The Logs folder.
         /// </summary>
-        public static string Logs { get; set; }
+        public string Logs { get; set; }
 
         /// <summary>
         /// The Dynamo folder in AppData
         /// </summary>
-        public static string AppData { get; set;}
+        public string AppData { get; set;}
 
         /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
         /// </summary>
-        public static List<string> AdditionalResolutionPaths
+        public List<string> AdditionalResolutionPaths
         {
             get { return addResolvePaths; }
             set { addResolvePaths = value; }
+        }
+
+        public static DynamoPathManager Instance
+        {
+            get { return instance ?? (instance = new DynamoPathManager()); }
         }
 
         /// <summary>
@@ -90,7 +95,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="mainExecPath">The main execution directory of Dynamo.</param>
         /// <param name="preloadLibraries">A list of libraries to preload.</param>
-        public static void SetupDynamoPathsCore(string mainExecPath)
+        public void InitializeCore(string mainExecPath)
         {
             if (Directory.Exists(mainExecPath))
             {
@@ -197,7 +202,7 @@ namespace DynamoUtilities
         /// Add a library for preloading with a check.
         /// </summary>
         /// <param name="path"></param>
-        public static void AddPreloadLibrary(string path)
+        public void AddPreloadLibrary(string path)
         {
             if (!preloadLibaries.Contains(path))
             {
@@ -209,7 +214,7 @@ namespace DynamoUtilities
         /// Adds a library for resolution with a check.
         /// </summary>
         /// <param name="path"></param>
-        public static void AddResolutionPath(string path)
+        public void AddResolutionPath(string path)
         {
             if (!addResolvePaths.Contains(path))
             {

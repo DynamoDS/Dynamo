@@ -78,7 +78,7 @@ namespace Dynamo.PackageManager
         private string BuildInstallDirectoryString()
         {
             // <user>/appdata/roaming/packages/package_name
-            return DynamoPaths.Packages + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
+            return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
         }
 
         public bool Extract( out Package pkg )

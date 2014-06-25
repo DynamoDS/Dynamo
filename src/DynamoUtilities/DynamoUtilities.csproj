@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="DataMarshaler.cs" />
-    <Compile Include="DynamoPaths.cs" />
+    <Compile Include="DynamoPathManager.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
