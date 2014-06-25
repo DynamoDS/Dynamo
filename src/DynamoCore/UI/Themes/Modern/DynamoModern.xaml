@@ -1268,7 +1268,16 @@
                 <DataTemplate>
                     <Grid>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Caption}" />
+                            <Image Width="31"
+                                   Margin="5,0,14,0"
+                                   Source="{Binding Icon}"
+                                   Visibility="{Binding IconVisibility}" />
+                            <TextBlock Text="{Binding Caption}"
+                                       Margin="6,0,0,0"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding SubScript}"
+                                       Margin="16,0,0,0"
+                                       VerticalAlignment="Center" />
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

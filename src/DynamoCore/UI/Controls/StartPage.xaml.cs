@@ -22,10 +22,25 @@ namespace Dynamo.UI.Controls
             this.Caption = caption;
         }
 
+        internal StartPageListItem(string caption, string imageFileName)
+        {
+            this.Caption = caption;
+
+            var format = @"pack://application:,,,/DynamoCore;component/UI/Images/StartPage/{0}";
+            var imageUri = new Uri(string.Format(format, imageFileName));
+            this.Icon = new BitmapImage(imageUri);
+        }
+
         public ImageSource Icon { get; private set; }
         public string Caption { get; private set; }
-        public string SubScript { get; private set; }
-        public string ToolTip { get; private set; }
+        public string SubScript { get; set; }
+        public string ToolTip { get; set; }
+
+        // Extended (derived) class properties.
+        public Visibility IconVisibility
+        {
+            get { return ((this.Icon == null) ? Visibility.Collapsed : Visibility.Visible); }
+        }
     }
 
     /// <summary>
@@ -55,30 +70,66 @@ namespace Dynamo.UI.Controls
             referenceList = new ObservableCollection<StartPageListItem>();
             codeList = new ObservableCollection<StartPageListItem>();
 
-            this.fileList.Add(new StartPageListItem("New"));
-            this.fileList.Add(new StartPageListItem("Open"));
+            var fileListItems = new StartPageListItem[]
+            {
+                new StartPageListItem("New", "icon-new.png"),
+                new StartPageListItem("Open", "icon-open.png")
+            };
 
-            this.recentList.Add(new StartPageListItem("ImportUsingSat"));
-            this.recentList.Add(new StartPageListItem("door_movable-copy"));
-            this.recentList.Add(new StartPageListItem("door_movable"));
-            this.recentList.Add(new StartPageListItem("test file"));
-            this.recentList.Add(new StartPageListItem("doormovable"));
+            foreach (var item in fileListItems)
+                this.fileList.Add(item);
 
-            this.sampleList.Add(new StartPageListItem("Abstract cubes"));
-            this.sampleList.Add(new StartPageListItem("Attractor circles"));
-            this.sampleList.Add(new StartPageListItem("Parametric bridge"));
-            this.sampleList.Add(new StartPageListItem("Rotated bricks"));
-            this.sampleList.Add(new StartPageListItem("Shading devices"));
+            var recentListItems = new StartPageListItem[]
+            {
+                new StartPageListItem("ImportUsingSat"),
+                new StartPageListItem("door_movable-copy"),
+                new StartPageListItem("door_movable"),
+                new StartPageListItem("test file"),
+                new StartPageListItem("doormovable")
+            };
 
-            this.askList.Add(new StartPageListItem("Discussion forum"));
-            this.askList.Add(new StartPageListItem("email team@dynamobim.org"));
-            this.askList.Add(new StartPageListItem("Visit www.dynamobim.org"));
+            foreach (var item in recentListItems)
+                this.recentList.Add(item);
 
-            this.referenceList.Add(new StartPageListItem("Dynamo reference"));
-            this.referenceList.Add(new StartPageListItem("Video tutorials"));
+            var sampleListItems = new StartPageListItem[]
+            {
+                new StartPageListItem("Abstract cubes"),
+                new StartPageListItem("Attractor circles"),
+                new StartPageListItem("Parametric bridge"),
+                new StartPageListItem("Rotated bricks"),
+                new StartPageListItem("Shading devices")
+            };
 
-            this.codeList.Add(new StartPageListItem("Github repository"));
-            this.codeList.Add(new StartPageListItem("Send issues"));
+            foreach (var item in sampleListItems)
+                this.sampleList.Add(item);
+
+            var askListItems = new StartPageListItem[]
+            {
+                new StartPageListItem("Discussion forum", "icon-discussion.png"),
+                new StartPageListItem("email team@dynamobim.org", "icon-email.png"),
+                new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
+            };
+
+            foreach (var item in askListItems)
+                this.askList.Add(item);
+
+            var referenceListItems = new StartPageListItem[]
+            {
+                new StartPageListItem("Dynamo reference", "icon-reference.png"),
+                new StartPageListItem("Video tutorials", "icon-video.png")
+            };
+
+            foreach (var item in referenceListItems)
+                this.referenceList.Add(item);
+
+            var codeListItems = new StartPageListItem[]
+            {
+                new StartPageListItem("Github repository", "icon-github.png"),
+                new StartPageListItem("Send issues", "icon-issues.png")
+            };
+
+            foreach (var item in codeListItems)
+                this.codeList.Add(item);
 
             this.filesListBox.ItemsSource = fileList;
             this.recentListBox.ItemsSource = recentList;
