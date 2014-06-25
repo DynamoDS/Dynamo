@@ -15,12 +15,18 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+
     <Grid Name="startPageGrid"
           Background="White">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="21"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+
+        <!-- Begin top part (i.e. the "Start" tab) -->
+
         <Border Background="#232323"
                 BorderThickness="0,1,0,1"
                 BorderBrush="#404040" />
@@ -35,5 +41,14 @@
                    Text="Start"
                    Foreground="#888888"
                    VerticalAlignment="Center" />
+
+        <!-- Begin Dynamo logo -->
+
+        <Image Grid.Row="1"
+               Width="250"
+               Margin="0,32,0,32"
+               HorizontalAlignment="Center"
+               Source="/DynamoCore;component/UI/Images/StartPage/dynamo-logo.png" />
+
     </Grid>
 </UserControl>

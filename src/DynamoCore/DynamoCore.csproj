@@ -766,6 +766,9 @@ limitations under the License.
     <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
