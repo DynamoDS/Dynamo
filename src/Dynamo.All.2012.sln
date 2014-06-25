@@ -109,6 +109,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "Dyn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowTests", "..\test\Libraries\WorlflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCrypto", "DynamoCrypto\DynamoCrypto.csproj", "{96643E77-C786-498C-AAA9-80E449854CE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -295,6 +297,10 @@ Global
 		{CEA31792-BA09-431B-8ECE-E2F0354B2150}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEA31792-BA09-431B-8ECE-E2F0354B2150}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEA31792-BA09-431B-8ECE-E2F0354B2150}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96643E77-C786-498C-AAA9-80E449854CE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96643E77-C786-498C-AAA9-80E449854CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96643E77-C786-498C-AAA9-80E449854CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96643E77-C786-498C-AAA9-80E449854CE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

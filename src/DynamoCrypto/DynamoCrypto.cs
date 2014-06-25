@@ -115,7 +115,7 @@ namespace DynamoCrypto
         /// Verify a file using a signature file and a public key.
         /// </summary>
         /// <param name="filePath">The file whose contents will be hashed.</param>
-        /// <param name="signatureFilePath">Teh path of the signature file.</param>
+        /// <param name="signatureFilePath">The path of the signature file.</param>
         /// <param name="publicBlob">The public key.</param>
         /// <returns> True if the file is verified, otherwise false.</returns>
         public static bool VerifyFile(string filePath, string signatureFilePath, byte[] publicBlob)
