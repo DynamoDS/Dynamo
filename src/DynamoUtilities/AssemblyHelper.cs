@@ -22,17 +22,27 @@ namespace Dynamo.Utilities
             try
             {
                 // First check the core path
-                string assemblyPath = Path.Combine(DynamoPaths.MainExecPath, new AssemblyName(args.Name).Name + ".dll");
+                string assemblyPath = Path.Combine(DynamoPathManager.Instance.MainExecPath, new AssemblyName(args.Name).Name + ".dll");
                 if (File.Exists(assemblyPath))
                 {
                     return Assembly.LoadFrom(assemblyPath);
                 }
 
                 // Then check the dll path
-                assemblyPath = Path.Combine(DynamoPaths.Asm, new AssemblyName(args.Name).Name + ".dll");
+                assemblyPath = Path.Combine(DynamoPathManager.Instance.Asm, new AssemblyName(args.Name).Name + ".dll");
                 if (File.Exists(assemblyPath))
                 {
                     return Assembly.LoadFrom(assemblyPath);
+                }
+
+                // Then check all additional resolution paths
+                foreach (var addPath in DynamoPathManager.Instance.AdditionalResolutionPaths)
+                {
+                    assemblyPath = Path.Combine(addPath, new AssemblyName(args.Name).Name + ".dll");
+                    if (File.Exists(assemblyPath))
+                    {
+                        return Assembly.LoadFrom(assemblyPath);
+                    }
                 }
 
                 return null;
@@ -51,7 +61,7 @@ namespace Dynamo.Utilities
 
         public static Assembly LoadLibG()
         {
-            var libG = Assembly.LoadFrom(DynamoPaths.Asm);
+            var libG = Assembly.LoadFrom(DynamoPathManager.Instance.Asm);
             return libG;
         }
     }
