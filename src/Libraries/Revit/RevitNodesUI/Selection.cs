@@ -983,7 +983,13 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            SelectedReferences.Clear();
+            if (SelectedReferences != null)
+            {
+                SelectedReferences.Clear();
+            }
+
+            List<Reference> loadedReferences = new List<Reference>();
+            
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals("instance"))
@@ -1000,9 +1006,10 @@ namespace Dynamo.Nodes
                         dynSettings.DynamoLogger.Log(
                             "Unable to find reference with stable id: " + id);
                     }
-                    SelectedReferences.Add(saved);
+                    loadedReferences.Add(saved);
                 }
             }
+            SelectedReferences = loadedReferences;
         }
     }
 
