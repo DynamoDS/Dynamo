@@ -378,9 +378,11 @@ namespace Revit.Elements
             return CollectConcreteGeometry(geomElement);
         }
 
-        private IEnumerable<Autodesk.Revit.DB.GeometryObject> CollectConcreteGeometry(Autodesk.Revit.DB.GeometryElement geometryElement)
+        private static IEnumerable<GeometryObject> CollectConcreteGeometry(GeometryElement geometryElement)
         {
             var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
+
+            if (geometryElement == null) return instanceGeometryObjects;
 
             foreach (Autodesk.Revit.DB.GeometryObject geob in geometryElement)
             {

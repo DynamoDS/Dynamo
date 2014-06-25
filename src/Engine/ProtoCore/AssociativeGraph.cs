@@ -120,6 +120,7 @@ namespace ProtoCore.AssociativeGraph
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
+        public string CallsiteIdentifier { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNode> dimensionNodeList { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNodeRef> updateNodeRefList { get; set; }
         public bool isDirty { get; set; }
@@ -187,6 +188,7 @@ namespace ProtoCore.AssociativeGraph
             UID = ProtoCore.DSASM.Constants.kInvalidIndex;
             AstID = ProtoCore.DSASM.Constants.kInvalidIndex;
             dependencyGraphListID = ProtoCore.DSASM.Constants.kInvalidIndex;
+            CallsiteIdentifier = string.Empty;
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
             isDirty = true;

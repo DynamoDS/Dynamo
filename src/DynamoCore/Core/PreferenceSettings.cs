@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Documents;
 using System.Xml.Serialization;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using DynamoUnits;
+
+using DynamoUtilities;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -21,7 +21,6 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DYNAMO_TEST_PATH = null;
-        const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private DynamoLengthUnit _lengthUnit;
         private DynamoAreaUnit _areaUnit;
@@ -212,15 +211,7 @@ namespace Dynamo
         {
             try
             {
-                string appDataFolder = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.ApplicationData);
-
-                appDataFolder = Path.Combine(appDataFolder, DYNAMO_SETTINGS_DIRECTORY);
-                
-                if (Directory.Exists(appDataFolder) == false)
-                    Directory.CreateDirectory(appDataFolder);
-                
-                return (Path.Combine(appDataFolder, DYNAMO_SETTINGS_FILE));
+                return (Path.Combine(DynamoPaths.AppData, DYNAMO_SETTINGS_FILE));
             }
             catch (Exception)
             {
