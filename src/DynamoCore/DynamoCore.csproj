@@ -769,6 +769,17 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-discussion.png" />
+    <Resource Include="UI\Images\StartPage\icon-dynamobim.png" />
+    <Resource Include="UI\Images\StartPage\icon-email.png" />
+    <Resource Include="UI\Images\StartPage\icon-github.png" />
+    <Resource Include="UI\Images\StartPage\icon-issues.png" />
+    <Resource Include="UI\Images\StartPage\icon-new.png" />
+    <Resource Include="UI\Images\StartPage\icon-open.png" />
+    <Resource Include="UI\Images\StartPage\icon-reference.png" />
+    <Resource Include="UI\Images\StartPage\icon-video.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
