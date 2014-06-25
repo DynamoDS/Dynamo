@@ -15,6 +15,8 @@ using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 
+using Newtonsoft.Json;
+
 namespace Dynamo.ViewModels
 {
     /// <summary>
@@ -1105,6 +1107,34 @@ namespace Dynamo.ViewModels
         internal bool CanFocusSearch(object parameter)
         {
             return true;
+        }
+
+        public string GetAllNodesWithCategoriesInJson()
+        {
+            List<JsonNodeItem> allNodes = new List<JsonNodeItem>();
+            foreach (var elem in BrowserRootCategories)
+            {
+                allNodes.AddRange(GetNodesFromCategory(elem));
+            }
+                        
+            return JsonConvert.SerializeObject(allNodes);
+        }
+
+        private List<JsonNodeItem> GetNodesFromCategory(BrowserItem elem)
+        {
+            List<JsonNodeItem> result = new List<JsonNodeItem>();
+            foreach (BrowserItem item in elem.Items)
+            {
+                if (item is SearchElementBase) 
+                {
+                    result.Add(new JsonNodeItem(item as SearchElementBase));
+                }
+                else
+                {
+                    result.AddRange(GetNodesFromCategory(item));
+                }
+            }
+            return result;
         }
     }
 }

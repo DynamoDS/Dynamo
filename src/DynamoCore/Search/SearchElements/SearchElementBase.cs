@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
 using Dynamo.Utilities;
+using System.Runtime.Serialization;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -9,6 +10,10 @@ namespace Dynamo.Search.SearchElements
     /// A base class for elements found in search </summary>
     public abstract class SearchElementBase : BrowserInternalElement
     {
+        /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public virtual string CreatingName { get { return this.Name; } }
 
         /// <summary>
         /// Searchable property </summary>
@@ -46,5 +51,47 @@ namespace Dynamo.Search.SearchElements
         /// the SearchView </summary>
         public abstract void Execute();
 
+    }
+
+    /// <summary>
+    /// A simple version of the SearchElementBase class needed for sending data to a web client
+    /// </summary>
+    public class JsonNodeItem
+    {
+        [DataMember]
+        public string Category { get; private set; }
+
+        [DataMember]
+        public string Type { get; private set; }
+
+        [DataMember]
+        public string Name { get; private set; }
+
+        [DataMember]
+        public string CreatingName { get; private set; }
+
+        [DataMember]
+        public string Description { get; private set; }
+
+        [DataMember]
+        public bool Searchable { get; private set; }
+
+        [DataMember]
+        public double Weight { get; private set; }
+
+        [DataMember]
+        public string Keywords { get; private set; }
+
+        public JsonNodeItem(SearchElementBase node)
+        {
+            Category = node.FullCategoryName;
+            Type = node.Type;
+            Name = node.Name;
+            CreatingName = node.CreatingName;
+            Description = node.Description;
+            Searchable = node.Searchable;
+            Weight = node.Weight;
+            Keywords = node.Keywords;
+        }
     }
 }

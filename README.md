@@ -206,6 +206,9 @@ http://www.apache.org/licenses/LICENSE-2.0.html
 http://msdn.microsoft.com/en-us/library/gg406140.aspx  
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
 
+###SuperWebSocket###
+http://superwebsocket.codeplex.com/
+http://superwebsocket.codeplex.com/license
 
 ###ASM v. 219###
 © 2014 Autodesk, Inc.  All rights reserved.   
