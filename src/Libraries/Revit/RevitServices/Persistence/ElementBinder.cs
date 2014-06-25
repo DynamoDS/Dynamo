@@ -240,11 +240,11 @@ namespace RevitServices.Persistence
         /// <param name="elements"></param>
         public static void SetElementsForTrace(List<Element> elements)
         {
-            if (IsEnabled)
-            {
-                MultipleSerializableId ids = new MultipleSerializableId(elements);
-                TraceUtils.SetTraceData(REVIT_TRACE_ID, ids);
-            }
+            if (!IsEnabled) return;
+
+            MultipleSerializableId ids = new MultipleSerializableId(elements);
+            TraceUtils.SetTraceData(REVIT_TRACE_ID, ids);
+
         }
 
         /// <summary>
@@ -255,18 +255,18 @@ namespace RevitServices.Persistence
         /// <returns></returns>
         public static void SetElementForTrace(ElementId elementId, ElementUUID elementUUID)
         {
-            if (IsEnabled)
-            {
-                SerializableId id = new SerializableId();
-                id.IntID = elementId.IntegerValue;
-                id.StringID = elementUUID.UUID;
+            if (!IsEnabled) return;
 
-                // if we're mutating the current Element id, that means we need to 
-                // clean up the old object
+            SerializableId id = new SerializableId();
+            id.IntID = elementId.IntegerValue;
+            id.StringID = elementUUID.UUID;
 
-                // Set the element ID cached in the callsite
-                TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
-            }
+            // if we're mutating the current Element id, that means we need to 
+            // clean up the old object
+
+            // Set the element ID cached in the callsite
+            TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
+
         }
 
         /// <summary>
@@ -303,6 +303,8 @@ namespace RevitServices.Persistence
         /// <returns></returns>
         public static void CleanupAndSetElementForTrace(Document document, Element newElement)
         {
+            if (!IsEnabled) return;
+
             // if the element id has changed on a subsequent run, that means we
             // couldn't mutate the element - hence we need to delete the old
             // element

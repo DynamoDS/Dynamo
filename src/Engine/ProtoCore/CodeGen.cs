@@ -154,6 +154,48 @@ namespace ProtoCore
             ssaPointerList = new List<AST.AssociativeAST.AssociativeNode>();
         }
 
+
+        /// <summary>
+        /// Generates unique identifier for the callsite associated with the graphnode
+        /// </summary>
+        /// <param name="graphNode"></param>
+        /// <param name="procNode"></param>
+        protected void GenerateCallsiteIdentifierForGraphNode(AssociativeGraph.GraphNode graphNode, string procName)
+        {
+            // This instance count in which the function appears lexically in the current guid
+            // This must be stored and incremented
+            int functionCallInstance = 0;
+
+
+            // Cache this function call instance count 
+            // This is the count of the number of times in which this callsite appears in the program
+            int callInstance = 0;
+            if (!core.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
+            {
+                // The guid doesnt exist yet
+                core.CallsiteGuidMap.Add(graphNode.guid, 0);
+            }
+            else
+            {
+                // Increment the current count
+                core.CallsiteGuidMap[graphNode.guid]++;
+                functionCallInstance = core.CallsiteGuidMap[graphNode.guid];
+            }
+
+            // Build the unique ID for a callsite 
+            string callsiteIdentifier =
+                procName + 
+                "_InClassDecl" + globalClassIndex + 
+                "_InFunctionScope" + globalProcIndex + 
+                "_Instance" + functionCallInstance.ToString() + 
+                "_" + graphNode.guid.ToString();
+
+            // TODO Jun: Address this in MAGN-3774
+            // The current limitation is retrieving the cached trace data for multiple callsites in a single CBN
+            // after modifying the lines of code.
+            graphNode.CallsiteIdentifier = callsiteIdentifier;
+        }
+
         protected ProtoCore.DSASM.AddressType GetOpType(ProtoCore.PrimitiveType type)
         {
             ProtoCore.DSASM.AddressType optype = ProtoCore.DSASM.AddressType.Int;

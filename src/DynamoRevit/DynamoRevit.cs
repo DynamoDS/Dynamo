@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -21,10 +19,9 @@ using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using DynamoUnits;
-using Dynamo.UpdateManager;
 using DynamoUtilities;
+
 using RevitServices.Elements;
 using RevitServices.Transactions;
 using RevitServices.Persistence;
@@ -67,7 +64,7 @@ namespace Dynamo.Applications
                 dynamoButton =
                         (PushButton)ribbonPanel.AddItem(
                             new PushButtonData(
-                                "Dynamo 0.7 Alpha",
+                                "Dynamo 0.7",
                                 res.GetString("App_Name"),
                                 assemblyName,
                                 "Dynamo.Applications.DynamoRevit"));
@@ -95,28 +92,6 @@ namespace Dynamo.Applications
             }
         }
 
-        private static void SetupDynamoPaths()
-        {
-            // The executing assembly will be in Revit_20xx, so 
-            // we have to walk up one level. Unfortunately, we
-            // can't use DynamoPaths here because those are not
-            // initialized until the controller is constructed.
-            var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            // Add the Revit_20xx folder for assembly resolution
-            DynamoPaths.AddResolutionPath(assDir);
-            
-            // Setup the core paths
-            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
-
-            // Add Revit-specific paths for loading.
-            DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "RevitNodes.dll"));
-            DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "SimpleRaaS.dll"));
-
-            //add an additional node processing folder
-            DynamoPaths.Nodes.Add(Path.Combine(assDir, "nodes"));
-        }
-
         /// <summary>
         /// Register some document updaters. Generally, document updaters 
         // should be handled by the ModelUpdater class. But there are some
@@ -142,6 +117,28 @@ namespace Dynamo.Applications
         public Result OnShutdown(UIControlledApplication application)
         {
             return Result.Succeeded;
+        }
+
+        private static void SetupDynamoPaths()
+        {
+            // The executing assembly will be in Revit_20xx, so 
+            // we have to walk up one level. Unfortunately, we
+            // can't use DynamoPathManager here because those are not
+            // initialized until the controller is constructed.
+            var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            // Add the Revit_20xx folder for assembly resolution
+            DynamoPathManager.Instance.AddResolutionPath(assDir);
+
+            // Setup the core paths
+            DynamoPathManager.Instance.InitializeCore(Path.GetFullPath(assDir + @"\.."));
+
+            // Add Revit-specific paths for loading.
+            DynamoPathManager.Instance.AddPreloadLibrary(Path.Combine(assDir, "RevitNodes.dll"));
+            DynamoPathManager.Instance.AddPreloadLibrary(Path.Combine(assDir, "SimpleRaaS.dll"));
+
+            //add an additional node processing folder
+            DynamoPathManager.Instance.Nodes.Add(Path.Combine(assDir, "nodes"));
         }
     }
 
@@ -171,7 +168,7 @@ namespace Dynamo.Applications
             //Add an assembly load step for the System.Windows.Interactivity assembly
             //Revit owns a version of this as well. Adding our step here prevents a duplicative
             //load of the dll at a later time.
-            var interactivityPath = Path.Combine(DynamoPaths.MainExecPath, "System.Windows.Interactivity.dll");
+            var interactivityPath = Path.Combine(DynamoPathManager.Instance.MainExecPath, "System.Windows.Interactivity.dll");
             if (File.Exists(interactivityPath))
             {
                 Assembly.LoadFrom(interactivityPath);
@@ -187,7 +184,7 @@ namespace Dynamo.Applications
 
                 #endregion
 
-                var logger = new DynamoLogger();
+                var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
                 dynSettings.DynamoLogger = logger;
 
                 if (DocumentManager.Instance.CurrentUIApplication == null)

@@ -12,7 +12,7 @@ using ProtoTestFx.TD;
 
 namespace IntegrationTests
 {
-    class IncrementingTraceTests
+    public class IncrementingTraceTests
     {
         private const string __TEMP_REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
         public TestFrameWork testFx = new TestFrameWork();
@@ -171,6 +171,50 @@ x = 1;
             Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcAWasTraced").Payload == true);
         }
 
+        [Test]
+        public void TestCallsiteReuseOnModifiedFunctionArgVariable01()
+        {
+            List<string> codes = new List<string>()
+            {
+                @"import(""FFITarget.dll"");",
+                "x = 10;",
+                "y = 20;",
+                "p = IncrementerTracedClass.IncrementerTracedClass(x);",
+                "p = IncrementerTracedClass.IncrementerTracedClass(y);",
+                "i = p.ID;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+            Guid guid5 = System.Guid.NewGuid();
+
+            // Create import CBN and call test class
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));  // import
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));  // x
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));  // y
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));  // call function
+            added.Add(CreateSubTreeFromCode(guid5, codes[5]));  // i
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Check trace ID
+            TestFrameWork.AssertValue("i", 0, astLiveRunner);
+
+           
+            // Modify the variable input to the function
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid4, codes[4]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Check that the same callsite was retrieved by checking that the ID matches the previous
+            TestFrameWork.AssertValue("i", 0, astLiveRunner);
+        }
 
         
 
