@@ -46,7 +46,7 @@ namespace Dynamo.Tests
             string assDir = fi.DirectoryName;
 
             // Setup the core paths
-            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
+            DynamoPathManager.Instance.InitializeCore(Path.GetFullPath(assDir + @"\.."));
 
             StartDynamo();
 
@@ -65,7 +65,7 @@ namespace Dynamo.Tests
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(DynamoPaths.Packages, "Dynamo Sample Custom Nodes", "dyf");
+            string defsLoc = Path.Combine(DynamoPathManager.Instance.Packages, "Dynamo Sample Custom Nodes", "dyf");
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
@@ -111,7 +111,7 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-                var logger = new DynamoLogger();
+                var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
                 dynSettings.DynamoLogger = logger;
                 var updateManager = new UpdateManager.UpdateManager(logger);
 

@@ -562,7 +562,7 @@ namespace Dynamo.DSEngine
         private void PreloadLibraries()
         {
             GraphUtilities.Reset();
-            libraries = DynamoPaths.PreloadLibraries;
+            libraries = DynamoPathManager.Instance.PreloadLibraries;
             GraphUtilities.PreloadAssembly(libraries);
         }
 
