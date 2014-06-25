@@ -641,9 +641,7 @@ namespace Dynamo.Nodes
                 paramNumNode,
                 positionNode,
                 arguments,
-                // false means at runtime we will pack all inputs into a single
-                // array and pass that array to the real function
-                AstFactory.BuildBooleanNode(false)
+                AstFactory.BuildBooleanNode(true)
             };
 
             return AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
