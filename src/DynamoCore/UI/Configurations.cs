@@ -177,7 +177,12 @@ namespace Dynamo.UI
 
         #endregion
 
+#if DEBUG
+        public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
+#else
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
+#endif
+
     }
 
     /// <summary>

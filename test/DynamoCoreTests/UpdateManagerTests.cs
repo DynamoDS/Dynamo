@@ -77,6 +77,60 @@ namespace Dynamo.Tests
 
             Assert.Null(Controller.UpdateManager.UpdateInfo);
         }
+
+        [Test]
+        public void ShouldRecognizeStableInstallerWithProperName()
+        {
+            var test =
+                UpdateManager.UpdateManager.IsStableBuild("DynamoInstall", "DynamoInstall0.7.1.exe");
+            Assert.True(test);
+        }
+
+        [Test]
+        public void ShouldRecognizeOldDailyBuilds()
+        {
+            var test =
+                UpdateManager.UpdateManager.IsDailyBuild("DynamoDailyInstall", "DynamoDailyInstall20140625T0009.exe");
+            Assert.True(test);
+        }
+
+        [Test]
+        public void ShouldRecognizeDailyInstallerWithProperName()
+        {
+            var test =
+                UpdateManager.UpdateManager.IsStableBuild("DynamoInstall", "DynamoInstall0.7.1.20140625T0009.exe");
+            Assert.False(test);
+
+            test = UpdateManager.UpdateManager.IsDailyBuild("DynamoInstall", "DynamoInstall0.7.1.20140625T0009.exe");
+            Assert.True(test);
+        }
+
+        [Test]
+        public void ShouldGetBinaryVersionFromInstaller()
+        {
+            var version = UpdateManager.UpdateManager.GetBinaryVersionFromFilePath("DynamoInstall", "DynamoInstall0.7.1.exe");
+            Assert.AreEqual("0.7.1.0", version.ToString());
+
+            version = UpdateManager.UpdateManager.GetBinaryVersionFromFilePath("DynamoInstall", "DynamoInstall0.7.1.20140625T0009.exe");
+            Assert.AreEqual("0.7.1.0", version.ToString());
+
+            version = UpdateManager.UpdateManager.GetBinaryVersionFromFilePath("DynamoInstall", "Blah.exe");
+            Assert.IsNull(version);
+        }
+
+        [Test]
+        public void ShouldGetDateTimeFromDailyInstaller()
+        {
+            var dateTime = UpdateManager.UpdateManager.GetBuildTimeFromFilePath("DynamoInstall", "DynamoInstall0.7.1.20140625T0009.exe");
+            Assert.AreEqual(dateTime.Year, 2014);
+            Assert.AreEqual(dateTime.Month, 6);
+            Assert.AreEqual(dateTime.Day, 25);
+            Assert.AreEqual(dateTime.Minute, 9);
+            Assert.AreEqual(dateTime.Hour, 0);
+
+            dateTime = UpdateManager.UpdateManager.GetBuildTimeFromFilePath("DynamoInstall", "DynamoInstall0.7.1.exe");
+            Assert.AreEqual(dateTime, DateTime.MinValue);
+        }
     }
 
     internal static class UpdateManagerTestHelpers
@@ -115,11 +169,11 @@ namespace Dynamo.Tests
                 "<LastModified>2013-11-01T17:02:59.000Z</LastModified>" +
                 "</Contents>" +
                 "<Contents>" +
-                "<Key>DynamoDailyInstall20990101T0001.exe</Key>" +
+                "<Key>DynamoInstall0.1.0.20990101T0001.exe</Key>" +
                 "<LastModified>2099-11-02T17:02:59.000Z</LastModified>" +
                 "</Contents>" +
                 "<Contents>" +
-                "<Key>DynamoDailyInstall20990101T0002.exe</Key>" +
+                "<Key>DynamoInstall0.1.0.20990101T0002.exe</Key>" +
                 "<LastModified>2099-11-03T17:02:59.000Z</LastModified>" +
                 "</Contents>" +
                 "</ListBucketResult>";

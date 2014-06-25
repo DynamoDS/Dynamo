@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -180,7 +178,7 @@ namespace Dynamo.UpdateManager
         private IAppVersionInfo updateInfo;
         private readonly ILogger logger;
         private const string InstallNameBase = "DynamoInstall";
-        private const string DailyInstallNameBase = "DynamoDailyInstall";
+        private const string OldDailyInstallNameBase = "DynamoDailyInstall";
         private bool checkNewerDailyBuilds;
         private bool forceUpdate;
         private string updateFileLocation;
@@ -363,7 +361,7 @@ namespace Dynamo.UpdateManager
                 return;
             }
 
-            var latestBuildFilePath = GetLatestBuildFromS3(request);
+            var latestBuildFilePath = GetLatestBuildFromS3(request, CheckNewerDailyBuilds);
             if (string.IsNullOrEmpty(latestBuildFilePath))
             {
                 versionCheckInProgress = false;
@@ -380,14 +378,14 @@ namespace Dynamo.UpdateManager
             var latestBuildTime = new DateTime();
 
             bool useStable = false;
-            if (IsStableBuild(latestBuildFilePath))
+            if (IsStableBuild(InstallNameBase, latestBuildFilePath))
             {
                 useStable = true;
-                latestBuildVersion = GetBinaryVersionFromFilePath(latestBuildFilePath);
+                latestBuildVersion = GetBinaryVersionFromFilePath(InstallNameBase, latestBuildFilePath);
             }
-            else if (IsDailyBuild(latestBuildFilePath))
+            else if (IsDailyBuild(InstallNameBase, latestBuildFilePath) || IsDailyBuild(OldDailyInstallNameBase, latestBuildFilePath))
             {
-                latestBuildTime = GetBuildTimeFromFilePath(latestBuildFilePath);
+                latestBuildTime = GetBuildTimeFromFilePath(InstallNameBase, latestBuildFilePath);
                 latestBuildVersion = GetCurrentBinaryVersion();
             }
             else
@@ -508,10 +506,8 @@ namespace Dynamo.UpdateManager
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private string GetLatestBuildFromS3(IAsynchronousRequest request)
+        private static string GetLatestBuildFromS3(IAsynchronousRequest request, bool checkDailyBuilds)
         {
-            string latestBuildFileName = "";
-
             XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
 
             XDocument doc = null;
@@ -534,21 +530,10 @@ namespace Dynamo.UpdateManager
 
             var bucketresult = doc.Element(ns + "ListBucketResult");
 
-            IEnumerable<XElement> builds;
-            if (!checkNewerDailyBuilds)
-            {
-                builds = bucketresult.Descendants(ns + "LastModified").
-                    OrderByDescending(x => DateTime.Parse(x.Value)).
-                    Where(x => x.Parent.Value.Contains(InstallNameBase)).
-                    Select(x => x.Parent);
-            }
-            else
-            {
-                builds = bucketresult.Descendants(ns + "LastModified").
-                    OrderByDescending(x => DateTime.Parse(x.Value)).
-                    Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(DailyInstallNameBase)).
-                    Select(x => x.Parent);
-            }
+            var builds = bucketresult.Descendants(ns + "LastModified").
+                OrderByDescending(x => DateTime.Parse(x.Value)).
+                Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(OldDailyInstallNameBase)).
+                Select(x => x.Parent);
 
 
             var xElements = builds as XElement[] ?? builds.ToArray();
@@ -557,63 +542,93 @@ namespace Dynamo.UpdateManager
                 return null;
             }
 
-            var latestBuild = xElements.First();
-            latestBuildFileName = latestBuild.Element(ns + "Key").Value;
+            var fileNames = xElements.Select(x => x.Element(ns + "Key").Value);
 
-            return latestBuildFileName;
+            string latestBuild = string.Empty;
+            latestBuild = checkDailyBuilds ?
+                fileNames.FirstOrDefault(x => IsDailyBuild(InstallNameBase, x) || IsDailyBuild(OldDailyInstallNameBase, x)) : 
+                fileNames.FirstOrDefault(x=>IsStableBuild(InstallNameBase, x));
+
+            return latestBuild;
         }
 
-        private bool ExistingUpdateIsNewer()
+        /// <summary>
+        /// Get a build time from a file path.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns>A DateTime or the DateTime MinValue.</returns>
+        internal static DateTime GetBuildTimeFromFilePath(string installNameBase, string filePath)
         {
-            if (!ExistingUpdateAvailable())
-            {
-                return false;
-            }
+            var version = GetVersionString(installNameBase, filePath);
+            var dtStr = version.Split('.').LastOrDefault();
 
-            var existingBuildPath = dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath;
-            var existingIsStable = IsStableBuild(existingBuildPath);
-
-            if (existingIsStable)
-            {
-                var latestBuildVersion = GetCurrentBinaryVersion();
-                var existingBuildVersion = GetBinaryVersionFromFilePath(existingBuildPath);
-                if (existingBuildVersion > latestBuildVersion)
-                {
-                    return true;
-                }
-            }
-            else //existing is daily
-            {
-                // If the existing is a daily build from today
-                var existingBuildTime = GetBuildTimeFromFilePath(existingBuildPath);
-                if (existingBuildTime.Date == DateTime.Today)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            DateTime dt;
+            return DateTime.TryParseExact(
+                dtStr,
+                "yyyyMMddTHHmm",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out dt) ? dt : DateTime.MinValue;
         }
 
-        private DateTime GetBuildTimeFromFilePath(string filePath)
+        /// <summary>
+        /// Find the version string within a file name 
+        /// by removing the base install name.
+        /// </summary>
+        /// <param name="installNameBase"></param>
+        /// <param name="filePath"></param>
+        /// <returns>A version string like "x.x.x.x" or null if one cannot be found.</returns>
+        private static string GetVersionString(string installNameBase, string filePath)
         {
+            if (!filePath.Contains(installNameBase))
+            {
+                return null;
+            }
+
             var fileName = Path.GetFileNameWithoutExtension(filePath);
-            var dtStr = fileName.Replace(DailyInstallNameBase, "");
-            return DateTime.ParseExact(dtStr, "yyyyMMddTHHmm", CultureInfo.InvariantCulture);
+            return fileName.Replace(installNameBase, "");
         }
 
-        private BinaryVersion GetCurrentBinaryVersion()
+        /// <summary>
+        /// Get a binary version for the executing assembly
+        /// </summary>
+        /// <returns>A BinaryVersion</returns>
+        internal static BinaryVersion GetCurrentBinaryVersion()
         {
             // If we're looking at dailies, latest build version will simply be
             // the current build version without a build or revision, ex. 0.6
             var v = Assembly.GetExecutingAssembly().GetName().Version;
-            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Revision));
+            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}", v.Major, v.Minor,v.Build));
         }
 
-        private BinaryVersion GetBinaryVersionFromFilePath(string filePath)
+        /// <summary>
+        /// Get a BinaryVersion from a file path.
+        /// </summary>
+        /// <param name="installNameBase">The base install name.</param>
+        /// <param name="filePath">The path name of the file.</param>
+        /// <returns>A BinaryVersion or null if one can not be parse from the file path.</returns>
+        internal static BinaryVersion GetBinaryVersionFromFilePath(string installNameBase, string filePath)
         {
-            var fileName = Path.GetFileNameWithoutExtension(filePath);
-            return BinaryVersion.FromString(fileName.Replace(InstallNameBase, ""));
+            // Filename format is DynamoInstall0.7.1.YYYYMMDDT0000.exe
+
+            if (!filePath.Contains(installNameBase))
+            {
+                return null;
+            }
+
+            var fileName = Path.GetFileNameWithoutExtension(filePath).Replace(installNameBase, "");
+            var splits = fileName.Split(new string[]{"."},StringSplitOptions.RemoveEmptyEntries);
+
+            if (splits.Count() < 3)
+            {
+                return null;
+            }
+
+            var major = ushort.Parse(splits[0]);
+            var minor = ushort.Parse(splits[1]);
+            var build = ushort.Parse(splits[2]);
+
+            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}.0", major, minor, build));
         }
 
         private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl)
@@ -626,20 +641,42 @@ namespace Dynamo.UpdateManager
             };
         }
 
-        private bool ExistingUpdateAvailable()
+        /// <summary>
+        /// Check if a file name is a daily build.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns>True if this is a daily build, otherwise false.</returns>
+        internal static bool IsDailyBuild(string installNameBase, string fileName)
         {
-            var existingUpdatePath = dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath;
-            return !string.IsNullOrEmpty(existingUpdatePath) && File.Exists(existingUpdatePath);
+            if (!fileName.Contains(installNameBase))
+            {
+                return false;
+            }
+
+            var versionStr = GetVersionString(installNameBase, fileName);
+            var splits = versionStr.Split('.');
+
+            DateTime dt;
+            return DateTime.TryParseExact(
+                splits.Last(),
+                "yyyyMMddTHHmm",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out dt);
         }
 
-        private bool IsDailyBuild(string fileName)
+        /// <summary>
+        /// Check if a file name is a stable build.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns>True if this is a stable build, otherwise false.</returns>
+        internal static bool IsStableBuild(string installNameBase, string fileName)
         {
-            return fileName.Contains(DailyInstallNameBase);
-        }
-
-        private bool IsStableBuild(string fileName)
-        {
-            return fileName.Contains(InstallNameBase);
+            if (!fileName.Contains(installNameBase))
+            {
+                return false;
+            }
+            return !IsDailyBuild(installNameBase,fileName);
         }
 
         /// <summary>
