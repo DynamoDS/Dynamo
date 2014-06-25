@@ -8,42 +8,30 @@ using RTF.Framework;
 namespace DSRevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    internal class RevitToProtoFaceTests : RevitNodeTestBase
+    internal class RevitToProtoFaceTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-        }
-
         [Test]
-        [TestModel(@".\Solids.rfa")]
-        public void AllSolidsConvert()
+        [TestModel(@".\Revolve.rfa")]
+        public void ToProtoType_SucceedsForRevolvedEllipse()
         {
-
-            var allSolidsInDoc = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
+            // extract revolved solid from doc
+            var revolvedEllipse = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
                 .Cast<Revit.Elements.Form>()
                 .SelectMany(x => x.InternalGeometry())
                 .OfType<Autodesk.Revit.DB.Solid>()
-                .ToList();
+                .First();
 
-            foreach (var solid in allSolidsInDoc)
-            {
-                var asmSolid = solid.ToProtoType();
+            // get the faces from the solid
+            var faces = revolvedEllipse.Faces.Cast<Autodesk.Revit.DB.Face>();
 
-                asmSolid.Volume.ShouldBeApproximately(solid.Volume);
-                asmSolid.Area.ShouldBeApproximately(solid.SurfaceArea);
-                Assert.AreEqual(solid.Faces.Size, asmSolid.Faces.Length);
-                asmSolid.Centroid().ShouldBeApproximately(solid.ComputeCentroid());
+            Assert.AreEqual(2, faces.Count());
 
-            }
+            var face = faces.First();
 
+            var r = face.ToProtoType(false);
+
+            r.Area.ShouldBeApproximately(face.Area);
+         
         }
     }
 }

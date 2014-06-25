@@ -3031,6 +3031,43 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestPersistentValuesOnUpdate()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");", 
+                "a = 10; b = 20;", 
+                "t = TestPersistentNodeValues(); t = t.Add(a,b); p = t.Sum;",
+                "a = 15; b = 25;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN's
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[1]));
+            Guid guid2 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("p", 30);
+
+
+            // Modify the 4th line to a = 15; b = 25;
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Expected value of Sum is 70 (30 + 15 +25)
+            AssertValue("p", 70);
+
+        }
+
+        [Test]
         public void TestCodeblockModification06()
         {
             List<string> codes = new List<string>() 

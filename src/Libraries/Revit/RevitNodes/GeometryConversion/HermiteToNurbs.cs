@@ -52,26 +52,28 @@ namespace Revit.GeometryConversion
         {
 
             int numKnots = nurbsKnots.Length;
-            int numPoints = numKnots - _cubicOrder;
+            int numPoints = numKnots - 4;
             var pPoints = new XYZ[numPoints];
+            var factorial = new double[] { 1, 1, 2, 6 };
+            var power = new double[] { 1, -1, 1, -1 };
 
             for (int ii = 0; ii < numPoints; ii++)
             {
                 double t = 0.5 * (nurbsKnots[ii] + nurbsKnots[ii + 1]);
 
-                var del = new double[_cubicOrder];
-                for (int jj = 1; jj <= _cubicDegree; jj++)
+                var del = new double[4];
+                for (int jj = 1; jj <= 3; jj++)
                 {
                     del[jj] = nurbsKnots[ii + jj] - t;
                 }
 
                 var s = Symmetric(del);
 
-                var psi = new double[_cubicOrder];
-                for (int k = 0; k <= _cubicDegree; k++)
+                var psi = new double[4];
+                for (int k = 0; k <= 3; k++)
                 {
-                    double top = _power1[k] * _factorial[k] * s[_cubicDegree - k];
-                    psi[k] = top / _factorial[_cubicDegree];
+                    double top = power[k] * factorial[k] * s[3 - k];
+                    psi[k] = top / factorial[3];
                 }
 
                 pPoints[ii] = XYZ.Zero;
@@ -125,19 +127,17 @@ namespace Revit.GeometryConversion
                 // an approximation of the third derivative
                 derivs[3] = P14 * (12.0 / (tk * tk * tk)) + R14 * (6.0 / (tk * tk));
 
-                for (int r = 0; r <= _cubicDegree; r++)
+                for (int r = 0; r <= 3; r++)
                 {
-                    int codegree = _cubicDegree - r;
-                    double mul = _power1[codegree] * psi[codegree];
+                    int codegree = 3 - r;
+                    double mul = power[codegree] * psi[codegree];
 
                     pPoints[ii] = pPoints[ii] + mul * derivs[r];
                 }
             }
 
-            return pPoints.Select(x => x.ToPoint()).ToArray();
+            return pPoints.Select(x => x.ToPoint(false)).ToArray();
         }
-
-        #region Helper methods
 
         private static double[] Symmetric(double[] pX)
         {
@@ -158,19 +158,12 @@ namespace Revit.GeometryConversion
                 }
             }
 
-            var pS = new double[_cubicOrder];
+            var pS = new double[4];
             for (int jj = 0; jj <= degree; jj++)
                 pS[jj] = stemp[degree, jj];
 
             return pS;
         }
-
-        private static int _cubicDegree = 3;
-        private static int _cubicOrder = _cubicDegree + 1;
-        private static double[] _factorial = { 1, 1, 2, 6 };
-        private static double[] _power1 = { 1, -1, 1, -1 };
-
-        #endregion
 
     }
 }

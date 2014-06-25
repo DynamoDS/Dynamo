@@ -17,7 +17,8 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class RevitToProtoFace
     {
-        public static Surface ToProtoType(this Autodesk.Revit.DB.Face revitFace)
+        public static Surface ToProtoType(this Autodesk.Revit.DB.Face revitFace, 
+            bool performHostUnitConversion = true)
         {
             if (revitFace == null) return null;
 
@@ -28,6 +29,8 @@ namespace Revit.GeometryConversion
 
             if (converted == null) return null;
 
+            converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
+
             var revitRef = revitFace.Reference;
             return revitRef != null ? ElementFaceReference.AddTag(converted, revitRef) : converted;
         }
@@ -36,10 +39,9 @@ namespace Revit.GeometryConversion
         {
             return face.EdgeLoops.Cast<EdgeArray>()
                 .Select(x => x.Cast<Autodesk.Revit.DB.Edge>())
-                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType()).ToArray())
+                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)).ToArray())
                 .Select(PolyCurve.ByJoinedCurves)
                 .ToList();
         }
-
     }
 }

@@ -128,7 +128,7 @@ namespace DynamoAddinGenerator
             var subfolder = "";
             if (latestDynamoInstall.Folder == DynamoVersions.dynamo_063)
             {
-                ClassName = "Dynamo.Applications.DynamoRevit";
+                ClassName = "Dynamo.Applications.DynamoRevitApp";
                 AssemblyPath = Path.Combine(latestDynamoInstall.Folder, "DynamoRevit.dll");
             }
             else

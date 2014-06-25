@@ -11,10 +11,13 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class RevitToProtoSolid
     {
-        public static Autodesk.DesignScript.Geometry.Solid ToProtoType(this Autodesk.Revit.DB.Solid solid)
+        public static Autodesk.DesignScript.Geometry.Solid ToProtoType(this Autodesk.Revit.DB.Solid solid, 
+            bool performHostUnitConversion = true)
         {
-            var srfs = solid.Faces.Cast<Autodesk.Revit.DB.Face>().Select(x => x.ToProtoType());
-            return Solid.ByJoinedSurfaces( srfs );
+            var srfs = solid.Faces.Cast<Autodesk.Revit.DB.Face>().Select(x => x.ToProtoType(false));
+            var converted = Solid.ByJoinedSurfaces( srfs );
+
+            return performHostUnitConversion ? converted.InDynamoUnits() : converted;
         }
     }
 }

@@ -206,14 +206,15 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
+            var corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            DynamoPathManager.Instance.InitializeCore(corePath);
+
             DynamoController controller;
-            var logger = new DynamoLogger();
+            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
             dynSettings.DynamoLogger = logger;
 
             var updateManager = new UpdateManager.UpdateManager(logger);
-
-            var corePath =
-                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
@@ -256,8 +257,6 @@ namespace Dynamo
         public DynamoController(string context, IUpdateManager updateManager,
             IWatchHandler watchHandler, IPreferences preferences, string corePath)
         {
-            DynamoPaths.SetupDynamoPathsCore(corePath);
-
             DebugSettings = new DebugSettings();
 
             IsCrashing = false;
@@ -292,7 +291,7 @@ namespace Dynamo
             DynamoModel.CurrentWorkspace.Y = 0;
 
             // custom node loader
-            CustomNodeManager = new CustomNodeManager(DynamoPaths.Definitions);
+            CustomNodeManager = new CustomNodeManager(DynamoPathManager.Instance.UserDefinitions);
 
             SearchViewModel = new SearchViewModel();
 
