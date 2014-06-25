@@ -131,15 +131,15 @@ namespace Dynamo.UI.Controls
             {
                 new StartPageListItem("Discussion forum", "icon-discussion.png")
                 {
-                    ContextData = "http://dynamobim.org/forums/forum/dyn/"
+                    ContextData = Configurations.DynamoBimForum
                 },
                 new StartPageListItem("email team@dynamobim.org", "icon-email.png")
                 {
-                    ContextData = "mailto:team@dynamobim.org"
+                    ContextData = Configurations.DynamoTeamEmail
                 },
                 new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
                 {
-                    ContextData = "http://dynamobim.org/"
+                    ContextData = Configurations.DynamoSiteLink
                 }
             };
 
@@ -165,11 +165,11 @@ namespace Dynamo.UI.Controls
             {
                 new StartPageListItem("Github repository", "icon-github.png")
                 {
-                    ContextData = "https://github.com/DynamoDS/Dynamo"
+                    ContextData = Configurations.GitHubDynamoLink
                 },
                 new StartPageListItem("Send issues", "icon-issues.png")
                 {
-                    ContextData = "https://github.com/DynamoDS/Dynamo/issues"
+                    ContextData = Configurations.GitHubBugReportingLink
                 }
             };
 
@@ -185,6 +185,44 @@ namespace Dynamo.UI.Controls
             this.askListBox.ItemsSource = askList;
             this.referenceListBox.ItemsSource = referenceList;
             this.codeListBox.ItemsSource = codeList;
+        }
+
+        private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e == null || (e.AddedItems.Count <= 0))
+                return;
+
+            var selected = e.AddedItems[0] as StartPageListItem;
+            if (selected == null)
+                return;
+
+            switch (selected.ClickAction)
+            {
+                case StartPageListItem.Action.RegularCommand:
+                    HandleRegularCommand(selected);
+                    break;
+
+                case StartPageListItem.Action.FilePath:
+                    HandleFilePath(selected);
+                    break;
+
+                case StartPageListItem.Action.ExternalUrl:
+                    HandleExternalUrl(selected);
+                    break;
+            }
+        }
+
+        private void HandleRegularCommand(StartPageListItem item)
+        {
+        }
+
+        private void HandleFilePath(StartPageListItem item)
+        {
+        }
+
+        private void HandleExternalUrl(StartPageListItem item)
+        {
+            System.Diagnostics.Process.Start(item.ContextData);
         }
     }
 }

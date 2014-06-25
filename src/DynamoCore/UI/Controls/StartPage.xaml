@@ -79,7 +79,8 @@
 
                 <ListBox Name="filesListBox"
                          ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}">
+                         Style="{StaticResource StartPageListBox}"
+                         SelectionChanged="OnItemSelectionChanged">
                 </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
@@ -94,7 +95,8 @@
 
                 <ListBox Name="recentListBox"
                          ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}">
+                         Style="{StaticResource StartPageListBox}"
+                         SelectionChanged="OnItemSelectionChanged">
                 </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
@@ -109,7 +111,8 @@
 
                 <ListBox Name="samplesListBox"
                          ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}">
+                         Style="{StaticResource StartPageListBox}"
+                         SelectionChanged="OnItemSelectionChanged">
                 </ListBox>
 
             </StackPanel>
@@ -132,7 +135,8 @@
 
                 <ListBox Name="askListBox"
                          ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}">
+                         Style="{StaticResource StartPageListBox}"
+                         SelectionChanged="OnItemSelectionChanged">
                 </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
@@ -147,7 +151,8 @@
 
                 <ListBox Name="referenceListBox"
                          ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}">
+                         Style="{StaticResource StartPageListBox}"
+                         SelectionChanged="OnItemSelectionChanged">
                 </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
@@ -162,7 +167,8 @@
 
                 <ListBox Name="codeListBox"
                          ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}">
+                         Style="{StaticResource StartPageListBox}"
+                         SelectionChanged="OnItemSelectionChanged">
                 </ListBox>
 
             </StackPanel>
