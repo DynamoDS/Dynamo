@@ -5,8 +5,7 @@ using System.Reflection;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
+
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
@@ -263,16 +262,6 @@ namespace Revit.Elements
             return ElementId.InvalidElementId;
         }
 
-        private static XYZ MeanXYZ(List<XYZ> pts)
-        {
-            return pts.Aggregate(new XYZ(), (i, p) => i.Add(p)).Divide(pts.Count);
-        }
-
-        private static XYZ MakeXYZ(Vector<double> vec)
-        {
-            return new XYZ(vec[0], vec[1], vec[2]);
-        }
-
         private static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
         {
             //cases to handle
@@ -326,12 +315,10 @@ namespace Revit.Elements
             for (int iPoint = 0; iPoint < points.Count; iPoint++)
                 xyzs.Add(points[iPoint]);
 
-            XYZ meanPt;
-            List<XYZ> orderedEigenvectors;
-            PrincipalComponentsAnalysis(xyzs, out meanPt, out orderedEigenvectors);
-            var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
-            var plane = Document.Application.Create.NewPlane(normal, meanPt);
-            return plane;
+            var bestFitPlane =
+                Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints(xyzs.ToPoints(false));
+
+            return bestFitPlane.ToPlane(false);
         }
 
         private static Autodesk.Revit.DB.SketchPlane GetSketchPlaneFromCurve(Curve c)
@@ -373,10 +360,10 @@ namespace Revit.Elements
                 var ns = c as Autodesk.Revit.DB.NurbSpline;
                 if (plane == null)
                 {
-                   PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
-                   normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
+                    var bestFitPlane = Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints(
+                        ns.CtrlPoints.ToList().ToPoints(false));
 
-                   plane = Document.Application.Create.NewPlane(normal, meanPt);
+                    plane = bestFitPlane.ToPlane(false);
                 }
 
                 var projPoints = new List<XYZ>();
@@ -390,35 +377,6 @@ namespace Revit.Elements
             }
 
             return c;
-        }
-
-        // TODO: refactor this somewhere else
-        private static void PrincipalComponentsAnalysis(List<XYZ> pts, out XYZ meanXYZ, out List<XYZ> orderEigenvectors)
-        {
-            var meanPt = MeanXYZ(pts);
-            meanXYZ = meanPt;
-
-            var l = pts.Count();
-            var ctrdMat = DenseMatrix.Create(3, l, (r, c) => pts[c][r] - meanPt[r]);
-            var covarMat = (1 / ((double)pts.Count - 1)) * ctrdMat * ctrdMat.Transpose();
-
-            var eigen = covarMat.Evd();
-
-            var valPairs = new List<Tuple<double, Vector<double>>>
-                {
-                    new Tuple<double, Vector<double>>(eigen.EigenValues()[0].Real, eigen.EigenVectors().Column(0)),
-                    new Tuple<double, Vector<double>>(eigen.EigenValues()[1].Real, eigen.EigenVectors().Column(1)),
-                    new Tuple<double, Vector<double>>(eigen.EigenValues()[2].Real, eigen.EigenVectors().Column(2))
-                };
-
-            var sortEigVecs = valPairs.OrderByDescending((x) => x.Item1).ToList();
-
-            orderEigenvectors = new List<XYZ>
-                {
-                    MakeXYZ( sortEigVecs[0].Item2 ),
-                    MakeXYZ( sortEigVecs[1].Item2 ),
-                    MakeXYZ( sortEigVecs[2].Item2 )
-                };
         }
 
         #endregion

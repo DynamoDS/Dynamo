@@ -452,6 +452,16 @@ namespace Dynamo.Models
 
                 return Decision.Retain;
             }
+           
+            //Force the file to go through the migration process, when the file version
+            //is 0.7.0.x. 
+            //Reason: There were files creaeted in 0.6.x with wrong version number 0.7.0.
+            //Force them to migration will manage to have those files migrated properly.
+            //Related YouTrack Defect: MAGN3767
+            if(fileVersion == new Version(0,7,0,0))
+            {
+                return Decision.Migrate;
+            }
 
             // For end-users, disable migration.
             if (fileVersion < currVersion)

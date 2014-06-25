@@ -7,7 +7,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Revit.Elements;
 using Revit.GeometryConversion;
-using MathNet.Numerics.NumberTheory;
+
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;

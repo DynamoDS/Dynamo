@@ -28,7 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\bin\AnyCPU\Debug\RevitNodes.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -39,14 +39,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\bin\AnyCPU\Release\RevitNodes.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\..\..\extern\mathnet-numerics-build\debug\Net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
@@ -116,6 +113,7 @@
     <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
     <Compile Include="GeometryConversion\HermiteToNurbs.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitMesh.cs" />
+    <Compile Include="GeometryConversion\NurbsUtils.cs" />
     <Compile Include="GeometryConversion\RevitToProtoSolid.cs" />
     <Compile Include="GeometryConversion\SurfaceExtractor.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />

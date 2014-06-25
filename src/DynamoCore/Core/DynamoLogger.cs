@@ -6,6 +6,9 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
+
+using DynamoUtilities;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -16,9 +19,6 @@ namespace Dynamo
     public class DynamoLogger:NotificationObject, ILogger, IDisposable
     {
         private readonly Object guardMutex = new Object();
-
-
-        const string DYNAMO_LOG_DIRECTORY = @"Autodesk\Dynamo\Logs\";
 
         //private static DynamoLogger instance;
         private string _logPath;
@@ -238,7 +238,7 @@ namespace Dynamo
                 string log_dir = System.Environment.GetFolderPath(
                     System.Environment.SpecialFolder.ApplicationData);
 
-                log_dir = Path.Combine(log_dir, DYNAMO_LOG_DIRECTORY);
+                log_dir = Path.Combine(log_dir, DynamoPaths.Logs);
 
                 if (!Directory.Exists(log_dir))
                 {
