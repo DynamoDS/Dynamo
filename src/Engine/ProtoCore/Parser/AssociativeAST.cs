@@ -1084,6 +1084,21 @@ namespace ProtoCore.AST.AssociativeAST
 
             return bodyHashCode;
         }
+
+        public override string ToString()
+        {
+            if (Body == null)
+            {
+                return string.Empty;
+            }
+
+            var buf = new StringBuilder();
+            for (int i = 0; i < Body.Count; ++i)
+            {
+                buf.Append(Body[i].ToString());
+            }
+            return buf.ToString();
+        }
     }
 
     public class ClassDeclNode : AssociativeNode

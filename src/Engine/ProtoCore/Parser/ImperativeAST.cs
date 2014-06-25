@@ -44,6 +44,7 @@ namespace ProtoCore.AST.ImperativeAST
                 ImperativeNode newNode = ProtoCore.Utils.NodeUtils.Clone(aNode);
                 Attributes.Add(newNode);
             }
+            CodeBlockNode = NodeUtils.Clone(rhs.CodeBlockNode);
         }
 
         public List<ImperativeNode> Attributes { get; set; }
