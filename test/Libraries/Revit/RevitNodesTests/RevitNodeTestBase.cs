@@ -1,4 +1,9 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Reflection;
+
+using NUnit.Framework;
+
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace DSRevitNodesTests
@@ -9,8 +14,13 @@ namespace DSRevitNodesTests
     /// </summary>
     public class RevitNodeTestBase
     {
+        public RevitNodeTestBase()
+        {
+            AssemblyResolver.Setup();
+        }
+
         [SetUp]
-        public virtual void Setup()
+        public virtual void SetupTransactionManager()
         {
             // create the transaction manager object
             TransactionManager.SetupManager(new AutomaticTransactionStrategy());
@@ -19,8 +29,14 @@ namespace DSRevitNodesTests
             TransactionManager.Instance.DoAssertInIdleThread = false;
         }
 
+        [SetUp]
+        public virtual void DisableElementBinder()
+        {
+            ElementBinder.IsEnabled = false;
+        }
+
         [TearDown]
-        public virtual void TearDown()
+        public virtual void ShutDownTransactionManager()
         {
             // Automatic transaction strategy requires that we 
             // close the transaction if it hasn't been closed by 

@@ -1606,6 +1606,30 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
+        /// <summary>
+         /// Create a Binary assignment node from a given lhs identifier and given right node
+         /// with line and col properties of rhs node
+         /// </summary>
+         /// <param name="lhs"></param>
+         /// <param name="rhs"></param>
+         public BinaryExpressionNode(IdentifierNode lhs, AssociativeNode rhs)
+             : base(rhs)
+         {
+             isSSAAssignment = false;
+             isSSAPointerAssignment = false;
+             isSSAFirstAssignment = false;
+             isMultipleAssign = false;
+             exprUID = Constants.kInvalidIndex;
+             modBlkUID = Constants.kInvalidIndex;
+             OriginalAstID = ID;
+             guid = System.Guid.Empty;
+            
+             Optr = Operator.assign;
+             LeftNode = lhs;
+             RightNode = NodeUtils.Clone(rhs);
+             
+         }
+
         public override bool Equals(object other)
         {
             if (null == LeftNode || null == RightNode)

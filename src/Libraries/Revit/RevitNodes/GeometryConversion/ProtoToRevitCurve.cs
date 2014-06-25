@@ -7,94 +7,127 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.DesignScript.Runtime;
+using ProtoPt = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.GeometryConversion
 {
     [SupressImportIntoVM]
     public static class ProtoToRevitCurve
     {
-        /// <summary>
-        /// A PolyCurve is not a curve, this is a special extension method to convert to a Revit CurveLoop
-        /// </summary>
-        /// <param name="pcrv"></param>
-        /// <returns></returns>
-        public static Autodesk.Revit.DB.CurveLoop ToRevitType(this Autodesk.DesignScript.Geometry.PolyCurve pcrv)
+        public static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv,
+            bool performHostUnitConversion = true)
+        {
+            crv = performHostUnitConversion ? crv.InHostUnits() : crv;
+
+            dynamic dyCrv = crv;
+            Autodesk.Revit.DB.Curve converted = ProtoToRevitCurve.Convert(dyCrv);
+
+            if (converted == null)
+            {
+                throw new Exception("An unexpected failure occurred when attempting to convert the curve");
+            }
+
+            return converted;
+        }
+
+        public static Autodesk.Revit.DB.CurveLoop ToRevitType(this Autodesk.DesignScript.Geometry.PolyCurve pcrv,
+            bool performHostUnitConversion = true)
         {
             if (!pcrv.IsClosed)
             {
                 throw new Exception("The input PolyCurve must be closed");
             }
 
-            var cl = new CurveLoop();
+            pcrv = performHostUnitConversion ? pcrv.InHostUnits() : pcrv;
 
+            var cl = new CurveLoop();
             var crvs = pcrv.Curves();
 
             foreach (Autodesk.DesignScript.Geometry.Curve curve in crvs)
             {
-                Autodesk.Revit.DB.Curve converted = curve.ToNurbsCurve().ToRevitType();
+                Autodesk.Revit.DB.Curve converted = curve.ToNurbsCurve().ToRevitType(false);
                 cl.Append(converted);
             }
 
             return cl;
-
         }
 
-        /// <summary>
-        /// An extension method for DesignScript.Geometry.Curve to convert to the analogous revit type
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
-        public static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv)
-        {
-            dynamic dyCrv = crv;
+        #region Conversions
 
-            return ProtoToRevitCurve.Convert(dyCrv);
 
-        }
-
-        /// <summary>
-        /// Convert a DS BSplineCurve to a Revit NurbSpline
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.NurbsCurve crv)
         {
+            // line
             if (crv.Degree == 1 && crv.ControlPoints().Length == 2 && !crv.IsRational)
             {
-                return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints()[0].ToXyz(), 
-                    crv.ControlPoints()[1].ToXyz());
+                return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints()[0].ToXyz(false), 
+                    crv.ControlPoints()[1].ToXyz(false));
             }
 
-            if (crv.Degree <= 2)
+            // polyline - not allowed
+            if (crv.Degree == 1)
             {
-                throw new Exception("Could not convert the curve to a Revit curve because it is less than or equal to degree 2.");
+                throw new Exception(
+                    "Degree 1 Nurbs Curves are not allowed in Revit!  Try splitting the curve into "
+                        +
+                        "individual linear pieces");
             }
 
-            // presumably checking if the curve is circular is quite expensive, we don't do it
-            return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlPoints().ToXyzs(),
+            // bezier
+            if (crv.Degree == 2 && crv.ControlPoints().Count() == 3 && !crv.IsRational)
+            {
+                var converted = NurbsUtils.ElevateBezierDegree(crv, 3);
+
+                return Autodesk.Revit.DB.NurbSpline.Create(converted.ControlPoints().ToXyzs(false),
+                    converted.Weights(),
+                    converted.Knots(),
+                    converted.Degree,
+                    converted.IsClosed,
+                    converted.IsRational);
+            }
+
+            // degree 2 curve
+            if (crv.Degree == 2)
+            {
+                // TODO: general NURBS degree elevation
+                var numSamples = crv.ControlPoints().Count() + 1;
+                var pts = Enumerable.Range(0, numSamples).Select(x => x/(double)numSamples)
+                    .Select(crv.PointAtParameter);
+
+                var resampledCrv = NurbsCurve.ByPointsTangents(
+                    pts,
+                    crv.TangentAtParameter(0).Normalized(),
+                    crv.TangentAtParameter(1).Normalized());
+
+                return Autodesk.Revit.DB.NurbSpline.Create(resampledCrv.ControlPoints().ToXyzs(false),
+                    resampledCrv.Weights(),
+                    resampledCrv.Knots(),
+                    resampledCrv.Degree,
+                    resampledCrv.IsClosed,
+                    resampledCrv.IsRational);
+            }
+
+            // general implementation
+            return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlPoints().ToXyzs(false),
                 crv.Weights(),
                 crv.Knots(),
                 crv.Degree,
                 crv.IsClosed,
-                crv.IsRational );
+                crv.IsRational);
+
         }
 
-        /// <summary>
-        /// Convert a DS Arc to a Revit arc
-        /// </summary>
-        /// <param name="arc"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
             // convert
-            var center = arc.CenterPoint.ToXyz();
-            var sp = arc.StartPoint.ToXyz();
+            var center = arc.CenterPoint.ToXyz(false);
+            var sp = arc.StartPoint.ToXyz(false);
 
             // get the xaxis of the arc base plane
             var x = (sp - center).Normalize();
 
             // get a second vector in the plane
-            var vecY = (arc.PointAtParameter(0.1).ToXyz() - center);
+            var vecY = (arc.PointAtParameter(0.1).ToXyz(false) - center);
 
             // get the normal to the plane
             var n2 = x.CrossProduct(vecY).Normalize();
@@ -106,22 +139,17 @@ namespace Revit.GeometryConversion
             return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, 0, arc.SweepAngle.ToRadians());
         }
 
-        /// <summary>
-        /// Convert a DS Circle to a Revit Arc
-        /// </summary>
-        /// <param name="circ"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
             // convert
-            var center = circ.CenterPoint.ToXyz();
-            var sp = circ.StartPoint.ToXyz();
+            var center = circ.CenterPoint.ToXyz(false);
+            var sp = circ.StartPoint.ToXyz(false);
 
             // get the xaxis of the arc base plane normalized
             var x = (sp - center).Normalize();
 
             // get a second vector in the plane
-            var vecY = (circ.PointAtParameter(0.1).ToXyz() - center);
+            var vecY = (circ.PointAtParameter(0.1).ToXyz(false) - center);
 
             // get the normal to the plane
             var n2 = x.CrossProduct(vecY).Normalize();
@@ -133,26 +161,16 @@ namespace Revit.GeometryConversion
             return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2 * System.Math.PI);
         }
 
-        /// <summary>
-        /// Convert a DS Line to a Revit line
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.Line Convert(Autodesk.DesignScript.Geometry.Line line)
         {
-            return Autodesk.Revit.DB.Line.CreateBound(line.StartPoint.ToXyz(), line.EndPoint.ToXyz());
+            return Autodesk.Revit.DB.Line.CreateBound(line.StartPoint.ToXyz(false), line.EndPoint.ToXyz(false));
         }
 
-        /// <summary>
-        /// Convert a DS Helix to a Revit Helix
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.CylindricalHelix Convert(Autodesk.DesignScript.Geometry.Helix crv)
         {
-            var sp = crv.StartPoint.ToXyz();
-            var ap = crv.AxisPoint.ToXyz();
-            var ad = crv.AxisDirection.ToXyz().Normalize();
+            var sp = crv.StartPoint.ToXyz(false);
+            var ap = crv.AxisPoint.ToXyz(false);
+            var ad = crv.AxisDirection.ToXyz(false).Normalize();
             var x = (sp - ap).Normalize();
             var p = crv.Pitch;
             var a = crv.Angle.ToRadians();
@@ -160,16 +178,11 @@ namespace Revit.GeometryConversion
             return Autodesk.Revit.DB.CylindricalHelix.Create(ap, crv.Radius, x, ad, p, 0, a);
         }
 
-        /// <summary>
-        /// Convert a DS Ellipse to a Revit ellipse
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.Ellipse crv)
         {
-            var center = crv.CenterPoint.ToXyz();
-            var x = crv.MajorAxis.ToXyz().Normalize();
-            var y = crv.MinorAxis.ToXyz().Normalize();
+            var center = crv.CenterPoint.ToXyz(false);
+            var x = crv.MajorAxis.ToXyz(false).Normalize();
+            var y = crv.MinorAxis.ToXyz(false).Normalize();
             var xw = crv.MajorAxis.Length;
             var yw = crv.MinorAxis.Length;
 
@@ -178,16 +191,11 @@ namespace Revit.GeometryConversion
             return e;
         }
 
-        /// <summary>
-        /// Convert a DS EllipseArc to a Revit Ellipse
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.EllipseArc crv)
         {
-            var center = crv.CenterPoint.ToXyz();
-            var x = crv.MajorAxis.ToXyz().Normalize();
-            var y = crv.MinorAxis.ToXyz().Normalize();
+            var center = crv.CenterPoint.ToXyz(false);
+            var x = crv.MajorAxis.ToXyz(false).Normalize();
+            var y = crv.MinorAxis.ToXyz(false).Normalize();
             var xw = crv.MajorAxis.Length;
             var yw = crv.MinorAxis.Length;
             var sa = crv.StartAngle.ToRadians();
@@ -198,11 +206,6 @@ namespace Revit.GeometryConversion
             return e;
         }
 
-        /// <summary>
-        /// Convert a generic Circle to a Revit Curve
-        /// </summary>
-        /// <param name="crvCurve"></param>
-        /// <returns></returns>
         private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.Curve crvCurve)
         {
            Autodesk.DesignScript.Geometry.Curve[] curves = crvCurve.ApproximateWithArcAndLineSegments();
@@ -228,5 +231,6 @@ namespace Revit.GeometryConversion
            return Convert(crvCurve.ToNurbsCurve());
         }
 
+        #endregion
     }
 }

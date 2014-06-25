@@ -61,31 +61,41 @@ namespace DynamoAddinGenerator
             Installs = installs;
         }
 
+        /// <summary>
+        /// Find a Dynamo install by checking for the existence of one of the
+        /// install directories, and ensuring that it contains DynamoCore.
+        /// </summary>
+        /// <returns></returns>
         public static List<IDynamoInstall> FindDynamoInstalls()
         {
             var installs = new List<IDynamoInstall>();
 
-            if (Directory.Exists(DynamoVersions.dynamo_063))
+            if (DynamoExistsAtPath(DynamoVersions.dynamo_063))
             {
                 installs.Add(new DynamoInstall(DynamoVersions.dynamo_063));
             }
 
-            if (Directory.Exists(DynamoVersions.dynamo_071_x86))
+            if (DynamoExistsAtPath(DynamoVersions.dynamo_071_x86))
             {
                 installs.Add(new DynamoInstall(DynamoVersions.dynamo_071_x86));
             }
 
-            if (Directory.Exists(DynamoVersions.dynamo_071_x64))
+            if (DynamoExistsAtPath(DynamoVersions.dynamo_071_x64))
             {
                 installs.Add(new DynamoInstall(DynamoVersions.dynamo_071_x64));
             }
 
-            if (Directory.Exists(DynamoVersions.dynamo_07x))
+            if (DynamoExistsAtPath(DynamoVersions.dynamo_07x))
             {
                 installs.Add(new DynamoInstall(DynamoVersions.dynamo_07x));
             }
 
             return installs;
+        }
+
+        private static bool DynamoExistsAtPath(string basePath)
+        {
+            return Directory.Exists(basePath) && Directory.GetFiles(basePath,"*DynamoCore.dll").Any();
         }
 
         public IDynamoInstall GetLatest()
@@ -118,7 +128,7 @@ namespace DynamoAddinGenerator
             var subfolder = "";
             if (latestDynamoInstall.Folder == DynamoVersions.dynamo_063)
             {
-                ClassName = "Dynamo.Applications.DynamoRevit";
+                ClassName = "Dynamo.Applications.DynamoRevitApp";
                 AssemblyPath = Path.Combine(latestDynamoInstall.Folder, "DynamoRevit.dll");
             }
             else

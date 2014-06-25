@@ -8,6 +8,9 @@ using Dynamo.Applications;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoUnits;
+
+using DynamoUtilities;
+
 using NUnit.Framework;
 using RevitServices.Elements;
 using RevitServices.Persistence;
@@ -89,6 +92,12 @@ namespace Dynamo.Tests
 
         private void Setup()
         {
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            string assDir = fi.DirectoryName;
+
+            // Setup the core paths
+            DynamoPathManager.Instance.InitializeCore(Path.GetFullPath(assDir + @"\.."));
+
             StartDynamo();
 
             DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
@@ -98,8 +107,6 @@ namespace Dynamo.Tests
             //fixture, so the initfixture method is not called.
 
             //get the test path
-            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            string assDir = fi.DirectoryName;
             string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\revit\");
             _testPath = Path.GetFullPath(testsLoc);
 
@@ -108,7 +115,7 @@ namespace Dynamo.Tests
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(assDir, @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
+            string defsLoc = Path.Combine(DynamoPathManager.Instance.Packages, "Dynamo Sample Custom Nodes", "dyf");
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
@@ -140,6 +147,9 @@ namespace Dynamo.Tests
         {
             try
             {
+                var asm = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                DynamoPathManager.Instance.InitializeCore(asm);
+
                 var updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
                 updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
                 updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
@@ -148,7 +158,7 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-                var logger = new DynamoLogger();
+                var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
                 dynSettings.DynamoLogger = logger;
                 var updateManager = new UpdateManager.UpdateManager(logger);
 

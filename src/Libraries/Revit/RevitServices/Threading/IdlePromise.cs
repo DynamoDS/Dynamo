@@ -77,7 +77,7 @@ namespace RevitServices.Threading
         /// Sets the Idle thread invocater to use the Idle event of the given UIControlledApplication.
         /// </summary>
         /// <param name="uIApplication">UIControlledApplication to use the Idle event of.</param>
-        public static void RegisterIdle(UIControlledApplication uIApplication)
+        public static void RegisterIdle(UIApplication uIApplication)
         {
             uIApplication.Idling += Application_Idling;
         }

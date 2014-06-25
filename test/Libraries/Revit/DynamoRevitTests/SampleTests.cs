@@ -827,7 +827,8 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
             // look at the sample folder and one directory up to get the distrib folder and combine with defs folder
-            string customNodePath = Path.Combine(Path.Combine(_samplesPath, @"..\\"), @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
+            string customNodePath = Path.Combine(Path.Combine(_samplesPath, @"..\\"), @".\
+\Dynamo Sample Custom Nodes\dyf\");
             // get the full path to the distrib folder and def folder
             string fullCustomNodePath = Path.GetFullPath(customNodePath);
 

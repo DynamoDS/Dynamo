@@ -8,7 +8,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class AdaptiveComponentTests : ProtoGeometryTest
+    class AdaptiveComponentTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\AdaptiveComponents.rfa")]
