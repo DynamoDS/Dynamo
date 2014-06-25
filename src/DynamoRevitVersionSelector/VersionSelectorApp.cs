@@ -8,8 +8,6 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
-using DynamoUtilities;
-
 namespace Dynamo.Applications
 {
     [Transaction(TransactionMode.Automatic)]
@@ -21,8 +19,6 @@ namespace Dynamo.Applications
 
         public Result OnStartup(UIControlledApplication application)
         {
-            SetupDynamoPaths();
-
             var versions = new List<string>();
 
             // default to loading 0.6.x
@@ -76,7 +72,7 @@ namespace Dynamo.Applications
             {
                 using (var sr = new StreamReader(fileLoc))
                 {
-                    cachedPath = sr.ReadToEnd();
+                    cachedPath = sr.ReadToEnd().TrimEnd('\r', '\n');
                 }
             }
 
@@ -87,6 +83,22 @@ namespace Dynamo.Applications
 
             if (String.IsNullOrEmpty(loadPath))
                 return Result.Failed;
+
+            // Preload the DynamoUtilities.dll. DynamoUtilities
+            // contains the assembly resolver logic. Because assembly
+            // resolution logic is different between 0.6.3 and 0.7.x,
+            // we preload to ensure we're doing the right thing.
+            var stub = Path.GetDirectoryName(loadPath);
+            var utilPath = string.Empty;
+            if (stub == BasePath)
+            {
+                utilPath = Path.Combine(stub, "DynamoUtilities.dll");
+            }
+            else
+            {
+                utilPath = Path.GetFullPath(Path.Combine(stub, @"..\DynamoUtilities.dll"));
+            }
+            Assembly.LoadFrom(utilPath);
 
             var ass = Assembly.LoadFrom(loadPath);
             var revitApp = ass.CreateInstance("Dynamo.Applications.DynamoRevitApp");
@@ -100,27 +112,6 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
-        private static void SetupDynamoPaths()
-        {
-            // The executing assembly will be in Revit_20xx, so 
-            // we have to walk up one level. Unfortunately, we
-            // can't use DynamoPaths here because those are not
-            // initialized until the controller is constructed.
-            var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            // Add the Revit_20xx folder for assembly resolution
-            DynamoPaths.AddResolutionPath(assDir);
-
-            // Setup the core paths
-            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
-
-            // Add Revit-specific paths for loading.
-            DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "RevitNodes.dll"));
-            DynamoPaths.AddPreloadLibrary(Path.Combine(assDir, "SimpleRaaS.dll"));
-
-            //add an additional node processing folder
-            DynamoPaths.Nodes.Add(Path.Combine(assDir, "nodes"));
-        }
     }
 
     [Transaction(TransactionMode.Automatic)]
@@ -182,7 +173,7 @@ namespace Dynamo.Applications
                 string appDataFolder = System.Environment.GetFolderPath(
                     System.Environment.SpecialFolder.ApplicationData);
 
-                return (Path.Combine(DynamoPaths.AppData, string.Format("DynamoDllForLoad_{0}.txt",versionName)));
+                return (Path.Combine(appDataFolder, "Dynamo","0.7", string.Format("DynamoDllForLoad_{0}.txt", versionName)));
             }
             catch (Exception)
             {
