@@ -77,7 +77,7 @@ namespace Dynamo
         /// <summary>
         /// The default constructor.
         /// </summary>
-        public DynamoLogger()
+        public DynamoLogger(string logDirectory)
         {
             lock (this.guardMutex)
             {
@@ -86,7 +86,7 @@ namespace Dynamo
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
-                StartLogging();
+                StartLogging(logDirectory);
             }
         }
 
@@ -229,23 +229,11 @@ namespace Dynamo
         /// <summary>
         /// Begin logging.
         /// </summary>
-        private void StartLogging()
+        private void StartLogging(string logDirectory)
         {
             lock (this.guardMutex)
             {
-                //create log files in a directory 
-                //with the executing assembly
-                string log_dir = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.ApplicationData);
-
-                log_dir = Path.Combine(log_dir, DynamoPaths.Logs);
-
-                if (!Directory.Exists(log_dir))
-                {
-                    Directory.CreateDirectory(log_dir);
-                }
-
-                _logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+                _logPath = Path.Combine(logDirectory, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
 
                 FileWriter = new StreamWriter(_logPath);
                 FileWriter.WriteLine("Dynamo log started " + DateTime.Now.ToString());

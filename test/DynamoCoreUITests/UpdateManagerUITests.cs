@@ -13,6 +13,9 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.UpdateManager;
 using DynamoCore.UI.Controls;
+
+using DynamoUtilities;
+
 using NUnit.Framework;
 using Moq;
 
@@ -65,7 +68,7 @@ namespace DynamoCoreUITests
         [Category("Failing")]
         public void UpdateButtonNotCollapsedIfNotUpToDate()
         {
-            var logger = new DynamoLogger();
+            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
             dynSettings.DynamoLogger = logger;
 
             var um_mock = new Mock<IUpdateManager>();
@@ -84,7 +87,7 @@ namespace DynamoCoreUITests
         [Category("Failing")]
         public void UpdateButtonCollapsedIfUpToDate()
         {
-            var logger = new DynamoLogger();
+            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
             dynSettings.DynamoLogger = logger;
 
             var um_mock = new Mock<IUpdateManager>();
@@ -103,7 +106,7 @@ namespace DynamoCoreUITests
         [Category("Failing")]
         public void UpdateButtonCollapsedIfNotConnected()
         {
-            var logger = new DynamoLogger();
+            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
             dynSettings.DynamoLogger = logger;
 
             var um_mock = new Mock<IUpdateManager>();
