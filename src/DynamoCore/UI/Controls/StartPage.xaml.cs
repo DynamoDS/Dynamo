@@ -17,6 +17,13 @@ namespace Dynamo.UI.Controls
 {
     public class StartPageListItem
     {
+        public enum Action
+        {
+            RegularCommand,
+            FilePath,
+            ExternalUrl
+        }
+
         internal StartPageListItem(string caption)
         {
             this.Caption = caption;
@@ -35,6 +42,8 @@ namespace Dynamo.UI.Controls
         public string Caption { get; private set; }
         public string SubScript { get; set; }
         public string ToolTip { get; set; }
+        public string ContextData { get; set; }
+        public Action ClickAction { get; set; }
 
         // Extended (derived) class properties.
         public Visibility IconVisibility
@@ -72,12 +81,21 @@ namespace Dynamo.UI.Controls
 
             var fileListItems = new StartPageListItem[]
             {
-                new StartPageListItem("New", "icon-new.png"),
+                new StartPageListItem("New", "icon-new.png")
+                {
+                    ContextData = "NewCommand"
+                },
                 new StartPageListItem("Open", "icon-open.png")
+                {
+                    ContextData = "OpenCommand"
+                }
             };
 
             foreach (var item in fileListItems)
+            {
+                item.ClickAction = StartPageListItem.Action.RegularCommand;
                 this.fileList.Add(item);
+            }
 
             var recentListItems = new StartPageListItem[]
             {
@@ -89,7 +107,10 @@ namespace Dynamo.UI.Controls
             };
 
             foreach (var item in recentListItems)
+            {
+                item.ClickAction = StartPageListItem.Action.FilePath;
                 this.recentList.Add(item);
+            }
 
             var sampleListItems = new StartPageListItem[]
             {
@@ -101,17 +122,32 @@ namespace Dynamo.UI.Controls
             };
 
             foreach (var item in sampleListItems)
+            {
+                item.ClickAction = StartPageListItem.Action.FilePath;
                 this.sampleList.Add(item);
+            }
 
             var askListItems = new StartPageListItem[]
             {
-                new StartPageListItem("Discussion forum", "icon-discussion.png"),
-                new StartPageListItem("email team@dynamobim.org", "icon-email.png"),
+                new StartPageListItem("Discussion forum", "icon-discussion.png")
+                {
+                    ContextData = "http://dynamobim.org/forums/forum/dyn/"
+                },
+                new StartPageListItem("email team@dynamobim.org", "icon-email.png")
+                {
+                    ContextData = "mailto:team@dynamobim.org"
+                },
                 new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
+                {
+                    ContextData = "http://dynamobim.org/"
+                }
             };
 
             foreach (var item in askListItems)
+            {
+                item.ClickAction = StartPageListItem.Action.ExternalUrl;
                 this.askList.Add(item);
+            }
 
             var referenceListItems = new StartPageListItem[]
             {
@@ -120,16 +156,28 @@ namespace Dynamo.UI.Controls
             };
 
             foreach (var item in referenceListItems)
+            {
+                item.ClickAction = StartPageListItem.Action.ExternalUrl;
                 this.referenceList.Add(item);
+            }
 
             var codeListItems = new StartPageListItem[]
             {
-                new StartPageListItem("Github repository", "icon-github.png"),
+                new StartPageListItem("Github repository", "icon-github.png")
+                {
+                    ContextData = "https://github.com/DynamoDS/Dynamo"
+                },
                 new StartPageListItem("Send issues", "icon-issues.png")
+                {
+                    ContextData = "https://github.com/DynamoDS/Dynamo/issues"
+                }
             };
 
             foreach (var item in codeListItems)
+            {
+                item.ClickAction = StartPageListItem.Action.ExternalUrl;
                 this.codeList.Add(item);
+            }
 
             this.filesListBox.ItemsSource = fileList;
             this.recentListBox.ItemsSource = recentList;

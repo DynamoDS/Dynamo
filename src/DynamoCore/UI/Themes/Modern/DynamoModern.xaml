@@ -1253,6 +1253,8 @@
                 Value="true" />
         <Setter Property="MaxHeight"
                 Value="190" />
+        <Setter Property="Margin"
+                Value="0,0,0,60" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBox">
@@ -1273,10 +1275,14 @@
                                    Source="{Binding Icon}"
                                    Visibility="{Binding IconVisibility}" />
                             <TextBlock Text="{Binding Caption}"
-                                       Margin="6,0,0,0"
+                                       Margin="6,7,0,8"
+                                       FontSize="14"
+                                       FontFamily="{StaticResource OpenSansRegular}"
                                        VerticalAlignment="Center" />
                             <TextBlock Text="{Binding SubScript}"
                                        Margin="16,0,0,0"
+                                       FontSize="14"
+                                       FontFamily="{StaticResource OpenSansRegular}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Grid>
