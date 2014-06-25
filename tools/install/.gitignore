@@ -3,6 +3,8 @@
 !Extra/fsharp_redist.exe
 !Extra/IronPython*.msi
 !Extra/InstallASMForDynamo.exe
+!Extra/DynamoAddinGenerator.exe
+!Extra/RevitAddinUtility.dll
 /bin
 /definitions
 /sample

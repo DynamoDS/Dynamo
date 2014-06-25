@@ -34,13 +34,14 @@ The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014,
 
 ## Releases ##
 
-###0.7.1###
+###0.7.1 Pre-Release###
 - Package Manager is Back
 - 0.6.3 files will be upgraded to 0.7 format
-- Experimental Library Loading
+- Library Loading (Experimental)
 - Stability Improvments
-- Revit Element created and Selected during a session will be rememebered in later sessions.
+- Revit Elements created and Selected during a session will be rememebered in later sessions.
 - Visualization Performance improvments
+- Navigation Improvements
 
 ###0.7.0###
 This is an alpha quality release which represents a significant refactoring of the underlying code.  There are some notable (temporary) restricitions to the functionality that is available in 0.6.3, and major enhancements to others. To allow users to continue work with 0.6.3 while exploring 0.7.0, this release can be installed side by side with older releases.  

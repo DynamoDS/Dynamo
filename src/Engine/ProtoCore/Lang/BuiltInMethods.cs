@@ -83,7 +83,7 @@ namespace ProtoCore.Lang
             "%dot",                     // kDot
             "Equals",                   // kEquals
             "GetElapsedTime",           // kGetElapsedTime
-            "%get_type",                // kGetType
+            Constants.kGetTypeMethodName,// kGetType
             "Flatten",                  // kFlatten
             "ImportData",               // kImportData
             "IndexOf",                  // kIndexOf
@@ -116,12 +116,12 @@ namespace ProtoCore.Lang
             "SortIndexByValue",         // kSortIndexByValueWithMode
             "Sort",                     // kSortPointer
             "Reorder",                  // kReorder
-            "%generate_range",          // kGenerateRange
+            Constants.kFunctionRangeExpression, // kGenerateRange
             "Sum",                      // kSum
             "ToString",                 // kToString
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
-            "%inlineconditional",       // kInlineConditional
+            Constants.kInlineConditionalMethodName,
             "Break",                    // kBreak
             "GetKeys",                  // kGetKeys    
             "GetValues",                // kGetValues    

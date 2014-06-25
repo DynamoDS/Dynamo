@@ -1,56 +1,52 @@
-﻿using System;
+﻿#region
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
+
 using DSNodeServices;
-using Dynamo.DSEngine;
+
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
+
+#endregion
 
 namespace Dynamo.Core
 {
     /// <summary>
-    /// Class that handles requests to run Dynamo graph
+    ///     Class that handles requests to run Dynamo graph
     /// </summary>
     public class DynamoRunner
     {
+        /// <summary>
+        ///     Protect guard for setting the run flag
+        /// </summary>
+        protected static Object RunControlMutex = new object();
+
         private readonly DynamoController controller = dynSettings.Controller;
 
-        private bool cancelSet = false;
-        private int? execInternval = null; 
-        
+        private bool cancelSet;
+        private int? execInternval;
+
+        public bool Running { get; protected set; }
+
+        /// <summary>
+        ///     Does the workflow need to be run again due to changes since the last run?
+        /// </summary>
+        public bool NeedsAdditionalRun { get; protected set; }
+
         public void CancelAsync()
         {
             cancelSet = true;
         }
 
 
-
-
-        #region Running
-
-        public bool Running { get; protected set; }
-
-        /// <summary>
-        /// Does the workflow need to be run again due to changes since the last run?
-        /// </summary>
-        public bool NeedsAdditionalRun { get; protected set; }
-
-        /// <summary>
-        /// Protect guard for setting the run flag
-        /// </summary>
-        public static Object runControlMutex = new object();
-
-
         public void RunExpression(int? executionInterval = null)
         {
-            this.execInternval = executionInterval;
+            execInternval = executionInterval;
 
-            lock (runControlMutex)
+            lock (RunControlMutex)
             {
                 if (Running)
                 {
@@ -58,26 +54,18 @@ namespace Dynamo.Core
                     NeedsAdditionalRun = true;
                     return;
                 }
-                else
-                {
-                    //We're new so if we needed an additional run, this one counts
-                    NeedsAdditionalRun = false;
-                }
+                //We're new so if we needed an additional run, this one counts
+                NeedsAdditionalRun = false;
 
                 // If there is preloaded trace data, send that along to the current
                 // LiveRunner instance. Here we make sure it is done exactly once 
                 // by resetting WorkspaceModel.PreloadedTraceData property after it 
                 // is obtained.
                 // 
-                var traceData = controller.DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
+                IEnumerable<KeyValuePair<Guid, List<string>>> traceData =
+                    controller.DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
                 controller.DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
                 controller.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
-
-                controller.EngineController.GenerateGraphSyncData(controller.DynamoViewModel.Model.HomeSpace.Nodes);
-
-                //No additional work needed
-                if (!controller.EngineController.HasPendingGraphSyncData)
-                    return;
 
                 //We are now considered running
                 Running = true;
@@ -89,7 +77,7 @@ namespace Dynamo.Core
                 controller.DynamoViewModel.RunEnabled = false;
 
                 //As we are the only place that is allowed to activate this, it is a trap door, so this is safe
-                lock (runControlMutex)
+                lock (RunControlMutex)
                 {
                     Validity.Assert(Running);
                 }
@@ -118,22 +106,21 @@ namespace Dynamo.Core
                 if (execInternval == null)
                     break;
 
-                var sleep = execInternval.Value;
+                int sleep = execInternval.Value;
                 Thread.Sleep(sleep);
-            }
-            while (!cancelSet);
+            } while (!cancelSet);
 
             RunComplete();
         }
 
         /// <summary>
-        /// Method to group together all the tasks associated with an execution being complete
+        ///     Method to group together all the tasks associated with an execution being complete
         /// </summary>
         public void RunComplete()
         {
             controller.OnRunCompleted(this, false);
 
-            lock (runControlMutex)
+            lock (RunControlMutex)
             {
                 Running = false;
                 controller.DynamoViewModel.RunEnabled = true;
@@ -148,15 +135,19 @@ namespace Dynamo.Core
             try
             {
                 sw.Start();
-                Eval();
+
+                controller.EngineController.GenerateGraphSyncData(
+                    controller.DynamoViewModel.Model.HomeSpace.Nodes);
+
+                //No additional work needed
+                if (controller.EngineController.HasPendingGraphSyncData)
+                    Eval();
             }
             catch (Exception ex)
             {
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
-                {
                     dynSettings.DynamoLogger.Log(ex);
-                }
 
                 OnRunCancelled(true);
 
@@ -167,7 +158,8 @@ namespace Dynamo.Core
             {
                 sw.Stop();
 
-                dynSettings.DynamoLogger.Log(string.Format("Evaluation completed in {0}", sw.Elapsed));
+                dynSettings.DynamoLogger.Log(
+                    string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
 
             controller.OnEvaluationCompleted(this, EventArgs.Empty);
@@ -176,9 +168,7 @@ namespace Dynamo.Core
         private void Eval()
         {
             //Print some stuff if we're in debug mode
-            if (controller.DynamoViewModel.RunInDebug)
-            {
-            }
+            if (controller.DynamoViewModel.RunInDebug) { }
 
             // We have caught all possible exceptions in UpdateGraph call, I am 
             // not certain if this try-catch block is still meaningful or not.
@@ -193,7 +183,8 @@ namespace Dynamo.Core
                 // 
                 if (DynamoController.IsTestMode == false && (fatalException != null))
                 {
-                    Action showFailureMessage = () => Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
+                    Action showFailureMessage =
+                        () => Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
 
                     // The "Run" method is guaranteed to be called on a background 
                     // thread (for Revit's case, it is the idle thread). Here we 
@@ -210,7 +201,8 @@ namespace Dynamo.Core
                 // preview value.
                 if (updated)
                 {
-                    var nodes = controller.DynamoViewModel.Model.HomeSpace.Nodes;
+                    ObservableCollection<NodeModel> nodes =
+                        controller.DynamoViewModel.Model.HomeSpace.Nodes;
                     foreach (NodeModel node in nodes)
                         node.IsUpdated = true;
                 }
@@ -235,11 +227,5 @@ namespace Dynamo.Core
         {
             //dynSettings.Controller.DynamoLogger.Log("Run cancelled. Error: " + error);
         }
-
-        
-
-        #endregion
-
-
     }
 }

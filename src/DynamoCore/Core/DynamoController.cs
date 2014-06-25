@@ -256,7 +256,7 @@ namespace Dynamo
         public DynamoController(string context, IUpdateManager updateManager,
             IWatchHandler watchHandler, IPreferences preferences, string corePath)
         {
-            DynamoPaths.SetupDynamoPaths(corePath);
+            DynamoPaths.SetupDynamoPathsCore(corePath);
 
             DebugSettings = new DebugSettings();
 
@@ -291,13 +291,8 @@ namespace Dynamo
             DynamoModel.CurrentWorkspace.X = 0;
             DynamoModel.CurrentWorkspace.Y = 0;
 
-            // Set the DynamoCore path
-
             // custom node loader
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            CustomNodeManager = new CustomNodeManager(pluginsPath);
+            CustomNodeManager = new CustomNodeManager(DynamoPaths.Definitions);
 
             SearchViewModel = new SearchViewModel();
 

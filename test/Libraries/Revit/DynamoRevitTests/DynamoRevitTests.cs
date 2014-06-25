@@ -10,6 +10,9 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
 using Dynamo.UpdateManager;
+
+using DynamoUtilities;
+
 using NUnit.Framework;
 using ProtoCore.Mirror;
 using RevitServices.Elements;
@@ -39,6 +42,12 @@ namespace Dynamo.Tests
         [SetUp]
         public void Setup()
         {
+            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            string assDir = fi.DirectoryName;
+
+            // Setup the core paths
+            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
+
             StartDynamo();
 
             DocumentManager.Instance.CurrentUIApplication.ViewActivating += CurrentUIApplication_ViewActivating;
@@ -48,17 +57,15 @@ namespace Dynamo.Tests
             //fixture, so the initfixture method is not called.
 
             //get the test path
-            var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
-            string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\revit\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\..\test\System\revit\");
             _testPath = Path.GetFullPath(testsLoc);
 
             //get the samples path
-            string samplesLoc = Path.Combine(assDir, @"..\..\..\doc\distrib\Samples\");
+            string samplesLoc = Path.Combine(assDir, @"..\..\..\..\doc\distrib\Samples\");
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(assDir, @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
+            string defsLoc = Path.Combine(DynamoPaths.Packages, "Dynamo Sample Custom Nodes", "dyf");
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");

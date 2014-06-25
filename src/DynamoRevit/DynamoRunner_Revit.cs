@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
+
 using Autodesk.Revit.DB;
-using Dynamo.Revit;
+
+using Dynamo.Core;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using RevitServices.Persistence;
-using RevitServices.Transactions;
+
+using RevitServices.Threading;
+
+#endregion
 
 namespace Dynamo.Applications
 {
-    class DynamoRunner_Revit : Dynamo.Core.DynamoRunner
+    internal class DynamoRunner_Revit : DynamoRunner
     {
-        private DynamoController_Revit controllerRevit;
+        private readonly DynamoController_Revit controllerRevit;
 
         public DynamoRunner_Revit(DynamoController_Revit controllerRevit)
         {
@@ -26,7 +26,8 @@ namespace Dynamo.Applications
         {
             base.OnRunCancelled(error);
 
-            if (controllerRevit.transaction != null && controllerRevit.transaction.Status == TransactionStatus.Started)
+            if (controllerRevit.transaction != null
+                && controllerRevit.transaction.Status == TransactionStatus.Started)
                 controllerRevit.transaction.CancelTransaction();
         }
 
@@ -48,14 +49,13 @@ namespace Dynamo.Applications
                 // will trigger the update for a Revit related node. Now just
                 // run the execution in the idle thread until we find out a 
                 // way to control the execution.
-                controllerRevit.TransMode = TransactionMode.Automatic; //Automatic transaction control
+                controllerRevit.TransMode = TransactionMode.Automatic;
+                    //Automatic transaction control
                 Debug.WriteLine("Adding a run to the idle stack.");
             }
 
             //Run in idle thread no matter what
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleSync(base.Evaluate);
+            IdlePromise.ExecuteOnIdleSync(base.Evaluate);
         }
-        
-
     }
 }
