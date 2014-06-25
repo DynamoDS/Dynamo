@@ -27,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\bin\AnyCPU\Debug\RevitNodes.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -37,7 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\bin\AnyCPU\Release\RevitNodes.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
