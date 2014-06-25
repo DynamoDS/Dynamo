@@ -72,27 +72,45 @@
                     <TextBlock Text="FILES"
                                FontSize="14"
                                FontFamily="{StaticResource OpenSansRegular}"
+                               Foreground="#3395a2"
                                Margin="0,0,12,0"
                                HorizontalAlignment="Right" />
                 </Border>
+
+                <ListBox Name="filesListBox"
+                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                         Style="{StaticResource StartPageListBox}">
+                </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
                         BorderBrush="#dfd8cf">
                     <TextBlock Text="RECENT"
                                FontSize="14"
                                FontFamily="{StaticResource OpenSansRegular}"
+                               Foreground="#62895b"
                                Margin="0,0,12,0"
                                HorizontalAlignment="Right" />
                 </Border>
+
+                <ListBox Name="recentListBox"
+                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                         Style="{StaticResource StartPageListBox}">
+                </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
                         BorderBrush="#dfd8cf">
                     <TextBlock Text="SAMPLES"
                                FontSize="14"
                                FontFamily="{StaticResource OpenSansRegular}"
+                               Foreground="#5e8f80"
                                Margin="0,0,12,0"
                                HorizontalAlignment="Right" />
                 </Border>
+
+                <ListBox Name="samplesListBox"
+                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                         Style="{StaticResource StartPageListBox}">
+                </ListBox>
 
             </StackPanel>
 
@@ -107,27 +125,45 @@
                     <TextBlock Text="ASK"
                                FontSize="14"
                                FontFamily="{StaticResource OpenSansRegular}"
+                               Foreground="#a55553"
                                Margin="0,0,12,0"
                                HorizontalAlignment="Right" />
                 </Border>
+
+                <ListBox Name="askListBox"
+                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                         Style="{StaticResource StartPageListBox}">
+                </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
                         BorderBrush="#dfd8cf">
                     <TextBlock Text="REFERENCE"
                                FontSize="14"
                                FontFamily="{StaticResource OpenSansRegular}"
+                               Foreground="#6f4c76"
                                Margin="0,0,12,0"
                                HorizontalAlignment="Right" />
                 </Border>
+
+                <ListBox Name="referenceListBox"
+                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                         Style="{StaticResource StartPageListBox}">
+                </ListBox>
 
                 <Border BorderThickness="0,0,0,1"
                         BorderBrush="#dfd8cf">
                     <TextBlock Text="CODE"
                                FontSize="14"
                                FontFamily="{StaticResource OpenSansRegular}"
+                               Foreground="#4b9dbf"
                                Margin="0,0,12,0"
                                HorizontalAlignment="Right" />
                 </Border>
+
+                <ListBox Name="codeListBox"
+                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                         Style="{StaticResource StartPageListBox}">
+                </ListBox>
 
             </StackPanel>
 
