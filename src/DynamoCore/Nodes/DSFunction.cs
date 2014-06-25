@@ -654,8 +654,8 @@ namespace Dynamo.Nodes
             string function = Definition.Name;
             AssociativeNode rhs;
 
-            // All inputs are provided, then we should pack all inputs into
-            // a single array. 
+            // All inputs are provided, then we should pack all inputs that
+            // belong to variable input parameter into a single array. 
             if (!HasUnconnectedInput())
             {
                 var paramCount = Definition.Parameters.Count();
