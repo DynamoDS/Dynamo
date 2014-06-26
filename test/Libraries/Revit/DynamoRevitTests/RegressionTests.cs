@@ -60,10 +60,8 @@ namespace Dynamo.Tests
                 //open the revit model
                 SwapCurrentModel(revitFilePath);
 
-                var model = Controller.DynamoModel;
-
                 //open the dyn file
-                model.Open(dynamoFilePath);
+                Controller.DynamoViewModel.OpenCommand.Execute(dynamoFilePath);
 
                 //run the expression and assert that it does not
                 //throw an error
