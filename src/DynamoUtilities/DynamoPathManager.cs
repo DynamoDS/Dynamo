@@ -83,6 +83,11 @@ namespace DynamoUtilities
             set { addResolvePaths = value; }
         }
 
+        /// <summary>
+        /// Downloaded updates.
+        /// </summary>
+        public string Updates { get; set; }
+
         public static DynamoPathManager Instance
         {
             get { return instance ?? (instance = new DynamoPathManager()); }
@@ -132,6 +137,12 @@ namespace DynamoUtilities
             if (!Directory.Exists(CommonDefinitions))
             {
                 Directory.CreateDirectory(CommonDefinitions);
+            }
+
+            Updates = Path.Combine(AppData, "updates");
+            if (!Directory.Exists(Updates))
+            {
+                Directory.CreateDirectory(Updates);
             }
 
             Asm = Path.Combine(MainExecPath, "dll");
