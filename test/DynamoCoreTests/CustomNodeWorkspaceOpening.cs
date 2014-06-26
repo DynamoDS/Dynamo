@@ -15,7 +15,7 @@ namespace Dynamo.Tests
 
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
             Assert.IsNotNull(nodeWorkspace);
@@ -27,9 +27,8 @@ namespace Dynamo.Tests
         {
             Assert.Inconclusive("Porting : Formula");
 
-            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
             
             Controller.SearchViewModel.SearchAndUpdateResultsSync("Sequence2");
             Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);

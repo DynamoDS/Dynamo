@@ -49,6 +49,28 @@ namespace ProtoCore.Lang
             int framePointer = runtimeCore.Rmem.FramePointer;
             StackValue thisPtr = StackValue.BuildPointer(-1);
 
+            // Functoion has variable input parameter. This case only happen
+            // for FFI functions whose last parameter's type is (params T[]).
+            // In this case, we need to convert argument list from
+            //
+            //    {a1, a2, ..., am, v1, v2, ..., vn}
+            // 
+            // to
+            // 
+            //    {a1, a2, ..., am, {v1, v2, ..., vn}}
+            if (procNode.isVarArg)
+            {
+                int paramCount = procNode.argInfoList.Count;
+                Validity.Assert(paramCount >= 1);
+
+                int varParamCount = args.Count - (paramCount - 1);
+                var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
+                args.RemoveRange(paramCount - 1, varParamCount);
+
+                var packedParams = HeapUtils.StoreArray(varParams, null, interpreter.runtime.Core);
+                args.Add(packedParams);
+            }
+
             bool isCallingMemberFunciton = procNode.classScope != Constants.kInvalidIndex 
                                            && !procNode.isConstructor 
                                            && !procNode.isStatic;

@@ -2075,9 +2075,7 @@ namespace Dynamo.Tests
 
         private void TestMigration(string filename)
         {
-            var model = dynSettings.Controller.DynamoModel;
-
-            model.Open(GetDynPath(filename));
+            Controller.DynamoViewModel.OpenCommand.Execute(GetDynPath(filename));
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             var nodes = Controller.DynamoModel.Nodes;

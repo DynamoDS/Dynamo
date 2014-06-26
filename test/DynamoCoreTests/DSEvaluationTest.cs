@@ -18,9 +18,8 @@ namespace Dynamo.Tests
     {
         public void OpenModel(string relativeFilePath)
         {
-            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
         }
 
         public void RunModel(string relativeDynFilePath)

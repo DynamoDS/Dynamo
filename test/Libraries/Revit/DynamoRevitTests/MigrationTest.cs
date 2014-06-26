@@ -15,11 +15,9 @@ namespace Dynamo.Tests
     {
         private void TestMigration(string filename)
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string testPath = Path.Combine(_testPath, filename);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
 
