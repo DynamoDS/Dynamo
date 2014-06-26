@@ -923,7 +923,7 @@ namespace Dynamo.Tests
             string openPath2 = Path.Combine(examplePath, "GraphFunction.dyf");
             Assert.IsTrue(
                 Controller.CustomNodeManager.AddFileToPath(openPath2)!= null);
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression(null);
             System.Threading.Thread.Sleep(500);
@@ -964,9 +964,8 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeInternals00()
         {
-            var model = Controller.DynamoModel;
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            model.Open(Path.Combine(folder, "DummyNodeSample.dyn"));
+            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
@@ -988,9 +987,8 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeInternals01()
         {
-            var model = Controller.DynamoModel;
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            model.Open(Path.Combine(folder, "DummyNodeSample.dyn"));
+            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
