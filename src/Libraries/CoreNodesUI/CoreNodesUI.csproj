@@ -69,6 +69,7 @@
     <Compile Include="Input\BasicInteractive.cs" />
     <Compile Include="Input\BoolSelector.cs" />
     <Compile Include="Input\File.cs" />
+    <Compile Include="Inspector.cs" />
     <Compile Include="Logic\AndOr.cs" />
     <Compile Include="Input\Sliders.cs" />
     <Compile Include="Logic\If.cs" />
