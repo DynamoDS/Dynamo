@@ -28,7 +28,7 @@ namespace DSCoreNodesUI
     [NodeDescription("Get a color given a color range.")]
     public class Inspector : VariableInputNode, IWpfNode
     {
-        private int numDropDowns = 2;
+        private int numDropDowns = 1;
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
         {
@@ -40,7 +40,7 @@ namespace DSCoreNodesUI
             }
         }
 
-        private List<int> selectedIndicies = new List<int>(0);
+        private List<int> selectedIndicies = new List<int>() {-1};
         public List<int> SelectedIndicies
         {
             get { return selectedIndicies; }
@@ -50,7 +50,7 @@ namespace DSCoreNodesUI
                 //go out of range of the items collection
                 foreach (var index in selectedIndicies)
                 {
-                    if (index < Items.Count - 1)
+                    if (index <= Items.Count - 1)
                     {
                         SelectedIndicies = value;
                         RaisePropertyChanged("SelectedIndex");
@@ -200,8 +200,15 @@ namespace DSCoreNodesUI
             //PopulateItems();
         }
 
+
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+              
+            
+
+
+            var comboboxes = new List<ComboBox>();
+
             //add a drop down list to the window
             var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
             //addButton.Height = 20;
@@ -209,30 +216,27 @@ namespace DSCoreNodesUI
             var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
             //subButton.Height = 20;
 
+            // first add all buttons
+            //
+
             var wp = new WrapPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Center,
+                MaxWidth = 500,
             };
             wp.Children.Add(addButton);
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
-
-
+          
             RequestSelectChange += delegate
             {
                 DispatchOnUIThread(delegate
                 {
-                    PopulateItems();
 
-                    foreach (UIElement item in wp.Children)
-                    {
-                        if (item is ComboBox)
-                        {
-                            wp.Children.Remove(item);
-                        }
-                    }
+                    PopulateItems();
+                    
                     for (int i = 0; i < numDropDowns; i++)
                     {
 
@@ -245,9 +249,10 @@ namespace DSCoreNodesUI
                             VerticalAlignment = VerticalAlignment.Center
                         };
                         wp.Children.Add(combo);
-                        System.Windows.Controls.Grid.SetColumn(combo, 0);
-                        System.Windows.Controls.Grid.SetRow(combo, 0);
-
+                        
+                        //System.Windows.Controls.Grid.SetColumn(combo, 0);
+                        //System.Windows.Controls.Grid.SetRow(combo, 0);
+                        
                         combo.DropDownOpened += combo_DropDownOpened;
                         combo.SelectionChanged += delegate
                         {
@@ -263,7 +268,7 @@ namespace DSCoreNodesUI
                                 SelectedIndicies[i] = 0;
                             }
                         };
-
+                        var SelectedIndex = SelectedIndicies[i];
                         combo.DataContext = this;
                         //bind this combo box to the selected item hash
 
