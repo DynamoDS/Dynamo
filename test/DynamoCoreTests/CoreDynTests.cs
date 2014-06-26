@@ -104,7 +104,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\sequence\sequence.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
@@ -130,7 +130,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\sorting\");
 
             string openPath = Path.Combine(examplePath, "sorting.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
@@ -339,12 +339,11 @@ namespace Dynamo.Tests
         [Test]
         public void Repeat()
         {
-            var model = dynSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core");
             string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
             //open and run the expression
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
             dynSettings.Controller.RunExpression(null);
 
             var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
@@ -374,7 +373,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
 
             string openPath = Path.Combine(examplePath, "readImageFileTest.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             //set the path to the image file
             var pathNode = (DSCore.File.Filename)model.Nodes.First(x => x is DSCore.File.Filename);
@@ -392,7 +391,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
 
             string openPath = Path.Combine(examplePath, "TestExportToCSVFile.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             //set the path to the csv file
             var pathNode = (DSCore.File.Filename)model.Nodes.First(x => x is DSCore.File.Filename);
@@ -414,11 +413,10 @@ namespace Dynamo.Tests
         [Test]
         public void TestExportToCSVFile_Negativ()
         {
-            var model = dynSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
 
             string openPath = Path.Combine(examplePath, "TestExportToCSVFile_Negative.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             RunCurrentModel();
 
@@ -465,7 +463,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
 
-            model.Open(Path.Combine(exPath, "formula-test.dyn"));
+            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(exPath, "formula-test.dyn"));
 
             var watches = new[]
             {
@@ -528,7 +526,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
-            model.Open(Path.Combine(exPath, @"begin-test.dyn"));
+            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(exPath, @"begin-test.dyn"));
 
             var dummy = model.CurrentWorkspace.FirstNodeFromWorkspace<DSCoreNodesUI.DummyNode>();
             Assert.IsNotNull(dummy);

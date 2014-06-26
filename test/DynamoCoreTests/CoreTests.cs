@@ -53,10 +53,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenGoodFile()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string openPath = Path.Combine(GetTestDirectory(), @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
         }
@@ -376,7 +374,7 @@ namespace Dynamo.Tests
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            model.SaveAs(path);
+            Controller.DynamoViewModel.SaveAsCommand.Execute(path);
             
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -398,7 +396,7 @@ namespace Dynamo.Tests
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            model.SaveAs(path);
+            Controller.DynamoViewModel.SaveAsCommand.Execute(path);
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -412,7 +410,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            model.SaveAs(null);
+            Controller.DynamoViewModel.SaveAsCommand.Execute(null);
 
             Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FileName);
         }
@@ -430,7 +428,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             }
 
-            model.Save(null);
+            Controller.DynamoViewModel.SaveCommand.Execute(null);
 
             Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FileName);
         }
@@ -607,7 +605,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = dynSettings.Controller.DynamoModel;
             var workspace = dynamoModel.CurrentWorkspace;
-            dynamoModel.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(1, workspace.Nodes.Count);
 
             var node = workspace.NodeFromWorkspace<DSVarArgFunction>(
@@ -668,12 +666,10 @@ namespace Dynamo.Tests
         [Test]
         public void NodesHaveCorrectLocationsIndpendentOfCulture()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string openPath = Path.Combine(GetTestDirectory(), @"core\nodeLocationTest.dyn");
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             var node = dynSettings.Controller.DynamoModel.Nodes.First();
@@ -681,7 +677,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             node = dynSettings.Controller.DynamoModel.Nodes.First();
@@ -689,7 +685,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             node = dynSettings.Controller.DynamoModel.Nodes.First();

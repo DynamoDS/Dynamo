@@ -23,7 +23,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Transform\BasisX.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             // Check that all nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Transform\BasisY.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             // Check that all nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
@@ -103,7 +103,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Transform\BasisZ.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             // Check that all nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);

@@ -95,7 +95,7 @@ namespace DynamoCoreUITests
             var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -141,7 +141,7 @@ namespace DynamoCoreUITests
             var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
 
@@ -210,7 +210,7 @@ namespace DynamoCoreUITests
             var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -240,7 +240,7 @@ namespace DynamoCoreUITests
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_thicken.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -253,11 +253,10 @@ namespace DynamoCoreUITests
         [Test, Category("Failing")]
         public void CanVisualizeASMSurfaces()
         {
-            var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_cuboid.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -269,11 +268,10 @@ namespace DynamoCoreUITests
         [Test, Category("Failing")]
         public void CanVisualizeCoordinateSystems()
         {
-            var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_coordinateSystem.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -286,11 +284,10 @@ namespace DynamoCoreUITests
         [Test, Category("Failing")]
         public void CanVisualizeGeometryFromPython()
         {
-            var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_python.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -308,7 +305,7 @@ namespace DynamoCoreUITests
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
@@ -335,7 +332,7 @@ namespace DynamoCoreUITests
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -353,13 +350,11 @@ namespace DynamoCoreUITests
         [Test, Category("Failing")]
         public void VisualizationsAreCreatedForCustomNodes()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             Assert.IsTrue(
                 Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"))
                 != null);
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_customNode.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -371,11 +366,10 @@ namespace DynamoCoreUITests
         [Test, Category("Failing")]
         public void HonorsPreviewSaveState()
         {
-            var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line_noPreview.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -391,7 +385,7 @@ namespace DynamoCoreUITests
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Labels.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
@@ -432,7 +426,7 @@ namespace DynamoCoreUITests
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);

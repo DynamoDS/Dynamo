@@ -110,7 +110,7 @@ namespace Dynamo.Tests
             string exampleFilePath, IEnumerable<KeyValuePair<Guid, object>> tests)
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.Open(exampleFilePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(exampleFilePath);
 
             dynSettings.Controller.RunExpression(null);
 
