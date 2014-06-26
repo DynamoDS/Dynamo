@@ -85,9 +85,6 @@ Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwrite
 ;Other Custom Nodes
 Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\0.7\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
-;The Certificate
-Source: Extra\Dynamo.cer; DestDir: {app}\Dynamo.cer; Flags: ignoreversion overwritereadonly; 
-
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2015\Dynamo071.addin"
