@@ -1168,9 +1168,15 @@ namespace ProtoFFI
         }
     }
 
+    /// <summary>
+    ///     It keeps FFI class's attributes.
+    /// </summary>
     public class FFIClassAttributes : ClassAttributes
     {
         private Attribute[] attributes;
+        /// <summary>
+        /// FFI class attributes.
+        /// </summary>
         public IEnumerable<Attribute> Attributes
         {
             get { return attributes; }
@@ -1193,9 +1199,15 @@ namespace ProtoFFI
         }
     }
 
+    /// <summary>
+    /// It keeps FFI method's attributes.
+    /// </summary>
     public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {
         private Attribute[] attributes;
+        /// <summary>
+        /// FFI method attributes.
+        /// </summary>
         public IEnumerable<Attribute> Attributes
         {
             get { return attributes; }
