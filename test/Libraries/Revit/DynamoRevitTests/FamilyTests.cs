@@ -70,12 +70,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Family\GetFamilyInstanceLocation.rvt")]
         public void GetFamilyInstanceLocation()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstanceLocation.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 

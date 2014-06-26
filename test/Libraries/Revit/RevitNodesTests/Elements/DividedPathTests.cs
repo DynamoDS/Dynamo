@@ -3,6 +3,9 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
+
+using RevitServices.Persistence;
+
 using RTF.Framework;
 
 namespace DSRevitNodesTests
@@ -96,9 +99,13 @@ namespace DSRevitNodesTests
             var divPath = DividedPath.ByCurveAndDivisions(modCurve.ElementCurveReference, 5);
             Assert.NotNull(divPath);
 
-            foreach (var pt in divPath.Points)
+            var divPathPts = divPath.Points;
+            Assert.AreEqual(5, divPathPts.Count());
+
+            foreach (var pt in divPathPts)
             {
-                Assert.IsTrue(pts.Any(x => x.ShouldBeApproximately(pt)));
+                // all of the points should be along the curve
+                spline.DistanceTo(pt).ShouldBeApproximately(0);
             }
         }
     }

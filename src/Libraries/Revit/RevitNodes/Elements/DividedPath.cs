@@ -50,15 +50,12 @@ namespace Revit.Elements
         /// <summary>
         /// All points along the DividedPath.
         /// </summary>
-        public Autodesk.DesignScript.Geometry.Point[] Points
+        public IEnumerable<Autodesk.DesignScript.Geometry.Point> Points
         {
             get
             {
-                return
-                    InternalDividedPath.get_Geometry(geometryOptions)
-                        .Cast<Autodesk.Revit.DB.Point>()
-                        .Select(x => x.Coord.ToPoint())
-                        .ToArray();
+                DocumentManager.Regenerate();
+                return Geometry().Cast<Autodesk.DesignScript.Geometry.Point>();
             }
         }
 

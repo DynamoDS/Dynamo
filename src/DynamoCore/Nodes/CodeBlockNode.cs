@@ -407,7 +407,7 @@ namespace Dynamo.Nodes
             try
             {
                 ParseParam parseParam = new ParseParam(this.GUID, code);
-                if (GraphToDSCompiler.GraphUtilities.Parse(parseParam))
+                if (GraphToDSCompiler.GraphUtilities.PreCompileCodeBlock(parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

@@ -84,7 +84,7 @@ namespace Dynamo.Utilities
         {
             SearchPath = new ObservableCollection<string> { searchPath };
             NodeInfos = new ObservableDictionary<Guid, CustomNodeInfo>();
-            AddDirectoryToSearchPath(DynamoPaths.CommonDefinitions);
+            AddDirectoryToSearchPath(DynamoPathManager.Instance.CommonDefinitions);
         }
 
         /// <summary> 

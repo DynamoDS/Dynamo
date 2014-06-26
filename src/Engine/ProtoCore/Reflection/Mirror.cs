@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore
 {
@@ -783,6 +784,11 @@ namespace ProtoCore
                             
                 return StaticMirror.FindMethod(methodName, argumentTypes, procList);
             }
+
+            public ClassAttributes GetClassAttributes()
+            {
+                return classNode == null ? null : classNode.ClassAttributes;
+            }
         }
 
         /// <summary>
@@ -851,7 +857,10 @@ namespace ProtoCore
                 return argTypes;
             }
 
-            
+            public MethodAttributes GetMethodAttributes()
+            {
+                return procNode == null ? null : procNode.MethodAttribute;
+            }
         }
 
         public class PropertyMirror : StaticMirror
