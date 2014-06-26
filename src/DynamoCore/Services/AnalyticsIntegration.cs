@@ -7,6 +7,8 @@ using System.Text;
 using CSharpAnalytics;
 using CSharpAnalytics.Protocols.Measurement;
 
+using Dynamo.Utilities;
+
 namespace Dynamo.Services
 {
     public class AnalyticsIntegration
@@ -19,7 +21,8 @@ namespace Dynamo.Services
         {
 
             CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
-                "Dynamo", "0.0.X.X.TEST");
+                "Dynamo", dynSettings.Controller.UpdateManager.ProductVersion.ToString());
+            
             AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
             
             CSharpAnalytics.AutoMeasurement.Start(mc);
