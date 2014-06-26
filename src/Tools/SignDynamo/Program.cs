@@ -10,7 +10,6 @@ namespace SignDynamo
 {
     class Program
     {
-        private static byte[] publicBlob = null;
         private static byte[] privateBlob = null;
         private static string installerPath;
         private const string keyContainerName = "Dynamo";
@@ -21,6 +20,7 @@ namespace SignDynamo
             {
                 Console.WriteLine("Press any key to quit.");
                 Console.ReadKey();
+                return;
             }
 
             var cert = Utils.FindCertificateForCurrentUser(keyContainerName, StoreLocation.LocalMachine);
@@ -39,8 +39,6 @@ namespace SignDynamo
                 Path.GetFileNameWithoutExtension(installerPath) + ".sig");
 
             Utils.SignFile(installerPath, sigPath, privateBlob);
-
-            bool ok = Utils.VerifyFile(installerPath, sigPath, publicBlob);
         }
 
         private static bool ParseArguments(IEnumerable<string> args)
