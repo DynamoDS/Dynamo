@@ -167,6 +167,7 @@ namespace Revit.Elements
             if (!Document.IsFamilyDocument)
                 throw new Exception("Revit can only create a ReferenceCurve in a family document!");
 
+
             return new ModelCurve(ExtractLegalRevitCurve(curve), true);
         }
 
