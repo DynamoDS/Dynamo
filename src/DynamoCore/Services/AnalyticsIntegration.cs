@@ -9,7 +9,7 @@ using CSharpAnalytics.Protocols.Measurement;
 
 namespace Dynamo.Services
 {
-    class AnalyticsIntegration
+    public class AnalyticsIntegration
     {
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 
@@ -44,6 +44,16 @@ namespace Dynamo.Services
             AutoMeasurement.Client.TrackScreenView(screenName);
         }
 
+        public static void LogException(string description)
+        {
+            AutoMeasurement.Client.TrackException(description);
+        }
+
+        public static void LogException(Exception e)
+        {
+            //Can only report the type of the exception not the stack trace because of PII concerns
+            AutoMeasurement.Client.TrackException(e.GetType().ToString());
+        }
 
         
         
