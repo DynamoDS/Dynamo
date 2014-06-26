@@ -16,12 +16,10 @@ namespace Dynamo.Tests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-66
 
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_66.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -39,7 +37,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_102_projectPointsToFace_selfContained.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -60,7 +58,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_122_wallsAndFloorsAndLevels.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -100,7 +98,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN-438_structuralFraming_simple.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -122,7 +120,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Bugs\Defect_MAGN_2576.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -150,7 +148,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN-3620_Elementgeometry.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 

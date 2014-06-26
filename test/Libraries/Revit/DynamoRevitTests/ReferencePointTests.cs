@@ -40,10 +40,8 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void ReferencePoint()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
             dynSettings.Controller.RunExpression();

@@ -76,12 +76,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void CurveLoop()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Curve\CurveLoop.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -89,12 +87,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void CurvebyPointsArc()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Curve\CurvebyPointsArc.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
@@ -109,12 +105,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void OffsetCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Curve\OffsetCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -122,12 +116,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void ThickenCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Curve\ThickenCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -195,12 +187,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void CurvebyPointsEllipse()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Curve\CurvebyPointsEllipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
 
@@ -216,12 +206,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Curve\GetCurveDomain.rfa")]
         public void GetCurveDomain()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Curve\GetCurveDomain.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
     }

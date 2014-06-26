@@ -89,6 +89,17 @@ namespace Dynamo.Tests
             AssertPreviewValue("fbc947fb-460b-49b9-8460-b223bffb63d5", new string[] { "abcd", "efgh" });
         }
 
+        [Test]
+        public void TestConcatStringInListMap()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatStringInListMap.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("a105ad39-9b1c-44aa-a2cb-37866ea48dd0", new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
+        }
+
         #endregion
 
         #region substring test cases  
@@ -237,10 +248,10 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_normal.dyn");
 
             RunModel(testFilePath);
-            AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", "123456789");
-            AssertPreviewValue("5a974eeb-6bca-4029-9948-c6af1c9fe913", "-123456789");
-            AssertPreviewValue("ce2c9ef8-8fac-427a-b550-ecec8f66aacf", "3.456000");
-            AssertPreviewValue("bd14730f-fddc-4301-9d63-7b1e77eeb72a", "-3.456000");
+            AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", 123456789);
+            AssertPreviewValue("5a974eeb-6bca-4029-9948-c6af1c9fe913", -123456789);
+            AssertPreviewValue("ce2c9ef8-8fac-427a-b550-ecec8f66aacf", 3.456000);
+            AssertPreviewValue("bd14730f-fddc-4301-9d63-7b1e77eeb72a", -3.456000);
 
         }
 

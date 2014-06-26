@@ -20,7 +20,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\dsfunctions.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
             
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
@@ -33,7 +33,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\add.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
 
@@ -53,7 +53,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\abs.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
 
@@ -81,7 +81,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\count.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
 

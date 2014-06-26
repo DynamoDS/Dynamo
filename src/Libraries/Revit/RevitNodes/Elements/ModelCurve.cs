@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
+
 using Revit.GeometryConversion;
 
 using RevitServices.Persistence;
@@ -17,7 +20,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit ModelCurve
     /// </summary>
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
     public class ModelCurve : CurveElement
     {
         #region Private constructors
@@ -146,7 +149,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("curve");
             }
 
-            return new ModelCurve(curve.ToRevitType(), false);
+            return new ModelCurve(ExtractLegalRevitCurve(curve), false);
         }
 
         // <summary>
@@ -161,7 +164,7 @@ namespace Revit.Elements
               throw new ArgumentNullException("curve");
            }
 
-           return new ModelCurve(curve.ToRevitType(), true);
+           return new ModelCurve(ExtractLegalRevitCurve(curve), true);
         }
 
         #endregion
@@ -184,6 +187,24 @@ namespace Revit.Elements
         #endregion
 
         #region Helper methods
+
+        private static Autodesk.Revit.DB.Curve ExtractLegalRevitCurve(Autodesk.DesignScript.Geometry.Curve curve)
+        {
+            // PB:  PolyCurves may have discontinuities that prevent them from being turned into legal Revit ModelCurves.
+            // Moreover, a single ModelCurve may not be a composite or multiple curves.
+
+            // One could add a static method to ModelCurve that is an overload of ByCurve - ModelCurve[] ByCurve(PolyCurve).
+            // But, this adds an unnecessary high level of complexity to the Element rebinding code.  Hence, we will go the
+            // more straightforward route of just providing an informative error message to the user.
+            if (curve is PolyCurve)
+            {
+                throw new Exception(
+                    "Revit does not support turning PolyCurves into ModelCurves.  "
+                        + "Try exploding your PolyCurve into multiple Curves.");
+            }
+
+            return curve.ToRevitType();
+        }
 
         private static bool hasMethodResetSketchPlane = true;
 

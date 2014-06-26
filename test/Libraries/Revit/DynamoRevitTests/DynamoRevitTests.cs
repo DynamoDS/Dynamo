@@ -208,14 +208,12 @@ namespace Dynamo.Tests
 
         protected void OpenAndRun(string subPath)
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, subPath);
             string testPath = Path.GetFullPath(samplePath);
 
             Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
@@ -224,12 +222,10 @@ namespace Dynamo.Tests
 
         public void OpenModel(string relativeFilePath)
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, relativeFilePath);
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
         }
 
         public void RunCurrentModel()
