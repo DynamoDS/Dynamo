@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
+
 using DynamoCrypto;
 using NDesk.Options;
 
@@ -21,7 +23,7 @@ namespace SignDynamo
                 Console.ReadKey();
             }
 
-            var cert = Utils.FindCertificateForCurrentUser(keyContainerName);
+            var cert = Utils.FindCertificateForCurrentUser(keyContainerName, StoreLocation.LocalMachine);
             if (cert == null)
             {
                 return;

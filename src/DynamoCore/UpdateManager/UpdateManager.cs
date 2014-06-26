@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.ComponentModel;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
@@ -496,7 +497,7 @@ namespace Dynamo.UpdateManager
             }
 
             // Attempt to find the Dynamo certificate.
-            var cert = Utils.FindCertificateForCurrentUser("Dynamo");
+            var cert = Utils.FindCertificateForCurrentUser("Dynamo", StoreLocation.CurrentUser);
 
             // If the certificate can't be found, install it
             // in the current user's certificate store.

@@ -152,11 +152,11 @@ namespace DynamoCrypto
         /// </summary>
         /// <param name="keyContainerName">The key container name.</param>
         /// <returns>An X509Certificate2 or null if no certificate can be found.</returns>
-        public static X509Certificate2 FindCertificateForCurrentUser(string keyContainerName)
+        public static X509Certificate2 FindCertificateForCurrentUser(string keyContainerName, StoreLocation location)
         {
             // Look for the Dynamo certificate in the certificate store. 
             // http://stackoverflow.com/questions/6304773/how-to-get-x509certificate-from-certificate-store-and-generate-xml-signature-dat
-            var store = new X509Store(StoreLocation.CurrentUser);
+            var store = new X509Store(location);
             store.Open(OpenFlags.ReadOnly);
             var cers = store.Certificates.Find(X509FindType.FindBySubjectName, keyContainerName, false);
 
