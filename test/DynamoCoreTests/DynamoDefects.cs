@@ -115,7 +115,7 @@ namespace Dynamo.Tests
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1206
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1206.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression(null);
             var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");

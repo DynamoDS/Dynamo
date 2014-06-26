@@ -17,6 +17,8 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Services;
 using DynamoUnits;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using System.Reflection;
 
 namespace Dynamo.ViewModels
 {
@@ -590,8 +592,20 @@ namespace Dynamo.ViewModels
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
 
-            OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
-            ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
+            #region File Handling Commands
+
+            OpenCommand = new DelegateCommand(Open, CanOpen);
+            OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
+            SaveCommand = new DelegateCommand(Save, CanSave);
+            SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
+            ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
+            ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
+            SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
+            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
+
+            #endregion
+
             WriteToLogCmd = new DelegateCommand(_model.WriteToLog, _model.CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(_model.PostUIActivation, _model.CanDoPostUIActivation);
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
@@ -602,9 +616,6 @@ namespace Dynamo.ViewModels
             GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
-            ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
-            SaveCommand = new DelegateCommand(_model.Save, _model.CanSave);
-            SaveAsCommand = new DelegateCommand(_model.SaveAs, _model.CanSaveAs);
             HomeCommand = new DelegateCommand(_model.Home, _model.CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
@@ -613,9 +624,6 @@ namespace Dynamo.ViewModels
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
-            ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
-            SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
-            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
@@ -651,7 +659,6 @@ namespace Dynamo.ViewModels
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
-            OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
 
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
@@ -833,15 +840,121 @@ namespace Dynamo.ViewModels
             return fileDialog;
         }
 
-        public void OpenRecent(object path)
+        /// <summary>
+        /// Open a definition or workspace.
+        /// </summary>
+        /// <param name="parameters">The path the the file.</param>
+        private void Open(object parameters)
         {
-            var p = path as string;
-            this.Model.Open(p);
+            string xmlFilePath = parameters as string;
+            ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
         }
 
-        public bool CanOpenRecent(object path)
+        private bool CanOpen(object parameters)
+        {
+            var filePath = parameters as string;
+            return ((!string.IsNullOrEmpty(filePath)) && File.Exists(filePath));
+        }
+
+        /// <summary>
+        /// Present the open dialogue and open the workspace that is selected.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ShowOpenDialogAndOpenResult(object parameter)
+        {
+            if (Model.HomeSpace.HasUnsavedChanges)
+            {
+                if (!AskUserToSaveWorkspaceOrCancel(Model.HomeSpace))
+                    return;
+            }
+
+            FileDialog _fileDialog = new OpenFileDialog()
+            {
+                Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*",
+                Title = "Open Dynamo Definition..."
+            };
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+            {
+                var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+            else // use the samples directory, if it exists
+            {
+                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+                string location = Path.GetDirectoryName(dynamoAssembly.Location);
+                string path = Path.Combine(location, "samples");
+
+                if (Directory.Exists(path))
+                    _fileDialog.InitialDirectory = path;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (CanOpen(_fileDialog.FileName))
+                    Open(_fileDialog.FileName);
+            }
+        }
+
+        private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
             return true;
+        }
+
+        private void OpenRecent(object path)
+        {
+            this.Open(path as string);
+        }
+
+        private bool CanOpenRecent(object path)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to save an the current workspace.
+        /// Assumes that workspace has already been saved.
+        /// </summary>
+        private void Save(object parameter)
+        {
+            if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+                SaveAs(Model.CurrentWorkspace.FileName);
+        }
+
+        private bool CanSave(object parameter)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Save the current workspace.
+        /// </summary>
+        /// <param name="parameters">The file path.</param>
+        private void SaveAs(object parameters)
+        {
+            var filePath = parameters as string;
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            var fi = new FileInfo(filePath);
+            SaveAs(fi.FullName);
+        }
+
+        internal bool CanSaveAs(object parameters)
+        {
+            return (parameters != null);
+        }
+
+        /// <summary>
+        /// Save the current workspace to a specific file path, if the path is null 
+        /// or empty, does nothing. If successful, the CurrentWorkspace.FileName
+        /// field is updated as a side effect.
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        internal void SaveAs(string path)
+        {
+            Model.CurrentWorkspace.SaveAs(path);
         }
 
         public virtual bool RunInDebug
@@ -1050,8 +1163,8 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (_model.CanSave(parameter))
-                    _model.Save(parameter);
+                if (CanSave(parameter))
+                    Save(parameter);
             }
         }
 
@@ -1080,7 +1193,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                _model.SaveAs(_fileDialog.FileName);
+                SaveAs(_fileDialog.FileName);
             }
         }
 

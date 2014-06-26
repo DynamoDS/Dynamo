@@ -10,12 +10,10 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddTwoInputsWithPython()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string graph = Path.Combine(_testPath, @".\Python\Python_add.dyn");
             string testPath = Path.GetFullPath(graph);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 

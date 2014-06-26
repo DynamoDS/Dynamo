@@ -597,9 +597,9 @@ namespace Dynamo.PackageManager
             }
             else // use the definitions directory
             {
-                if (Directory.Exists(DynamoPaths.Definitions))
+                if (Directory.Exists(DynamoPathManager.Instance.UserDefinitions))
                 {
-                    fDialog.InitialDirectory = DynamoPaths.Definitions;
+                    fDialog.InitialDirectory = DynamoPathManager.Instance.UserDefinitions;
                 }
             }
 

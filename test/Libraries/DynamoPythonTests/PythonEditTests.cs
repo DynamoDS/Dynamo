@@ -22,7 +22,7 @@ namespace Dynamo.Tests
             // open file
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var workspace = model.CurrentWorkspace;
@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             // open file
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
@@ -78,7 +78,7 @@ namespace Dynamo.Tests
             // open file
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
@@ -97,7 +97,7 @@ namespace Dynamo.Tests
             // open file
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();

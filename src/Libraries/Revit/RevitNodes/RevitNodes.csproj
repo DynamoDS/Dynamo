@@ -27,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\bin\AnyCPU\Debug\RevitNodes.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -37,13 +37,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\bin\AnyCPU\Release\RevitNodes.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\..\..\extern\mathnet-numerics-build\debug\Net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
@@ -112,6 +109,7 @@
     <Compile Include="Elements\Views\Packing\OutOfSpaceException.cs" />
     <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
     <Compile Include="GeometryConversion\HermiteToNurbs.cs" />
+    <Compile Include="GeometryConversion\NurbsUtils.cs" />
     <Compile Include="GeometryConversion\RevitToProtoSolid.cs" />
     <Compile Include="GeometryConversion\SurfaceExtractor.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
@@ -119,12 +117,13 @@
     <Compile Include="GeometryConversion\RevitToProtoFace.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
+    <Compile Include="GeometryConversion\UnitConverter.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
     <Compile Include="GeometryReferences\ElementGeometryReference.cs" />
     <Compile Include="GeometryReferences\ElementFaceReference.cs" />
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />
     <Compile Include="Elements\Family.cs" />
-    <Compile Include="GeometryConversion\Extensions.cs" />
+    <Compile Include="GeometryConversion\GeometryPrimitiveConverter.cs" />
     <Compile Include="GeometryReferences\RayBounce.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Elements\Parameter.cs" />

@@ -12,20 +12,8 @@ using ModelCurve = Revit.Elements.ModelCurve;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FormTests : RevitNodeTestBase
+    public class FormTests : GeometricRevitNodeTest
     {
-        [SetUp]
-        public override void Setup()
-        {
-            HostFactory.Instance.StartUp();
-        }
-         
-        [TearDown]
-        public override void TearDown()
-        {
-            HostFactory.Instance.ShutDown();
-        }
-
         [Test]
         [TestModel(@".\modelLines.rfa")]
         public void ByLoftingCurveReferences_ValidArgs()

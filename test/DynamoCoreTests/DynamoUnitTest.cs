@@ -7,6 +7,9 @@ using Dynamo.Interfaces;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using DynamoUtilities;
+
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
@@ -56,13 +59,14 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
-            var logger = new DynamoLogger();
+            var corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            DynamoPathManager.Instance.InitializeCore(corePath);
+
+            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
             dynSettings.DynamoLogger = logger;
 
             var updateManager = new UpdateManager.UpdateManager(logger);
-
-            var corePath =
-                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             ////create a new instance of the ViewModel
             Controller = new DynamoController(Context.NONE, updateManager,
@@ -81,8 +85,9 @@ namespace Dynamo.Tests
         /// <param name="visualizationManager"></param>
         protected void StartDynamo(IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences, IVisualizationManager visualizationManager)
         {
-            var corePath =
-                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            DynamoPathManager.Instance.InitializeCore(corePath);
 
             //create a new instance of the ViewModel
             Controller = new DynamoController(Context.NONE, updateManager, watchHandler, preferences, corePath);
@@ -105,7 +110,7 @@ namespace Dynamo.Tests
             string exampleFilePath, IEnumerable<KeyValuePair<Guid, object>> tests)
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.Open(exampleFilePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(exampleFilePath);
 
             dynSettings.Controller.RunExpression(null);
 
