@@ -16,6 +16,7 @@ namespace DSRevitNodesTests
             if (resolverSetup) return;
             AppDomain.CurrentDomain.AssemblyResolve += ResolveProtoGeometry;
             AppDomain.CurrentDomain.AssemblyResolve += ResolveDynamoUnits;
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveDSNodeServices;
             resolverSetup = true;
         }
 
@@ -31,6 +32,15 @@ namespace DSRevitNodesTests
             if (!args.Name.Contains("ProtoGeometry")) return null;
 
             var assemPath = Path.Combine(GetDynamoRootDirectory(), "ProtoGeometry.dll");
+
+            return File.Exists(assemPath) ? Assembly.LoadFrom(assemPath) : null;
+        }
+
+        private static Assembly ResolveDSNodeServices(object sender, ResolveEventArgs args)
+        {
+            if (!args.Name.Contains("DSNodeServices")) return null;
+
+            var assemPath = Path.Combine(GetDynamoRootDirectory(), "DSNodeServices.dll");
 
             return File.Exists(assemPath) ? Assembly.LoadFrom(assemPath) : null;
         }
