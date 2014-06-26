@@ -13,20 +13,15 @@ namespace DynamoCrypto
         /// private key, if one is available.
         /// </summary>
         /// <param name="keyContainerName">The key container name.</param>
+        /// <param name="certificate">An X509Certificate2 object containing a private key.</param>
         /// <returns>A byte array of the private key.</returns>
-        public static byte[] FindCertificateAndGetPrivateKey(string keyContainerName)
+        public static byte[] GetPrivateKeyFromCertificate(X509Certificate2 certificate)
         {
             byte[] privateBlob;
 
-            X509Certificate2 cer = FindCertificate(keyContainerName);
-            if (cer == null)
+            if (certificate.HasPrivateKey)
             {
-                return null;
-            }
-
-            if (cer.HasPrivateKey)
-            {
-                var dsa = cer.PrivateKey as DSACryptoServiceProvider;
+                var dsa = certificate.PrivateKey as DSACryptoServiceProvider;
 
                 if (dsa == null)
                 {
@@ -52,16 +47,11 @@ namespace DynamoCrypto
         /// public key, if one is available.
         /// </summary>
         /// <param name="keyContainerName">The key container name.</param>
-        /// <returns>A byte array of the the public key.</returns>
-        public static byte[] FindCertificateAndGetPublicKey(string keyContainerName)
+        /// <param name="certificate">A X509Certificate2 object containing a public key.</param>
+        /// <returns>A byte array of the the public key or null if the certificate does not contain a public key.</returns>
+        public static byte[] GetPublicKeyFromCertificate(X509Certificate2 certificate)
         {
-            X509Certificate2 cer = FindCertificate(keyContainerName);
-            if (cer == null)
-            {
-                return null;
-            }
-
-            var dsa = cer.PublicKey.Key as DSACryptoServiceProvider;
+            var dsa = certificate.PublicKey.Key as DSACryptoServiceProvider;
 
             if (dsa == null)
             {
@@ -162,11 +152,11 @@ namespace DynamoCrypto
         /// </summary>
         /// <param name="keyContainerName">The key container name.</param>
         /// <returns>An X509Certificate2 or null if no certificate can be found.</returns>
-        private static X509Certificate2 FindCertificate(string keyContainerName)
+        public static X509Certificate2 FindCertificateForCurrentUser(string keyContainerName)
         {
             // Look for the Dynamo certificate in the certificate store. 
             // http://stackoverflow.com/questions/6304773/how-to-get-x509certificate-from-certificate-store-and-generate-xml-signature-dat
-            var store = new X509Store(StoreLocation.LocalMachine);
+            var store = new X509Store(StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly);
             var cers = store.Certificates.Find(X509FindType.FindBySubjectName, keyContainerName, false);
 
@@ -184,13 +174,14 @@ namespace DynamoCrypto
         /// <summary>
         /// Install a certificate in the local machine certificate store.
         /// </summary>
-        /// <param name="certPath"></param>
-        public static void InstallCertificate(string certPath)
+        /// <param name="certPath">The installed certificate.</param>
+        public static X509Certificate2 InstallCertificateForCurrentUser(string certPath)
         {
-            var store = new X509Store(StoreLocation.LocalMachine);
+            var store = new X509Store(StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadWrite);
             var cert = new X509Certificate2(certPath);
             store.Add(cert);
+            return cert;
         }
     }
 }

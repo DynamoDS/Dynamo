@@ -11,6 +11,11 @@ using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.UI;
 using System.Xml.Linq;
+
+using DynamoCrypto;
+
+using DynamoUtilities;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UpdateManager
@@ -493,16 +498,39 @@ namespace Dynamo.UpdateManager
                 logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
             }
 
-            // Check the download against an installed certificate.
-            var pubKey = DynamoCrypto.Utils.FindCertificateAndGetPublicKey("Dynamo");
-            if (pubKey.Length == 0)
+            // Attempt to find the Dynamo certificate.
+            var cert = Utils.FindCertificateForCurrentUser("Dynamo");
+
+            // If the certificate can't be found, install it
+            // in the current user's certificate store.
+            if (cert == null)
             {
-                // Certificate could not be found
+                var certPath = Path.Combine(DynamoPathManager.Instance.MainExecPath, "Dynamo.cer");
+                if (!File.Exists(certPath))
+                {
+                    logger.Log("The Dynamo certificate could not be found. Update cancelled.");
+                    return;
+                }
+
+                cert = DynamoCrypto.Utils.InstallCertificateForCurrentUser(certPath);
+            }
+
+            if (cert == null)
+            {
+                logger.Log("There was a problem with the security certificate. Update cancelled.");
+                return;
+            }
+
+            // Check the download against an installed certificate.
+            var pubKey = DynamoCrypto.Utils.GetPublicKeyFromCertificate(cert);
+            if (pubKey == null)
+            {
                 logger.Log("Could not verify the update download");
                 return;
             }
 
-            DynamoCrypto.Utils.VerifyFile(UpdateFileLocation, )
+            // Verify the file
+            //DynamoCrypto.Utils.VerifyFile(UpdateFileLocation, )
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));

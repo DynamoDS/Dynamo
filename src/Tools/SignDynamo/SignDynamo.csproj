@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4F9EF46A-9219-468D-A3F5-CA51C5C2FEE4}</ProjectGuid>
+    <ProjectGuid>{A84E15A2-6735-4575-A1DA-7C64AF7582B1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InstallCert</RootNamespace>
-    <AssemblyName>InstallCert</AssemblyName>
+    <RootNamespace>SignDynamo</RootNamespace>
+    <AssemblyName>SignDynamo</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NDesk.Options">
+      <HintPath>..\..\..\extern\ndesk-options\NDesk.Options.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,7 +51,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
+    <ProjectReference Include="..\..\DynamoCrypto\DynamoCrypto.csproj">
       <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
       <Name>DynamoCrypto</Name>
     </ProjectReference>

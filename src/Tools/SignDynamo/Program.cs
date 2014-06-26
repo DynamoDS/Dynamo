@@ -21,11 +21,16 @@ namespace SignDynamo
                 Console.ReadKey();
             }
 
-            privateBlob = Utils.FindCertificateAndGetPrivateKey(keyContainerName);
+            var cert = Utils.FindCertificateForCurrentUser(keyContainerName);
+            if (cert == null)
+            {
+                return;
+            }
+
+            privateBlob = Utils.GetPrivateKeyFromCertificate(cert);
             if (privateBlob == null)
             {
-                Console.WriteLine("Press any key to quit.");
-                Console.ReadKey();
+                return;
             }
 
             var sigPath = Path.Combine(Path.GetDirectoryName(installerPath),
