@@ -166,7 +166,7 @@ namespace DynamoCrypto
         {
             // Look for the Dynamo certificate in the certificate store. 
             // http://stackoverflow.com/questions/6304773/how-to-get-x509certificate-from-certificate-store-and-generate-xml-signature-dat
-            var store = new X509Store(StoreLocation.CurrentUser);
+            var store = new X509Store(StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadOnly);
             var cers = store.Certificates.Find(X509FindType.FindBySubjectName, keyContainerName, false);
 
@@ -179,6 +179,18 @@ namespace DynamoCrypto
 
             cer = cers[0];
             return cer;
+        }
+
+        /// <summary>
+        /// Install a certificate in the local machine certificate store.
+        /// </summary>
+        /// <param name="certPath"></param>
+        private static void InstallCertificate(string certPath)
+        {
+            var store = new X509Store(StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadWrite);
+            var cert = new X509Certificate2(certPath);
+            store.Add(cert);
         }
     }
 }
