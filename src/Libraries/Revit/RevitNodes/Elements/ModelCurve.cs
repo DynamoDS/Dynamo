@@ -146,6 +146,8 @@ namespace Revit.Elements
                 throw new ArgumentNullException("curve");
             }
 
+
+
             return new ModelCurve(curve.ToRevitType(), false);
         }
 
@@ -160,6 +162,9 @@ namespace Revit.Elements
            {
               throw new ArgumentNullException("curve");
            }
+
+            if (!Document.IsFamilyDocument)
+                throw new Exception("Revit can only create a ReferenceCurve in a family document!");
 
            return new ModelCurve(curve.ToRevitType(), true);
         }
@@ -325,9 +330,7 @@ namespace Revit.Elements
         {
             Plane plane = GetPlaneFromCurve(c, false);
             Autodesk.Revit.DB.SketchPlane sp = null;
-            sp = Document.IsFamilyDocument ?
-                Document.FamilyCreate.NewSketchPlane(plane) :
-                Document.Create.NewSketchPlane(plane);
+            sp = Autodesk.Revit.DB.SketchPlane.Create(Document, plane);
 
             return sp;
         }
