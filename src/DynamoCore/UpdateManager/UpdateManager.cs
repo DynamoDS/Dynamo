@@ -493,6 +493,17 @@ namespace Dynamo.UpdateManager
                 logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
             }
 
+            // Check the download against an installed certificate.
+            var pubKey = DynamoCrypto.Utils.FindCertificateAndGetPublicKey("Dynamo");
+            if (pubKey.Length == 0)
+            {
+                // Certificate could not be found
+                logger.Log("Could not verify the update download");
+                return;
+            }
+
+            DynamoCrypto.Utils.VerifyFile(UpdateFileLocation, )
+
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
         }
