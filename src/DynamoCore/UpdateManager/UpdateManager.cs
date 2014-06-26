@@ -740,7 +740,7 @@ namespace Dynamo.UpdateManager
             try
             {
                 downloadedFileName = Path.GetFileName(url);
-                downloadedFilePath = Path.Combine(Path.GetTempPath(), downloadedFileName);
+                downloadedFilePath = Path.Combine(DynamoPathManager.Instance.Updates, downloadedFileName);
 
                 if (File.Exists(downloadedFilePath))
                     File.Delete(downloadedFilePath);
