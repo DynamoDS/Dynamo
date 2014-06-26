@@ -251,8 +251,6 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void GraphFunctionAndConnectPointsSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function and connect points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
@@ -264,7 +262,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1) != null);
             Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2) != null);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -283,12 +281,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void ScalableGraphFunctionSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -307,8 +303,6 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void GraphFunctionSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
@@ -316,7 +310,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
             Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath) != null);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
             double noOfNdoes = nodes.Count();
@@ -333,12 +327,10 @@ namespace Dynamo.Tests
         [TestModel(@"..\..\..\doc\distrib\Samples\08 Get Set Family Params\inst param.rvt")]
         public void InstParamSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
             double noOfNdoes = nodes.Count();
@@ -355,12 +347,10 @@ namespace Dynamo.Tests
         [TestModel(@"..\..\..\doc\distrib\Samples\08 Get Set Family Params\inst param mass families.rvt")]
         public void InstParam2MassesSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -378,12 +368,10 @@ namespace Dynamo.Tests
         [TestModel(@"..\..\..\doc\distrib\Samples\08 Get Set Family Params\inst param mass families.rvt")]
         public void InstParam2MassesDrivingEachOtherSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -412,7 +400,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\10 Attractor\Attractor Logic_End.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -439,7 +427,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\10 Attractor\Attractor Logic_Start.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -466,7 +454,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\11 Indexed Family Instances\Indexed Family Instances.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -493,7 +481,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\18 Adaptive Components\Adaptive Component Placement.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -520,7 +508,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\2dDomain.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -552,7 +540,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation with coincident grids.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -580,7 +568,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -608,7 +596,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation_types.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -636,7 +624,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\17 Transforms\Translate and Rotate sequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -664,7 +652,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\17 Transforms\Translate and Rotate.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -692,7 +680,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\19 Formulas\FormulaCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -720,7 +708,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\19 Formulas\Scalable Circle.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -747,7 +735,7 @@ namespace Dynamo.Tests
 
             string samplePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\Excel to Stuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -787,7 +775,7 @@ namespace Dynamo.Tests
 
             string samplePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\CSV to Stuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -849,7 +837,7 @@ namespace Dynamo.Tests
 
 
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -903,7 +891,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test model curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -931,7 +919,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -959,7 +947,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -987,7 +975,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -1015,7 +1003,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -1043,7 +1031,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -1071,7 +1059,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\circle.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -1099,7 +1087,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\ellipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -1131,7 +1119,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays without python.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -1158,7 +1146,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
@@ -1175,7 +1163,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
@@ -1193,7 +1181,7 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);

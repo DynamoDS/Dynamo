@@ -26,7 +26,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
@@ -169,7 +169,7 @@ namespace Dynamo.Tests
         {
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
-            model.Open(Path.Combine(examplePath, "collapse-number-chain.dyn"));
+            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-number-chain.dyn"));
 
             // Ensure all the nodes we are looking for are actually there.
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
@@ -298,7 +298,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             var nodesToCollapse = new[]
             {
@@ -349,7 +349,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
 
             string openPath = Path.Combine(examplePath, "reduce-example.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
@@ -393,7 +393,7 @@ namespace Dynamo.Tests
                 != null);
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
@@ -462,7 +462,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "multi-custom.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression();
 
@@ -490,7 +490,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression();
 

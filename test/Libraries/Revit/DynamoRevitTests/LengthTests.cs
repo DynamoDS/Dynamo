@@ -12,12 +12,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Length()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Length\Length.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
     }

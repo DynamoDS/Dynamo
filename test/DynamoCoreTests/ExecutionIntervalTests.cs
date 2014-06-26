@@ -14,11 +14,10 @@ namespace Dynamo
         [Test]
         public void EvalTwiceAndCancel()
         {
-            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\executioninterval\");
 
             string openPath = Path.Combine(examplePath, "pause.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             int runCount = 0;
 
