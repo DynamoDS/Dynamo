@@ -1179,9 +1179,7 @@ namespace ProtoFFI
         public FFIClassAttributes(Type type)
         {
             if (type == null)
-            {
                 throw new ArgumentNullException("type");
-            }
 
             attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray(); 
             foreach (var attr in attributes)
@@ -1207,6 +1205,9 @@ namespace ProtoFFI
 
         public FFIMethodAttributes(MethodInfo method)
         {
+            if (method == null)
+                throw new ArgumentException("method");
+
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;
             if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
