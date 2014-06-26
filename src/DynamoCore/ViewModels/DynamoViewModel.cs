@@ -863,6 +863,7 @@ namespace Dynamo.ViewModels
         {
             string xmlFilePath = parameters as string;
             ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            this.ShowStartPage = false; // Hide start page if there's one.
         }
 
         private bool CanOpen(object parameters)
@@ -1314,6 +1315,7 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = this.Model.HomeSpace;
 
                 _model.Clear(null);
+                this.ShowStartPage = false; // Hide start page if there's one.
             }
         }
 

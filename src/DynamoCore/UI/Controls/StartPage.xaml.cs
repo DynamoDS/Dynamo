@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -52,11 +53,18 @@ namespace Dynamo.UI.Controls
         }
     }
 
+    struct CommandNames
+    {
+        public const string NewWorkspace = "NewWorkspace";
+        public const string OpenWorkspace = "OpenWorkspace";
+    }
+
     /// <summary>
     /// Interaction logic for StartPage.xaml
     /// </summary>
     public partial class StartPage : UserControl
     {
+        private DynamoViewModel dynamoViewModel = null;
         private ObservableCollection<StartPageListItem> fileList = null;
         private ObservableCollection<StartPageListItem> recentList = null;
         private ObservableCollection<StartPageListItem> sampleList = null;
@@ -67,6 +75,13 @@ namespace Dynamo.UI.Controls
         public StartPage()
         {
             InitializeComponent();
+        }
+
+        public StartPage(DynamoViewModel dynamoViewModel)
+        {
+            InitializeComponent();
+
+            this.dynamoViewModel = dynamoViewModel;
             this.Loaded += OnStartPageLoaded;
         }
 
@@ -83,11 +98,11 @@ namespace Dynamo.UI.Controls
             {
                 new StartPageListItem("New", "icon-new.png")
                 {
-                    ContextData = "NewCommand"
+                    ContextData = CommandNames.NewWorkspace
                 },
                 new StartPageListItem("Open", "icon-open.png")
                 {
-                    ContextData = "OpenCommand"
+                    ContextData = CommandNames.OpenWorkspace
                 }
             };
 
@@ -151,8 +166,14 @@ namespace Dynamo.UI.Controls
 
             var referenceListItems = new StartPageListItem[]
             {
-                new StartPageListItem("Dynamo reference", "icon-reference.png"),
+                new StartPageListItem("PDF Tutorials", "icon-reference.png")
+                {
+                    ContextData = Configurations.DynamoPdfTutorials
+                },
                 new StartPageListItem("Video tutorials", "icon-video.png")
+                {
+                    ContextData = Configurations.DynamoVideoTutorials
+                }
             };
 
             foreach (var item in referenceListItems)
@@ -210,10 +231,27 @@ namespace Dynamo.UI.Controls
                     HandleExternalUrl(selected);
                     break;
             }
+
+            var listBox = sender as ListBox;
+            listBox.SelectedIndex = -1;
         }
 
         private void HandleRegularCommand(StartPageListItem item)
         {
+            switch (item.ContextData)
+            {
+                case CommandNames.NewWorkspace:
+                    dynamoViewModel.NewHomeWorkspaceCommand.Execute(null);
+                    break;
+
+                case CommandNames.OpenWorkspace:
+                    dynamoViewModel.ShowOpenDialogAndOpenResultCommand.Execute(null);
+                    break;
+
+                default:
+                    throw new ArgumentException(
+                        string.Format("Invalid command: {0}", item.ContextData));
+            }
         }
 
         private void HandleFilePath(StartPageListItem item)

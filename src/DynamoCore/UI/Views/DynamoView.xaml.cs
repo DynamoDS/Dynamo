@@ -250,7 +250,7 @@ namespace Dynamo.Controls
             if (DynamoController.IsTestMode) // No start screen in unit testing.
                 return;
 
-            StartPage startPage = new StartPage();
+            StartPage startPage = new StartPage(DataContext as DynamoViewModel);
             startPage.SetValue(Grid.RowProperty, 2);
             startPage.SetValue(Grid.RowSpanProperty, 4);
             startPage.SetValue(Grid.ColumnProperty, 0);
