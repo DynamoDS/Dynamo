@@ -185,7 +185,7 @@ namespace DynamoCrypto
         /// Install a certificate in the local machine certificate store.
         /// </summary>
         /// <param name="certPath"></param>
-        private static void InstallCertificate(string certPath)
+        public static void InstallCertificate(string certPath)
         {
             var store = new X509Store(StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadWrite);
