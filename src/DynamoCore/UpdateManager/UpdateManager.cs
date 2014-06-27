@@ -65,6 +65,7 @@ namespace Dynamo.UpdateManager
         BinaryVersion Version { get; set; }
         string VersionInfoURL { get; set; }
         string InstallerURL { get; set; }
+        string SignatureURL { get; set; }
     }
 
     /// <summary>
@@ -85,6 +86,7 @@ namespace Dynamo.UpdateManager
         public BinaryVersion Version { get; set; }
         public string VersionInfoURL { get; set; }
         public string InstallerURL { get; set; }
+        public string SignatureURL { get; set; }
     }
 
     /// <summary>
@@ -320,7 +322,10 @@ namespace Dynamo.UpdateManager
                         //by the vsisibility of the download cloud. The most up to date version will
                         //be downloaded asynchronously.
                         logger.Log("Update download started...");
-                        DownloadUpdatePackageAsynchronously(updateInfo.InstallerURL, updateInfo.Version);
+
+                        var tempPath = Path.GetTempPath();
+                        DownloadUpdatePackageAsynchronously(updateInfo.InstallerURL, updateInfo.Version, tempPath);
+                        DownloadSignatureFileAsynchronously(updateInfo.SignatureURL, tempPath);
                     }
                     break;
             }
@@ -376,6 +381,9 @@ namespace Dynamo.UpdateManager
             // and compare it with the current product version.
 
             var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFilePath);
+            var latestBuildSignatureUrl = Path.Combine(
+                Configurations.UpdateSignatureLocation,
+                Path.GetFileNameWithoutExtension(latestBuildFilePath) + ".sig");
 
             BinaryVersion latestBuildVersion;
             var latestBuildTime = new DateTime();
@@ -414,7 +422,7 @@ namespace Dynamo.UpdateManager
             // is newer than the current build.
             if (ForceUpdate)
             {
-                SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
+                SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl, latestBuildSignatureUrl);
             }
             else
             {
@@ -422,7 +430,7 @@ namespace Dynamo.UpdateManager
                 {
                     if (latestBuildVersion > ProductVersion)
                     {
-                        SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl);
+                        SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl, latestBuildSignatureUrl);
                     }
                     else
                     {
@@ -433,7 +441,7 @@ namespace Dynamo.UpdateManager
                 {
                     if (latestBuildTime > DateTime.Now)
                     {
-                        SetUpdateInfo(GetCurrentBinaryVersion(), latestBuildDownloadUrl);
+                        SetUpdateInfo(GetCurrentBinaryVersion(), latestBuildDownloadUrl, latestBuildSignatureUrl);
                     }
                     else
                     {
@@ -467,6 +475,10 @@ namespace Dynamo.UpdateManager
             {
                 if (File.Exists(UpdateFileLocation))
                     Process.Start(UpdateFileLocation);
+
+                var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var updater = Path.Combine(currDir, "InstallUpdate.exe");
+                Process.Start(updater);
             }
         }
 
@@ -493,42 +505,8 @@ namespace Dynamo.UpdateManager
             if (e.Error == null)
             {
                 UpdateFileLocation = (string)e.UserState;
-                logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
+                //logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
             }
-
-            // Attempt to find the Dynamo certificate.
-            var cert = Utils.FindCertificateForCurrentUser("Dynamo", StoreLocation.CurrentUser);
-
-            // If the certificate can't be found, install it
-            // in the current user's certificate store.
-            if (cert == null)
-            {
-                var certPath = Path.Combine(DynamoPathManager.Instance.MainExecPath, "Dynamo.cer");
-                if (!File.Exists(certPath))
-                {
-                    logger.Log("The Dynamo certificate could not be found. Update cancelled.");
-                    return;
-                }
-
-                cert = DynamoCrypto.Utils.InstallCertificateForCurrentUser(certPath);
-            }
-
-            if (cert == null)
-            {
-                logger.Log("There was a problem with the security certificate. Update cancelled.");
-                return;
-            }
-
-            // Check the download against an installed certificate.
-            var pubKey = DynamoCrypto.Utils.GetPublicKeyFromCertificate(cert);
-            if (pubKey == null)
-            {
-                logger.Log("Could not verify the update download");
-                return;
-            }
-
-            // Verify the file
-            //DynamoCrypto.Utils.VerifyFile(UpdateFileLocation, )
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
@@ -668,13 +646,14 @@ namespace Dynamo.UpdateManager
             return BinaryVersion.FromString(string.Format("{0}.{1}.{2}.0", major, minor, build));
         }
 
-        private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl)
+        private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl, string signatureUrl)
         {
             UpdateInfo = new AppVersionInfo()
             {
                 Version = latestBuildVersion,
                 VersionInfoURL = Configurations.UpdateDownloadLocation,
-                InstallerURL = latestBuildDownloadUrl
+                InstallerURL = latestBuildDownloadUrl,
+                SignatureURL = signatureUrl
             };
         }
 
@@ -723,7 +702,7 @@ namespace Dynamo.UpdateManager
         /// <param name="url">Web URL for file to download.</param>
         /// <param name="version">The version of package that is to be downloaded.</param>
         /// <returns>Request status, it may return false if invalid URL was passed.</returns>
-        private bool DownloadUpdatePackageAsynchronously(string url, BinaryVersion version)
+        private bool DownloadUpdatePackageAsynchronously(string url, BinaryVersion version, string tempPath)
         {
             currentDownloadProgress = -1;
 
@@ -740,7 +719,7 @@ namespace Dynamo.UpdateManager
             try
             {
                 downloadedFileName = Path.GetFileName(url);
-                downloadedFilePath = Path.Combine(DynamoPathManager.Instance.Updates, downloadedFileName);
+                downloadedFilePath = Path.Combine(tempPath, downloadedFileName);
 
                 if (File.Exists(downloadedFilePath))
                     File.Delete(downloadedFilePath);
@@ -754,6 +733,35 @@ namespace Dynamo.UpdateManager
             var client = new WebClient();
             client.DownloadProgressChanged += client_DownloadProgressChanged;
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(OnDownloadFileCompleted);
+            client.DownloadFileAsync(new Uri(url), downloadedFilePath, downloadedFilePath);
+            return true;
+        }
+
+        /// <summary>
+        /// Async call to download the signature file.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private bool DownloadSignatureFileAsynchronously(string url, string tempPath)
+        {
+            string downloadedFileName = string.Empty;
+            string downloadedFilePath = string.Empty;
+
+            try
+            {
+                downloadedFileName = Path.GetFileName(url);
+                downloadedFilePath = Path.Combine(tempPath, downloadedFileName);
+
+                if (File.Exists(downloadedFilePath))
+                    File.Delete(downloadedFilePath);
+            }
+            catch (Exception)
+            {
+                versionCheckInProgress = false;
+                return false;
+            }
+
+            var client = new WebClient();
             client.DownloadFileAsync(new Uri(url), downloadedFilePath, downloadedFilePath);
             return true;
         }
