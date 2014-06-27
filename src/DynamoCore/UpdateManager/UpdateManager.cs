@@ -505,7 +505,7 @@ namespace Dynamo.UpdateManager
             if (e.Error == null)
             {
                 UpdateFileLocation = (string)e.UserState;
-                //logger.Log(string.Format("Update download complete. Update available at {0}", UpdateFileLocation));
+                logger.Log(string.Format("Update download complete."));
             }
 
             if (null != UpdateDownloaded)
