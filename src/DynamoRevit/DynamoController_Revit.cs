@@ -41,6 +41,12 @@ namespace Dynamo
         /// </summary>
         private Assembly singleSignOnAssembly;
 
+        /// <summary>
+        ///     Flag for syncing up document switches between Application.DocumentClosing and
+        ///     Application.DocumentClosed events.
+        /// </summary>
+        private bool updateCurrentUIDoc;
+
         public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager, string corePath)
             : base(
                 context,
@@ -53,6 +59,8 @@ namespace Dynamo
 
             dynRevitSettings.Controller = this;
 
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosing +=
+                Application_DocumentClosing;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
                 Application_DocumentClosed;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
@@ -213,6 +221,15 @@ namespace Dynamo
             }
         }
 
+        private void Application_DocumentClosing(object sender, DocumentClosingEventArgs e)
+        {
+            // ReSharper disable once PossibleUnintendedReferenceComparison
+            if (DocumentManager.Instance.CurrentDBDocument == e.Document)
+            {
+                updateCurrentUIDoc = true;
+            }
+        }
+
         /// <summary>
         /// Handler for Revit's DocumentClosed event.
         /// This handler is called when a document is closed.
@@ -236,10 +253,11 @@ namespace Dynamo
             {
                 // If Dynamo's active UI document's document is the one that was just closed
                 // then set Dynamo's active UI document to whatever revit says is active.
-                if (DocumentManager.Instance.CurrentUIDocument.Document == null)
+                if (updateCurrentUIDoc)
                 {
-                    DocumentManager.Instance.CurrentUIDocument =
-                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                    updateCurrentUIDoc = false;
+                    DocumentManager.Instance.CurrentUIDocument = 
+                        DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 }
             }
         }
