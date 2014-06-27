@@ -66,7 +66,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetDescription()); }
         }
 
         public string Description
@@ -201,7 +201,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetSummary()); }
         }
 
         /// <summary>
