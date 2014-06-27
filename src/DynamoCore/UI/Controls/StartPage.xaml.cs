@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -81,11 +82,19 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
 
-            this.dynamoViewModel = dynamoViewModel;
             this.Loaded += OnStartPageLoaded;
+            this.dynamoViewModel = dynamoViewModel;
+            this.dynamoViewModel.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
 
-        void OnStartPageLoaded(object sender, RoutedEventArgs e)
+        #region Private Class Event Handlers
+
+        private void OnRecentFilesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RefreshRecentFileList(sender as IEnumerable<string>);
+        }
+
+        private void OnStartPageLoaded(object sender, RoutedEventArgs e)
         {
             fileList = new ObservableCollection<StartPageListItem>();
             recentList = new ObservableCollection<StartPageListItem>();
@@ -110,21 +119,6 @@ namespace Dynamo.UI.Controls
             {
                 item.ClickAction = StartPageListItem.Action.RegularCommand;
                 this.fileList.Add(item);
-            }
-
-            var recentListItems = new StartPageListItem[]
-            {
-                new StartPageListItem("ImportUsingSat"),
-                new StartPageListItem("door_movable-copy"),
-                new StartPageListItem("door_movable"),
-                new StartPageListItem("test file"),
-                new StartPageListItem("doormovable")
-            };
-
-            foreach (var item in recentListItems)
-            {
-                item.ClickAction = StartPageListItem.Action.FilePath;
-                this.recentList.Add(item);
             }
 
             var sampleListItems = new StartPageListItem[]
@@ -200,6 +194,8 @@ namespace Dynamo.UI.Controls
                 this.codeList.Add(item);
             }
 
+            RefreshRecentFileList(dynamoViewModel.RecentFiles);
+
             this.filesListBox.ItemsSource = fileList;
             this.recentListBox.ItemsSource = recentList;
             this.samplesListBox.ItemsSource = sampleList;
@@ -236,6 +232,24 @@ namespace Dynamo.UI.Controls
             listBox.SelectedIndex = -1;
         }
 
+        #endregion
+
+        #region Private Class Helper Methods
+
+        private void RefreshRecentFileList(IEnumerable<string> recentFiles)
+        {
+            recentList.Clear();
+            foreach (var recentFile in recentFiles)
+            {
+                var caption = System.IO.Path.GetFileNameWithoutExtension(recentFile);
+                recentList.Add(new StartPageListItem(caption)
+                {
+                    ContextData = recentFile,
+                    ClickAction = StartPageListItem.Action.FilePath
+                });
+            }
+        }
+
         private void HandleRegularCommand(StartPageListItem item)
         {
             switch (item.ContextData)
@@ -262,5 +276,7 @@ namespace Dynamo.UI.Controls
         {
             System.Diagnostics.Process.Start(item.ContextData);
         }
+
+        #endregion
     }
 }
