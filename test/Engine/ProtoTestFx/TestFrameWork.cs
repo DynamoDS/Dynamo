@@ -64,8 +64,7 @@ namespace ProtoTestFx.TD
             {
                  testImport = false;
             }
-            //Console.WriteLine("CONFIG:\t" + cfgImport);
-            //Console.WriteLine("CONFIG:\t" + cfgDebug);
+
             if (cfgDebug)
             {
                 testImport = cfgDebug;

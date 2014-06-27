@@ -216,12 +216,6 @@ namespace ProtoTestFx
                     try
                     {
                         runValue = runExecMirror.GetGlobalValue(symNode.name);
-
-                        //This operation is very time consuming, and does not provide
-                        //usefully information while running the test cases.
-                        //Comment this line out to save running time.
-                        //Console.WriteLine(symNode.name + ": " + runValue);
-                        
                         lookupOk = true;
 
                     }

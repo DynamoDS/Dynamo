@@ -44,8 +44,8 @@ namespace ProtoTestConsoleRunner
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
 #if DEBUG
-            core.Options.DumpByteCode = false;
-            core.Options.Verbose = false;
+            core.Options.DumpByteCode = true;
+            core.Options.Verbose = true;
 #else
             core.Options.DumpByteCode = false;
             core.Options.Verbose = false;
