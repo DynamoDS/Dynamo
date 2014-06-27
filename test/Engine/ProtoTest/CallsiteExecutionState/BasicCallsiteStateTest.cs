@@ -24,7 +24,7 @@ namespace ProtoTest.CallsiteState
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            testCore.Options.Verbose = true;
+            testCore.Options.Verbose = false;
             testCore.EnableCallsiteExecutionState = true;
 
             return testCore;
