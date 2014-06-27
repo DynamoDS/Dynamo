@@ -52,128 +52,132 @@
 
         <!-- Begin inner grid control for all other list boxes -->
 
-        <Grid Name="innerGrid"
-              Grid.Row="2"
-              HorizontalAlignment="Center">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="285"></ColumnDefinition>
-                <ColumnDefinition Width="110"></ColumnDefinition>
-                <ColumnDefinition Width="285"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                      HorizontalAlignment="Stretch"
+                      Grid.Row="2">
 
-            <!-- Left rows of list boxes -->
+            <Grid Name="innerGrid"
+                  HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="285"></ColumnDefinition>
+                    <ColumnDefinition Width="110"></ColumnDefinition>
+                    <ColumnDefinition Width="285"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
-            <StackPanel Name="leftPanel"
-                        Grid.Column="0"
-                        Orientation="Vertical">
+                <!-- Left rows of list boxes -->
 
-                <Border BorderThickness="0,0,0,1"
-                        BorderBrush="#dfd8cf">
-                    <TextBlock Text="FILES"
-                               FontSize="13"
-                               FontFamily="{StaticResource OpenSansRegular}"
-                               Foreground="#3395a2"
-                               Margin="0,0,12,0"
-                               HorizontalAlignment="Right" />
-                </Border>
+                <StackPanel Name="leftPanel"
+                            Grid.Column="0"
+                            Orientation="Vertical">
 
-                <ListBox Name="filesListBox"
-                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}"
-                         SelectionChanged="OnItemSelectionChanged">
-                </ListBox>
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="FILES"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#3395a2"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
 
-                <Border BorderThickness="0,0,0,1"
-                        BorderBrush="#dfd8cf">
-                    <TextBlock Text="RECENT"
-                               FontSize="13"
-                               FontFamily="{StaticResource OpenSansRegular}"
-                               Foreground="#62895b"
-                               Margin="0,0,12,0"
-                               HorizontalAlignment="Right" />
-                </Border>
+                    <ListBox Name="filesListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
 
-                <ListBox Name="recentListBox"
-                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}"
-                         SelectionChanged="OnItemSelectionChanged">
-                </ListBox>
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="RECENT"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#62895b"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
 
-                <Border BorderThickness="0,0,0,1"
-                        BorderBrush="#dfd8cf">
-                    <TextBlock Text="SAMPLES"
-                               FontSize="13"
-                               FontFamily="{StaticResource OpenSansRegular}"
-                               Foreground="#5e8f80"
-                               Margin="0,0,12,0"
-                               HorizontalAlignment="Right" />
-                </Border>
+                    <ListBox Name="recentListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
 
-                <ListBox Name="samplesListBox"
-                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}"
-                         SelectionChanged="OnItemSelectionChanged">
-                </ListBox>
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="SAMPLES"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#5e8f80"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
 
-            </StackPanel>
+                    <ListBox Name="samplesListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
 
-            <!-- Right rows of list boxes -->
+                </StackPanel>
 
-            <StackPanel Name="rightPanel"
-                        Grid.Column="2"
-                        Orientation="Vertical">
+                <!-- Right rows of list boxes -->
 
-                <Border BorderThickness="0,0,0,1"
-                        BorderBrush="#dfd8cf">
-                    <TextBlock Text="ASK"
-                               FontSize="13"
-                               FontFamily="{StaticResource OpenSansRegular}"
-                               Foreground="#a55553"
-                               Margin="0,0,12,0"
-                               HorizontalAlignment="Right" />
-                </Border>
+                <StackPanel Name="rightPanel"
+                            Grid.Column="2"
+                            Orientation="Vertical">
 
-                <ListBox Name="askListBox"
-                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}"
-                         SelectionChanged="OnItemSelectionChanged">
-                </ListBox>
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="ASK"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#a55553"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
 
-                <Border BorderThickness="0,0,0,1"
-                        BorderBrush="#dfd8cf">
-                    <TextBlock Text="REFERENCE"
-                               FontSize="13"
-                               FontFamily="{StaticResource OpenSansRegular}"
-                               Foreground="#6f4c76"
-                               Margin="0,0,12,0"
-                               HorizontalAlignment="Right" />
-                </Border>
+                    <ListBox Name="askListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
 
-                <ListBox Name="referenceListBox"
-                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}"
-                         SelectionChanged="OnItemSelectionChanged">
-                </ListBox>
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="REFERENCE"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#6f4c76"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
 
-                <Border BorderThickness="0,0,0,1"
-                        BorderBrush="#dfd8cf">
-                    <TextBlock Text="CODE"
-                               FontSize="13"
-                               FontFamily="{StaticResource OpenSansRegular}"
-                               Foreground="#4b9dbf"
-                               Margin="0,0,12,0"
-                               HorizontalAlignment="Right" />
-                </Border>
+                    <ListBox Name="referenceListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
 
-                <ListBox Name="codeListBox"
-                         ItemContainerStyle="{StaticResource StartPageListBoxItem}"
-                         Style="{StaticResource StartPageListBox}"
-                         SelectionChanged="OnItemSelectionChanged">
-                </ListBox>
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="CODE"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#4b9dbf"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
 
-            </StackPanel>
+                    <ListBox Name="codeListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
 
-        </Grid>
+                </StackPanel>
+
+            </Grid>
+        </ScrollViewer>
 
     </Grid>
 </UserControl>

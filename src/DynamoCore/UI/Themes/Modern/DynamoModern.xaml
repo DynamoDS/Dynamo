@@ -1284,7 +1284,8 @@
                                        VerticalAlignment="Center" />
                             <TextBlock Text="{Binding SubScript}"
                                        Margin="16,0,0,0"
-                                       FontSize="14"
+                                       Foreground="#888"
+                                       FontSize="10"
                                        FontFamily="{StaticResource OpenSansRegular}"
                                        VerticalAlignment="Center" />
                         </StackPanel>

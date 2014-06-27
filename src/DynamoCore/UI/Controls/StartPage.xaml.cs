@@ -233,11 +233,13 @@ namespace Dynamo.UI.Controls
             recentList.Clear();
             foreach (var recentFile in recentFiles)
             {
+                var extension = Path.GetExtension(recentFile).ToUpper();
                 var caption = Path.GetFileNameWithoutExtension(recentFile);
                 recentList.Add(new StartPageListItem(caption)
                 {
                     ContextData = recentFile,
                     ToolTip = recentFile,
+                    SubScript = extension.Substring(1), // Skipping the 'dot'
                     ClickAction = StartPageListItem.Action.FilePath
                 });
             }
