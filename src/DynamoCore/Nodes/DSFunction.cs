@@ -393,57 +393,73 @@ namespace Dynamo.Nodes
 
                 if (undefinedOutputs || !IsPartiallyApplied)
                 {
+                    //first thing in the result
                     resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
                 }
 
-                resultAst.AddRange(
-                    Enumerable.Range(0, OutPortData.Count)
-                        .Select(
-                            outputIdx =>
-                                undefinedOutputs
-                                    ? AstIdentifierForPreview
-                                    : new IdentifierNode(AstIdentifierForPreview)
-                                    {
-                                        ArrayDimensions =
-                                            new ArrayNode
-                                            {
-                                                Expr = AstFactory.BuildStringNode(
-                                                    Definition.ReturnKeys.ElementAt(
-                                                        outputIdx))
-                                            }
-                                    }));
-
-                if (!undefinedOutputs && IsPartiallyApplied)
+                if (!undefinedOutputs)
                 {
-                    var tmp = AstFactory.BuildIdentifier("__partial_" + GUID.ToString().Replace('-', '_'));
-                    resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
+                    // declare each return key
                     resultAst.AddRange(
                         Enumerable.Range(0, OutPortData.Count)
                             .Select(
                                 outputIdx =>
-                                    AstFactory.BuildAssignment(
-                                        GetAstIdentifierForOutputIndex(outputIdx),
-                                        AstFactory.BuildFunctionCall(
-                                            "__Compose",
-                                            new List<AssociativeNode>
+                                    new IdentifierNode(AstIdentifierForPreview)
+                                    {
+                                        ArrayDimensions =
+                                            new ArrayNode
                                             {
-                                                AstFactory.BuildExprList(
-                                                    new List<AssociativeNode>
-                                                    {
-                                                        AstFactory.BuildFunctionObject(
-                                                            "__GetOutput",
-                                                            2,
-                                                            new[] { 1 },
-                                                            new List<AssociativeNode>
-                                                            {
-                                                                AstFactory.BuildNullNode(),
-                                                                AstFactory.BuildStringNode(
-                                                                    Definition.ReturnKeys.ElementAt(
-                                                                        outputIdx))
-                                                            }),
-                                                        tmp
-                                                    })
-                                            }))));
+                                                Expr =
+                                                    AstFactory.BuildStringNode(
+                                                        Definition.ReturnKeys.ElementAt(outputIdx))
+                                            }
+                                    }));
+
+
+                    if (IsPartiallyApplied)
+                    {
+                        var missingAmt = Enumerable.Range(0, InPortData.Count).Count(x => !HasInput(x));
+
+                        var tmp =
+                            AstFactory.BuildIdentifier(
+                                "__partial_" + GUID.ToString().Replace('-', '_'));
+                        resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
+                        resultAst.AddRange(
+                            Enumerable.Range(0, OutPortData.Count)
+                                .Select(
+                                    outputIdx =>
+                                        AstFactory.BuildAssignment(
+                                            GetAstIdentifierForOutputIndex(outputIdx),
+                                            AstFactory.BuildFunctionObject(
+                                                "__ComposeBuffered",
+                                                3,
+                                                new[] { 0, 1 },
+                                                new List<AssociativeNode>
+                                                {
+                                                    AstFactory.BuildExprList(
+                                                        new List<AssociativeNode>
+                                                        {
+                                                            AstFactory.BuildFunctionObject(
+                                                                "__GetOutput",
+                                                                2,
+                                                                new[] { 1 },
+                                                                new List<AssociativeNode>
+                                                                {
+                                                                    AstFactory.BuildNullNode
+                                                                    (),
+                                                                    AstFactory
+                                                                    .BuildStringNode(
+                                                                        Definition
+                                                                            .ReturnKeys
+                                                                            .ElementAt(
+                                                                                outputIdx))
+                                                                }),
+                                                                tmp
+                                                        }),
+                                                    AstFactory.BuildIntNode(missingAmt),
+                                                    AstFactory.BuildNullNode()
+                                                }))));
+                    }
                 }
             }
             return resultAst;
@@ -794,10 +810,10 @@ namespace Dynamo.Nodes
                     break;
             }
 
-            resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
-
             if (OutPortData.Count == 1)
             {
+                resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
+
                 var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
                 string outputIdentifier = outputIdentiferNode.ToString();
                 string thisIdentifier = AstIdentifierForPreview.ToString();
@@ -811,26 +827,76 @@ namespace Dynamo.Nodes
             {
                 var undefinedOutputs = Definition.ReturnKeys == null || !Definition.ReturnKeys.Any();
 
-                resultAst.AddRange(
-                    Enumerable.Range(0, OutPortData.Count)
-                              .Select(
-                                  outputIdx =>
-                                      undefinedOutputs
-                                          ? AstIdentifierForPreview
-                                          : new IdentifierNode(AstIdentifierForPreview)
-                                          {
-                                              ArrayDimensions =
-                                                  new ArrayNode
-                                                  {
-                                                      Expr =
-                                                          new StringNode
-                                                          {
-                                                              value =
-                                                                  Definition.ReturnKeys.ElementAt(
-                                                                      outputIdx)
-                                                          }
-                                                  }
-                                          }));
+                if (undefinedOutputs || !IsPartiallyApplied)
+                {
+                    //first thing in the result
+                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
+                }
+
+                if (!undefinedOutputs)
+                {
+                    // declare each return key
+                    resultAst.AddRange(
+                        Enumerable.Range(0, OutPortData.Count)
+                            .Select(
+                                outputIdx =>
+                                    new IdentifierNode(AstIdentifierForPreview)
+                                    {
+                                        ArrayDimensions =
+                                            new ArrayNode
+                                            {
+                                                Expr =
+                                                    AstFactory.BuildStringNode(
+                                                        Definition.ReturnKeys.ElementAt(outputIdx))
+                                            }
+                                    }));
+
+
+                    if (IsPartiallyApplied)
+                    {
+                        var missingAmt = Enumerable.Range(0, InPortData.Count).Count(x => !HasInput(x));
+
+                        var tmp =
+                            AstFactory.BuildIdentifier(
+                                "__partial_" + GUID.ToString().Replace('-', '_'));
+                        resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
+                        resultAst.AddRange(
+                            Enumerable.Range(0, OutPortData.Count)
+                                .Select(
+                                    outputIdx =>
+                                        AstFactory.BuildAssignment(
+                                            GetAstIdentifierForOutputIndex(outputIdx),
+                                            AstFactory.BuildFunctionObject(
+                                                "__ComposeBuffered",
+                                                3,
+                                                new[] { 0, 1 },
+                                                new List<AssociativeNode>
+                                                {
+                                                    AstFactory.BuildExprList(
+                                                        new List<AssociativeNode>
+                                                        {
+                                                            AstFactory.BuildFunctionObject(
+                                                                "__GetOutput",
+                                                                2,
+                                                                new[] { 1 },
+                                                                new List<AssociativeNode>
+                                                                {
+                                                                    AstFactory.BuildNullNode
+                                                                    (),
+                                                                    AstFactory
+                                                                    .BuildStringNode(
+                                                                        Definition
+                                                                            .ReturnKeys
+                                                                            .ElementAt(
+                                                                                outputIdx))
+                                                                }),
+                                                                tmp
+                                                        }),
+                                                    AstFactory.BuildIntNode(missingAmt),
+                                                    AstFactory.BuildNullNode()
+                                                }))));
+                    }
+                }
             }
 
             return resultAst;

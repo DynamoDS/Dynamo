@@ -345,9 +345,10 @@ namespace Dynamo.Nodes
         {
             var proxyDef = new CustomNodeDefinition(funcId)
             {
-                WorkspaceModel = new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null }
+                WorkspaceModel =
+                    new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null },
+                IsProxy = true
             };
-            proxyDef.IsProxy = true;
 
             string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
 
