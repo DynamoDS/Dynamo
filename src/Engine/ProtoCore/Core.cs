@@ -1006,10 +1006,6 @@ namespace ProtoCore
         // unlike the codeblocklist which only stores the outer most code blocks
         public List<CodeBlock> CompleteCodeBlockList { get; set; }
 
-
-
-        // TODO Jun: Refactor this and similar indices into a logical grouping of block incrementing variables 
-
         /// <summary>
         /// ForLoopBlockIndex tracks the current number of new for loop blocks created at compile time for every new compile phase
         /// It is reset for delta compilation

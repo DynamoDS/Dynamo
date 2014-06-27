@@ -86,20 +86,6 @@ namespace ProtoImperative
         private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
         {
             ProtoCore.DSASM.CodeBlock cb = null;
-
-            // If the codeBlockindex is greater than the size of the codeblockList then it means that this imperative codeblock already exists
-            // Just retrieve it
-            //if (core.CodeBlockList.Count > 1 && core.CodeBlockList.Count <= core.CodeBlockIndex)
-            //{
-            //    // find the codeblock of this imperative block
-            //    cb = core.CodeBlockList[core.DeltaCodeBlockIndex];
-            //    core.DeltaCodeBlockIndex++;
-            //}
-            //else
-            //{
-            //    cb = BuildNewCodeBlock();
-            //}
-
             cb = BuildNewCodeBlock();
             Validity.Assert(null != cb);
             return cb;
