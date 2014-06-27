@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -13,7 +14,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Dynamo.UI.Controls
 {
@@ -241,7 +241,7 @@ namespace Dynamo.UI.Controls
             recentList.Clear();
             foreach (var recentFile in recentFiles)
             {
-                var caption = System.IO.Path.GetFileNameWithoutExtension(recentFile);
+                var caption = Path.GetFileNameWithoutExtension(recentFile);
                 recentList.Add(new StartPageListItem(caption)
                 {
                     ContextData = recentFile,
@@ -270,6 +270,15 @@ namespace Dynamo.UI.Controls
 
         private void HandleFilePath(StartPageListItem item)
         {
+            var path = item.ContextData;
+            if (string.IsNullOrEmpty(path) || (File.Exists(path) == false))
+            {
+                MessageBox.Show(string.Format("File not found: {0}", path));
+                return;
+            }
+
+            if (dynamoViewModel.OpenCommand.CanExecute(path))
+                dynamoViewModel.OpenCommand.Execute(path);
         }
 
         private void HandleExternalUrl(StartPageListItem item)
