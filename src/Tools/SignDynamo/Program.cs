@@ -18,6 +18,7 @@ namespace SignDynamo
         {
             if (!ParseArguments(args))
             {
+                Console.WriteLine("Could not parse the input arguments.");
                 Console.WriteLine("Press any key to quit.");
                 Console.ReadKey();
                 return;
@@ -39,6 +40,8 @@ namespace SignDynamo
                 Path.GetFileNameWithoutExtension(installerPath) + ".sig");
 
             Utils.SignFile(installerPath, sigPath, privateBlob);
+
+            Console.WriteLine("Signature generation complete.");
         }
 
         private static bool ParseArguments(IEnumerable<string> args)
