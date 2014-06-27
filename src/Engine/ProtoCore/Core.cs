@@ -1008,11 +1008,6 @@ namespace ProtoCore
 
 
 
-        /// <summary>
-        /// The delta codeblock index tracks the current number of new language blocks created at compile time for every new compile phase
-        /// </summary>
-        public int DeltaCodeBlockIndex { get; set; }
-
         // TODO Jun: Refactor this and similar indices into a logical grouping of block incrementing variables 
 
         /// <summary>
@@ -1280,7 +1275,6 @@ namespace ProtoCore
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
-            DeltaCodeBlockIndex = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             // Jun this is where the temp solutions starts for implementing language blocks in delta execution
