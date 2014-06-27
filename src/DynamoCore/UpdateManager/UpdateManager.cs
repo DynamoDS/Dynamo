@@ -7,6 +7,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
@@ -473,12 +474,12 @@ namespace Dynamo.UpdateManager
         {
             if (!string.IsNullOrEmpty(UpdateFileLocation))
             {
-                if (File.Exists(UpdateFileLocation))
-                    Process.Start(UpdateFileLocation);
-
                 var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 var updater = Path.Combine(currDir, "InstallUpdate.exe");
-                Process.Start(updater);
+                if (File.Exists(updater))
+                {
+                    Process.Start(updater, UpdateFileLocation);
+                }
             }
         }
 
