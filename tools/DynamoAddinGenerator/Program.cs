@@ -9,8 +9,16 @@ namespace DynamoAddinGenerator
 {
     class Program
     {
+        private static string debugPath = string.Empty;
+
         static void Main(string[] args)
         {
+            if (args.Length > 0)
+            {
+                // First argument should be the debug assembly path
+                debugPath = args[0];
+            }
+
             var allProducts = RevitProductUtility.GetAllInstalledRevitProducts();
             var prodColl = new RevitProductCollection(allProducts.Select(x=>new DynamoRevitProduct(x)));
             if (!prodColl.Products.Any())
@@ -19,7 +27,7 @@ namespace DynamoAddinGenerator
                 return;
             }
 
-            var installs = DynamoInstallCollection.FindDynamoInstalls();
+            var installs = DynamoInstallCollection.FindDynamoInstalls(debugPath);
             var dynamoColl = new DynamoInstallCollection(installs);
             if (!dynamoColl.Installs.Any())
             {

@@ -12,12 +12,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rvt")]
         public void TopographyFromPoints()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Topography\TopographyFromPoints.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -25,12 +23,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Topography\topography.rvt")]
         public void PointsFromTopography()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Topography\PointsFromTopography.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
     }
