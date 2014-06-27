@@ -168,6 +168,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand SaveAsCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
+        public DelegateCommand CloseHomeWorkspaceCommand { get; set; }
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
@@ -633,6 +634,7 @@ namespace Dynamo.ViewModels
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             HomeCommand = new DelegateCommand(_model.Home, _model.CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
+            CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(_model.Delete, _model.CanDelete);
             ExitCommand = new DelegateCommand(Exit, CanExit);
@@ -1308,6 +1310,45 @@ namespace Dynamo.ViewModels
 
         public void MakeNewHomeWorkspace(object parameter)
         {
+            if (ClearHomeWorkspaceInternal())
+                this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
+        internal bool CanMakeNewHomeWorkspace(object parameter)
+        {
+            return true;
+        }
+
+        private void CloseHomeWorkspace(object parameter)
+        {
+            if (ClearHomeWorkspaceInternal())
+            {
+                // If after closing the HOME workspace, and there are no other custom 
+                // workspaces opened at the time, then we should show the start page.
+                this.ShowStartPage = (Model.Workspaces.Count <= 1);
+            }
+        }
+
+        private bool CanCloseHomeWorkspace(object parameter)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// TODO(Ben): Both "CloseHomeWorkspace" and "MakeNewHomeWorkspace" are 
+        /// quite close in terms of functionality, but because their callers 
+        /// have different expectations in different scenarios, they remain 
+        /// separate now. A new task has been scheduled for them to be unified 
+        /// into one consistent way of handling.
+        /// 
+        ///     http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3813
+        /// 
+        /// </summary>
+        /// <returns>Returns true if the home workspace has been saved and 
+        /// cleared, or false otherwise.</returns>
+        /// 
+        private bool ClearHomeWorkspaceInternal()
+        {
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
             if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
@@ -1315,13 +1356,10 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = this.Model.HomeSpace;
 
                 _model.Clear(null);
-                this.ShowStartPage = false; // Hide start page if there's one.
+                return true;
             }
-        }
 
-        internal bool CanMakeNewHomeWorkspace(object parameter)
-        {
-            return true;
+            return false;
         }
 
         public void Exit(object allowCancel)
