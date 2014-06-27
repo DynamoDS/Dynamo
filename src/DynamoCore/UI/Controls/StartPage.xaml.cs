@@ -66,12 +66,7 @@ namespace Dynamo.UI.Controls
     public partial class StartPage : UserControl
     {
         private DynamoViewModel dynamoViewModel = null;
-        private ObservableCollection<StartPageListItem> fileList = null;
         private ObservableCollection<StartPageListItem> recentList = null;
-        private ObservableCollection<StartPageListItem> sampleList = null;
-        private ObservableCollection<StartPageListItem> askList = null;
-        private ObservableCollection<StartPageListItem> referenceList = null;
-        private ObservableCollection<StartPageListItem> codeList = null;
 
         public StartPage()
         {
@@ -81,6 +76,7 @@ namespace Dynamo.UI.Controls
         public StartPage(DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
+            this.recentList = new ObservableCollection<StartPageListItem>();
 
             this.Loaded += OnStartPageLoaded;
             this.dynamoViewModel = dynamoViewModel;
@@ -96,112 +92,104 @@ namespace Dynamo.UI.Controls
 
         private void OnStartPageLoaded(object sender, RoutedEventArgs e)
         {
-            fileList = new ObservableCollection<StartPageListItem>();
-            recentList = new ObservableCollection<StartPageListItem>();
-            sampleList = new ObservableCollection<StartPageListItem>();
-            askList = new ObservableCollection<StartPageListItem>();
-            referenceList = new ObservableCollection<StartPageListItem>();
-            codeList = new ObservableCollection<StartPageListItem>();
-
-            var fileListItems = new StartPageListItem[]
+            var fileList = new List<StartPageListItem>();
             {
-                new StartPageListItem("New", "icon-new.png")
+                fileList.Add(new StartPageListItem("New", "icon-new.png")
                 {
-                    ContextData = CommandNames.NewWorkspace
-                },
-                new StartPageListItem("Open", "icon-open.png")
-                {
-                    ContextData = CommandNames.OpenWorkspace
-                }
-            };
+                    ContextData = CommandNames.NewWorkspace,
+                    ClickAction = StartPageListItem.Action.RegularCommand
+                });
 
-            foreach (var item in fileListItems)
-            {
-                item.ClickAction = StartPageListItem.Action.RegularCommand;
-                this.fileList.Add(item);
+                fileList.Add(new StartPageListItem("Open", "icon-open.png")
+                {
+                    ContextData = CommandNames.OpenWorkspace,
+                    ClickAction = StartPageListItem.Action.RegularCommand
+                });
+
+                filesListBox.ItemsSource = fileList;
             }
 
-            var sampleListItems = new StartPageListItem[]
+            var sampleList = new List<StartPageListItem>();
             {
-                new StartPageListItem("Abstract cubes"),
-                new StartPageListItem("Attractor circles"),
-                new StartPageListItem("Parametric bridge"),
-                new StartPageListItem("Rotated bricks"),
-                new StartPageListItem("Shading devices")
-            };
+                sampleList.Add(new StartPageListItem("Abstract cubes"));
+                sampleList.Add(new StartPageListItem("Attractor circles"));
+                sampleList.Add(new StartPageListItem("Parametric bridge"));
+                sampleList.Add(new StartPageListItem("Rotated bricks"));
+                sampleList.Add(new StartPageListItem("Shading devices"));
 
-            foreach (var item in sampleListItems)
-            {
-                item.ClickAction = StartPageListItem.Action.FilePath;
-                this.sampleList.Add(item);
+                sampleList.ForEach((x) =>
+                {
+                    x.ClickAction = StartPageListItem.Action.FilePath;
+                });
+
+                this.samplesListBox.ItemsSource = sampleList;
             }
 
-            var askListItems = new StartPageListItem[]
+            var askList = new List<StartPageListItem>();
             {
-                new StartPageListItem("Discussion forum", "icon-discussion.png")
+                askList.Add(new StartPageListItem("Discussion forum", "icon-discussion.png")
                 {
-                    ContextData = Configurations.DynamoBimForum
-                },
-                new StartPageListItem("email team@dynamobim.org", "icon-email.png")
-                {
-                    ContextData = Configurations.DynamoTeamEmail
-                },
-                new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
-                {
-                    ContextData = Configurations.DynamoSiteLink
-                }
-            };
+                    ContextData = Configurations.DynamoBimForum,
+                    ClickAction = StartPageListItem.Action.ExternalUrl
+                });
 
-            foreach (var item in askListItems)
-            {
-                item.ClickAction = StartPageListItem.Action.ExternalUrl;
-                this.askList.Add(item);
+                askList.Add(new StartPageListItem("email team@dynamobim.org", "icon-email.png")
+                {
+                    ContextData = Configurations.DynamoTeamEmail,
+                    ClickAction = StartPageListItem.Action.ExternalUrl
+                });
+
+                askList.Add(new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
+                {
+                    ContextData = Configurations.DynamoSiteLink,
+                    ClickAction = StartPageListItem.Action.ExternalUrl
+                });
+
+                this.askListBox.ItemsSource = askList;
             }
 
-            var referenceListItems = new StartPageListItem[]
+            var referenceList = new List<StartPageListItem>();
             {
-                new StartPageListItem("PDF Tutorials", "icon-reference.png")
+                referenceList.Add(new StartPageListItem("PDF Tutorials", "icon-reference.png")
                 {
                     ContextData = Configurations.DynamoPdfTutorials
-                },
-                new StartPageListItem("Video tutorials", "icon-video.png")
+                });
+
+                referenceList.Add(new StartPageListItem("Video tutorials", "icon-video.png")
                 {
                     ContextData = Configurations.DynamoVideoTutorials
-                }
-            };
+                });
 
-            foreach (var item in referenceListItems)
-            {
-                item.ClickAction = StartPageListItem.Action.ExternalUrl;
-                this.referenceList.Add(item);
+                referenceList.ForEach((x) =>
+                {
+                    x.ClickAction = StartPageListItem.Action.ExternalUrl;
+                });
+
+                this.referenceListBox.ItemsSource = referenceList;
             }
 
-            var codeListItems = new StartPageListItem[]
+            var codeList = new List<StartPageListItem>();
             {
-                new StartPageListItem("Github repository", "icon-github.png")
+                codeList.Add(new StartPageListItem("Github repository", "icon-github.png")
                 {
                     ContextData = Configurations.GitHubDynamoLink
-                },
-                new StartPageListItem("Send issues", "icon-issues.png")
+                });
+
+                codeList.Add(new StartPageListItem("Send issues", "icon-issues.png")
                 {
                     ContextData = Configurations.GitHubBugReportingLink
-                }
-            };
+                });
 
-            foreach (var item in codeListItems)
-            {
-                item.ClickAction = StartPageListItem.Action.ExternalUrl;
-                this.codeList.Add(item);
+                codeList.ForEach((x) =>
+                {
+                    x.ClickAction = StartPageListItem.Action.ExternalUrl;
+                });
+
+                this.codeListBox.ItemsSource = codeList;
             }
 
             RefreshRecentFileList(dynamoViewModel.RecentFiles);
-
-            this.filesListBox.ItemsSource = fileList;
             this.recentListBox.ItemsSource = recentList;
-            this.samplesListBox.ItemsSource = sampleList;
-            this.askListBox.ItemsSource = askList;
-            this.referenceListBox.ItemsSource = referenceList;
-            this.codeListBox.ItemsSource = codeList;
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
