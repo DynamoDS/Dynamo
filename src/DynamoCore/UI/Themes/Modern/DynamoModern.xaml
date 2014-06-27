@@ -1268,7 +1268,10 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Grid>
+                    <Grid Background="Transparent">
+                        <Grid.ToolTip>
+                            <Binding Path="ToolTip" />
+                        </Grid.ToolTip>
                         <StackPanel Orientation="Horizontal">
                             <Image Width="31"
                                    Margin="5,0,14,0"
