@@ -15,7 +15,7 @@ def report_progress( bytes_so_far, total_bytes ):
 	
 	print "Upload progress: %.2f mb / %.2f mb ( %.2f percent )" % (mb(bytes_so_far), mb(total_bytes), 100 * float(bytes_so_far)/total_bytes)
 
-def upload_installer(fn, prefix, include_date, is_dev_build, extension):
+def upload_installer(fn, prefix, include_date, is_dev_build, extension, date_string):
 
 	s3 = boto.connect_s3()
 
@@ -32,7 +32,7 @@ def upload_installer(fn, prefix, include_date, is_dev_build, extension):
 
 	k = Key(b)
 	
-	key = 'daily/' + prefix + '.' + date_string() + extension if include_date else 'daily/' + prefix + extension
+	key = 'daily/' + prefix + '.' + date_string + extension if include_date else 'daily/' + prefix + extension
 	
 	k.key = os.path.basename( key )
 
