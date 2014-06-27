@@ -83,6 +83,26 @@ namespace Dynamo.UI.Controls
             this.dynamoViewModel.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
 
+        internal void PopulateSampleFileList(IEnumerable<string> filePaths)
+        {
+            if (filePaths == null || (filePaths.Count() <= 0))
+                return;
+
+            var sampleList = new List<StartPageListItem>();
+            foreach (var filePath in filePaths)
+            {
+                var path = Path.GetFileNameWithoutExtension(filePath);
+                sampleList.Add(new StartPageListItem(path)
+                {
+                    ContextData = filePath,
+                    ToolTip = filePath,
+                    ClickAction = StartPageListItem.Action.FilePath
+                });
+            }
+
+            this.samplesListBox.ItemsSource = sampleList;
+        }
+
         #region Private Class Event Handlers
 
         private void OnRecentFilesChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -107,22 +127,6 @@ namespace Dynamo.UI.Controls
                 });
 
                 filesListBox.ItemsSource = fileList;
-            }
-
-            var sampleList = new List<StartPageListItem>();
-            {
-                sampleList.Add(new StartPageListItem("Abstract cubes"));
-                sampleList.Add(new StartPageListItem("Attractor circles"));
-                sampleList.Add(new StartPageListItem("Parametric bridge"));
-                sampleList.Add(new StartPageListItem("Rotated bricks"));
-                sampleList.Add(new StartPageListItem("Shading devices"));
-
-                sampleList.ForEach((x) =>
-                {
-                    x.ClickAction = StartPageListItem.Action.FilePath;
-                });
-
-                this.samplesListBox.ItemsSource = sampleList;
             }
 
             var askList = new List<StartPageListItem>();
@@ -233,6 +237,7 @@ namespace Dynamo.UI.Controls
                 recentList.Add(new StartPageListItem(caption)
                 {
                     ContextData = recentFile,
+                    ToolTip = recentFile,
                     ClickAction = StartPageListItem.Action.FilePath
                 });
             }

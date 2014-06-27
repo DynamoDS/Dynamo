@@ -1174,23 +1174,6 @@
 
         </WrapPanel>
 
-        <Canvas HorizontalAlignment="Stretch"
-              Margin="0,20,0,0"
-              Grid.Row="2"
-              Grid.Column="0"
-              Grid.RowSpan="3"
-              Grid.ColumnSpan="3"
-              Name="overlayCanvas" 
-              VerticalAlignment="Stretch" 
-              Width="Auto" 
-              IsHitTestVisible="{Binding IsUILocked}" 
-              PreviewMouseMove="OverlayCanvas_OnMouseMove"
-              Visibility="Visible" 
-                Cursor="{Binding IsUILocked, Converter={StaticResource BoolToCanvasCursorConverter}}"
-              ForceCursor="{Binding IsUILocked}">
-
-            </Canvas>
-
             <GridSplitter ResizeDirection="Rows" 
                         Grid.Column="2" 
                         Grid.ColumnSpan="1"

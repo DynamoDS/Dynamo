@@ -40,12 +40,9 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
 
-        private Point dragOffset;
-#pragma warning disable 649
-        private dynNodeView draggedNode;
-#pragma warning restore 649
-        private DynamoViewModel _vm;
-        private Stopwatch _timer;
+        private DynamoViewModel _vm = null;
+        private Stopwatch _timer = null;
+        private StartPage startPage = null;
 
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
@@ -250,11 +247,11 @@ namespace Dynamo.Controls
             if (DynamoController.IsTestMode) // No start screen in unit testing.
                 return;
 
-            StartPage startPage = new StartPage(DataContext as DynamoViewModel);
-            startPage.SetValue(Grid.RowProperty, 2);
-            startPage.SetValue(Grid.RowSpanProperty, 4);
-            startPage.SetValue(Grid.ColumnProperty, 0);
-            startPage.SetValue(Grid.ColumnSpanProperty, 3);
+            this.startPage = new StartPage(DataContext as DynamoViewModel);
+            this.startPage.SetValue(Grid.RowProperty, 2);
+            this.startPage.SetValue(Grid.RowSpanProperty, 4);
+            this.startPage.SetValue(Grid.ColumnProperty, 0);
+            this.startPage.SetValue(Grid.ColumnSpanProperty, 3);
 
             var visibilityBinding = new Binding("ShowStartPage")
             {
@@ -265,7 +262,7 @@ namespace Dynamo.Controls
             };
 
             startPage.SetBinding(UIElement.VisibilityProperty, visibilityBinding);
-            mainGrid.Children.Add(startPage);
+            mainGrid.Children.Add(this.startPage);
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
@@ -669,19 +666,6 @@ namespace Dynamo.Controls
             _vm.RequestAboutWindow -= _vm_RequestAboutWindow;
         }
 
-        private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
-        {
-            if (_vm.IsUILocked)
-                return;
-
-            dynNodeView el = draggedNode;
-
-            Point pos = e.GetPosition(overlayCanvas);
-
-            Canvas.SetLeft(el, pos.X - dragOffset.X);
-            Canvas.SetTop(el, pos.Y - dragOffset.Y);
-        }
-
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and
         // passes it to thecurrent workspace
@@ -744,6 +728,7 @@ namespace Dynamo.Controls
 
             if (Directory.Exists(samplesPath))
             {
+                var sampleFiles = new System.Collections.Generic.List<string>();
                 string[] dirPaths = Directory.GetDirectories(samplesPath);
                 string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
 
@@ -759,6 +744,7 @@ namespace Dynamo.Controls
                         };
                         item.Click += OpenSample_Click;
                         SamplesMenu.Items.Add(item);
+                        sampleFiles.Add(path);
                     }
                 }
 
@@ -785,14 +771,16 @@ namespace Dynamo.Controls
                                 };
                                 item.Click += OpenSample_Click;
                                 dirItem.Items.Add(item);
+                                sampleFiles.Add(path);
                             }
                         }
                         SamplesMenu.Items.Add(dirItem);
                     }
-                    return;
                 }
+
+                if (this.startPage != null)
+                    this.startPage.PopulateSampleFileList(sampleFiles);
             }
-            //this.fileMenu.Items.Remove(this.samplesMenu);
         }
 #endif
 
