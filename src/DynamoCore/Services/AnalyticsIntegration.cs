@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Services
 {
+
     public class AnalyticsIntegration
     {
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
@@ -19,6 +20,8 @@ namespace Dynamo.Services
  
         static AnalyticsIntegration()
         {
+            StabilityTracking.GetInstance();
+
 
             CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
                 "Dynamo", dynSettings.Controller.UpdateManager.ProductVersion.ToString());

@@ -49,6 +49,8 @@ namespace DynamoSandbox
                 {
                     dynSettings.Controller.IsCrashing = true;
                     AnalyticsIntegration.LogException(e);
+                    StabilityTracking.GetInstance().NotifyCrash();
+
 
                     // Show the unhandled exception dialog so user can copy the 
                     // crash details and report the crash if she chooses to.
