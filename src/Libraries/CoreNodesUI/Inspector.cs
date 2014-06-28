@@ -28,6 +28,39 @@ namespace DSCoreNodesUI
     [NodeDescription("Get a color given a color range.")]
     public class Inspector : VariableInputNode, IWpfNode
     {
+
+       public class combobox_selected_index_wrapper: INotifyPropertyChanged{
+
+            public combobox_selected_index_wrapper()
+            { 
+            
+            }
+
+        private int selectedIndex = 0;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                
+                selectedIndex = value;
+                NotifyPropertyChanged("SelectedIndex");
+            }
+        }
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+         }
+       
+
         private int numDropDowns = 1;
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
@@ -39,23 +72,20 @@ namespace DSCoreNodesUI
                 RaisePropertyChanged("Items");
             }
         }
-
-        private List<int> selectedIndicies = new List<int>() {-1};
-        public List<int> SelectedIndicies
+        private ObservableCollection<combobox_selected_index_wrapper> indicies = new ObservableCollection<combobox_selected_index_wrapper>();
+        public ObservableCollection<combobox_selected_index_wrapper> Indicies
         {
-            get { return selectedIndicies; }
+            get { return indicies; }
             set
             {
-                
-                
-                        dynSettings.DynamoLogger.Log(value.ToString());
-                        SelectedIndicies = value;
-                        RaisePropertyChanged("SelectedIndicies");
-                    
-                
-               
+                indicies = value;
+                RaisePropertyChanged("Indicies");
             }
         }
+       
+      
+
+        
 
         public List<ComboBox> comboboxes = new List<ComboBox>();
 
@@ -80,6 +110,7 @@ namespace DSCoreNodesUI
             // but that handler checks if IsUpdated is fired
             this.PropertyChanged += Inspector_PropertyChanged;
             
+            
         }
 
         void Inspector_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -90,7 +121,7 @@ namespace DSCoreNodesUI
             if (InPorts.Any(x => x.Connectors.Count == 0))
                 return;
 
-            OnRequestSelectChange(this, EventArgs.Empty);
+           // OnRequestSelectChange(this, EventArgs.Empty);
         }
         
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -108,7 +139,6 @@ namespace DSCoreNodesUI
         public void PopulateItems()
         {
             // getting the input object song and dance
-            // crash might be occuring here because input is not ready
             if (Inputs.Count > 0)
             {
 
@@ -158,9 +188,11 @@ namespace DSCoreNodesUI
         {
             // instead of actually adding an input
             // keep track of # of dropdowns
+            // create a new indexwrapper and store it
             // then call setupcustomUIelements on the UIdispatch thread.
             numDropDowns = numDropDowns + 1;
-            SelectedIndicies.Add(0);
+            combobox_selected_index_wrapper new_selected_index = new combobox_selected_index_wrapper();
+            indicies.Add(new_selected_index);
             RequiresRecalc = true;
             OnRequestSelectChange(this, EventArgs.Empty);
         }
@@ -170,7 +202,10 @@ namespace DSCoreNodesUI
             if (numDropDowns > 1)
             {
                 numDropDowns = numDropDowns - 1;
-                SelectedIndicies.RemoveAt(SelectedIndicies.Count - 1);
+                // not sure about this actually deleting the wrapper
+                var lastindex = indicies[indicies.Count - 1];
+                indicies.RemoveAt(indicies.Count - 1);
+
                 RequiresRecalc = true;
                 OnRequestSelectChange(this, EventArgs.Empty);
             }
@@ -202,58 +237,13 @@ namespace DSCoreNodesUI
         }
 
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public ComboBox gen_and_setup_combobox(WrapPanel wp)
         {
-              
-            
 
-
-           
-
-            //add a drop down list to the window
-            var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
-            //addButton.Height = 20;
-
-            var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
-            //subButton.Height = 20;
-
-            // first add all buttons
-            //
-
-            var wp = new WrapPanel
-            {
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                MaxWidth = 500,
-            };
-            wp.Children.Add(addButton);
-            wp.Children.Add(subButton);
-
-            nodeUI.inputGrid.Children.Add(wp);
-          
-            RequestSelectChange += delegate
-            {
-                DispatchOnUIThread(delegate
-                {
-                    // first populate all items list
-
-                    // delete existing combo boxes
-                    foreach (ComboBox combo in comboboxes)
-                    {
-
-                        wp.Children.Remove(combo);
-
-                    }
-                    comboboxes.Clear();
-                    PopulateItems();
-                    //clear the list of stored boxes
-
-                    // then build new combo boxes for each desired
-                    // this number is set by the user
-                    for (int i = 0; i < numDropDowns; i++)
-                    {
-                        
-                        var combo = new ComboBox
+            combobox_selected_index_wrapper new_selected_index = new combobox_selected_index_wrapper();
+            indicies.Add(new_selected_index);
+           int index_into_index = indicies.IndexOf(new_selected_index);
+            var combo = new ComboBox
                         {
                             Width = System.Double.NaN,
                             MinWidth = 100,
@@ -294,13 +284,85 @@ namespace DSCoreNodesUI
                         combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
 
                         //bind the selected index to the 
-                        var indexBinding = new Binding("SelectedIndex")
-                        {
+                        var indexBinding = new Binding()
+                        {  Path= new PropertyPath("Indicies[index_into_index].SelectedIndex"),
                             Mode = BindingMode.TwoWay,
                             Source = this
                         };
                         combo.SetBinding(Selector.SelectedIndexProperty, indexBinding);
+                       
+            return combo;            
+        }
+
+        public ComboBox remove_combo(WrapPanel wp)
+        {
+            // find the last combobox
+            var last = comboboxes[comboboxes.Count - 1];
+            //remove it from the wrap panel
+            wp.Children.Remove(last);
+            comboboxes.Remove(last);
+            // remove it's index from the list of indicies
+            indicies.RemoveAt(comboboxes.Count-1);
+            return last;
+
+        }
+
+
+
+
+
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        {
+
+
+
+
+
+
+            //add a drop down list to the window
+            var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
+            //addButton.Height = 20;
+
+            var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
+            //subButton.Height = 20;
+
+            // first add all buttons
+            //
+
+            var wp = new WrapPanel
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                MaxWidth = 500,
+            };
+            wp.Children.Add(addButton);
+            wp.Children.Add(subButton);
+
+            nodeUI.inputGrid.Children.Add(wp);
+
+            // add the first combobox
+            var firstcombo = gen_and_setup_combobox(wp);
+           
+
+            RequestSelectChange += delegate
+            {
+                DispatchOnUIThread(delegate
+                {
+                    // first populate all items list
+
+                    PopulateItems();
+                    if (comboboxes.Count < numDropDowns)
+                    {
+                        var cur_combo_box = gen_and_setup_combobox(wp);
                     }
+                    else if (comboboxes.Count > numDropDowns)
+                    {
+                        ComboBox removed_combo = remove_combo(wp);
+
+
+                    }
+
+
                 });
             };
         }
