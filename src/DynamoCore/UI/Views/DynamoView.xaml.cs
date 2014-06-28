@@ -252,12 +252,12 @@ namespace Dynamo.Controls
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
                     var camera1 = background_preview.View.CameraController;
-                    camera1.Zoom(background_preview.View.ZoomSensitivity * 0.5);
+                    camera1.Zoom(-0.5 * background_preview.View.ZoomSensitivity);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
                     var camera2 = background_preview.View.CameraController;
-                    camera2.Zoom(-background_preview.View.ZoomSensitivity * 0.5);
+                    camera2.Zoom(0.5 * background_preview.View.ZoomSensitivity);
                     break;
             }
         }
