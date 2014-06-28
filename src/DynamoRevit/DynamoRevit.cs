@@ -18,6 +18,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Services;
 using Dynamo.Utilities;
 using DynamoUnits;
 using DynamoUtilities;
@@ -244,6 +245,9 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
+                InstrumentationLogger.LogException(ex);
+                StabilityTracking.GetInstance().NotifyCrash();
+
                 //isRunning = false;
                 MessageBox.Show(ex.ToString());
 
@@ -358,6 +362,9 @@ namespace Dynamo.Applications
 
             try
             {
+                InstrumentationLogger.LogException(args.Exception);
+                StabilityTracking.GetInstance().NotifyCrash();
+
                 dynSettings.DynamoLogger.LogError("Dynamo Unhandled Exception");
                 dynSettings.DynamoLogger.LogError(exceptionMessage);
             }
