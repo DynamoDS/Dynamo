@@ -1648,26 +1648,6 @@ z=Point.ByCoordinates(y,a,a);
             }
         }
 
-        [Test]
-        public void TestImperative01()
-        {
-            List<string> codes = new List<string>() 
-            {
-                "i = [Imperative] {a = 1;b = a;a = 10;return = b;}"
-            };
-            Guid guid = System.Guid.NewGuid();
-
-            // add two nodes
-            IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guid, codes[idx])).ToList();
-
-            var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
-
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("i");
-            StackValue value = mirror.GetData().GetStackValue();
-            Assert.AreEqual(value.opdata, 1);
-        }
 
         [Test]
         public void TestModify01()
@@ -4706,6 +4686,192 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
                     }
 
+        }
+
+        [Test]
+        public void TestImperativeExecution01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "i = [Imperative] {a = 1;b = a;a = 10;return = b;}"
+            };
+            Guid guid = System.Guid.NewGuid();
+
+            // add two nodes
+            IEnumerable<int> index = Enumerable.Range(0, codes.Count);
+            var added = index.Select(idx => CreateSubTreeFromCode(guid, codes[idx])).ToList();
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("i");
+            StackValue value = mirror.GetData().GetStackValue();
+            Assert.AreEqual(value.opdata, 1);
+        }
+
+        [Test]
+        public void TestImperativeExecution02()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestImperativeExecution03()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    if (x > 2)
+    {
+        x = 10;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestImperativeExecution04()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    if (x > 2)
+    {
+        x = 10;
+    }
+    else
+    {
+        x = 11;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 11);
+        }
+
+        [Test]
+        public void TestImperativeExecution05()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    if (x > 1)
+    {
+        x = 10;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 10);
+        }
+
+        [Test]
+        public void TestImperativeExecution06()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 0;
+    n = 1..5;
+    for (i in n)
+    {
+        x = x + i;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 15);
+        }
+
+        [Test]
+        public void TestImperativeExecution07()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 0;
+    n = 1..5;
+    for (i in n)
+    {
+        x = x + i;
+        break;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
         }
 
 
