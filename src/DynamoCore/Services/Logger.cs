@@ -1,8 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+
+using CSharpAnalytics;
+using CSharpAnalytics.Protocols.Measurement;
+
+using Dynamo.Utilities;
+
 using Microsoft.Win32;
 using net.riversofdata.dhlogger;
 
@@ -13,13 +20,41 @@ namespace Dynamo.Services
     /// </summary>
     public class InstrumentationLogger
     {
+        private const bool IS_VERBOSE_DIAGNOSTICS = false;
+
         private static string userID = GetUserID();
         private static string sessionID = Guid.NewGuid().ToString();
         private static Log loggerImpl;
 
-        public static void Start()
+        //Analytics components
+        private const string ANALYTICS_PROPERTY = "UA-52186525-1";
+        private static MeasurementAnalyticsClient client;
+
+        static InstrumentationLogger()
         {
             userID = GetUserID();
+
+            StabilityTracking.GetInstance();
+
+
+            CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
+                "Dynamo", dynSettings.Controller.UpdateManager.ProductVersion.ToString());
+
+            if (IS_VERBOSE_DIAGNOSTICS)
+            {
+                AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+            }
+
+            CSharpAnalytics.AutoMeasurement.Start(mc);
+
+
+            client = AutoMeasurement.Client;
+
+        }
+
+        //Service start
+        public static void Start()
+        {
             sessionID = Guid.NewGuid().ToString();
             loggerImpl = new Log("Dynamo", userID, sessionID);
 
@@ -35,7 +70,6 @@ namespace Dynamo.Services
             // the rest of clean-up happens.
             Heartbeat.DestroyInstance();
 
-            userID = null;
             sessionID = null;
 
             if (loggerImpl != null)
@@ -45,7 +79,7 @@ namespace Dynamo.Services
             }
         }
 
-        private static bool LoggingEnabled
+        private static bool IsPIILoggingEnabled
         {
             get { return UsageReportingManager.Instance.IsUsageReportingApproved; }
         }
@@ -81,42 +115,51 @@ namespace Dynamo.Services
 
 
 
+        #region Analytics only methods
+
+
+        public static void LogAnonymousTimedEvent(string category, string variable, TimeSpan time, string label = null)
+        {
+            client.TrackTimedEvent(category, variable, time, label);
+        }
+
+        public static void LogAnonymousEvent(string action, string category, string label = null)
+        {
+            AutoMeasurement.Client.TrackEvent(action, category, label);
+        }
+
+        public static void LogAnonymousScreen(string screenName)
+        {
+            AutoMeasurement.Client.TrackScreenView(screenName);
+        }
+
+        #endregion
+
+        public static void LogException(Exception e)
+        {
+            //Log anonymous version
+            AutoMeasurement.Client.TrackException(e.GetType().ToString());
+
+            //Protect PII
+            if (!IsPIILoggingEnabled)
+                return;
+
+            //Log PII containing version
+            loggerImpl.Error("Stack Trace", e.ToString());
+        }
+
         public static void FORCE_LogInfo(string tag, string data)
         {
 
             loggerImpl.Info(tag, data);
         }
 
-        public static void LogInfo(string tag, string data)
+        public static void LogPiiInfo(string tag, string data)
         {
-            if (!LoggingEnabled)
+            if (!IsPIILoggingEnabled)
                 return;
 
             loggerImpl.Info(tag, data);
-        }
-
-        public static void LogDebug(string tag, string data)
-        {
-            if (!LoggingEnabled)
-                return;
-
-            loggerImpl.Debug(tag, data);
-        }
-
-        public static void LogPerf(string tag, string data)
-        {
-            if (!LoggingEnabled)
-                return;
-
-            loggerImpl.Info("Perf-" + tag, data);
-        }
-
-        public static void LogError(string tag, string data)
-        {
-            if (!LoggingEnabled)
-                return;
-
-            loggerImpl.Error(tag, data);
         }
 
     }

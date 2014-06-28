@@ -77,10 +77,7 @@ namespace Dynamo.Services
             {
                 try
                 {
-                    AnalyticsIntegration.LogEvent("ApplicationLifeCycle", "Heartbeat");
-
-
-                    InstrumentationLogger.LogInfo("VersionInfo", GetVersionString());
+                    InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString() );
 
                     var difference = DateTime.Now.Subtract(startTime).TotalSeconds;
                     InstrumentationLogger.FORCE_LogInfo("Heartbeat-Uptime-s",
@@ -90,8 +87,8 @@ namespace Dynamo.Services
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
 
-                    InstrumentationLogger.LogInfo("Node-usage", usage);
-                    InstrumentationLogger.LogInfo("Nodes-with-errors", errors);
+                    InstrumentationLogger.LogPiiInfo("Node-usage", usage);
+                    InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
                 }
                 catch (Exception e)
                 {

@@ -48,7 +48,7 @@ namespace DynamoSandbox
                 try
                 {
                     dynSettings.Controller.IsCrashing = true;
-                    AnalyticsIntegration.LogException(e);
+                    InstrumentationLogger.LogException(e);
                     StabilityTracking.GetInstance().NotifyCrash();
 
 

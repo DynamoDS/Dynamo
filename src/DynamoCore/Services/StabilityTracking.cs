@@ -38,12 +38,9 @@ namespace Dynamo.Services
 
         public void NotifyCrash()
         {
-            AnalyticsIntegration.LogTimedEvent(
+            InstrumentationLogger.LogAnonymousTimedEvent(
                 "Stability", "TimeBetweenFailure", timeSinceLastCrash.Elapsed);
             timeSinceLastCrash.Restart();
-
-
-
         }
     }
 }

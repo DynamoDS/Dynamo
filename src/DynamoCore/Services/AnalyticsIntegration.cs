@@ -11,7 +11,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Services
 {
-
+/*
     public class AnalyticsIntegration
     {
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
@@ -64,4 +64,6 @@ namespace Dynamo.Services
         
         
     }
+
+    */
 }

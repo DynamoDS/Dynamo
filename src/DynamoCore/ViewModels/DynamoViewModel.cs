@@ -1210,9 +1210,9 @@ namespace Dynamo.ViewModels
             CanNavigateBackground = !CanNavigateBackground;
 
             if (CanNavigateBackground)
-                AnalyticsIntegration.LogScreen("Geometry");
+                InstrumentationLogger.LogAnonymousScreen("Geometry");
             else
-                AnalyticsIntegration.LogScreen("Nodes");
+                InstrumentationLogger.LogAnonymousScreen("Nodes");
 
 
             if (!CanNavigateBackground)

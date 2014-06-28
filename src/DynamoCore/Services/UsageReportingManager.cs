@@ -35,6 +35,9 @@ namespace Dynamo.Services
 
         #region Properties binded to PreferenceSettings
 
+        /// <summary>
+        /// UsageReporting is the opt-in component
+        /// </summary>
         public bool IsUsageReportingApproved
         {
             get
@@ -64,6 +67,14 @@ namespace Dynamo.Services
                     dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
             }
+        }
+
+        /// <summary>
+        /// Analytics is the opt-out tracking system
+        /// </summary>
+        public bool IsAnalyticsReportApproved
+        {
+            get { return true; }
         }
 
         public bool FirstRun
