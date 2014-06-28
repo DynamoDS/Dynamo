@@ -15326,7 +15326,7 @@ z = { A.A(), A.A() };
                 a : Point = null;
                 b : Line = null;
 
-                [imperative]
+                [Imperative]
                 {
                     a = Point.ByCoordinates(10, 0, 0);
                     b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));
