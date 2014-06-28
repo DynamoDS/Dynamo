@@ -30,37 +30,43 @@ namespace Dynamo.Services
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
         private static MeasurementAnalyticsClient client;
 
+        private static bool started = false;
+
         static InstrumentationLogger()
         {
             userID = GetUserID();
 
             StabilityTracking.GetInstance();
-
-
-            CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
-                "Dynamo", dynSettings.Controller.UpdateManager.ProductVersion.ToString());
-
-            if (IS_VERBOSE_DIAGNOSTICS)
-            {
-                AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
-            }
-
-            CSharpAnalytics.AutoMeasurement.Start(mc);
-
-
-            client = AutoMeasurement.Client;
-
+            
         }
 
         //Service start
         public static void Start()
         {
+            string appVersion = System.AppDomain.CurrentDomain.FriendlyName + "-"
+                                + dynSettings.Controller.UpdateManager.ProductVersion.ToString();
+
+
+            CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
+                "Dynamo", appVersion);
+
             sessionID = Guid.NewGuid().ToString();
             loggerImpl = new Log("Dynamo", userID, sessionID);
 
             // The following starts the heartbeat, do not remove this 
             // because of the unreferenced "heartbeat" variable.
             var heartbeat = Heartbeat.GetInstance();
+
+            CSharpAnalytics.AutoMeasurement.Start(mc);
+            client = AutoMeasurement.Client;
+
+            if (IS_VERBOSE_DIAGNOSTICS)
+            {
+                AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+            }
+
+            started = true;
+
         }
 
         public static void End()
@@ -77,6 +83,8 @@ namespace Dynamo.Services
                 loggerImpl.Dispose();
                 loggerImpl = null;
             }
+
+            started = false;
         }
 
         private static bool IsPIILoggingEnabled
@@ -120,16 +128,26 @@ namespace Dynamo.Services
 
         public static void LogAnonymousTimedEvent(string category, string variable, TimeSpan time, string label = null)
         {
+            if (!started)
+                return;
+
             client.TrackTimedEvent(category, variable, time, label);
         }
 
         public static void LogAnonymousEvent(string action, string category, string label = null)
         {
+
+            if (!started)
+                return;
+
             AutoMeasurement.Client.TrackEvent(action, category, label);
         }
 
         public static void LogAnonymousScreen(string screenName)
         {
+            if (!started)
+                return;
+
             AutoMeasurement.Client.TrackScreenView(screenName);
         }
 
@@ -137,6 +155,10 @@ namespace Dynamo.Services
 
         public static void LogException(Exception e)
         {
+
+            if (!started)
+                return;
+
             //Log anonymous version
             AutoMeasurement.Client.TrackException(e.GetType().ToString());
 
@@ -150,12 +172,18 @@ namespace Dynamo.Services
 
         public static void FORCE_LogInfo(string tag, string data)
         {
+            if (!started)
+                return;
 
             loggerImpl.Info(tag, data);
         }
 
         public static void LogPiiInfo(string tag, string data)
         {
+
+            if (!started)
+                return;
+
             if (!IsPIILoggingEnabled)
                 return;
 
