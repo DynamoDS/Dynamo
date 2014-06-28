@@ -844,7 +844,7 @@
             Create a curve by pulling onto plane
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLength(System.Int32)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
             <summary>
             Divides curve into given number of equal length curves
             </summary>
