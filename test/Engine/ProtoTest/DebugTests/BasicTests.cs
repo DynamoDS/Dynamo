@@ -15991,59 +15991,6 @@ a = 7;
         //Investigate the color object properties number, relates to IDE-493
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        public void UseCaseTesting_Condtional_symbology_inline_conditional_singleton_1()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
-@"
-import(""ProtoGeometry.dll"");
-
-p1 = Point.ByCoordinates(5,5,0);
-
-delta = 1;
-
-p2 = Point.ByCoordinates(5+delta,10,0);
-
-myLine = Line.ByStartPointEndPoint(p1,p2);
-
-length = myLine.Length;
-
-myLine.Color = myLine.Length > 7 ? Color.Red : Color.Blue; // conditional symbology
-
-lineColor = myLine.Color;
-
-delta = 9; // edit this value and rerun.. try 1, 5, 9 in turn
-           
-", runnerConfig);
-
-
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-
-            Obj o = vms.mirror.GetDebugValue("lineColor");
-            string type = vms.mirror.GetType("lineColor");
-            Assert.IsTrue(type == "Color");
-            Assert.IsTrue((long)o.Payload == 7);
-
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("lineColor");
-            type = vms.mirror.GetType("lineColor");
-            Assert.IsTrue(type == "Color");
-            Assert.IsTrue((long)o.Payload == 6
-                );
-
-        }
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
         [Category("ReleaseCriteria")]
         public void UseCase_Robert_simple_copy_and_modiy_collection_1()
         {
@@ -16202,8 +16149,6 @@ b : int;
             TestFrameWork.Verify(mirror, "b", 22, 0);
 
         }
-        [Test]
-        
         [Test]
         [Category("ExpressionInterpreterRunner")]
         [Category("ReleaseCriteria")]
