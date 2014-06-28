@@ -8614,62 +8614,6 @@ surf = makeSurf(ps);
         }
         [Test]
         [Category("Debugger")]
-        public void TestNestedReplication_501()
-        {
-            string src =
-        @"
-import(""ProtoGeometry.dll"");
-
-def makeSurf(p)
-{
-    p1 = p.Translate(1, 0, 0);
-    p2 = p.Translate(1, 1, 0);
-    p3 = p.Translate(0, 1, 0);
-    pts = { {p, p1}, {p3, p2} };
-    return = BSplineSurface.ByPoints(pts);
-}
-surf = makeSurf(Point.ByCoordinates((-10..10..1.5)<1>,
-(-10..10..1.5)<2>, 0));
-tool = Cuboid.ByLengths(CoordinateSystem.WCS,
-5.5, 5.5, 5.5);
-";
-            fsr.PreStart(src, runnerConfig);
-            fsr.Step();
-
-            DebugRunner.VMState vms = fsr.Step();
-            fsr.Step();
-            vms = fsr.Step();
-
-            Obj o = vms.mirror.GetDebugValue("surf");
-            string type = vms.mirror.GetType("surf");
-
-            Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
-            List<Obj> lo0 = vms.mirror.GetArrayElements(lo[0]);
-            type = vms.mirror.GetType(lo0[0]);
-            Assert.IsTrue(type == "BSplineSurface");
-
-            Dictionary<string, Obj> os_0 = vms.mirror.GetProperties(lo0[0]);
-
-
-            //Assert.IsTrue((Int64)os_0["UDegree"].Payload == 3);
-            //Assert.IsTrue((Int64)os_0["VDegree"].Payload == 3);
-            Assert.IsTrue(lo.Count == 14);
-
-            vms = fsr.StepOver();
-            Obj o1 = vms.mirror.GetDebugValue("tool");
-            type = vms.mirror.GetType("tool");
-            Assert.IsTrue(type == "Cuboid");
-            Dictionary<string, Obj> os_1 = vms.mirror.GetProperties(o1);
-            //Assert.IsTrue((Int64)os_1["Vertices"].Payload == 8);
-            //Assert.IsTrue((Int64)os_1["Edges"].Payload == 12);
-            //Assert.IsTrue((Int64)os_1["Faces"].Payload == 6);
-            //Assert.IsTrue((Int64)os_1["Shells"].Payload == 1);
-
-
-        }
-        [Test]
-        [Category("Debugger")]
         public void Defect_IDE446()
         {
             string src =
