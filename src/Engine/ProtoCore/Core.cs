@@ -1103,10 +1103,6 @@ namespace ProtoCore
         public List<string> LoadedDLLs = new List<string>();
         public int deltaCompileStartPC { get; set; }
 
-
-        public bool EnableCallsiteExecutionState { get; set; }
-        public CallsiteExecutionState csExecutionState { get; set; }
-
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
 
         /// <summary>
@@ -1430,18 +1426,6 @@ namespace ProtoCore
             builtInsLoaded = false;
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
-            csExecutionState = null;
-            EnableCallsiteExecutionState = false;
-
-            // TODO: Remove check once fully implemeted
-            if (EnableCallsiteExecutionState)
-            {
-                csExecutionState = CallsiteExecutionState.LoadState();
-            }
-            else
-            {
-                csExecutionState = new CallsiteExecutionState();
-            }
 
             CallsiteCache = new Dictionary<string, CallSite>();
             CachedSSANodes = new List<AssociativeNode>();
