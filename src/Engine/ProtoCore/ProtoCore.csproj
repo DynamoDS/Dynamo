@@ -89,7 +89,6 @@
     <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="AttributeEntry.cs" />
     <Compile Include="BuildStatus.cs" />
-    <Compile Include="CallsiteExecutionState\CallsiteExecutionState.cs" />
     <Compile Include="CodeBlock.cs" />
     <Compile Include="CodeGen.cs" />
     <Compile Include="CodeFile.cs" />
