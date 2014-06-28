@@ -46,21 +46,18 @@ namespace DSCoreNodesUI
             get { return selectedIndicies; }
             set
             {
-                //do not allow selected index to
-                //go out of range of the items collection
-                foreach (var index in selectedIndicies)
-                {
-                    if (index <= Items.Count - 1)
-                    {
+                
+                
+                        dynSettings.DynamoLogger.Log(value.ToString());
                         SelectedIndicies = value;
-                        RaisePropertyChanged("SelectedIndex");
-                    }
-                }
+                        RaisePropertyChanged("SelectedIndicies");
+                    
+                
                
             }
         }
 
-
+        public List<ComboBox> comboboxes = new List<ComboBox>();
 
 
 
@@ -78,7 +75,9 @@ namespace DSCoreNodesUI
             OutPortData.Add(new PortData("object", "The Object"));
 
             RegisterAllPorts();
-
+            
+            // subscribe this method to send an update event whenever any property on this object changes...
+            // but that handler checks if IsUpdated is fired
             this.PropertyChanged += Inspector_PropertyChanged;
             
         }
@@ -109,49 +108,51 @@ namespace DSCoreNodesUI
         public void PopulateItems()
         {
             // getting the input object song and dance
-            var inputnode = InPorts[0].Connectors[0].Start.Owner;
-            var inputIndex = InPorts[0].Connectors[0].Start.Index;
-
-            var inputId = inputnode.GetAstIdentifierForOutputIndex(inputIndex).Name;
-
-            var mirror = dynSettings.Controller.EngineController.GetMirror(inputId);
-
-            object objectinput = null;
-          
-
-            if (mirror.GetData().IsCollection)
+            // crash might be occuring here because input is not ready
+            if (Inputs.Count > 0)
             {
-                objectinput = mirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+
+                var inputnode = InPorts[0].Connectors[0].Start.Owner;
+                var inputIndex = InPorts[0].Connectors[0].Start.Index;
+
+                var inputId = inputnode.GetAstIdentifierForOutputIndex(inputIndex).Name;
+
+                var mirror = dynSettings.Controller.EngineController.GetMirror(inputId);
+
+                object objectinput = null;
+
+
+                if (mirror.GetData().IsCollection)
+                {
+                    objectinput = mirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                }
+                else
+                {
+                    objectinput = mirror.GetData().Data;
+                }
+
+                objectinput = objectinput as object;
+
+
+                Items.Clear();
+
+                var propertyInfos = objectinput.GetType().GetProperties(
+           BindingFlags.Public | BindingFlags.NonPublic // Get public and non-public
+         | BindingFlags.Static | BindingFlags.Instance  // Get instance + static
+         | BindingFlags.FlattenHierarchy); // Search up the hierarchy
+
+
+                foreach (var prop in propertyInfos.ToList())
+                {
+                    var val = prop.GetValue(objectinput, null);
+                    items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", prop.Name, val), val));
+                }
+
+                Items = Items.OrderBy(x => x.Name).ToObservableCollection();
+
             }
-            else
-            {
-                objectinput = mirror.GetData().Data;
-            }
-
-            objectinput = objectinput as object;
-            
-            // this is causing trouble,
-            // since if we clear the items when opening one dropdpown, all others are reset as well....
-            // items may need to be a list of lists
-            Items.Clear();
-            
-            var propertyInfos = objectinput.GetType().GetProperties(
-       BindingFlags.Public | BindingFlags.NonPublic // Get public and non-public
-     | BindingFlags.Static | BindingFlags.Instance  // Get instance + static
-     | BindingFlags.FlattenHierarchy); // Search up the hierarchy
-
-
-            foreach (var prop in propertyInfos.ToList())
-            {
-                var val = prop.GetValue(objectinput, null);
-                items.Add(new DynamoDropDownItem(string.Format("{0}:{1}",prop.Name,val),val));
-            }
-
-           Items = Items.OrderBy(x => x.Name).ToObservableCollection();
 
         }
-
-        
 
         protected override void AddInput()
         {
@@ -207,7 +208,7 @@ namespace DSCoreNodesUI
             
 
 
-            var comboboxes = new List<ComboBox>();
+           
 
             //add a drop down list to the window
             var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
@@ -234,12 +235,24 @@ namespace DSCoreNodesUI
             {
                 DispatchOnUIThread(delegate
                 {
+                    // first populate all items list
 
-                    PopulateItems();
-                    
-                    for (int i = 0; i < numDropDowns; i++)
+                    // delete existing combo boxes
+                    foreach (ComboBox combo in comboboxes)
                     {
 
+                        wp.Children.Remove(combo);
+
+                    }
+                    comboboxes.Clear();
+                    PopulateItems();
+                    //clear the list of stored boxes
+
+                    // then build new combo boxes for each desired
+                    // this number is set by the user
+                    for (int i = 0; i < numDropDowns; i++)
+                    {
+                        
                         var combo = new ComboBox
                         {
                             Width = System.Double.NaN,
@@ -249,26 +262,31 @@ namespace DSCoreNodesUI
                             VerticalAlignment = VerticalAlignment.Center
                         };
                         wp.Children.Add(combo);
-                        
+                        comboboxes.Add(combo);
                         //System.Windows.Controls.Grid.SetColumn(combo, 0);
                         //System.Windows.Controls.Grid.SetRow(combo, 0);
                         
                         combo.DropDownOpened += combo_DropDownOpened;
-                        combo.SelectionChanged += delegate
+                      /*  combo.SelectionChanged += delegate
                         {
                             if (combo.SelectedIndex != -1)
+                            {
                                 RequiresRecalc = true;
+                                int index = comboboxes.IndexOf(combo);
+                                SelectedIndicies[index] = combo.SelectedIndex;
+                            }
                         };
-
+                       */
                         combo.DropDownClosed += delegate
                         {
                             //disallow selection of nothing
                             if (combo.SelectedIndex == -1)
                             {
-                                SelectedIndicies[i] = 0;
+                              
+                                
                             }
                         };
-                        var SelectedIndex = SelectedIndicies[i];
+                        
                         combo.DataContext = this;
                         //bind this combo box to the selected item hash
 
