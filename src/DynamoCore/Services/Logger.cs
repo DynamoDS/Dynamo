@@ -43,7 +43,7 @@ namespace Dynamo.Services
         //Service start
         public static void Start()
         {
-            string appVersion = System.AppDomain.CurrentDomain.FriendlyName + "-"
+            string appVersion = Process.GetCurrentProcess().ProcessName + "-"
                                 + dynSettings.Controller.UpdateManager.ProductVersion.ToString();
 
 
