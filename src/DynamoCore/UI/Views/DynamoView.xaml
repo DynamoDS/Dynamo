@@ -314,11 +314,17 @@
                     </MenuItem>
 
                     <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
-                        <MenuItem Header="_Enable usability data reporting"
+                        <MenuItem Header="_Enable detailed usability data reporting"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  Focusable="False"/>
+                        <MenuItem Header="Enable anonymous summary reporting"
+                                  Name="ToggleIsAnalyticsReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   Focusable="False"/>
                         <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
                             <MenuItem Focusable="False" Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>

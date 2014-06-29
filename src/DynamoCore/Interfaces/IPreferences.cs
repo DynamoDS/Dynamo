@@ -16,6 +16,7 @@ namespace Dynamo.Interfaces
         DynamoAreaUnit AreaUnit { get; set; }
         DynamoVolumeUnit VolumeUnit { get; set; }
         bool IsUsageReportingApproved { get; set; }
+        bool IsAnalyticsReportingApproved { get; set; }
         bool IsFirstRun { get; set; }
         double WindowX { get; set; }
         double WindowY { get; set; }

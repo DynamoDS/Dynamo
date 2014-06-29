@@ -12,6 +12,8 @@ namespace Dynamo.Services
     public class UsageReportingManager : NotificationObject
     {
         public DelegateCommand ToggleIsUsageReportingApprovedCommand { get; set; }
+        public DelegateCommand ToggleIsAnalyticsReportingApprovedCommand { get; set; }
+
 
         #region Private
 
@@ -71,10 +73,40 @@ namespace Dynamo.Services
 
         /// <summary>
         /// Analytics is the opt-out tracking system
+        /// PII is prohibited from Analytics.
         /// </summary>
-        public bool IsAnalyticsReportApproved
+        public bool IsAnalyticsReportingApproved
         {
-            get { return true; }
+            get
+            {
+                if (DynamoController.IsTestMode) // Do not want logging in unit tests.
+                    return false;
+
+                if (dynSettings.Controller != null)
+                    return dynSettings.Controller.PreferenceSettings.IsAnalyticsReportingApproved;
+
+                return true;
+            }
+
+            private set
+            {
+                dynSettings.Controller.PreferenceSettings.IsAnalyticsReportingApproved = value;
+                RaisePropertyChanged("IsAnalyticsReportingApproved");
+
+                // Call PreferenceSettings to save
+                try
+                {
+                    dynSettings.Controller.PreferenceSettings.Save();
+                }
+                catch (Exception args)
+                {
+                    dynSettings.Controller.IsCrashing = true;
+                    string filePath = PreferenceSettings.GetSettingsFilePath();
+                    dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                }
+            }
+
+
         }
 
         public bool FirstRun
@@ -95,6 +127,8 @@ namespace Dynamo.Services
         public UsageReportingManager()
         {
             ToggleIsUsageReportingApprovedCommand = new DelegateCommand(ToggleIsUsageReportingApproved, CanToggleIsUsageReportingApproved);
+            ToggleIsAnalyticsReportingApprovedCommand = new DelegateCommand(ToggleIsAnalyticsReportingApproved, CanToggleIsAnalyticsReportingApproved);
+        
         }
 
         public void CheckIsFirstRun(Window ownerWindow)
@@ -104,6 +138,10 @@ namespace Dynamo.Services
             {
                 FirstRun = false;
 
+                //Analytics enable by default
+                IsAnalyticsReportingApproved = true;
+
+                //Prompt user for detailed reporting
                 if (!DynamoController.IsTestMode)
                     ShowUsageReportingPrompt(ownerWindow);
             }
@@ -126,7 +164,17 @@ namespace Dynamo.Services
                 IsUsageReportingApproved = false;
         }
 
+        public void ToggleIsAnalyticsReportingApproved(object parameter)
+        {
+            IsAnalyticsReportingApproved = !IsAnalyticsReportingApproved;
+        }
+
         internal bool CanToggleIsUsageReportingApproved(object parameter)
+        {
+            return true;
+        }
+
+        internal bool CanToggleIsAnalyticsReportingApproved(object parameter)
         {
             return true;
         }
