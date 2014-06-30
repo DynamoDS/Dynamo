@@ -18,8 +18,46 @@ using System.Windows.Navigation;
 
 namespace Dynamo.UI.Controls
 {
+    public class StartPageListItem
+    {
+        public enum Action
+        {
+            RegularCommand,
+            FilePath,
+            ExternalUrl
+        }
+
+        internal StartPageListItem(string caption)
+        {
+            this.Caption = caption;
+        }
+
+        internal StartPageListItem(string caption, string imageFileName)
+        {
+            this.Caption = caption;
+
+            var format = @"pack://application:,,,/DynamoCore;component/UI/Images/StartPage/{0}";
+            var imageUri = new Uri(string.Format(format, imageFileName));
+            this.Icon = new BitmapImage(imageUri);
+        }
+
+        public ImageSource Icon { get; private set; }
+        public string Caption { get; private set; }
+        public string SubScript { get; set; }
+        public string ToolTip { get; set; }
+        public string ContextData { get; set; }
+        public Action ClickAction { get; set; }
+
+        // Extended (derived) class properties.
+        public Visibility IconVisibility
+        {
+            get { return ((this.Icon == null) ? Visibility.Collapsed : Visibility.Visible); }
+        }
+    }
+
     public class StartPageViewModel : ViewModelBase
     {
+        // Static lists that gets created only during creation.
         List<StartPageListItem> fileOperations = new List<StartPageListItem>();
         List<StartPageListItem> communityLinks = new List<StartPageListItem>();
         List<StartPageListItem> references = new List<StartPageListItem>();
@@ -38,13 +76,13 @@ namespace Dynamo.UI.Controls
 
             fileOperations.Add(new StartPageListItem("New", "icon-new.png")
             {
-                ContextData = CommandNames.NewWorkspace,
+                ContextData = ButtonNames.NewWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
             fileOperations.Add(new StartPageListItem("Open", "icon-open.png")
             {
-                ContextData = CommandNames.OpenWorkspace,
+                ContextData = ButtonNames.OpenWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
@@ -121,6 +159,27 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        internal void HandleListItemClicked(StartPageListItem clicked)
+        {
+            if (clicked != null)
+            {
+                switch (clicked.ClickAction)
+                {
+                    case StartPageListItem.Action.RegularCommand:
+                        HandleRegularCommand(clicked);
+                        break;
+
+                    case StartPageListItem.Action.FilePath:
+                        HandleFilePath(clicked);
+                        break;
+
+                    case StartPageListItem.Action.ExternalUrl:
+                        HandleExternalUrl(clicked);
+                        break;
+                }
+            }
+        }
+
         #region Public Class Properties (Static Lists)
 
         public IEnumerable<StartPageListItem> FileOperations
@@ -187,47 +246,50 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        private void HandleRegularCommand(StartPageListItem item)
+        {
+            var dvm = dynSettings.Controller.DynamoViewModel;
+
+            switch (item.ContextData)
+            {
+                case ButtonNames.NewWorkspace:
+                    dvm.NewHomeWorkspaceCommand.Execute(null);
+                    break;
+
+                case ButtonNames.OpenWorkspace:
+                    dvm.ShowOpenDialogAndOpenResultCommand.Execute(null);
+                    break;
+
+                default:
+                    throw new ArgumentException(
+                        string.Format("Invalid command: {0}", item.ContextData));
+            }
+        }
+
+        private void HandleFilePath(StartPageListItem item)
+        {
+            var path = item.ContextData;
+            if (string.IsNullOrEmpty(path) || (File.Exists(path) == false))
+            {
+                MessageBox.Show(string.Format("File not found: {0}", path));
+                return;
+            }
+
+            var dvm = dynSettings.Controller.DynamoViewModel;
+            if (dvm.OpenCommand.CanExecute(path))
+                dvm.OpenCommand.Execute(path);
+        }
+
+        private void HandleExternalUrl(StartPageListItem item)
+        {
+            System.Diagnostics.Process.Start(item.ContextData);
+        }
+
         #endregion
+
     }
 
-    public class StartPageListItem
-    {
-        public enum Action
-        {
-            RegularCommand,
-            FilePath,
-            ExternalUrl
-        }
-
-        internal StartPageListItem(string caption)
-        {
-            this.Caption = caption;
-        }
-
-        internal StartPageListItem(string caption, string imageFileName)
-        {
-            this.Caption = caption;
-
-            var format = @"pack://application:,,,/DynamoCore;component/UI/Images/StartPage/{0}";
-            var imageUri = new Uri(string.Format(format, imageFileName));
-            this.Icon = new BitmapImage(imageUri);
-        }
-
-        public ImageSource Icon { get; private set; }
-        public string Caption { get; private set; }
-        public string SubScript { get; set; }
-        public string ToolTip { get; set; }
-        public string ContextData { get; set; }
-        public Action ClickAction { get; set; }
-
-        // Extended (derived) class properties.
-        public Visibility IconVisibility
-        {
-            get { return ((this.Icon == null) ? Visibility.Collapsed : Visibility.Visible); }
-        }
-    }
-
-    struct CommandNames
+    struct ButtonNames
     {
         public const string NewWorkspace = "NewWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
@@ -256,72 +318,17 @@ namespace Dynamo.UI.Controls
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e == null || (e.AddedItems.Count <= 0))
+            if (e == null || (e.AddedItems == null) || (e.AddedItems.Count <= 0))
                 return;
 
             var selected = e.AddedItems[0] as StartPageListItem;
-            if (selected == null)
-                return;
+            var startPageViewModel = this.DataContext as StartPageViewModel;
+            startPageViewModel.HandleListItemClicked(selected);
 
-            switch (selected.ClickAction)
-            {
-                case StartPageListItem.Action.RegularCommand:
-                    HandleRegularCommand(selected);
-                    break;
-
-                case StartPageListItem.Action.FilePath:
-                    HandleFilePath(selected);
-                    break;
-
-                case StartPageListItem.Action.ExternalUrl:
-                    HandleExternalUrl(selected);
-                    break;
-            }
-
+            // Clear list box selection so that the same item, when 
+            // clicked, still triggers "selection changed" notification.
             var listBox = sender as ListBox;
             listBox.SelectedIndex = -1;
-        }
-
-        #endregion
-
-        #region Private Class Helper Methods
-
-        private DynamoViewModel dynamoViewModel = null;
-
-        private void HandleRegularCommand(StartPageListItem item)
-        {
-            switch (item.ContextData)
-            {
-                case CommandNames.NewWorkspace:
-                    dynamoViewModel.NewHomeWorkspaceCommand.Execute(null);
-                    break;
-
-                case CommandNames.OpenWorkspace:
-                    dynamoViewModel.ShowOpenDialogAndOpenResultCommand.Execute(null);
-                    break;
-
-                default:
-                    throw new ArgumentException(
-                        string.Format("Invalid command: {0}", item.ContextData));
-            }
-        }
-
-        private void HandleFilePath(StartPageListItem item)
-        {
-            var path = item.ContextData;
-            if (string.IsNullOrEmpty(path) || (File.Exists(path) == false))
-            {
-                MessageBox.Show(string.Format("File not found: {0}", path));
-                return;
-            }
-
-            if (dynamoViewModel.OpenCommand.CanExecute(path))
-                dynamoViewModel.OpenCommand.Execute(path);
-        }
-
-        private void HandleExternalUrl(StartPageListItem item)
-        {
-            System.Diagnostics.Process.Start(item.ContextData);
         }
 
         #endregion
