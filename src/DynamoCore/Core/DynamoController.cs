@@ -284,8 +284,6 @@ namespace Dynamo
             SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
-            UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
-            UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
             UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
@@ -352,20 +350,6 @@ namespace Dynamo
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
-        }
-
-        void updateManager_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
-        {
-            UpdateManager.QuitAndInstallUpdate();
-        }
-
-        void updateManager_ShutdownRequested(object sender, EventArgs e)
-        {
-            UIDispatcher.Invoke((Action) delegate
-            {
-                ShutDown(true);
-                UpdateManager.HostApplicationBeginQuit(this, e);
-            });
         }
 
         #endregion
