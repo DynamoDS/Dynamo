@@ -20,9 +20,113 @@ namespace Dynamo.UI.Controls
 {
     public class StartPageViewModel : ViewModelBase
     {
+        List<StartPageListItem> fileOperations = new List<StartPageListItem>();
         List<StartPageListItem> sampleFiles = new List<StartPageListItem>();
+        List<StartPageListItem> communityLinks = new List<StartPageListItem>();
+        List<StartPageListItem> references = new List<StartPageListItem>();
+        List<StartPageListItem> contributeLinks = new List<StartPageListItem>();
 
         internal StartPageViewModel()
+        {
+            #region File Operations
+
+            fileOperations.Add(new StartPageListItem("New", "icon-new.png")
+            {
+                ContextData = CommandNames.NewWorkspace,
+                ClickAction = StartPageListItem.Action.RegularCommand
+            });
+
+            fileOperations.Add(new StartPageListItem("Open", "icon-open.png")
+            {
+                ContextData = CommandNames.OpenWorkspace,
+                ClickAction = StartPageListItem.Action.RegularCommand
+            });
+
+            #endregion
+
+            #region Community Links
+
+            communityLinks.Add(new StartPageListItem("Discussion forum", "icon-discussion.png")
+            {
+                ContextData = Configurations.DynamoBimForum,
+                ClickAction = StartPageListItem.Action.ExternalUrl
+            });
+
+            communityLinks.Add(new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
+            {
+                ContextData = Configurations.DynamoSiteLink,
+                ClickAction = StartPageListItem.Action.ExternalUrl
+            });
+
+            #endregion
+
+            #region Reference List
+
+            references.Add(new StartPageListItem("PDF Tutorials", "icon-reference.png")
+            {
+                ContextData = Configurations.DynamoPdfTutorials,
+                ClickAction = StartPageListItem.Action.ExternalUrl
+            });
+
+            references.Add(new StartPageListItem("Video tutorials", "icon-video.png")
+            {
+                ContextData = Configurations.DynamoVideoTutorials,
+                ClickAction = StartPageListItem.Action.ExternalUrl
+            });
+
+            #endregion
+
+            #region Contribution Links
+
+            contributeLinks.Add(new StartPageListItem("Github repository", "icon-github.png")
+            {
+                ContextData = Configurations.GitHubDynamoLink,
+                ClickAction = StartPageListItem.Action.ExternalUrl
+            });
+
+            contributeLinks.Add(new StartPageListItem("Send issues", "icon-issues.png")
+            {
+                ContextData = Configurations.GitHubBugReportingLink,
+                ClickAction = StartPageListItem.Action.ExternalUrl
+            });
+
+            #endregion
+
+            EnumerateSampleFiles();
+        }
+
+        #region Public Class Properties
+
+        public IEnumerable<StartPageListItem> FileOperations
+        {
+            get { return this.fileOperations; }
+        }
+
+        public IEnumerable<StartPageListItem> SampleFiles
+        {
+            get { return this.sampleFiles; }
+        }
+
+        public IEnumerable<StartPageListItem> CommunityLinks
+        {
+            get { return this.communityLinks; }
+        }
+
+        public IEnumerable<StartPageListItem> References
+        {
+            get { return this.references; }
+        }
+
+        public IEnumerable<StartPageListItem> ContributeLinks
+        {
+            get { return this.contributeLinks; }
+        }
+
+        #endregion
+
+        #region Private Class Helper Methods
+
+        private void EnumerateSampleFiles()
         {
             sampleFiles.Add(new StartPageListItem("Hey")
             {
@@ -30,10 +134,7 @@ namespace Dynamo.UI.Controls
             });
         }
 
-        public IEnumerable<StartPageListItem> SampleFiles
-        {
-            get { return this.sampleFiles; }
-        }
+        #endregion
     }
 
     public class StartPageListItem
@@ -123,91 +224,15 @@ namespace Dynamo.UI.Controls
 
         private void OnStartPageLoaded(object sender, RoutedEventArgs e)
         {
-            var fileList = new List<StartPageListItem>();
-            {
-                fileList.Add(new StartPageListItem("New", "icon-new.png")
-                {
-                    ContextData = CommandNames.NewWorkspace,
-                    ClickAction = StartPageListItem.Action.RegularCommand
-                });
-
-                fileList.Add(new StartPageListItem("Open", "icon-open.png")
-                {
-                    ContextData = CommandNames.OpenWorkspace,
-                    ClickAction = StartPageListItem.Action.RegularCommand
-                });
-
-                filesListBox.ItemsSource = fileList;
-            }
-
-            var askList = new List<StartPageListItem>();
-            {
-                askList.Add(new StartPageListItem("Discussion forum", "icon-discussion.png")
-                {
-                    ContextData = Configurations.DynamoBimForum,
-                    ClickAction = StartPageListItem.Action.ExternalUrl
-                });
-
-                askList.Add(new StartPageListItem("email team@dynamobim.org", "icon-email.png")
-                {
-                    ContextData = Configurations.DynamoTeamEmail,
-                    ClickAction = StartPageListItem.Action.ExternalUrl
-                });
-
-                askList.Add(new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
-                {
-                    ContextData = Configurations.DynamoSiteLink,
-                    ClickAction = StartPageListItem.Action.ExternalUrl
-                });
-
-                this.askListBox.ItemsSource = askList;
-            }
-
-            var referenceList = new List<StartPageListItem>();
-            {
-                referenceList.Add(new StartPageListItem("PDF Tutorials", "icon-reference.png")
-                {
-                    ContextData = Configurations.DynamoPdfTutorials
-                });
-
-                referenceList.Add(new StartPageListItem("Video tutorials", "icon-video.png")
-                {
-                    ContextData = Configurations.DynamoVideoTutorials
-                });
-
-                referenceList.ForEach((x) =>
-                {
-                    x.ClickAction = StartPageListItem.Action.ExternalUrl;
-                });
-
-                this.referenceListBox.ItemsSource = referenceList;
-            }
-
-            var codeList = new List<StartPageListItem>();
-            {
-                codeList.Add(new StartPageListItem("Github repository", "icon-github.png")
-                {
-                    ContextData = Configurations.GitHubDynamoLink
-                });
-
-                codeList.Add(new StartPageListItem("Send issues", "icon-issues.png")
-                {
-                    ContextData = Configurations.GitHubBugReportingLink
-                });
-
-                codeList.ForEach((x) =>
-                {
-                    x.ClickAction = StartPageListItem.Action.ExternalUrl;
-                });
-
-                this.codeListBox.ItemsSource = codeList;
-            }
-
             RefreshRecentFileList(dynamoViewModel.RecentFiles);
             this.recentListBox.ItemsSource = recentList;
 
             var startPageViewModel = this.DataContext as StartPageViewModel;
+            this.filesListBox.ItemsSource = startPageViewModel.FileOperations;
             this.samplesListBox.ItemsSource = startPageViewModel.SampleFiles;
+            this.askListBox.ItemsSource = startPageViewModel.CommunityLinks;
+            this.referenceListBox.ItemsSource = startPageViewModel.References;
+            this.codeListBox.ItemsSource = startPageViewModel.ContributeLinks;
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
