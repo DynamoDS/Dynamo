@@ -59,6 +59,7 @@ namespace InstallUpdate
             if (pubKey == null)
             {
                 Console.WriteLine("Could not verify the update download");
+                RequestManualReinstall();
                 return;
             }
 
@@ -67,6 +68,7 @@ namespace InstallUpdate
             if (string.IsNullOrEmpty(sigDir) || !Directory.Exists(sigDir))
             {
                 Console.WriteLine("A signature file could not be found to verify this update.");
+                RequestManualReinstall();
                 return;
             }
 
@@ -76,17 +78,26 @@ namespace InstallUpdate
             if (!File.Exists(sigPath))
             {
                 Console.WriteLine("A signature file could not be found to verify this update.");
+                RequestManualReinstall();
                 return;
             }
 
             if (!Utils.VerifyFile(installerPath, sigPath, pubKey))
             {
                 Console.WriteLine("The update could not be verified against the signature file.");
+                RequestManualReinstall();
                 return;
             }
 
             // Run the installer
             Process.Start(installerPath);
+        }
+
+        private static void RequestManualReinstall()
+        {
+            Console.WriteLine("Please reinstall Dynamo manually.");
+            Console.WriteLine("Press any key to quit.");
+            Console.ReadKey();
         }
     }
 }
