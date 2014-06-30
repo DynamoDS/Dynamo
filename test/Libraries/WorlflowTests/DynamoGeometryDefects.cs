@@ -20,6 +20,9 @@ namespace Dynamo.Tests
 
             RunModel(openPath);
 
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
             var curveByDivide = "a78486e2-66aa-43e4-a261-34ae3b079307";
             AssertPreviewCount(curveByDivide, 5);
 
@@ -29,6 +32,25 @@ namespace Dynamo.Tests
                 var curve = GetPreviewValueAtIndex(curveByDivide, i) as Curve;
                 Assert.IsNotNull(curve);
             }
+        }
+
+        [Test]
+        public void Defect_MAGN_3417()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3417
+
+            DynamoModel model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3417.dyn");
+
+            RunModel(openPath);
+
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            var thinShell = "b20b551c-b2ad-421a-9308-fc628d5aa7e1";
+            var curve = GetPreviewValue(thinShell) as Solid;
+            Assert.IsNotNull(curve);
+
         }
     }
 }
