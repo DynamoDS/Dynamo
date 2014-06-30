@@ -1627,7 +1627,7 @@ namespace ProtoTest.Associative
         ///     
         /// </summary>
         [Test]
-        public void TestMethodResolutionForThisPtrs()
+        public void TestMethodResolutionForThisPtrs1()
         {
             string code = @"
 class A
@@ -1668,6 +1668,33 @@ r4 = a.foo(a,a,a);
             thisTest.Verify("r4", 44);
         }
 
+        [Test]
+        public void TestMethodResolutionForThisPtrs2()
+        {
+            string code = @"
+class A
+{
+    def foo(x: int)
+    {
+        return = 41;
+    }
+
+    static def foo(x : A, y: int)
+    {
+        return = 42;
+    }
+}
+
+a = A();
+r1 = a.foo(1);
+r2 = a.foo(a, 1);
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r1", 41);
+            thisTest.Verify("r2", 42);
+        }
     }
 }
 
