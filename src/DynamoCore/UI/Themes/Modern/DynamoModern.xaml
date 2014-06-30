@@ -1275,7 +1275,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Image Width="31"
                                    Margin="5,0,14,0"
-                                   Source="{Binding Icon}"
+                                   Source="{Binding IconResourcePath}"
                                    Visibility="{Binding IconVisibility}" />
                             <TextBlock Text="{Binding Caption}"
                                        Margin="6,7,0,8"
