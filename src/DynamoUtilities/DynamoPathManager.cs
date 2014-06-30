@@ -51,7 +51,9 @@ namespace DynamoUtilities
         /// </summary>
         public string Asm { get; set; }
 
-        // All 'nodes' folders.
+        /// <summary>
+        /// All 'nodes' folders.
+        /// </summary>
         public HashSet<string> Nodes { get; set; }
 
         /// <summary>
