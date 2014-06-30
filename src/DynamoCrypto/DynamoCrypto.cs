@@ -6,6 +6,12 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace DynamoCrypto
 {
+    /// <summary>
+    /// This class contains static methods for finding Dynamo certificates in 
+    /// a user, or a local machine's certificate store. It also has methods
+    /// for signing or verifying a file using public/private key pairs. These methods 
+    /// use the DSA algorithm for verification.
+    /// </summary>
     public class Utils
     {
         /// <summary>
