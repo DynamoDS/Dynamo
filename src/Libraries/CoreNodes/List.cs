@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using Autodesk.DesignScript.Runtime;
+
+#endregion
 
 namespace DSCore
 {
@@ -11,6 +15,16 @@ namespace DSCore
     /// </summary>
     public static class List
     {
+        /// <summary>
+        ///     An Empty List.
+        /// </summary>
+        /// <returns name="list">Empty list.</returns>
+        /// <search>empty list, emptylist</search>
+        public static IList Empty
+        {
+            get { return new ArrayList(); }
+        }
+
         /// <summary>
         ///     Creates a new list containing all unique items in the given list.
         /// </summary>
@@ -21,36 +35,6 @@ namespace DSCore
         {
             return list.Cast<object>().Distinct(DistinctComparer.Instance).ToList();
         }
-
-        #region UniqueItems Comparer
-
-        private class DistinctComparer : IEqualityComparer<object>
-        {
-            internal static readonly IEqualityComparer<object> Instance = new DistinctComparer();
-
-            private static bool Eq(double x, double y)
-            {
-                return x.Equals(y);
-            }
-
-            private static bool Eq(IList x, IList y)
-            {
-                return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
-            }
-
-            bool IEqualityComparer<object>.Equals(object x, object y)
-            {
-                return Eq(x as dynamic, y as dynamic);
-            }
-
-            // Bypass hash code check, use Equals instead.
-            public int GetHashCode(object obj)
-            {
-                return -1;
-            }
-        }
-
-        #endregion
 
         /// <summary>
         ///     Determines if the given list contains the given item.
@@ -88,16 +72,24 @@ namespace DSCore
         ///     Build sublists from a list using DesignScript range syntax.
         /// </summary>
         /// <param name="list">The list from which to create sublists.</param>
-        /// <param name="ranges">The index ranges of the sublist elements.
-        /// Ex. \"{0..3,5,2}\"</param>
-        /// <param name="offset">The offset to apply to the sublist.
-        /// Ex. the range \"0..3\" with an offset of 2 will yield
-        /// {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+        /// <param name="ranges">
+        ///     The index ranges of the sublist elements.
+        ///     Ex. \"{0..3,5,2}\"
+        /// </param>
+        /// <param name="offset">
+        ///     The offset to apply to the sublist.
+        ///     Ex. the range \"0..3\" with an offset of 2 will yield
+        ///     {0,1,2,3}{2,3,4,5}{4,5,6,7}...
+        /// </param>
+        /// <param name="keepIncomplete">
+        ///     Determines if ranges where some indices are out of bounds are kept.
+        ///     If true (default): All ranges are kept, out of bounds indices are ommitted.
+        ///     If false: Any ranges with out of bounds indices are ommitted.</param>
         /// <returns name="lists">Sublists of the given list.</returns>
         /// <search>sublists,build sublists</search>
         public static IList Sublists(IList list, IList ranges, int offset)
         {
-            var result = new List<object>();
+            var result = new ArrayList();
             int len = list.Count;
 
             if (offset <= 0)
@@ -106,7 +98,7 @@ namespace DSCore
             for (int start = 0; start < len; start += offset)
             {
                 var row = new List<object>();
-                
+
                 foreach (object item in ranges)
                 {
                     List<int> subrange;
@@ -116,15 +108,12 @@ namespace DSCore
                     else
                         subrange = new List<int> { Convert.ToInt32(item) };
 
-                    // skip subrange if exceeds the list
-                    if (start + subrange.Max() >= len)
-                        continue;
-
-                    row.AddRange(subrange.Where(idx => start + idx < len).Select(idx => list[start + idx]));
+                    row.AddRange(
+                        subrange.Where(idx => start + idx < len).Select(idx => list[start + idx]));
                 }
 
                 if (row.Count > 0)
-                    result.Add(row.ToArray());
+                    result.Add(row);
             }
 
             return result;
@@ -175,7 +164,9 @@ namespace DSCore
         [MultiReturn(new[] { "in", "out" })]
         public static Dictionary<string, object> FilterByBoolMask(IList list, IList mask)
         {
-            var result = FilterByMaskHelper(list.Cast<object>(), mask.Cast<object>());
+            Tuple<ArrayList, ArrayList> result = FilterByMaskHelper(
+                list.Cast<object>(),
+                mask.Cast<object>());
 
             return new Dictionary<string, object>
             {
@@ -184,7 +175,8 @@ namespace DSCore
             };
         }
 
-        private static Tuple<ArrayList, ArrayList> FilterByMaskHelper(IEnumerable<object> list, IEnumerable<object> mask)
+        private static Tuple<ArrayList, ArrayList> FilterByMaskHelper(
+            IEnumerable<object> list, IEnumerable<object> mask)
         {
             var inList = new ArrayList();
             var outList = new ArrayList();
@@ -193,9 +185,10 @@ namespace DSCore
             {
                 if (p.flag is IList && p.item is IList)
                 {
-                    var recur = FilterByMaskHelper(
-                        (p.item as IList).Cast<object>(),
-                        (p.flag as IList).Cast<object>());
+                    Tuple<ArrayList, ArrayList> recur =
+                        FilterByMaskHelper(
+                            (p.item as IList).Cast<object>(),
+                            (p.flag as IList).Cast<object>());
                     inList.Add(recur.Item1);
                     outList.Add(recur.Item2);
                 }
@@ -224,7 +217,7 @@ namespace DSCore
         {
             return new Dictionary<string, object>
             {
-                { "first", list[0] }, 
+                { "first", list[0] },
                 { "rest", list.Cast<object>().Skip(1).ToList() }
             };
         }
@@ -236,9 +229,7 @@ namespace DSCore
         /// <param name="list">List to add on to.</param>
         /// <returns name="list">New list.</returns>
         /// <search>insert,add,item,front</search>
-        public static IList AddItemToFront(
-            [ArbitraryDimensionArrayImport] object item,
-            IList list)
+        public static IList AddItemToFront([ArbitraryDimensionArrayImport] object item, IList list)
         {
             var newList = new ArrayList { item };
             newList.AddRange(list);
@@ -246,7 +237,7 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Adds an item to the end of a list.
+        ///     Adds an item to the end of a list.
         /// </summary>
         /// <param name="item">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
@@ -270,7 +261,7 @@ namespace DSCore
         /// <search>get,sub,sublist</search>
         public static IList TakeItems(IList list, int amount)
         {
-            var genList = list.Cast<object>();
+            IEnumerable<object> genList = list.Cast<object>();
             return (amount < 0 ? genList.Skip(list.Count + amount) : genList.Take(amount)).ToList();
         }
 
@@ -285,7 +276,7 @@ namespace DSCore
         /// <search>drop,remove</search>
         public static IList DropItems(IList list, int amount)
         {
-            var genList = list.Cast<object>();
+            IEnumerable<object> genList = list.Cast<object>();
             return (amount < 0 ? genList.Take(list.Count + amount) : genList.Skip(amount)).ToList();
         }
 
@@ -303,11 +294,12 @@ namespace DSCore
             if (amount == 0)
                 return list;
 
-            var genList = list.Cast<object>();
+            IEnumerable<object> genList = list.Cast<object>();
             return
                 (amount < 0
                     ? genList.Skip(-amount).Concat(genList.Take(-amount))
-                    : genList.Skip(list.Count - amount).Concat(genList.Take(list.Count - amount))).ToList();
+                    : genList.Skip(list.Count - amount).Concat(genList.Take(list.Count - amount)))
+                    .ToList();
         }
 
         /// <summary>
@@ -417,16 +409,6 @@ namespace DSCore
         public static IList TakeEveryNthItem(IList list, int n, int offset = 0)
         {
             return list.Cast<object>().Where((_, i) => (i + 1 - offset)%n == 0).ToList();
-        }
-
-        /// <summary>
-        ///     An Empty List.
-        /// </summary>
-        /// <returns name="list">Empty list.</returns>
-        /// <search>empty list, emptylist</search>
-        public static IList Empty
-        {
-            get { return new ArrayList(); }
         }
 
         /// <summary>
@@ -571,7 +553,7 @@ namespace DSCore
                     index += subLength + 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)subLength);
+                    var nextRow = (int)System.Math.Ceiling((index + 1)/(double)subLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
@@ -628,7 +610,7 @@ namespace DSCore
                     index += rowLength - 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)rowLength);
+                    var nextRow = (int)System.Math.Ceiling((index + 1)/(double)rowLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
@@ -650,24 +632,21 @@ namespace DSCore
             if (lists.Count == 0 || !lists.Cast<object>().Any(x => x is IList))
                 return lists;
 
-            var ilists = lists.Cast<IList>();
-            var maxLength = ilists.Max(subList => subList.Count); 
-            List<ArrayList> transposedList = Enumerable.Range(0, maxLength)
-                                                       .Select(i => new ArrayList())
-                                                       .ToList();
+            IEnumerable<IList> ilists = lists.Cast<IList>();
+            int maxLength = ilists.Max(subList => subList.Count);
+            List<ArrayList> transposedList =
+                Enumerable.Range(0, maxLength).Select(i => new ArrayList()).ToList();
 
-            foreach (var sublist in ilists)
+            foreach (IList sublist in ilists)
             {
                 for (int i = 0; i < sublist.Count; i++)
-                {
-                    transposedList[i].Add(sublist[i]);                
-                }
+                    transposedList[i].Add(sublist[i]);
             }
 
             return transposedList;
         }
 
-        
+
         /// <summary>
         ///     Creates a list containing the given item the given number of times.
         /// </summary>
@@ -675,9 +654,7 @@ namespace DSCore
         /// <param name="amount">The number of times to repeat.</param>
         /// <returns name="list">List of repeated items.</returns>
         /// <search>repeat,repeated,duplicate</search>
-        public static IList OfRepeatedItem(
-            [ArbitraryDimensionArrayImport] object item,
-            int amount)
+        public static IList OfRepeatedItem([ArbitraryDimensionArrayImport] object item, int amount)
         {
             return Enumerable.Repeat(item, amount).ToList();
         }
@@ -733,7 +710,7 @@ namespace DSCore
             var rng = new Random();
             return list.Cast<object>().OrderBy(_ => rng.Next()).ToList();
         }
-        
+
         /// <summary>
         ///     Produces all permutations of the given length of a given list.
         /// </summary>
@@ -769,7 +746,6 @@ namespace DSCore
         }
 
         #region Combinatorics Helpers
-
         private static IEnumerable<T> Singleton<T>(T t)
         {
             yield return t;
@@ -779,14 +755,15 @@ namespace DSCore
             IEnumerable<T> items, int count, bool replace)
         {
             int i = 0;
-            var enumerable = items as IList<T> ?? items.ToList();
-            foreach (var item in enumerable)
+            IList<T> enumerable = items as IList<T> ?? items.ToList();
+            foreach (T item in enumerable)
             {
                 if (count == 1)
                     yield return Singleton(item);
                 else
                 {
-                    var combs = GetCombinations(enumerable.Skip(replace ? i : i + 1), count - 1, replace);
+                    IEnumerable<IEnumerable<T>> combs =
+                        GetCombinations(enumerable.Skip(replace ? i : i + 1), count - 1, replace);
                     foreach (var result in combs)
                         yield return Singleton(item).Concat(result);
                 }
@@ -795,17 +772,21 @@ namespace DSCore
             }
         }
 
-        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items, int count)
+        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(
+            IEnumerable<T> items, int count)
         {
             int i = 0;
-            var enumerable = items as IList<T> ?? items.ToList();
-            foreach (var item in enumerable)
+            IList<T> enumerable = items as IList<T> ?? items.ToList();
+            foreach (T item in enumerable)
             {
                 if (count == 1)
                     yield return Singleton(item);
                 else
                 {
-                    var perms = GetPermutations(enumerable.Take(i).Concat(enumerable.Skip(i + 1)), count - 1);
+                    IEnumerable<IEnumerable<T>> perms =
+                        GetPermutations(
+                            enumerable.Take(i).Concat(enumerable.Skip(i + 1)),
+                            count - 1);
                     foreach (var result in perms)
                         yield return Singleton(item).Concat(result);
                 }
@@ -828,24 +809,49 @@ namespace DSCore
         {
             if (amt == 0)
             {
-                foreach (var item in list)
-                {
+                foreach (object item in list)
                     acc.Add(item);
-                }
             }
             else
             {
-                foreach (var item in list)
+                foreach (object item in list)
                 {
                     if (item is IList)
-                        acc = Flatten(item as IList, amt-1, acc);
+                        acc = Flatten(item as IList, amt - 1, acc);
                     else
-                        acc.Add(item);                   
+                        acc.Add(item);
                 }
             }
             return acc;
         }
+        #endregion
 
+        #region UniqueItems Comparer
+        private class DistinctComparer : IEqualityComparer<object>
+        {
+            internal static readonly IEqualityComparer<object> Instance = new DistinctComparer();
+
+            bool IEqualityComparer<object>.Equals(object x, object y)
+            {
+                return Eq(x as dynamic, y as dynamic);
+            }
+
+            // Bypass hash code check, use Equals instead.
+            public int GetHashCode(object obj)
+            {
+                return -1;
+            }
+
+            private static bool Eq(double x, double y)
+            {
+                return x.Equals(y);
+            }
+
+            private static bool Eq(IList x, IList y)
+            {
+                return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
+            }
+        }
         #endregion
 
         /* Disabled Higher-order functions
@@ -1188,17 +1194,17 @@ namespace DSCore
     }
 
     /// <summary>
-    /// Implements Compare function for two objects using following rule.
-    /// 1. Numbers are assumed to be smallest, then bool, string and pointers.
-    /// 2. If the two objects are IComparable and of the same type, then use
-    ///    it's native comparison mechanism.
-    /// 3. If both inputs are value type, but one of them is bool, bool is bigger
-    /// 4. Otherwise Convert them all to double and compare.
-    /// 5. Else If only one is value type, then value type object is smaller
-    /// 6. Else If only one is string, then the string is smaller than other
-    /// 7. Else don't know how to compare, so best campare them based on HashCode.
+    ///     Implements Compare function for two objects using following rule.
+    ///     1. Numbers are assumed to be smallest, then bool, string and pointers.
+    ///     2. If the two objects are IComparable and of the same type, then use
+    ///     it's native comparison mechanism.
+    ///     3. If both inputs are value type, but one of them is bool, bool is bigger
+    ///     4. Otherwise Convert them all to double and compare.
+    ///     5. Else If only one is value type, then value type object is smaller
+    ///     6. Else If only one is string, then the string is smaller than other
+    ///     7. Else don't know how to compare, so best campare them based on HashCode.
     /// </summary>
-    class ObjectComparer : IComparer<object>
+    internal class ObjectComparer : IComparer<object>
     {
         public int Compare(object x, object y)
         {
@@ -1225,7 +1231,7 @@ namespace DSCore
             //if y is value type x is bigger
             if (yType.IsValueType)
                 return 1;
-            
+
             //Next higher order object is string
             if (xType == typeof(string))
                 return -1;

@@ -382,7 +382,8 @@ namespace ProtoTest.TD.DocTests
         public void UM42_Math()
         {
             string code =
-@"import (""Math.dll"");val = 0.5;f = Math.Floor(val);c = Math.Ceiling(val);r = Math.Round(val);r2 = Math.Round(val + 0.001);";
+@"import (""DSCoreNodes.dll"");
+val = 0.5;f = Math.Floor(val);c = Math.Ceiling(val);r = Math.Round(val);r2 = Math.Round(val + 0.001);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("f", 0);
             thisTest.Verify("c", 1);

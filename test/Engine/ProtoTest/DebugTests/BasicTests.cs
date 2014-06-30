@@ -8614,62 +8614,6 @@ surf = makeSurf(ps);
         }
         [Test]
         [Category("Debugger")]
-        public void TestNestedReplication_501()
-        {
-            string src =
-        @"
-import(""ProtoGeometry.dll"");
-
-def makeSurf(p)
-{
-    p1 = p.Translate(1, 0, 0);
-    p2 = p.Translate(1, 1, 0);
-    p3 = p.Translate(0, 1, 0);
-    pts = { {p, p1}, {p3, p2} };
-    return = BSplineSurface.ByPoints(pts);
-}
-surf = makeSurf(Point.ByCoordinates((-10..10..1.5)<1>,
-(-10..10..1.5)<2>, 0));
-tool = Cuboid.ByLengths(CoordinateSystem.WCS,
-5.5, 5.5, 5.5);
-";
-            fsr.PreStart(src, runnerConfig);
-            fsr.Step();
-
-            DebugRunner.VMState vms = fsr.Step();
-            fsr.Step();
-            vms = fsr.Step();
-
-            Obj o = vms.mirror.GetDebugValue("surf");
-            string type = vms.mirror.GetType("surf");
-
-            Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
-            List<Obj> lo0 = vms.mirror.GetArrayElements(lo[0]);
-            type = vms.mirror.GetType(lo0[0]);
-            Assert.IsTrue(type == "BSplineSurface");
-
-            Dictionary<string, Obj> os_0 = vms.mirror.GetProperties(lo0[0]);
-
-
-            //Assert.IsTrue((Int64)os_0["UDegree"].Payload == 3);
-            //Assert.IsTrue((Int64)os_0["VDegree"].Payload == 3);
-            Assert.IsTrue(lo.Count == 14);
-
-            vms = fsr.StepOver();
-            Obj o1 = vms.mirror.GetDebugValue("tool");
-            type = vms.mirror.GetType("tool");
-            Assert.IsTrue(type == "Cuboid");
-            Dictionary<string, Obj> os_1 = vms.mirror.GetProperties(o1);
-            //Assert.IsTrue((Int64)os_1["Vertices"].Payload == 8);
-            //Assert.IsTrue((Int64)os_1["Edges"].Payload == 12);
-            //Assert.IsTrue((Int64)os_1["Faces"].Payload == 6);
-            //Assert.IsTrue((Int64)os_1["Shells"].Payload == 1);
-
-
-        }
-        [Test]
-        [Category("Debugger")]
         public void Defect_IDE446()
         {
             string src =
@@ -15326,7 +15270,7 @@ z = { A.A(), A.A() };
                 a : Point = null;
                 b : Line = null;
 
-                [imperative]
+                [Imperative]
                 {
                     a = Point.ByCoordinates(10, 0, 0);
                     b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));
@@ -16047,59 +15991,6 @@ a = 7;
         //Investigate the color object properties number, relates to IDE-493
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        public void UseCaseTesting_Condtional_symbology_inline_conditional_singleton_1()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
-@"
-import(""ProtoGeometry.dll"");
-
-p1 = Point.ByCoordinates(5,5,0);
-
-delta = 1;
-
-p2 = Point.ByCoordinates(5+delta,10,0);
-
-myLine = Line.ByStartPointEndPoint(p1,p2);
-
-length = myLine.Length;
-
-myLine.Color = myLine.Length > 7 ? Color.Red : Color.Blue; // conditional symbology
-
-lineColor = myLine.Color;
-
-delta = 9; // edit this value and rerun.. try 1, 5, 9 in turn
-           
-", runnerConfig);
-
-
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-
-            Obj o = vms.mirror.GetDebugValue("lineColor");
-            string type = vms.mirror.GetType("lineColor");
-            Assert.IsTrue(type == "Color");
-            Assert.IsTrue((long)o.Payload == 7);
-
-            vms = fsr.Step(); vms = fsr.Step();
-            vms = fsr.Step(); vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("lineColor");
-            type = vms.mirror.GetType("lineColor");
-            Assert.IsTrue(type == "Color");
-            Assert.IsTrue((long)o.Payload == 6
-                );
-
-        }
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
         [Category("ReleaseCriteria")]
         public void UseCase_Robert_simple_copy_and_modiy_collection_1()
         {
@@ -16256,125 +16147,6 @@ b : int;
 
             vms = fsr.Step();
             TestFrameWork.Verify(mirror, "b", 22, 0);
-
-        }
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
-        [Category("ReleaseCriteria")]
-        public void UseCase_Robert_simple_geometric_imperative_2()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
-@"
-import(""ProtoGeometry.dll"");
-
-WCS = CoordinateSystem.WCS;
-
-a : Point;
-b : Point;
-c : Line;
-a1;b1;c1;a2;
-[Imperative]
-{
-    a = Point.ByCartesianCoordinates(WCS,  5, 5, 0);
-    a1=a.X;
-	b = Point.ByCartesianCoordinates(WCS, 10, 5, 0);
-    b1=b.X;
-    c = Line.ByStartPointEndPoint(a, b);
-    c1=c.Length;
-    
-    a = Point.ByCartesianCoordinates(WCS, 7, 7, 0);
-    a2=a.X;
-}
-           
-", runnerConfig);
-
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
-            ExecutionMirror mirror = watchRunner.Execute(@"a.X");
-            Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "a1", 5.0, 0);
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "b1", 10.0, 0);
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "c1", 5.0, 0);
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-            TestFrameWork.Verify(mirror, "a1", 5.0, 0);
-            TestFrameWork.Verify(mirror, "c1", 5.0, 0);
-
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a2", 7.0, 0);
-
-
-        }
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
-        [Category("ReleaseCriteria")]
-        public void UseCase_Robert_simple_geometric_associative_2()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
-@"
-import(""ProtoGeometry.dll"");
-
-WCS = CoordinateSystem.WCS;
-
-a : Point;
-b : Point;
-c : Line;
-
-[Associative]
-{
-    a = Point.ByCartesianCoordinates(WCS,  5, 5, 0);
-    a1=a.X;
-	b = Point.ByCartesianCoordinates(WCS, 10, 5, 0);
-    b1=b.X;
-    c = Line.ByStartPointEndPoint(a, b);
-    c1=c.Length;
-    a = Point.ByCartesianCoordinates(WCS, 7, 7, 0);
-}
-           
-", runnerConfig);
-
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
-            ExecutionMirror mirror = watchRunner.Execute(@"a.X");
-            Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "a1", 5.0, 0);
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-            TestFrameWork.Verify(mirror, "b1", 10.0, 0);
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-            TestFrameWork.Verify(mirror, "c1", 5.0, 0);
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-            TestFrameWork.Verify(mirror, "a1", 7.0, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "c1", 3.605551, 0);
 
         }
         [Test]
