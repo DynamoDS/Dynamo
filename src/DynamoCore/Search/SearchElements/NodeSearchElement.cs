@@ -126,7 +126,7 @@ namespace Dynamo.Search.SearchElements
             // create node
             var guid = Guid.NewGuid();
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, this.Name, 0, 0, true, true));
+                new DynCmd.CreateNodeCommand(guid, CreatingName, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

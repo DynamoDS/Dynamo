@@ -36,6 +36,8 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>618</NoWarn>
     <DocumentationFile>$(OutputPath)\DynamoRevitDS.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoRevitDS.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -47,6 +49,7 @@
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>618</NoWarn>
     <DocumentationFile>$(OutputPath)\DynamoRevitDS.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamoRaaSHelper">
