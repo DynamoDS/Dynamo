@@ -6,6 +6,10 @@ using System.Text;
 
 namespace Dynamo.Services
 {
+    /// <summary>
+    /// Stability state tracking utils library
+    /// The primary use is for reporting MTBF to instrumentation
+    /// </summary>
     public class StabilityTracking
     {
         private Stopwatch globalTime;
@@ -26,7 +30,7 @@ namespace Dynamo.Services
             return instance;
         }
 
-        public StabilityTracking()
+        private StabilityTracking()
         {
             globalTime = new Stopwatch();
             timeSinceLastCrash = new Stopwatch();
@@ -35,7 +39,9 @@ namespace Dynamo.Services
             timeSinceLastCrash.Start();
         }
 
-
+        /// <summary>
+        /// Notify the stability tracker that a crash has occured
+        /// </summary>
         public void NotifyCrash()
         {
             InstrumentationLogger.LogAnonymousTimedEvent(
