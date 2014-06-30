@@ -44,6 +44,26 @@ namespace ProtoCore
 
             body = rhs.body;
         }
+
+        /// <summary>
+        /// Equality check for properties of a language block
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(LanguageCodeBlock other)
+        {
+            // Attributes, fingerprint, body and version are not yet used/set for language blocks 
+            // They only have default values.
+            bool eqAttributes = true; 
+            bool eqProperties = fingerprint == other.version && version == other.version;
+            bool eqBody = string.Equals(body, other.body);
+
+            return 
+                language == other.language 
+                && eqProperties 
+                && eqAttributes 
+                && eqBody;
+        }
     }
 
     public class Script
