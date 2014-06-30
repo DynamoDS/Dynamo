@@ -164,7 +164,6 @@ namespace ProtoAssociative
                 codeBlock.parent = parentBlock;
             }
 
-            core.CompleteCodeBlockList.Add(codeBlock);
             compilePass = ProtoCore.DSASM.AssociativeCompilePass.kClassName;
 
             // Bouncing to this language codeblock from a function should immediately set the first instruction as the entry point
@@ -198,7 +197,6 @@ namespace ProtoAssociative
             else
             {
                 cb = core.CodeBlockList[0];
-                core.DeltaCodeBlockIndex++;
             }
             Validity.Assert(null != cb);
             return cb;
@@ -222,8 +220,6 @@ namespace ProtoAssociative
 
             ++core.CodeBlockIndex;
             ++core.RuntimeTableIndex;
-
-            ++core.DeltaCodeBlockIndex;
 
             return cb;
         }
@@ -6523,14 +6519,16 @@ namespace ProtoAssociative
                 Language.kInvalid,
                 core.CodeBlockIndex++,
                 new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("if"), core.RuntimeTableIndex++),
-                null);
+                null,
+                false,
+                core);
 
 
             localCodeBlock.instrStream = codeBlock.instrStream;
             localCodeBlock.parent = codeBlock;
             codeBlock.children.Add(localCodeBlock);
             codeBlock = localCodeBlock;
-            core.CompleteCodeBlockList.Add(localCodeBlock);
+
             // If-body
             foreach (AssociativeNode ifBody in ifnode.IfBody)
             {
@@ -6599,13 +6597,14 @@ namespace ProtoAssociative
                     Language.kInvalid,
                     core.CodeBlockIndex++,
                     new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("else"), core.RuntimeTableIndex++),
-                    null);
+                    null,
+                    false,
+                    core);
 
                 localCodeBlock.instrStream = codeBlock.instrStream;
                 localCodeBlock.parent = codeBlock;
                 codeBlock.children.Add(localCodeBlock);
                 codeBlock = localCodeBlock;
-                core.CompleteCodeBlockList.Add(localCodeBlock);
                 foreach (AssociativeNode elseBody in ifnode.ElseBody)
                 {
                     inferedType = new ProtoCore.Type();

@@ -1006,15 +1006,6 @@ namespace ProtoCore
         // unlike the codeblocklist which only stores the outer most code blocks
         public List<CodeBlock> CompleteCodeBlockList { get; set; }
 
-
-
-        /// <summary>
-        /// The delta codeblock index tracks the current number of new language blocks created at compile time for every new compile phase
-        /// </summary>
-        public int DeltaCodeBlockIndex { get; set; }
-
-        // TODO Jun: Refactor this and similar indices into a logical grouping of block incrementing variables 
-
         /// <summary>
         /// ForLoopBlockIndex tracks the current number of new for loop blocks created at compile time for every new compile phase
         /// It is reset for delta compilation
@@ -1102,10 +1093,6 @@ namespace ProtoCore
         public bool builtInsLoaded { get; set; }
         public List<string> LoadedDLLs = new List<string>();
         public int deltaCompileStartPC { get; set; }
-
-
-        public bool EnableCallsiteExecutionState { get; set; }
-        public CallsiteExecutionState csExecutionState { get; set; }
 
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
 
@@ -1280,7 +1267,6 @@ namespace ProtoCore
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
-            DeltaCodeBlockIndex = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             // Jun this is where the temp solutions starts for implementing language blocks in delta execution
@@ -1430,18 +1416,6 @@ namespace ProtoCore
             builtInsLoaded = false;
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
-            csExecutionState = null;
-            EnableCallsiteExecutionState = false;
-
-            // TODO: Remove check once fully implemeted
-            if (EnableCallsiteExecutionState)
-            {
-                csExecutionState = CallsiteExecutionState.LoadState();
-            }
-            else
-            {
-                csExecutionState = new CallsiteExecutionState();
-            }
 
             CallsiteCache = new Dictionary<string, CallSite>();
             CachedSSANodes = new List<AssociativeNode>();

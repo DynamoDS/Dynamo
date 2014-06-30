@@ -308,6 +308,7 @@ namespace Dynamo
             DisposeLogic.IsShuttingDown = false;
 
             EngineController = new EngineController(this);
+            CustomNodeManager.RecompileAllNodes(EngineController);
 
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
@@ -378,6 +379,7 @@ namespace Dynamo
             }
 
             EngineController = new EngineController(this);
+            CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
         public void RequestRedraw()
