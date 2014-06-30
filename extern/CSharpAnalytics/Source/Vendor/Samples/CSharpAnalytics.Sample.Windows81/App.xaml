@@ -1,0 +1,12 @@
+﻿<Application
+    x:Class="CSharpAnalytics.Sample.Windows81.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CSharpAnalytics.Sample.Windows81"
+    xmlns:localData="using:CSharpAnalytics.Sample.Windows81.Data">
+
+    <Application.Resources>
+        <!-- Application-specific resources -->
+        <x:String x:Key="AppName">CSharpAnalytics sample for Windows 8.1 apps</x:String>
+    </Application.Resources>
+</Application>

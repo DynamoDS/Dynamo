@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
+using DynamoUtilities;
+
 namespace Dynamo.DSEngine
 {
     public static class DocumentationServices
@@ -47,7 +49,7 @@ namespace Dynamo.DSEngine
 
         public static bool ResolveForAssembly(string assemblyLocation, ref string documentationPath)
         {
-            Dynamo.Nodes.Utilities.ResolveLibraryPath(ref assemblyLocation);
+            DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation);
 
             if (!File.Exists(assemblyLocation))
             {

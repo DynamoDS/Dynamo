@@ -4,41 +4,39 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
+using DynamoUtilities;
+
 namespace Dynamo.DSEngine
 {
     public class LibraryCustomizationServices
     {
-        private static Dictionary<string, bool> _triedPaths = new Dictionary<string, bool>();
-        private static Dictionary<string, LibraryCustomization> _cache = new Dictionary<string, LibraryCustomization>();
+        private static Dictionary<string, bool> triedPaths = new Dictionary<string, bool>();
+        private static Dictionary<string, LibraryCustomization> cache = new Dictionary<string, LibraryCustomization>();
 
         public static LibraryCustomization GetForAssembly(string assemblyPath)
         {
-            if (_triedPaths.ContainsKey(assemblyPath))
+            if (triedPaths.ContainsKey(assemblyPath))
             {
-                return _triedPaths[assemblyPath] ? _cache[assemblyPath] : null;
+                return triedPaths[assemblyPath] ? cache[assemblyPath] : null;
             }
 
             var customizationPath = "";
             if (ResolveForAssembly(assemblyPath, ref customizationPath))
             {
                 var c = new LibraryCustomization(XDocument.Load(customizationPath));
-                _triedPaths.Add(assemblyPath, true);
-                _cache.Add(assemblyPath, c);
+                triedPaths.Add(assemblyPath, true);
+                cache.Add(assemblyPath, c);
                 return c;
             }
-            else
-            {
-                _triedPaths.Add(assemblyPath, false);
-                return null;
-            }
+
+            triedPaths.Add(assemblyPath, false);
+            return null;
             
         }
 
         public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)
         {
-            Dynamo.Nodes.Utilities.ResolveLibraryPath(ref assemblyLocation);
-
-            if (!File.Exists(assemblyLocation))
+            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
             {
                 return false;
             }

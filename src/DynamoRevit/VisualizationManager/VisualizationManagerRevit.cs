@@ -112,7 +112,8 @@ namespace Dynamo
                     TransactionManager.Instance.EnsureInTransaction(
                         DocumentManager.Instance.CurrentDBDocument);
 
-                    if (keeperId != ElementId.InvalidElementId)
+                    if (keeperId != ElementId.InvalidElementId && 
+                        DocumentManager.Instance.CurrentDBDocument.GetElement(keeperId) != null)
                     {
                         DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
                         keeperId = ElementId.InvalidElementId;
