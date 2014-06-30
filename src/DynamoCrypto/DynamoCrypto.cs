@@ -77,9 +77,14 @@ namespace DynamoCrypto
         /// <param name="signatureFilePath">The path of the generated signature file.</param>
         /// <param name="privateBlob">The private key.</param>
         public static void SignFile(string filePath, string signatureFilePath, byte[] privateBlob)
-        {
+        {  
             try
             {
+                if (privateBlob.Length == 0)
+                {
+                    throw new Exception("The specified private key is invalid.");
+                }
+
                 byte[] hash = null;
 
                 using (Stream fileStream = File.Open(filePath, FileMode.Open))
@@ -115,6 +120,9 @@ namespace DynamoCrypto
         /// <returns> True if the file is verified, otherwise false.</returns>
         public static bool VerifyFile(string filePath, string signatureFilePath, byte[] publicBlob)
         {
+            if (publicBlob.Length == 0)
+                return false;
+
             bool verified = false;
             byte[] hash = null;
 
