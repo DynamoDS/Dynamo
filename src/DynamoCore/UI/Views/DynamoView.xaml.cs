@@ -232,14 +232,13 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// These lines of codes create an instance of StartPage object, insert
-        /// it under the main grid. The same thing can easily be achieved in XAML,
-        /// but the cost that comes with creating a new start page will be large.
-        /// The start-page object internally creates a whole bunch of other stuff,
-        /// so if it part of the main XAML, then the cost will always be incurred,
-        /// even if user opts to not show start-screen for each launch. Having the
-        /// creation in a separate method that is optionally called, this cost can
-        /// be completely avoided in cases that start-screen is not required.
+        /// This method inserts an instance of "StartPageViewModel" into the 
+        /// "startPageItemsControl", results of which displays the Start Page on 
+        /// "DynamoView" through the list item's data template. This method also
+        /// ensures that there is at most one item in the "startPageItemsControl".
+        /// Only when this method is invoked the cost of initializing the start 
+        /// page is incurred, when user opts to not display start page at start 
+        /// up, then this method will not be called (therefore incurring no cost).
         /// </summary>
         /// 
         private void InitializeStartPage()
@@ -247,22 +246,8 @@ namespace Dynamo.Controls
             if (DynamoController.IsTestMode) // No start screen in unit testing.
                 return;
 
-            this.startPage = new StartPage(DataContext as DynamoViewModel);
-            this.startPage.SetValue(Grid.RowProperty, 2);
-            this.startPage.SetValue(Grid.RowSpanProperty, 4);
-            this.startPage.SetValue(Grid.ColumnProperty, 0);
-            this.startPage.SetValue(Grid.ColumnSpanProperty, 3);
-
-            var visibilityBinding = new Binding("ShowStartPage")
-            {
-                Mode = BindingMode.OneWay,
-                Source = this.DataContext,
-                Converter = new BooleanToVisibilityConverter(),
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-
-            startPage.SetBinding(UIElement.VisibilityProperty, visibilityBinding);
-            mainGrid.Children.Add(this.startPage);
+            if (startPageItemsControl.Items.Count <= 0)
+                startPageItemsControl.Items.Add(new StartPageViewModel());
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)

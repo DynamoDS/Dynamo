@@ -1,4 +1,5 @@
-﻿using Dynamo.ViewModels;
+﻿using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +18,24 @@ using System.Windows.Navigation;
 
 namespace Dynamo.UI.Controls
 {
+    public class StartPageViewModel : ViewModelBase
+    {
+        List<StartPageListItem> sampleFiles = new List<StartPageListItem>();
+
+        internal StartPageViewModel()
+        {
+            sampleFiles.Add(new StartPageListItem("Hey")
+            {
+                ClickAction = StartPageListItem.Action.FilePath
+            });
+        }
+
+        public IEnumerable<StartPageListItem> SampleFiles
+        {
+            get { return this.sampleFiles; }
+        }
+    }
+
     public class StartPageListItem
     {
         public enum Action
@@ -60,9 +79,6 @@ namespace Dynamo.UI.Controls
         public const string OpenWorkspace = "OpenWorkspace";
     }
 
-    /// <summary>
-    /// Interaction logic for StartPage.xaml
-    /// </summary>
     public partial class StartPage : UserControl
     {
         private DynamoViewModel dynamoViewModel = null;
@@ -71,15 +87,10 @@ namespace Dynamo.UI.Controls
         public StartPage()
         {
             InitializeComponent();
-        }
-
-        public StartPage(DynamoViewModel dynamoViewModel)
-        {
-            InitializeComponent();
             this.recentList = new ObservableCollection<StartPageListItem>();
 
             this.Loaded += OnStartPageLoaded;
-            this.dynamoViewModel = dynamoViewModel;
+            this.dynamoViewModel = dynSettings.Controller.DynamoViewModel;
             this.dynamoViewModel.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
 
@@ -194,6 +205,9 @@ namespace Dynamo.UI.Controls
 
             RefreshRecentFileList(dynamoViewModel.RecentFiles);
             this.recentListBox.ItemsSource = recentList;
+
+            var startPageViewModel = this.DataContext as StartPageViewModel;
+            this.samplesListBox.ItemsSource = startPageViewModel.SampleFiles;
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
