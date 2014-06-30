@@ -58,24 +58,11 @@ namespace ProtoCore.AST.AssociativeAST
         public LanguageCodeBlock codeblock { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
 
+        //only comparing attributes and codeblock at the moment
         public override bool Equals(object other)
         {
             var otherNode = other as LanguageBlockNode;
-
-            // Compare language block properties
-            bool eqLangBlockProperties = codeblock.Equals(otherNode.codeblock);
-
-            // Compare language block contents
-            bool eqLangblockContents = CodeBlockNode is AssociativeNode && otherNode.CodeBlockNode is AssociativeNode
-                                    && (CodeBlockNode as AssociativeNode).Equals(otherNode.CodeBlockNode as AssociativeNode)
-                                    ||
-                                    CodeBlockNode is ImperativeNode && otherNode.CodeBlockNode is ImperativeNode
-                                    && (CodeBlockNode as ImperativeNode).Equals(otherNode.CodeBlockNode as ImperativeNode)
-                                    ;
-
-            bool eqAttribute = null != otherNode && Attributes.SequenceEqual(otherNode.Attributes);
-
-            return eqLangBlockProperties && eqLangblockContents && eqAttribute;
+            return null != otherNode && Attributes.SequenceEqual(otherNode.Attributes);
         }
 
         public override int GetHashCode()
