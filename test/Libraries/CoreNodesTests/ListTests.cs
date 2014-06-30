@@ -538,5 +538,46 @@ namespace DSCoreNodesTests
                 },
                 check);
         }
+
+        [Test]
+        public static void Sublists()
+        {
+            List<int> input = Enumerable.Range(0, 10).ToList();
+
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { 0, 2 },
+                    new ArrayList { 1, 3 },
+                    new ArrayList { 2, 4 },
+                    new ArrayList { 3, 5 },
+                    new ArrayList { 4, 6 },
+                    new ArrayList { 5, 7 },
+                    new ArrayList { 6, 8 },
+                    new ArrayList { 7, 9 },
+                    new ArrayList { 8 },
+                    new ArrayList { 9 }
+                },
+                List.Sublists(input, new ArrayList { 0, 2 }, 1));
+
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { 2, 1 },
+                    new ArrayList { 5, 4 },
+                    new ArrayList { 8, 7 },
+                },
+                List.Sublists(input, new ArrayList { 2, 1 }, 3));
+
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { 0, 5, 2, 3, 4 },
+                    new ArrayList { 5, 7, 8, 9 }
+                },
+                List.Sublists(input, new ArrayList { 0, 5, new ArrayList { 2, 3, 4 } }, 5));
+
+
+        }
     }
 }
