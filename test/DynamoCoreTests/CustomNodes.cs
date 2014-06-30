@@ -7,6 +7,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using NUnit.Framework;
 using System.Text;
 using Dynamo.DSEngine;
@@ -19,7 +21,6 @@ namespace Dynamo.Tests
     internal class CustomNodes : DSEvaluationUnitTest
     {
         [Test]
-        [Category("Failing")]
         public void CanCollapseNodesAndGetSameResult()
         {
             var model = Controller.DynamoModel;
@@ -120,7 +121,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void CanCollapseWith1NodeHoleInSelection()
         {
             var model = Controller.DynamoModel;
@@ -164,7 +164,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void CanCollapseAndUndoRedo()
         {
             var model = Controller.DynamoModel;
@@ -291,7 +290,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void GitHub_461_DeleteNodesFromCustomNodeWorkspaceAfterCollapse()
         {
             var model = Controller.DynamoModel;
@@ -382,7 +380,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void FilterWithCustomNode()
         {
             var model = Controller.DynamoModel;
@@ -425,20 +422,182 @@ namespace Dynamo.Tests
             Assert.Inconclusive();
         }
 
+
+        [Test]
+        public void CanCreateAndPlaceNewCustomNode()
+        {
+            const string name = "Custom Node Creation Test";
+            const string description = "Description";
+            const string category = "Custom Node Category";
+
+            Controller.DynamoViewModel.ExecuteCommand(
+                new DynamoViewModel.CreateCustomNodeCommand(
+                    Guid.NewGuid(),
+                    name,
+                    category,
+                    description,
+                    true));
+
+            Assert.IsInstanceOf<CustomNodeWorkspaceModel>(Controller.DynamoModel.CurrentWorkspace);
+            var customNodeWs = Controller.DynamoModel.CurrentWorkspace as CustomNodeWorkspaceModel;
+            var customNodeDef = customNodeWs.CustomNodeDefinition;
+            Assert.AreEqual(name, customNodeDef.DisplayName);
+            Assert.AreEqual(description, customNodeWs.Description);
+            Assert.AreEqual(category, customNodeWs.Category);
+
+            Controller.DynamoViewModel.HomeCommand.Execute(null);
+
+            Controller.DynamoViewModel.ExecuteCommand(
+                new DynamoViewModel.CreateNodeCommand(
+                    Guid.NewGuid(),
+                    customNodeDef.FunctionId.ToString(),
+                    0,
+                    0,
+                    true,
+                    true));
+
+            Assert.AreEqual(1, Controller.DynamoModel.HomeSpace.Nodes.Count);
+            Assert.IsInstanceOf<Function>(Controller.DynamoModel.HomeSpace.Nodes.First());
+            Assert.AreEqual(customNodeDef, (Controller.DynamoModel.HomeSpace.Nodes.First() as Function).Definition);
+        }
+
+
         /// <summary>
         /// Run a custom node, change parameter/output/function names, run again to verify consistency
         /// </summary>
         [Test]
-        public void RenameConsistency()
+        public void ModificationUITesting()
         {
-            Assert.Inconclusive();
+            // Re-use code for creating a custom node
+            CanCreateAndPlaceNewCustomNode();
+
+            var instance = Controller.DynamoModel.HomeSpace.Nodes.First() as Function;
+
+            Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(instance.Definition.FunctionId);
+
+            var currentInPortAmt = 0;
+            var currentOutPortAmt = 0;
+
+            #region Reflection code for instantiating Input and Output nodes
+            var inputType = typeof(Symbol);
+            var outputType = typeof(Output);
+
+            var inputName =
+                inputType.GetCustomAttributes(typeof(NodeNameAttribute), false)
+                    .OfType<NodeNameAttribute>()
+                    .First()
+                    .Name;
+
+            var outputName =
+                outputType.GetCustomAttributes(typeof(NodeNameAttribute), false)
+                    .OfType<NodeNameAttribute>()
+                    .First()
+                    .Name;
+            #endregion
+
+            #region Adding
+            Func<string, Symbol> addInput = label =>
+            {
+                var guid = Guid.NewGuid();
+
+                Controller.DynamoViewModel.ExecuteCommand(
+                    new DynamoViewModel.CreateNodeCommand(
+                        guid,
+                        inputName,
+                        0,
+                        0,
+                        true,
+                        true));
+
+                var node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace<Symbol>(guid);
+                node.InputSymbol = label;
+
+                Assert.AreEqual(++currentInPortAmt, instance.InPorts.Count);
+                Assert.AreEqual(label, instance.InPorts.Last().PortName);
+
+                return node;
+            };
+
+            Func<string, Output> addOutput = label =>
+            {
+                var guid = Guid.NewGuid();
+
+                Controller.DynamoViewModel.ExecuteCommand(
+                    new DynamoViewModel.CreateNodeCommand(
+                        guid,
+                        outputName,
+                        0,
+                        0,
+                        true,
+                        true));
+
+                var node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace<Output>(guid);
+                node.Symbol = label;
+
+                Assert.AreEqual(++currentOutPortAmt, instance.OutPorts.Count);
+                Assert.AreEqual(label, instance.OutPorts.Last().PortName);
+
+                return node;
+            };
+            #endregion
+
+            #region Renaming
+            Action<Symbol, int, string> renameInput = (input, idx, s) =>
+            {
+                input.InputSymbol = s;
+                Assert.AreEqual(s, instance.InPorts[idx].PortName);
+            };
+
+            Action<Output, int, string> renameOutput = (output, idx, s) =>
+            {
+                output.Symbol = s;
+                Assert.AreEqual(s, instance.OutPorts[idx].PortName);
+            };
+            #endregion
+
+            #region Deleting
+            Action<NodeModel> deleteNode = nodeModel =>
+            {
+                DynamoSelection.Instance.ClearSelection();
+                Controller.DynamoModel.AddToSelection(nodeModel);
+                Controller.DynamoViewModel.DeleteCommand.Execute(null);
+            };
+
+            Action<Symbol> deleteInput = input =>
+            {
+                deleteNode(input);
+                Assert.AreEqual(--currentInPortAmt, instance.InPorts.Count);
+            };
+
+            Action<Output> deleteOutput = output =>
+            {
+                deleteNode(output);
+                Assert.AreEqual(--currentOutPortAmt, instance.OutPorts.Count);
+            };
+            #endregion
+
+            //Add some outputs
+            var out1 = addOutput("output1");
+            var out2 = addOutput("output2");
+
+            //Add some inputs
+            var in1 = addInput("input1");
+            var in2 = addInput("input2");
+
+            //Change some names
+            renameInput(in1, 0, "test");
+            renameOutput(out2, 1, "something");
+
+            //Delete some ports
+            deleteInput(in2);
+            deleteOutput(out1);
         }
 
         /// <summary>
         /// Modification of a recursive custom node results in UI updating for all instances.
         /// </summary>
         [Test]
-        public void ModificationUITesting()
+        public void ModificationUITesting_Recursive()
         {
             // var homeNode = custom node instance in the home workspace
             // var recNode = recursive custom node instance in the custom node workspace
@@ -483,7 +642,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-		[Category("Failing")]
         public void PartialApplicationWithMultipleOutputs()
         {
             var model = Controller.DynamoModel;

@@ -186,12 +186,6 @@ namespace ProtoScript.Runners
                 return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             }
 
-            // Save the Callsite state for this execution
-            if (core.EnableCallsiteExecutionState)
-            {
-                ProtoCore.CallsiteExecutionState.SaveState(core.csExecutionState);
-            }
-
             return null;
         }
 
@@ -225,12 +219,6 @@ namespace ProtoScript.Runners
                 return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             }
 
-            // Save the Callsite state for this execution
-            if (core.EnableCallsiteExecutionState)
-            {
-                ProtoCore.CallsiteExecutionState.SaveState(core.csExecutionState);
-            }
-
             return null;
         }
 
@@ -260,12 +248,6 @@ namespace ProtoScript.Runners
                 return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             }
 
-            // Save the Callsite state for this execution
-            if (core.EnableCallsiteExecutionState)
-            {
-                ProtoCore.CallsiteExecutionState.SaveState(core.csExecutionState);
-            }
-
             return null;
         }
 
@@ -293,12 +275,6 @@ namespace ProtoScript.Runners
             if (isTest && !core.Options.CompileToLib)
             {
                 return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
-            }
-
-            // Save the Callsite state for this execution
-            if (core.EnableCallsiteExecutionState)
-            {
-                ProtoCore.CallsiteExecutionState.SaveState(core.csExecutionState);
             }
 
             return null;

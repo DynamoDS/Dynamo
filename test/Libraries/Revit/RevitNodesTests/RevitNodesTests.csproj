@@ -75,6 +75,7 @@
     <Compile Include="Elements\DividedPathTests.cs" />
     <Compile Include="Elements\DividedSurfaceTests.cs" />
     <Compile Include="Elements\DocumentTests.cs" />
+    <Compile Include="Elements\ElementTests.cs" />
     <Compile Include="Elements\FloorTests.cs" />
     <Compile Include="Elements\FloorTypeTests.cs" />
     <Compile Include="Elements\GridTests.cs" />
