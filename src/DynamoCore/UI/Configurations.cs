@@ -20,9 +20,10 @@ namespace Dynamo.UI
         #region Usage Reporting Error Message
 
         public static string DynamoSiteLink = "http://dynamobim.org/";
+        public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
         public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
         public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
-        public static string DynamoPdfTutorials = "https://github.com/ikeough/Dynamo/blob/0.6.2/doc/distrib/Dynamo%20Visual%20Programming%20for%20Design.pdf?raw=true";
+        public static string DynamoPdfTutorials = "https://github.com/DynamoDS/Dynamo/blob/master/doc/distrib/Dynamo%20Visual%20Programming%20for%20Design.pdf?raw=true";
         public static string DynamoVideoTutorials = "http://dynamobim.org/learn/";
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";

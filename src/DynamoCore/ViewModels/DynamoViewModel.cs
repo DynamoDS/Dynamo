@@ -1570,7 +1570,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo/wiki");
+            Process.Start(Dynamo.UI.Configurations.DynamoWikiLink);
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -1580,7 +1580,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo");
+            Process.Start(Dynamo.UI.Configurations.GitHubDynamoLink);
         }
 
         internal bool CanGoToSourceCode(object parameter)
