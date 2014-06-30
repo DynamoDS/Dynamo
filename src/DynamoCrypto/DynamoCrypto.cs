@@ -135,7 +135,7 @@ namespace DynamoCrypto
                 // Verify the signature against the hash of the installer
                 verified = dsaDeformatter.VerifySignature(hash, signature);
 
-                Console.WriteLine(verified);
+                Console.WriteLine("File verified: {0}", verified);
             }
             catch (Exception e)
             {
