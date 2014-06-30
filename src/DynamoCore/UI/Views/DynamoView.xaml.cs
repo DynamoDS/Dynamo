@@ -42,7 +42,7 @@ namespace Dynamo.Controls
 
         private DynamoViewModel _vm = null;
         private Stopwatch _timer = null;
-        private StartPage startPage = null;
+        private StartPageViewModel startPage = null;
 
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
@@ -246,8 +246,17 @@ namespace Dynamo.Controls
             if (DynamoController.IsTestMode) // No start screen in unit testing.
                 return;
 
-            if (startPageItemsControl.Items.Count <= 0)
-                startPageItemsControl.Items.Add(new StartPageViewModel());
+            if (this.startPage == null)
+            {
+                if (startPageItemsControl.Items.Count > 0)
+                {
+                    var message = "'startPageItemsControl' must be empty";
+                    throw new InvalidOperationException(message);
+                }
+
+                this.startPage = new StartPageViewModel();
+                startPageItemsControl.Items.Add(this.startPage);
+            }
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)

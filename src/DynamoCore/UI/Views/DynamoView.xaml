@@ -1213,7 +1213,7 @@
                                      Mode="OneWay"
                                      RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
                         </Grid.Height>
-                        <uictrls:StartPage />
+                        <uictrls:StartPageView />
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

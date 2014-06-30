@@ -21,13 +21,19 @@ namespace Dynamo.UI.Controls
     public class StartPageViewModel : ViewModelBase
     {
         List<StartPageListItem> fileOperations = new List<StartPageListItem>();
-        List<StartPageListItem> sampleFiles = new List<StartPageListItem>();
         List<StartPageListItem> communityLinks = new List<StartPageListItem>();
         List<StartPageListItem> references = new List<StartPageListItem>();
         List<StartPageListItem> contributeLinks = new List<StartPageListItem>();
 
+        // Dynamic lists that update views on the fly.
+        ObservableCollection<StartPageListItem> sampleFiles = null;
+        ObservableCollection<StartPageListItem> recentFiles = null;
+
         internal StartPageViewModel()
         {
+            this.sampleFiles = new ObservableCollection<StartPageListItem>();
+            this.recentFiles = new ObservableCollection<StartPageListItem>();
+
             #region File Operations
 
             fileOperations.Add(new StartPageListItem("New", "icon-new.png")
@@ -92,19 +98,34 @@ namespace Dynamo.UI.Controls
 
             #endregion
 
-            EnumerateSampleFiles();
+            var dvm = dynSettings.Controller.DynamoViewModel;
+            RefreshRecentFileList(dvm.RecentFiles);
+            dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
 
-        #region Public Class Properties
+        internal void PopulateSampleFileList(IEnumerable<string> filePaths)
+        {
+            if (filePaths == null || (filePaths.Count() <= 0))
+                return;
+
+            sampleFiles.Clear();
+            foreach (var filePath in filePaths)
+            {
+                var path = Path.GetFileNameWithoutExtension(filePath);
+                sampleFiles.Add(new StartPageListItem(path)
+                {
+                    ContextData = filePath,
+                    ToolTip = filePath,
+                    ClickAction = StartPageListItem.Action.FilePath
+                });
+            }
+        }
+
+        #region Public Class Properties (Static Lists)
 
         public IEnumerable<StartPageListItem> FileOperations
         {
             get { return this.fileOperations; }
-        }
-
-        public IEnumerable<StartPageListItem> SampleFiles
-        {
-            get { return this.sampleFiles; }
         }
 
         public IEnumerable<StartPageListItem> CommunityLinks
@@ -124,14 +145,46 @@ namespace Dynamo.UI.Controls
 
         #endregion
 
+        #region Public Class Properties (Dynamic Lists)
+
+        public ObservableCollection<StartPageListItem> SampleFiles
+        {
+            get { return this.sampleFiles; }
+        }
+
+        public ObservableCollection<StartPageListItem> RecentFiles
+        {
+            get { return this.recentFiles; }
+        }
+
+        #endregion
+
+        #region Private Class Event Handlers
+
+        private void OnRecentFilesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RefreshRecentFileList(sender as IEnumerable<string>);
+        }
+
+        #endregion
+
         #region Private Class Helper Methods
 
-        private void EnumerateSampleFiles()
+        private void RefreshRecentFileList(IEnumerable<string> filePaths)
         {
-            sampleFiles.Add(new StartPageListItem("Hey")
+            this.recentFiles.Clear();
+            foreach (var filePath in filePaths)
             {
-                ClickAction = StartPageListItem.Action.FilePath
-            });
+                var extension = Path.GetExtension(filePath).ToUpper();
+                var caption = Path.GetFileNameWithoutExtension(filePath);
+                this.recentFiles.Add(new StartPageListItem(caption)
+                {
+                    ContextData = filePath,
+                    ToolTip = filePath,
+                    SubScript = extension.Substring(1), // Skipping the 'dot'
+                    ClickAction = StartPageListItem.Action.FilePath
+                });
+            }
         }
 
         #endregion
@@ -180,59 +233,25 @@ namespace Dynamo.UI.Controls
         public const string OpenWorkspace = "OpenWorkspace";
     }
 
-    public partial class StartPage : UserControl
+    public partial class StartPageView : UserControl
     {
-        private DynamoViewModel dynamoViewModel = null;
-        private ObservableCollection<StartPageListItem> recentList = null;
-
-        public StartPage()
+        public StartPageView()
         {
             InitializeComponent();
-            this.recentList = new ObservableCollection<StartPageListItem>();
-
             this.Loaded += OnStartPageLoaded;
-            this.dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-            this.dynamoViewModel.RecentFiles.CollectionChanged += OnRecentFilesChanged;
-        }
-
-        internal void PopulateSampleFileList(IEnumerable<string> filePaths)
-        {
-            if (filePaths == null || (filePaths.Count() <= 0))
-                return;
-
-            var sampleList = new List<StartPageListItem>();
-            foreach (var filePath in filePaths)
-            {
-                var path = Path.GetFileNameWithoutExtension(filePath);
-                sampleList.Add(new StartPageListItem(path)
-                {
-                    ContextData = filePath,
-                    ToolTip = filePath,
-                    ClickAction = StartPageListItem.Action.FilePath
-                });
-            }
-
-            this.samplesListBox.ItemsSource = sampleList;
         }
 
         #region Private Class Event Handlers
 
-        private void OnRecentFilesChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            RefreshRecentFileList(sender as IEnumerable<string>);
-        }
-
         private void OnStartPageLoaded(object sender, RoutedEventArgs e)
         {
-            RefreshRecentFileList(dynamoViewModel.RecentFiles);
-            this.recentListBox.ItemsSource = recentList;
-
             var startPageViewModel = this.DataContext as StartPageViewModel;
             this.filesListBox.ItemsSource = startPageViewModel.FileOperations;
-            this.samplesListBox.ItemsSource = startPageViewModel.SampleFiles;
             this.askListBox.ItemsSource = startPageViewModel.CommunityLinks;
             this.referenceListBox.ItemsSource = startPageViewModel.References;
             this.codeListBox.ItemsSource = startPageViewModel.ContributeLinks;
+            this.recentListBox.ItemsSource = startPageViewModel.RecentFiles;
+            this.samplesListBox.ItemsSource = startPageViewModel.SampleFiles;
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -267,22 +286,7 @@ namespace Dynamo.UI.Controls
 
         #region Private Class Helper Methods
 
-        private void RefreshRecentFileList(IEnumerable<string> recentFiles)
-        {
-            recentList.Clear();
-            foreach (var recentFile in recentFiles)
-            {
-                var extension = Path.GetExtension(recentFile).ToUpper();
-                var caption = Path.GetFileNameWithoutExtension(recentFile);
-                recentList.Add(new StartPageListItem(caption)
-                {
-                    ContextData = recentFile,
-                    ToolTip = recentFile,
-                    SubScript = extension.Substring(1), // Skipping the 'dot'
-                    ClickAction = StartPageListItem.Action.FilePath
-                });
-            }
-        }
+        private DynamoViewModel dynamoViewModel = null;
 
         private void HandleRegularCommand(StartPageListItem item)
         {
