@@ -189,6 +189,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
+        public DelegateCommand DisplayStartPageCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -366,10 +367,12 @@ namespace Dynamo.ViewModels
         {
             get { return this.showStartPage; }
 
-            private set
+            set
             {
                 showStartPage = value;
                 RaisePropertyChanged("ShowStartPage");
+                if (DisplayStartPageCommand != null)
+                    DisplayStartPageCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -655,6 +658,7 @@ namespace Dynamo.ViewModels
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
+            DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
@@ -1582,6 +1586,16 @@ namespace Dynamo.ViewModels
         internal bool CanGoToSourceCode(object parameter)
         {
             return true;
+        }
+
+        private void DisplayStartPage(object parameter)
+        {
+            this.ShowStartPage = true;
+        }
+
+        private bool CanDisplayStartPage(object parameter)
+        {
+            return !this.ShowStartPage;
         }
 
         public void Pan(object parameter)

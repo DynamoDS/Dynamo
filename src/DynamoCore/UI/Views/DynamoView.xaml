@@ -366,9 +366,10 @@
                                 <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}"  Name="bugCommand" Focusable="False"/>
-                        <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
-                        <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
+                        <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}" Focusable="False"/>
+                        <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}" Focusable="False"/>
+                        <MenuItem Header="Go To Project _Wiki" Command="{Binding GoToWikiCommand}" Focusable="False"/>
+                        <MenuItem Header="_Display Start Page" Command="{Binding DisplayStartPageCommand}" Focusable="False"/>
                         <MenuItem Header="_About..." Command="{Binding ShowAboutWindowCommand}" Focusable="False" />
                     </MenuItem>
 

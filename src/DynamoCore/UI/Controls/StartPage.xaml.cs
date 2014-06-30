@@ -383,6 +383,11 @@ namespace Dynamo.UI.Controls
             listBox.SelectedIndex = -1;
         }
 
+        private void OnCloseStartPageClicked(object sender, MouseButtonEventArgs e)
+        {
+            dynSettings.Controller.DynamoViewModel.ShowStartPage = false;
+        }
+
         #endregion
     }
 }

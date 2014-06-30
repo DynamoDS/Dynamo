@@ -35,12 +35,39 @@
                 BorderBrush="#404040"
                 Width="200"
                 HorizontalAlignment="Left" />
-        <TextBlock Margin="8,0,0,0"
-                   FontSize="11"
-                   FontFamily="{StaticResource OpenSansRegular}"
-                   Text="Start"
-                   Foreground="#888888"
-                   VerticalAlignment="Center" />
+
+        <StackPanel Orientation="Horizontal">
+
+            <TextBlock Margin="8,0,0,0"
+                       FontSize="11"
+                       Width="172"
+                       FontFamily="{StaticResource OpenSansRegular}"
+                       Text="Start"
+                       Foreground="#888888"
+                       VerticalAlignment="Center" />
+
+            <Image Width="16"
+                   Height="16"
+                   MouseLeftButtonUp="OnCloseStartPageClicked">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="False">
+                                <Setter Property="Source"
+                                        Value="/DynamoCore;component/UI/Images/closetab_normal.png" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Source"
+                                        Value="/DynamoCore;component/UI/Images/closetab_hover.png" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
+        </StackPanel>
 
         <!-- Begin Dynamo logo -->
 
