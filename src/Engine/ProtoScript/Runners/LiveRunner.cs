@@ -1446,7 +1446,15 @@ namespace ProtoScript.Runners
             if (graphCompiler != null)
                 runtimeContext.execFlagList = graphCompiler.ExecutionFlagList;
 
-            runner.Execute(runnerCore, runtimeContext);
+            try
+            {
+                runner.Execute(runnerCore, runtimeContext);
+            }
+            catch (ProtoCore.Exceptions.CancelExecution)
+            {
+                runnerCore.Cleanup();
+                ReInitializeLiveRunner();
+            }
 
             // ExecutionMirror mirror = new ExecutionMirror(runnerCore.CurrentExecutive.CurrentDSASMExec, runnerCore);
 

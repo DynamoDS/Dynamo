@@ -9,4 +9,8 @@ namespace ProtoCore.Exceptions
     public class EndOfScript : Exception
     {
     }
+
+    public class CancelExecution : Exception
+    {
+    }
 }

@@ -1454,6 +1454,7 @@ namespace ProtoCore
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
+            cancelExecution = false;
         }
 
         #region Trace Data Serialization Methods/Members
@@ -1635,6 +1636,7 @@ namespace ProtoCore
 
         private int tempVarId = 0;
         private int tempLanguageId = 0;
+        public bool cancelExecution = false;
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AST.AssociativeAST.AssociativeNode AssocNode { get; set; }

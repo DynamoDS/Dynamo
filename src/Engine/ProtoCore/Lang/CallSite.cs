@@ -1622,6 +1622,10 @@ namespace ProtoCore
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             //@PERF: Todo add a fast path here for the case where we have a homogenious array so we can directly dispatch
+            if (core.cancelExecution)
+            {
+                throw new CancelExecution();
+            }
 
             FunctionEndPoint finalFep = SelectFinalFep(c, functionEndPoint, formalParameters, stackFrame, core);
 

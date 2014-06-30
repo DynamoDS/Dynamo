@@ -38,9 +38,12 @@ namespace Dynamo.Core
 
         public void CancelAsync()
         {
-            cancelSet = true;
+            if (Running)
+            {
+                cancelSet = true;
+                controller.PostCancellationRequest(cancelSet);
+            }
         }
-
 
         public void RunExpression(int? executionInterval = null)
         {
@@ -124,6 +127,12 @@ namespace Dynamo.Core
             {
                 Running = false;
                 controller.DynamoViewModel.RunEnabled = true;
+            }
+
+            if (cancelSet)
+            {
+                controller.Reset();
+                cancelSet = false;
             }
         }
 
