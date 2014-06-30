@@ -1,0 +1,27 @@
+<Workspace Version="0.7.0.34351" X="144.468549926166" Y="-9.71746057558329" zoom="0.784766222529978" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="a78486e2-66aa-43e4-a261-34ae3b079307" nickname="Curve.DivideEqually" x="459" y="177.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.DivideEqually@int">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="222b242c-c92d-4e4e-8c08-36dbd8c86c30" nickname="Line.ByStartPointEndPoint" x="225" y="125.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3a10203a-79d6-4dea-9ec8-8f0b5ec3efa6" nickname="Point.ByCoordinates" x="39" y="61.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d48d27ae-fe34-494b-a324-db08f16c74bf" nickname="Point.ByCoordinates" x="39" y="215.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="0fbdc1ae-e0e3-4a23-a6b3-367ca1d37cb6" nickname="Code Block" x="-139.010517883927" y="148.199598581678" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="222b242c-c92d-4e4e-8c08-36dbd8c86c30" start_index="0" end="a78486e2-66aa-43e4-a261-34ae3b079307" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a10203a-79d6-4dea-9ec8-8f0b5ec3efa6" start_index="0" end="222b242c-c92d-4e4e-8c08-36dbd8c86c30" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d48d27ae-fe34-494b-a324-db08f16c74bf" start_index="0" end="222b242c-c92d-4e4e-8c08-36dbd8c86c30" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0fbdc1ae-e0e3-4a23-a6b3-367ca1d37cb6" start_index="0" end="d48d27ae-fe34-494b-a324-db08f16c74bf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0fbdc1ae-e0e3-4a23-a6b3-367ca1d37cb6" start_index="0" end="a78486e2-66aa-43e4-a261-34ae3b079307" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
