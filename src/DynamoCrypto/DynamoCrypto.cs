@@ -35,7 +35,6 @@ namespace DynamoCrypto
                     return null;
                 }
 
-                //publicBlob = dsa.ExportCspBlob(false);
                 privateBlob = dsa.ExportCspBlob(true);
                 dsa.Dispose();
             }
