@@ -25,6 +25,7 @@ namespace Dynamo.UI
         public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
         public static string DynamoPdfTutorials = "https://github.com/DynamoDS/Dynamo/blob/master/doc/distrib/Dynamo%20Visual%20Programming%20for%20Design.pdf?raw=true";
         public static string DynamoVideoTutorials = "http://dynamobim.org/learn/";
+        public static string DynamoDownloadLink = "http://dynamobim.org/download/";
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
 

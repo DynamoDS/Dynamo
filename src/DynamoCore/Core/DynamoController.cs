@@ -482,6 +482,11 @@ namespace Dynamo
             Process.Start(Configurations.GitHubBugReportingLink);
         }
 
+        public void DownloadDynamo()
+        {
+            Process.Start(Configurations.DynamoDownloadLink);
+        }
+
         internal bool CanReportABug(object parameter)
         {
             return true;

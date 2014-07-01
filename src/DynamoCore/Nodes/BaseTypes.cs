@@ -566,6 +566,37 @@ namespace Dynamo.Nodes
 
             return indexOfSeparator >= 0;
         }
+
+        internal static bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
+        {
+            if (fileVersion != null && currVersion != null)
+                InstrumentationLogger.LogInfo("FutureFileMessage", fullFilePath + " :: fileVersion:" +
+                    fileVersion + " :: currVersion:" + currVersion);
+            else
+                InstrumentationLogger.LogInfo("FutureFileMessage", fullFilePath + " :: null");
+
+            var summary = "Your file cannot be opened";
+            var description = string.Format("Your file '{0}' was created in future version '{1}' and cannot " +
+                "be opened by your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
+
+            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Future File", summary, description);
+
+            args.AddRightAlignedButton(43420, "Cancel");
+            args.AddRightAlignedButton(43421, "Download latest version");
+            args.AddRightAlignedButton(43422, "Proceed anyway");
+            
+            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            if (args.ClickedButtonId == 43421)
+                dynSettings.Controller.DownloadDynamo();
+
+            if (args.ClickedButtonId == 43422)
+                return true;
+
+            return false;
+        }
     }
 
     public abstract partial class VariableInput : NodeModel
