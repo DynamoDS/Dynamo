@@ -4,6 +4,8 @@ using NUnit.Framework;
 using Dynamo.Models;
 using RTF.Framework;
 using Autodesk.DesignScript.Geometry;
+using Revit.Elements;
+using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -171,6 +173,46 @@ namespace Dynamo.Tests
             var mesh = GetPreviewValueAtIndex(allElements, 14) as Mesh;
             Assert.IsNotNull(mesh);
 
+
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void Defect_MAGN_3784()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3784
+
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_3784.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            RunCurrentModel();
+
+            // evaluate graph
+            var refPtNodeId = "92774673-e265-4378-b8ba-aef86c1a616e";
+            var refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(0, refPt.X);
+
+            // change slider value and re-evaluate graph
+            IntegerSlider slider = model.CurrentWorkspace.NodeFromWorkspace
+                ("55a992c9-8f16-4c07-a049-b0627d78c93c") as IntegerSlider;
+            slider.Value = 10;
+
+            RunCurrentModel();
+
+            refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(10, refPt.X);
+
+            // One more verification pending, I need to make sure there is only one point in Revit, 
+            // I will find out how to do that and will add that verification here.
 
         }
     }
