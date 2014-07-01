@@ -27,7 +27,7 @@ namespace Dynamo.UI.Controls
     /// 
     public class StartPageListItem
     {
-        private string iconPath = string.Empty;
+        private ImageSource icon = null;
 
         public enum Action
         {
@@ -60,6 +60,12 @@ namespace Dynamo.UI.Controls
             this.Caption = caption;
         }
 
+        internal StartPageListItem(string caption, string iconPath)
+        {
+            this.Caption = caption;
+            this.icon = LoadBitmapImage(iconPath);
+        }
+
         #region Public Class Properties
 
         public string Caption { get; private set; }
@@ -68,32 +74,26 @@ namespace Dynamo.UI.Controls
         public string ContextData { get; set; }
         public Action ClickAction { get; set; }
 
-        public string IconResourcePath
+        public ImageSource Icon
         {
-            get { return this.iconPath; }
-            set { this.iconPath = ConvertToResourcePath(value); }
+            get { return this.icon; }
         }
 
         // Extended (derived) class properties.
         public Visibility IconVisibility
         {
-            get
-            {
-                if (string.IsNullOrEmpty(this.iconPath))
-                    return Visibility.Collapsed;
-
-                return Visibility.Visible;
-            }
+            get { return ((icon == null) ? Visibility.Collapsed : Visibility.Visible); }
         }
 
         #endregion
 
         #region Private Class Helper Methods
 
-        private string ConvertToResourcePath(string imageFileName)
+        private BitmapImage LoadBitmapImage(string iconPath)
         {
             var format = @"pack://application:,,,/DynamoCore;component/UI/Images/StartPage/{0}";
-            return string.Format(format, imageFileName);
+            iconPath = string.Format(format, iconPath);
+            return new BitmapImage(new Uri(iconPath, UriKind.Absolute));
         }
 
         #endregion
@@ -118,16 +118,14 @@ namespace Dynamo.UI.Controls
 
             #region File Operations
 
-            fileOperations.Add(new StartPageListItem("New")
+            fileOperations.Add(new StartPageListItem("New", "icon-new.png")
             {
-                IconResourcePath = "icon-new.png",
                 ContextData = ButtonNames.NewWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
-            fileOperations.Add(new StartPageListItem("Open")
+            fileOperations.Add(new StartPageListItem("Open", "icon-open.png")
             {
-                IconResourcePath = "icon-open.png",
                 ContextData = ButtonNames.OpenWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
@@ -136,16 +134,14 @@ namespace Dynamo.UI.Controls
 
             #region Community Links
 
-            communityLinks.Add(new StartPageListItem("Discussion forum")
+            communityLinks.Add(new StartPageListItem("Discussion forum", "icon-discussion.png")
             {
-                IconResourcePath = "icon-discussion.png",
                 ContextData = Configurations.DynamoBimForum,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            communityLinks.Add(new StartPageListItem("Visit www.dynamobim.org")
+            communityLinks.Add(new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
             {
-                IconResourcePath = "icon-dynamobim.png",
                 ContextData = Configurations.DynamoSiteLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
@@ -154,16 +150,14 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem("PDF Tutorials")
+            references.Add(new StartPageListItem("PDF Tutorials", "icon-reference.png")
             {
-                IconResourcePath = "icon-reference.png",
                 ContextData = Configurations.DynamoPdfTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            references.Add(new StartPageListItem("Video tutorials")
+            references.Add(new StartPageListItem("Video tutorials", "icon-video.png")
             {
-                IconResourcePath = "icon-video.png",
                 ContextData = Configurations.DynamoVideoTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
@@ -172,16 +166,14 @@ namespace Dynamo.UI.Controls
 
             #region Contribution Links
 
-            contributeLinks.Add(new StartPageListItem("Github repository")
+            contributeLinks.Add(new StartPageListItem("Github repository", "icon-github.png")
             {
-                IconResourcePath = "icon-github.png",
                 ContextData = Configurations.GitHubDynamoLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            contributeLinks.Add(new StartPageListItem("Send issues")
+            contributeLinks.Add(new StartPageListItem("Send issues", "icon-issues.png")
             {
-                IconResourcePath = "icon-issues.png",
                 ContextData = Configurations.GitHubBugReportingLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
