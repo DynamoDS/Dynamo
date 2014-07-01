@@ -108,7 +108,6 @@
     <Compile Include="Associative\ReplicatorTest.cs" />
     <Compile Include="Associative\SSATransformTest.cs" />
     <Compile Include="Associative\TypeSystemTests.cs" />
-    <Compile Include="CallsiteExecutionState\BasicCallsiteStateTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />
     <Compile Include="DebugTests\NamespaceConflictTest.cs" />
     <Compile Include="DebugTests\RunEqualityTests.cs" />
@@ -192,6 +191,7 @@
     <Compile Include="TD\OtherMiscTests\MiscTest.cs" />
     <Compile Include="TD\ArrayUtilsTest.cs" />
     <Compile Include="TD\TraceUtilsTests.cs" />
+    <Compile Include="FFITests\TestCSharpAttribute.cs" />
     <Compile Include="UtilsTests\AstFactoryTest.cs" />
     <Compile Include="UtilsTests\ClassUtilsTest.cs" />
     <Compile Include="UtilsTests\CoreDump.cs" />

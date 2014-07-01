@@ -196,28 +196,6 @@ namespace Revit.Elements
         }
 
         /// <summary>
-        /// Set one of the element's parameters.
-        /// </summary>
-        /// <param name="parameterName">The name of the parameter to set.</param>
-        /// <param name="value">The value.</param>
-        public Element SetParameterByName(string parameterName, object value)
-        {
-            var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
-            
-            if(param == null)
-                throw new Exception("No parameter found by that name.");
-
-            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-            
-            var dynval = value as dynamic;
-            SetParameterValue(param, dynval);
-            
-            TransactionManager.Instance.TransactionTaskDone();
-
-            return this;
-        }
-
-        /// <summary>
         /// Get the value of one of the element's parameters.
         /// </summary>
         /// <param name="parameterName">The name of the parameter whose value you want to obtain.</param>
@@ -289,6 +267,28 @@ namespace Revit.Elements
             return this;
         }
 
+        /// <summary>
+        /// Set one of the element's parameters.
+        /// </summary>
+        /// <param name="parameterName">The name of the parameter to set.</param>
+        /// <param name="value">The value.</param>
+        public Element SetParameterByName(string parameterName, object value)
+        {
+            var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
+
+            if (param == null)
+                throw new Exception("No parameter found by that name.");
+
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+
+            var dynval = value as dynamic;
+            SetParameterValue(param, dynval);
+
+            TransactionManager.Instance.TransactionTaskDone();
+
+            return this;
+        }
+
         #region dynamic parameter setting methods
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, double value)
@@ -297,6 +297,14 @@ namespace Revit.Elements
                 throw new Exception("The parameter's storage type is not a number.");
 
             param.Set(value);
+        }
+
+        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, Revit.Elements.Element value)
+        {
+            if (param.StorageType != StorageType.ElementId)
+                throw new Exception("The parameter's storage type is not an Element.");
+
+            param.Set(value.InternalElementId);
         }
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, int value)
@@ -325,7 +333,6 @@ namespace Revit.Elements
 
         #endregion
 
-
         /// <summary>
         /// Get all of the Geometry associated with this object
         /// </summary>
@@ -351,6 +358,8 @@ namespace Revit.Elements
 
             return converted.ToArray();
         }
+
+        #region Geometry extraction
 
         [SupressImportIntoVM]
         public IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
@@ -468,7 +477,6 @@ namespace Revit.Elements
             }
         }
 
-        #region Internal Geometry Helpers
 
         /// <summary>
         /// Is this element still alive in Revit, and good to be drawn, queried etc.

@@ -1228,8 +1228,6 @@ namespace ProtoCore.AST.AssociativeAST
     public class MethodAttributes
     {
         public bool HiddenInLibrary { get; protected set; }
-        public bool AllowRankReduction { get; protected set; }
-        public bool RequireTracing { get; protected set; }
         public IEnumerable<string> ReturnKeys
         {
             get

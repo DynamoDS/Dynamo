@@ -837,7 +837,8 @@ namespace ProtoCore.Lang
             List<String> rowsCollection = new List<String>();
             List<Object[]> CSVdatalist = new List<Object[]>();
             int colNum = 0;
-            using (StreamReader sr = File.OpenText(path))
+            var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using (var sr = new StreamReader(fileStream))
             {
 
                 while (!sr.EndOfStream)
