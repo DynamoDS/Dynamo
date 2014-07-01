@@ -124,9 +124,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCrypto", "DynamoCrypt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallUpdate", "Tools\InstallUpdate\InstallUpdate.csproj", "{0ED387BC-17B5-49B7-9C1D-BF58A4A5CC4D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bloodstone.Cpp", "Extensions\Dynamorph\Dynamorph.Cpp\Bloodstone.vcxproj", "{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bloodstone.Cpp", "Extensions\Dynamorph\Bloodstone.Cpp\Bloodstone.vcxproj", "{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bloodstone.Net", "Extensions\Dynamorph\Dynamorph.Net\Bloodstone.Net.csproj", "{54C12D23-B989-45F4-9681-3A8716F30050}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bloodstone.Net", "Extensions\Dynamorph\Bloodstone.Net\Bloodstone.Net.csproj", "{54C12D23-B989-45F4-9681-3A8716F30050}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
