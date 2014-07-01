@@ -579,7 +579,7 @@ namespace Dynamo.Nodes
             var description = string.Format("Your file '{0}' was created in future version '{1}' and cannot " +
                 "be opened by your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
-            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
+            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_future_file.png";
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);

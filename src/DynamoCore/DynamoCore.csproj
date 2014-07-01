@@ -784,6 +784,9 @@ limitations under the License.
     <Resource Include="UI\Images\StartPage\icon-reference.png" />
     <Resource Include="UI\Images\StartPage\icon-video.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\task_dialog_future_file.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
