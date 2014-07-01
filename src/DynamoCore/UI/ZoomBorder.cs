@@ -56,7 +56,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public void Initialize(UIElement element)
+        private void Initialize(UIElement element)
         {
             this.child = element;
             if (child != null)
@@ -79,29 +79,6 @@ namespace Dynamo.Controls
             this.MouseDown += child_MouseDown;
             this.MouseUp += child_MouseUp;
             this.MouseMove += child_MouseMove;
-        }
-
-        public void Reset()
-        {
-            if (child != null)
-            {
-                // reset zoom
-                var st = GetScaleTransform(child);
-                st.ScaleX = 1.0;
-                st.ScaleY = 1.0;
-
-                // reset pan
-                var tt = GetTranslateTransform(child);
-                tt.X = 0.0;
-                tt.Y = 0.0;
-            }
-        }
-
-        public void IncrementTranslateOrigin(double x, double y)
-        {
-            var tt = GetTranslateTransform(child);
-            tt.X += x;
-            tt.Y += y;
         }
 
         public Point GetTranslateTransformOrigin()
@@ -195,8 +172,7 @@ namespace Dynamo.Controls
 
         private bool IsInPanMode()
         {
-            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
-            return vm.CurrentState == WorkspaceViewModel.StateMachine.State.PanMode;
+            return ((DataContext as WorkspaceViewModel).IsPanning);
         }
 
         #endregion

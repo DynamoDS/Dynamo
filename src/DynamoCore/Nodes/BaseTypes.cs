@@ -494,10 +494,10 @@ namespace Dynamo.Nodes
             string fullFilePath, Version fileVersion, Version currVersion)
         {
             if (fileVersion != null && currVersion != null)
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: fileVersion:" +
+                InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath + " :: fileVersion:" +
                     fileVersion + " :: currVersion:" + currVersion);
             else
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: null");
+                InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath + " :: null");
 
             var summary = "Your file cannot be opened";
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
@@ -521,11 +521,13 @@ namespace Dynamo.Nodes
         /// <param name="exception">The exception to display.</param>
         internal static void DisplayEngineFailureMessage(Exception exception)
         {
+            StabilityTracking.GetInstance().NotifyCrash();
+            InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
+
             if (exception != null)
-                InstrumentationLogger.LogInfo("EngineFailure", exception + " :: " + exception.StackTrace);
-            else
-                InstrumentationLogger.LogInfo("EngineFailure", "null");
-            
+            {
+                InstrumentationLogger.LogException(exception);
+            }
 
             var summary = "Unhandled exception in Dynamo engine";
             var description = "The virtual machine that powers Dynamo is " +
