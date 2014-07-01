@@ -1242,6 +1242,12 @@ namespace Dynamo.ViewModels
 
             CanNavigateBackground = !CanNavigateBackground;
 
+            if (CanNavigateBackground)
+                InstrumentationLogger.LogAnonymousScreen("Geometry");
+            else
+                InstrumentationLogger.LogAnonymousScreen("Nodes");
+
+
             if (!CanNavigateBackground)
             {
                 // Return focus back to Search View (Search Field)
