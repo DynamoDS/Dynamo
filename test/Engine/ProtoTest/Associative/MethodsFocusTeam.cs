@@ -1695,6 +1695,34 @@ r2 = a.foo(a, 1);
             thisTest.Verify("r1", 41);
             thisTest.Verify("r2", 42);
         }
+
+        [Test]
+        public void TestMethodResolutionForThisPtrs3()
+        {
+            string code = @"
+class A
+{
+    def foo(x: int)
+    {
+        return = 41;
+    }
+
+    static def foo(x : A, y: int)
+    {
+        return = 42;
+    }
+}
+
+a = A();
+r1 = a.foo({1});
+r2 = a.foo(a, {1});
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r1", new object[] {41});
+            thisTest.Verify("r2", new object[] {42});
+        }
     }
 }
 
