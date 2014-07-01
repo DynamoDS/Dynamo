@@ -3,8 +3,8 @@
 #include "OpenInterfaces.h"
 
 using namespace System;
-using namespace Dynamorph;
-using namespace Dynamorph::OpenGL;
+using namespace Bloodstone;
+using namespace Bloodstone::OpenGL;
 
 // Convert float count to offset.
 #define FC2O(x) ((const void *)(x * sizeof(float)))
@@ -13,7 +13,7 @@ VertexBuffer::VertexBuffer() :
     mVertexCount(0),
     mVertexArrayId(0),
     mVertexBufferId(0),
-    mPrimitiveType(Dynamorph::IVertexBuffer::PrimitiveType::None)
+    mPrimitiveType(Bloodstone::IVertexBuffer::PrimitiveType::None)
 {
 }
 
@@ -36,10 +36,10 @@ void VertexBuffer::Render(void) const
 
     switch (mPrimitiveType)
     {
-    case Dynamorph::IVertexBuffer::PrimitiveType::Point:
+    case Bloodstone::IVertexBuffer::PrimitiveType::Point:
         GL::glDrawArrays(GL_POINTS, 0, mVertexCount);
         break;
-    case Dynamorph::IVertexBuffer::PrimitiveType::LineStrip:
+    case Bloodstone::IVertexBuffer::PrimitiveType::LineStrip:
         {
             auto vc = mSegmentVertexCount.begin();
             for (int start = 0; vc != mSegmentVertexCount.end(); ++vc)
@@ -52,13 +52,13 @@ void VertexBuffer::Render(void) const
             }
             break;
         }
-    case Dynamorph::IVertexBuffer::PrimitiveType::Triangle:
+    case Bloodstone::IVertexBuffer::PrimitiveType::Triangle:
         GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
         break;
     }
 }
 
-Dynamorph::IVertexBuffer::PrimitiveType VertexBuffer::GetPrimitiveTypeCore() const
+Bloodstone::IVertexBuffer::PrimitiveType VertexBuffer::GetPrimitiveTypeCore() const
 {
     return this->mPrimitiveType;
 }
@@ -73,11 +73,11 @@ void VertexBuffer::LoadDataCore(const GeometryData& geometries)
     auto tgd = dynamic_cast<const TriangleGeometryData *>(p);
 
     if (pgd != nullptr)
-        mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::Point;
+        mPrimitiveType = Bloodstone::IVertexBuffer::PrimitiveType::Point;
     else if (lgd != nullptr)
-        mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::LineStrip;
+        mPrimitiveType = Bloodstone::IVertexBuffer::PrimitiveType::LineStrip;
     else if (tgd != nullptr)
-        mPrimitiveType = Dynamorph::IVertexBuffer::PrimitiveType::Triangle;
+        mPrimitiveType = Bloodstone::IVertexBuffer::PrimitiveType::Triangle;
 
     mVertexCount = geometries.VertexCount();
     std::vector<VertexData> data(mVertexCount);

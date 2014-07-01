@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamorph.Properties {
+namespace Bloodstone.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

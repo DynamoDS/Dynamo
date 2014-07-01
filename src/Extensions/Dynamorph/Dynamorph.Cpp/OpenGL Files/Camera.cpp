@@ -3,8 +3,8 @@
 #include "OpenInterfaces.h"
 
 using namespace System;
-using namespace Dynamorph;
-using namespace Dynamorph::OpenGL;
+using namespace Bloodstone;
+using namespace Bloodstone::OpenGL;
 
 // ================================================================================
 // TrackBall
@@ -154,7 +154,7 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     this->Configure(&configuration);
 }
 
-Dynamorph::ITrackBall* Camera::GetTrackBallCore() const
+Bloodstone::ITrackBall* Camera::GetTrackBallCore() const
 {
     return (const_cast<Camera *>(this))->mpTrackBall;
 }

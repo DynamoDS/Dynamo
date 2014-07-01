@@ -1,8 +1,8 @@
 
-#ifndef _DYNAMORPH_H_
-#define _DYNAMORPH_H_
+#ifndef _BLOODSTONE_H_
+#define _BLOODSTONE_H_
 
-namespace Dynamorph
+namespace Bloodstone
 {
     class GeometryData
     {

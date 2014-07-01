@@ -4,7 +4,7 @@
 
 #include "Interfaces.h"
 
-namespace Dynamorph
+namespace Bloodstone
 {
     class IGraphicsContext;
 

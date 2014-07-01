@@ -9,7 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Dynamorph
+namespace Bloodstone
 {
     class GraphResources
     {
@@ -162,7 +162,7 @@ namespace Dynamorph
         private void OnSliderVisualHostLoaded(object sender, RoutedEventArgs e)
         {
             var pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
-            var path = pack + "://application:,,,/Dynamorph.Net;component/";
+            var path = pack + "://application:,,,/Bloodstone.Net;component/";
             var uri = new Uri(path + "Resources/Images/slider-thumb.png");
             sliderThumbImage = new BitmapImage(uri);
         }
@@ -366,7 +366,7 @@ namespace Dynamorph
             // Font for use on node text.
             string fontResourceUri = "./Resources/Fonts/#Open Sans";
             string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
-            var uri = new Uri(pack + "://application:,,,/Dynamorph.Net;component/");
+            var uri = new Uri(pack + "://application:,,,/Bloodstone.Net;component/");
             var textFontFamily = new FontFamily(uri, fontResourceUri);
 
             var typeface = new Typeface(textFontFamily, FontStyles.Normal,

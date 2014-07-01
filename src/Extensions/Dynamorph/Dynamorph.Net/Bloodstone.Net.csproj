@@ -7,8 +7,8 @@
     <ProjectGuid>{54C12D23-B989-45F4-9681-3A8716F30050}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamorph</RootNamespace>
-    <AssemblyName>Dynamorph.Net</AssemblyName>
+    <RootNamespace>Bloodstone</RootNamespace>
+    <AssemblyName>Bloodstone.Net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -53,22 +53,22 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamorphWindow.xaml.cs">
-      <DependentUpon>DynamorphWindow.xaml</DependentUpon>
+    <Compile Include="BloodstoneWindow.xaml.cs">
+      <DependentUpon>BloodstoneWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SynthesizedGraph.cs" />
     <Compile Include="GraphVisualHost.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="VisualizerHwndHost.cs" />
-    <Page Include="DynamorphControl.xaml">
+    <Page Include="BloodstoneControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="DynamorphControl.xaml.cs">
-      <DependentUpon>DynamorphControl.xaml</DependentUpon>
+    <Compile Include="BloodstoneControl.xaml.cs">
+      <DependentUpon>BloodstoneControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="DynamorphWindow.xaml">
+    <Page Include="BloodstoneWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -99,9 +99,9 @@
     <Resource Include="Resources\Fonts\OpenSans-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dynamorph.Cpp\Dynamorph.vcxproj">
+    <ProjectReference Include="..\Bloodstone.Cpp\Bloodstone.vcxproj">
       <Project>{c1e084ab-af20-4d56-b9e3-e606c4df6ecf}</Project>
-      <Name>Dynamorph.Cpp</Name>
+      <Name>Bloodstone.Cpp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

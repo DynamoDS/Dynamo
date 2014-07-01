@@ -1,14 +1,14 @@
 
-#ifdef DYNAMORPH_EXPORTS
-#define DYNAMORPH_API __declspec(dllexport)
+#ifdef BLOODSTONE_EXPORTS
+#define BLOODSTONE_API __declspec(dllexport)
 #else
-#define DYNAMORPH_API __declspec(dllimport)
+#define BLOODSTONE_API __declspec(dllimport)
 #endif
 
 namespace Gen = System::Collections::Generic;
 namespace Ds = Autodesk::DesignScript::Interfaces;
 
-namespace Dynamorph
+namespace Bloodstone
 {
     class IGraphicsContext;
     class IShaderProgram;

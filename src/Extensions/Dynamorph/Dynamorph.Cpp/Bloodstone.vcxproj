@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Dynamorph</RootNamespace>
-    <ProjectName>Dynamorph.Cpp</ProjectName>
+    <RootNamespace>Bloodstone</RootNamespace>
+    <ProjectName>Bloodstone.Cpp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -57,7 +57,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DYNAMORPH_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BLOODSTONE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -74,7 +74,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DYNAMORPH_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BLOODSTONE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -87,7 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Dynamorph.h" />
+    <ClInclude Include="Bloodstone.h" />
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="NodeGeometries.h" />
     <ClInclude Include="OpenGL Files\OpenInterfaces.h" />
@@ -102,7 +102,7 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Dynamorph.cpp" />
+    <ClCompile Include="Bloodstone.cpp" />
     <ClCompile Include="NodeGeometries.cpp" />
     <ClCompile Include="OpenGL Files\Buffers.cpp" />
     <ClCompile Include="OpenGL Files\Camera.cpp" />

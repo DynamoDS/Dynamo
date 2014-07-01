@@ -15,9 +15,9 @@ using System.Windows.Navigation;
 using System.Windows.Resources;
 using System.Windows.Shapes;
 
-namespace Dynamorph
+namespace Bloodstone
 {
-    public partial class DynamorphControl : UserControl
+    public partial class BloodstoneControl : UserControl
     {
         private enum CursorIndex
         {
@@ -35,10 +35,10 @@ namespace Dynamorph
 
         #region Public Operational Class Methods
 
-        public DynamorphControl()
+        public BloodstoneControl()
         {
             InitializeComponent();
-            this.Loaded += OnDynamorphControlLoaded;
+            this.Loaded += OnBloodstoneControlLoaded;
         }
 
         public ISynthesizedGraph GetSynthesizedGraph()
@@ -109,7 +109,7 @@ namespace Dynamorph
 
         #region Private Class Event Handlers
 
-        private void OnDynamorphControlLoaded(object sender, RoutedEventArgs e)
+        private void OnBloodstoneControlLoaded(object sender, RoutedEventArgs e)
         {
             this.graphVisualHost = new GraphVisualHost();
             this.graphCanvas.Children.Add(graphVisualHost);
@@ -179,7 +179,7 @@ namespace Dynamorph
 
         private Cursor LoadCursorResource(string name)
         {
-            var baseUri = "pack://application:,,,/Dynamorph.Net;component/Resources";
+            var baseUri = "pack://application:,,,/Bloodstone.Net;component/Resources";
             Uri uri = new Uri(string.Format("{0}/Cursors/{1}", baseUri, name));
             StreamResourceInfo cursorStream = Application.GetResourceStream(uri);
             return new Cursor(cursorStream.Stream);

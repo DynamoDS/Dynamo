@@ -10,7 +10,7 @@
 #include "../../../../../extern/OpenGL/glm/glm/gtc/matrix_transform.hpp"
 #include "../../../../../extern/OpenGL/glm/glm/gtc/type_ptr.hpp"
 
-namespace Dynamorph { namespace OpenGL {
+namespace Bloodstone { namespace OpenGL {
 
 #define DEFGLPROC(t, n)     static t n;
 #define INITGLPROC(t, n)    t GL::n = nullptr;
@@ -125,7 +125,7 @@ namespace Dynamorph { namespace OpenGL {
 
     class Camera; // Forward declaration.
 
-    class GraphicsContext : public Dynamorph::IGraphicsContext
+    class GraphicsContext : public Bloodstone::IGraphicsContext
     {
     public:
         GraphicsContext();
@@ -154,7 +154,7 @@ namespace Dynamorph { namespace OpenGL {
         Camera* mpDefaultCamera;
     };
 
-    class TrackBall : public Dynamorph::ITrackBall
+    class TrackBall : public Bloodstone::ITrackBall
     {
     public:
         TrackBall(Camera* pCamera);
@@ -174,7 +174,7 @@ namespace Dynamorph { namespace OpenGL {
         int mPrevX, mPrevY, mCurrX, mCurrY;
     };
 
-    class Camera : public Dynamorph::ICamera
+    class Camera : public Bloodstone::ICamera
     {
     public:
         Camera(GraphicsContext* pGraphicsContext);
@@ -187,7 +187,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration);
         virtual void ResizeViewportCore(int width, int height);
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox);
-        virtual Dynamorph::ITrackBall* GetTrackBallCore() const;
+        virtual Bloodstone::ITrackBall* GetTrackBallCore() const;
 
     private:
         void ConfigureInternal(const CameraConfiguration* pConfiguration);
@@ -217,7 +217,7 @@ namespace Dynamorph { namespace OpenGL {
         const GraphicsContext* mpGraphicsContext;
     };
 
-    class VertexShader : public CommonShaderBase, public Dynamorph::IVertexShader
+    class VertexShader : public CommonShaderBase, public Bloodstone::IVertexShader
     {
     public:
         VertexShader(const GraphicsContext* pGraphicsContext);
@@ -226,7 +226,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual GLuint CreateShaderIdCore(void) const;
     };
 
-    class FragmentShader : public CommonShaderBase, public Dynamorph::IFragmentShader
+    class FragmentShader : public CommonShaderBase, public Bloodstone::IFragmentShader
     {
     public:
         FragmentShader(const GraphicsContext* pGraphicsContext);
@@ -235,7 +235,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual GLuint CreateShaderIdCore(void) const;
     };
 
-    class ShaderProgram : public Dynamorph::IShaderProgram
+    class ShaderProgram : public Bloodstone::IShaderProgram
     {
     public:
         ShaderProgram(VertexShader* pVertexShader, FragmentShader* pFragmentShader);
@@ -272,7 +272,7 @@ namespace Dynamorph { namespace OpenGL {
         }
     };
 
-    class VertexBuffer : public Dynamorph::IVertexBuffer
+    class VertexBuffer : public Bloodstone::IVertexBuffer
     {
     public:
         VertexBuffer(void);

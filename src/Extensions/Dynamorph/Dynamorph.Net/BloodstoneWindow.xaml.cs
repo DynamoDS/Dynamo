@@ -13,21 +13,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Dynamorph
+namespace Bloodstone
 {
-    public partial class DynamorphWindow : Window
+    public partial class BloodstoneWindow : Window
     {
-        public DynamorphWindow()
+        public BloodstoneWindow()
         {
             InitializeComponent();
-            this.Closing += OnDynamorphWindowClosing;
+            this.Closing += OnBloodstoneWindowClosing;
         }
 
-        public DynamorphControl Control { get { return TheDynamorphControl; } }
+        public BloodstoneControl Control { get { return TheBloodstoneControl; } }
 
-        private void OnDynamorphWindowClosing(object sender, CancelEventArgs e)
+        private void OnBloodstoneWindowClosing(object sender, CancelEventArgs e)
         {
-            TheDynamorphControl.DestroyVisualizer();
+            TheBloodstoneControl.DestroyVisualizer();
         }
     }
 }

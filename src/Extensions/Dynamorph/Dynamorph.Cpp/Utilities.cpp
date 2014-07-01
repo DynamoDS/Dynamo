@@ -4,7 +4,7 @@
 
 bool Utils::LoadShaderResource(unsigned int id, std::string& content)
 {
-    auto module = GetModuleHandle(L"Dynamorph.Cpp.dll");
+    auto module = GetModuleHandle(L"Bloodstone.Cpp.dll");
     if (module != nullptr)
     {
         auto resourceInfo = FindResource(module, MAKEINTRESOURCE(id), L"SHADER");

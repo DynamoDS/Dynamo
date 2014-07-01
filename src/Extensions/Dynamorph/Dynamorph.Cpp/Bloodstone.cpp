@@ -1,8 +1,8 @@
-// Dynamorph.cpp : Defines the exported functions for the DLL application.
+// Bloodstone.cpp : Defines the exported functions for the DLL application.
 //
 
 #include "stdafx.h"
-#include "Dynamorph.h"
+#include "Bloodstone.h"
 #include "Utilities.h"
 #include "NodeGeometries.h"
 #include "OpenGL Files\OpenInterfaces.h"
@@ -11,7 +11,7 @@
 #include <msclr/marshal_cppstd.h>
 
 using namespace System;
-using namespace Dynamorph;
+using namespace Bloodstone;
 using namespace System::Collections::Generic;
 using namespace Autodesk::DesignScript::Interfaces;
 
@@ -93,7 +93,7 @@ IGraphicsContext* IGraphicsContext::Create(IGraphicsContext::ContextType context
     switch(contextType)
     {
     case IGraphicsContext::ContextType::OpenGL:
-        return new Dynamorph::OpenGL::GraphicsContext();
+        return new Bloodstone::OpenGL::GraphicsContext();
     }
 
     auto message = L"Invalid value for 'IGraphicsContext::ContextType'";

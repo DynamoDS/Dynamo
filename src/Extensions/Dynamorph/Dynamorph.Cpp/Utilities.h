@@ -1,6 +1,6 @@
 
-#ifndef _DYNAMORPH_UTILITIES_H_
-#define _DYNAMORPH_UTILITIES_H_
+#ifndef _BLOODSTONE_UTILITIES_H_
+#define _BLOODSTONE_UTILITIES_H_
 
 class Utils
 {
