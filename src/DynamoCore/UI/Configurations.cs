@@ -18,7 +18,15 @@ namespace Dynamo.UI
         #endregion
 
         #region Usage Reporting Error Message
-        public static string GitHubBugReportingLink = "https://github.com/ikeough/Dynamo/issues?state=open";
+
+        public static string DynamoSiteLink = "http://dynamobim.org/";
+        public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
+        public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
+        public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
+        public static string DynamoPdfTutorials = "https://github.com/DynamoDS/Dynamo/blob/master/doc/distrib/Dynamo%20Visual%20Programming%20for%20Design.pdf?raw=true";
+        public static string DynamoVideoTutorials = "http://dynamobim.org/learn/";
+        public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
+        public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
 
         public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
         #endregion
