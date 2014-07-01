@@ -286,7 +286,7 @@ namespace Dynamo.Controls
 
             control.SetSynthesizedGraph(graph);
         }
-        
+
         /// <summary>
         /// This method inserts an instance of "StartPageViewModel" into the 
         /// "startPageItemsControl", results of which displays the Start Page on 
