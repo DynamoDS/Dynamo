@@ -206,13 +206,13 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
-            ShortcutBarItem dynamorphButton = new ShortcutBarItem();
-            dynamorphButton.ShortcutToolTip = "Dynamorph!";
-            dynamorphButton.ShortcutCommand = new DelegateCommand(DoDynamorph, CanDynamorph);
-            dynamorphButton.ShortcutCommandParameter = null;
-            dynamorphButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
-            dynamorphButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
-            dynamorphButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+            ShortcutBarItem bloodstoneButton = new ShortcutBarItem();
+            bloodstoneButton.ShortcutToolTip = "Bloodstone!";
+            bloodstoneButton.ShortcutCommand = new DelegateCommand(DoBloodstone, CanBloodstone);
+            bloodstoneButton.ShortcutCommandParameter = null;
+            bloodstoneButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
+            bloodstoneButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
+            bloodstoneButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
@@ -236,7 +236,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            shortcutBar.ShortcutBarItems.Add(dynamorphButton);
+            shortcutBar.ShortcutBarItems.Add(bloodstoneButton);
 
             //shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
@@ -244,31 +244,31 @@ namespace Dynamo.Controls
             shortcutBarGrid.Children.Add(shortcutBar);
         }
 
-        private Dynamorph.DynamorphWindow dynamorphWindow = null;
+        private Bloodstone.BloodstoneWindow bloodstoneWindow = null;
 
-        private void DoDynamorph(object parameter)
+        private void DoBloodstone(object parameter)
         {
-            if (dynamorphWindow == null)
-                dynamorphWindow = new Dynamorph.DynamorphWindow();
+            if (bloodstoneWindow == null)
+                bloodstoneWindow = new Bloodstone.BloodstoneWindow();
 
-            if (dynamorphWindow.Visibility != System.Windows.Visibility.Visible)
-                dynamorphWindow.Show();
+            if (bloodstoneWindow.Visibility != System.Windows.Visibility.Visible)
+                bloodstoneWindow.Show();
 
             var vm = (DataContext as DynamoViewModel);
             this.SynthesizeGraph(vm.CurrentSpace);
         }
 
-        private bool CanDynamorph(object parameter)
+        private bool CanBloodstone(object parameter)
         {
             return true;
         }
 
         private void SynthesizeGraph(WorkspaceModel workspace)
         {
-            if (this.dynamorphWindow == null)
+            if (this.bloodstoneWindow == null)
                 return;
 
-            var control = this.dynamorphWindow.Control;
+            var control = this.bloodstoneWindow.Control;
             var graph = control.GetSynthesizedGraph();
 
             foreach (var node in workspace.Nodes)
@@ -379,8 +379,8 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
-#if DYNAMORPH
-            _vm.RequestUpdateDynamorphVisual += OnRequestUpdateDynamorphVisual;
+#if BLOODSTONE
+            _vm.RequestUpdateBloodstoneVisual += OnRequestUpdateBloodstoneVisual;
 #endif
 
             _vm.RequestClose += _vm_RequestClose;
@@ -403,11 +403,11 @@ namespace Dynamo.Controls
             _vm.BeginCommandPlayback(this);
         }
 
-        void OnRequestUpdateDynamorphVisual(object sender, UpdateDynamorphVisualEventArgs e)
+        void OnRequestUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
         {
-            if (this.dynamorphWindow != null)
+            if (this.bloodstoneWindow != null)
             {
-                var control = this.dynamorphWindow.Control;
+                var control = this.bloodstoneWindow.Control;
                 control.SetNodeGeometries(e.Geometries.ToDictionary(
                     item => item.Key.ToString(), item => item.Value));
             }
@@ -738,8 +738,8 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             _vm.RequestsFunctionNamePrompt -= _vm_RequestsFunctionNamePrompt;
 
-#if DYNAMORPH
-            _vm.RequestUpdateDynamorphVisual -= OnRequestUpdateDynamorphVisual;
+#if BLOODSTONE
+            _vm.RequestUpdateBloodstoneVisual -= OnRequestUpdateBloodstoneVisual;
 #endif
 
             _vm.RequestClose -= _vm_RequestClose;

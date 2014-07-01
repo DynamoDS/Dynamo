@@ -1480,7 +1480,7 @@ namespace Dynamo.Models
                 count++;
             }
 
-#if DYNAMORPH
+#if BLOODSTONE
             var p = new RenderPackage(true);
             RenderPackages.Add(p);
 #endif
@@ -1493,7 +1493,7 @@ namespace Dynamo.Models
                 if (graphItems == null)
                     continue;
 
-#if DYNAMORPH
+#if BLOODSTONE
                 foreach (var gi in graphItems)
                     MergeGraphicItemIntoPackage(gi, p);
 

@@ -1,6 +1,6 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
 
-Dynamorph, morph the heck out of your design.
+The Bloodstone's bright ruby color is unmistakable on the battlefield, as the owner seems to have infinite vitality and spirit.
 
 ## Tasks (Prioritized) ##
 
@@ -41,11 +41,11 @@ Dynamorph, morph the heck out of your design.
 - [ ] Fix: Line segment with 0 vertex should be filtered
 - [ ] Fix: Warning surrounding deprecated GLM functions
 - [ ] Merge multiple RenderPackage into one vertex buffer
-- [ ] Fix: Dynamorph relaunch problem
-- [ ] Fix: Closing Dynamo does not close Dynamorph
+- [ ] Fix: Bloodstone relaunch problem
+- [ ] Fix: Closing Dynamo does not close Bloodstone
 - [ ] Implement logging mechanism
 - [ ] Incorporate [debugging facility](http://www.opengl.org/registry/specs/ARB/debug_output.txt) provided by OpenGL
-- [ ] Display OpenGL logs in Dynamorph window
+- [ ] Display OpenGL logs in Bloodstone window
 - [ ] Implement mini-ball for tightest bounding box
 - [ ] Add GLM licence terms to EULA and ReadMe.md
 - [ ] Implement hit testing for graph visuals

@@ -33,11 +33,11 @@ namespace Dynamo.ViewModels
 
     public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
 
-#if DYNAMORPH
+#if BLOODSTONE
 
-    public class UpdateDynamorphVisualEventArgs : EventArgs
+    public class UpdateBloodstoneVisualEventArgs : EventArgs
     {
-        public UpdateDynamorphVisualEventArgs(Dictionary<Guid, IRenderPackage> geometries)
+        public UpdateBloodstoneVisualEventArgs(Dictionary<Guid, IRenderPackage> geometries)
         {
             this.Geometries = geometries;
         }
@@ -45,7 +45,7 @@ namespace Dynamo.ViewModels
         public Dictionary<Guid, IRenderPackage> Geometries { get; private set; }
     }
 
-    public delegate void UpdateDynamorphVisualHandler(object sender, UpdateDynamorphVisualEventArgs e);
+    public delegate void UpdateBloodstoneVisualHandler(object sender, UpdateBloodstoneVisualEventArgs e);
 
 #endif
 
@@ -157,12 +157,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-#if DYNAMORPH
-        public event UpdateDynamorphVisualHandler RequestUpdateDynamorphVisual;
-        public void OnUpdateDynamorphVisual(object sender, UpdateDynamorphVisualEventArgs e)
+#if BLOODSTONE
+        public event UpdateBloodstoneVisualHandler RequestUpdateBloodstoneVisual;
+        public void OnUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
         {
-            if (RequestUpdateDynamorphVisual != null)
-                RequestUpdateDynamorphVisual(sender, e);
+            if (RequestUpdateBloodstoneVisual != null)
+                RequestUpdateBloodstoneVisual(sender, e);
         }
 #endif
 
@@ -2025,7 +2025,7 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
-#if DYNAMORPH
+#if BLOODSTONE
             var packages = new Dictionary<Guid, IRenderPackage>();
             foreach (var node in this.Model.Nodes)
             {
@@ -2042,8 +2042,8 @@ namespace Dynamo.ViewModels
 
             if (packages.Any())
             {
-                var args = new UpdateDynamorphVisualEventArgs(packages);
-                OnUpdateDynamorphVisual(this, args);
+                var args = new UpdateBloodstoneVisualEventArgs(packages);
+                OnUpdateBloodstoneVisual(this, args);
             }
 #else
             var taskId = (long) parameters;
