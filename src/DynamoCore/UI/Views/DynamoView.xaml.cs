@@ -23,6 +23,9 @@ using Dynamo.UI;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using DynamoUtilities;
+
 using String = System.String;
 using System.Windows.Data;
 using Dynamo.UI.Controls;
@@ -620,6 +623,9 @@ namespace Dynamo.Controls
                 return;
             }
 
+            SizeChanged -= DynamoView_SizeChanged;
+            LocationChanged -= DynamoView_LocationChanged;
+
             if (!DynamoController.IsTestMode)
             {
                 dynSettings.Controller.ShutDown(false);
@@ -717,14 +723,11 @@ namespace Dynamo.Controls
         /// </summary>
         private void LoadSamplesMenu()
         {
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string samplesPath = Path.Combine(directory, "samples");
-
-            if (Directory.Exists(samplesPath))
+            if (Directory.Exists(DynamoPathManager.Instance.CommonSamples))
             {
                 var sampleFiles = new System.Collections.Generic.List<string>();
-                string[] dirPaths = Directory.GetDirectories(samplesPath);
-                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+                string[] dirPaths = Directory.GetDirectories(DynamoPathManager.Instance.CommonSamples);
+                string[] filePaths = Directory.GetFiles(DynamoPathManager.Instance.CommonSamples, "*.dyn");
 
                 // handle top-level files
                 if (filePaths.Any())

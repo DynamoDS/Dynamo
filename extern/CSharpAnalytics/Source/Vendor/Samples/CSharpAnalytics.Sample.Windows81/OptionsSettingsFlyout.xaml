@@ -1,0 +1,31 @@
+﻿<SettingsFlyout
+    x:Class="CSharpAnalytics.Sample.Windows81.OptionsSettingsFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:cSharpAnalytics="using:CSharpAnalytics"
+    IconSource="Assets/SmallLogo.png"
+    Title="Options"
+    mc:Ignorable="d" d:DesignWidth="346">
+
+    <SettingsFlyout.Resources>
+        <cSharpAnalytics:AnalyticsUserOptions x:Key="AnalyticsUserOptions" />
+    </SettingsFlyout.Resources>
+
+    <!-- This StackPanel acts as a root panel for vertical layout of the content sections -->
+    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+
+        <!-- The StackPanel(s) below define individual content sections -->
+
+        <!-- Content Section 1-->
+        <StackPanel Style="{StaticResource SettingsFlyoutSectionStyle}">
+            <ToggleSwitch Header="Usage data collection"
+                IsOn="{Binding Source={StaticResource AnalyticsUserOptions}, Path=AllowUsageDataCollection, Mode=TwoWay}"
+                Margin="-6,15,0,0" HorizontalAlignment="Stretch" />
+        </StackPanel>
+
+        <!-- Define more Content Sections below as necessary -->
+
+    </StackPanel>
+</SettingsFlyout>

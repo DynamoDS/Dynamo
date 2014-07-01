@@ -35,6 +35,11 @@ namespace DynamoUtilities
         public string CommonDefinitions { get; set; }
 
         /// <summary>
+        /// The location of the Samples folder.
+        /// </summary>
+        public string CommonSamples { get; set; }
+
+        /// <summary>
         /// The packages folder, which contains pacakages downloaded
         /// with the package manager.
         /// </summary>
@@ -51,7 +56,9 @@ namespace DynamoUtilities
         /// </summary>
         public string Asm { get; set; }
 
-        // All 'nodes' folders.
+        /// <summary>
+        /// All 'nodes' folders.
+        /// </summary>
         public HashSet<string> Nodes { get; set; }
 
         /// <summary>
@@ -132,6 +139,12 @@ namespace DynamoUtilities
             if (!Directory.Exists(CommonDefinitions))
             {
                 Directory.CreateDirectory(CommonDefinitions);
+            }
+
+            CommonSamples = Path.Combine(commonData, "samples");
+            if (!Directory.Exists(CommonSamples))
+            {
+                Directory.CreateDirectory(CommonSamples);
             }
 
             Asm = Path.Combine(MainExecPath, "dll");
