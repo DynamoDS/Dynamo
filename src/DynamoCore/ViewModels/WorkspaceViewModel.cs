@@ -269,9 +269,28 @@ namespace Dynamo.ViewModels
             get { return _model.Zoom; }
         }
 
-        public bool ZoomEnabled
+        public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }
+        }
+
+        public bool CanZoomOut
+        {
+            get { return CanZoom(-Configurations.ZoomIncrement); }
+        }
+
+        internal void ZoomInInternal()
+        {
+            var args = new ZoomEventArgs(Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
+        }
+
+        internal void ZoomOutInternal()
+        {
+            var args = new ZoomEventArgs(-Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
         }
 
         public bool CanFindNodesFromElements
@@ -286,7 +305,7 @@ namespace Dynamo.ViewModels
 
         public bool CanShowInfoBubble
         {
-            get { return stateMachine.CurrentState == StateMachine.State.None; }
+            get { return stateMachine.IsInIdleState; }
         }
 
         public Action FindNodesFromElements { get; set; }
@@ -434,8 +453,6 @@ namespace Dynamo.ViewModels
                 case "Zoom":
                     OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
                     RaisePropertyChanged("Zoom");
-                    ZoomInCommand.RaiseCanExecuteChanged();
-                    ZoomOutCommand.RaiseCanExecuteChanged();
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
@@ -450,7 +467,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void SelectAll(object parameter)
+        internal void SelectAll(object parameter)
         {
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
@@ -741,28 +758,6 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
-        private void ZoomIn(object o)
-        {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(Configurations.ZoomIncrement));
-            ResetFitViewToggle(o);
-        }
-
-        private bool CanZoomIn(object o)
-        {
-            return CanZoom(Configurations.ZoomIncrement);
-        }
-
-        private void ZoomOut(object o)
-        {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-Configurations.ZoomIncrement));
-            ResetFitViewToggle(o);
-        }
-
-        private bool CanZoomOut(object o)
-        {
-            return CanZoom(-Configurations.ZoomIncrement);
-        }
-
         private bool CanZoom(double zoom)
         {
             if ((zoom < 0 && _model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)
@@ -786,7 +781,8 @@ namespace Dynamo.ViewModels
         }
 
         private bool _fitViewActualZoomToggle = false;
-        private void FitView(object o)
+
+        internal void FitViewInternal()
         {
             // Get the offset and focus width & height (zoom if 100%)
             double minX, maxX, minY, maxY;
@@ -822,27 +818,12 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private bool CanFitView(object o)
-        {
-            return true;
-        }
-
         private void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
         }
 
         private bool CanResetFitViewToggle(object o)
-        {
-            return true;
-        }
-
-        private void TogglePan(object o)
-        {
-            RequestTogglePanMode();
-        }
-
-        private bool CanTogglePan(object o)
         {
             return true;
         }
@@ -951,7 +932,7 @@ namespace Dynamo.ViewModels
             // Fit view to the new graph layout
             DynamoSelection.Instance.ClearSelection();
             ResetFitViewToggle(null);
-            FitViewCommand.Execute(null);
+            FitViewInternal();
         }
 
         private bool CanDoGraphAutoLayout(object o)

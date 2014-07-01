@@ -43,7 +43,6 @@ namespace Dynamo.Views
         }
 
         private Dynamo.Controls.DragCanvas WorkBench = null;
-        private ZoomAndPanControl zoomAndPanControl = null;
 
         private PortViewModel snappedPort = null;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
@@ -228,14 +227,6 @@ namespace Dynamo.Views
 
                 ViewModel.Loaded();
             }
-
-            outerCanvas.Children.Remove(zoomAndPanControl);
-            zoomAndPanControl = new ZoomAndPanControl(DataContext as WorkspaceViewModel);
-            Canvas.SetRight(zoomAndPanControl, 10);
-            Canvas.SetTop(zoomAndPanControl, 10);
-            Canvas.SetZIndex(zoomAndPanControl, 8000);
-            zoomAndPanControl.Focusable = false;
-            outerCanvas.Children.Add(zoomAndPanControl);
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -541,52 +532,44 @@ namespace Dynamo.Views
 
             bool mouseMessageHandled = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            var currentState = wvm.CurrentState;
 
-            switch (wvm.CurrentState)
+            // If we are currently connecting and there is an active 
+            // connector, redraw it to match the new mouse coordinates.
+            if (wvm.IsConnecting)
             {
-                // If we are currently connecting and there is an active 
-                // connector, redraw it to match the new mouse coordinates.
-                case WorkspaceViewModel.StateMachine.State.Connection:
-                {
-                    //Point mouse = e.GetPosition((UIElement)sender);
-                    //this.snappedPort = GetSnappedPort(mouse);
+                //Point mouse = e.GetPosition((UIElement)sender);
+                //this.snappedPort = GetSnappedPort(mouse);
 
-                    // Check for nearby port to snap
-                    //if (this.snappedPort != null)
-                    //{
-                    //    // Nearby port must be compatible for connection
-                    //    if (wvm.CheckActiveConnectorCompatibility(this.snappedPort))
-                    //    {
-                    //        mouseMessageHandled = true;
-                    //        wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
-                    //    }
-                    //    else
-                    //        this.snappedPort = null; // remove non-compatible port
-                    //}
-                    //else
-                    wvm.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                    
-                    break;
-                }
+                // Check for nearby port to snap
+                //if (this.snappedPort != null)
+                //{
+                //    // Nearby port must be compatible for connection
+                //    if (wvm.CheckActiveConnectorCompatibility(this.snappedPort))
+                //    {
+                //        mouseMessageHandled = true;
+                //        wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
+                //    }
+                //    else
+                //        this.snappedPort = null; // remove non-compatible port
+                //}
+                //else
+                wvm.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+            }
 
-                case WorkspaceViewModel.StateMachine.State.None:
-                {
-                    // Find the dependency object directly under the mouse 
-                    // cursor, then see if it represents a port. If it does,
-                    // then determine its type, we would like to show the 
-                    // "ArcRemoving" cursor when the mouse is over an out port.
-                    Point mouse = e.GetPosition((UIElement)sender);
-                    var dependencyObject = ElementUnderMouseCursor(mouse);
-                    PortViewModel pvm = PortFromHitTestResult(dependencyObject);
+            if (wvm.IsInIdleState)
+            {
+                // Find the dependency object directly under the mouse 
+                // cursor, then see if it represents a port. If it does,
+                // then determine its type, we would like to show the 
+                // "ArcRemoving" cursor when the mouse is over an out port.
+                Point mouse = e.GetPosition((UIElement)sender);
+                var dependencyObject = ElementUnderMouseCursor(mouse);
+                PortViewModel pvm = PortFromHitTestResult(dependencyObject);
 
-                    if (null != pvm && (pvm.PortType == PortType.INPUT))
-                        this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                    else
-                        this.Cursor = null;
-
-                    break;
-                }
+                if (null != pvm && (pvm.PortType == PortType.INPUT))
+                    this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                else
+                    this.Cursor = null;
             }
 
             if (false == mouseMessageHandled)
