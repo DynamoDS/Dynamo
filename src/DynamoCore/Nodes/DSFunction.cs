@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Web.UI.WebControls;
 using System.Xml;
+
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using GraphToDSCompiler;
+
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Utils;
+
 using Autodesk.DesignScript.Runtime;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
@@ -30,12 +29,8 @@ namespace Dynamo.Nodes
     /// DesignScript function node. All functions from DesignScript share the
     /// same function node but internally have different procedure.
     /// </summary>
-    [NodeName("Function Node")]
-    [NodeDescription("DesignScript Builtin Functions")]
-    [IsInteractive(false)]
-    [IsVisibleInDynamoLibrary(false)]
-    [NodeSearchable(false)]
-    [IsMetaNode]
+    [NodeName("Function Node"), NodeDescription("DesignScript Builtin Functions"),
+     IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSFunction : NodeModel
     {
         public FunctionDescriptor Definition { get; set; }
@@ -57,7 +52,7 @@ namespace Dynamo.Nodes
             return Definition.Type == FunctionType.Constructor;
         }
 
-        public DSFunction() 
+        public DSFunction()
         {
             ArgumentLacing = LacingStrategy.Shortest;
         }
@@ -81,10 +76,7 @@ namespace Dynamo.Nodes
 
         public override bool IsConvertible
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
         /// <summary>
@@ -115,7 +107,9 @@ namespace Dynamo.Nodes
             }
             else
             {
-                string displayReturnType = IsConstructor() ? Definition.UnqualifedClassName : Definition.ReturnType;
+                string displayReturnType = IsConstructor()
+                    ? Definition.UnqualifedClassName
+                    : Definition.ReturnType;
                 OutPortData.Add(new PortData(displayReturnType, displayReturnType));
             }
 
@@ -130,8 +124,8 @@ namespace Dynamo.Nodes
         /// <param name="xmlDoc"></param>
         /// <param name="nodeElement"></param>
         /// <param name="context"></param>
-        protected override void SaveNode(XmlDocument xmlDoc,
-            XmlElement nodeElement, SaveContext context)
+        protected override void SaveNode(
+            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             var asmPath = Definition.Assembly ?? "";
 
@@ -161,7 +155,8 @@ namespace Dynamo.Nodes
             string assembly = null;
             string function;
 
-            if (nodeElement.Attributes["assembly"] == null && nodeElement.Attributes["function"] == null)
+            if (nodeElement.Attributes["assembly"] == null
+                && nodeElement.Attributes["function"] == null)
             {
                 // To open old file
                 foreach (var helper in
@@ -221,8 +216,8 @@ namespace Dynamo.Nodes
             return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
         }
 
-        private AssociativeNode CreateFunctionObject(AssociativeNode functionNode, 
-                                                     List<AssociativeNode> inputs)
+        private AssociativeNode CreateFunctionObject(
+            AssociativeNode functionNode, List<AssociativeNode> inputs)
         {
             return AstFactory.BuildFunctionObject(
                 functionNode,
@@ -233,17 +228,19 @@ namespace Dynamo.Nodes
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any() )
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 var indexedValue = new IdentifierNode(AstIdentifierForPreview)
                 {
-                    ArrayDimensions = new ArrayNode
-                    {
-                        Expr = new StringNode
+                    ArrayDimensions =
+                        new ArrayNode
                         {
-                            value = Definition.ReturnKeys.ElementAt(outputIndex)
+                            Expr =
+                                new StringNode
+                                {
+                                    value = Definition.ReturnKeys.ElementAt(outputIndex)
+                                }
                         }
-                    }
                 };
 
                 return indexedValue;
@@ -252,7 +249,7 @@ namespace Dynamo.Nodes
             return base.GetAstIdentifierForOutputIndex(outputIndex);
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        override internal IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
             AssociativeNode rhs;
@@ -347,7 +344,8 @@ namespace Dynamo.Nodes
                                 var memberFunc = new IdentifierListNode
                                 {
                                     LeftNode = thisNode,
-                                    RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes)
+                                    RightNode =
+                                        AstFactory.BuildFunctionCall(function, inputAstNodes)
                                 };
                                 rhs = memberFunc;
                             }
@@ -370,43 +368,65 @@ namespace Dynamo.Nodes
                     break;
             }
 
-            var resultAst = new List<AssociativeNode>
-            {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, rhs)
-            };
+            var resultAst = new List<AssociativeNode>();
 
             if (OutPortData.Count == 1)
             {
+                resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
+
                 var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
                 string outputIdentifier = outputIdentiferNode.ToString();
                 string thisIdentifier = AstIdentifierForPreview.ToString();
                 if (!string.Equals(outputIdentifier, thisIdentifier))
                 {
-                    resultAst.Add(AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
+                    resultAst.Add(
+                        AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
                 }
             }
             else
             {
                 var undefinedOutputs = Definition.ReturnKeys == null || !Definition.ReturnKeys.Any();
 
-                resultAst.AddRange(
-                    Enumerable.Range(0, OutPortData.Count)
-                        .Select(
-                            outputIdx =>
-                                undefinedOutputs
-                                    ? AstIdentifierForPreview
-                                    : new IdentifierNode(AstIdentifierForPreview)
-                                    {
-                                        ArrayDimensions =
-                                            new ArrayNode
+                if (undefinedOutputs || !IsPartiallyApplied)
+                {
+                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
+                }
+                else
+                {
+                    var missingAmt = Enumerable.Range(0, InPortData.Count).Count(x => !HasInput(x));
+                    var tmp =
+                        AstFactory.BuildIdentifier("__partial_" + GUID.ToString().Replace('-', '_'));
+                    resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
+                    resultAst.AddRange(
+                        Definition.ReturnKeys.Select(AstFactory.BuildStringNode)
+                            .Select(
+                                (rtnKey, index) =>
+                                    AstFactory.BuildAssignment(
+                                        GetAstIdentifierForOutputIndex(index),
+                                        AstFactory.BuildFunctionObject(
+                                            "__ComposeBuffered",
+                                            3,
+                                            new[] { 0, 1 },
+                                            new List<AssociativeNode>
                                             {
-                                                Expr =
-                                                    new StringNode
+                                                AstFactory.BuildExprList(
+                                                    new List<AssociativeNode>
                                                     {
-                                                        value = Definition.ReturnKeys.ElementAt(outputIdx)
-                                                    }
-                                            }
-                                    }));
+                                                        AstFactory.BuildFunctionObject(
+                                                            "__GetOutput",
+                                                            2,
+                                                            new[] { 1 },
+                                                            new List<AssociativeNode>
+                                                            {
+                                                                AstFactory.BuildNullNode(),
+                                                                rtnKey
+                                                            }),
+                                                        tmp
+                                                    }),
+                                                AstFactory.BuildIntNode(missingAmt),
+                                                AstFactory.BuildNullNode()
+                                            }))));
+                }
             }
             return resultAst;
         }
@@ -415,12 +435,8 @@ namespace Dynamo.Nodes
     /// <summary>
     /// DS Function Node that support Variable Arguments.
     /// </summary>
-    [NodeName("Function Node w/ VarArgs")]
-    [NodeDescription("DesignScript Builtin Functions")]
-    [IsInteractive(false)]
-    [IsVisibleInDynamoLibrary(false)]
-    [NodeSearchable(false)]
-    [IsMetaNode]
+    [NodeName("Function Node w/ VarArgs"), NodeDescription("DesignScript Builtin Functions"),
+     IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSVarArgFunction : VariableInputNode
     {
         public FunctionDescriptor Definition { get; set; }
@@ -442,10 +458,6 @@ namespace Dynamo.Nodes
             return Definition.Type == FunctionType.Constructor;
         }
 
-        // A 'DSVarArgFunction' function cannot live without its 'Definition'
-        // (a 'FunctionDescriptor'), therefore this constructor shouldn't be used.
-        private DSVarArgFunction() { }
-
         public DSVarArgFunction(FunctionDescriptor definition)
         {
             Definition = definition;
@@ -454,18 +466,12 @@ namespace Dynamo.Nodes
 
         public override string Description
         {
-            get
-            {
-                return Definition.Signature;
-            }
+            get { return Definition.Signature; }
         }
 
         public override bool IsConvertible
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
         /// <summary>
@@ -483,10 +489,10 @@ namespace Dynamo.Nodes
                 foreach (var arg in Definition.Parameters.Take(Definition.Parameters.Count() - 1))
                 {
                     InPortData.Add(
-                         new PortData(
-                             arg.Name,
-                             string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
-                             defaultValue: arg.DefaultValue));
+                        new PortData(
+                            arg.Name,
+                            string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
+                            arg.DefaultValue));
                 }
                 AddInput();
             }
@@ -565,11 +571,9 @@ namespace Dynamo.Nodes
             {
                 var helper =
                     nodeElement.ChildNodes.Cast<XmlElement>()
-                               .Where(
-                                   subNode =>
-                                       subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
-                               .Select(subNode => new XmlElementHelper(subNode))
-                               .FirstOrDefault();
+                        .Where(subNode => subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
+                        .Select(subNode => new XmlElementHelper(subNode))
+                        .FirstOrDefault();
 
                 // To open old file
                 if (helper != null)
@@ -623,10 +627,11 @@ namespace Dynamo.Nodes
 
         private List<AssociativeNode> GetConnectedInputs()
         {
-            return Enumerable.Range(0, InPortData.Count)
-                             .Where(HasConnectedInput)
-                             .Select(x => new IntNode(x) as AssociativeNode)
-                             .ToList();
+            return
+                Enumerable.Range(0, InPortData.Count)
+                    .Where(HasConnectedInput)
+                    .Select(x => new IntNode(x) as AssociativeNode)
+                    .ToList();
         }
 
         private AssociativeNode CreateFunctionObject(
@@ -647,7 +652,30 @@ namespace Dynamo.Nodes
             return AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
+            {
+                var indexedValue = new IdentifierNode(AstIdentifierForPreview)
+                {
+                    ArrayDimensions =
+                        new ArrayNode
+                        {
+                            Expr =
+                                new StringNode
+                                {
+                                    value = Definition.ReturnKeys.ElementAt(outputIndex)
+                                }
+                        }
+                };
+
+                return indexedValue;
+            }
+
+            return base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
+        override internal IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var resultAst = new List<AssociativeNode>();
 
@@ -667,8 +695,8 @@ namespace Dynamo.Nodes
 
                 inputAstNodes =
                     inputAstNodes.Take(paramCount - 1)
-                                 .Concat(new[] { AstFactory.BuildIdentifier(packId) })
-                                 .ToList();
+                        .Concat(new[] { AstFactory.BuildIdentifier(packId) })
+                        .ToList();
             }
 
             switch (Definition.Type)
@@ -686,9 +714,10 @@ namespace Dynamo.Nodes
                     }
                     else
                     {
-                        rhs = AstFactory.BuildFunctionCall(Definition.ClassName,
-                                                           Definition.Name,
-                                                           inputAstNodes);
+                        rhs = AstFactory.BuildFunctionCall(
+                            Definition.ClassName,
+                            Definition.Name,
+                            inputAstNodes);
                     }
                     break;
 
@@ -756,10 +785,10 @@ namespace Dynamo.Nodes
                     break;
             }
 
-            resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
-
             if (OutPortData.Count == 1)
             {
+                resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
+
                 var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
                 string outputIdentifier = outputIdentiferNode.ToString();
                 string thisIdentifier = AstIdentifierForPreview.ToString();
@@ -773,28 +802,47 @@ namespace Dynamo.Nodes
             {
                 var undefinedOutputs = Definition.ReturnKeys == null || !Definition.ReturnKeys.Any();
 
-                resultAst.AddRange(
-                    Enumerable.Range(0, OutPortData.Count)
-                              .Select(
-                                  outputIdx =>
-                                      undefinedOutputs
-                                          ? AstIdentifierForPreview
-                                          : new IdentifierNode(AstIdentifierForPreview)
-                                          {
-                                              ArrayDimensions =
-                                                  new ArrayNode
-                                                  {
-                                                      Expr =
-                                                          new StringNode
-                                                          {
-                                                              value =
-                                                                  Definition.ReturnKeys.ElementAt(
-                                                                      outputIdx)
-                                                          }
-                                                  }
-                                          }));
+                if (undefinedOutputs || !IsPartiallyApplied)
+                {
+                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
+                }
+                else
+                {
+                    var missingAmt = Enumerable.Range(0, InPortData.Count).Count(x => !HasInput(x));
+                    var tmp =
+                        AstFactory.BuildIdentifier("__partial_" + GUID.ToString().Replace('-', '_'));
+                    resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
+                    resultAst.AddRange(
+                        Definition.ReturnKeys.Select(AstFactory.BuildStringNode)
+                            .Select(
+                                (rtnKey, index) =>
+                                    AstFactory.BuildAssignment(
+                                        GetAstIdentifierForOutputIndex(index),
+                                        AstFactory.BuildFunctionObject(
+                                            "__ComposeBuffered",
+                                            3,
+                                            new[] { 0, 1 },
+                                            new List<AssociativeNode>
+                                            {
+                                                AstFactory.BuildExprList(
+                                                    new List<AssociativeNode>
+                                                    {
+                                                        AstFactory.BuildFunctionObject(
+                                                            "__GetOutput",
+                                                            2,
+                                                            new[] { 1 },
+                                                            new List<AssociativeNode>
+                                                            {
+                                                                AstFactory.BuildNullNode(),
+                                                                rtnKey
+                                                            }),
+                                                        tmp
+                                                    }),
+                                                AstFactory.BuildIntNode(missingAmt),
+                                                AstFactory.BuildNullNode()
+                                            }))));
+                }
             }
-
             return resultAst;
         }
     }
