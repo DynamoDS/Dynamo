@@ -149,6 +149,9 @@ limitations under the License.
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Controls\StartPage.xaml.cs">
+      <DependentUpon>StartPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
@@ -487,6 +490,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Controls\StartPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -762,6 +769,20 @@ limitations under the License.
     <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-discussion.png" />
+    <Resource Include="UI\Images\StartPage\icon-dynamobim.png" />
+    <Resource Include="UI\Images\StartPage\icon-email.png" />
+    <Resource Include="UI\Images\StartPage\icon-github.png" />
+    <Resource Include="UI\Images\StartPage\icon-issues.png" />
+    <Resource Include="UI\Images\StartPage\icon-new.png" />
+    <Resource Include="UI\Images\StartPage\icon-open.png" />
+    <Resource Include="UI\Images\StartPage\icon-reference.png" />
+    <Resource Include="UI\Images\StartPage\icon-video.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
