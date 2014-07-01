@@ -145,10 +145,10 @@ limitations under the License.
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
-    <Compile Include="UI\Controls\CanvasCheckBox.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Controls\ImageBasedControls.cs" />
     <Compile Include="UI\Controls\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
@@ -216,9 +216,6 @@ limitations under the License.
     <Compile Include="UI\StateMachine.cs" />
     <Compile Include="UI\Views\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
-      <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
@@ -591,10 +588,6 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\ZoomAndPanControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UI\Views\DynamoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -632,9 +625,6 @@ limitations under the License.
     <Resource Include="UI\Images\collapsestate_normal.png" />
     <Resource Include="UI\Images\expandstate_hover.png" />
     <Resource Include="UI\Images\expandstate_normal.png" />
-    <Resource Include="UI\Images\fitview_disabled.png" />
-    <Resource Include="UI\Images\fitview_hover.png" />
-    <Resource Include="UI\Images\fitview_normal.png" />
     <Resource Include="UI\Images\librarycollapse_hover.png" />
     <Resource Include="UI\Images\librarycollapse_normal.png" />
     <Resource Include="UI\Images\maximizewindow_hover.png" />
@@ -671,21 +661,10 @@ limitations under the License.
     <Resource Include="UI\Images\undo_disabled.png" />
     <Resource Include="UI\Images\undo_hover.png" />
     <Resource Include="UI\Images\undo_normal.png" />
-    <Resource Include="UI\Images\zoomin_disabled.png" />
-    <Resource Include="UI\Images\zoomin_hover.png" />
-    <Resource Include="UI\Images\zoomin_normal.png" />
-    <Resource Include="UI\Images\zoomout_disabled.png" />
-    <Resource Include="UI\Images\zoomout_hover.png" />
-    <Resource Include="UI\Images\zoomout_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\tick_selected.png" />
     <Resource Include="UI\Images\click_background.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\pan_disabled.png" />
-    <Resource Include="UI\Images\pan_hover.png" />
-    <Resource Include="UI\Images\pan_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\hand_drag.cur" />
@@ -771,6 +750,15 @@ limitations under the License.
     <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-out-states.png" />
     <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
   </ItemGroup>
   <ItemGroup>

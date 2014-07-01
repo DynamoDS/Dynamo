@@ -146,7 +146,7 @@
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="P"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=DataContext.TogglePanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=TogglePanCommand}"/>
         <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                     CommandParameter="{Binding Path=DataContext.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -424,10 +424,10 @@
                     <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
-            <controls:Watch3DView Margin="0,20,0,0" x:Name="background_preview"
-                                          Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            IsHitTestVisible="{Binding WatchPreviewHitTest}">
-
+            <controls:Watch3DView x:Name="background_preview"
+                                  Margin="0,20,0,0"
+                                  Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  IsHitTestVisible="{Binding WatchPreviewHitTest}">
             </controls:Watch3DView>
         </Grid>
 
