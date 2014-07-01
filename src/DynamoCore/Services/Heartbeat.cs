@@ -79,16 +79,20 @@ namespace Dynamo.Services
                 {
                     InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString() );
 
-                    var difference = DateTime.Now.Subtract(startTime).TotalSeconds;
-                    InstrumentationLogger.FORCE_LogInfo("Heartbeat-Uptime-s",
-                        difference.ToString(CultureInfo.InvariantCulture));
-
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
-
                     InstrumentationLogger.LogPiiInfo("Node-usage", usage);
                     InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
+
+                    string workspace =
+                        dynSettings.Controller.DynamoModel.CurrentWorkspace
+                                   .GetStringRepOfWorkspaceSync();
+
+                    Debug.WriteLine(workspace);
+                    InstrumentationLogger.LogPiiInfo("Workspace", workspace);
+
+
                 }
                 catch (Exception e)
                 {
@@ -155,7 +159,7 @@ namespace Dynamo.Services
 
             foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
-                string fullName = node.GetType().FullName;
+                string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
 
@@ -179,7 +183,7 @@ namespace Dynamo.Services
                 if (node.State != ElementState.Error)
                     continue;
 
-                string fullName = node.GetType().FullName;
+                string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
                 
