@@ -1252,6 +1252,9 @@ namespace Dynamo.Models
                     if (!this.PopulateXmlDocument(document))
                         return;
 
+                    //Now unset the temp file name again
+                    Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, null);
+
 
                     outData = document.OuterXml;
 

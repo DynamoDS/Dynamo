@@ -132,6 +132,7 @@ namespace Dynamo.Services
         /// <returns></returns>
         private string PackFrequencyDict(Dictionary<String, int> frequencies)
         {
+            //@TODO(Luke): Merge with ComputeNodeFrequencies http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3842
             StringBuilder sb = new StringBuilder();
 
             foreach (String key in frequencies.Keys)
@@ -149,6 +150,7 @@ namespace Dynamo.Services
 
         private Dictionary<String, int> ComputeNodeFrequencies()
         {
+            //@TODO(Luke): Merge with ComputeNodeFrequencies http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3842
 
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
