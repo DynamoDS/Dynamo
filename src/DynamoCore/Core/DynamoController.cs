@@ -482,7 +482,7 @@ namespace Dynamo
             Process.Start(Configurations.GitHubBugReportingLink);
         }
 
-        public void DownloadDynamo()
+        internal void DownloadDynamo()
         {
             Process.Start(Configurations.DynamoDownloadLink);
         }

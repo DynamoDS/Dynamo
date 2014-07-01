@@ -119,6 +119,15 @@ namespace Dynamo.Nodes
 
     public static class Utilities
     {
+        enum ButtonId
+        {
+            OK = 43420,
+            Cancel,
+            DownloadLatest,
+            Proceed,
+            Submit
+        }
+
         public static string Ellipsis(string value, int desiredLength)
         {
             if (desiredLength > value.Length)
@@ -493,11 +502,11 @@ namespace Dynamo.Nodes
         internal static void DisplayObsoleteFileMessage(
             string fullFilePath, Version fileVersion, Version currVersion)
         {
-            if (fileVersion != null && currVersion != null)
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: fileVersion:" +
-                    fileVersion + " :: currVersion:" + currVersion);
-            else
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: null");
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
+            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
+
+            InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath +
+                " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
             var summary = "Your file cannot be opened";
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
@@ -508,7 +517,7 @@ namespace Dynamo.Nodes
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
 
-            args.AddRightAlignedButton(43420, "OK");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "OK");
 
             dynSettings.Controller.OnRequestTaskDialog(null, args);
         }
@@ -547,12 +556,12 @@ namespace Dynamo.Nodes
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
-            args.AddRightAlignedButton(43420, "Submit Bug To Github");
-            args.AddRightAlignedButton(43421, "Arrrrg, ok");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Submit, "Submit Bug To Github");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "Arrrrg, ok");
             args.Exception = exception;
 
             dynSettings.Controller.OnRequestTaskDialog(null, args);
-            if (args.ClickedButtonId == 43420)
+            if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
                 dynSettings.Controller.ReportABug(null);
         }
 
@@ -567,35 +576,42 @@ namespace Dynamo.Nodes
             return indexOfSeparator >= 0;
         }
 
+        /// <summary>
+        /// Displays file open error dialog if the file is of a future version than the currently installed version
+        /// </summary>
+        /// <param name="fullFilePath"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currVersion"></param>
+        /// <returns> true if the file must be opened and false otherwise </returns>
         internal static bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            if (fileVersion != null && currVersion != null)
-                InstrumentationLogger.LogInfo("FutureFileMessage", fullFilePath + " :: fileVersion:" +
-                    fileVersion + " :: currVersion:" + currVersion);
-            else
-                InstrumentationLogger.LogInfo("FutureFileMessage", fullFilePath + " :: null");
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
+            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
 
-            var summary = "Your file cannot be opened";
-            var description = string.Format("Your file '{0}' was created in future version '{1}' and cannot " +
-                "be opened by your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
+            InstrumentationLogger.LogInfo("FutureFileMessage", fullFilePath +
+                " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
+
+            var summary = "Your file may not open correctly";
+            var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
+                "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_future_file.png";
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
 
-            args.AddRightAlignedButton(43420, "Cancel");
-            args.AddRightAlignedButton(43421, "Download latest version");
-            args.AddRightAlignedButton(43422, "Proceed anyway");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Cancel, "Cancel");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, "Download latest version");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, "Proceed anyway");
             
             dynSettings.Controller.OnRequestTaskDialog(null, args);
-            if (args.ClickedButtonId == 43421)
+            if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
+            {
                 dynSettings.Controller.DownloadDynamo();
+                return false;
+            }
 
-            if (args.ClickedButtonId == 43422)
-                return true;
-
-            return false;
+            return args.ClickedButtonId == (int)Utilities.ButtonId.Proceed;
         }
     }
 

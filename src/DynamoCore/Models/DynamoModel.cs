@@ -1157,23 +1157,32 @@ namespace Dynamo.Models
                 var dynamoModel = dynSettings.Controller.DynamoModel;
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
 
+                bool isTesting = DynamoController.IsTestMode; // No backup during test.
                 if (fileVersion > currentVersion)
                 {
-                    bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
-                    if (!resume)
+                    if (!isTesting)
+                    {
+                        bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
+                        if (!resume)
+                            return false;
+                    }
+                    else
                         return false;
                 }
 
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
+                    if (!isTesting)
+                    {
+                        Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
+                    }
                     return false;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
                 {
                     string backupPath = string.Empty;
-                    bool isTesting = DynamoController.IsTestMode; // No backup during test.
+                    
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format(
