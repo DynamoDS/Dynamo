@@ -8,6 +8,8 @@ using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using ProtoCore.Mirror;
 using Revit.GeometryConversion;
+
+using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
@@ -19,6 +21,7 @@ namespace Dynamo
     class VisualizationManagerRevit : VisualizationManager
     {
         private ElementId keeperId = ElementId.InvalidElementId;
+        private ElementId directShapeId = ElementId.InvalidElementId;
 
         public ElementId KeeperId
         {
@@ -60,6 +63,17 @@ namespace Dynamo
                         keeperId = ElementId.InvalidElementId;
                     }
 
+                    DirectShape directShape;
+                    DocumentManager.Instance.CurrentDBDocument.TryGetElement(
+                        directShapeId,
+                        out directShape);
+                    if (directShape != null)
+                    {
+                        // Set the direct shape to empty.
+                        DocumentManager.Instance.CurrentDBDocument.Delete(directShapeId);
+                        directShapeId = ElementId.InvalidElementId;
+                    }
+
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
         }
@@ -86,10 +100,14 @@ namespace Dynamo
             var geoms = new List<GeometryObject>();
             values.ToList().ForEach(md=>RevitGeometryFromMirrorData(md, ref geoms));
 
-            Draw(geoms);
+            var solidsAndSurfs = geoms.Where(x => x is Autodesk.Revit.DB.Mesh || x is Autodesk.Revit.DB.Solid).ToList();
+            var pointsAndCurves = geoms.Where(x => x is Autodesk.Revit.DB.Point || x is Autodesk.Revit.DB.Curve).ToList();
+
+            DrawPointsAndCurves(pointsAndCurves);
+            DrawSurfsAndSolids(solidsAndSurfs);
         }
 
-        private void Draw(IEnumerable<GeometryObject> geoms)
+        private void DrawPointsAndCurves(IEnumerable<GeometryObject> geoms)
         {
             Type geometryElementType = typeof(GeometryElement);
             MethodInfo[] geometryElementTypeMethods =
@@ -101,10 +119,8 @@ namespace Dynamo
             if (method == null)
                 return;
 
-            var styles = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            styles.OfClass(typeof(GraphicsStyle));
-
-            Element gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
+            var gStyleId = FindDynamoGraphicsStyle();
+            var matId = FindDefaultRevitMaterial();
 
             RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
                 () =>
@@ -121,17 +137,81 @@ namespace Dynamo
 
                     var argsM = new object[4];
                     argsM[0] = DocumentManager.Instance.CurrentUIDocument.Document;
-                    argsM[1] = ElementId.InvalidElementId;
+                    argsM[1] = matId;
                     argsM[2] = geoms;
-                    if (gStyle != null)
-                        argsM[3] = gStyle.Id;
-                    else
-                        argsM[3] = ElementId.InvalidElementId;
+                    argsM[3] = gStyleId;
 
                     keeperId = (ElementId)method.Invoke(null, argsM);
 
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
+        }
+
+        private void DrawSurfsAndSolids(List<GeometryObject> geoms)
+        {
+            Type dsType = typeof(DirectShape);
+            MethodInfo[] dsStaticTypeMethods =
+                dsType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+
+            MethodInfo[] dsInstanceTypeMethods =
+                dsType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
+
+            MethodInfo createMethod =
+                dsStaticTypeMethods.FirstOrDefault(x => x.Name == "CreateElement");
+            MethodInfo setMethod =
+                dsInstanceTypeMethods.FirstOrDefault(x => x.Name == "SetShape" && x.GetParameters().Count() == 1);
+
+            if (setMethod == null || createMethod == null)
+                return;
+
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
+            () =>
+            {
+                TransactionManager.Instance.EnsureInTransaction(
+                DocumentManager.Instance.CurrentDBDocument);
+
+                Element directShape;
+                DocumentManager.Instance.CurrentDBDocument.TryGetElement(
+                        directShapeId,
+                        out directShape);
+                if (directShape == null)
+                {
+                    var categoryId = new ElementId(BuiltInCategory.OST_GenericModel);
+
+                    directShape = (DirectShape)createMethod.Invoke(null, new object[] {DocumentManager.Instance.CurrentDBDocument, categoryId, "A", "B" });
+                    directShapeId = directShape.Id;
+                }
+
+                setMethod.Invoke(
+                    directShape,
+                    new object[] { geoms });
+                
+                TransactionManager.Instance.ForceCloseTransaction();
+            });
+        }
+
+        private static ElementId FindDefaultRevitMaterial()
+        {
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.OfClass(typeof(Material));
+            var materials = fec.ToElements();
+
+            var defaultMat = materials.FirstOrDefault(mat => mat.Name == "Default");
+            if (defaultMat != null)
+            {
+                return defaultMat.Id;
+            }
+
+            throw new Exception("The default material could not be found.");
+        }
+
+        private static ElementId FindDynamoGraphicsStyle()
+        {
+            var styles = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            styles.OfClass(typeof(GraphicsStyle));
+
+            var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Generic Models");
+            return gStyle != null ? gStyle.Id : ElementId.InvalidElementId;
         }
 
         /// <summary>
@@ -182,6 +262,13 @@ namespace Dynamo
                     {
                         geoms.AddRange(surf.ToRevitType());
                     }
+
+                    var solid = data.Data as Autodesk.DesignScript.Geometry.Solid;
+                    if (solid != null)
+                    {
+                        geoms.AddRange(solid.ToRevitType());
+                    }
+
                 }
                 catch (Exception ex)
                 {
