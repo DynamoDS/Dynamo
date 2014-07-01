@@ -105,7 +105,7 @@ namespace Dynamo
             {
                 //Don't overwhelm the logging system
                 if (dynSettings.Controller != null && !dynSettings.Controller.DebugSettings.VerboseLogging)
-                    InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);
+                    InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
                 switch (level)
                 {
