@@ -2722,6 +2722,7 @@ namespace ProtoCore.AST.AssociativeAST
             return new IdentifierListNode
             {
                 LeftNode = new IdentifierNode(className),
+                Optr = Operator.dot,
                 RightNode = BuildFunctionCall(functionName, arguments)
             };
         }
