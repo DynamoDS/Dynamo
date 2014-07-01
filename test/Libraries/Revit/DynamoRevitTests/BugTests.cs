@@ -215,10 +215,13 @@ namespace Dynamo.Tests
             Assert.IsNotNull(refPt);
             Assert.AreEqual(10, refPt.X);
 
+            RunCurrentModel();
 
             // Cross check from Revit side.
             var selectElementType = "4a99826a-eb73-4831-857c-909579c7eb12";
-            var refPt1 = GetPreviewValue(selectElementType) as ReferencePoint;
+            var refPt1 = GetPreviewValueAtIndex(selectElementType, 0) as ReferencePoint;
+            AssertPreviewCount(selectElementType, 1);
+
             Assert.IsNotNull(refPt1);
             Assert.AreEqual(10, refPt1.X);
 
