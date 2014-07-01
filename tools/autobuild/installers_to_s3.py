@@ -40,9 +40,13 @@ def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date, is_dev
 		mkdir('temp')
 		copy_folder_contents( form_path([installer_dir, installer_bin_dir]), 'temp')
 
+		date_string = dynamo_s3.date_string()
+
 		for file in os.listdir('temp'):
 		  if fnmatch.fnmatch( file, '*.exe'):
-		  	dynamo_s3.upload_daily( form_path( ['temp', file] ), prefix, include_date, is_dev_build)
+		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.exe', date_string)
+		  elif fnmatch.fnmatch( file, '*.sig'):
+		  	dynamo_s3.upload_installer( form_path( ['temp', file] ), prefix, include_date, is_dev_build ,'.sig', date_string)
 
 	except Exception:
 		print 'There was an exception uploading to s3:'
