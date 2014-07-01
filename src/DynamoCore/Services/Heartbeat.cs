@@ -89,7 +89,6 @@ namespace Dynamo.Services
                         dynSettings.Controller.DynamoModel.CurrentWorkspace
                                    .GetStringRepOfWorkspaceSync();
 
-                    Debug.WriteLine(workspace);
                     InstrumentationLogger.LogPiiInfo("Workspace", workspace);
 
 
