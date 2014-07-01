@@ -194,6 +194,10 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
 
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
             // evaluate graph
             var refPtNodeId = "92774673-e265-4378-b8ba-aef86c1a616e";
             var refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
@@ -211,8 +215,12 @@ namespace Dynamo.Tests
             Assert.IsNotNull(refPt);
             Assert.AreEqual(10, refPt.X);
 
-            // One more verification pending, I need to make sure there is only one point in Revit, 
-            // I will find out how to do that and will add that verification here.
+
+            // Cross check from Revit side.
+            var selectElementType = "4a99826a-eb73-4831-857c-909579c7eb12";
+            var refPt1 = GetPreviewValue(selectElementType) as ReferencePoint;
+            Assert.IsNotNull(refPt1);
+            Assert.AreEqual(10, refPt1.X);
 
         }
     }
