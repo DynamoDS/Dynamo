@@ -32,6 +32,8 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.UI.Commands;
+using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Controls
 {
@@ -204,6 +206,14 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
+            ShortcutBarItem dynamorphButton = new ShortcutBarItem();
+            dynamorphButton.ShortcutToolTip = "Dynamorph!";
+            dynamorphButton.ShortcutCommand = new DelegateCommand(DoDynamorph, CanDynamorph);
+            dynamorphButton.ShortcutCommandParameter = null;
+            dynamorphButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
+            dynamorphButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
+            dynamorphButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
             //updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
@@ -226,12 +236,55 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            //shortcutBar.ShortcutBarItems.Add(runButton);            
+            shortcutBar.ShortcutBarItems.Add(dynamorphButton);
 
             //shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
+        }
+
+        private Dynamorph.DynamorphWindow dynamorphWindow = null;
+
+        private void DoDynamorph(object parameter)
+        {
+            if (dynamorphWindow == null)
+                dynamorphWindow = new Dynamorph.DynamorphWindow();
+
+            if (dynamorphWindow.Visibility != System.Windows.Visibility.Visible)
+                dynamorphWindow.Show();
+
+            var vm = (DataContext as DynamoViewModel);
+            this.SynthesizeGraph(vm.CurrentSpace);
+        }
+
+        private bool CanDynamorph(object parameter)
+        {
+            return true;
+        }
+
+        private void SynthesizeGraph(WorkspaceModel workspace)
+        {
+            if (this.dynamorphWindow == null)
+                return;
+
+            var control = this.dynamorphWindow.Control;
+            var graph = control.GetSynthesizedGraph();
+
+            foreach (var node in workspace.Nodes)
+            {
+                var id = node.GUID.ToString().ToLower();
+                graph.AddNode(id, node.NickName);
+            }
+
+            foreach (var conn in workspace.Connectors)
+            {
+                var startId = conn.Start.Owner.GUID.ToString().ToLower();
+                var endId = conn.End.Owner.GUID.ToString().ToLower();
+                graph.AddEdge(startId, endId);
+            }
+
+            control.SetSynthesizedGraph(graph);
         }
 
         /// <summary>
@@ -326,6 +379,10 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
+#if DYNAMORPH
+            _vm.RequestUpdateDynamorphVisual += OnRequestUpdateDynamorphVisual;
+#endif
+
             _vm.RequestClose += _vm_RequestClose;
             _vm.RequestSaveImage += _vm_RequestSaveImage;
             _vm.SidebarClosed += _vm_SidebarClosed;
@@ -344,6 +401,16 @@ namespace Dynamo.Controls
 
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
+        }
+
+        void OnRequestUpdateDynamorphVisual(object sender, UpdateDynamorphVisualEventArgs e)
+        {
+            if (this.dynamorphWindow != null)
+            {
+                var control = this.dynamorphWindow.Control;
+                control.SetNodeGeometries(e.Geometries.ToDictionary(
+                    item => item.Key.ToString(), item => item.Value));
+            }
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -670,6 +737,10 @@ namespace Dynamo.Controls
 
             //FUNCTION NAME PROMPT
             _vm.RequestsFunctionNamePrompt -= _vm_RequestsFunctionNamePrompt;
+
+#if DYNAMORPH
+            _vm.RequestUpdateDynamorphVisual -= OnRequestUpdateDynamorphVisual;
+#endif
 
             _vm.RequestClose -= _vm_RequestClose;
             _vm.RequestSaveImage -= _vm_RequestSaveImage;

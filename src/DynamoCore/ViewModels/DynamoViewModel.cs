@@ -17,6 +17,7 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Services;
 using DynamoUnits;
+using Autodesk.DesignScript.Interfaces;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 
@@ -31,6 +32,22 @@ namespace Dynamo.ViewModels
     public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
 
     public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
+
+#if DYNAMORPH
+
+    public class UpdateDynamorphVisualEventArgs : EventArgs
+    {
+        public UpdateDynamorphVisualEventArgs(Dictionary<Guid, IRenderPackage> geometries)
+        {
+            this.Geometries = geometries;
+        }
+
+        public Dictionary<Guid, IRenderPackage> Geometries { get; private set; }
+    }
+
+    public delegate void UpdateDynamorphVisualHandler(object sender, UpdateDynamorphVisualEventArgs e);
+
+#endif
 
     public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
@@ -139,6 +156,15 @@ namespace Dynamo.ViewModels
                 RequestViewOperation(e);
             }
         }
+
+#if DYNAMORPH
+        public event UpdateDynamorphVisualHandler RequestUpdateDynamorphVisual;
+        public void OnUpdateDynamorphVisual(object sender, UpdateDynamorphVisualEventArgs e)
+        {
+            if (RequestUpdateDynamorphVisual != null)
+                RequestUpdateDynamorphVisual(sender, e);
+        }
+#endif
 
         #endregion
 
@@ -1999,8 +2025,30 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
+#if DYNAMORPH
+            var packages = new Dictionary<Guid, IRenderPackage>();
+            foreach (var node in this.Model.Nodes)
+            {
+                if (node.HasRenderPackages == false)
+                    continue;
+
+                lock (node.RenderPackagesMutex)
+                {
+                    var p = node.RenderPackages[0] as Dynamo.DSEngine.RenderPackage;
+                    if (p.IsNotEmpty())
+                        packages.Add(node.GUID, p);
+                }
+            }
+
+            if (packages.Any())
+            {
+                var args = new UpdateDynamorphVisualEventArgs(packages);
+                OnUpdateDynamorphVisual(this, args);
+            }
+#else
             var taskId = (long) parameters;
             dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId,null));
+#endif
         }
 
         public bool CanGetBranchVisualization(object parameter)
