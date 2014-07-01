@@ -1,0 +1,40 @@
+<Workspace Version="0.7.0.11908" X="-2470.7452134046" Y="-512.557137122162" zoom="0.926774980788014" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a8d28be4-5b93-4b68-a182-6e7d09b6147e" nickname="Number" x="2909.42030691147" y="837.693927478957" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="adfb6a7d-3ae8-4747-a50d-6446b0575438" nickname="Point.ByCoordinates" x="3171.24043419157" y="837.875724754357" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="07b70228-2be8-48b2-a8f7-f7d66eb0ed16" nickname="Double Slider" x="2908.30735204679" y="923.982465105865" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>4.42987885724275</System.Double>
+      <Range min="0" max="10" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e444c893-2cb6-4893-89b0-9a3ed1900d69" nickname="Watch" x="3698.2866013423" y="839.425514630162" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="751b37a0-8c55-46b3-90a9-f6b644af185b" nickname="Watch 3D" x="3703.97847300225" y="996.504872140292" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="276">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b8d01157-d3a3-47b1-8c2c-440b20da9d54" nickname="Point.ByCoordinates" x="3167.27237489451" y="1039.65070128749" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d060080d-17f1-41e4-897d-79c511029919" nickname="Line.ByStartPointEndPoint" x="3437.80074060347" y="987.704305812221" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a8d28be4-5b93-4b68-a182-6e7d09b6147e" start_index="0" end="adfb6a7d-3ae8-4747-a50d-6446b0575438" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="adfb6a7d-3ae8-4747-a50d-6446b0575438" start_index="0" end="e444c893-2cb6-4893-89b0-9a3ed1900d69" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="adfb6a7d-3ae8-4747-a50d-6446b0575438" start_index="0" end="d060080d-17f1-41e4-897d-79c511029919" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="07b70228-2be8-48b2-a8f7-f7d66eb0ed16" start_index="0" end="adfb6a7d-3ae8-4747-a50d-6446b0575438" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8d01157-d3a3-47b1-8c2c-440b20da9d54" start_index="0" end="d060080d-17f1-41e4-897d-79c511029919" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d060080d-17f1-41e4-897d-79c511029919" start_index="0" end="751b37a0-8c55-46b3-90a9-f6b644af185b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Geometric Data can be visualized as either textual information or in 3d space" x="3696.45943455216" y="776.817350498903" />
+    <Dynamo.Models.NoteModel text="You can toggle between 3d navigation and node navigation with the Geom/Node Butttons in the lower right of the screen.  Background Preview can also be turned on and off in the View Menu" x="2906.12249671052" y="741.787811444411" />
+  </Notes>
+</Workspace>
