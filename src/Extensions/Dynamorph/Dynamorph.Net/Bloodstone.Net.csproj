@@ -99,7 +99,7 @@
     <Resource Include="Resources\Fonts\OpenSans-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bloodstone.Cpp\Bloodstone.vcxproj">
+    <ProjectReference Include="..\Dynamorph.Cpp\Bloodstone.vcxproj">
       <Project>{c1e084ab-af20-4d56-b9e3-e606c4df6ecf}</Project>
       <Name>Bloodstone.Cpp</Name>
     </ProjectReference>
