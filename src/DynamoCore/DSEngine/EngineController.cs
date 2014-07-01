@@ -54,8 +54,6 @@ namespace Dynamo.DSEngine
 
             this.controller = controller;
             this.controller.DynamoModel.NodeDeleted += NodeDeleted;
-
-            this.controller.CustomNodeManager.RecompileAllNodes(this);
         }
 
         public void Dispose()

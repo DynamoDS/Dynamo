@@ -199,6 +199,16 @@ namespace DSCoreNodesUI
                 args.Result = 0;
             };
 
+            e.EvaluateFunction += delegate(string name, FunctionArgs args)
+            {
+                foreach (var p in args.Parameters)
+                {
+                    p.Evaluate();
+                }
+
+                args.Result = 0;
+            };
+
             try
             {
                 e.Evaluate();

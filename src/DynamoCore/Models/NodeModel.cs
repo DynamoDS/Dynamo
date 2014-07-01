@@ -1452,6 +1452,7 @@ namespace Dynamo.Models
                 return;
             }
 
+            ClearRenderPackages();
             if (State == ElementState.Error ||
                 !IsVisible ||
                 CachedValue == null)

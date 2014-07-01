@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FFA063AF-369C-4CBA-A1F6-C71C28F01B5A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSharpAnalytics</RootNamespace>
+    <AssemblyName>CSharpAnalytics.WinForms</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Binaries\Debug\WinForms\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\WinForms\</IntermediateOutputPath>
+    <DefineConstants>TRACE;DEBUG;WINFORMS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Binaries\Release\WinForms\</OutputPath>
+    <IntermediateOutputPath>obj\Release\WinForms\</IntermediateOutputPath>
+    <DefineConstants>TRACE;WINFORMS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Activities\AutoTimedEventActivity.cs" />
+    <Compile Include="Activities\ContentViewActivity.cs" />
+    <Compile Include="Activities\ExceptionActivity.cs" />
+    <Compile Include="Activities\EventActivity.cs" />
+    <Compile Include="Activities\MeasurementActivity.cs" />
+    <Compile Include="Activities\ScreenViewActivity.cs" />
+    <Compile Include="Activities\TimedEventActivity.cs" />
+    <Compile Include="Activities\TransactionItemActivity.cs" />
+    <Compile Include="Activities\SocialActivity.cs" />
+    <Compile Include="Activities\TransactionActivity.cs" />
+    <Compile Include="AutoMeasurement\AnalyticsScreenNameAttribute.cs" />
+    <Compile Include="AutoMeasurement\BaseAutoMeasurement.cs" />
+    <Compile Include="Debugging\MeasurementParameterDefinitions.cs" />
+    <Compile Include="Debugging\ParameterDefinition.cs" />
+    <Compile Include="Debugging\ProtocolDebugger.cs" />
+    <Compile Include="Serializers\AppDataContractSerializer.cs" />
+    <Compile Include="AutoMeasurement\ITrackOwnView.cs" />
+    <Compile Include="AutoMeasurement\WinFormsAutoMeasurement.cs" />
+    <Compile Include="Environment\IEnvironment.cs" />
+    <Compile Include="Environment\WinFormsEnvironment.cs" />
+    <Compile Include="Network\HttpWebRequester.cs" />
+    <Compile Include="Network\BackgroundUriRequester.cs" />
+    <Compile Include="Network\ExtensionMethods.cs" />
+    <Compile Include="Network\HttpClientRequester.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementTracker.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementActivityParameterBuilder.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementAnalyticsClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\KeyValuePair.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementConfiguration.cs" />
+    <Compile Include="Protocols\Measurement\MeasurementUriBuilder.cs" />
+    <Compile Include="Sessions\SessionManager.cs" />
+    <Compile Include="Sessions\SessionState.cs" />
+    <Compile Include="Sessions\TimeoutSessionManager.cs" />
+    <Compile Include="Sessions\Visitor.cs" />
+    <Compile Include="SystemInfo\WindowsSystemInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
