@@ -33,8 +33,11 @@ namespace Dynamo.UI.Views
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
         {
-            var um = dynSettings.Controller.UpdateManager;
-            um.UpdateDownloaded -= OnUpdatePackageDownloaded;
+            if (dynSettings.Controller != null)
+            {
+                var um = dynSettings.Controller.UpdateManager;
+                um.UpdateDownloaded -= OnUpdatePackageDownloaded;
+            }
         }
 
         public bool InstallNewUpdate { get; private set; }
@@ -98,6 +101,11 @@ namespace Dynamo.UI.Views
             }
         }
 
+        private void AboutWindow_OnClosed(object sender, EventArgs e)
+        {
+            var um = dynSettings.Controller.UpdateManager;
+            um.UpdateDownloaded -= OnUpdatePackageDownloaded;
+        }
     }
 
     //http://www.rhyous.com/2011/08/01/loading-a-richtextbox-from-an-rtf-file-using-binding-or-a-richtextfile-control/

@@ -669,16 +669,36 @@ namespace Dynamo.ViewModels
 
         private void Hide(object parameters)
         {
-            if (!Model.HasUnsavedChanges || dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+            // Closing of custom workspaces will simply close those workspaces,
+            // but closing Home workspace has a different meaning. First off, 
+            // Home workspace cannot be closed or hidden, it can only be cleared.
+            // As of this revision, pressing the "X" button on Home workspace 
+            // tab simply clears the Home workspace, and bring up the Start Page
+            // if there are no other custom workspace that is opened.
+            // 
+            var dvm = dynSettings.Controller.DynamoViewModel;
+
+            if (this.IsHomeSpace)
             {
-                dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(_model);
+                if (dvm.CloseHomeWorkspaceCommand.CanExecute(null))
+                    dvm.CloseHomeWorkspaceCommand.Execute(null);
+            }
+            else
+            {
+                if (!Model.HasUnsavedChanges || dvm.AskUserToSaveWorkspaceOrCancel(Model))
+                    dvm.Model.HideWorkspace(_model);
             }
         }
 
         private bool CanHide(object parameters)
         {
-            // can hide anything but the home workspace
-            return dynSettings.Controller.DynamoViewModel.Model.HomeSpace != _model;
+            // Workspaces other than HOME can be hidden (i.e. closed), but we 
+            // are enabling it also for the HOME workspace. When clicked, the 
+            // HOME workspace is cleared (i.e. equivalent of pressing the New 
+            // button), and if there is no other workspaces opened, then the 
+            // Start Page is displayed.
+            // 
+            return true;
         }
 
         private void SetCurrentOffset(object parameter)

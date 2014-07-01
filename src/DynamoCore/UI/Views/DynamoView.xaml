@@ -6,6 +6,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
         xmlns:commands="clr-namespace:Dynamo.UI.Commands"
         xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:dynamo="clr-namespace:Dynamo"
@@ -365,9 +366,10 @@
                                 <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}"  Name="bugCommand" Focusable="False"/>
-                        <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
-                        <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
+                        <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}" Focusable="False"/>
+                        <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}" Focusable="False"/>
+                        <MenuItem Header="Go To Project _Wiki" Command="{Binding GoToWikiCommand}" Focusable="False"/>
+                        <MenuItem Header="_Display Start Page" Command="{Binding DisplayStartPageCommand}" Focusable="False"/>
                         <MenuItem Header="_About..." Command="{Binding ShowAboutWindowCommand}" Focusable="False" />
                     </MenuItem>
 
@@ -382,8 +384,11 @@
                                     Command="{Binding MutateTestDelegateCommand}"
                                     CommandParameter="{Binding Path=RunInDebug}"
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
+                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
+                                  IsCheckable="True" IsChecked="{Binding Path=UpdateManager.CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
+                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
+                                      IsCheckable="True" IsChecked="{Binding Path=UpdateManager.ForceUpdate, Mode=TwoWay}"/>
                     </MenuItem>
-                    
                 </Menu>
 
                 <!--Titlebar buttons-->
@@ -770,6 +775,10 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
+                            
+                            <!-- The close button for workspace is no longer hidden on the HOME 
+                                 tab page, since it is used to bring up the Start Page when pressed.
+                            
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
                                              Value="{x:Type models:HomeWorkspaceModel}">
@@ -777,6 +786,8 @@
                                             Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
+                            -->
+                            
                         </Style>
 
                         <Style TargetType="{x:Type TabItem}">
@@ -836,8 +847,7 @@
                                                 <ContentPresenter x:Name="ContentSite"
                                                                   Grid.Column="0"
                                                                   VerticalAlignment="Center"
-                                                                  ContentSource="Header"
-                                                                  HorizontalAlignment="Left" />
+                                                                  ContentSource="Header" />
                                                 <Button Style="{StaticResource CloseButtonStyle}"
                                                         Command="{Binding HideCommand}"
                                                         Grid.Column="1">
@@ -889,123 +899,128 @@
 
                             <Grid Height="20">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Name="WorkspaceName"
-                                           Margin="8,0,0,0"
-                                           Padding="0,0,0,0"
-                                           HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Center"
-                                           TextTrimming="CharacterEllipsis">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
 
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
-                                                             Value="True">
-                                                    <Setter Property="Foreground"
-                                                            Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
-                                                    <Setter Property="FontWeight"
-                                                            Value="SemiBold" />
-                                                </DataTrigger>
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center">
 
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
-                                                             Value="False">
-                                                    <Setter Property="Foreground"
-                                                            Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
-                                                    <Setter Property="FontWeight"
-                                                            Value="Normal" />
-                                                </DataTrigger>
+                                    <TextBlock Name="WorkspaceName"
+                                               Margin="8,0,0,0"
+                                               Padding="0,0,0,0"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
 
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                   Value="{x:Type models:HomeWorkspaceModel}" />
-                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                   Value="Unsaved" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Text"
-                                                            Value="Home" />
-                                                </MultiDataTrigger>
-                                                
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                   Value="{x:Type models:HomeWorkspaceModel}" />
-                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                   Value="Saved" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Text"
-                                                            Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
-                                                </MultiDataTrigger>
-                                                
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                   Value="{x:Type models:CustomNodeWorkspaceModel}" />
-                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                   Value="Unsaved" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Text"
-                                                            Value="{Binding Name}" />
-                                                </MultiDataTrigger>
-                                                
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                   Value="{x:Type models:CustomNodeWorkspaceModel}" />
-                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                   Value="Saved" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Text"
-                                                            Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
-                                                </MultiDataTrigger>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
+                                                                 Value="True">
+                                                        <Setter Property="Foreground"
+                                                                Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
+                                                        <Setter Property="FontWeight"
+                                                                Value="SemiBold" />
+                                                    </DataTrigger>
 
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
+                                                                 Value="False">
+                                                        <Setter Property="Foreground"
+                                                                Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
+                                                        <Setter Property="FontWeight"
+                                                                Value="Normal" />
+                                                    </DataTrigger>
 
-                                <TextBlock Name="WorkspaceSaveState"
-                                           Grid.Column="1"
-                                           Margin="0,0,0,0"
-                                           VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
-                                                             Value="True">
-                                                    <Setter Property="Foreground"
-                                                            Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
-                                                    <Setter Property="FontWeight"
-                                                            Value="SemiBold" />
-                                                </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                       Value="{x:Type models:HomeWorkspaceModel}" />
+                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                       Value="Unsaved" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Text"
+                                                                Value="Home" />
+                                                    </MultiDataTrigger>
 
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
-                                                             Value="False">
-                                                    <Setter Property="Foreground"
-                                                            Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
-                                                    <Setter Property="FontWeight"
-                                                            Value="Normal" />
-                                                </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                       Value="{x:Type models:HomeWorkspaceModel}" />
+                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                       Value="Saved" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Text"
+                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                    </MultiDataTrigger>
 
-                                                <DataTrigger Binding="{Binding HasUnsavedChanges}"
-                                                             Value="True">
-                                                    <Setter Property="Text"
-                                                            Value="*" />
-                                                </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                       Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                       Value="Unsaved" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Text"
+                                                                Value="{Binding Name}" />
+                                                    </MultiDataTrigger>
 
-                                                <DataTrigger Binding="{Binding HasUnsavedChanges}"
-                                                             Value="False">
-                                                    <Setter Property="Text"
-                                                            Value="" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                       Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                       Value="Saved" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Text"
+                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                    </MultiDataTrigger>
+
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <TextBlock Name="WorkspaceSaveState"
+                                               Margin="0,0,0,0"
+                                               VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
+                                                                 Value="True">
+                                                        <Setter Property="Foreground"
+                                                                Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
+                                                        <Setter Property="FontWeight"
+                                                                Value="SemiBold" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
+                                                                 Value="False">
+                                                        <Setter Property="Foreground"
+                                                                Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
+                                                        <Setter Property="FontWeight"
+                                                                Value="Normal" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                 Value="True">
+                                                        <Setter Property="Text"
+                                                                Value="*" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                 Value="False">
+                                                        <Setter Property="Text"
+                                                                Value="" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                </StackPanel>
+
                             </Grid>
                             <!--</Button>-->
 
@@ -1164,23 +1179,6 @@
 
         </WrapPanel>
 
-        <Canvas HorizontalAlignment="Stretch"
-              Margin="0,20,0,0"
-              Grid.Row="2"
-              Grid.Column="0"
-              Grid.RowSpan="3"
-              Grid.ColumnSpan="3"
-              Name="overlayCanvas" 
-              VerticalAlignment="Stretch" 
-              Width="Auto" 
-              IsHitTestVisible="{Binding IsUILocked}" 
-              PreviewMouseMove="OverlayCanvas_OnMouseMove"
-              Visibility="Visible" 
-                Cursor="{Binding IsUILocked, Converter={StaticResource BoolToCanvasCursorConverter}}"
-              ForceCursor="{Binding IsUILocked}">
-
-            </Canvas>
-
             <GridSplitter ResizeDirection="Rows" 
                         Grid.Column="2" 
                         Grid.ColumnSpan="1"
@@ -1206,6 +1204,32 @@
                           Margin="0" Background="Transparent"
                           Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur"/>
 
+        <ItemsControl Name="startPageItemsControl"
+                      Grid.Row="2"
+                      Grid.RowSpan="4"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="3">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
+                    <Grid>
+                        <Grid.Height>
+                            <Binding Path="ActualHeight"
+                                     Mode="OneWay"
+                                     RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
+                        </Grid.Height>
+                        <uictrls:StartPageView />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.Visibility>
+                <Binding Path="DataContext.ShowStartPage"
+                         Mode="OneWay"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                         Converter="{StaticResource BooleanToVisibilityConverter}"
+                         UpdateSourceTrigger="Explicit" />
+            </ItemsControl.Visibility>
+        </ItemsControl>
+        
     </Grid>
 
 

@@ -27881,7 +27881,8 @@ r2 = Print(arr2);";
         public void DebugWatch837_T068_Abs_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -27935,7 +27936,8 @@ t7 = foo(2);
         public void DebugWatch838_T068_Cosh_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -27989,7 +27991,8 @@ t7 = foo(2);
         public void DebugWatch839_T068_DivRem_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28046,7 +28049,8 @@ t7 = foo();
         public void DebugWatch840_T068_Factorial_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28101,7 +28105,8 @@ t8 = Math.Factorial(arr);
         public void DebugWatch841_T068_IEEERemainder_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28155,7 +28160,8 @@ t7 = foo();
         public void DebugWatch842_T068_Max_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28210,7 +28216,8 @@ t8 = 0;
         public void DebugWatch843_T068_Min_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28265,7 +28272,8 @@ t8 = 0;
         public void DebugWatch844_T068_Pow_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28320,7 +28328,8 @@ t8 = 0;
         public void DebugWatch845_T068_Round_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28375,7 +28384,8 @@ t8 = 0;
         public void DebugWatch846_T068_Sign_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -28429,7 +28439,8 @@ t7 = foo(-2);
         public void DebugWatch847_T068_Sinh_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""Math.dll"");
+            string src = @"import (""DSCoreNodes.dll"");
+
 class A
 {
     x;

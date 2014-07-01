@@ -167,6 +167,7 @@ namespace Dynamo.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
         private bool canNavigateBackground = false;
+        private bool showStartPage = false;
         private bool _watchEscapeIsDown = false;
 
         public DelegateCommand OpenCommand { get; set; }
@@ -193,6 +194,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand SaveAsCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
+        public DelegateCommand CloseHomeWorkspaceCommand { get; set; }
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
@@ -213,6 +215,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
+        public DelegateCommand DisplayStartPageCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -386,6 +389,19 @@ namespace Dynamo.ViewModels
             get { return dynSettings.Controller.IsUILocked; }
         }
 
+        public bool ShowStartPage
+        {
+            get { return this.showStartPage; }
+
+            set
+            {
+                showStartPage = value;
+                RaisePropertyChanged("ShowStartPage");
+                if (DisplayStartPageCommand != null)
+                    DisplayStartPageCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         public bool WatchEscapeIsDown
         {
             get { return _watchEscapeIsDown; }
@@ -549,8 +565,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynSettings.Controller.UpdateManager.AvailableVersion >
-                       dynSettings.Controller.UpdateManager.ProductVersion;
+                var um = dynSettings.Controller.UpdateManager;
+                if (um.ForceUpdate)
+                {
+                    return true;
+                }
+                return um.AvailableVersion > um.ProductVersion;
             }
         }
 
@@ -614,9 +634,13 @@ namespace Dynamo.ViewModels
             
             //Register for a notification when the update manager downloads an update
             dynSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            dynSettings.Controller.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
+
+            // Start page should not show up during test mode.
+            this.ShowStartPage = !DynamoController.IsTestMode;
 
             #region File Handling Commands
 
@@ -644,6 +668,7 @@ namespace Dynamo.ViewModels
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             HomeCommand = new DelegateCommand(_model.Home, _model.CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
+            CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(_model.Delete, _model.CanDelete);
             ExitCommand = new DelegateCommand(Exit, CanExit);
@@ -664,6 +689,7 @@ namespace Dynamo.ViewModels
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
+            DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
@@ -693,7 +719,6 @@ namespace Dynamo.ViewModels
             ((DynamoLogger)dynSettings.DynamoLogger).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            //((VisualizationManager)dynSettings.Controller.VisualizationManager).PropertyChanged += VisualizationManager_PropertyChanged;
 
             this.Model.PropertyChanged += (e, args) =>
             {
@@ -727,21 +752,14 @@ namespace Dynamo.ViewModels
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");
-            RaisePropertyChanged("UpToDate");
+            RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        //void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    switch (e.PropertyName)
-        //    {
-        //        case "AlternateDrawingContextAvailable":
-        //            RaisePropertyChanged("AlternateDrawingContextAvailable");
-        //            break;
-        //        case "ShowGeometryInAlternateContext":
-        //            RaisePropertyChanged("ShowGeometryInAlternateContext");
-        //            break;
-        //    }
-        //}
+        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        {
+            Exit(true, true);
+            Controller.UpdateManager.HostApplicationBeginQuit();
+        }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -874,6 +892,7 @@ namespace Dynamo.ViewModels
         {
             string xmlFilePath = parameters as string;
             ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            this.ShowStartPage = false; // Hide start page if there's one.
         }
 
         private bool CanOpen(object parameters)
@@ -1318,14 +1337,8 @@ namespace Dynamo.ViewModels
 
         public void MakeNewHomeWorkspace(object parameter)
         {
-            // if the workspace is unsaved, prompt to save
-            // otherwise overwrite the home workspace with new workspace
-            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
-            {
-                Model.CurrentWorkspace = this.Model.HomeSpace;
-
-                _model.Clear(null);
-            }
+            if (ClearHomeWorkspaceInternal())
+                this.ShowStartPage = false; // Hide start page if there's one.
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
@@ -1333,7 +1346,70 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void CloseHomeWorkspace(object parameter)
+        {
+            if (ClearHomeWorkspaceInternal())
+            {
+                // If after closing the HOME workspace, and there are no other custom 
+                // workspaces opened at the time, then we should show the start page.
+                this.ShowStartPage = (Model.Workspaces.Count <= 1);
+            }
+        }
+
+        private bool CanCloseHomeWorkspace(object parameter)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// TODO(Ben): Both "CloseHomeWorkspace" and "MakeNewHomeWorkspace" are 
+        /// quite close in terms of functionality, but because their callers 
+        /// have different expectations in different scenarios, they remain 
+        /// separate now. A new task has been scheduled for them to be unified 
+        /// into one consistent way of handling.
+        /// 
+        ///     http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3813
+        /// 
+        /// </summary>
+        /// <returns>Returns true if the home workspace has been saved and 
+        /// cleared, or false otherwise.</returns>
+        /// 
+        private bool ClearHomeWorkspaceInternal()
+        {
+            // if the workspace is unsaved, prompt to save
+            // otherwise overwrite the home workspace with new workspace
+            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
+            {
+                Model.CurrentWorkspace = this.Model.HomeSpace;
+
+                _model.Clear(null);
+                return true;
+            }
+
+            return false;
+        }
+
         public void Exit(object allowCancel)
+        {
+            if (SetAllowCancelAndRequestUIClose(allowCancel))
+            {
+                return;
+            }
+
+            dynSettings.Controller.ShutDown(false);
+        }
+
+        internal void Exit(bool allowCancel, bool shutDownHost)
+        {
+            if (SetAllowCancelAndRequestUIClose(allowCancel))
+            {
+                return;
+            }
+
+            dynSettings.Controller.ShutDown(true);
+        }
+
+        private bool SetAllowCancelAndRequestUIClose(object allowCancel)
         {
             bool allowCancelBool = true;
             if (allowCancel != null)
@@ -1341,14 +1417,13 @@ namespace Dynamo.ViewModels
                 allowCancelBool = (bool)allowCancel;
             }
             if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
-                return;
+                return true;
 
             exitInvoked = true;
 
             //request the UI to close its window
             OnRequestClose(this, EventArgs.Empty);
-
-            dynSettings.Controller.ShutDown(false);
+            return false;
         }
 
         internal bool CanExit(object allowCancel)
@@ -1537,7 +1612,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo/wiki");
+            Process.Start(Dynamo.UI.Configurations.DynamoWikiLink);
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -1547,12 +1622,22 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo");
+            Process.Start(Dynamo.UI.Configurations.GitHubDynamoLink);
         }
 
         internal bool CanGoToSourceCode(object parameter)
         {
             return true;
+        }
+
+        private void DisplayStartPage(object parameter)
+        {
+            this.ShowStartPage = true;
+        }
+
+        private bool CanDisplayStartPage(object parameter)
+        {
+            return !this.ShowStartPage;
         }
 
         public void Pan(object parameter)
