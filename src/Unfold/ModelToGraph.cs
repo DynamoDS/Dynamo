@@ -126,7 +126,7 @@ namespace Unfold
             public graph_vertex(Face face)
             {
                 Face = face;
-
+                Graph_Edges = new List<graph_edge>();
             }
         }
 
