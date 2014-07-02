@@ -170,6 +170,10 @@ The UserID is randomly generated when the application is first run. The SessionI
 http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor  
 http://opensource.org/licenses/lgpl-3.0.html  
 
+###CSharpAnalytics###
+https://github.com/AttackPattern/CSharpAnalytics
+http://www.apache.org/licenses/LICENSE-2.0
+
 ###Helix3D###
 https://helixtoolkit.codeplex.com/  
 https://helixtoolkit.codeplex.com/license  
@@ -212,6 +216,6 @@ http://www.apache.org/licenses/LICENSE-2.0.html
 http://msdn.microsoft.com/en-us/library/gg406140.aspx  
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
 
-###CSharpAnalytics###
-https://github.com/AttackPattern/CSharpAnalytics
-http://www.apache.org/licenses/LICENSE-2.0
+###Revit Test Framework###
+https://github.com/DynamoDS/RevitTestFramework
+http://opensource.org/licenses/MIT
