@@ -1,0 +1,17 @@
+<Workspace Version="0.7.0.32119" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6a71170d-b926-48d8-bb3c-bcd957c8783f" nickname="bar" x="283" y="198.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8c81a098-663a-4c0d-8582-39e7e7efaf22" />
+      <Name value="bar" />
+      <Description value="" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

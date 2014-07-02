@@ -145,6 +145,21 @@ namespace Dynamo.Models
         }
     }
 
+    public class ViewOperationEventArgs : EventArgs
+    {
+        public enum Operation
+        {
+            FitView, ZoomIn, ZoomOut
+        }
+
+        public ViewOperationEventArgs(Operation operation)
+        {
+            this.ViewOperation = operation;
+        }
+
+        public Operation ViewOperation { get; private set; }
+    }
+
     public class PointEventArgs : EventArgs
     {
         public Point Point { get; set; }
@@ -873,16 +888,11 @@ namespace Dynamo.Models
 
             WorkspaceViewModel wvm = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
 
-            if (wvm.CurrentState == WorkspaceViewModel.StateMachine.State.Connection)
-            {
-                if (node == wvm.ActiveConnector.ActiveStartPort.Owner)
-                    wvm.CancelActiveState();
-            }
+            if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
+                wvm.CancelActiveState();
 
             if (NodeDeleted != null)
-            {
                 NodeDeleted(node);
-            }
         }
 
         /// <summary>
@@ -1156,6 +1166,14 @@ namespace Dynamo.Models
 
                 var dynamoModel = dynSettings.Controller.DynamoModel;
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
+
+                if (fileVersion > currentVersion)
+                {
+                    bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
+                    if (!resume)
+                        return false;                    
+                }
+
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {

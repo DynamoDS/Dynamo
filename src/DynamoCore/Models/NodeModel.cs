@@ -1452,63 +1452,65 @@ namespace Dynamo.Models
                 return;
             }
 
-            //dispose of the current render package
-            lock (RenderPackagesMutex)
+            ClearRenderPackages();
+            if (State == ElementState.Error ||
+                !IsVisible ||
+                CachedValue == null)
             {
-                RenderPackages.Clear();
-                HasRenderPackages = false;
+                return;
+            }
 
-                if (State == ElementState.Error ||
-                    !IsVisible ||
-                    CachedValue == null)
+            List<string> drawableIds = GetDrawableIds().ToList();
+
+            int count = 0;
+            var labelMap = new List<string>();
+            var sizeMap = new List<double>();
+
+            var ident = AstIdentifierForPreview.Name;
+
+            var data = from varName in drawableIds
+                        select dynSettings.Controller.EngineController.GetMirror(varName)
+                        into mirror
+                        where mirror != null
+                        select mirror.GetData();
+
+            foreach (var mirrorData in data) 
+            {
+                AddToLabelMap(mirrorData, labelMap, ident);
+                count++;
+            }
+
+            count = 0;
+            List<IRenderPackage> newRenderPackages = new List<IRenderPackage>();
+            foreach (var varName in drawableIds)
+            {
+                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                if (graphItems == null)
+                    continue;
+
+                foreach (var gItem in graphItems)
                 {
-                    return;
-                }
-
-                List<string> drawableIds = GetDrawableIds().ToList();
-
-                int count = 0;
-                var labelMap = new List<string>();
-                var sizeMap = new List<double>();
-
-                var ident = AstIdentifierForPreview.Name;
-
-                var data = from varName in drawableIds
-                           select dynSettings.Controller.EngineController.GetMirror(varName)
-                           into mirror
-                           where mirror != null
-                           select mirror.GetData();
-
-                foreach (var mirrorData in data) 
-                {
-                    AddToLabelMap(mirrorData, labelMap, ident);
-                    count++;
-                } 
-
-                count = 0;
-                foreach (var varName in drawableIds)
-                {
-                    var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
-                    if (graphItems == null)
-                        continue;
-
-                    foreach (var gItem in graphItems)
-                    {
-                        var package = new RenderPackage(IsSelected, DisplayLabels);
+                    var package = new RenderPackage(IsSelected, DisplayLabels);
                         
-                        PushGraphicItemIntoPackage(gItem, 
-                            package, 
-                            labelMap.Count > count ? labelMap[count] : "?",
-                            sizeMap.Count > count ? sizeMap[count] : -1.0);
+                    PushGraphicItemIntoPackage(gItem, 
+                        package, 
+                        labelMap.Count > count ? labelMap[count] : "?",
+                        sizeMap.Count > count ? sizeMap[count] : -1.0);
 
-                        package.ItemsCount++;
-                        RenderPackages.Add(package);
-                        count++;
-                    }
+                    package.ItemsCount++;
+                    newRenderPackages.Add(package);
+                    count++;
                 }
+            }
 
-                if (RenderPackages.Any())
-                    HasRenderPackages = true;
+            RenderPackages = newRenderPackages;
+            if (RenderPackages.Any())
+            {
+                HasRenderPackages = true;
+            }
+            else
+            {
+                HasRenderPackages = false;
             }
         }
 

@@ -81,6 +81,8 @@
     <Compile Include="MigrationManagerTests.cs" />
     <Compile Include="MigrationTestFramework.cs" />
     <Compile Include="NodeMigrationTests.cs" />
+    <Compile Include="Nodes\FormulaTests.cs" />
+    <Compile Include="Nodes\HigherOrder.cs" />
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="TimeStampOrderingTests.cs" />

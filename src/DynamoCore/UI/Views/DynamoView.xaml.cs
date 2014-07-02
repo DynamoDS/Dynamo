@@ -23,6 +23,9 @@ using Dynamo.UI;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using DynamoUtilities;
+
 using String = System.String;
 using System.Windows.Data;
 using Dynamo.UI.Controls;
@@ -40,12 +43,9 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
 
-        private Point dragOffset;
-#pragma warning disable 649
-        private dynNodeView draggedNode;
-#pragma warning restore 649
-        private DynamoViewModel _vm;
-        private Stopwatch _timer;
+        private DynamoViewModel _vm = null;
+        private Stopwatch _timer = null;
+        private StartPageViewModel startPage = null;
 
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
@@ -234,9 +234,60 @@ namespace Dynamo.Controls
             shortcutBarGrid.Children.Add(shortcutBar);
         }
 
+        /// <summary>
+        /// This method inserts an instance of "StartPageViewModel" into the 
+        /// "startPageItemsControl", results of which displays the Start Page on 
+        /// "DynamoView" through the list item's data template. This method also
+        /// ensures that there is at most one item in the "startPageItemsControl".
+        /// Only when this method is invoked the cost of initializing the start 
+        /// page is incurred, when user opts to not display start page at start 
+        /// up, then this method will not be called (therefore incurring no cost).
+        /// </summary>
+        /// 
+        private void InitializeStartPage()
+        {
+            if (DynamoController.IsTestMode) // No start screen in unit testing.
+                return;
+
+            if (this.startPage == null)
+            {
+                if (startPageItemsControl.Items.Count > 0)
+                {
+                    var message = "'startPageItemsControl' must be empty";
+                    throw new InvalidOperationException(message);
+                }
+
+                this.startPage = new StartPageViewModel();
+                startPageItemsControl.Items.Add(this.startPage);
+            }
+        }
+
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
             Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
+        }
+
+        void _vm_RequestViewOperation(ViewOperationEventArgs e)
+        {
+            if (_vm.CanNavigateBackground == false)
+                return;
+
+            switch (e.ViewOperation)
+            {
+                case ViewOperationEventArgs.Operation.FitView:
+                    background_preview.View.ZoomExtents();
+                    break;
+
+                case ViewOperationEventArgs.Operation.ZoomIn:
+                    var camera1 = background_preview.View.CameraController;
+                    camera1.Zoom(-0.5 * background_preview.View.ZoomSensitivity);
+                    break;
+
+                case ViewOperationEventArgs.Operation.ZoomOut:
+                    var camera2 = background_preview.View.CameraController;
+                    camera2.Zoom(0.5 * background_preview.View.ZoomSensitivity);
+                    break;
+            }
         }
 
         private void DynamoView_Loaded(object sender, EventArgs e)
@@ -247,12 +298,14 @@ namespace Dynamo.Controls
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
+            _vm.RequestViewOperation += _vm_RequestViewOperation;
             _vm.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
             dynSettings.DynamoLogger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
+            InitializeStartPage();
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
@@ -594,6 +647,9 @@ namespace Dynamo.Controls
                 return;
             }
 
+            SizeChanged -= DynamoView_SizeChanged;
+            LocationChanged -= DynamoView_LocationChanged;
+
             if (!DynamoController.IsTestMode)
             {
                 dynSettings.Controller.ShutDown(false);
@@ -634,45 +690,22 @@ namespace Dynamo.Controls
             _vm.RequestAboutWindow -= _vm_RequestAboutWindow;
         }
 
-        private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
-        {
-            if (_vm.IsUILocked)
-                return;
-
-            dynNodeView el = draggedNode;
-
-            Point pos = e.GetPosition(overlayCanvas);
-
-            Canvas.SetLeft(el, pos.X - dragOffset.X);
-            Canvas.SetTop(el, pos.Y - dragOffset.Y);
-        }
-
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape)
-                return;
-
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-
-            _vm.WatchEscapeIsDown = true;
+            if (e.Key == Key.Escape)
+                _vm.WatchEscapeIsDown = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape)
-                return;
-
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-
-            _vm.WatchEscapeIsDown = false;
-            _vm.EscapeCommand.Execute(null);
+            if (e.Key == Key.Escape)
+            {
+                _vm.WatchEscapeIsDown = false;
+                _vm.EscapeCommand.Execute(null);
+            }
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -704,13 +737,11 @@ namespace Dynamo.Controls
         /// </summary>
         private void LoadSamplesMenu()
         {
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string samplesPath = Path.Combine(directory, "samples");
-
-            if (Directory.Exists(samplesPath))
+            if (Directory.Exists(DynamoPathManager.Instance.CommonSamples))
             {
-                string[] dirPaths = Directory.GetDirectories(samplesPath);
-                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
+                var sampleFiles = new System.Collections.Generic.List<string>();
+                string[] dirPaths = Directory.GetDirectories(DynamoPathManager.Instance.CommonSamples);
+                string[] filePaths = Directory.GetFiles(DynamoPathManager.Instance.CommonSamples, "*.dyn");
 
                 // handle top-level files
                 if (filePaths.Any())
@@ -724,6 +755,7 @@ namespace Dynamo.Controls
                         };
                         item.Click += OpenSample_Click;
                         SamplesMenu.Items.Add(item);
+                        sampleFiles.Add(path);
                     }
                 }
 
@@ -750,14 +782,16 @@ namespace Dynamo.Controls
                                 };
                                 item.Click += OpenSample_Click;
                                 dirItem.Items.Add(item);
+                                sampleFiles.Add(path);
                             }
                         }
                         SamplesMenu.Items.Add(dirItem);
                     }
-                    return;
                 }
+
+                if (this.startPage != null)
+                    this.startPage.PopulateSampleFileList(sampleFiles);
             }
-            //this.fileMenu.Items.Remove(this.samplesMenu);
         }
 #endif
 

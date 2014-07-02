@@ -8,6 +8,9 @@ using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Globalization;
+
+using DynamoUtilities;
+
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;
@@ -116,6 +119,15 @@ namespace Dynamo.Nodes
 
     public static class Utilities
     {
+        enum ButtonId
+        {
+            OK = 43420,
+            Cancel,
+            DownloadLatest,
+            Proceed,
+            Submit
+        }
+
         public static string Ellipsis(string value, int desiredLength)
         {
             if (desiredLength > value.Length)
@@ -232,37 +244,6 @@ namespace Dynamo.Nodes
                 "might be missing from your workflow.");
 
             return null;
-        }
-
-        /// <summary>
-        /// Given an initial file path with the file name, resolve the full path
-        /// to the target file. The search happens in the following order:
-        /// 
-        /// 1. Alongside DynamoCore.dll folder (i.e. the "Add-in" folder).
-        /// 2. System path resolution.
-        /// 
-        /// </summary>
-        /// <param name="library">The initial library file path.</param>
-        /// <returns>Returns true if the requested file can be located, or false
-        /// otherwise.</returns>
-        public static bool ResolveLibraryPath(ref string library)
-        {
-            if (File.Exists(library)) // Absolute path, we're done here.
-                return true;
-
-            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
-            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
-            string currAsmLocation = System.Reflection.Assembly.GetCallingAssembly().Location;
-            var asmPath = Path.Combine(Path.GetDirectoryName(currAsmLocation), assemblyName);
-
-            if (File.Exists(asmPath)) // Found under add-in folder...
-            {
-                library = asmPath;
-                return true;
-            }
-
-            library = Path.GetFullPath(library); // Fallback on system search.
-            return File.Exists(library);
         }
 
         /// <summary>
@@ -521,11 +502,12 @@ namespace Dynamo.Nodes
         internal static void DisplayObsoleteFileMessage(
             string fullFilePath, Version fileVersion, Version currVersion)
         {
-            if (fileVersion != null && currVersion != null)
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: fileVersion:" +
-                    fileVersion + " :: currVersion:" + currVersion);
-            else
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: null");
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
+            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
+
+            InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath +
+                " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
+
 
             var summary = "Your file cannot be opened";
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
@@ -536,7 +518,7 @@ namespace Dynamo.Nodes
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
 
-            args.AddRightAlignedButton(43420, "OK");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "OK");
 
             dynSettings.Controller.OnRequestTaskDialog(null, args);
         }
@@ -549,11 +531,13 @@ namespace Dynamo.Nodes
         /// <param name="exception">The exception to display.</param>
         internal static void DisplayEngineFailureMessage(Exception exception)
         {
+            StabilityTracking.GetInstance().NotifyCrash();
+            InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
+
             if (exception != null)
-                InstrumentationLogger.LogInfo("EngineFailure", exception + " :: " + exception.StackTrace);
-            else
-                InstrumentationLogger.LogInfo("EngineFailure", "null");
-            
+            {
+                InstrumentationLogger.LogException(exception);
+            }
 
             var summary = "Unhandled exception in Dynamo engine";
             var description = "The virtual machine that powers Dynamo is " +
@@ -575,12 +559,12 @@ namespace Dynamo.Nodes
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
-            args.AddRightAlignedButton(43420, "Submit Bug To Github");
-            args.AddRightAlignedButton(43421, "Arrrrg, ok");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Submit, "Submit Bug To Github");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "Arrrrg, ok");
             args.Exception = exception;
 
             dynSettings.Controller.OnRequestTaskDialog(null, args);
-            if (args.ClickedButtonId == 43420)
+            if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
                 dynSettings.Controller.ReportABug(null);
         }
 
@@ -593,6 +577,45 @@ namespace Dynamo.Nodes
             });
 
             return indexOfSeparator >= 0;
+        }
+
+        /// <summary>
+        /// Displays file open error dialog if the file is of a future version than the currently installed version
+        /// </summary>
+        /// <param name="fullFilePath"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currVersion"></param>
+        /// <returns> true if the file must be opened and false otherwise </returns>
+        internal static bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
+        {
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
+            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
+
+            InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
+                " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
+
+            var summary = "Your file may not open correctly";
+            var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
+                "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
+
+            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_future_file.png";
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Future File", summary, description);
+            args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;
+            
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Cancel, "Cancel");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, "Download latest version");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, "Proceed anyway");
+            
+            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
+            {
+                dynSettings.Controller.DownloadDynamo();
+                return false;
+            }
+
+            return args.ClickedButtonId == (int)Utilities.ButtonId.Proceed;
         }
     }
 

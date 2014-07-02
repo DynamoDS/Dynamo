@@ -35,6 +35,11 @@ namespace DynamoUtilities
         public string CommonDefinitions { get; set; }
 
         /// <summary>
+        /// The location of the Samples folder.
+        /// </summary>
+        public string CommonSamples { get; set; }
+
+        /// <summary>
         /// The packages folder, which contains pacakages downloaded
         /// with the package manager.
         /// </summary>
@@ -51,7 +56,9 @@ namespace DynamoUtilities
         /// </summary>
         public string Asm { get; set; }
 
-        // All 'nodes' folders.
+        /// <summary>
+        /// All 'nodes' folders.
+        /// </summary>
         public HashSet<string> Nodes { get; set; }
 
         /// <summary>
@@ -103,7 +110,7 @@ namespace DynamoUtilities
             }
             else
             {
-                throw new Exception(string.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
+                throw new Exception(String.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
             AppData = GetDynamoAppDataFolder(MainExecPath);
@@ -134,6 +141,12 @@ namespace DynamoUtilities
                 Directory.CreateDirectory(CommonDefinitions);
             }
 
+            CommonSamples = Path.Combine(commonData, "samples");
+            if (!Directory.Exists(CommonSamples))
+            {
+                Directory.CreateDirectory(CommonSamples);
+            }
+
             Asm = Path.Combine(MainExecPath, "dll");
             Ui = Path.Combine(MainExecPath , "UI");
 
@@ -147,12 +160,12 @@ namespace DynamoUtilities
 
 #if DEBUG
             var sb = new StringBuilder();
-            sb.AppendLine(string.Format("MainExecPath: {0}", MainExecPath));
-            sb.AppendLine(string.Format("Definitions: {0}", UserDefinitions));
-            sb.AppendLine(string.Format("Packages: {0}", Packages));
-            sb.AppendLine(string.Format("Ui: {0}", Asm));
-            sb.AppendLine(string.Format("Asm: {0}", Ui));
-            Nodes.ToList().ForEach(n=>sb.AppendLine(string.Format("Nodes: {0}", n)));
+            sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
+            sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
+            sb.AppendLine(String.Format("Packages: {0}", Packages));
+            sb.AppendLine(String.Format("Ui: {0}", Asm));
+            sb.AppendLine(String.Format("Asm: {0}", Ui));
+            Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
             Debug.WriteLine(sb);
 #endif
@@ -178,7 +191,7 @@ namespace DynamoUtilities
         {
             var dynCore = Path.Combine(basePath, "DynamoCore.dll");
             var fvi = FileVersionInfo.GetVersionInfo(dynCore);
-            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var dynVersion = String.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
             var appData = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "Dynamo",
@@ -190,12 +203,51 @@ namespace DynamoUtilities
         {
             var dynCore = Path.Combine(basePath, "DynamoCore.dll");
             var fvi = FileVersionInfo.GetVersionInfo(dynCore);
-            var dynVersion = string.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var dynVersion = String.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
             var progData = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "Dynamo",
                 dynVersion);
             return progData;
+        }
+
+        /// <summary>
+        /// Given an initial file path with the file name, resolve the full path
+        /// to the target file. The search happens in the following order:
+        /// 
+        /// 1. Alongside DynamoCore.dll folder (i.e. the "Add-in" folder).
+        /// 2. The AdditionalResolutionPaths
+        /// 3. System path resolution.
+        /// 
+        /// </summary>
+        /// <param name="library">The initial library file path.</param>
+        /// <returns>Returns true if the requested file can be located, or false
+        /// otherwise.</returns>
+        public bool ResolveLibraryPath(ref string library)
+        {
+            if (File.Exists(library)) // Absolute path, we're done here.
+                return true;
+
+            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
+            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
+            var assemPath = Path.Combine(Instance.MainExecPath, assemblyName);
+
+            if (File.Exists(assemPath)) // Found under add-in folder...
+            {
+                library = assemPath;
+                return true;
+            }
+
+            foreach (var dir in AdditionalResolutionPaths)
+            {
+                var path = Path.Combine(dir, assemblyName);
+                if (!File.Exists(path)) continue;
+                library = path;
+                return true;
+            }
+
+            library = Path.GetFullPath(library); // Fallback on system search.
+            return File.Exists(library);
         }
 
         /// <summary>

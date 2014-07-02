@@ -31,6 +31,7 @@ namespace DSRevitNodesTests
             var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));
             return assemDir.Parent.FullName;
         }
+
     }
     
 }

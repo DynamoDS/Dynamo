@@ -84,22 +84,6 @@ namespace Dynamo.Applications
             if (String.IsNullOrEmpty(loadPath))
                 return Result.Failed;
 
-            // Preload the DynamoUtilities.dll. DynamoUtilities
-            // contains the assembly resolver logic. Because assembly
-            // resolution logic is different between 0.6.3 and 0.7.x,
-            // we preload to ensure we're doing the right thing.
-            var stub = Path.GetDirectoryName(loadPath);
-            var utilPath = string.Empty;
-            if (stub == BasePath)
-            {
-                utilPath = Path.Combine(stub, "DynamoUtilities.dll");
-            }
-            else
-            {
-                utilPath = Path.GetFullPath(Path.Combine(stub, @"..\DynamoUtilities.dll"));
-            }
-            Assembly.LoadFrom(utilPath);
-
             var ass = Assembly.LoadFrom(loadPath);
             var revitApp = ass.CreateInstance("Dynamo.Applications.DynamoRevitApp");
             revitApp.GetType().GetMethod("OnStartup").Invoke(revitApp, new object[] { application });
