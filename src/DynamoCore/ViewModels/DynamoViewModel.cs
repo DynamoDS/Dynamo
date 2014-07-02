@@ -542,6 +542,7 @@ namespace Dynamo.ViewModels
         }
 
         public bool WatchIsResizable { get; set; }
+        public bool IsBackgroundPreview { get { return true; } }
 
         public string Version
         {
