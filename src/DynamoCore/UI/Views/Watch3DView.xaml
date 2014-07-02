@@ -28,7 +28,7 @@
             MinHeight="100" MinWidth="100">
 
         <Grid.ContextMenu>
-            <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
+            <ContextMenu Name="MainContextMenu" x:FieldModifier="public">
                 <MenuItem Header="_Rotate"
                           Tag="ViewMenuItem_D9417029"
                           Click="OnViewMenuItemClicked" />

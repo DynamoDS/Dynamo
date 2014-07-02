@@ -335,10 +335,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-        }
-
         void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
         {
             e.Handled = false;
