@@ -92,9 +92,9 @@ namespace Revit.Elements
 
             InternalSetCurveElement(mc);
             if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
-               DocumentManager.Instance.DeleteElement(oldId);
+                DocumentManager.Instance.DeleteElement(oldId);
             if (makeReferenceCurve)
-               mc.ChangeToReferenceLine();
+                mc.ChangeToReferenceLine();
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -159,10 +159,13 @@ namespace Revit.Elements
         /// <returns></returns>
         public static ModelCurve ReferenceCurveByCurve(Autodesk.DesignScript.Geometry.Curve curve)
         {
-           if (curve == null)
-           {
-              throw new ArgumentNullException("curve");
-           }
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curve");
+            }
+
+            if (!Document.IsFamilyDocument)
+                throw new Exception("Revit can only create a ReferenceCurve in a family document!");
 
            return new ModelCurve(ExtractLegalRevitCurve(curve), true);
         }
@@ -345,20 +348,11 @@ namespace Revit.Elements
         private static Autodesk.Revit.DB.SketchPlane GetSketchPlaneFromCurve(Curve c)
         {
             Plane plane = GetPlaneFromCurve(c, false);
-            Autodesk.Revit.DB.SketchPlane sp = null;
-            sp = Document.IsFamilyDocument ?
-                Document.FamilyCreate.NewSketchPlane(plane) :
-                Document.Create.NewSketchPlane(plane);
-
-            return sp;
+            return Autodesk.Revit.DB.SketchPlane.Create(Document, plane);
         }
 
         private static Curve Flatten3dCurveOnPlane(Curve c, Plane plane)
         {
-            XYZ meanPt = null;
-            List<XYZ> orderedEigenvectors;
-            XYZ normal;
-
             if (c is Autodesk.Revit.DB.HermiteSpline)
             {
                 var hs = c as Autodesk.Revit.DB.HermiteSpline;
