@@ -1,0 +1,10 @@
+<Workspace Version="0.7.9.24176" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="0c8cbade-1c81-4697-b1a5-6209379848d3" nickname="Code Block" x="86" y="132" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="20;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="554a3c6d-c84c-4582-8dfe-6f01a175db17" nickname="Math.Cos" x="279" y="98.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Math.Cos@double" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0c8cbade-1c81-4697-b1a5-6209379848d3" start_index="0" end="554a3c6d-c84c-4582-8dfe-6f01a175db17" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
