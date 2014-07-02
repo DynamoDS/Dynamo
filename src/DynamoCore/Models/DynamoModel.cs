@@ -1261,7 +1261,7 @@ namespace Dynamo.Models
 
                     // If a custom node fails to load its definition, convert it into a dummy node.
                     var function = el as Dynamo.Nodes.Function;
-                    if ((function != null) && (function.Definition == null))
+                    if ((function != null) && (function.Controller == null))
                     {
                         var e = elNode as XmlElement;
                         dummyElement = MigrationManager.CreateMissingNode(
@@ -1570,9 +1570,9 @@ namespace Dynamo.Models
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
 #if USE_DSENGINE
                 else if (node is DSFunction)
-                    nodeName = ((node as DSFunction).Definition.MangledName);
+                    nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
-                    nodeName = ((node as DSVarArgFunction).Definition.MangledName);
+                    nodeName = ((node as DSVarArgFunction).Controller.MangledName);
 #endif
 
                 var xmlDoc = new XmlDocument();

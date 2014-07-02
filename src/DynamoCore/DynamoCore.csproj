@@ -139,9 +139,11 @@ limitations under the License.
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Nodes\FunctionCallData.cs" />
-    <Compile Include="Nodes\ZeroTouchFunctionCallData.cs" />
-    <Compile Include="Nodes\ZeroTouchVarArgFunctionCallData.cs" />
+    <Compile Include="Nodes\CustomNodeController.cs" />
+    <Compile Include="Nodes\DSVarArgFunction.cs" />
+    <Compile Include="Nodes\FunctionCallNodeController.cs" />
+    <Compile Include="Nodes\ZeroTouchNodeController.cs" />
+    <Compile Include="Nodes\ZeroTouchVarArgNodeController.cs" />
     <Compile Include="Nodes\UnresolvedFunctionException.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />

@@ -2,15 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using Dynamo.UI;
 
 using ProtoCore.AST.AssociativeAST;
 
 using Autodesk.DesignScript.Runtime;
-using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
 {
@@ -23,31 +20,53 @@ namespace Dynamo.Nodes
     public class DSFunction : DSFunctionBase
     {
         public DSFunction(FunctionDescriptor descriptor)
-            : base(new ZeroTouchFunctionCallData(descriptor)) { }
+            : base(new ZeroTouchNodeController(descriptor)) { }
 
         public DSFunction() : this(null) { }
     }
 
-
-    public abstract class DSFunctionBase : NodeModel, IWpfNode
+    public abstract class FunctionCallBase : NodeModel
     {
-        public ZeroTouchFunctionCallData Definition { get; private set; }
+        public FunctionCallNodeController Controller { get; private set; }
 
-        protected DSFunctionBase(ZeroTouchFunctionCallData definition)
+        protected FunctionCallBase(FunctionCallNodeController controller)
+        {
+            Controller = controller;
+            Controller.SyncNodeWithDefinition(this);
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return Controller.ReturnKeys != null && Controller.ReturnKeys.Any()
+                ? AstFactory.BuildIdentifier(
+                    AstIdentifierForPreview.Name,
+                    AstFactory.BuildStringNode(
+                        Controller.ReturnKeys.ElementAt(outputIndex)))
+                : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+    }
+
+    public abstract class DSFunctionBase : FunctionCallBase
+    {
+        protected DSFunctionBase(ZeroTouchNodeController controller)
+            : base(controller)
         {
             ArgumentLacing = LacingStrategy.Shortest;
-            Definition = definition;
-            Definition.InitializeNode(this);
+        }
+
+        public new ZeroTouchNodeController Controller
+        {
+            get { return base.Controller as ZeroTouchNodeController; }
         }
 
         public override string Description
         {
-            get { return Definition.Description; }
+            get { return Controller.Description; }
         }
 
         public override string Category
         {
-            get { return Definition.Category; }
+            get { return Controller.Category; }
         }
 
         public override bool IsConvertible
@@ -64,7 +83,7 @@ namespace Dynamo.Nodes
         protected override void SaveNode(
             XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            Definition.Save(xmlDoc, nodeElement, context);
+            Controller.SaveNode(xmlDoc, nodeElement, context);
         }
 
         /// <summary>
@@ -73,7 +92,8 @@ namespace Dynamo.Nodes
         /// <param name="nodeElement"></param>
         protected override void LoadNode(XmlNode nodeElement)
         {
-            Definition.LoadNode(this, nodeElement);
+            Controller.LoadNode(nodeElement);
+            Controller.SyncNodeWithDefinition(this);
         }
 
         /// <summary>
@@ -84,52 +104,18 @@ namespace Dynamo.Nodes
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
-            Definition.SerializeCore(element, context);
+            Controller.SerializeCore(element, context);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context);
-            Definition.DeserializeCore(element, context);
-        }
-
-        protected override bool HandleModelEventCore(string eventName)
-        {
-            return Definition.HandleModelEventCore(eventName)
-                || base.HandleModelEventCore(eventName);
-        }
-
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
-            {
-                var indexedValue = new IdentifierNode(AstIdentifierForPreview)
-                {
-                    ArrayDimensions =
-                        new ArrayNode
-                        {
-                            Expr =
-                                new StringNode
-                                {
-                                    value = Definition.ReturnKeys.ElementAt(outputIndex)
-                                }
-                        }
-                };
-
-                return indexedValue;
-            }
-
-            return base.GetAstIdentifierForOutputIndex(outputIndex);
+            Controller.DeserializeCore(element, context);
         }
 
         override internal IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            return Definition.BuildAst(this, inputAstNodes);
-        }
-
-        public void SetupCustomUIElements(dynNodeView view)
-        {
-            Definition.SetupNodeUI(view);
+            return Controller.BuildAst(this, inputAstNodes);
         }
     }
 }

@@ -105,10 +105,10 @@ namespace Dynamo
         private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
         {
             return WorkspaceModel.Nodes
-                            .OfType<Function>()
-                            .Select(node => node.Definition)
-                            .Where(def => def != this)
-                            .Distinct();
+                .OfType<Function>()
+                .Select(node => node.Definition)
+                .Where(def => def != this)
+                .Distinct();
         }
 
         #endregion
@@ -217,7 +217,7 @@ namespace Dynamo
             //Update existing function nodes which point to this function to match its changes
             var customNodeInstances = dynSettings.Controller.DynamoModel.AllNodes
                         .OfType<Function>()
-                        .Where(el => el.Definition != null && el.Definition == this);
+                        .Where(el => el.Controller != null && el.Definition == this);
             
             foreach (var node in customNodeInstances)
                 node.ResyncWithDefinition();

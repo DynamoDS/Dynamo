@@ -612,7 +612,7 @@ namespace Dynamo.Tests
                 Guid.Parse("a182d3f8-bb7d-4480-8aa5-eaacd6161415"));
 
             Assert.IsNotNull(node);
-            Assert.IsNotNull(node.Definition);
+            Assert.IsNotNull(node.Controller);
             Assert.AreEqual(3, node.InPorts.Count);
         }
         

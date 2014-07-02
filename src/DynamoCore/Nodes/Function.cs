@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -18,16 +19,15 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public partial class Function : NodeModel
+    public partial class Function : FunctionCallBase
     {
-        protected internal Function(CustomNodeDefinition def)
+        protected internal Function(CustomNodeDefinition def) 
+            : base(new CustomNodeController(def))
         {
-            Definition = def;
-            ResyncWithDefinition();
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public Function() { }
+        public Function() : this(null) { }
 
         public new string Name
         {
@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
 
         public override string Description
         {
-            get { return Definition == null ? string.Empty : Definition.WorkspaceModel.Description; }
+            get { return Controller == null ? string.Empty : Definition.WorkspaceModel.Description; }
             set
             {
                 Definition.WorkspaceModel.Description = value;
@@ -68,127 +68,18 @@ namespace Dynamo.Nodes
 
         /// <summary>
         /// </summary>
-        public CustomNodeDefinition Definition { get; set; }
-
-        /// <summary>
-        ///     Updates this Custom Node's data to match its Definition.
-        /// </summary>
-        public void ResyncWithDefinition()
+        public new CustomNodeController Controller
         {
-            DisableReporting();
-
-            if (Definition.Parameters != null)
-            {
-                InPortData.Clear();
-                foreach (string arg in Definition.Parameters)
-                    InPortData.Add(new PortData(arg, "parameter"));
-            }
-
-            OutPortData.Clear();
-            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
-            {
-                foreach (string key in Definition.ReturnKeys)
-                    OutPortData.Add(new PortData(key, "return value"));
-            }
-            else
-                OutPortData.Add(new PortData("", "return value"));
-
-            RegisterAllPorts();
-            NickName = Definition.DisplayName;
-
-            EnableReporting();
+            get { return base.Controller as CustomNodeController; }
         }
 
-        /// <summary>
-        ///   Return if the custom node instance is in sync with its definition.
-        ///   It may be out of sync if .dyf file is opened and updated and then
-        ///   .dyn file is opened. 
-        /// </summary>
-        /// <returns></returns>
-        public bool IsInSyncWithDefinition()
-        {
-            if (Definition.Parameters != null)
-            {
-                if (Definition.Parameters.Count() != InPortData.Count() ||
-                    !Definition.Parameters.SequenceEqual(InPortData.Select(p => p.NickName)))
-                    return false;
-            }
-
-            if (Definition.ReturnKeys != null)
-            {
-                if (Definition.ReturnKeys.Count() != OutPortData.Count() ||
-                    !Definition.ReturnKeys.SequenceEqual(OutPortData.Select(p => p.NickName)))
-                    return false;
-            }
-
-            return true;
-        }
-
-        //protected override InputNode Compile(IEnumerable<string> portNames)
-        //{
-        //    return SaveResult ? base.Compile(portNames) : new FunctionNode(Symbol, portNames);
-        //}
-
-        /// <summary>
-        ///     Sets the inputs of this function.
-        /// </summary>
-        /// <param name="inputs"></param>
-        [Obsolete]
-        public void SetInputs(IEnumerable<string> inputs)
-        {
-            int i = 0;
-            foreach (string input in inputs)
-            {
-                if (InPortData.Count > i)
-                    InPortData[i].NickName = input;
-                else
-                    InPortData.Add(new PortData(input, "Input #" + (i + 1)));
-
-                i++;
-            }
-
-            if (i < InPortData.Count)
-            {
-                //for (var k = i; k < InPortData.Count; k++)
-                //    InPorts[k].KillAllConnectors();
-
-                //MVVM: confirm that extension methods on observable collection do what we expect
-                InPortData.RemoveRange(i, InPortData.Count - i);
-            }
-        }
-
-        [Obsolete]
-        public void SetOutputs(IEnumerable<string> outputs)
-        {
-            int i = 0;
-            foreach (string output in outputs)
-            {
-                if (OutPortData.Count > i)
-                    OutPortData[i].NickName = output;
-                else
-                    OutPortData.Add(new PortData(output, "Output #" + (i + 1)));
-
-                i++;
-            }
-
-            if (i < OutPortData.Count)
-            {
-                //for (var k = i; k < OutPortData.Count; k++)
-                //    OutPorts[k].KillAllConnectors();
-
-                OutPortData.RemoveRange(i, OutPortData.Count - i);
-            }
-        }
+        public CustomNodeDefinition Definition { get { return Controller.Definition; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement("ID");
-
-            outEl.SetAttribute("value", Definition.FunctionId.ToString());
-            nodeElement.AppendChild(outEl);
-
-            outEl = xmlDoc.CreateElement("Name");
+            Controller.SaveNode(xmlDoc, nodeElement, context);
+            
+            var outEl = xmlDoc.CreateElement("Name");
             outEl.SetAttribute("value", NickName);
             nodeElement.AppendChild(outEl);
 
@@ -217,30 +108,13 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            Controller.LoadNode(nodeElement);
+
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
 
             XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
             if (nameNode != null && nameNode.Attributes != null)
                 NickName = nameNode.Attributes[0].Value;
-
-            XmlNode idNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("ID"));
-            if (idNode != null && idNode.Attributes != null)
-            {
-                string id = idNode.Attributes[0].Value;
-                Guid funcId;
-                if (!Guid.TryParse(id, out funcId) && nodeElement.Attributes != null)
-                    funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
-                if (!VerifyFuncId(ref funcId))
-                {
-                    LoadProxyCustomNode(funcId);
-                }
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
-
-                if (Definition.IsProxy)
-                {
-                    Error("Cannot load custom node");
-                }
-            }
 
             foreach (XmlNode subNode in childNodes)
             {
@@ -285,7 +159,7 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                    #region Legacy output support
+                #region Legacy output support
 
                 else if (subNode.Name.Equals("Output"))
                 {
@@ -300,9 +174,9 @@ namespace Dynamo.Nodes
                 #endregion
             }
 
-            if (!IsInSyncWithDefinition())
+            if (!Controller.IsInSyncWithNode(this))
             {
-                ResyncWithDefinition();
+                Controller.SyncNodeWithDefinition(this);
             }
             else
             {
@@ -313,167 +187,11 @@ namespace Dynamo.Nodes
             //by default in the constructor, but for any workflow saved
             //before this was the case, we need to ensure it here.
             ArgumentLacing = LacingStrategy.Disabled;
-
-            //if (Definition != null)
-            //    ResyncWithDefinition();
-        }
-
-        private bool VerifyFuncId(ref Guid funcId)
-        {
-            if (funcId == null)
-                return false;
-
-            // if the dyf does not exist on the search path...
-            if (dynSettings.Controller.CustomNodeManager.Contains(funcId))
-                return true;
-
-            CustomNodeManager manager = dynSettings.Controller.CustomNodeManager;
-
-            // if there is a node with this name, use it instead
-            if (manager.Contains(NickName))
-            {
-                funcId = manager.GetGuidFromName(NickName);
-                return true;
-            }
-
-            return false;
-        }
-
-        private void LoadProxyCustomNode(Guid funcId)
-        {
-            var proxyDef = new CustomNodeDefinition(funcId)
-            {
-                WorkspaceModel =
-                    new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null },
-                IsProxy = true
-            };
-
-            string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
-
-            dynSettings.DynamoLogger.Log(userMsg);
-
-            // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
-        }
-
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
-            {
-                var indexedValue = new IdentifierNode(AstIdentifierForPreview)
-                {
-                    ArrayDimensions = new ArrayNode
-                    {
-                        Expr = new StringNode
-                        {
-                            value = Definition.ReturnKeys.ElementAt(outputIndex)
-                        }
-                    }
-                };
-
-                return indexedValue;
-            }
-
-            return base.GetAstIdentifierForOutputIndex(outputIndex);
         }
 
         override internal IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            var resultAst = new List<AssociativeNode>();
-
-            if (OutPortData.Count == 1)
-            {
-                if (IsPartiallyApplied)
-                {
-                    var count = Definition.Parameters.Count();
-                    AssociativeNode functionCall =
-                        AstFactory.BuildFunctionObject(
-                            Definition.FunctionName,
-                            count,
-                            Enumerable.Range(0, count).Where(HasInput),
-                            inputAstNodes);
-                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
-                    resultAst.Add(
-                        AstFactory.BuildAssignment(
-                            GetAstIdentifierForOutputIndex(0),
-                            AstIdentifierForPreview));
-                }
-                else
-                {
-                    AssociativeNode functionCall =
-                        AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
-
-                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
-
-                    // assign the entire result to the only output port
-
-                    var outId = GetAstIdentifierForOutputIndex(0);
-
-                    if (AstIdentifierForPreview.Value != outId.Value)
-                        resultAst.Add(AstFactory.BuildAssignment(outId, AstIdentifierForPreview));
-                }
-            }
-            else
-            {
-                var undefinedOutputs = Definition.ReturnKeys == null || !Definition.ReturnKeys.Any();
-
-                if (undefinedOutputs || !IsPartiallyApplied)
-                {
-                    AssociativeNode functionCall =
-                        AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
-                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
-                }
-                else
-                {
-                    var count = Definition.Parameters.Count();
-                    AssociativeNode functionCall =
-                        AstFactory.BuildFunctionObject(
-                            Definition.FunctionName,
-                            count,
-                            Enumerable.Range(0, count).Where(HasInput),
-                            inputAstNodes);
-
-                    var missingAmt = Enumerable.Range(0, InPortData.Count).Count(x => !HasInput(x));
-
-                    var tmp =
-                        AstFactory.BuildIdentifier("__partial_" + GUID.ToString().Replace('-', '_'));
-
-                    resultAst.Add(AstFactory.BuildAssignment(tmp, functionCall));
-
-                    // declare each return key
-                    resultAst.AddRange(
-                        Definition.ReturnKeys.Select(AstFactory.BuildStringNode)
-                            .Select(
-                                (rtnKey, index) =>
-                                    AstFactory.BuildAssignment(
-                                        GetAstIdentifierForOutputIndex(index),
-                                        AstFactory.BuildFunctionObject(
-                                            "__ComposeBuffered",
-                                            3,
-                                            new[] { 0, 1 },
-                                            new List<AssociativeNode>
-                                            {
-                                                AstFactory.BuildExprList(
-                                                    new List<AssociativeNode>
-                                                    {
-                                                        AstFactory.BuildFunctionObject(
-                                                            "__GetOutput",
-                                                            2,
-                                                            new[] { 1 },
-                                                            new List<AssociativeNode>
-                                                            {
-                                                                AstFactory.BuildNullNode(),
-                                                                rtnKey
-                                                            }),
-                                                        tmp
-                                                    }),
-                                                AstFactory.BuildIntNode(missingAmt),
-                                                AstFactory.BuildNullNode()
-                                            }))));
-                }
-            }
-
-            return resultAst;
+            return Controller.BuildAst(this, inputAstNodes);
         }
 
         #region Serialization/Deserialization methods
@@ -481,27 +199,27 @@ namespace Dynamo.Nodes
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
+            
+            if (context != SaveContext.Undo) return;
+
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("functionId", Definition.FunctionId.ToString());
+            helper.SetAttribute("functionName", NickName);
+            helper.SetAttribute("functionDesc", Description);
+
+            XmlDocument xmlDoc = element.OwnerDocument;
+            foreach (string input in InPortData.Select(x => x.NickName))
             {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("functionId", Definition.FunctionId.ToString());
-                helper.SetAttribute("functionName", NickName);
-                helper.SetAttribute("functionDesc", Description);
+                XmlElement inputEl = xmlDoc.CreateElement("functionInput");
+                inputEl.SetAttribute("inputValue", input);
+                element.AppendChild(inputEl);
+            }
 
-                XmlDocument xmlDoc = element.OwnerDocument;
-                foreach (string input in InPortData.Select(x => x.NickName))
-                {
-                    XmlElement inputEl = xmlDoc.CreateElement("functionInput");
-                    inputEl.SetAttribute("inputValue", input);
-                    element.AppendChild(inputEl);
-                }
-
-                foreach (string input in OutPortData.Select(x => x.NickName))
-                {
-                    XmlElement outputEl = xmlDoc.CreateElement("functionOutput");
-                    outputEl.SetAttribute("outputValue", input);
-                    element.AppendChild(outputEl);
-                }
+            foreach (string input in OutPortData.Select(x => x.NickName))
+            {
+                XmlElement outputEl = xmlDoc.CreateElement("functionOutput");
+                outputEl.SetAttribute("outputValue", input);
+                element.AppendChild(outputEl);
             }
         }
 
@@ -509,87 +227,87 @@ namespace Dynamo.Nodes
         {
             base.DeserializeCore(element, context); //Base implementation must be called
 
-            if (context == SaveContext.Undo)
+            if (context != SaveContext.Undo) return;
+
+            var helper = new XmlElementHelper(element);
+            NickName = helper.ReadString("functionName");
+
+            Controller.DeserializeCore(element, context);
+
+            XmlNodeList inNodes = element.SelectNodes("functionInput");
+            XmlNodeList outNodes = element.SelectNodes("functionOutput");
+
+            var inData =
+                inNodes.Cast<XmlNode>()
+                    .Select(
+                        (inputNode, i) =>
+                            new
+                            {
+                                data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
+                                idx = i
+                            });
+
+            foreach (var dataAndIdx in inData)
             {
-                var helper = new XmlElementHelper(element);
-                NickName = helper.ReadString("functionName");
-
-                Guid funcId;
-                if (!Guid.TryParse(helper.ReadString("functionId"), out funcId))
-                    funcId = GuidUtility.Create(GuidUtility.UrlNamespace, NickName);
-
-                if (!VerifyFuncId(ref funcId))
-                {
-                    LoadProxyCustomNode(funcId);
-                    return;
-                }
-
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
-
-                XmlNodeList inNodes = element.SelectNodes("functionInput");
-                XmlNodeList outNodes = element.SelectNodes("functionOutput");
-
-                var inData =
-                    inNodes.Cast<XmlNode>()
-                        .Select(
-                            (inputNode, i) =>
-                                new
-                                {
-                                    data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
-                                    idx = i
-                                });
-
-                foreach (var dataAndIdx in inData)
-                {
-                    if (InPortData.Count > dataAndIdx.idx)
-                        InPortData[dataAndIdx.idx] = dataAndIdx.data;
-                    else
-                        InPortData.Add(dataAndIdx.data);
-                }
-
-                var outData =
-                    outNodes.Cast<XmlNode>()
-                        .Select(
-                            (outputNode, i) =>
-                                new
-                                {
-                                    data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
-                                    idx = i
-                                });
-
-                foreach (var dataAndIdx in outData)
-                {
-                    if (OutPortData.Count > dataAndIdx.idx)
-                        OutPortData[dataAndIdx.idx] = dataAndIdx.data;
-                    else
-                        OutPortData.Add(dataAndIdx.data);
-                }
-
-                //Added it the same way as LoadNode. But unsure of when 'Output' ChildNodes will
-                //be added to element. As of now I dont think it is added during serialize
-
-                #region Legacy output support
-
-                foreach (var portData in 
-                    from XmlNode subNode in element.ChildNodes
-                    where subNode.Name.Equals("Output")
-                    select new PortData(subNode.Attributes[0].Value, "function output"))
-                {
-                    if (OutPortData.Any())
-                        OutPortData[0] = portData;
-                    else
-                        OutPortData.Add(portData);
-                }
-
-                #endregion
-
-                RegisterAllPorts();
-
-                Description = helper.ReadString("functionDesc");
+                if (InPortData.Count > dataAndIdx.idx)
+                    InPortData[dataAndIdx.idx] = dataAndIdx.data;
+                else
+                    InPortData.Add(dataAndIdx.data);
             }
+
+            var outData =
+                outNodes.Cast<XmlNode>()
+                    .Select(
+                        (outputNode, i) =>
+                            new
+                            {
+                                data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
+                                idx = i
+                            });
+
+            foreach (var dataAndIdx in outData)
+            {
+                if (OutPortData.Count > dataAndIdx.idx)
+                    OutPortData[dataAndIdx.idx] = dataAndIdx.data;
+                else
+                    OutPortData.Add(dataAndIdx.data);
+            }
+
+            //Added it the same way as LoadNode. But unsure of when 'Output' ChildNodes will
+            //be added to element. As of now I dont think it is added during serialize
+
+            #region Legacy output support
+
+            foreach (var portData in 
+                from XmlNode subNode in element.ChildNodes
+                where subNode.Name.Equals("Output")
+                select new PortData(subNode.Attributes[0].Value, "function output"))
+            {
+                if (OutPortData.Any())
+                    OutPortData[0] = portData;
+                else
+                    OutPortData.Add(portData);
+            }
+
+            #endregion
+
+            RegisterAllPorts();
+
+            Description = helper.ReadString("functionDesc");
         }
 
         #endregion
+
+        public void ResyncWithDefinition()
+        {
+            Controller.SyncNodeWithDefinition(this);
+        }
+
+        public void ResyncWithDefinition(CustomNodeDefinition def)
+        {
+            Controller.Definition = def;
+            Controller.SyncNodeWithDefinition(this);
+        }
     }
 
     [NodeName("Input")]

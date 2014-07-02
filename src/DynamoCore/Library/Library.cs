@@ -99,7 +99,11 @@ namespace Dynamo.DSEngine
     }
 
 
-    public interface IFunctionDescriptor { }
+    public interface IFunctionDescriptor
+    {
+        string DisplayName { get; }
+        IEnumerable<string> ReturnKeys { get; } 
+    }
 
     /// <summary>
     ///     Describe a DesignScript function in a imported library
