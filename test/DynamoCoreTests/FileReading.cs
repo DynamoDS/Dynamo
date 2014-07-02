@@ -46,7 +46,7 @@ namespace Dynamo.Tests
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1380
 
-            string testFilePath = Path.Combine(localDynamoFileTestFloder, "MAGN-1380.dyn");
+            string testFilePath = Path.Combine(localDynamoFileTestFloder, "future_file.dyn");
             
 
             Controller.DynamoViewModel.OpenCommand.Execute(testFilePath);
@@ -60,7 +60,7 @@ namespace Dynamo.Tests
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1380
 
-            string testFilePath = Path.Combine(localDynamoFileTestFloder, "GetTwoPoints_OnCurve.dyf");
+            string testFilePath = Path.Combine(localDynamoFileTestFloder, "future_file.dyf");
 
             Controller.DynamoViewModel.OpenCommand.Execute(testFilePath);
             WorkspaceModel wsm = Controller.DynamoViewModel.CurrentSpace;
