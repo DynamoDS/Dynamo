@@ -205,7 +205,7 @@ http://ncalc.codeplex.com/license
 http://ndesk.org/Options#License
 
 ###Newtonsoft JSON###
-https://github.com/JamesNK/Newtonsoft.Json
+https://github.com/JamesNK/Newtonsoft.Json  
 https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
 
 ###NUnit####
