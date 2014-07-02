@@ -9,7 +9,7 @@ using Dynamo.Tests;
 
 using NUnit.Framework;
 
-namespace Dynamo.Nodes
+namespace Dynamo
 {
     [TestFixture]
     public class HigherOrder : DSEvaluationUnitTest
