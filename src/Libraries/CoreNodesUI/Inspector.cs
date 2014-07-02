@@ -148,8 +148,8 @@ namespace DSCoreNodesUI
             };
         }
 
-        
-        
+       //method for
+      //  http://stackoverflow.com/questions/1926776/getting-a-value-from-a-dynamic-object-dynamically
         public static object GetDynamicValue(dynamic ob, string name)
         {
             CallSite<Func<CallSite, object, object>> site
@@ -211,9 +211,12 @@ namespace DSCoreNodesUI
                             names.AddRange(dynobj.GetMetaObject(System.Linq.Expressions.Expression.Constant(dynobj)).GetDynamicMemberNames());
                         }
 
+                        //filter names
+                        var filterednames = names.Where(x => x.StartsWith("__") != true).ToList();
 
-                        foreach (var name in names)
-                        {
+                        foreach (var name in filterednames)
+                        {   
+
                             var val = GetDynamicValue(objectinput, name);
 
                             if (val != null)
@@ -221,7 +224,7 @@ namespace DSCoreNodesUI
                                 items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", name, val), val));
                             }
 
-
+                        }
                             /* object val = null;
                              MemberInfo mem = objectinput.GetType().GetMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).FirstOrDefault();
 
@@ -242,7 +245,7 @@ namespace DSCoreNodesUI
 
                         }
 
-                    }
+                    
 
                     // if object was not dynamic    
                     else
