@@ -599,7 +599,8 @@ namespace Dynamo.Nodes
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
-
+            args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;
+            
             args.AddRightAlignedButton((int)Utilities.ButtonId.Cancel, "Cancel");
             args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, "Download latest version");
             args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, "Proceed anyway");

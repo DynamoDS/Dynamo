@@ -696,19 +696,10 @@ namespace Dynamo.Utilities
                 var dynamoModel = dynSettings.Controller.DynamoModel;
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
 
-                bool isTesting = DynamoController.IsTestMode; // No backup during test.
                 if (fileVersion > currentVersion)
                 {
-                    if (!isTesting)
-                    {
-                        bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
-                        if (!resume)
-                        {
-                            def = null;
-                            return false;
-                        }
-                    }
-                    else
+                    bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
+                    if (!resume)
                     {
                         def = null;
                         return false;
@@ -718,17 +709,15 @@ namespace Dynamo.Utilities
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    if (!isTesting)
-                    {
-                        Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
-                    }
-
+                    Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
+                    
                     def = null;
                     return false;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
                 {
                     string backupPath = string.Empty;
+                    bool isTesting = DynamoController.IsTestMode; // No backup during test.
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format(
