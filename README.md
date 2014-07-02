@@ -190,7 +190,7 @@ http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx
 http://msdn.microsoft.com/en-us/vstudio/dn501987
 
 ###Moq###
-http://www.nuget.org/packages/Moq/
+http://www.nuget.org/packages/Moq/  
 http://opensource.org/licenses/bsd-license.php
 
 ###MiConvexHull###
@@ -209,7 +209,7 @@ http://www.nunit.org/
 http://www.nunit.org/index.php?p=license&r=2.6.2  
 
 ###OpenSans font from Google###
-http://www.google.com/fonts/specimen/Open+Sans
+http://www.google.com/fonts/specimen/Open+Sans  
 http://www.apache.org/licenses/LICENSE-2.0.html
 
 ###Prism###
