@@ -314,9 +314,25 @@ namespace Dynamo.Controls
             }
         }
 
-        protected void OnZoomToFitClicked(object sender, RoutedEventArgs e)
+        protected void OnViewMenuItemClicked(object sender, RoutedEventArgs e)
         {
-            watch_view.ZoomExtents();
+            var tag = ((sender as MenuItem).Tag as string);
+            var dvm = dynSettings.Controller.DynamoViewModel;
+
+            switch (tag)
+            {
+                case "ViewMenuItem_D9417029": // Rotate.
+                    if (dvm.ToggleOrbitCommand.CanExecute(null))
+                        dvm.ToggleOrbitCommand.Execute(null);
+                    break;
+                case "ViewMenuItem_C6285AC9": // Pan.
+                    if (dvm.TogglePanCommand.CanExecute(null))
+                        dvm.TogglePanCommand.Execute(null);
+                    break;
+                case "ViewMenuItem_57C3054B": // Zoom to fit.
+                    watch_view.ZoomExtents();
+                    break;
+            }
         }
 
         private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -699,10 +715,5 @@ namespace Dynamo.Controls
         }
 
         #endregion
-
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
