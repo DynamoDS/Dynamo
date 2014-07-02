@@ -123,8 +123,10 @@
 
                     <MenuItem  Header="New Node F_rom Selection"
                                Command="{Binding NodeFromSelectionCommand}" />
+                    <!--
                     <MenuItem  Header="Node to _Code"
                                Command="{Binding NodeToCodeCommand}" />
+                    -->
                     <MenuItem  Header="Nodes From _Selected Geometry"
                                Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                Command="{Binding FindNodesFromSelectionCommand}" />
