@@ -459,6 +459,18 @@ namespace Dynamo.Models
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
         }
 
+
+
+        /// <summary>
+        ///     Return if all input ports of the node have connections.
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete("Use IsPartiallyApplied property")]
+        public bool HasUnconnectedInput()
+        {
+            return IsPartiallyApplied;
+        }
+
         /// <summary>
         ///     Flags this node as dirty.
         /// </summary>
@@ -737,7 +749,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="inputs"></param>
         /// <returns></returns>
-        protected void AppendReplicationGuides(List<AssociativeNode> inputs)
+        public void AppendReplicationGuides(List<AssociativeNode> inputs)
         {
             if (inputs == null || !inputs.Any())
                 return;
@@ -772,6 +784,11 @@ namespace Dynamo.Models
         #endregion
 
         #region Input and Output Connections
+
+        public IEnumerable<int> GetConnectedInputs()
+        {
+            return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
+        }
 
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
@@ -822,15 +839,6 @@ namespace Dynamo.Models
         public bool HasInput(int data)
         {
             return HasConnectedInput(data) || (InPorts.Count > data && InPorts[data].UsingDefaultValue);
-        }
-
-        /// <summary>
-        ///     Return if all input ports of the node have connections.
-        /// </summary>
-        /// <returns></returns>
-        public bool HasUnconnectedInput()
-        {
-            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
         }
 
         /// <summary>

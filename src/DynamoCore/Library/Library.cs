@@ -98,10 +98,13 @@ namespace Dynamo.DSEngine
         }
     }
 
+
+    public interface IFunctionDescriptor { }
+
     /// <summary>
     ///     Describe a DesignScript function in a imported library
     /// </summary>
-    public class FunctionDescriptor
+    public class FunctionDescriptor : IFunctionDescriptor
     {
         /// <summary>
         ///     A comment describing the Function

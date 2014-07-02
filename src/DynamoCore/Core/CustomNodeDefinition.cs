@@ -9,7 +9,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
 {
-    public class CustomNodeDefinition
+    public class CustomNodeDefinition : IFunctionDescriptor
     {
         internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
 
