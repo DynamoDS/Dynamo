@@ -904,8 +904,19 @@ namespace Dynamo.ViewModels
         /// <param name="parameters">The path the the file.</param>
         private void Open(object parameters)
         {
-            string xmlFilePath = parameters as string;
-            ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            try
+            {
+                string xmlFilePath = parameters as string;
+                ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log("Error opening file:" + e.Message);
+                dynSettings.DynamoLogger.Log(e);
+                return;
+            }            
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
@@ -1267,6 +1278,12 @@ namespace Dynamo.ViewModels
                 return;
 
             CanNavigateBackground = !CanNavigateBackground;
+
+            if (CanNavigateBackground)
+                InstrumentationLogger.LogAnonymousScreen("Geometry");
+            else
+                InstrumentationLogger.LogAnonymousScreen("Nodes");
+
 
             if (!CanNavigateBackground)
             {

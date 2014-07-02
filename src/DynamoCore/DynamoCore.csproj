@@ -52,6 +52,7 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -61,11 +62,16 @@ limitations under the License.
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE;BLOODSTONE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSharpAnalytics.WinForms, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\CSharpAnalytics\CSharpAnalytics.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -141,6 +147,7 @@ limitations under the License.
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
+    <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
@@ -775,6 +782,9 @@ limitations under the License.
     <Resource Include="UI\Images\StartPage\icon-open.png" />
     <Resource Include="UI\Images\StartPage\icon-reference.png" />
     <Resource Include="UI\Images\StartPage\icon-video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\task_dialog_future_file.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
