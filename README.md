@@ -197,6 +197,9 @@ http://miconvexhull.codeplex.com/license
 http://ncalc.codeplex.com/  
 http://ncalc.codeplex.com/license  
 
+###NDesk Options###
+http://ndesk.org/Options#License
+
 ###NUnit####
 http://www.nunit.org/  
 http://www.nunit.org/index.php?p=license&r=2.6.2  
@@ -212,4 +215,3 @@ http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
 ###CSharpAnalytics###
 https://github.com/AttackPattern/CSharpAnalytics
 http://www.apache.org/licenses/LICENSE-2.0
-
