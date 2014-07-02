@@ -29,6 +29,20 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
+                <MenuItem Header="_Rotate">
+                    <MenuItem.Command>
+                        <Binding Path="PlacementTarget.DataContext.ToggleOrbitCommand"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.Command>
+                </MenuItem>
+                <MenuItem Header="_Pan">
+                    <MenuItem.Command>
+                        <Binding Path="PlacementTarget.DataContext.TogglePanCommand"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.Command>
+                </MenuItem>
+                <MenuItem Header="_Zoom to Fit"
+                          Click="OnZoomToFitClicked" />
             </ContextMenu>
         </Grid.ContextMenu>
 

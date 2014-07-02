@@ -150,7 +150,7 @@ namespace Dynamo.Controls
             MouseRightButtonUp += view_MouseRightButtonUp;
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
-            var mi = new MenuItem { Header = "Zoom to Fit" };
+            var mi = new MenuItem { Header = "Zoom to Fit 2" };
             mi.Click += mi_Click;
 
             MainContextMenu.Items.Add(mi);

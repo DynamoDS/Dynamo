@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var mi = new MenuItem { Header = "Zoom to Fit" };
+            var mi = new MenuItem { Header = "Zoom to Fit 3" };
             mi.Click += mi_Click;
 
             nodeUI.MainContextMenu.Items.Add(mi);
