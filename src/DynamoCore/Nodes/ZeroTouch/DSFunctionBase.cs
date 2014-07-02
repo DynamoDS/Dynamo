@@ -2,50 +2,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
 
-using Autodesk.DesignScript.Runtime;
-
 namespace Dynamo.Nodes
 {
     /// <summary>
-    /// DesignScript function node. All functions from DesignScript share the
-    /// same function node but internally have different procedure.
+    ///     Base class for NodeModels representing zero-touch-imported-function calls.
     /// </summary>
-    [NodeName("Function Node"), NodeDescription("DesignScript Builtin Functions"),
-     IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
-    public class DSFunction : DSFunctionBase
-    {
-        public DSFunction(FunctionDescriptor descriptor)
-            : base(new ZeroTouchNodeController(descriptor)) { }
-
-        public DSFunction() : this(null) { }
-    }
-
-    public abstract class FunctionCallBase : NodeModel
-    {
-        public FunctionCallNodeController Controller { get; private set; }
-
-        protected FunctionCallBase(FunctionCallNodeController controller)
-        {
-            Controller = controller;
-            Controller.SyncNodeWithDefinition(this);
-        }
-
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            return Controller.ReturnKeys != null && Controller.ReturnKeys.Any()
-                ? AstFactory.BuildIdentifier(
-                    AstIdentifierForPreview.Name,
-                    AstFactory.BuildStringNode(
-                        Controller.ReturnKeys.ElementAt(outputIndex)))
-                : base.GetAstIdentifierForOutputIndex(outputIndex);
-        }
-    }
-
     public abstract class DSFunctionBase : FunctionCallBase
     {
         protected DSFunctionBase(ZeroTouchNodeController controller)
@@ -54,6 +19,9 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Shortest;
         }
 
+        /// <summary>
+        ///     Controller used to sync node with a zero-touch function definition.
+        /// </summary>
         public new ZeroTouchNodeController Controller
         {
             get { return base.Controller as ZeroTouchNodeController; }
@@ -74,8 +42,19 @@ namespace Dynamo.Nodes
             get { return true; }
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return Controller.ReturnKeys != null && Controller.ReturnKeys.Any()
+                ? AstFactory.BuildIdentifier(
+                    AstIdentifierForPreview.Name,
+                    AstFactory.BuildStringNode(Controller.ReturnKeys.ElementAt(outputIndex)))
+                : (OutPortData.Count == 1
+                    ? AstIdentifierForPreview
+                    : base.GetAstIdentifierForOutputIndex(outputIndex));
+        }
+
         /// <summary>
-        /// Save document will call this method to serialize node to xml data
+        ///     Save document will call this method to serialize node to xml data
         /// </summary>
         /// <param name="xmlDoc"></param>
         /// <param name="nodeElement"></param>
@@ -87,20 +66,20 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Open document will call this method to unsearilize xml data to node
+        ///     Open document will call this method to unsearilize xml data to node
         /// </summary>
         /// <param name="nodeElement"></param>
         protected override void LoadNode(XmlNode nodeElement)
         {
+            if (Controller.Definition != null) return;
+
             Controller.LoadNode(nodeElement);
             Controller.SyncNodeWithDefinition(this);
         }
 
         /// <summary>
-        /// Copy command will call it to serialize this node to xml data.
+        ///     Copy command will call it to serialize this node to xml data.
         /// </summary>
-        /// <param name="element"></param>
-        /// <param name="context"></param>
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
@@ -113,7 +92,7 @@ namespace Dynamo.Nodes
             Controller.DeserializeCore(element, context);
         }
 
-        override internal IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             return Controller.BuildAst(this, inputAstNodes);
         }

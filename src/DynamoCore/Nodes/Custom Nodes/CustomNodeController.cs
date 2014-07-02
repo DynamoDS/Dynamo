@@ -10,10 +10,16 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
+    /// <summary>
+    ///     Controller that synchronizes a node with a custom node definition.
+    /// </summary>
     public class CustomNodeController : FunctionCallNodeController
     {
         public CustomNodeController(CustomNodeDefinition def) : base(def) { }
 
+        /// <summary>
+        ///     Definition of a custom node.
+        /// </summary>
         public new CustomNodeDefinition Definition
         {
             get { return base.Definition as CustomNodeDefinition; }
@@ -55,11 +61,49 @@ namespace Dynamo.Nodes
                 inputAstNodes);
         }
 
+        protected override void BuildAstForPartialMultiOutput(
+            NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
+        {
+            base.BuildAstForPartialMultiOutput(model, rhs, resultAst);
+
+            var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
+            var previewIdInit = AstFactory.BuildAssignment(model.AstIdentifierForPreview, emptyList);
+
+            resultAst.Add(previewIdInit);
+            resultAst.AddRange(
+                Definition.ReturnKeys.Select(
+                    (rtnKey, idx) =>
+                        AstFactory.BuildAssignment(
+                            AstFactory.BuildIdentifier(
+                                model.AstIdentifierForPreview.Name,
+                                AstFactory.BuildStringNode(rtnKey)),
+                            model.GetAstIdentifierForOutputIndex(idx))));
+        }
+
+        protected override void AssignIdentifiersForFunctionCall(
+            NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
+        {
+            if (model.OutPortData.Count == 1)
+            {
+                resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
+                resultAst.Add(
+                    AstFactory.BuildAssignment(
+                        model.GetAstIdentifierForOutputIndex(0),
+                        model.AstIdentifierForPreview));
+            }
+            else
+                base.AssignIdentifiersForFunctionCall(model, rhs, resultAst);
+        }
+
         public override void SyncNodeWithDefinition(NodeModel model)
         {
-            model.DisableReporting();
-            base.SyncNodeWithDefinition(model);
-            model.EnableReporting();
+            if (!IsInSyncWithNode(model))
+            {
+                model.DisableReporting();
+                base.SyncNodeWithDefinition(model);
+                model.EnableReporting();
+                model.RequiresRecalc = true;
+            }
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext saveContext)
@@ -103,20 +147,17 @@ namespace Dynamo.Nodes
         ///   It may be out of sync if .dyf file is opened and updated and then
         ///   .dyn file is opened. 
         /// </summary>
-        /// <returns></returns>
         public bool IsInSyncWithNode(NodeModel model)
         {
-            return Definition.Parameters == null
-                ? Definition.ReturnKeys == null
-                    || Definition.ReturnKeys.Count() == model.OutPortData.Count()
-                        && Definition.ReturnKeys.SequenceEqual(
-                            model.OutPortData.Select(p => p.NickName))
-                : Definition.Parameters.Count() == model.InPortData.Count()
-                    && Definition.Parameters.SequenceEqual(model.InPortData.Select(p => p.NickName))
+            return Definition != null
+                && ((Definition.Parameters == null
+                    || (Definition.Parameters.Count() == model.InPortData.Count()
+                        && Definition.Parameters.SequenceEqual(
+                            model.InPortData.Select(p => p.NickName))))
                     && (Definition.ReturnKeys == null
                         || Definition.ReturnKeys.Count() == model.OutPortData.Count()
                             && Definition.ReturnKeys.SequenceEqual(
-                                model.OutPortData.Select(p => p.NickName)));
+                                model.OutPortData.Select(p => p.NickName))));
         }
 
         private bool VerifyFuncId(ref Guid funcId)

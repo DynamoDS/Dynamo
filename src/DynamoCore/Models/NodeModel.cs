@@ -488,10 +488,9 @@ namespace Dynamo.Models
         {
             Type t = GetType();
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-            if (rtAttribs.Length > 0)
-                return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
-
-            return "No description provided";
+            return rtAttribs.Length > 0
+                ? ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription
+                : "No description provided";
         }
 
         /// <summary>
@@ -504,8 +503,8 @@ namespace Dynamo.Models
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            if (OutPortData.Count == 1)
-                return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
+            //if (OutPortData.Count == 1)
+            //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
 
             string id = AstIdentifierBase + "_out" + outputIndex;
             return AstFactory.BuildIdentifier(id);
@@ -712,8 +711,8 @@ namespace Dynamo.Models
 
             var result = BuildOutputAst(inputAstNodes);
 
-            if (OutPortData.Count == 1)
-                return result;
+            //if (OutPortData.Count == 1)
+            //    return result;
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);

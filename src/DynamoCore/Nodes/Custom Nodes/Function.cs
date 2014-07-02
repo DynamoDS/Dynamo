@@ -65,7 +65,6 @@ namespace Dynamo.Nodes
             }
         }
 
-
         /// <summary>
         /// </summary>
         public new CustomNodeController Controller
@@ -189,7 +188,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        override internal IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             return Controller.BuildAst(this, inputAstNodes);
         }
@@ -306,7 +305,7 @@ namespace Dynamo.Nodes
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
             Controller.Definition = def;
-            Controller.SyncNodeWithDefinition(this);
+            ResyncWithDefinition();
         }
     }
 

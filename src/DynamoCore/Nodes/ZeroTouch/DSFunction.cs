@@ -5,38 +5,81 @@ using System.Xml;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
+
+using Autodesk.DesignScript.Runtime;
+
 using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
+    /// <summary>
+    /// DesignScript function node. All functions from DesignScript share the
+    /// same function node but internally have different procedure.
+    /// </summary>
+    [NodeName("Function Node"), NodeDescription("DesignScript Builtin Functions"),
+     IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
+    public class DSFunction : DSFunctionBase
+    {
+        public DSFunction(FunctionDescriptor descriptor)
+            : base(new ZeroTouchNodeController(descriptor)) { }
+
+        public DSFunction() : this(null) { }
+    }
+
+    /// <summary>
+    ///     Controller that synchronizes a node with a zero-touch function definition.
+    /// </summary>
     public class ZeroTouchNodeController : FunctionCallNodeController
     {
         public ZeroTouchNodeController(FunctionDescriptor zeroTouchDef) : base(zeroTouchDef) { }
 
+        /// <summary>
+        ///     Definition of a zero-touch-imported function.
+        /// </summary>
         public new FunctionDescriptor Definition
         {
             get { return base.Definition as FunctionDescriptor; }
             set { base.Definition = value; }
         }
 
+        /// <summary>
+        ///     Description of function, taken from Definition.
+        /// </summary>
         public string Description { get { return Definition.Description; } }
+
+        /// <summary>
+        ///     Category of function, taken from Definition.
+        /// </summary>
         public string Category { get { return Definition.Category; } }
+
+        /// <summary>
+        ///     MangledName of function, taken from Definition.
+        /// </summary>
         public string MangledName { get { return Definition.MangledName; } }
 
+        /// <summary>
+        ///     Is this function an instance member of a class?
+        /// </summary>
         public bool IsInstanceMember()
         {
             return Definition.Type == FunctionType.InstanceMethod
                 || Definition.Type == FunctionType.InstanceProperty;
         }
 
+        /// <summary>
+        ///     Is this function a static member of a class?
+        /// </summary>
         public bool IsStaticMember()
         {
             return Definition.Type == FunctionType.StaticMethod
                 || Definition.Type == FunctionType.StaticProperty;
         }
 
+        /// <summary>
+        ///     Is this function a constructor of a class?
+        /// </summary>
         public bool IsConstructor()
         {
             return Definition.Type == FunctionType.Constructor;
@@ -57,6 +100,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        ///     Initializes a node's InPortData based on a list of parameters.
+        /// </summary>
+        /// <param name="model">Node to initialize.</param>
+        /// <param name="parameters">Parameters used for initialization.</param>
         protected virtual void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {
             foreach (var arg in parameters)
@@ -161,6 +209,12 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
+        /// <summary>
+        ///     Creates a FunctionObject representing a partial application of a function.
+        /// </summary>
+        /// <param name="model">Node to produce FunctionObject for.</param>
+        /// <param name="functionNode">AST representing the function to make a FunctionObject out of.</param>
+        /// <param name="inputs">Arguments to be applied partially.</param>
         protected AssociativeNode CreateFunctionObject(
             NodeModel model,
             AssociativeNode functionNode, List<AssociativeNode> inputs)
