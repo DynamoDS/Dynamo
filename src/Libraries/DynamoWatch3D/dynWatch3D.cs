@@ -76,28 +76,10 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            // I do not believe this belongs here (was about to remove this 
-            // completely), but I do not want the functionality to be taken away
-            // so I'm leaving it as is. The way NodeView is made known to the 
-            // NodeModel is probably a MVVM violation that we should fix when 
-            // breaking views from view models.
-            // 
-            nodeUI.MainContextMenu.Items.Add(new Separator());
-            nodeUI.MainContextMenu.Items.Add(new MenuItem()
-            {
-                Header = "_Rotate",
-                Command = dynSettings.Controller.DynamoViewModel.ToggleOrbitCommand
-            });
+            var mi = new MenuItem { Header = "Zoom to Fit" };
+            mi.Click += mi_Click;
 
-            nodeUI.MainContextMenu.Items.Add(new MenuItem()
-            {
-                Header = "_Pan",
-                Command = dynSettings.Controller.DynamoViewModel.TogglePanCommand
-            });
-
-            var zoomToFitItem = new MenuItem { Header = "_Zoom to Fit" };
-            zoomToFitItem.Click += OnZoomToFitClicked;
-            nodeUI.MainContextMenu.Items.Add(zoomToFitItem);
+            nodeUI.MainContextMenu.Items.Add(mi);
 
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
@@ -130,7 +112,7 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
         }
 
-        void OnZoomToFitClicked(object sender, RoutedEventArgs e)
+        void mi_Click(object sender, RoutedEventArgs e)
         {
             View.View.ZoomExtents();
         }
