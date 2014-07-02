@@ -144,7 +144,12 @@
                     <MenuItem Header="Switch to Geometry _View"
                               Command="{Binding DynamoViewModel.ToggleCanNavigateBackgroundCommand}" />
                     <MenuItem Header="Pa_n"
-                              Command="{Binding DynamoViewModel.TogglePanCommand}" />
+                              Command="{Binding DynamoViewModel.TogglePanCommand}">
+                        <MenuItem.IsChecked>
+                            <Binding Path="DynamoViewModel.IsPanning"
+                                     Mode="OneWay" />
+                        </MenuItem.IsChecked>
+                    </MenuItem>
                     <MenuItem Header="_Fit to Screen"
                               Command="{Binding DynamoViewModel.FitViewCommand}" />
 
