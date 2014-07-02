@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.DesignScript.Runtime;
+using ProtoPt = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.GeometryConversion
 {
@@ -53,19 +54,60 @@ namespace Revit.GeometryConversion
 
         #region Conversions
 
+
         private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.NurbsCurve crv)
         {
+            // line
             if (crv.Degree == 1 && crv.ControlPoints().Length == 2 && !crv.IsRational)
             {
                 return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints()[0].ToXyz(false), 
                     crv.ControlPoints()[1].ToXyz(false));
             }
 
-            if (crv.Degree <= 2)
+            // polyline - not allowed
+            if (crv.Degree == 1)
             {
-                throw new Exception("Could not convert the curve to a Revit curve because it is less than or equal to degree 2.");
+                throw new Exception(
+                    "Degree 1 Nurbs Curves are not allowed in Revit!  Try splitting the curve into "
+                        +
+                        "individual linear pieces");
             }
 
+            // bezier
+            if (crv.Degree == 2 && crv.ControlPoints().Count() == 3 && !crv.IsRational)
+            {
+                var converted = NurbsUtils.ElevateBezierDegree(crv, 3);
+
+                return Autodesk.Revit.DB.NurbSpline.Create(converted.ControlPoints().ToXyzs(false),
+                    converted.Weights(),
+                    converted.Knots(),
+                    converted.Degree,
+                    converted.IsClosed,
+                    converted.IsRational);
+            }
+
+            // degree 2 curve
+            if (crv.Degree == 2)
+            {
+                // TODO: general NURBS degree elevation
+                var numSamples = crv.ControlPoints().Count() + 1;
+                var pts = Enumerable.Range(0, numSamples).Select(x => x/(double)numSamples)
+                    .Select(crv.PointAtParameter);
+
+                var resampledCrv = NurbsCurve.ByPointsTangents(
+                    pts,
+                    crv.TangentAtParameter(0).Normalized(),
+                    crv.TangentAtParameter(1).Normalized());
+
+                return Autodesk.Revit.DB.NurbSpline.Create(resampledCrv.ControlPoints().ToXyzs(false),
+                    resampledCrv.Weights(),
+                    resampledCrv.Knots(),
+                    resampledCrv.Degree,
+                    resampledCrv.IsClosed,
+                    resampledCrv.IsRational);
+            }
+
+            // general implementation
             return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlPoints().ToXyzs(false),
                 crv.Weights(),
                 crv.Knots(),
@@ -190,6 +232,5 @@ namespace Revit.GeometryConversion
         }
 
         #endregion
-
     }
 }

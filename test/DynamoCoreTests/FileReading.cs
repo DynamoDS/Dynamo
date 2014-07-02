@@ -14,20 +14,18 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenADynFileFromBefore6_0()
         {
-            DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_pre6_0.dyn");
 
-            model.Open(testFilePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testFilePath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null)); 
         }
 
         [Test]
         public void CanOpenADynFileFromAfter6_0()
         {
-            DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_post6_0.dyn");
 
-            model.Open(testFilePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testFilePath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
         }
 
@@ -36,10 +34,9 @@ namespace Dynamo.Tests
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-781
 
-            DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "Defect_MAGN_781.dyf");
 
-            model.Open(testFilePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testFilePath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
         }
     }

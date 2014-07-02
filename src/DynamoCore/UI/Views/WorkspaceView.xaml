@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI.Controls"
+             xmlns:views="clr-namespace:Dynamo.Views"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -123,8 +124,13 @@
                     <MenuItem  Header="_New Node From Selection"
                                Name="NodeFromSelection"
                                Command="{Binding NodeFromSelectionCommand}" />
-                    <MenuItem  Header="_Node to Code"  Name="NodeToCode" Command="{Binding NodeToCodeCommand}" />
-                    <MenuItem  Header="_Nodes From Selected Geometry" Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Name="ShowElementsInContext" Command="{Binding FindNodesFromSelectionCommand}" />
+                    <!--<MenuItem  Header="_Node to Code"
+                               Name="NodeToCode"
+                               Command="{Binding NodeToCodeCommand}" />-->
+                    <MenuItem  Header="_Nodes From Selected Geometry"
+                               Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                               Name="ShowElementsInContext"
+                               Command="{Binding FindNodesFromSelectionCommand}" />
                     <Separator Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"></Separator>
                     <MenuItem  Header="_Edit Custom Node Properties..."
                                Name="EditProperties"
@@ -140,32 +146,103 @@
 
         </Canvas>
 
+        <StackPanel Name="viewControlPanel"
+                    Orientation="Vertical"
+                    Margin="4"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top">
+
+            <ui:ImageButton Width="30"
+                            Height="28"
+                            StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-fit-view-states.png">
+                <ui:ImageButton.Command>
+                    <Binding Path="DataContext.FitViewCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageButton.Command>
+            </ui:ImageButton>
+
+            <ui:ImageRepeatButton Width="30"
+                                  Height="24"
+                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-in-states.png">
+                <ui:ImageRepeatButton.Command>
+                    <Binding Path="DataContext.ZoomInCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageRepeatButton.Command>
+            </ui:ImageRepeatButton>
+
+            <ui:ImageRepeatButton Width="30"
+                                  Height="28"
+                                  StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-zoom-out-states.png">
+                <ui:ImageRepeatButton.Command>
+                    <Binding Path="DataContext.ZoomOutCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageRepeatButton.Command>
+            </ui:ImageRepeatButton>
+
+            <ui:ImageCheckBox Width="30"
+                              Height="30"
+                              StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-pan-states.png"
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-pan-check.png">
+                <ui:ImageCheckBox.Command>
+                    <Binding Path="DataContext.TogglePanCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.Command>
+                <ui:ImageCheckBox.IsChecked>
+                    <Binding Path="DataContext.IsPanning"
+                             Mode="OneWay"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.IsChecked>
+            </ui:ImageCheckBox>
+
+            <ui:ImageCheckBox Width="30"
+                              Height="30"
+                              StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-states.png"
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-orbit-check.png">
+                <ui:ImageCheckBox.Command>
+                    <Binding Path="DataContext.ToggleOrbitCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.Command>
+                <ui:ImageCheckBox.IsChecked>
+                    <Binding Path="DataContext.IsOrbiting"
+                             Mode="OneWay"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.IsChecked>
+                <ui:ImageCheckBox.Visibility>
+                    <Binding Path="DataContext.CanNavigateBackground"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                </ui:ImageCheckBox.Visibility>
+            </ui:ImageCheckBox>
+
+        </StackPanel>
+
         <StackPanel Name="statusBarPanel"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Height="Auto">
-            <ui:CanvasCheckBox Width="56"
-                               Height="30"
-                               Margin="4,4,0,4"
-                               StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-geom-states.png"
-                               CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-geom-check.png">
-                <ui:CanvasCheckBox.IsChecked>
+            <ui:ImageCheckBox Width="56"
+                              Height="30"
+                              Margin="4,4,0,4"
+                              StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-geom-states.png"
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-geom-check.png">
+                <ui:ImageCheckBox.IsChecked>
                     <Binding Path="DataContext.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
-                </ui:CanvasCheckBox.IsChecked>
-            </ui:CanvasCheckBox>
-            <ui:CanvasCheckBox Width="55"
-                               Height="30"
-                               Margin="0,4,4,4"
-                               StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-node-states.png"
-                               CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-node-check.png">
-                <ui:CanvasCheckBox.IsChecked>
+                </ui:ImageCheckBox.IsChecked>
+            </ui:ImageCheckBox>
+            <ui:ImageCheckBox Width="55"
+                              Height="30"
+                              Margin="0,4,4,4"
+                              StateImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-node-states.png"
+                              CheckImage="/DynamoCore;component/UI/Images/Canvas/canvas-button-node-check.png">
+                <ui:ImageCheckBox.IsChecked>
                     <Binding Path="DataContext.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                              Converter="{StaticResource InverseBooleanConverter}" />
-                </ui:CanvasCheckBox.IsChecked>
-            </ui:CanvasCheckBox>
+                </ui:ImageCheckBox.IsChecked>
+            </ui:ImageCheckBox>
         </StackPanel>
+
     </Grid>
 </UserControl>

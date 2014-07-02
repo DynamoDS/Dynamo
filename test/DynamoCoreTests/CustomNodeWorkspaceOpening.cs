@@ -1,21 +1,22 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.ViewModels;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     public class CustomNodeWorkspaceOpening : DynamoUnitTest
     {
-
         [Test]
         public void CanOpenCustomNodeWorkspace()
         {
-            Assert.Inconclusive("Porting : Formula");
-
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
             Assert.IsNotNull(nodeWorkspace);
@@ -25,11 +26,8 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
-            Assert.Inconclusive("Porting : Formula");
-
-            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            model.Open(examplePath);
+            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
             
             Controller.SearchViewModel.SearchAndUpdateResultsSync("Sequence2");
             Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);

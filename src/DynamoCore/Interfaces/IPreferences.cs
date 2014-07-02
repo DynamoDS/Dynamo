@@ -16,11 +16,13 @@ namespace Dynamo.Interfaces
         DynamoAreaUnit AreaUnit { get; set; }
         DynamoVolumeUnit VolumeUnit { get; set; }
         bool IsUsageReportingApproved { get; set; }
+        bool IsAnalyticsReportingApproved { get; set; }
         bool IsFirstRun { get; set; }
         double WindowX { get; set; }
         double WindowY { get; set; }
         double WindowH { get; set; }
         double WindowW { get; set; }
+        string LastUpdateDownloadPath { get; set; }
         int MaxNumRecentFiles { get; set; }
         List<string> RecentFiles { get; set; }
 

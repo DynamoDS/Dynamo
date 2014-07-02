@@ -35,17 +35,19 @@ namespace Dynamo.Nodes.Prompts
         {
             InitializeComponent();
 
+            StabilityTracking.GetInstance().NotifyCrash();
+
             if (args.HasDetails())
             {
                 this.details = args.Details;
                 this.CrashDetailsContent.Text = args.Details;
                 this.btnDetails.Visibility = Visibility.Visible;
 
-                InstrumentationLogger.LogInfo("CrasphPrompt", args.Details);
+                InstrumentationLogger.LogPiiInfo("CrashPrompt", args.Details);
             }
             else
             {
-                InstrumentationLogger.LogInfo("CrasphPrompt", "No details");
+                InstrumentationLogger.LogPiiInfo("CrashPrompt", args.Details);
                 
             }
 

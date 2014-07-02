@@ -8,6 +8,9 @@ using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Globalization;
+
+using DynamoUtilities;
+
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;
@@ -232,37 +235,6 @@ namespace Dynamo.Nodes
                 "might be missing from your workflow.");
 
             return null;
-        }
-
-        /// <summary>
-        /// Given an initial file path with the file name, resolve the full path
-        /// to the target file. The search happens in the following order:
-        /// 
-        /// 1. Alongside DynamoCore.dll folder (i.e. the "Add-in" folder).
-        /// 2. System path resolution.
-        /// 
-        /// </summary>
-        /// <param name="library">The initial library file path.</param>
-        /// <returns>Returns true if the requested file can be located, or false
-        /// otherwise.</returns>
-        public static bool ResolveLibraryPath(ref string library)
-        {
-            if (File.Exists(library)) // Absolute path, we're done here.
-                return true;
-
-            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
-            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
-            string currAsmLocation = System.Reflection.Assembly.GetCallingAssembly().Location;
-            var asmPath = Path.Combine(Path.GetDirectoryName(currAsmLocation), assemblyName);
-
-            if (File.Exists(asmPath)) // Found under add-in folder...
-            {
-                library = asmPath;
-                return true;
-            }
-
-            library = Path.GetFullPath(library); // Fallback on system search.
-            return File.Exists(library);
         }
 
         /// <summary>
@@ -522,10 +494,10 @@ namespace Dynamo.Nodes
             string fullFilePath, Version fileVersion, Version currVersion)
         {
             if (fileVersion != null && currVersion != null)
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: fileVersion:" +
+                InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath + " :: fileVersion:" +
                     fileVersion + " :: currVersion:" + currVersion);
             else
-                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: null");
+                InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath + " :: null");
 
             var summary = "Your file cannot be opened";
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
@@ -549,11 +521,13 @@ namespace Dynamo.Nodes
         /// <param name="exception">The exception to display.</param>
         internal static void DisplayEngineFailureMessage(Exception exception)
         {
+            StabilityTracking.GetInstance().NotifyCrash();
+            InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
+
             if (exception != null)
-                InstrumentationLogger.LogInfo("EngineFailure", exception + " :: " + exception.StackTrace);
-            else
-                InstrumentationLogger.LogInfo("EngineFailure", "null");
-            
+            {
+                InstrumentationLogger.LogException(exception);
+            }
 
             var summary = "Unhandled exception in Dynamo engine";
             var description = "The virtual machine that powers Dynamo is " +

@@ -12,12 +12,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Face\GetSurfaceDomain.rvt")]
         public void GetSurfaceDomain()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Face\GetSurfaceDomain.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
     }

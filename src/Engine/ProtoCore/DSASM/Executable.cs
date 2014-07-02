@@ -93,13 +93,14 @@ namespace ProtoCore.DSASM
             children = new List<CodeBlock>();
 
             language = langId;
-            this.codeBlockId = codeBlockId;
             instrStream = new InstructionStream(langId, core);
 
             symbolTable = symbols;
             procedureTable = procTable;
 
             isBreakable = isBreakableBlock;
+            core.CompleteCodeBlockList.Add(this);
+            this.codeBlockId = core.CompleteCodeBlockList.Count - 1;
         }
 
         public bool IsMyAncestorBlock(int blockId)

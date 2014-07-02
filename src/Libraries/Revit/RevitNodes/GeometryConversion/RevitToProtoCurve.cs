@@ -167,22 +167,47 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Ellipse crv)
         {
-            var isComplete = !crv.IsBound ||
+            var isFullEllipse = !crv.IsBound ||
                              Math.Abs(Math.Abs(crv.GetEndParameter(1) - crv.GetEndParameter(0)) - 2*Math.PI) < 1e-6;
 
-            if (!isComplete)
+            if (isFullEllipse)
             {
-                var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false),
-                    crv.XDirection.ToVector(false), crv.YDirection.ToVector(false));
-
-                var s = crv.GetEndParameter(0).ToDegrees();
-                var e = crv.GetEndParameter(1).ToDegrees();
-
-                return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, crv.RadiusX, crv.RadiusY, s, e - s);
+                return
+                    Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(
+                        crv.Center.ToPoint(false),
+                        (crv.XDirection*crv.RadiusX).ToVector(false),
+                        (crv.YDirection*crv.RadiusY).ToVector(false));
             }
 
-            return Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(crv.Center.ToPoint(false),
-                (crv.XDirection*crv.RadiusX).ToVector(false), (crv.YDirection*crv.RadiusY).ToVector(false));
+            // We need to define the major and minor axis as the curve 
+            // will be trimmed starting from the major axis (not the xaxis)
+            var major = Math.Max(crv.RadiusX, crv.RadiusY);
+            var minor = Math.Min(crv.RadiusX, crv.RadiusY);
+
+            Vector majorAxis;
+            Vector minorAxis;
+
+            double startParam;
+
+            var span = Math.Abs( crv.GetEndParameter(0) - crv.GetEndParameter(1)).ToDegrees();
+
+            if (crv.RadiusX > crv.RadiusY)
+            {
+                majorAxis = crv.XDirection.ToVector();
+                minorAxis = crv.YDirection.ToVector();
+                startParam = crv.GetEndParameter(0).ToDegrees();
+            }
+            else
+            {
+                majorAxis = crv.YDirection.ToVector().Reverse();
+                minorAxis = crv.XDirection.ToVector();
+                startParam = crv.GetEndParameter(0).ToDegrees() + 90;
+            }
+
+            var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false), majorAxis, minorAxis);
+
+            return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, major, minor, startParam, span);
+
         }
 
         private static Autodesk.DesignScript.Geometry.Helix Convert(Autodesk.Revit.DB.CylindricalHelix crv)

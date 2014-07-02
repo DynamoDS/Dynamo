@@ -115,7 +115,7 @@ namespace Dynamo.Tests
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1206
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1206.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression(null);
             var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
@@ -210,6 +210,24 @@ namespace Dynamo.Tests
 
             AssertPreviewValue(nodeID, 1);
 
+        }
+
+        [Test]
+        public void Defect_MAGN_3726()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3726
+            DynamoModel model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3726.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(null);
+
+            AssertPreviewValue("02985f61-2ece-4fe2-b78a-dfb21aa589ff",
+                new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
         }
     }
 }

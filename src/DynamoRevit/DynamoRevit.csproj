@@ -35,7 +35,7 @@
     <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>618</NoWarn>
-    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoRevitDS.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\DynamoRevitDS.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -46,6 +46,7 @@
     <WarningLevel>3</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>618</NoWarn>
+    <DocumentationFile>$(OutputPath)\DynamoRevitDS.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamoRaaSHelper">
@@ -148,6 +149,7 @@
     <EmbeddedResource Include="Resource_en_us.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource_en_us.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -178,7 +180,7 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
