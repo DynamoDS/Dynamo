@@ -4,8 +4,8 @@
 
 #include "Interfaces.h"
 
-namespace Bloodstone
-{
+namespace Dynamo { namespace Bloodstone {
+
     class IGraphicsContext;
 
     enum class Dimensionality
@@ -33,6 +33,6 @@ namespace Bloodstone
         std::wstring mNodeId;
         std::vector<IVertexBuffer *> mVertexBuffers;
     };
-}
+} }
 
 #endif

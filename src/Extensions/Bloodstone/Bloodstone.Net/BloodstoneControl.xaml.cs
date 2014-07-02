@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Resources;
 using System.Windows.Shapes;
 
-namespace Bloodstone
+namespace Dynamo.Bloodstone
 {
     public partial class BloodstoneControl : UserControl
     {

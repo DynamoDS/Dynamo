@@ -3,7 +3,7 @@
 #include "Interfaces.h"
 #include "NodeGeometries.h"
 
-using namespace Bloodstone;
+using namespace Dynamo::Bloodstone;
 
 NodeGeometries::NodeGeometries(const std::wstring& nodeId) : mNodeId(nodeId)
 {

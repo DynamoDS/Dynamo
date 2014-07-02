@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
-namespace Bloodstone
+namespace Dynamo.Bloodstone
 {
     class Utilities
     {

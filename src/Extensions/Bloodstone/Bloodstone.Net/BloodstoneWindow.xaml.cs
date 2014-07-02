@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Bloodstone
+namespace Dynamo.Bloodstone
 {
     public partial class BloodstoneWindow : Window
     {

@@ -8,8 +8,8 @@
 namespace Gen = System::Collections::Generic;
 namespace Ds = Autodesk::DesignScript::Interfaces;
 
-namespace Bloodstone
-{
+namespace Dynamo { namespace Bloodstone {
+
     class IGraphicsContext;
     class IShaderProgram;
     class IVertexBuffer;
@@ -105,4 +105,4 @@ namespace Bloodstone
         std::vector<std::vector<std::wstring> *>* mpGeomsOnDepthLevel;
         std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
     };
-}
+} }

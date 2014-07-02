@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Bloodstone
+namespace Dynamo.Bloodstone
 {
     struct Config
     {

@@ -2,8 +2,8 @@
 #ifndef _BLOODSTONE_H_
 #define _BLOODSTONE_H_
 
-namespace Bloodstone
-{
+namespace Dynamo { namespace Bloodstone {
+
     class GeometryData
     {
     public:
@@ -530,6 +530,6 @@ namespace Bloodstone
         virtual void EnableAlphaBlendCore(void) const = 0;
         virtual void ClearDepthBufferCore(void) const = 0;
     };
-}
+} }
 
 #endif

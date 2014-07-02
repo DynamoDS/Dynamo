@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
 
-namespace Bloodstone
+namespace Dynamo.Bloodstone
 {
     class VisualizerHwndHost : HwndHost, IDisposable
     {

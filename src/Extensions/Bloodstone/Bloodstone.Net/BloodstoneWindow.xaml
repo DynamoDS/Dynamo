@@ -1,7 +1,7 @@
-﻿<Window x:Class="Bloodstone.BloodstoneWindow"
+﻿<Window x:Class="Dynamo.Bloodstone.BloodstoneWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Bloodstone"
+        xmlns:local="clr-namespace:Dynamo.Bloodstone"
         Title="Bloodstone Viewer" Height="560" Width="850">
     <Grid>
         <local:BloodstoneControl x:Name="TheBloodstoneControl"></local:BloodstoneControl>

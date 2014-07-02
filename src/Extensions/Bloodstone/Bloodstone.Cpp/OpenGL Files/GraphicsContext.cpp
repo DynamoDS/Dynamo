@@ -3,8 +3,8 @@
 #include "OpenInterfaces.h"
 
 using namespace System;
-using namespace Bloodstone;
-using namespace Bloodstone::OpenGL;
+using namespace Dynamo::Bloodstone;
+using namespace Dynamo::Bloodstone::OpenGL;
 
 INITGLPROC(PFNGLGETSTRINGPROC,                  glGetString);
 INITGLPROC(PFNGLGETINTEGERVPROC,                glGetIntegerv);

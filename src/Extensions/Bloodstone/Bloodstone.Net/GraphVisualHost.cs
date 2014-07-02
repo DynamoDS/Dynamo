@@ -9,7 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Bloodstone
+namespace Dynamo.Bloodstone
 {
     class GraphResources
     {

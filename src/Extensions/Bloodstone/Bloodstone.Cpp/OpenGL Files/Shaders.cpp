@@ -3,8 +3,8 @@
 #include "OpenInterfaces.h"
 
 using namespace System;
-using namespace Bloodstone;
-using namespace Bloodstone::OpenGL;
+using namespace Dynamo::Bloodstone;
+using namespace Dynamo::Bloodstone::OpenGL;
 
 // ================================================================================
 // CommonShaderBase
@@ -148,16 +148,16 @@ void ShaderProgram::BindTransformMatrixCore(TransMatrix transform, const std::st
 
     switch (transform)
     {
-    case Bloodstone::TransMatrix::Model:
+    case Dynamo::Bloodstone::TransMatrix::Model:
         mModelMatrixUniform = index;
         break;
-    case Bloodstone::TransMatrix::View:
+    case Dynamo::Bloodstone::TransMatrix::View:
         mViewMatrixUniform = index;
         break;
-    case Bloodstone::TransMatrix::Projection:
+    case Dynamo::Bloodstone::TransMatrix::Projection:
         mProjMatrixUniform = index;
         break;
-    case Bloodstone::TransMatrix::Normal:
+    case Dynamo::Bloodstone::TransMatrix::Normal:
         mNormMatrixUniform = index;
         break;
     }
@@ -169,7 +169,7 @@ void ShaderProgram::ApplyTransformationCore(const ICamera* pCamera) const
     if (pCameraInternal == nullptr)
         return;
 
-    Bloodstone::CameraConfiguration config;
+    Dynamo::Bloodstone::CameraConfiguration config;
     pCameraInternal->GetConfiguration(config);
     glm::vec3 offset(-config.center[0], -config.center[1], -config.center[2]);
     glm::mat4 moveToCenter = glm::translate(glm::mat4(1.0f), offset);

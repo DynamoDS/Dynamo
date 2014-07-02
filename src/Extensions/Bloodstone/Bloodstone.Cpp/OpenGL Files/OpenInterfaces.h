@@ -10,7 +10,7 @@
 #include "../../../../../extern/OpenGL/glm/glm/gtc/matrix_transform.hpp"
 #include "../../../../../extern/OpenGL/glm/glm/gtc/type_ptr.hpp"
 
-namespace Bloodstone { namespace OpenGL {
+namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 
 #define DEFGLPROC(t, n)     static t n;
 #define INITGLPROC(t, n)    t GL::n = nullptr;
@@ -125,7 +125,7 @@ namespace Bloodstone { namespace OpenGL {
 
     class Camera; // Forward declaration.
 
-    class GraphicsContext : public Bloodstone::IGraphicsContext
+    class GraphicsContext : public Dynamo::Bloodstone::IGraphicsContext
     {
     public:
         GraphicsContext();
@@ -154,7 +154,7 @@ namespace Bloodstone { namespace OpenGL {
         Camera* mpDefaultCamera;
     };
 
-    class TrackBall : public Bloodstone::ITrackBall
+    class TrackBall : public Dynamo::Bloodstone::ITrackBall
     {
     public:
         TrackBall(Camera* pCamera);
@@ -174,7 +174,7 @@ namespace Bloodstone { namespace OpenGL {
         int mPrevX, mPrevY, mCurrX, mCurrY;
     };
 
-    class Camera : public Bloodstone::ICamera
+    class Camera : public Dynamo::Bloodstone::ICamera
     {
     public:
         Camera(GraphicsContext* pGraphicsContext);
@@ -187,7 +187,7 @@ namespace Bloodstone { namespace OpenGL {
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration);
         virtual void ResizeViewportCore(int width, int height);
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox);
-        virtual Bloodstone::ITrackBall* GetTrackBallCore() const;
+        virtual Dynamo::Bloodstone::ITrackBall* GetTrackBallCore() const;
 
     private:
         void ConfigureInternal(const CameraConfiguration* pConfiguration);
@@ -217,7 +217,7 @@ namespace Bloodstone { namespace OpenGL {
         const GraphicsContext* mpGraphicsContext;
     };
 
-    class VertexShader : public CommonShaderBase, public Bloodstone::IVertexShader
+    class VertexShader : public CommonShaderBase, public Dynamo::Bloodstone::IVertexShader
     {
     public:
         VertexShader(const GraphicsContext* pGraphicsContext);
@@ -226,7 +226,7 @@ namespace Bloodstone { namespace OpenGL {
         virtual GLuint CreateShaderIdCore(void) const;
     };
 
-    class FragmentShader : public CommonShaderBase, public Bloodstone::IFragmentShader
+    class FragmentShader : public CommonShaderBase, public Dynamo::Bloodstone::IFragmentShader
     {
     public:
         FragmentShader(const GraphicsContext* pGraphicsContext);
@@ -235,7 +235,7 @@ namespace Bloodstone { namespace OpenGL {
         virtual GLuint CreateShaderIdCore(void) const;
     };
 
-    class ShaderProgram : public Bloodstone::IShaderProgram
+    class ShaderProgram : public Dynamo::Bloodstone::IShaderProgram
     {
     public:
         ShaderProgram(VertexShader* pVertexShader, FragmentShader* pFragmentShader);
@@ -272,7 +272,7 @@ namespace Bloodstone { namespace OpenGL {
         }
     };
 
-    class VertexBuffer : public Bloodstone::IVertexBuffer
+    class VertexBuffer : public Dynamo::Bloodstone::IVertexBuffer
     {
     public:
         VertexBuffer(void);
@@ -296,6 +296,7 @@ namespace Bloodstone { namespace OpenGL {
         BoundingBox mBoundingBox;
         PrimitiveType mPrimitiveType;
     };
-} }
+
+} } }
 
 #endif

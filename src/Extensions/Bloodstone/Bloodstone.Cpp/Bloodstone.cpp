@@ -11,7 +11,7 @@
 #include <msclr/marshal_cppstd.h>
 
 using namespace System;
-using namespace Bloodstone;
+using namespace Dynamo::Bloodstone;
 using namespace System::Collections::Generic;
 using namespace Autodesk::DesignScript::Interfaces;
 
@@ -93,7 +93,7 @@ IGraphicsContext* IGraphicsContext::Create(IGraphicsContext::ContextType context
     switch(contextType)
     {
     case IGraphicsContext::ContextType::OpenGL:
-        return new Bloodstone::OpenGL::GraphicsContext();
+        return new Dynamo::Bloodstone::OpenGL::GraphicsContext();
     }
 
     auto message = L"Invalid value for 'IGraphicsContext::ContextType'";
