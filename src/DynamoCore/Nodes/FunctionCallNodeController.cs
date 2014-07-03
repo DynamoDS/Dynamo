@@ -22,7 +22,13 @@ namespace Dynamo.Nodes
         /// <summary>
         ///     NickName for nodes using this controller, based on the underlying FunctionDescriptor.
         /// </summary>
-        public string NickName { get { return Definition.DisplayName; } }
+        public string NickName 
+        {
+            get
+            {
+                return Definition.DisplayName;
+            } 
+        }
 
         /// <summary>
         ///     ReturnKeys for multi-output functions.

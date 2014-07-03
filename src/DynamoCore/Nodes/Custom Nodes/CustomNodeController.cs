@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
 
 using Dynamo.Models;
@@ -124,22 +125,39 @@ namespace Dynamo.Nodes
             if (idNode == null || idNode.Attributes == null) return;
             
             string id = idNode.Attributes[0].Value;
+
+            string nickname = nodeElement.Attributes["nickname"].Value;
             
             Guid funcId;
             if (!Guid.TryParse(id, out funcId) && nodeElement.Attributes != null)
             {
-                funcId = GuidUtility.Create(
-                    GuidUtility.UrlNamespace,
-                    nodeElement.Attributes["nickname"].Value);
+                funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
             }
-            
-            if (!VerifyFuncId(ref funcId))
-                LoadProxyCustomNode(funcId);
+
+            if (!VerifyFuncId(ref funcId, nickname))
+                LoadProxyCustomNode(funcId, nickname);
             
             Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+        }
 
-            if (Definition.IsProxy)
-                throw new Exception("Cannot load custom node");
+        public override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+
+            var helper = new XmlElementHelper(element);
+            var nickname = helper.ReadString("functionName");
+
+            Guid funcId;
+            if (!Guid.TryParse(helper.ReadString("functionId"), out funcId))
+                funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
+
+            if (!VerifyFuncId(ref funcId, nickname))
+            {
+                LoadProxyCustomNode(funcId, nickname);
+                return;
+            }
+
+            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
         }
 
         /// <summary>
@@ -160,7 +178,7 @@ namespace Dynamo.Nodes
                                 model.OutPortData.Select(p => p.NickName))));
         }
 
-        private bool VerifyFuncId(ref Guid funcId)
+        private static bool VerifyFuncId(ref Guid funcId, string nickname)
         {
             if (funcId == null) return false;
 
@@ -171,22 +189,22 @@ namespace Dynamo.Nodes
             CustomNodeManager manager = dynSettings.Controller.CustomNodeManager;
 
             // if there is a node with this name, use it instead
-            if (!manager.Contains(NickName)) return false;
+            if (!manager.Contains(nickname)) return false;
 
-            funcId = manager.GetGuidFromName(NickName);
+            funcId = manager.GetGuidFromName(nickname);
             return true;
         }
 
-        private void LoadProxyCustomNode(Guid funcId)
+        private static void LoadProxyCustomNode(Guid funcId, string nickname)
         {
             var proxyDef = new CustomNodeDefinition(funcId)
             {
                 WorkspaceModel =
-                    new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null },
+                    new CustomNodeWorkspaceModel(nickname, "Custom Nodes") { FileName = null },
                 IsProxy = true
             };
 
-            string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
+            string userMsg = "Failed to load custom node: " + nickname + ".  Replacing with proxy custom node.";
 
             dynSettings.DynamoLogger.Log(userMsg);
 
