@@ -3282,6 +3282,11 @@ namespace ProtoCore.DSASM
 
             while (!terminate)
             {
+                if (core.cancelExecution)
+                {
+                    throw new CancelExecution();
+                }
+
                 if (pc >= istream.instrList.Count || pc < 0)
                 {
                     break;

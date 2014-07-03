@@ -1621,12 +1621,12 @@ namespace ProtoCore
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
-            //@PERF: Todo add a fast path here for the case where we have a homogenious array so we can directly dispatch
             if (core.cancelExecution)
             {
                 throw new CancelExecution();
             }
 
+            //@PERF: Todo add a fast path here for the case where we have a homogenious array so we can directly dispatch
             FunctionEndPoint finalFep = SelectFinalFep(c, functionEndPoint, formalParameters, stackFrame, core);
 
             if (functionEndPoint == null)
