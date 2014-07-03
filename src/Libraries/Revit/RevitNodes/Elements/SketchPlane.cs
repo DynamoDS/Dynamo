@@ -79,14 +79,7 @@ namespace Revit.Elements
 
             Autodesk.Revit.DB.SketchPlane sp;
 
-            if (Document.IsFamilyDocument)
-            {
-                sp = Document.FamilyCreate.NewSketchPlane(p);
-            }
-            else
-            {
-                sp = Document.Create.NewSketchPlane(p);
-            }
+            sp = Autodesk.Revit.DB.SketchPlane.Create(Document, p);
 
             InternalSetSketchPlane(sp);
 

@@ -269,9 +269,28 @@ namespace Dynamo.ViewModels
             get { return _model.Zoom; }
         }
 
-        public bool ZoomEnabled
+        public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }
+        }
+
+        public bool CanZoomOut
+        {
+            get { return CanZoom(-Configurations.ZoomIncrement); }
+        }
+
+        internal void ZoomInInternal()
+        {
+            var args = new ZoomEventArgs(Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
+        }
+
+        internal void ZoomOutInternal()
+        {
+            var args = new ZoomEventArgs(-Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
         }
 
         public bool CanFindNodesFromElements
@@ -286,7 +305,7 @@ namespace Dynamo.ViewModels
 
         public bool CanShowInfoBubble
         {
-            get { return stateMachine.CurrentState == StateMachine.State.None; }
+            get { return stateMachine.IsInIdleState; }
         }
 
         public Action FindNodesFromElements { get; set; }
@@ -434,8 +453,6 @@ namespace Dynamo.ViewModels
                 case "Zoom":
                     OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
                     RaisePropertyChanged("Zoom");
-                    ZoomInCommand.RaiseCanExecuteChanged();
-                    ZoomOutCommand.RaiseCanExecuteChanged();
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
@@ -450,7 +467,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void SelectAll(object parameter)
+        internal void SelectAll(object parameter)
         {
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
@@ -669,16 +686,36 @@ namespace Dynamo.ViewModels
 
         private void Hide(object parameters)
         {
-            if (!Model.HasUnsavedChanges || dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+            // Closing of custom workspaces will simply close those workspaces,
+            // but closing Home workspace has a different meaning. First off, 
+            // Home workspace cannot be closed or hidden, it can only be cleared.
+            // As of this revision, pressing the "X" button on Home workspace 
+            // tab simply clears the Home workspace, and bring up the Start Page
+            // if there are no other custom workspace that is opened.
+            // 
+            var dvm = dynSettings.Controller.DynamoViewModel;
+
+            if (this.IsHomeSpace)
             {
-                dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(_model);
+                if (dvm.CloseHomeWorkspaceCommand.CanExecute(null))
+                    dvm.CloseHomeWorkspaceCommand.Execute(null);
+            }
+            else
+            {
+                if (!Model.HasUnsavedChanges || dvm.AskUserToSaveWorkspaceOrCancel(Model))
+                    dvm.Model.HideWorkspace(_model);
             }
         }
 
         private bool CanHide(object parameters)
         {
-            // can hide anything but the home workspace
-            return dynSettings.Controller.DynamoViewModel.Model.HomeSpace != _model;
+            // Workspaces other than HOME can be hidden (i.e. closed), but we 
+            // are enabling it also for the HOME workspace. When clicked, the 
+            // HOME workspace is cleared (i.e. equivalent of pressing the New 
+            // button), and if there is no other workspaces opened, then the 
+            // Start Page is displayed.
+            // 
+            return true;
         }
 
         private void SetCurrentOffset(object parameter)
@@ -721,28 +758,6 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
-        private void ZoomIn(object o)
-        {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(Configurations.ZoomIncrement));
-            ResetFitViewToggle(o);
-        }
-
-        private bool CanZoomIn(object o)
-        {
-            return CanZoom(Configurations.ZoomIncrement);
-        }
-
-        private void ZoomOut(object o)
-        {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-Configurations.ZoomIncrement));
-            ResetFitViewToggle(o);
-        }
-
-        private bool CanZoomOut(object o)
-        {
-            return CanZoom(-Configurations.ZoomIncrement);
-        }
-
         private bool CanZoom(double zoom)
         {
             if ((zoom < 0 && _model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)
@@ -766,7 +781,8 @@ namespace Dynamo.ViewModels
         }
 
         private bool _fitViewActualZoomToggle = false;
-        private void FitView(object o)
+
+        internal void FitViewInternal()
         {
             // Get the offset and focus width & height (zoom if 100%)
             double minX, maxX, minY, maxY;
@@ -802,27 +818,12 @@ namespace Dynamo.ViewModels
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private bool CanFitView(object o)
-        {
-            return true;
-        }
-
         private void ResetFitViewToggle(object o)
         {
             _fitViewActualZoomToggle = false;
         }
 
         private bool CanResetFitViewToggle(object o)
-        {
-            return true;
-        }
-
-        private void TogglePan(object o)
-        {
-            RequestTogglePanMode();
-        }
-
-        private bool CanTogglePan(object o)
         {
             return true;
         }
@@ -931,7 +932,7 @@ namespace Dynamo.ViewModels
             // Fit view to the new graph layout
             DynamoSelection.Instance.ClearSelection();
             ResetFitViewToggle(null);
-            FitViewCommand.Execute(null);
+            FitViewInternal();
         }
 
         private bool CanDoGraphAutoLayout(object o)

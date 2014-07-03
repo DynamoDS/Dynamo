@@ -8,6 +8,7 @@ using System.Threading;
 using DSNodeServices;
 
 using Dynamo.Models;
+using Dynamo.Services;
 using Dynamo.Utilities;
 
 #endregion
@@ -157,6 +158,9 @@ namespace Dynamo.Core
             finally
             {
                 sw.Stop();
+
+                InstrumentationLogger.LogAnonymousEvent("Run", "Eval");
+                InstrumentationLogger.LogAnonymousTimedEvent("Perf", "EvalTime", sw.Elapsed); 
 
                 dynSettings.DynamoLogger.Log(
                     string.Format("Evaluation completed in {0}", sw.Elapsed));

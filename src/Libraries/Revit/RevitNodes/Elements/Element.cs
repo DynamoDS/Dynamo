@@ -485,7 +485,17 @@ namespace Revit.Elements
         {
             get
             {
+                if (this.InternalElementId == null)
+                {
+                    return false;
+                }
+
                 //Ensure that the object is still alive
+                
+                //Check whether the internal element Id is null
+                if (null == InternalElementId)
+                    return false;
+
                 return !ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.InternalElementId.IntegerValue);
             }
         }

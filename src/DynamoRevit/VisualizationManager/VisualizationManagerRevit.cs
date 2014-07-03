@@ -128,9 +128,6 @@ namespace Dynamo
 
                     keeperId = (ElementId)method.Invoke(null, argsM);
 
-                    //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
-                    //                                       ElementId.InvalidElementId);
-
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
         }

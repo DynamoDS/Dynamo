@@ -31,13 +31,15 @@ namespace Dynamo.Applications
             if (File.Exists(path06x))
             {
                 loadPath = path06x;
-                versions.Add(FileVersionInfo.GetVersionInfo(path06x).FileVersion);
+                var vi = FileVersionInfo.GetVersionInfo(path06x);
+                versions.Add(string.Format("{0}.{1}.{2}",vi.FileMajorPart,vi.FileMinorPart,vi.FileBuildPart));
             }
 
             if (File.Exists(path07x))
             {
                 loadPath = path07x;
-                versions.Add(FileVersionInfo.GetVersionInfo(path07x).FileVersion);
+                var vi = FileVersionInfo.GetVersionInfo(path07x);
+                versions.Add(string.Format("{0}.{1}.{2}", vi.FileMajorPart, vi.FileMinorPart, vi.FileBuildPart));
             }
 
             // If there are multiple versions installed, then create
@@ -83,22 +85,6 @@ namespace Dynamo.Applications
 
             if (String.IsNullOrEmpty(loadPath))
                 return Result.Failed;
-
-            // Preload the DynamoUtilities.dll. DynamoUtilities
-            // contains the assembly resolver logic. Because assembly
-            // resolution logic is different between 0.6.3 and 0.7.x,
-            // we preload to ensure we're doing the right thing.
-            var stub = Path.GetDirectoryName(loadPath);
-            var utilPath = string.Empty;
-            if (stub == BasePath)
-            {
-                utilPath = Path.Combine(stub, "DynamoUtilities.dll");
-            }
-            else
-            {
-                utilPath = Path.GetFullPath(Path.Combine(stub, @"..\DynamoUtilities.dll"));
-            }
-            Assembly.LoadFrom(utilPath);
 
             var ass = Assembly.LoadFrom(loadPath);
             var revitApp = ass.CreateInstance("Dynamo.Applications.DynamoRevitApp");

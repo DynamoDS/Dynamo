@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Services;
 using Dynamo.Utilities;
 using DynamoWebServer;
 
@@ -57,6 +58,10 @@ namespace DynamoSandbox
                 try
                 {
                     dynSettings.Controller.IsCrashing = true;
+                    InstrumentationLogger.LogException(e);
+                    StabilityTracking.GetInstance().NotifyCrash();
+
+
                     // Show the unhandled exception dialog so user can copy the 
                     // crash details and report the crash if she chooses to.
                     dynSettings.Controller.OnRequestsCrashPrompt(null,

@@ -10,7 +10,24 @@ namespace DSRevitNodesTests.Elements
     {
         [Test]
         [TestModel(@".\Empty.rvt")]
-        public void ByPlane_ValidArgs()
+        public void ByPlane_CanBeUsedToCreateSketchPlaneInProjectDocument()
+        {
+            var origin = Point.ByCoordinates(1, 2, 3);
+            var normal = Vector.ByCoordinates(0, 0, 1);
+            var plane = Plane.ByOriginNormal(origin, normal);
+
+            var sketchPlane = SketchPlane.ByPlane(plane);
+
+            Assert.NotNull(sketchPlane);
+            Assert.NotNull(sketchPlane.Plane);
+            Assert.AreEqual(normal, sketchPlane.Plane.Normal);
+            Assert.AreEqual(origin, sketchPlane.Plane.Origin);
+            Assert.NotNull(sketchPlane.ElementPlaneReference);
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void ByPlane_CanBeUsedToCreateSketchPlaneInFamilyDocument()
         {
             var origin = Point.ByCoordinates(1, 2, 3);
             var normal = Vector.ByCoordinates(0, 0, 1);

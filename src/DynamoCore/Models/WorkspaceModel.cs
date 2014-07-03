@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml;
@@ -1228,6 +1229,49 @@ namespace Dynamo.Models
             }
         }
         #endregion
+
+        /// <summary>
+        /// Syncronously get a string representation of the workspace
+        /// </summary>
+        /// <returns></returns>
+        internal string GetStringRepOfWorkspaceSync()
+        {
+            string outData = String.Empty;
+
+            Action getString = (() =>
+                {
+                    // Create the xml document to write to.
+                    var document = new XmlDocument();
+                    document.CreateXmlDeclaration("1.0", null, null);
+                    document.AppendChild(document.CreateElement("Workspace"));
+
+                    //This is only used for computing relative offsets, it's not actually created
+                    string virtualFileName = String.Join(Path.GetTempPath(), "DynamoTemp.dyn");
+                    Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, virtualFileName);
+
+                    if (!this.PopulateXmlDocument(document))
+                        return;
+
+                    //Now unset the temp file name again
+                    Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, null);
+
+
+                    outData = document.OuterXml;
+
+                });
+
+            if (dynSettings.Controller != null &&
+                dynSettings.Controller.UIDispatcher != null &&
+                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
+            {
+                dynSettings.Controller.UIDispatcher.Invoke(getString);
+                return outData;
+            }
+            else
+                return String.Empty;
+
+        }
+
 
     }
 }

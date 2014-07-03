@@ -80,7 +80,7 @@ Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwrit
 Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Samples
-Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+Source: temp\Samples\*.*; DestDir: {commonappdata}\Dynamo\0.7\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 ;Other Custom Nodes
 Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\0.7\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
@@ -96,7 +96,7 @@ Type: filesandordirs; Name: {app}\dll
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 Filename: "{app}\InstallASMForDynamo.exe";
-Filename: "{app}\DynamoAddinGenerator.exe";
+Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: """{app}"""
 
 [UninstallRun]
 Filename: "{app}\DynamoAddinGenerator.exe"
