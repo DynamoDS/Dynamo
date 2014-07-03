@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.33416" X="-1468.1332294723" Y="-371.32438905637" zoom="0.805962777835898" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.42482" X="-659.1332294723" Y="-286.32438905637" zoom="0.934842287566693" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="eed8d389-5ad2-4ac0-a270-7d737f487ad0" nickname="Select Model Element" x="846.35713721073" y="813.096583627717" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <instance id="c222719c-4dcb-4e48-98ea-a81db96bf8ce-000f490a" />
@@ -14,7 +14,7 @@
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="115c2eca-a0d8-4d88-badc-a6746e940543" nickname="Number" x="2648.49701153633" y="956.254868879924" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value=".5" />
+      <System.Double value="0.5" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e3fedc00-247a-4971-901c-7fcb063344c6" nickname="ImportInstance.ByGeometries" x="2924.93659842395" y="867.293105174156" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.ImportInstance.ByGeometries@Autodesk.DesignScript.Geometry.Geometry[]" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b1450930-c74b-4dcd-b56a-1eae6abd9852" nickname="Curve.ExtendEnd" x="2308.64643040911" y="858.510942250537" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.ExtendEnd@double">
@@ -65,6 +65,7 @@
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Model Lines have been  pre-selected from Revit, Element IDs saved with the Dynamo file" x="840.039356460182" y="619.823494459318" />
-    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation" x="837.916415601284" y="540.706854239215" />
+    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\0.7\samples\Revit" x="840.055813900441" y="434.806638430955" />
+    <Dynamo.Models.NoteModel text="Import a solid form into Revit" x="840.408067932615" y="537.352842271657" />
   </Notes>
 </Workspace>

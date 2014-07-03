@@ -1166,6 +1166,14 @@ namespace Dynamo.Models
 
                 var dynamoModel = dynSettings.Controller.DynamoModel;
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
+
+                if (fileVersion > currentVersion)
+                {
+                    bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
+                    if (!resume)
+                        return false;                    
+                }
+
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {

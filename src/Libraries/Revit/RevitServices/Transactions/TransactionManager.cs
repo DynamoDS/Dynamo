@@ -308,6 +308,11 @@ namespace RevitServices.Transactions
             if (Transaction == null || Transaction.GetStatus() != TransactionStatus.Started)
             {
                 TransactionManager.Log("Starting Transaction.");
+                
+                // Dispose the old transaction so that it won't impact the new transaction
+                if (null != Transaction)
+                    Transaction.Dispose();
+
                 Transaction = new Transaction(document, "Dynamo Script");
                 Transaction.Start();
 

@@ -22,18 +22,33 @@ using Autodesk.Revit.UI.Events;
 namespace RevitServices.Threading
 {
     public delegate T IdlePromiseDelegate<out T>();
-    
+
     /// <summary>
     /// Dispatches delegates in the Revit Idle thread.
     /// </summary>
     public static class IdlePromise
     {
+        //The lock will be used to prevent write access to Promises by multiple threads
+        //at the same time. For example, one thread might be calling the Enqueue method
+        //while another thread is calling the Dequeue method.
+        private static object PromisesAccessMutex = new object();
+
         internal static Queue<Action> Promises = new Queue<Action>();
         internal static Queue<Action> ShutdownPromises = new Queue<Action>();
 
         [ThreadStatic] private static bool idle;
-        public static bool InIdleThread { get { return idle; }
+        public static bool InIdleThread
+        {
+            get { return idle; }
             set { idle = value; }
+        }
+
+        public static void AddPromise(Action a)
+        {
+            lock (PromisesAccessMutex)
+            {
+                Promises.Enqueue(a);
+            }
         }
 
         private static void Application_Idling(object sender, IdlingEventArgs e)
@@ -42,11 +57,17 @@ namespace RevitServices.Threading
             Thread.Sleep(1);
             while (HasPendingPromises())
             {
-                Promises.Dequeue()();
+                Action a;
+                lock (PromisesAccessMutex)
+                {
+                    a = Promises.Dequeue();
+                }
+                if (null != a)
+                    a();
             }
             idle = false;
         }
-        
+
         /// <summary>
         /// Are there currently promises queued for Idle thread invocation?
         /// </summary>
@@ -60,7 +81,10 @@ namespace RevitServices.Threading
         /// </summary>
         public static void ClearPromises()
         {
-            Promises.Clear();
+            lock (PromisesAccessMutex)
+            {
+                Promises.Clear();
+            }
         }
 
         public static void ClearShutdownPromises()
@@ -116,7 +140,7 @@ namespace RevitServices.Threading
 
             var redeemed = false;
 
-            Promises.Enqueue(
+            AddPromise(
                 delegate
                 {
                     try
@@ -127,8 +151,8 @@ namespace RevitServices.Threading
                     {
                         redeemed = true;
                     }
-
-                });
+                }
+            );
 
             while (!redeemed)
             {
@@ -194,7 +218,7 @@ namespace RevitServices.Threading
             redeemed = false;
             value = default(T);
 
-            IdlePromise.Promises.Enqueue(
+            IdlePromise.AddPromise(
                 delegate
                 {
                     value = d();
@@ -212,7 +236,7 @@ namespace RevitServices.Threading
             redeemed = false;
             value = default(T);
 
-            IdlePromise.Promises.Enqueue(
+            IdlePromise.AddPromise(
                 delegate
                 {
                     d();
