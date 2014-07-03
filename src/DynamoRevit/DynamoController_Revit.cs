@@ -78,6 +78,9 @@ namespace Dynamo
                 dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
             }
 
+            // Reset the materials manager.
+            MaterialsManager.Reset();
+
             TransactionWrapper = TransactionManager.Instance.TransactionWrapper;
             TransactionWrapper.TransactionStarted += TransactionManager_TransactionCommitted;
             TransactionWrapper.TransactionCancelled += TransactionManager_TransactionCancelled;
@@ -261,6 +264,8 @@ namespace Dynamo
                     updateCurrentUIDoc = false;
                     DocumentManager.Instance.CurrentUIDocument = 
                         DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                    
+                    MaterialsManager.Reset();
                 }
             }
         }
@@ -280,6 +285,8 @@ namespace Dynamo
             {
                 DocumentManager.Instance.CurrentUIDocument =
                 DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                
+                MaterialsManager.Reset();
 
                 DynamoViewModel.RunEnabled = true;
             }

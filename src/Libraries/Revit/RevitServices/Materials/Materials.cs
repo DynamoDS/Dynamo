@@ -64,18 +64,6 @@ namespace RevitServices.Materials
                 dynamoMaterial.Color = new Color(255,128,0);
                 DynamoMaterialId = dynamoMaterial.Id;
 
-                //var matId = Material.Create(DocumentManager.Instance.CurrentDBDocument, "Dynamo");
-                //var dynamoMaterial = DocumentManager.Instance.CurrentDBDocument.GetElement(matId) as Material;
-                //if (dynamoMaterial != null)
-                //{
-                //    var color = new Color(0, 255, 0);
-                //    dynamoMaterial.Color = color;
-                //    dynamoMaterial.Shininess = 0;
-                //    dynamoMaterial.Transparency = 90;
-                //    dynamoMaterial.UseRenderAppearanceForShading = false;
-                //    DynamoMaterialId = dynamoMaterial.Id;
-                //}
-
                 TransactionManager.Instance.ForceCloseTransaction();
             });
         }

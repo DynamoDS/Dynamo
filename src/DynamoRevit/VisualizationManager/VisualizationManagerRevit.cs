@@ -43,9 +43,6 @@ namespace Dynamo
                 RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
                 dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
-
-                // Reset the materials manager.
-                MaterialsManager.Reset();
             }
             else
             {
