@@ -655,7 +655,6 @@ namespace Dynamo.Tests
             var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
 
             Assert.IsTrue(firstWatch.CachedValue.IsCollection);
-            Assert.IsAssignableFrom<double>(firstWatch.CachedValue.GetElements()[0].Data);
             Assert.AreEqual(0, firstWatch.CachedValue.GetElements()[0].Data);
 
             var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");

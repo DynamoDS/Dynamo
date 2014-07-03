@@ -81,7 +81,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-		[Category("Failing")]
         public void PartialApplicationWithMultipleOutputs()
         {
             var model = Controller.DynamoModel;
