@@ -24,8 +24,8 @@ namespace DSRevitNodesTests.Conversion
             var max = bbox.MaxPoint;
             var min = bbox.MinPoint;
 
-            max.AssertShouldBeApproximately(Point.ByCoordinates(15, 16, 32).InDynamoUnits());
-            min.AssertShouldBeApproximately(Point.ByCoordinates(-15, -14, 2).InDynamoUnits());
+            max.ShouldBeApproximately(Point.ByCoordinates(15, 16, 32).InDynamoUnits());
+            min.ShouldBeApproximately(Point.ByCoordinates(-15, -14, 2).InDynamoUnits());
 
         }
 
@@ -41,8 +41,8 @@ namespace DSRevitNodesTests.Conversion
 
             var bbxyz = bbox.ToRevitType();
 
-            bbxyz.Max.AssertShouldBeApproximately(Point.ByCoordinates(15, 16, 32));
-            bbxyz.Min.AssertShouldBeApproximately(Point.ByCoordinates(-15, -14, 2));
+            bbxyz.Max.ShouldBeApproximately(Point.ByCoordinates(15, 16, 32));
+            bbxyz.Min.ShouldBeApproximately(Point.ByCoordinates(-15, -14, 2));
 
         }
     }

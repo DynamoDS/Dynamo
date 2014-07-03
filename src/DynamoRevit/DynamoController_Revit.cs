@@ -25,6 +25,7 @@ using DynamoUtilities;
 using Greg;
 using Revit.Elements;
 using RevitServices.Elements;
+using RevitServices.Materials;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Element = Autodesk.Revit.DB.Element;
@@ -76,6 +77,9 @@ namespace Dynamo
                        DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
             }
+
+            // Reset the materials manager.
+            MaterialsManager.Reset();
 
             TransactionWrapper = TransactionManager.Instance.TransactionWrapper;
             TransactionWrapper.TransactionStarted += TransactionManager_TransactionCommitted;
@@ -260,7 +264,15 @@ namespace Dynamo
                     updateCurrentUIDoc = false;
                     DocumentManager.Instance.CurrentUIDocument = 
                         DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                    
+                    MaterialsManager.Reset();
                 }
+            }
+
+            var uiDoc = DocumentManager.Instance.CurrentUIDocument;
+            if (uiDoc != null)
+            {
+                DynamoRevit.SetRunEnabledBasedOnContext(uiDoc.ActiveView); 
             }
         }
 
@@ -279,12 +291,14 @@ namespace Dynamo
             {
                 DocumentManager.Instance.CurrentUIDocument =
                 DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                
+                MaterialsManager.Reset();
 
                 DynamoViewModel.RunEnabled = true;
             }
         }
 
-        private static string GetDocumentPointerMessage()
+        internal static string GetDocumentPointerMessage()
         {
             var docPath = DocumentManager.Instance.CurrentUIDocument.Document.PathName;
             var message = string.IsNullOrEmpty(docPath)
