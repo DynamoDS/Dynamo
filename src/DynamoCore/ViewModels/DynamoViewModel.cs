@@ -381,6 +381,16 @@ namespace Dynamo.ViewModels
 
             set
             {
+                // If the caller attempts to show the start page, but we are 
+                // currently in playback mode, then this will not be allowed
+                // (i.e. the start page will never be shown during a playback).
+                // 
+                if ((value == true) && (null != automationSettings))
+                {
+                    if (automationSettings.IsInPlaybackMode)
+                        return;
+                }
+
                 showStartPage = value;
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
