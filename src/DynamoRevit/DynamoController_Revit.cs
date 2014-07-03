@@ -226,7 +226,7 @@ namespace Dynamo
         private void Application_DocumentClosing(object sender, DocumentClosingEventArgs e)
         {
             // ReSharper disable once PossibleUnintendedReferenceComparison
-            if (DocumentManager.Instance.CurrentDBDocument == e.Document)
+            if (DocumentManager.Instance.CurrentDBDocument.Equals(e.Document))
             {
                 updateCurrentUIDoc = true;
             }
