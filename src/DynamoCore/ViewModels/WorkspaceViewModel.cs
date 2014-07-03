@@ -683,11 +683,6 @@ namespace Dynamo.ViewModels
             toAlign.ForEach(x => x.ReportPosition());
         }
 
-        private bool CanAlignSelected(string alignType)
-        {
-            return DynamoSelection.Instance.Selection.Count > 1;
-        }
-
         private static bool CanAlignSelected(object parameter)
         {
             return DynamoSelection.Instance.Selection.Count > 1;
@@ -716,7 +711,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanHide(object parameters)
+        private static bool CanHide(object parameters)
         {
             // Workspaces other than HOME can be hidden (i.e. closed), but we 
             // are enabling it also for the HOME workspace. When clicked, the 
@@ -831,7 +826,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void FindById(object id)
+        private static void FindById(object id)
         {
             try
             {
