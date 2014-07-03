@@ -3282,7 +3282,7 @@ namespace ProtoCore.DSASM
 
             while (!terminate)
             {
-                if (core.cancelExecution)
+                if (core.CancelExecution)
                 {
                     throw new CancelExecution();
                 }

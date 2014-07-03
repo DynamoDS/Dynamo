@@ -1621,7 +1621,7 @@ namespace ProtoCore
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
-            if (core.cancelExecution)
+            if (core.CancelExecution)
             {
                 throw new CancelExecution();
             }

@@ -506,7 +506,7 @@ namespace Dynamo
 
         internal void PostCancellationRequest(bool cancelSet)
         {
-            EngineController.LiveRunnerCore.cancelExecution = true;
+            EngineController.LiveRunnerCore.CancelExecution = true;
         }
     }
     

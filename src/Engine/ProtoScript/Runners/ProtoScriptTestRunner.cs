@@ -265,9 +265,9 @@ namespace ProtoScript.Runners
                 {
                     Execute(core, new ProtoCore.Runtime.Context());
                 }
-                catch (ProtoCore.Exceptions.CancelExecution)
+                catch (ProtoCore.Exceptions.CancelExecution e)
                 {
-                    
+                    Console.WriteLine(e.Message);             
                 }
                 
                 if (!isTest)
