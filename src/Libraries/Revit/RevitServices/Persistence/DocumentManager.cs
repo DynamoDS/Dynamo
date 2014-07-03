@@ -106,7 +106,6 @@ namespace RevitServices.Persistence
             TransactionManager.Instance.TransactionTaskDone();
         }
 
-
         /// <summary>
         /// Obtain all elements of a given type from the current document
         /// </summary>
