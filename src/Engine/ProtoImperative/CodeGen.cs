@@ -1217,7 +1217,10 @@ namespace ProtoImperative
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 // Save the guid of the current scope (which is stored in the current graphnodes) to the nested language block.
                 // This will be passed on to the nested language block that will be compiled
-                context.guid = propogateUpdateGraphNode.guid;
+                if (propogateUpdateGraphNode != null)
+                {
+                    context.guid = propogateUpdateGraphNode.guid;
+                }
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;

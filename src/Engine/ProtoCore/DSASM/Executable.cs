@@ -104,6 +104,11 @@ namespace ProtoCore.DSASM
             isBreakable = isBreakableBlock;
             core.CompleteCodeBlockList.Add(this);
             this.codeBlockId = core.CompleteCodeBlockList.Count - 1;
+
+            if (core.ProcNode != null)
+            {
+                core.ProcNode.ChildCodeBlocks.Add(codeBlockId);
+            }
         }
 
         public bool IsMyAncestorBlock(int blockId)

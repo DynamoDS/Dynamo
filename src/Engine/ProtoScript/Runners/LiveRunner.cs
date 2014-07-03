@@ -114,7 +114,7 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
         public List<AssociativeNode> ForceExecuteASTList;
         public List<AssociativeNode> ModifiedFunctions;
-        public List<Guid> ModifiedNestedLangBlockGuidList;
+        public List<AssociativeNode> ModifiedNestedLangBlock;
     }
 
     /// <summary>
@@ -140,7 +140,7 @@ namespace ProtoScript.Runners
 
         private void ApplyChangeSetModified(ChangeSetData changeSet)
         {
-            ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlockGuidList);
+            ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
             // Mark all graphnodes dependent on the modified functions as dirty
@@ -200,20 +200,24 @@ namespace ProtoScript.Runners
         /// Removes the modified nested block from the VM codegens in preparation for the next run
         /// </summary>
         /// <param name="modifuedGuids"></param>
-        private void ClearModifiedNestedBlocks(List<Guid> modifiedGuids)
+        private void ClearModifiedNestedBlocks(List<AssociativeNode> astNodes)
         {
-            foreach (Guid guid in modifiedGuids)
+            BinaryExpressionNode bnode = null;
+            foreach (AssociativeNode node in astNodes)
             {
-                if (core.CodeBlockList[0].children != null)
+                bnode = node as BinaryExpressionNode;
+                if (bnode.RightNode is LanguageBlockNode)
                 {
-                    core.CodeBlockList[0].children.RemoveAll(x => x.guid == guid);
-                }
-            }
+                    if (core.CodeBlockList[0].children != null)
+                    {
+                        core.CodeBlockList[0].children.RemoveAll(x => x.guid == bnode.guid);
+                    }
 
-            foreach (Guid guid in modifiedGuids)
-            {
-                core.CodeBlockList.RemoveAll(x => x.guid == guid);
-                core.CompleteCodeBlockList.RemoveAll(x => x.guid == guid);
+                    // Remove from the global codeblocks
+                    core.CodeBlockList.RemoveAll(x => x.guid == bnode.guid);// && x.AstID == bnode.OriginalAstID);
+                    // Remove from the runtime codeblocks
+                    core.CompleteCodeBlockList.RemoveAll(x => x.guid == bnode.guid);// && x.AstID == bnode.OriginalAstID);
+                }
             }
         }
     }
@@ -423,7 +427,7 @@ namespace ProtoScript.Runners
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
             csData.ForceExecuteASTList = new List<AssociativeNode>();
-            csData.ModifiedNestedLangBlockGuidList = new List<Guid>();
+            csData.ModifiedNestedLangBlock = new List<AssociativeNode>();
 
             if (modifiedSubTrees == null)
             {
@@ -683,7 +687,7 @@ namespace ProtoScript.Runners
                     {
                         if (bnode.RightNode is LanguageBlockNode)
                         {
-                            csData.ModifiedNestedLangBlockGuidList.Add(subtree.GUID);
+                            csData.ModifiedNestedLangBlock.Add(bnode);
                         }
                         else if (bnode.LeftNode is IdentifierNode)
                         {

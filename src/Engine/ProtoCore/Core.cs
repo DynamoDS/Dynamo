@@ -1138,12 +1138,16 @@ namespace ProtoCore
             // Update the functiond definition in the codeblocks
             int hash = CoreUtils.GetFunctionHash(functionDef);
 
+            ProcedureNode procNode = null;
+
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
                 int index = block.procedureTable.IndexOfHash(hash);
                 if (Constants.kInvalidIndex == index)
                     continue;
+
+                procNode = block.procedureTable.procList[index];
 
                 block.procedureTable.SetInactive(index);
 
@@ -1167,6 +1171,15 @@ namespace ProtoCore
 
                 break;
             }
+
+            if (null != procNode)
+            {
+                foreach (int cbID in procNode.ChildCodeBlocks)
+                {
+                    CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
+                }
+            }
+
 
             // Update the function definition in global function tables
             foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in FunctionTable.GlobalFuncTable)
@@ -1268,6 +1281,9 @@ namespace ProtoCore
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
 
+            // The main codeblock never goes out of scope
+            // Resetting CodeBlockIndex & RuntimeTableIndex  means getting the number of main codeblocks that dont go out of scope.
+            // As of the current requirements, there is only 1 main scope, the rest are nested within.
             CodeBlockIndex = CodeBlockList.Count;
             RuntimeTableIndex = CodeBlockIndex;
 
