@@ -35,7 +35,7 @@ namespace ProtoAssociative
                         {
                             if (core.CodeBlockList.Count == 0)
                             {
-                                core.assocCodegen = new ProtoAssociative.CodeGen(core, parentBlock);
+                                core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
                             }
                             else 
                             {
@@ -45,7 +45,7 @@ namespace ProtoAssociative
                             }
                         }
                         else
-                            core.assocCodegen = new ProtoAssociative.CodeGen(core, parentBlock);
+                            core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
                     }
 
                     if (null != core.AssocNode)

@@ -35,8 +35,9 @@ namespace ProtoImperative
 
         private NodeBuilder nodeBuilder;
 
-        public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
+        public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
         {
+            context = callContext;
             //  dumpbytecode is optionally enabled
             //
             astNodes = new List<ImperativeNode>();
@@ -115,6 +116,7 @@ namespace ProtoImperative
              * */
 
             ProtoCore.DSASM.CodeBlock cb = new ProtoCore.DSASM.CodeBlock(
+                context.guid,
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
                 ProtoCore.Language.kImperative,
                 core.CodeBlockIndex,
@@ -1213,6 +1215,9 @@ namespace ProtoImperative
                 }
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                // Save the guid of the current scope (which is stored in the current graphnodes) to the nested language block.
+                // This will be passed on to the nested language block that will be compiled
+                context.guid = propogateUpdateGraphNode.guid;
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1610,6 +1615,7 @@ namespace ProtoImperative
 
             
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                    context.guid,
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
                     Language.kInvalid,
                     core.CodeBlockIndex,
@@ -1698,6 +1704,7 @@ namespace ProtoImperative
                         // Set the new codeblock as a new child of the current codeblock
                         // Set the new codeblock as the current codeblock
                         localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                            context.guid,
                             ProtoCore.DSASM.CodeBlockType.kConstruct,
                             Language.kInvalid,
                             core.CodeBlockIndex++,
@@ -1766,6 +1773,7 @@ namespace ProtoImperative
                     // Set the new codeblock as a new child of the current codeblock
                     // Set the new codeblock as the current codeblock
                     localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
                         Language.kInvalid,
                         core.CodeBlockIndex++,
@@ -1877,6 +1885,7 @@ namespace ProtoImperative
                     // Set the new codeblock as a new child of the current codeblock
                     // Set the new codeblock as the current codeblock
                     ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
                         Language.kInvalid,
                         core.CodeBlockIndex++,
@@ -1884,7 +1893,6 @@ namespace ProtoImperative
                         null,
                         true,
                         core);
-
 
                     core.CodeBlockIndex++;
 

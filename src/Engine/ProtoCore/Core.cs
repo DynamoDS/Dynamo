@@ -1267,6 +1267,10 @@ namespace ProtoCore
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
+
+            CodeBlockIndex = CodeBlockList.Count;
+            RuntimeTableIndex = CodeBlockIndex;
+
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             // Jun this is where the temp solutions starts for implementing language blocks in delta execution

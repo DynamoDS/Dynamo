@@ -87,6 +87,7 @@ namespace ProtoAssociative
             // Re-use the existing procedureTable and symbolTable to access the built-in and predefined functions
             ProcedureTable procTable = core.CodeBlockList[0].procedureTable;
             codeBlock = BuildNewCodeBlock(procTable);
+
             
             // Remove global symbols from existing symbol table for subsequent run in Graph UI            
             //SymbolTable sTable = core.CodeBlockList[0].symbolTable;
@@ -107,8 +108,9 @@ namespace ProtoAssociative
             expressionSSATempSymbolList = new Stack<SymbolNode>();
         }
 
-        public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
+        public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
         {
+            context = callContext;
             classOffset = 0;
 
             //  either of these should set the console to flood
@@ -136,7 +138,6 @@ namespace ProtoAssociative
             {
                 codeBlock = BuildNewCodeBlock();
             }
-
 
             if (null == parentBlock)
             {
@@ -189,7 +190,9 @@ namespace ProtoAssociative
         private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
         {
             ProtoCore.DSASM.CodeBlock cb = null;
-            if (core.CodeBlockList.Count <= 0)
+
+            // Build a new codeblock for the first run or nested runs
+            if (core.CodeBlockList.Count <= 0  || core.CodeBlockIndex > 1)
             {
                 cb = BuildNewCodeBlock();
                 core.CodeBlockList.Add(cb);
@@ -210,13 +213,14 @@ namespace ProtoAssociative
             // Set the new symbol table's parent
             // Set the new table as a child of the parent table
             ProtoCore.DSASM.CodeBlock cb = new ProtoCore.DSASM.CodeBlock(
-                    ProtoCore.DSASM.CodeBlockType.kLanguage,
-                    ProtoCore.Language.kAssociative,
-                    core.CodeBlockIndex,
-                    new ProtoCore.DSASM.SymbolTable("associative lang block", core.RuntimeTableIndex),
-                    pTable,
-                    false,
-                    core);
+                context.guid,
+                ProtoCore.DSASM.CodeBlockType.kLanguage,
+                ProtoCore.Language.kAssociative,
+                core.CodeBlockIndex,
+                new ProtoCore.DSASM.SymbolTable("associative lang block", core.RuntimeTableIndex),
+                pTable,
+                false,
+                core);
 
             ++core.CodeBlockIndex;
             ++core.RuntimeTableIndex;
@@ -4730,7 +4734,11 @@ namespace ProtoAssociative
                 if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
                     throw new BuildHaltException("Invalid language block type (D1B95A65)");
 
-                ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                ProtoCore.CompileTime.Context nextContext = new ProtoCore.CompileTime.Context();
+
+                // Save the guid of the current scope (which is stored in the current graphnodes) to the nested language block.
+                // This will be passed on to the nested language block that will be compiled
+                nextContext.guid = graphNode.guid;
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -4763,7 +4771,7 @@ namespace ProtoAssociative
                     propagateGraphNode = graphNode;
                 }
 
-                core.Executives[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
+                core.Executives[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, nextContext, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
                 graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
 
@@ -6515,6 +6523,7 @@ namespace ProtoAssociative
             // Set the new codeblock as a new child of the current codeblock
             // Set the new codeblock as the current codeblock
             ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                context.guid,
                 ProtoCore.DSASM.CodeBlockType.kConstruct,
                 Language.kInvalid,
                 core.CodeBlockIndex++,
@@ -6593,6 +6602,7 @@ namespace ProtoAssociative
                 // Set the new codeblock as a new child of the current codeblock
                 // Set the new codeblock as the current codeblock
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                    context.guid,
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
                     Language.kInvalid,
                     core.CodeBlockIndex++,
