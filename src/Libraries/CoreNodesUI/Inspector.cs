@@ -148,7 +148,7 @@ namespace DSCoreNodesUI
             };
         }
 
-       //method for
+       //method for grabbing member values from a dynamic object, we use this for python objects...
       //  http://stackoverflow.com/questions/1926776/getting-a-value-from-a-dynamic-object-dynamically
         public static object GetDynamicValue(dynamic ob, string name)
         {
@@ -324,7 +324,7 @@ namespace DSCoreNodesUI
         }
 
 
-        public ComboBox gen_and_setup_combobox(WrapPanel wp)
+        public ComboBox gen_and_setup_combobox(StackPanel sp)
         {
             // make a new index wrapper to bind to
             combobox_selected_index_wrapper new_selected_index = new combobox_selected_index_wrapper();
@@ -369,7 +369,7 @@ namespace DSCoreNodesUI
                             HorizontalAlignment = HorizontalAlignment.Stretch,
                             VerticalAlignment = VerticalAlignment.Center
                         };
-            wp.Children.Add(combo);
+            sp.Children.Add(combo);
             comboboxes.Add(combo);
           //  tboxes.Add(tbox);
             //System.Windows.Controls.Grid.SetColumn(combo, 0);
@@ -427,13 +427,13 @@ namespace DSCoreNodesUI
             return combo;
         }
 
-        public ComboBox remove_combo(WrapPanel wp)
+        public ComboBox remove_combo(StackPanel sp)
         {
             // find the last combobox
             var last = comboboxes[comboboxes.Count - 1];
            // var lasttbox = tboxes[tboxes.Count-1];
             //remove it from the wrap panel
-            wp.Children.Remove(last);
+            sp.Children.Remove(last);
             comboboxes.Remove(last);
           //  wp.Children.Remove(lasttbox);
            // tboxes.Remove(lasttbox);
@@ -464,20 +464,39 @@ namespace DSCoreNodesUI
 
             // first add all buttons
             //
+            addButton.MaxHeight = Configurations.PortHeightInPixels;
+            subButton.MaxHeight = Configurations.PortHeightInPixels;
 
-            var wp = new WrapPanel
+            addButton.VerticalAlignment = VerticalAlignment.Top;
+            subButton.VerticalAlignment = VerticalAlignment.Top;
+
+
+
+            var OuterWrapPanel = new WrapPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 MaxWidth = 500,
             };
-            wp.Children.Add(addButton);
-            wp.Children.Add(subButton);
+            OuterWrapPanel.Children.Add(addButton);
+            OuterWrapPanel.Children.Add(subButton);
+            
 
-            nodeUI.inputGrid.Children.Add(wp);
+            var InnerStackPanel = new StackPanel
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                MinHeight = Configurations.PortHeightInPixels,
+                
 
+            };
+            OuterWrapPanel.Children.Add(InnerStackPanel);
+
+            nodeUI.inputGrid.Children.Add(OuterWrapPanel);
+           
+            //nodeUI.PresentationGrid.Children.Add(InnerStackPanel);
             // add the first combobox
-            var firstcombo = gen_and_setup_combobox(wp);
+            var firstcombo = gen_and_setup_combobox(InnerStackPanel);
 
 
             RequestSelectChange += delegate
@@ -489,11 +508,11 @@ namespace DSCoreNodesUI
                     PopulateItems();
                     if (comboboxes.Count < numDropDowns)
                     {
-                        var cur_combo_box = gen_and_setup_combobox(wp);
+                        var cur_combo_box = gen_and_setup_combobox(InnerStackPanel);
                     }
                     else if (comboboxes.Count > numDropDowns)
                     {
-                        ComboBox removed_combo = remove_combo(wp);
+                        ComboBox removed_combo = remove_combo(InnerStackPanel);
 
 
                     }
