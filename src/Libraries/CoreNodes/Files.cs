@@ -100,7 +100,7 @@ namespace DSCore
                 writer.Flush();
                 writer.Close();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
