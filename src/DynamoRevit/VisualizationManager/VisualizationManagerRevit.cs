@@ -12,6 +12,7 @@ using Revit.GeometryConversion;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using RevitServices.Materials;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using PolyCurve = Autodesk.DesignScript.Geometry.PolyCurve;
@@ -28,7 +29,7 @@ namespace Dynamo
             get { return keeperId; }
         }
 
-        public VisualizationManagerRevit() : base()
+        public VisualizationManagerRevit()
         {
             var context = dynSettings.Controller.Context;
             if (context == Context.VASARI_2014 || 
@@ -42,6 +43,9 @@ namespace Dynamo
                 RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
                 dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
+
+                // Reset the materials manager.
+                MaterialsManager.Reset();
             }
             else
             {
@@ -100,14 +104,10 @@ namespace Dynamo
             var geoms = new List<GeometryObject>();
             values.ToList().ForEach(md=>RevitGeometryFromMirrorData(md, ref geoms));
 
-            var solidsAndSurfs = geoms.Where(x => x is Autodesk.Revit.DB.Mesh || x is Autodesk.Revit.DB.Solid).ToList();
-            var pointsAndCurves = geoms.Where(x => x is Autodesk.Revit.DB.Point || x is Autodesk.Revit.DB.Curve).ToList();
-
-            DrawPointsAndCurves(pointsAndCurves);
-            DrawSurfsAndSolids(solidsAndSurfs);
+            Draw(geoms);
         }
 
-        private void DrawPointsAndCurves(IEnumerable<GeometryObject> geoms)
+        private void Draw(IEnumerable<GeometryObject> geoms)
         {
             Type geometryElementType = typeof(GeometryElement);
             MethodInfo[] geometryElementTypeMethods =
@@ -118,9 +118,6 @@ namespace Dynamo
 
             if (method == null)
                 return;
-
-            var gStyleId = FindDynamoGraphicsStyle();
-            var matId = FindDefaultRevitMaterial();
 
             RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
                 () =>
@@ -137,9 +134,9 @@ namespace Dynamo
 
                     var argsM = new object[4];
                     argsM[0] = DocumentManager.Instance.CurrentUIDocument.Document;
-                    argsM[1] = matId;
+                    argsM[1] = ElementId.InvalidElementId;
                     argsM[2] = geoms;
-                    argsM[3] = gStyleId;
+                    argsM[3] = ElementId.InvalidElementId;
 
                     keeperId = (ElementId)method.Invoke(null, argsM);
 
@@ -188,30 +185,6 @@ namespace Dynamo
                 
                 TransactionManager.Instance.ForceCloseTransaction();
             });
-        }
-
-        private static ElementId FindDefaultRevitMaterial()
-        {
-            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            fec.OfClass(typeof(Material));
-            var materials = fec.ToElements();
-
-            var defaultMat = materials.FirstOrDefault(mat => mat.Name == "Default");
-            if (defaultMat != null)
-            {
-                return defaultMat.Id;
-            }
-
-            throw new Exception("The default material could not be found.");
-        }
-
-        private static ElementId FindDynamoGraphicsStyle()
-        {
-            var styles = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            styles.OfClass(typeof(GraphicsStyle));
-
-            var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Generic Models");
-            return gStyle != null ? gStyle.Id : ElementId.InvalidElementId;
         }
 
         /// <summary>

@@ -25,6 +25,7 @@ using DynamoUtilities;
 using Greg;
 using Revit.Elements;
 using RevitServices.Elements;
+using RevitServices.Materials;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Element = Autodesk.Revit.DB.Element;
