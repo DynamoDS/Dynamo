@@ -464,7 +464,10 @@ namespace Revit.Elements
             if (!IsAlive)
                 return;
 
-            package.PushPointVertex(X, Y, Z);
+            if (this.InternalElement.IsValidObject)
+            {
+                package.PushPointVertex(X, Y, Z);
+            }
         }
 
         #endregion
