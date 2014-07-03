@@ -159,6 +159,13 @@ namespace Dynamo.Nodes
                 RequestBindingRehook(this, e);
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return outputIndex == 0
+                ? AstIdentifierForPreview
+                : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var resultAst = new List<AssociativeNode>
