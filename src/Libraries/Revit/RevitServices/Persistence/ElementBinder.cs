@@ -220,7 +220,10 @@ namespace RevitServices.Persistence
         /// <returns></returns>
         public static ElementId GetIdForUUID(Document document, ElementUUID uuid)
         {
-            return document.GetElement(uuid.UUID).Id;
+            Element e = document.GetElement(uuid.UUID);
+            if (e != null)
+                return e.Id;
+            return null;
         }
 
 
