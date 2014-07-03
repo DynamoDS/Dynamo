@@ -60,6 +60,23 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void IsGreaterVersionThan_StringString_ReturnsCorrectResults()
+        {
+            Assert.IsTrue(PackageHelper.IsGreaterVersionThan("0.7.0", "0.0.5"));
+            Assert.IsTrue(PackageHelper.IsGreaterVersionThan("1.7.0", "0.7.5"));
+            Assert.IsTrue(PackageHelper.IsGreaterVersionThan("0.0.7", "0.0.5"));
+            Assert.IsTrue(PackageHelper.IsGreaterVersionThan("2.7.0", "1.0.5"));
+            Assert.IsTrue(PackageHelper.IsGreaterVersionThan("0.7.1", "0.7.0"));
+
+            Assert.IsFalse(PackageHelper.IsGreaterVersionThan("0.7.0", "0.7.0"));
+            Assert.IsFalse(PackageHelper.IsGreaterVersionThan("0.0.5", "0.7.0"));
+            Assert.IsFalse(PackageHelper.IsGreaterVersionThan("0.7.5", "1.7.0"));
+            Assert.IsFalse(PackageHelper.IsGreaterVersionThan("0.0.5", "0.0.7"));
+            Assert.IsFalse(PackageHelper.IsGreaterVersionThan("1.0.5", "2.7.0"));
+            Assert.IsFalse(PackageHelper.IsGreaterVersionThan( "0.7.0", "0.7.1"));
+        }
+
+        [Test]
         public void GetOwnerPackageReturnsPackageForValidFunctionDefinition()
         {
             Assert.Inconclusive("Porting : Formula");

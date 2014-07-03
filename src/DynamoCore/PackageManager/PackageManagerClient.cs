@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerClient()
         {
-            Client = new Client(null, "http://54.225.121.251"); 
+            Client = new Client(null, "http://www.dynamopackages.com"); 
             this.CachedPackageList = new List<PackageManagerSearchElement>();
         }
 

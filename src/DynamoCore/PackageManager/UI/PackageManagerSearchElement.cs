@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Search.SearchElements;
@@ -98,6 +101,44 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
+                // refactor into separate method with unit tests
+
+                //var dynamoVersion = dynSettings.Controller.DynamoViewModel.Version; // debug
+                var dynamoVersion = "0.5.0.2"; // debug
+
+                var versionHeaderPairs = headers.Zip(
+                    version.full_dependency_versions,
+                    (header, v) => new Tuple<PackageHeader, string>(header, v));
+
+                var failedElems = new List<string>();
+
+                foreach (var pair in versionHeaderPairs)
+                {
+                    var header = pair.Item1;
+                    var vname = pair.Item2;
+
+                    var depVersion = header.versions.First(x => x.version == vname);
+
+                    if (depVersion.engine_version.IsGreaterVersionThan(dynamoVersion))
+                    {
+                        failedElems.Add(header.name);
+                    }
+                }
+
+                var sb = new StringBuilder();
+                bool hasFailure = false;
+
+
+                
+                // if package is newer than dynamo version
+                //foreach (var versionHeader in versionHeaderPairs)
+                //{
+                //    if (versionHeader.Item2.IsGreaterVersionThan(  ) )
+
+
+                //}
+
+
                 var localPkgs = dynSettings.PackageLoader.LocalPackages;
 
                 // if a package is already installed we need to uninstall it
@@ -122,7 +163,7 @@ namespace Dynamo.PackageManager
                 }
 
                 // form header version pairs and download and install all packages
-                headers.Zip(version.full_dependency_versions, (header, v) => new Tuple<PackageHeader, string>(header, v))
+                versionHeaderPairs
                         .Select( x=> new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
                         .ForEach(x=>x.Start());
@@ -130,6 +171,7 @@ namespace Dynamo.PackageManager
             }
 
         }
+
 
         #region Properties 
 
@@ -213,4 +255,21 @@ namespace Dynamo.PackageManager
 
     }
 
+    public static class PackageHelper
+    {
+        public static bool IsGreaterVersionThan(this string version, string versionToCompare)
+        {
+            var splitVersion = version.Split('.').Select(int.Parse).Take(3).ToList();
+            var splitVersionToCompare = versionToCompare.Split('.').Select(int.Parse).Take(3).ToList();
+
+            for (var i = 0; i < 3; i++)
+            {
+                if (splitVersion[i] > splitVersionToCompare[i]) return true;
+                if (splitVersion[i] < splitVersionToCompare[i]) return false;
+            }
+
+            return false;
+        }
+
+    }
 }
