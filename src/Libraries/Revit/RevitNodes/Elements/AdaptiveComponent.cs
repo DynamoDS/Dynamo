@@ -261,9 +261,6 @@ namespace Revit.Elements
         {
             get
             {
-                //var pos = this.InternalFamilyInstance.Location as LocationPoint;
-                //return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
-
                 TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                 DocumentManager.Regenerate();
                 var pts = new List<Point>();
@@ -272,8 +269,7 @@ namespace Revit.Elements
                 foreach (var id in ids)
                 {
                     var p = DocumentManager.Instance.CurrentDBDocument.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
-                    var pos = p.Position;
-                    pts.Add(Point.ByCoordinates(p.Position.X, p.Position.Y, p.Position.Z));
+                    pts.Add(p.Position.ToPoint());
                 }
                 return pts;
             }
