@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager
             GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
             PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
             PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
-            UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
+            UninstallCommand = new DelegateCommand(ShowDialogAndUninstall, CanUninstall);
             DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
 
@@ -208,26 +208,29 @@ namespace Dynamo.PackageManager
                         });
         }
 
-        private void Uninstall()
+        internal void ShowDialogAndUninstall()
         {
-
             var res = MessageBox.Show("Are you sure you want to uninstall " + this.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
             if (res == MessageBoxResult.No) return;
 
+            Uninstall();
+        }
+
+        internal void Uninstall()
+        {
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => dynSettings.CustomNodeManager.RemoveFromDynamo(x.Guid));
                 dynSettings.PackageLoader.LocalPackages.Remove(this);
                 Directory.Delete(this.RootDirectory, true);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
                 MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
                 dynSettings.DynamoLogger.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
                 dynSettings.DynamoLogger.Log(e.GetType() + ": " + e.Message);
             }
-            
+
         }
 
         private bool CanUninstall()

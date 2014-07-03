@@ -83,7 +83,6 @@ namespace Dynamo.PackageManager
 
         public bool Extract( out Package pkg )
         {
-
             this.DownloadState = State.Installing;
 
             // unzip, place files

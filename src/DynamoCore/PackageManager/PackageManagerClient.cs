@@ -119,7 +119,7 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            return !PackageUtilities.IsNewerVersion(currentVersion, header._id);
+            return !Greg.Utility.PackageUtilities.IsNewerVersion(currentVersion, header._id);
         }
 
         public bool IsUserPackageOwner(string packageId)
@@ -379,7 +379,6 @@ namespace Dynamo.PackageManager
 
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
-
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             Downloads.Add( packageDownloadHandle );
 
@@ -400,7 +399,7 @@ namespace Dynamo.PackageManager
 
                                 var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                                 if (firstOrDefault != null)
-                                    firstOrDefault.UninstallCommand.Execute();
+                                    firstOrDefault.Uninstall();
 
                                 if (packageDownloadHandle.Extract(out dynPkg))
                                 {

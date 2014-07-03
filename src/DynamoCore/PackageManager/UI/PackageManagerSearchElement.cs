@@ -6,8 +6,12 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 
@@ -101,44 +105,40 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
-                // refactor into separate method with unit tests
-
-                //var dynamoVersion = dynSettings.Controller.DynamoViewModel.Version; // debug
-                var dynamoVersion = "0.5.0.2"; // debug
-
-                var versionHeaderPairs = headers.Zip(
+                var headerVersionPairs = headers.Zip(
                     version.full_dependency_versions,
                     (header, v) => new Tuple<PackageHeader, string>(header, v));
 
-                var failedElems = new List<string>();
+                var dynamoVersion = dynSettings.Controller.DynamoViewModel.Version;
+                var futureDeps = headerVersionPairs.FilterFuturePackages(dynamoVersion);
 
-                foreach (var pair in versionHeaderPairs)
+                // show future dependency warning
+                if (futureDeps.Any())
                 {
-                    var header = pair.Item1;
-                    var vname = pair.Item2;
+                    var sb = new StringBuilder();
 
-                    var depVersion = header.versions.First(x => x.version == vname);
+                    sb.AppendLine(
+                        "The following packages use a newer version of Dynamo than you are currently using: ");
+                    sb.AppendLine();
 
-                    if (depVersion.engine_version.IsGreaterVersionThan(dynamoVersion))
+                    foreach (var elem in futureDeps)
                     {
-                        failedElems.Add(header.name);
+                        sb.AppendLine(elem.Item1.name + " " + elem.Item2);
+                    }
+
+                    sb.AppendLine();
+                    sb.AppendLine("Do you want to continue?");
+
+                    if (MessageBox.Show(
+                        sb.ToString(),
+                        "Package Uses Newer Version of Dynamo!",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    {
+                        return;
                     }
                 }
-
-                var sb = new StringBuilder();
-                bool hasFailure = false;
-
-
                 
-                // if package is newer than dynamo version
-                //foreach (var versionHeader in versionHeaderPairs)
-                //{
-                //    if (versionHeader.Item2.IsGreaterVersionThan(  ) )
-
-
-                //}
-
-
                 var localPkgs = dynSettings.PackageLoader.LocalPackages;
 
                 // if a package is already installed we need to uninstall it
@@ -163,7 +163,7 @@ namespace Dynamo.PackageManager
                 }
 
                 // form header version pairs and download and install all packages
-                versionHeaderPairs
+                headerVersionPairs
                         .Select( x=> new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
                         .ForEach(x=>x.Start());
@@ -171,7 +171,6 @@ namespace Dynamo.PackageManager
             }
 
         }
-
 
         #region Properties 
 
@@ -255,21 +254,4 @@ namespace Dynamo.PackageManager
 
     }
 
-    public static class PackageHelper
-    {
-        public static bool IsGreaterVersionThan(this string version, string versionToCompare)
-        {
-            var splitVersion = version.Split('.').Select(int.Parse).Take(3).ToList();
-            var splitVersionToCompare = versionToCompare.Split('.').Select(int.Parse).Take(3).ToList();
-
-            for (var i = 0; i < 3; i++)
-            {
-                if (splitVersion[i] > splitVersionToCompare[i]) return true;
-                if (splitVersion[i] < splitVersionToCompare[i]) return false;
-            }
-
-            return false;
-        }
-
-    }
 }
