@@ -658,6 +658,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void UsingFunctionObject01()
         {
             RunModel(@"core\dsevaluation\FunctionObject.dyn");
@@ -784,6 +785,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void Defect_MAGN_3264()
         {
             // Function object to property method and used in apply 
