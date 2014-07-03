@@ -165,6 +165,9 @@ namespace RevitServices.Persistence
                      TransactionManager.Instance.EnsureInTransaction(
                                   DocumentManager.Instance.CurrentDBDocument);
                      Instance.CurrentDBDocument.Regenerate();
+                     //To ensure the transaction is closed in the idle process
+                     //so that the element is updated after this.
+                     TransactionManager.Instance.ForceCloseTransaction();
                  }
                  );
             }
