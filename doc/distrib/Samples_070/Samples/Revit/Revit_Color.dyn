@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.11908" X="167.882400616268" Y="-199.96730891266" zoom="1.0030296397438" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.42482" X="167.882400616268" Y="-199.96730891266" zoom="1.0030296397438" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ecb2936d-6ee9-4b99-9ab1-24269ffedfc5" nickname="Element.OverrideColorInView" x="2505.79836981401" y="565.668051560561" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="RevitNodes.dll" function="Revit.Elements.Element.OverrideColorInView@DSCore.Color" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="bcb655a9-5f3a-46c0-926d-51616dbe998f" nickname="Color.ByARGB" x="2090.82000881931" y="276.98229836352" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="DSCoreNodes.dll" function="DSCore.Color.ByARGB@int,int,int,int" />
@@ -26,7 +26,7 @@
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e503bedb-d3b1-47b8-9219-db21f2e23d89" nickname="List.MaximumItem" x="1436.54085484231" y="449.203889079254" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MaximumItem@var[]..[]" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6061ef50-eae8-4647-af89-78e2eab6366b" nickname="Element.Geometry" x="639.282513790607" y="532.460703498048" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.Element.Geometry" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="a64810c3-f133-4d92-bae4-b61f8c703cb4" nickname="Solid.Area" x="1128.63491825934" y="535.964300854645" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Solid.Area" />
-    <Dynamo.Nodes.DSModelElementsSelection type="Dynamo.Nodes.DSModelElementsSelection" guid="0c78494a-8be5-4761-b232-1c4acea3b0b9" nickname="Select Model Elements" x="27.3642971377004" y="578.119350500084" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSModelElementsSelection type="Dynamo.Nodes.DSModelElementsSelection" guid="0c78494a-8be5-4761-b232-1c4acea3b0b9" nickname="Select Model Elements" x="18.3914815364597" y="595.068002191317" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <instance id="fe746f97-9f89-4685-8fa8-a4525719f180-00092721" />
       <instance id="fe746f97-9f89-4685-8fa8-a4525719f180-00092762" />
       <instance id="fe746f97-9f89-4685-8fa8-a4525719f180-0009278f" />
@@ -69,8 +69,9 @@
     <Dynamo.Models.NoteModel text="set color range" x="2317.24454113634" y="568.176486686567" />
     <Dynamo.Models.NoteModel text="identify areas within a tolerance" x="1500.02392453724" y="662.041657447533" />
     <Dynamo.Models.NoteModel text="or" x="1570.75045297809" y="607.326634244679" />
-    <Dynamo.Models.NoteModel text="Get Walls" x="108.959643797371" y="528.598744177593" />
+    <Dynamo.Models.NoteModel text="Get Walls" x="19.2314877849641" y="557.511150003813" />
     <Dynamo.Models.NoteModel text="Extract Surface Area of Geometry" x="1081.8569802703" y="487.074542902389" />
-    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation" x="23.2442138153635" y="425.874099839549" />
+    <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\0.7\samples\Revit" x="18.2593162591187" y="369.046267698358" />
+    <Dynamo.Models.NoteModel text="Color Revit Elements based on some measurable criteria" x="18.7578060147432" y="462.762341755763" />
   </Notes>
 </Workspace>
