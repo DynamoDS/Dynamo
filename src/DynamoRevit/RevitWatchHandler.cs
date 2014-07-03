@@ -30,7 +30,11 @@ namespace Dynamo.Applications
             var id = element.Id;
 
             var node = new WatchViewModel(element.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
-            node.Clicked += () => DocumentManager.Instance.CurrentUIDocument.ShowElements(element.InternalElement);
+            node.Clicked += () =>
+            {
+                if (element.InternalElement.IsValidObject)
+                    DocumentManager.Instance.CurrentUIDocument.ShowElements(element.InternalElement);
+            };
             node.Link = id.ToString(CultureInfo.InvariantCulture);
 
             return node;
