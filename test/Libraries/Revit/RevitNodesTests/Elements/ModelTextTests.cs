@@ -48,16 +48,16 @@ namespace DSRevitNodesTests.Elements
             Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
                  new ElementUUID( mt.InternalElement.UniqueId)));
 
-            mt.Depth.AssertShouldBeApproximately(depth);
+            mt.Depth.ShouldBeApproximately(depth);
 
             // with unit conversion
-            InternalDepth(mt).AssertShouldBeApproximately(depth * UnitConverter.DynamoToHostFactor);
+            InternalDepth(mt).ShouldBeApproximately(depth * UnitConverter.DynamoToHostFactor);
 
             var expectedInternalLoc =
                 origin.InHostUnits()
                     .Add(Vector.XAxis().Scale(x*UnitConverter.DynamoToHostFactor))
                     .Add(Vector.YAxis().Scale(y*UnitConverter.DynamoToHostFactor));
-            InternalLocation(mt).AssertShouldBeApproximately(expectedInternalLoc);
+            InternalLocation(mt).ShouldBeApproximately(expectedInternalLoc);
 
         }
 

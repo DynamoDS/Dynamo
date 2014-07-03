@@ -26,7 +26,7 @@ namespace DSRevitNodesTests.Elements
 
             var bb = wall.BoundingBox.MinPoint;
             
-            bb.Z.AssertShouldBeApproximately(-129234);
+            bb.Z.ShouldBeApproximately(elevation);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace DSRevitNodesTests.Elements
 
             var wall = Wall.ByCurveAndLevels(line, level0, level1, wallType);
 
-            wall.BoundingBox.MinPoint.Z.AssertShouldBeApproximately(elevation);
+            wall.BoundingBox.MinPoint.Z.ShouldBeApproximately(elevation);
         }
 
         [Test]

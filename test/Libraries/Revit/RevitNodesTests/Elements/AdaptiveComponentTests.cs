@@ -57,14 +57,14 @@ namespace DSRevitNodesTests
 
             // compares after unit conversion
             foreach (var pair in pairs)
-                pair.Item1.AssertShouldBeApproximately(pair.Item2);
+                pair.Item1.ShouldBeApproximately(pair.Item2);
 
             var unconvertedPairs = pts.Zip(GetInternalPoints((FamilyInstance) ac.InternalElement), 
                 (point, point1) => new Tuple<Point, XYZ>(point, point1));
 
             foreach (var pair in unconvertedPairs)
             {
-                pair.Item1.AssertShouldBeApproximately(pair.Item2 * UnitConverter.HostToDynamoFactor);
+                pair.Item1.ShouldBeApproximately(pair.Item2 * UnitConverter.HostToDynamoFactor);
             }
 
             Assert.NotNull(ac);
@@ -141,14 +141,14 @@ namespace DSRevitNodesTests
 
             // with unit conversion
             foreach (var pt in ac.Locations)
-                spline.DistanceTo(pt).AssertShouldBeApproximately(0);
+                spline.DistanceTo(pt).ShouldBeApproximately(0);
 
             // without unit conversion
             var unconvertedPoints = GetInternalPoints((FamilyInstance)ac.InternalElement);
 
             foreach (var pt in unconvertedPoints)
             {
-                spline.DistanceTo(pt.ToPoint()).AssertShouldBeApproximately(0);
+                spline.DistanceTo(pt.ToPoint()).ShouldBeApproximately(0);
             }
 
             Assert.NotNull(ac);

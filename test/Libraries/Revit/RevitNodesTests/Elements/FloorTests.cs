@@ -36,7 +36,7 @@ namespace DSRevitNodesTests.Elements
 
             var floor = Floor.ByOutlineTypeAndLevel(outline, floorType, level);
 
-            BoundingBoxVolume(floor.BoundingBox).AssertShouldBeApproximately(100 * 100 * 0.3048, 1e-3);
+            BoundingBoxVolume(floor.BoundingBox).ShouldBeApproximately(100 * 100 * 0.3048, 1e-3);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace DSRevitNodesTests.Elements
 
             var floor = Floor.ByOutlineTypeAndLevel(polyCurveOutline, floorType, level);
 
-            BoundingBoxVolume(floor.BoundingBox).AssertShouldBeApproximately(100 * 100 * 0.3048, 1e-3);
+            BoundingBoxVolume(floor.BoundingBox).ShouldBeApproximately(100 * 100 * 0.3048, 1e-3);
         }
 
         [Test]

@@ -33,7 +33,7 @@ namespace DSRevitNodesTests.Elements
 
             // without unit conversion
             InternalElevation(level)
-                .AssertShouldBeApproximately(elevation * UnitConverter.DynamoToHostFactor);
+                .ShouldBeApproximately(elevation * UnitConverter.DynamoToHostFactor);
 
         }
 
@@ -59,7 +59,7 @@ namespace DSRevitNodesTests.Elements
 
             // without unit conversion
             InternalElevation(level)
-                .AssertShouldBeApproximately(elevation * UnitConverter.DynamoToHostFactor);
+                .ShouldBeApproximately(elevation * UnitConverter.DynamoToHostFactor);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace DSRevitNodesTests.Elements
 
             // without unit conversion
             InternalElevation(level2)
-                .AssertShouldBeApproximately((elevation + offset) * UnitConverter.DynamoToHostFactor);
+                .ShouldBeApproximately((elevation + offset) * UnitConverter.DynamoToHostFactor);
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace DSRevitNodesTests.Elements
 
             // without unit conversion
             InternalElevation(level2)
-                .AssertShouldBeApproximately((elevation + offset) * UnitConverter.DynamoToHostFactor);
+                .ShouldBeApproximately((elevation + offset) * UnitConverter.DynamoToHostFactor);
         }
 
         [Test]

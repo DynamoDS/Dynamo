@@ -30,7 +30,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var r = face.ToProtoType(false);
 
-            r.Area.AssertShouldBeApproximately(face.Area);
+            r.Area.ShouldBeApproximately(face.Area);
          
         }
     }

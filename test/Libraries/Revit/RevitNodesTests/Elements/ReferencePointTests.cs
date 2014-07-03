@@ -33,9 +33,9 @@ namespace DSRevitNodesTests
             var p = Point.ByCoordinates(0, -10, 23.1);
             var rp = ReferencePoint.ByCoordinates(p.X, p.Y, p.Z);
 
-            rp.Point.AssertShouldBeApproximately(p);
+            rp.Point.ShouldBeApproximately(p);
 
-            InternalPosition(rp).AssertShouldBeApproximately(p.InHostUnits());
+            InternalPosition(rp).ShouldBeApproximately(p.InHostUnits());
         }
 
         [Test]
@@ -45,9 +45,9 @@ namespace DSRevitNodesTests
             var p = Point.ByCoordinates(0, -10, 23.1);
             var rp = ReferencePoint.ByPoint(p);
 
-            rp.Point.AssertShouldBeApproximately(p);
+            rp.Point.ShouldBeApproximately(p);
 
-            InternalPosition(rp).AssertShouldBeApproximately(p.InHostUnits());
+            InternalPosition(rp).ShouldBeApproximately(p.InHostUnits());
         }
 
         [Test]
@@ -61,8 +61,8 @@ namespace DSRevitNodesTests
 
             var pt = p.Add(v.Scale(5));
 
-            rp.Point.AssertShouldBeApproximately(pt);
-            InternalPosition(rp).AssertShouldBeApproximately(pt.InHostUnits());
+            rp.Point.ShouldBeApproximately(pt);
+            InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
         [Test]
@@ -75,8 +75,8 @@ namespace DSRevitNodesTests
 
             var pt = Point.ByCoordinates(0.5, 0, 0);
 
-            rp.Point.AssertShouldBeApproximately(pt);
-            InternalPosition(rp).AssertShouldBeApproximately(pt.InHostUnits());
+            rp.Point.ShouldBeApproximately(pt);
+            InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
         [Test]
@@ -89,8 +89,8 @@ namespace DSRevitNodesTests
 
             var pt = Point.ByCoordinates(0.5, 0, 0);
 
-            rp.Point.AssertShouldBeApproximately(pt);
-            InternalPosition(rp).AssertShouldBeApproximately(pt.InHostUnits());
+            rp.Point.ShouldBeApproximately(pt);
+            InternalPosition(rp).ShouldBeApproximately(pt.InHostUnits());
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace DSRevitNodesTests
             var pt = ReferencePoint.ByParametersOnFaceReference(faceRef, 0.5, 0.5);
 
             Assert.NotNull(pt);
-            pt.X.AssertShouldBeApproximately(-18.19622727891606);
+            pt.X.ShouldBeApproximately(-18.19622727891606);
         }
 
         [Test]

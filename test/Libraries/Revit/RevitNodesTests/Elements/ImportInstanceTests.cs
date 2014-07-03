@@ -36,9 +36,9 @@ namespace DSRevitNodesTests.Elements
 
             var solidImport = (Autodesk.DesignScript.Geometry.Solid)importGeometry;
 
-            cuboid.Volume.AssertShouldBeApproximately(solidImport.Volume);
-            cuboid.BoundingBox.MinPoint.AssertShouldBeApproximately(solidImport.BoundingBox.MinPoint);
-            cuboid.BoundingBox.MaxPoint.AssertShouldBeApproximately(solidImport.BoundingBox.MaxPoint);
+            cuboid.Volume.ShouldBeApproximately(solidImport.Volume);
+            cuboid.BoundingBox.MinPoint.ShouldBeApproximately(solidImport.BoundingBox.MinPoint);
+            cuboid.BoundingBox.MaxPoint.ShouldBeApproximately(solidImport.BoundingBox.MaxPoint);
         }
     }
 }

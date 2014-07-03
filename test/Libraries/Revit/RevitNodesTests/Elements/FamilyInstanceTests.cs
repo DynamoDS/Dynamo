@@ -30,13 +30,13 @@ namespace DSRevitNodesTests
 
             var position = famInst.Location;
 
-            position.AssertShouldBeApproximately(Point.ByCoordinates(0, 1, 2));
+            position.ShouldBeApproximately(Point.ByCoordinates(0, 1, 2));
     
             // no unit conversion
             var internalPos =
                 InternalLocation(famInst.InternalElement as Autodesk.Revit.DB.FamilyInstance);
 
-            (internalPos * UnitConverter.HostToDynamoFactor).AssertShouldBeApproximately(
+            (internalPos * UnitConverter.HostToDynamoFactor).ShouldBeApproximately(
                 Point.ByCoordinates(0, 1, 2));
         }
 
@@ -51,13 +51,13 @@ namespace DSRevitNodesTests
 
             var position = famInst.Location;
 
-            position.AssertShouldBeApproximately(Point.ByCoordinates(0, 1, 2));
+            position.ShouldBeApproximately(Point.ByCoordinates(0, 1, 2));
 
             // no unit conversion
             var internalPos =
                 InternalLocation(famInst.InternalElement as Autodesk.Revit.DB.FamilyInstance);
 
-            (internalPos * UnitConverter.HostToDynamoFactor).AssertShouldBeApproximately(
+            (internalPos * UnitConverter.HostToDynamoFactor).ShouldBeApproximately(
                 Point.ByCoordinates(0, 1, 2));
         }
 
