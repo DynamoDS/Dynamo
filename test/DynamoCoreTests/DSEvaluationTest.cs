@@ -813,9 +813,10 @@ namespace Dynamo.Tests
         [Test]
         public void CBNAndFormula()
         {
-
             RunModel(@"core\dsevaluation\CBNWithFormula.dyn");
-            AssertPreviewValue("60979b20-8089-4d5a-93bf-2cf829f74060", 3);
+            var id =
+                dynSettings.Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().GUID;
+            AssertPreviewValue(id.ToString(), 3);
         }
 
         [Test]
@@ -877,7 +878,6 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWithCBNAndGeometry()
         {
-            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
@@ -885,23 +885,17 @@ namespace Dynamo.Tests
                 != null);
 
             string openPath = Path.Combine(examplePath, "TestCentroid.dyn");
-            //model.Open(openPath);
 
             RunModel(openPath);
 
-            // check all the nodes and connectors are loaded
-                       
-            
-            AssertPreviewValue("6542259f-b7c2-4a09-962b-7712ca269306", 0.00);
-            AssertValue("x", 5.5);
-            AssertValue("y", 3.0);
-            AssertValue("z", 0.0);
+            AssertPreviewValue("6ad5aa92-b3f5-492f-aa7c-4ae307587967", 5.5);
+            AssertPreviewValue("7095a283-62e8-4f95-b1bf-f8919b700c96", 3.0);
+            AssertPreviewValue("7a4b9510-c64c-48cb-81c7-24616cec56fc", 0.0);
         }
 
         [Test]
         public void CustomNodeMultipleInGraph()
         {
-            var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             var dyfPath = Path.Combine(examplePath, "Poly.dyf");
@@ -909,10 +903,9 @@ namespace Dynamo.Tests
 
             RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
 
-            AssertPreviewValue("6542259f-b7c2-4a09-962b-7712ca269306", 0.00);
-            AssertValue("x", 5.5);
-            AssertValue("y", 3.0);
-            AssertValue("z", 0.0);
+            AssertPreviewValue("8453b5c7-2efc-4ff2-a8f3-7c376d22c240", 5.5);
+            AssertPreviewValue("a9868848-0443-431b-bedd-9f63c25157e0", 3.0);
+            AssertPreviewValue("9b569c4f-1f09-4ffb-a621-d0341f1fe890", 0.0);
         }
 
         [Test]

@@ -94,7 +94,7 @@
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="CustomNodes.cs" />
-    <Compile Include="Setup.cs" />
+    <Compile Include="SetupAssemblyResolver.cs" />
     <Compile Include="FileReading.cs" />
     <Compile Include="Nodes\ListTests.cs" />
     <Compile Include="DynamoUnitTest.cs" />

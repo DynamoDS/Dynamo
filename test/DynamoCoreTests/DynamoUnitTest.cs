@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
+using Dynamo.Selection;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -20,20 +21,19 @@ namespace Dynamo.Tests
     {
         protected DynamoController Controller;
 
-        [SetUp]
         public override void Init()
         {
             base.Init();
             StartDynamo();
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             try
             {
                 Controller.ShutDown(false, null);
                 this.Controller = null;
+                DynamoSelection.Instance.ClearSelection();
             }
             catch (Exception ex)
             {
