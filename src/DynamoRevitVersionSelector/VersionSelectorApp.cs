@@ -31,13 +31,15 @@ namespace Dynamo.Applications
             if (File.Exists(path06x))
             {
                 loadPath = path06x;
-                versions.Add(FileVersionInfo.GetVersionInfo(path06x).FileVersion);
+                var vi = FileVersionInfo.GetVersionInfo(path06x);
+                versions.Add(string.Format("{0}.{1}.{2}",vi.FileMajorPart,vi.FileMinorPart,vi.FileBuildPart));
             }
 
             if (File.Exists(path07x))
             {
                 loadPath = path07x;
-                versions.Add(FileVersionInfo.GetVersionInfo(path07x).FileVersion);
+                var vi = FileVersionInfo.GetVersionInfo(path07x);
+                versions.Add(string.Format("{0}.{1}.{2}", vi.FileMajorPart, vi.FileMinorPart, vi.FileBuildPart));
             }
 
             // If there are multiple versions installed, then create

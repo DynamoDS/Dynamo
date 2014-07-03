@@ -6,6 +6,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using Dynamo.Utilities;
+
+using DynamoUtilities;
+
 namespace DSRevitNodesTests
 {
     public static class AssemblyResolver
@@ -14,10 +18,10 @@ namespace DSRevitNodesTests
         public static void Setup()
         {
             if (resolverSetup) return;
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveProtoGeometry;
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveDynamoUnits;
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveProtoInterface;
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveDSNodeServices;
+
+            DynamoPathManager.Instance.InitializeCore(GetDynamoRootDirectory());
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+
             resolverSetup = true;
         }
 
@@ -28,41 +32,6 @@ namespace DSRevitNodesTests
             return assemDir.Parent.FullName;
         }
 
-        private static Assembly ResolveDSNodeServices(object sender, ResolveEventArgs args)
-        {
-            if (!args.Name.Contains("DSNodeServices")) return null;
-
-            var assemPath = Path.Combine(GetDynamoRootDirectory(), "DSNodeServices.dll");
-
-            return File.Exists(assemPath) ? Assembly.LoadFrom(assemPath) : null;
-        }
-
-        private static Assembly ResolveProtoInterface(object sender, ResolveEventArgs args)
-        {
-            if (!args.Name.Contains("ProtoInterface")) return null;
-
-            var assemPath = Path.Combine(GetDynamoRootDirectory(), "ProtoInterface.dll");
-
-            return File.Exists(assemPath) ? Assembly.LoadFrom(assemPath) : null;
-        }
-
-        private static Assembly  ResolveProtoGeometry(object sender, ResolveEventArgs args)
-        {
-            if (!args.Name.Contains("ProtoGeometry")) return null;
-
-            var assemPath = Path.Combine(GetDynamoRootDirectory(), "ProtoGeometry.dll");
-
-            return File.Exists(assemPath) ? Assembly.LoadFrom(assemPath) : null;
-        }
-
-        private static Assembly ResolveDynamoUnits(object sender, ResolveEventArgs args)
-        {
-            if (!args.Name.Contains("DynamoUnits")) return null;
-
-            var assemPath = Path.Combine(GetDynamoRootDirectory(), "DynamoUnits.dll");
-
-            return File.Exists(assemPath) ? Assembly.LoadFrom(assemPath) : null;
-        }
     }
     
 }
