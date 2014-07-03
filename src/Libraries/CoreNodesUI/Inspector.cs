@@ -15,7 +15,7 @@ using System.Reflection;
 using System.Windows.Data;
 using System.Windows.Controls.Primitives;
 using System.Dynamic;
-
+using System.Xml;
 using rt =  Microsoft.CSharp.RuntimeBinder;
 using System;
 using System.Dynamic;
@@ -95,8 +95,8 @@ namespace DSCoreNodesUI
             }
         }
 
-
-
+        public StackPanel InnerStackPanel;
+        
 
         /// <summary>
         /// list of comboboxes - can use this to track existing number of comboboxes
@@ -104,7 +104,7 @@ namespace DSCoreNodesUI
         public List<ComboBox> comboboxes = new List<ComboBox>();
         public List<combobox_selected_index_wrapper> previous_indicies = new List<combobox_selected_index_wrapper>();
        // public List<TextBox> tboxes = new List<TextBox>();
-
+        public List<int> loaded_indices = new List<int>();
 
         public event EventHandler RequestSelectChange;
         protected virtual void OnRequestSelectChange(object sender, EventArgs e)
@@ -323,43 +323,15 @@ namespace DSCoreNodesUI
             //PopulateItems();
         }
 
-
+        
         public ComboBox gen_and_setup_combobox(StackPanel sp)
-        {
+        {   
             // make a new index wrapper to bind to
             combobox_selected_index_wrapper new_selected_index = new combobox_selected_index_wrapper();
             //store it
             indicies.Add(new_selected_index);
             //we just added this so this is the index
             int index_into_index = indicies.Count - 1;
-
-/*
-
-            var tbox = new TextBox
-            {
-                Width = System.Double.NaN,
-                MinWidth = 100,
-                Height = Configurations.PortHeightInPixels,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
-
-            };
-            wp.Children.Add(tbox);
-           
-
-            //text box for testing the index binding
-            var tindexBinding = new Binding()
-            {
-                Path = new PropertyPath("SelectedIndex"),
-                Mode = BindingMode.OneWay,
-                Source = new_selected_index
-            };
-            tbox.SetBinding(TextBox.TextProperty, tindexBinding);
-
-            */
-
-
-
 
             var combo = new ComboBox
                         {
@@ -442,10 +414,28 @@ namespace DSCoreNodesUI
             return last;
 
         }
+        
+        public void SetComboBoxes()
+            {
+                    // first populate all items list
+                    // then add necessary combo boxes
+
+                    PopulateItems();
+                    if (comboboxes.Count < numDropDowns)
+                    {
+                        var cur_combo_box = gen_and_setup_combobox(InnerStackPanel);
+                    }
+                    else if (comboboxes.Count > numDropDowns)
+                    {
+                        ComboBox removed_combo = remove_combo(InnerStackPanel);
 
 
+                    }
 
 
+                }
+
+       
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
@@ -490,37 +480,66 @@ namespace DSCoreNodesUI
                 
 
             };
+
+            this.InnerStackPanel = InnerStackPanel;
+
             OuterWrapPanel.Children.Add(InnerStackPanel);
 
             nodeUI.inputGrid.Children.Add(OuterWrapPanel);
            
-            //nodeUI.PresentationGrid.Children.Add(InnerStackPanel);
+            
             // add the first combobox
-            var firstcombo = gen_and_setup_combobox(InnerStackPanel);
+            // only create this first item if we have not already loaded the combo boxes
 
+              if (loaded_indices.Count > 0)
+             {
+                for (int i = 0; i < loaded_indices.Count; i++)
+               {
+                  SetComboBoxes();
+                  Indicies[i].SelectedIndex = loaded_indices[i];
+             }
+            }
+            
 
             RequestSelectChange += delegate
             {
-                DispatchOnUIThread(delegate
-                {
-                    // first populate all items list
+                DispatchOnUIThread(SetComboBoxes);
+        };
+       }
 
-                    PopulateItems();
-                    if (comboboxes.Count < numDropDowns)
-                    {
-                        var cur_combo_box = gen_and_setup_combobox(InnerStackPanel);
-                    }
-                    else if (comboboxes.Count > numDropDowns)
-                    {
-                        ComboBox removed_combo = remove_combo(InnerStackPanel);
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            var stringlist = Indicies.Select(x=>x.SelectedIndex.ToString()).ToList();
+            string joined = string.Join(",", stringlist.ToArray());
+            nodeElement.SetAttribute("indices",joined );
 
-
-                    }
-
-
-                });
-            };
+            nodeElement.SetAttribute("numdropdowns", numDropDowns.ToString());
         }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            try
+            {   string[] strings =  nodeElement.Attributes["indices"].Value.Split(',');
+                List<int> ints =  strings.Select(x=> Convert.ToInt32(x)).ToList();
+
+                numDropDowns = Convert.ToInt32(nodeElement.Attributes["numdropdowns"].Value);
+
+                foreach(int index in ints){
+
+                   
+                 
+                    // record the loaded indicies and let setupui handle this when it loads the UI
+                    loaded_indices.Add(index);
+                }
+
+                
+            }
+            catch { }
+
+           
+
+        }
+
         protected override bool ShouldDisplayPreviewCore()
         {
             return false; // Previews are not shown for this node type.
