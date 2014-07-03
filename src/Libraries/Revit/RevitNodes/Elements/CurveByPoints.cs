@@ -96,6 +96,11 @@ namespace Revit.Elements
             return new CurveByPoints(points.Select(x=>x.InternalReferencePoint), isReferenceLine);
         }
 
+
+        #endregion
+
+        #region Internal constructors
+
         /// <summary>
         /// Construct a Revit ModelCurve element from an existing element.
         /// </summary>
@@ -110,7 +115,7 @@ namespace Revit.Elements
         }
 
         #endregion
-    
+
         public override string ToString()
         {
             return "CurveByPoints";

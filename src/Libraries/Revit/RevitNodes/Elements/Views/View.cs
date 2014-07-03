@@ -29,7 +29,8 @@ namespace Revit.Elements.Views
         }
 
         /// <summary>
-        /// Export the view as an image to the given path as a PNG
+        /// Export the view as an image to the given path - defaults to png, but you can override 
+        /// the file type but supplying a path with the appropriate extension
         /// </summary>
         /// <param name="path">A valid path for the image</param>
         /// <returns>The image</returns>

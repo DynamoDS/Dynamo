@@ -105,7 +105,7 @@ namespace DSRevitNodesTests
             foreach (var pt in divPathPts)
             {
                 // all of the points should be along the curve
-                spline.DistanceTo(pt).ShouldBeApproximately(0);
+                spline.DistanceTo(pt).AssertShouldBeApproximately(0);
             }
         }
     }

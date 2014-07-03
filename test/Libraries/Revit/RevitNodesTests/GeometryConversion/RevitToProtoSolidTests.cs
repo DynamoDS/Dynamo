@@ -29,10 +29,10 @@ namespace DSRevitNodesTests.GeometryConversion
             {
                 var asmSolid = solid.ToProtoType(false);
 
-                asmSolid.Volume.ShouldBeApproximately(solid.Volume);
-                asmSolid.Area.ShouldBeApproximately(solid.SurfaceArea);
+                asmSolid.Volume.AssertShouldBeApproximately(solid.Volume);
+                asmSolid.Area.AssertShouldBeApproximately(solid.SurfaceArea);
                 Assert.AreEqual(solid.Faces.Size, asmSolid.Faces.Length);
-                asmSolid.Centroid().ShouldBeApproximately(solid.ComputeCentroid());
+                asmSolid.Centroid().AssertShouldBeApproximately(solid.ComputeCentroid());
 
             }
 
