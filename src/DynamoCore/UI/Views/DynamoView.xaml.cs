@@ -322,6 +322,7 @@ namespace Dynamo.Controls
 
         void _vm_RequestViewOperation(ViewOperationEventArgs e)
         {
+#if !BLOODSTONE
             if (_vm.CanNavigateBackground == false)
                 return;
 
@@ -341,6 +342,7 @@ namespace Dynamo.Controls
                     camera2.Zoom(0.5 * background_preview.View.ZoomSensitivity);
                     break;
             }
+#endif
         }
 
         private void DynamoView_Loaded(object sender, EventArgs e)
