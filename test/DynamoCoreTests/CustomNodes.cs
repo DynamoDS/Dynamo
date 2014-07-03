@@ -458,7 +458,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, Controller.DynamoModel.HomeSpace.Nodes.Count);
             Assert.IsInstanceOf<Function>(Controller.DynamoModel.HomeSpace.Nodes.First());
-            Assert.AreEqual(customNodeDef, (Controller.DynamoModel.HomeSpace.Nodes.First() as Function).Definition);
+            Assert.AreSame(customNodeDef, (Controller.DynamoModel.HomeSpace.Nodes.First() as Function).Definition);
         }
 
 

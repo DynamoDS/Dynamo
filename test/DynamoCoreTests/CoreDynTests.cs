@@ -297,17 +297,12 @@ namespace Dynamo.Tests
         [Test]
         public void OpeningDynWithDyfMissingIsOkayAndRunsOkay()
         {
-            Assert.DoesNotThrow(delegate
-                {
-                    var model = dynSettings.Controller.DynamoModel;
-                    var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
-                    string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
+            string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
 
-                    RunModel(openPath);
+            RunModel(openPath);
 
-                    Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count, 11);
-
-                });
+            Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count, 11);
         }
 
         [Test]

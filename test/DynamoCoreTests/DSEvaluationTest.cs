@@ -180,7 +180,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void Regress561()
         {
             // 1; ----> x
@@ -718,7 +717,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
             AssertPreviewValue("0ffe94bd-f926-4e81-83f7-7975e67a3713",
-                new int[] { 2, 4, 6, 8, 10, 12, 14, 16 });
+                new int[] { 2, 4, 6, 8 });
         }
 
         [Test]
@@ -812,25 +811,11 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Formula_Simple()
-        {
-            
-            RunModel(@"core\dsevaluation\SimpleFormula.dyn");
-            AssertPreviewValue("6637546b-7998-4c48-bdb6-0bcf9f6ae997", new int[]{ 2, 6, 12, 20, 30 });
-        }
-        [Test]
         public void CBNAndFormula()
         {
 
             RunModel(@"core\dsevaluation\CBNWithFormula.dyn");
             AssertPreviewValue("60979b20-8089-4d5a-93bf-2cf829f74060", 3);
-        }
-        [Test]
-        public void FormulaIntegration()
-        {
-
-            RunModel(@"core\dsevaluation\FormulaIntegration1.dyn");
-            AssertPreviewValue("88d3bb73-42cd-4ffc-82e2-402c9550d5b1", new double[] { 0.000000, 0.001038, 0.002289, -0.007827, -0.035578, -0.046003, 0.034186, 0.216376, 0.315323, 0.000000 });
         }
 
         [Test]

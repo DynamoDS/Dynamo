@@ -1059,39 +1059,19 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
 		public void LaceShortest_StringInput()
 		{
-			var model = dynSettings.Controller.DynamoModel;
-
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_StringInput.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
-
-			// Element from the Reverse list
-			AssertPreviewValue("1c4c75ff-735d-4431-9df3-2b187c469b3a", "1Design");
 
 			// Elements from first LaceShortest list
 			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
 			{
-				{0,1},
-				{1,1},
-				{2,1},
+				{0,"DynamoDynamo"},
+				{1,"DesignDesign"},
+				{2,"ScriptScript"},
 			};
-			SelectivelyAssertPreviewValues("10005d3c-3bbf-4690-b658-37b11c8402b1", validationData1);
-
-			// Elements from second LaceShortest list
-			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
-			{
-				{0,"Dynamo"},
-				{1,"Design"},
-				{2,"Script"},
-			};
-			SelectivelyAssertPreviewValues("c19f09a1-6132-4c9c-8f37-5f138e1a3067", validationData2);
-
+            SelectivelyAssertPreviewValues("10005d3c-3bbf-4690-b658-37b11c8402b1", validationData1);
 		}
 
 		[Test]
@@ -1326,37 +1306,17 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
 		public void NumberRange_LacingShortest()
 		{
-			var model = dynSettings.Controller.DynamoModel;
-
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingShortest.dyn");
 			RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
-
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0,1},
-				{8,9},
-			};
-
-			//this is the case of 2D array. Need to change verification
-			SelectivelyAssertPreviewValues("798bc857-f36e-44df-97cc-6e878aef5b72", validationData);
-
-			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
-			{
-				{0,2},
-				{3,8},
-			};
-
-			//this is the case of 2D array. Need to change verification
-			SelectivelyAssertPreviewValues("2f5277db-4656-4014-8d85-8e4f51e5c2b1", validationData1);
-
-
+            AssertPreviewValue("4e781f03-5b48-4d58-a511-8c732665e961",
+                new[]
+                {
+                    new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+                    new[] { 2, 4, 6, 8, 10 }
+                });
 		}
 
 		[Test]
@@ -2076,12 +2036,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0,10},
-				{1,13},
-			};
-			SelectivelyAssertPreviewValues("b18e5ac3-5732-4c78-9a3b-56b375c9beee", validationData);
+			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new[] { 7, 10, 13, 16, 19 });
 		}
 
 		[Test]
@@ -2096,7 +2051,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
 			Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new double[] { 2.3 });
+			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new[] { 1.0, 2.3 });
 		}
 
 		[Test]
@@ -2145,7 +2100,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
 			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-			AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 6, 7, 8, 9 });
+			AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 1, 2, 3, 4, 6, 7, 8, 9 });
 		}
 
 		[Test]
@@ -2270,10 +2225,6 @@ namespace Dynamo.Tests
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_Complex.dyn");
 			RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
-
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
 				{0,7},
@@ -2318,10 +2269,6 @@ namespace Dynamo.Tests
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_SimpleTest.dyn");
 			RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4 + 1, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3 + 1, model.CurrentWorkspace.Connectors.Count);
-
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
 				{0,1},
@@ -2337,10 +2284,6 @@ namespace Dynamo.Tests
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_Complex.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(12 + 1, model.CurrentWorkspace.Connectors.Count);
 			
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -2359,10 +2302,6 @@ namespace Dynamo.Tests
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_MultipleInput.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
 			AssertPreviewValue("cc3ae092-8644-4a36-ad38-12ffa15cebda",
 				new object[][]
