@@ -711,8 +711,17 @@ namespace Dynamo.Models
 
             var result = BuildOutputAst(inputAstNodes);
 
-            //if (OutPortData.Count == 1)
-            //    return result;
+            if (OutPortData.Count == 1)
+            {
+                return
+                    result.Concat(
+                        new[]
+                        {
+                            AstFactory.BuildAssignment(
+                                AstIdentifierForPreview,
+                                GetAstIdentifierForOutputIndex(0))
+                        });
+            }
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
