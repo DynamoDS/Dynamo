@@ -26,11 +26,11 @@ namespace DSRevitNodesTests.Elements
             var topoSurf = Topography.ByPoints(new List<Point> { p1,p2,p3,p4,p5 });
             Assert.NotNull(topoSurf);
 
-            topoSurf.Points[0].AssertShouldBeApproximately(p1);
-            topoSurf.Points[1].AssertShouldBeApproximately(p2);
-            topoSurf.Points[2].AssertShouldBeApproximately(p3);
-            topoSurf.Points[3].AssertShouldBeApproximately(p4);
-            topoSurf.Points[4].AssertShouldBeApproximately(p5);
+            topoSurf.Points[0].ShouldBeApproximately(p1);
+            topoSurf.Points[1].ShouldBeApproximately(p2);
+            topoSurf.Points[2].ShouldBeApproximately(p3);
+            topoSurf.Points[3].ShouldBeApproximately(p4);
+            topoSurf.Points[4].ShouldBeApproximately(p5);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace DSRevitNodesTests.Elements
             topoSurf = Topography.ByPoints(new List<Point> {p1, p2, p3, p4, p6});
             Assert.NotNull(topoSurf);
 
-            topoSurf.Points[4].AssertShouldBeApproximately(p6);
+            topoSurf.Points[4].ShouldBeApproximately(p6);
         }
     }
 }
