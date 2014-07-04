@@ -209,14 +209,6 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
-            ShortcutBarItem bloodstoneButton = new ShortcutBarItem();
-            bloodstoneButton.ShortcutToolTip = "Bloodstone!";
-            bloodstoneButton.ShortcutCommand = new DelegateCommand(DoBloodstone, CanBloodstone);
-            bloodstoneButton.ShortcutCommandParameter = null;
-            bloodstoneButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
-            bloodstoneButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
-            bloodstoneButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
-
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
             //updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
@@ -239,55 +231,11 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            shortcutBar.ShortcutBarItems.Add(bloodstoneButton);
 
             //shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
-        }
-
-        private Bloodstone.BloodstoneWindow bloodstoneWindow = null;
-
-        private void DoBloodstone(object parameter)
-        {
-            if (bloodstoneWindow == null)
-                bloodstoneWindow = new Bloodstone.BloodstoneWindow();
-
-            if (bloodstoneWindow.Visibility != System.Windows.Visibility.Visible)
-                bloodstoneWindow.Show();
-
-            var vm = (DataContext as DynamoViewModel);
-            this.SynthesizeGraph(vm.CurrentSpace);
-        }
-
-        private bool CanBloodstone(object parameter)
-        {
-            return true;
-        }
-
-        private void SynthesizeGraph(WorkspaceModel workspace)
-        {
-            if (this.bloodstoneWindow == null)
-                return;
-
-            var control = this.bloodstoneWindow.Control;
-            var graph = control.GetSynthesizedGraph();
-
-            foreach (var node in workspace.Nodes)
-            {
-                var id = node.GUID.ToString().ToLower();
-                graph.AddNode(id, node.NickName);
-            }
-
-            foreach (var conn in workspace.Connectors)
-            {
-                var startId = conn.Start.Owner.GUID.ToString().ToLower();
-                var endId = conn.End.Owner.GUID.ToString().ToLower();
-                graph.AddEdge(startId, endId);
-            }
-
-            control.SetSynthesizedGraph(graph);
         }
 
         /// <summary>
@@ -392,6 +340,7 @@ namespace Dynamo.Controls
             {
                 var b = this.visualizerHostElement;
                 visualizer = new VisualizerHwndHost(b.ActualWidth, b.ActualHeight);
+                visualizer.Visibility = System.Windows.Visibility.Collapsed;
                 this.visualizerHostElement.Child = visualizer;
             }
 #endif
@@ -420,11 +369,15 @@ namespace Dynamo.Controls
         {
             if (e.PropertyName == "ShowStartPage" && (this.visualizer != null))
             {
-                var dynamoViewModel = sender as DynamoViewModel;
-                var vis = this.visualizer.CurrentVisualizer;
-                vis.ShowWindow(!dynamoViewModel.ShowStartPage);
+                var visibility = Visibility.Visible;
+                if ((sender as DynamoViewModel).ShowStartPage)
+                    visibility = Visibility.Collapsed;
+
+                visualizer.Visibility = visibility;
             }
         }
+
+#if BLOODSTONE
 
         void OnRequestUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
         {
@@ -441,6 +394,8 @@ namespace Dynamo.Controls
 
             visualizer.CurrentVisualizer.UpdateNodeDetails(details);
         }
+
+#endif
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
         {
