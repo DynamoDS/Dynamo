@@ -68,6 +68,7 @@ namespace Dynamo { namespace Bloodstone {
 
         // Public class methods.
         HWND GetWindowHandle(void);
+        void ShowWindow(bool show);
         void BlendGeometryLevels(float blendingFactor);
         void UpdateNodeDetails(NodeDetailsType^ nodeDetails);
         void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
