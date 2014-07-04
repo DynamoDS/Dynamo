@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Revit.Elements;
 using Revit.GeometryConversion;
-
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -15,6 +15,36 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Revit.AnalysisDisplay
 {
+    /// <summary>
+    /// Hold a pair of element ID of SpatialFieldManager and primitive ID to
+    /// support serialization.
+    /// </summary>
+    [Serializable]
+    public class SpmPrimitiveIdPair : ISerializable
+    {
+        public int SpatialFieldManagerID { get; set; }
+        public int PrimitiveID { get; set; }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("SpatialFieldManagerID", SpatialFieldManagerID, typeof(int));
+            info.AddValue("PrimitiveID", PrimitiveID, typeof(int));
+        }
+
+        public SpmPrimitiveIdPair()
+        {
+            SpatialFieldManagerID = int.MinValue;
+            PrimitiveID = int.MinValue;
+        }
+
+        public SpmPrimitiveIdPair(SerializationInfo info, StreamingContext context)
+        {
+            SpatialFieldManagerID = (int) info.GetValue("SpatialFieldManagerID", typeof (int));
+            PrimitiveID = (int)info.GetValue("PrimitiveID", typeof(int));
+
+        }
+    }
+
     /// <summary>
     /// Superclass for all Revit Analysis Display types
     /// 
@@ -30,7 +60,7 @@ namespace Revit.AnalysisDisplay
         /// <summary>
         /// A reference to the current document
         /// </summary>
-        protected static Autodesk.Revit.DB.Document Document 
+        protected static Autodesk.Revit.DB.Document Document
         {
             get
             {
@@ -47,7 +77,8 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         protected Autodesk.Revit.DB.Analysis.SpatialFieldManager SpatialFieldManager
         {
-            get; set;
+            get;
+            set;
         }
 
         /// <summary>
@@ -55,7 +86,8 @@ namespace Revit.AnalysisDisplay
         /// </summary>
         protected int SpatialFieldPrimitiveId
         {
-            get; set;
+            get;
+            set;
         }
 
         #endregion
@@ -114,7 +146,7 @@ namespace Revit.AnalysisDisplay
             return schemaIndex;
         }
 
-        
+
 
         /// <summary>
         /// Get the SpatialFieldManager for a particular view.  This is a singleton for every view.  Note that the 
@@ -154,9 +186,7 @@ namespace Revit.AnalysisDisplay
         {
             if (SpatialFieldManager != null)
             {
-                // no need to get rid of SpatialFieldManager, which may be used again
-                // just remove the primitive
-                this.SpatialFieldManager.RemoveSpatialFieldPrimitive( SpatialFieldPrimitiveId );
+                // no need to delete SpatialFieldManager, neither primitive id.
             }
         }
 
@@ -170,24 +200,24 @@ namespace Revit.AnalysisDisplay
         /// <returns></returns>
         protected Tuple<SpatialFieldManager, int> GetElementAndPrimitiveIdFromTrace()
         {
-            throw new NotImplementedException("This Element ID scheme is not yet implemented");
-            
-            /*
-
             // This is a provisional implementation until we can store both items in trace
-            var id = ElementBinder.GetElementIdFromTrace(Document);
+            var id = ElementBinder.GetRawDataFromTrace();
+            if (id == null)
+                return null;
 
-            if (id == null) return null;
+            var idPair = id as SpmPrimitiveIdPair;
+            if (idPair == null)
+                return null;
 
-            var primitiveId = id.IntegerValue / PrimitiveIdPrimeFactor;
-            var sfmId = id.IntegerValue % PrimitiveIdPrimeFactor;
+            var primitiveId = idPair.PrimitiveID;
+            var sfmId = idPair.SpatialFieldManagerID;
 
             SpatialFieldManager sfm = null;
 
             // if we can't get the sfm, return null
             if (!Document.TryGetElement<SpatialFieldManager>(new ElementId(sfmId), out sfm)) return null;
 
-            return new Tuple<SpatialFieldManager, int>(sfm, primitiveId);*/
+            return new Tuple<SpatialFieldManager, int>(sfm, primitiveId);
         }
 
         /// <summary>
@@ -207,12 +237,10 @@ namespace Revit.AnalysisDisplay
                 throw new Exception();
             }
 
-            // This is provisional until we can store an Int and ElementId simultaneously in TLS
-            var id = primitiveId * PrimitiveIdPrimeFactor + manager.Id.IntegerValue;
-
-
-            throw new NotImplementedException("This Element ID scheme is not yet implemented");
-         //   ElementBinder.SetElementForTrace(new ElementId(id));
+            SpmPrimitiveIdPair idPair = new SpmPrimitiveIdPair();
+            idPair.SpatialFieldManagerID = manager.Id.IntegerValue;
+            idPair.PrimitiveID = primitiveId;
+            ElementBinder.SetRawDataForTrace(idPair);
         }
 
         /// <summary>
@@ -224,8 +252,5 @@ namespace Revit.AnalysisDisplay
         }
 
         #endregion
-
+    }
 }
-
-}
-
