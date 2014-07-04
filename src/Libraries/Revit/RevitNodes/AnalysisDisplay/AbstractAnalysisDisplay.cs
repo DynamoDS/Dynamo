@@ -19,6 +19,7 @@ namespace Revit.AnalysisDisplay
     /// Hold a pair of element ID of SpatialFieldManager and primitive ID to
     /// support serialization.
     /// </summary>
+    [SupressImportIntoVM]
     [Serializable]
     public class SpmPrimitiveIdPair : ISerializable
     {
