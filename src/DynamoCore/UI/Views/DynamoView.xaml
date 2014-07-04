@@ -1067,7 +1067,7 @@
                       Margin="0" Background="Transparent"
                       Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur"/>
 
-        <Border Name="VisualizerHostElement"
+        <Border Name="visualizerHostElement"
                 Grid.Column="2"
                 Background="CornflowerBlue" />
 

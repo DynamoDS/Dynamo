@@ -452,6 +452,10 @@ limitations under the License.
       <Name>GraphLayout</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Extensions\Bloodstone\Bloodstone.Cpp\Bloodstone.vcxproj">
+      <Project>{c1e084ab-af20-4d56-b9e3-e606c4df6ecf}</Project>
+      <Name>Bloodstone.Cpp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Extensions\Bloodstone\Bloodstone.Net\Bloodstone.Net.csproj">
       <Project>{54c12d23-b989-45f4-9681-3a8716f30050}</Project>
       <Name>Bloodstone.Net</Name>

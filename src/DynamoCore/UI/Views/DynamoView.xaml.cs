@@ -34,6 +34,8 @@ using System.Windows.Media;
 using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Bloodstone;
+using System.Collections.Generic;
 
 namespace Dynamo.Controls
 {
@@ -48,6 +50,7 @@ namespace Dynamo.Controls
         private DynamoViewModel _vm = null;
         private Stopwatch _timer = null;
         private StartPageViewModel startPage = null;
+        private VisualizerHwndHost visualizer = null;
 
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
@@ -352,6 +355,7 @@ namespace Dynamo.Controls
 
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
+            _vm.PropertyChanged += OnViewModelPropertyChanged;
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             _vm.RequestViewOperation += _vm_RequestViewOperation;
             _vm.PostUiActivationCommand.Execute(null);
@@ -383,6 +387,13 @@ namespace Dynamo.Controls
 
 #if BLOODSTONE
             _vm.RequestUpdateBloodstoneVisual += OnRequestUpdateBloodstoneVisual;
+
+            if (this.visualizer == null)
+            {
+                var b = this.visualizerHostElement;
+                visualizer = new VisualizerHwndHost(b.ActualWidth, b.ActualHeight);
+                this.visualizerHostElement.Child = visualizer;
+            }
 #endif
 
             _vm.RequestClose += _vm_RequestClose;
@@ -405,19 +416,41 @@ namespace Dynamo.Controls
             _vm.BeginCommandPlayback(this);
         }
 
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ShowStartPage" && (this.visualizer != null))
+            {
+                var dynamoViewModel = sender as DynamoViewModel;
+                var vis = this.visualizer.CurrentVisualizer;
+                vis.ShowWindow(!dynamoViewModel.ShowStartPage);
+            }
+        }
+
         void OnRequestUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
         {
-            if (this.bloodstoneWindow != null)
-            {
-                var control = this.bloodstoneWindow.Control;
-                control.SetNodeGeometries(e.Geometries.ToDictionary(
-                    item => item.Key.ToString(), item => item.Value));
-            }
+            if (this.visualizer == null)
+                return;
+
+            var geometries = e.Geometries.ToDictionary(
+                    item => item.Key.ToString(), item => item.Value);
+
+            var details = new Dictionary<string, NodeDetails>();
+
+            foreach (var geometry in geometries)
+                details.Add(geometry.Key, new NodeDetails(0, geometry.Value));
+
+            visualizer.CurrentVisualizer.UpdateNodeDetails(details);
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
         {
-            
+#if BLOODSTONE
+            if (visualizer != null)
+            {
+                visualizer.Dispose();
+                visualizer = null;
+            }
+#endif
         }
 
         private UI.Views.AboutWindow _aboutWindow;
