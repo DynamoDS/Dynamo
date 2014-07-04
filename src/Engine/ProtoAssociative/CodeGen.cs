@@ -44,10 +44,6 @@ namespace ProtoAssociative
 
         private Dictionary<int, ClassDeclNode> unPopulatedClasses;
 
-
-        // This variable is used to keep track of the expression ID being traversed by the code generator
-        private int currentExpressionID = ProtoCore.DSASM.Constants.kInvalidIndex;
-
         //
         // This dictionary maps the first pointer to all the SSA temps generated for the identifier list
         // Given:
@@ -5839,7 +5835,6 @@ namespace ProtoAssociative
                         ++argNumber;
 
                         IdentifierNode paramNode = null;
-                        bool aIsDefault = false;
                         ProtoCore.AST.Node aDefaultExpression = null;
                         if (argNode.NameNode is IdentifierNode)
                         {
@@ -7348,9 +7343,6 @@ namespace ProtoAssociative
             };
 
             procNode.Signature.Arguments.Insert(0, thisPtrArg);
-
-
-            ProtoCore.Type type = new ProtoCore.Type();
         }
         
         /// <summary>
