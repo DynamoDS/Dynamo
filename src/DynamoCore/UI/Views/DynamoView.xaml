@@ -448,13 +448,20 @@
             Please ensure that mouse events will be able to pass through this layer,
             when Navigate Background 3D Preview is set to true.
         -->
+        
+        <Grid Name="contentAreaGrid"
+              Grid.Row="2"
+              Grid.Column="2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         <!--Workspace-->
         <Border Margin="0"
                 BorderBrush="Black"
                 BorderThickness="0"
                 Name="border"
-                Grid.Row="2"
-                Grid.Column="2"
                 SizeChanged="Workspace_SizeChanged">
 
             <Grid AllowDrop="True" Drop="DynamoView_OnDrop">
@@ -1049,6 +1056,22 @@
             </Grid>
 
         </Border>
+        
+        <GridSplitter Name="contentAreaSplitter"
+                      ResizeDirection="Auto" 
+                      Grid.Column="1" 
+                      Height="Auto"
+                      Width="5"
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch" 
+                      Margin="0" Background="Transparent"
+                      Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur"/>
+
+        <Border Name="VisualizerHostElement"
+                Grid.Column="2"
+                Background="CornflowerBlue" />
+
+        </Grid>
         
         <!--Collapsed Sidebar-->
         <StackPanel Grid.Row="2"
