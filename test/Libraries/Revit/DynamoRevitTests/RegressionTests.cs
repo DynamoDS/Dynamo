@@ -233,7 +233,7 @@ namespace Dynamo.Tests
 
         void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
         {
-            DynamoRevit.SetRunEnabledBasedOnContext(e);
+            DynamoRevit.SetRunEnabledBasedOnContext(e.NewActiveView);
         }
     }
 

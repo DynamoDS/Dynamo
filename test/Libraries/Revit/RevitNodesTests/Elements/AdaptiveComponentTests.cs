@@ -1,8 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using Autodesk.DesignScript.Geometry;
+using Autodesk.Revit.DB;
+
 using Revit.Elements;
 using NUnit.Framework;
+
+using Revit.GeometryConversion;
+
+using RevitServices.Persistence;
+using RevitServices.Transactions;
+
 using RTF.Framework;
+
+using FamilyInstance = Autodesk.Revit.DB.FamilyInstance;
+using FamilySymbol = Revit.Elements.FamilySymbol;
+using ModelCurve = Revit.Elements.ModelCurve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests
@@ -10,9 +25,22 @@ namespace DSRevitNodesTests
     [TestFixture]
     class AdaptiveComponentTests : GeometricRevitNodeTest
     {
+
+        public List<XYZ> GetInternalPoints(FamilyInstance adaptiveComponent)
+        {
+            var pts = new List<XYZ>();
+            var ids = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(adaptiveComponent);
+            foreach (var id in ids)
+            {
+                var p = DocumentManager.Instance.CurrentDBDocument.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
+                pts.Add(p.Position);
+            }
+            return pts;
+        }
+
         [Test]
         [TestModel(@".\AdaptiveComponents.rfa")]
-        public void ByPoints_ValidInput()
+        public void ByPoints_PointArray_ProducesValidAdaptiveComponentAndLocations()
         {
             var pts = new Point[]
             {
@@ -23,12 +51,28 @@ namespace DSRevitNodesTests
             var fs = FamilySymbol.ByName("3PointAC");
             var ac = AdaptiveComponent.ByPoints(pts, fs);
 
+            var locs = ac.Locations;
+
+            var pairs = locs.Zip(pts, (point, point1) => new Tuple<Point, Point>(point, point1));
+
+            // compares after unit conversion
+            foreach (var pair in pairs)
+                pair.Item1.ShouldBeApproximately(pair.Item2);
+
+            var unconvertedPairs = pts.Zip(GetInternalPoints((FamilyInstance) ac.InternalElement), 
+                (point, point1) => new Tuple<Point, XYZ>(point, point1));
+
+            foreach (var pair in unconvertedPairs)
+            {
+                pair.Item1.ShouldBeApproximately(pair.Item2 * UnitConverter.HostToDynamoFactor);
+            }
+
             Assert.NotNull(ac);
         }
 
         [Test]
         [TestModel(@".\AdaptiveComponents.rfa")]
-        public void ByPoints_NonMatchingNumberOfPoints()
+        public void ByPoints_ShouldThrowExceptionWithNonMatchingNumberOfPoints()
         {
             var pts = new Point[]
             {
@@ -65,7 +109,7 @@ namespace DSRevitNodesTests
 
         [Test]
         [TestModel(@".\AdaptiveComponents.rfa")]
-        public void ByPointsOnCurve_ValidInput()
+        public void ByPointsOnCurve_ProducesValidAdaptiveComponentAndLocations()
         {
             // create spline
             var pts = new Autodesk.DesignScript.Geometry.Point[]
@@ -94,6 +138,19 @@ namespace DSRevitNodesTests
             };
 
             var ac = AdaptiveComponent.ByParametersOnCurveReference(parms, modCurve.ElementCurveReference, fs);
+
+            // with unit conversion
+            foreach (var pt in ac.Locations)
+                spline.DistanceTo(pt).ShouldBeApproximately(0);
+
+            // without unit conversion
+            var unconvertedPoints = GetInternalPoints((FamilyInstance)ac.InternalElement);
+
+            foreach (var pt in unconvertedPoints)
+            {
+                spline.DistanceTo(pt.ToPoint()).ShouldBeApproximately(0);
+            }
+
             Assert.NotNull(ac);
 
         }
@@ -106,7 +163,6 @@ namespace DSRevitNodesTests
         }
 
         // tests for properties, null input
-
 
     }
 }

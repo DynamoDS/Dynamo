@@ -88,8 +88,6 @@ namespace Dynamo.UI.Controls
         /// 
         public override void OnApplyTemplate()
         {
-            System.Windows.Controls.Primitives.RepeatButton a;
-
             var animationOffsets = new Dictionary<string, double>();
             animationOffsets.Add("hoverOverAnimation", -1.0 * this.Height);
             animationOffsets.Add("pressedAnimation", -2.0 * this.Height);
