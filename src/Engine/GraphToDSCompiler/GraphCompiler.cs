@@ -773,7 +773,7 @@ namespace GraphToDSCompiler
         public List<SnapshotNode> ToCode(AST graph, GraphCompiler originalGC, List<SnapshotNode> inputs)
         {
             List<SnapshotNode> result = new List<SnapshotNode>();
-            string liststat = "";
+
             List<Node> li = TopSort.sort(graph);
             tguid = 20000;
             List<string> listIslands = new List<string>();

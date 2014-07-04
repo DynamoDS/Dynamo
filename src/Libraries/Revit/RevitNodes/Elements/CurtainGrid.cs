@@ -208,7 +208,7 @@ namespace Revit.Elements
 
       #endregion
 
-      #region Static constructors
+      #region Public static constructors
 
       /// <summary>
       ///get curtain grid from element with curtain grid or grids

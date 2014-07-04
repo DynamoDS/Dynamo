@@ -233,7 +233,7 @@ namespace Revit.Elements.Views
                 throw new ArgumentNullException("name");
             }
 
-            return new PerspectiveView(eyePoint.ToXyz(true), target.ToXyz(true), boundingBox.ToRevitType(true), name, isolateElement);
+            return new PerspectiveView(eyePoint.ToXyz(), target.ToXyz(), boundingBox.ToRevitType(), name, isolateElement);
         }
 
         #endregion
