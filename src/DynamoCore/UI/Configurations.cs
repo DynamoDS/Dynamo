@@ -23,8 +23,9 @@ namespace Dynamo.UI
         public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
         public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
         public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
-        public static string DynamoPdfTutorials = "https://github.com/DynamoDS/Dynamo/blob/master/doc/distrib/Dynamo%20Visual%20Programming%20for%20Design.pdf?raw=true";
-        public static string DynamoVideoTutorials = "http://dynamobim.org/learn/";
+        public static string DynamoWrittenTutorials = "http://dynamobim.org/learn/#124";
+        public static string DynamoVideoTutorials = "http://dynamobim.org/learn/#161";
+        public static string DynamoMoreSamples = "http://dynamobim.org/learn/#159";
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
