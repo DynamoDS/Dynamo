@@ -87,7 +87,7 @@ namespace ProtoCore.DSASM
 
         public bool isBreakable { get; set; }
 
-        public CodeBlock(Guid guid, CodeBlockType type, ProtoCore.Language langId, int codeBlockId, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock = false, ProtoCore.Core core = null)
+        public CodeBlock(Guid guid, CodeBlockType type, ProtoCore.Language langId, int cbID, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock = false, ProtoCore.Core core = null)
         {
             this.guid = guid;
             blockType = type;
@@ -104,6 +104,8 @@ namespace ProtoCore.DSASM
             isBreakable = isBreakableBlock;
             core.CompleteCodeBlockList.Add(this);
             this.codeBlockId = core.CompleteCodeBlockList.Count - 1;
+
+            symbols.RuntimeIndex = this.codeBlockId;
 
             if (core.ProcNode != null)
             {

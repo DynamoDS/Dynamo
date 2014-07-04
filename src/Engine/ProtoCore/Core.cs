@@ -1282,7 +1282,7 @@ namespace ProtoCore
             RunningBlock = 0;
 
             // The main codeblock never goes out of scope
-            // Resetting CodeBlockIndex & RuntimeTableIndex  means getting the number of main codeblocks that dont go out of scope.
+            // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
             // As of the current requirements, there is only 1 main scope, the rest are nested within.
             CodeBlockIndex = CodeBlockList.Count;
             RuntimeTableIndex = CodeBlockIndex;
@@ -1978,7 +1978,7 @@ namespace ProtoCore
             {
                 if (DSASM.CodeBlockType.kLanguage == codeBlock.blockType || DSASM.CodeBlockType.kFunction == codeBlock.blockType)
                 {
-                    Validity.Assert(codeBlock.codeBlockId < CodeBlockIndex);
+                    Validity.Assert(codeBlock.codeBlockId < RuntimeTableIndex);
                     istreamList[codeBlock.codeBlockId] = codeBlock.instrStream;
                 }
 
@@ -2036,6 +2036,8 @@ namespace ProtoCore
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
+            RuntimeTableIndex = CompleteCodeBlockList.Count;
+
             // Build the runtime symbols
             DSExecutable.runtimeSymbols = new DSASM.SymbolTable[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
@@ -2051,7 +2053,7 @@ namespace ProtoCore
             }
 
             // Build the executable instruction streams
-            DSExecutable.instrStreamList = new DSASM.InstructionStream[CodeBlockIndex];
+            DSExecutable.instrStreamList = new DSASM.InstructionStream[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
