@@ -11,10 +11,22 @@ using DSCoreNodesUI;
 using System;
 using DynamoCoreUITests;
 
+using Dynamo.Controls;
+using Dynamo.Interfaces;
+using Dynamo.UI.Controls;
+using Dynamo.UpdateManager;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.UpdateManager;
+using DynamoCore.UI.Controls;
+
+using DynamoUtilities;
+
+
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class InspectorTests : DynamoTestUI
+    class InspectorTests : DSEvaluationUnitTest
     {
 
 
@@ -67,10 +79,23 @@ namespace Dynamo.Tests
         {
 
 
-            string openPath = Path.Combine(, "core", "inspector", "InspectorTest1.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), "core", "inspector", "InspectorTest1.dyn");
             Console.WriteLine(openPath);
-            
-            Model.
+
+
+
+            // open a new UI so that SetupUI() runs
+           
+            DynamoController.IsTestMode = true;
+            Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
+            Controller.VisualizationManager = new VisualizationManager();
+
+            //create the view
+            var Ui = new DynamoView { DataContext = Controller.DynamoViewModel };
+            var Vm = Controller.DynamoViewModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();                             
+
 
             Assert.DoesNotThrow(() => RunModel(openPath));
             
@@ -82,7 +107,7 @@ namespace Dynamo.Tests
             
             //for some reason RunModel is not setting the indicies or items on this inspector instance... investigate... 
             Assert.AreEqual(inspectornode.Items.Count, 5);
-            Assert.AreEqual(inspectornode.Indicies.Count, 2);
+            Assert.AreEqual(inspectornode.Indicies.Count, 3);
 
            AssertMatchingItemNames(inspectornode, new List<string>(){"boogers","InternalColor","Red","Green","Blue", "Alpha"});
            //AssertMatchingItemValues(inspectornode, new List<object>(){};
