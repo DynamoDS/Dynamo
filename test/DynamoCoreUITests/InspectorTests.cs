@@ -1,35 +1,50 @@
-﻿using System.Collections.ObjectModel;
-using Dynamo.Utilities;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.IO;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
-using ProtoCore.Mirror;
-using Dynamo.Models;
 using System.Collections.Generic;
 using DSCoreNodesUI;
 using System;
 using DynamoCoreUITests;
-
-using Dynamo.Controls;
-using Dynamo.Interfaces;
-using Dynamo.UI.Controls;
-using Dynamo.UpdateManager;
+using System.Reflection;
+using System.Linq;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.UpdateManager;
-using DynamoCore.UI.Controls;
-
-using DynamoUtilities;
-
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class InspectorTests : DSEvaluationUnitTest
+    class InspectorTests : DynamoTestUI
     {
 
+        private static List<object> BuildTestValuesFromReflection(DSFunction ColorNode)
+        {
+            var OutputID = ColorNode.GetAstIdentifierForOutputIndex(0).Name;
 
+            var mirror = dynSettings.Controller.EngineController.GetMirror(OutputID);
+
+            List<object> testvalues = new List<object>();
+
+            if (mirror != null)
+            {
+                object color = null;
+                {
+                    color = mirror.GetData().Data;
+                }
+
+                var propertyInfos = color.GetType().GetProperties(
+               BindingFlags.Public | BindingFlags.NonPublic // Get public and non-public
+             | BindingFlags.Static | BindingFlags.Instance  // Get instance + static
+             | BindingFlags.FlattenHierarchy); // Search up the hierarchy
+
+
+
+                foreach (var prop in propertyInfos.ToList())
+                {
+                    var val = prop.GetValue(color, null);
+                    testvalues.Add(val);
+                }
+            }
+            return testvalues;
+        }
 
 
         public void AssertMatchingItemNames(Inspector inspector, List<string> names)
@@ -79,43 +94,53 @@ namespace Dynamo.Tests
         {
 
 
-            string openPath = Path.Combine(GetTestDirectory(), "core", "inspector", "InspectorTest1.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "core", "inspector", "InspectorTest1.dyn");
             Console.WriteLine(openPath);
+            Model.Open(openPath);
+            Assert.DoesNotThrow(() => Controller.RunExpression());
 
-
-
-            // open a new UI so that SetupUI() runs
-           
-            DynamoController.IsTestMode = true;
-            Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
-            Controller.VisualizationManager = new VisualizationManager();
-
-            //create the view
-            var Ui = new DynamoView { DataContext = Controller.DynamoViewModel };
-            var Vm = Controller.DynamoViewModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();                             
-
-
-            Assert.DoesNotThrow(() => RunModel(openPath));
             
-            //dynSettings.Controller.PreferenceSettings.NumberFormat = "f0";
-
+            
             Inspector inspectornode = Controller.DynamoModel.CurrentWorkspace.Nodes[1] as Inspector;
-            Console.WriteLine(inspectornode.GUID);
+            var ColorNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
+           
             Assert.NotNull(inspectornode);
+            Assert.NotNull(ColorNode);
             
-            //for some reason RunModel is not setting the indicies or items on this inspector instance... investigate... 
             Assert.AreEqual(inspectornode.Items.Count, 5);
             Assert.AreEqual(inspectornode.Indicies.Count, 3);
-
-           AssertMatchingItemNames(inspectornode, new List<string>(){"boogers","InternalColor","Red","Green","Blue", "Alpha"});
-           //AssertMatchingItemValues(inspectornode, new List<object>(){};
-           AssertCorrectSelectedIndices(inspectornode, new List<int>() { 100, 300, 3 });
+            
+           AssertMatchingItemNames(inspectornode, new List<string>(){"InternalColor:Color [A=255, R=255, G=255, B=100]","Red:255","Green:255","Blue:100", "Alpha:255"});
+          
            
+           AssertCorrectSelectedIndices(inspectornode, new List<int>() { 1, 2, 3 });
+           
+            // next test will grab public properties from the mirror data of the input node and assert that the value of these properties
+            // is == to the values in the items list of the inspector node
+
+           List<object> testvalues = BuildTestValuesFromReflection(ColorNode);
+           AssertMatchingItemValues(inspectornode, testvalues);
+
 
             
         }
+
+        [Test]
+        public void InspectorAddAndRemoveDropDowns()
+        {
+            //
+        }
+
+        public void InspectorRemoveInputAndRun()
+        {
+            //
+        }
+
+        public void InspectorChangeSelections()
+        {
+            //
+        }
+
 
     }
 }
