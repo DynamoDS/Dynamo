@@ -16,9 +16,7 @@ using System.Windows.Data;
 using System.Windows.Controls.Primitives;
 using System.Dynamic;
 using System.Xml;
-using rt =  Microsoft.CSharp.RuntimeBinder;
-using System;
-using System.Dynamic;
+using rt = Microsoft.CSharp.RuntimeBinder;
 using System.Runtime.CompilerServices;
 
 namespace DSCoreNodesUI
@@ -26,11 +24,11 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     [NodeName("Inspector")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Displays Members of Any Object - Useful for debugging.")]
+    [NodeDescription("Displays Public Properties of Any Object - Useful for Debugging.")]
     public class Inspector : VariableInputNode, IWpfNode
     {
         /// <summary>
-        /// wraps a combox box selexted index
+        /// wraps a comobox's selexted index so that we can data bind to it for a specific combobox
         /// </summary>
         public class combobox_selected_index_wrapper : INotifyPropertyChanged
         {
@@ -95,16 +93,21 @@ namespace DSCoreNodesUI
             }
         }
 
-        public StackPanel InnerStackPanel;
-        
+        private StackPanel InnerStackPanel;
+
 
         /// <summary>
         /// list of comboboxes - can use this to track existing number of comboboxes
         /// </summary>
-        public List<ComboBox> comboboxes = new List<ComboBox>();
-        public List<combobox_selected_index_wrapper> previous_indicies = new List<combobox_selected_index_wrapper>();
-       // public List<TextBox> tboxes = new List<TextBox>();
-        public List<int> loaded_indices = new List<int>();
+        private List<ComboBox> comboboxes = new List<ComboBox>();
+        /// <summary>
+        /// store the previous indicies of all comboboxes so when populate items() runs and databind changes all indicies to -1, we can set them back correctly
+        /// </summary>
+        private List<combobox_selected_index_wrapper> previous_indicies = new List<combobox_selected_index_wrapper>();
+        /// <summary>
+        /// list that is only populated with deserialized indicies on load so that indicies can be set correctly by SetupUI method
+        /// </summary>
+        private List<int> loaded_indices = new List<int>();
 
         public event EventHandler RequestSelectChange;
         protected virtual void OnRequestSelectChange(object sender, EventArgs e)
@@ -137,7 +140,11 @@ namespace DSCoreNodesUI
 
             OnRequestSelectChange(this, EventArgs.Empty);
         }
-
+        /// <summary>
+        /// pass through of the object to the output
+        /// </summary>
+        /// <param name="inputAstNodes"></param>
+        /// <returns></returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
 
@@ -148,9 +155,9 @@ namespace DSCoreNodesUI
             };
         }
 
-       //method for grabbing member values from a dynamic object, we use this for python objects...
-      //  http://stackoverflow.com/questions/1926776/getting-a-value-from-a-dynamic-object-dynamically
-        public static object GetDynamicValue(dynamic ob, string name)
+        //method for grabbing member values from a dynamic object, we use this for python objects...
+        //  http://stackoverflow.com/questions/1926776/getting-a-value-from-a-dynamic-object-dynamically
+        private static object GetDynamicValue(dynamic ob, string name)
         {
             CallSite<Func<CallSite, object, object>> site
                 = CallSite<Func<CallSite, object, object>>.Create
@@ -160,7 +167,7 @@ namespace DSCoreNodesUI
         }
 
 
-        public void PopulateItems()
+        private void PopulateItems()
         {
             // getting the input object song and dance
             if (InPorts.All(x => x.Connectors.Count != 0))
@@ -211,11 +218,11 @@ namespace DSCoreNodesUI
                             names.AddRange(dynobj.GetMetaObject(System.Linq.Expressions.Expression.Constant(dynobj)).GetDynamicMemberNames());
                         }
 
-                        //filter names
+                        //filter names so that python private and builtin members do not show
                         var filterednames = names.Where(x => x.StartsWith("__") != true).ToList();
 
                         foreach (var name in filterednames)
-                        {   
+                        {
 
                             var val = GetDynamicValue(objectinput, name);
 
@@ -225,29 +232,13 @@ namespace DSCoreNodesUI
                             }
 
                         }
-                            /* object val = null;
-                             MemberInfo mem = objectinput.GetType().GetMember(name, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).FirstOrDefault();
 
-                             if (mem.MemberType == MemberTypes.Field)
-                             {
-                                 val = ((FieldInfo)mem).GetValue(objectinput);
-                             }
-                             else if (mem.MemberType == MemberTypes.Property)
-                             {
 
-                                 val = ((PropertyInfo)mem).GetValue(objectinput, null);
-                             }
-                             if (val != null){
-                             items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", name, val), val));
-                             }
-                         }
-                             */
+                    }
 
-                        }
 
-                    
 
-                    // if object was not dynamic    
+                    // if object was not dynamic use regular reflection
                     else
                     {
                         var propertyInfos = objectinput.GetType().GetProperties(
@@ -265,7 +256,7 @@ namespace DSCoreNodesUI
 
                     }
 
-                    //Items = Items.OrderBy(x => x.Name).ToObservableCollection();
+
 
                 }
 
@@ -275,11 +266,9 @@ namespace DSCoreNodesUI
         {
             // instead of actually adding an input
             // keep track of # of dropdowns
-            // create a new indexwrapper and store it
-            // then call setupcustomUIelements on the UIdispatch thread.
+            // then call setupcustomUIelements on the UIdispatch thread by firing event.
             numDropDowns = numDropDowns + 1;
-            // combobox_selected_index_wrapper new_selected_index = new combobox_selected_index_wrapper();
-            //indicies.Add(new_selected_index);
+
             RequiresRecalc = true;
             OnRequestSelectChange(this, EventArgs.Empty);
         }
@@ -289,9 +278,6 @@ namespace DSCoreNodesUI
             if (numDropDowns > 1)
             {
                 numDropDowns = numDropDowns - 1;
-                // not sure about this actually deleting the wrapper
-                // var lastindex = indicies[indicies.Count - 1];
-                //indicies.RemoveAt(indicies.Count - 1);
 
                 RequiresRecalc = true;
                 OnRequestSelectChange(this, EventArgs.Empty);
@@ -313,19 +299,15 @@ namespace DSCoreNodesUI
             return InPortData.Count;
         }
 
-        /// <summary>
-        /// When the dropdown is opened, the node's implementation of PopulateItems is called
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         void combo_DropDownOpened(object sender, EventArgs e)
         {
             //PopulateItems();
         }
 
-        
+
         public ComboBox gen_and_setup_combobox(StackPanel sp)
-        {   
+        {
             // make a new index wrapper to bind to
             combobox_selected_index_wrapper new_selected_index = new combobox_selected_index_wrapper();
             //store it
@@ -343,9 +325,7 @@ namespace DSCoreNodesUI
                         };
             sp.Children.Add(combo);
             comboboxes.Add(combo);
-          //  tboxes.Add(tbox);
-            //System.Windows.Controls.Grid.SetColumn(combo, 0);
-            //System.Windows.Controls.Grid.SetRow(combo, 0);
+
 
             combo.DropDownOpened += combo_DropDownOpened;
             combo.SelectionChanged += delegate
@@ -356,29 +336,23 @@ namespace DSCoreNodesUI
                 // and in that case we'll hold onto the current index
                 if (combo.SelectedIndex == -1)
                 {
-                    //RequiresRecalc = true;
+
                     int index_of_this_box = comboboxes.IndexOf(combo);
-                    //indicies[index_of_this_box] = previous_indicies[index_of_this_box];
-                    
-                    // if this combo box has been removed from the combobox list, then 
-                    // the selected index should refer to the last remaining item in the list.
-                    // actually this may be unture... might need to just delete the combobox, could do it here or where it is removed.
+
+
+                    // if we found the combobox in the list of comboboxes, it has not been removed
+                    // and we need to set its index to what it was previously before data bind changed it to -1
                     if (index_of_this_box > -1)
-                    {   
-                    
-                    combo.SelectedIndex = previous_indicies[index_of_this_box].SelectedIndex;
+                    {
+
+                        combo.SelectedIndex = previous_indicies[index_of_this_box].SelectedIndex;
                     }
                 }
             };
 
             combo.DropDownClosed += delegate
             {
-                //disallow selection of nothing
-                if (combo.SelectedIndex == -1)
-                {
 
-
-                }
             };
 
             combo.DataContext = this;
@@ -387,7 +361,7 @@ namespace DSCoreNodesUI
             var bindingVal = new System.Windows.Data.Binding("Items") { Mode = BindingMode.TwoWay, Source = this };
             combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
 
-            //bind the selected index to the 
+            //bind the selected index to the selected index property of the index wrapper we just created above
             var indexBinding = new Binding()
             {
                 Path = new PropertyPath("SelectedIndex"),
@@ -403,46 +377,41 @@ namespace DSCoreNodesUI
         {
             // find the last combobox
             var last = comboboxes[comboboxes.Count - 1];
-           // var lasttbox = tboxes[tboxes.Count-1];
-            //remove it from the wrap panel
+
+            //remove it from the stack panel
             sp.Children.Remove(last);
             comboboxes.Remove(last);
-          //  wp.Children.Remove(lasttbox);
-           // tboxes.Remove(lasttbox);
+
             // remove it's index from the list of indicies
             indicies.RemoveAt(Indicies.Count - 1);
             return last;
 
         }
-        
+
         public void SetComboBoxes()
+        {
+            // first populate all items list
+            // then add necessary combo boxes or remove
+
+            PopulateItems();
+            if (comboboxes.Count < numDropDowns)
             {
-                    // first populate all items list
-                    // then add necessary combo boxes
-
-                    PopulateItems();
-                    if (comboboxes.Count < numDropDowns)
-                    {
-                        var cur_combo_box = gen_and_setup_combobox(InnerStackPanel);
-                    }
-                    else if (comboboxes.Count > numDropDowns)
-                    {
-                        ComboBox removed_combo = remove_combo(InnerStackPanel);
+                var cur_combo_box = gen_and_setup_combobox(InnerStackPanel);
+            }
+            else if (comboboxes.Count > numDropDowns)
+            {
+                ComboBox removed_combo = remove_combo(InnerStackPanel);
 
 
-                    }
+            }
 
 
-                }
+        }
 
-       
+
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-
-
-
-
 
 
             //add a drop down list to the window
@@ -470,14 +439,14 @@ namespace DSCoreNodesUI
             };
             OuterWrapPanel.Children.Add(addButton);
             OuterWrapPanel.Children.Add(subButton);
-            
+
 
             var InnerStackPanel = new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 MinHeight = Configurations.PortHeightInPixels,
-                
+
 
             };
 
@@ -486,32 +455,33 @@ namespace DSCoreNodesUI
             OuterWrapPanel.Children.Add(InnerStackPanel);
 
             nodeUI.inputGrid.Children.Add(OuterWrapPanel);
-           
-            
-            // add the first combobox
-            // only create this first item if we have not already loaded the combo boxes
 
-              if (loaded_indices.Count > 0)
-             {
+
+            // if the loaded indicies exist then create the correct number of boxes and set their indicies
+            if (loaded_indices.Count > 0)
+            {
                 for (int i = 0; i < loaded_indices.Count; i++)
-               {
-                  SetComboBoxes();
-                  Indicies[i].SelectedIndex = loaded_indices[i];
-             }
+                {
+                    SetComboBoxes();
+                    Indicies[i].SelectedIndex = loaded_indices[i];
+                }
+                // clear this list after loading the first time
+                loaded_indices.Clear();
             }
-            
+
 
             RequestSelectChange += delegate
             {
                 DispatchOnUIThread(SetComboBoxes);
-        };
-       }
+            };
+        }
 
+        // drop all indicies into a csv list
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            var stringlist = Indicies.Select(x=>x.SelectedIndex.ToString()).ToList();
+            var stringlist = Indicies.Select(x => x.SelectedIndex.ToString()).ToList();
             string joined = string.Join(",", stringlist.ToArray());
-            nodeElement.SetAttribute("indices",joined );
+            nodeElement.SetAttribute("indices", joined);
 
             nodeElement.SetAttribute("numdropdowns", numDropDowns.ToString());
         }
@@ -519,24 +489,24 @@ namespace DSCoreNodesUI
         protected override void LoadNode(XmlNode nodeElement)
         {
             try
-            {   string[] strings =  nodeElement.Attributes["indices"].Value.Split(',');
-                List<int> ints =  strings.Select(x=> Convert.ToInt32(x)).ToList();
+            {
+                string[] strings = nodeElement.Attributes["indices"].Value.Split(',');
+                List<int> ints = strings.Select(x => Convert.ToInt32(x)).ToList();
 
                 numDropDowns = Convert.ToInt32(nodeElement.Attributes["numdropdowns"].Value);
 
-                foreach(int index in ints){
+                foreach (int index in ints)
+                {
 
-                   
-                 
                     // record the loaded indicies and let setupui handle this when it loads the UI
                     loaded_indices.Add(index);
                 }
 
-                
+
             }
             catch { }
 
-           
+
 
         }
 
