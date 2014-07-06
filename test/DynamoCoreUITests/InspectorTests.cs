@@ -8,11 +8,13 @@ using ProtoCore.Mirror;
 using Dynamo.Models;
 using System.Collections.Generic;
 using DSCoreNodesUI;
+using System;
+using DynamoCoreUITests;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class InspectorTests : DSEvaluationUnitTest
+    class InspectorTests : DynamoTestUI
     {
 
 
@@ -63,22 +65,28 @@ namespace Dynamo.Tests
         [Test]
         public void InspectorItemNamesAndIndicies()
         {
-            var model = Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\inspector\InspectorTest1.dyn");
-            model.Open(openPath);
 
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            string openPath = Path.Combine(, "core", "inspector", "InspectorTest1.dyn");
+            Console.WriteLine(openPath);
+            
+            Model.
+
+            Assert.DoesNotThrow(() => RunModel(openPath));
             
             //dynSettings.Controller.PreferenceSettings.NumberFormat = "f0";
 
-            var inspectornode = model.CurrentWorkspace.FirstNodeFromWorkspace<Inspector>();
-
+            Inspector inspectornode = Controller.DynamoModel.CurrentWorkspace.Nodes[1] as Inspector;
+            Console.WriteLine(inspectornode.GUID);
             Assert.NotNull(inspectornode);
             
-           AssertMatchingItemNames(inspectornode, new List<string>(){"InternalColor","Red","Green","Blue", "Alpha"});
+            //for some reason RunModel is not setting the indicies or items on this inspector instance... investigate... 
+            Assert.AreEqual(inspectornode.Items.Count, 5);
+            Assert.AreEqual(inspectornode.Indicies.Count, 2);
+
+           AssertMatchingItemNames(inspectornode, new List<string>(){"boogers","InternalColor","Red","Green","Blue", "Alpha"});
            //AssertMatchingItemValues(inspectornode, new List<object>(){};
-           AssertCorrectSelectedIndices(inspectornode, new List<int>() { 1, 2, 3 });
+           AssertCorrectSelectedIndices(inspectornode, new List<int>() { 100, 300, 3 });
            
 
             
