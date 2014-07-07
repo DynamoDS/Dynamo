@@ -1428,7 +1428,7 @@ namespace ProtoCore
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
-            CancelExecution = false;
+            cancellationPending = false;
         }
 
         #region Trace Data Serialization Methods/Members
@@ -1610,7 +1610,15 @@ namespace ProtoCore
 
         private int tempVarId = 0;
         private int tempLanguageId = 0;
-        public bool CancelExecution { get; set; }
+
+        private bool cancellationPending = false;
+        public bool CancellationPending
+        {
+            get
+            {
+                return cancellationPending;
+            }
+        }
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AST.AssociativeAST.AssociativeNode AssocNode { get; set; }
@@ -2208,6 +2216,17 @@ namespace ProtoCore
         {
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
+        }
+
+        public void RequestCancellation()
+        {
+            if (this.cancellationPending)
+            {
+                var message = "Cancellation cannot be requested twice";
+                throw new InvalidOperationException(message);
+            }
+
+            this.cancellationPending = true;
         }
     }
 }

@@ -29,6 +29,8 @@ namespace Dynamo.Core
 
         private bool cancelSet;
         private int? execInternval;
+        private Thread evaluationThread = null;
+        public Thread EvaluationThread { get { return evaluationThread; } }
 
         public bool Running { get; protected set; }
 
@@ -37,12 +39,17 @@ namespace Dynamo.Core
         /// </summary>
         public bool NeedsAdditionalRun { get; protected set; }
 
+        private void PostCancellationRequest()
+        {
+            controller.EngineController.LiveRunnerCore.RequestCancellation();
+        }
+
         public void CancelAsync()
         {
             if (Running)
             {
                 cancelSet = true;
-                controller.PostCancellationRequest(cancelSet);
+                PostCancellationRequest();
             }
         }
 
@@ -86,6 +93,7 @@ namespace Dynamo.Core
                     Validity.Assert(Running);
                 }
                 RunAsync();
+
             }
             else
             {
@@ -98,7 +106,8 @@ namespace Dynamo.Core
 
         private void RunAsync()
         {
-            new Thread(RunSync).Start();
+            evaluationThread = new Thread(RunSync);
+            evaluationThread.Start();
         }
 
         private void RunSync()
@@ -120,7 +129,7 @@ namespace Dynamo.Core
         /// <summary>
         ///     Method to group together all the tasks associated with an execution being complete
         /// </summary>
-        public void RunComplete()
+        private void RunComplete()
         {
             controller.OnRunCompleted(this, false);
 

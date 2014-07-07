@@ -50,7 +50,10 @@ namespace DynamoCoreUITests
             commandCallback = null;
             if (this.Controller != null)
             {
-                this.Controller.ShutDown(true);
+                if (DynamoController.IsTestMode)
+                {
+                    this.Controller.ShutDown(true);
+                }
                 this.Controller = null;
             }
 
@@ -2687,6 +2690,40 @@ namespace DynamoCoreUITests
 
             });
 
+        }
+
+        [Test, RequiresSTA]
+        public void TestCancelExecution()
+        {
+            RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", false, (commandTag) =>
+            {
+                // We need to Run Async for this test case as we need to 
+                // simulate cancellation of execution from UI asynchoronously
+                DynamoController.IsTestMode = false; 
+
+                if (commandTag == "BeforeRun")
+                {
+                    AssertNullValues();
+                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, Controller.Runner.Running);
+                }
+                else if (commandTag == "AfterRun")
+                {
+                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(true, Controller.Runner.Running);
+                }
+                else if (commandTag == "AfterCancel")
+                {
+                    // We need to wait for evaluation thread to complete
+                    // so that we can shutdown properly before exiting the test case
+                    if (Controller.Runner.EvaluationThread != null)
+                        Controller.Runner.EvaluationThread.Join();
+
+                    AssertNullValues();
+                }
+         
+            });
+            
         }
 
 

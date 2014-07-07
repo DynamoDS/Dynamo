@@ -1621,9 +1621,9 @@ namespace ProtoCore
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
-            if (core.CancelExecution)
+            if(core.CancellationPending)
             {
-                throw new CancelExecution();
+                throw new ExecutionCancelledException();               
             }
 
             //@PERF: Todo add a fast path here for the case where we have a homogenious array so we can directly dispatch

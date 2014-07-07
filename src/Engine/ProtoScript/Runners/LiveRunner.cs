@@ -1450,7 +1450,7 @@ namespace ProtoScript.Runners
             {
                 runner.Execute(runnerCore, runtimeContext);
             }
-            catch (ProtoCore.Exceptions.CancelExecution)
+            catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
                 runnerCore.Cleanup();
                 ReInitializeLiveRunner();
