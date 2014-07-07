@@ -12,12 +12,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Intersect\CurveCurveIntersection.rfa")]
         public void CurveCurveIntersection()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Intersect\CurveCurveIntersection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -25,12 +23,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Intersect\CurveFaceIntersection.rfa")]
         public void CurveFaceIntersection()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Intersect\CurveFaceIntersection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -38,12 +34,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Intersect\FaceFaceIntersection.rfa")]
         public void FaceFaceIntersection()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Intersect\FaceFaceIntersection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -51,12 +45,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Intersect\EdgePlaneIntersection.rfa")]
         public void EdgePlaneIntersection()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Intersect\EdgePlaneIntersection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
     }

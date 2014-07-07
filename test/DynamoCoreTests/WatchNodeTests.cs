@@ -88,7 +88,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
 
@@ -118,7 +118,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
 

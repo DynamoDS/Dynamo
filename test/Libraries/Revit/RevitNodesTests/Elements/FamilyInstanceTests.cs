@@ -1,16 +1,28 @@
-﻿using Autodesk.DesignScript.Geometry;
-using Revit.Elements;
+﻿using Autodesk.Revit.DB;
+
 using NUnit.Framework;
+
+using Revit.GeometryConversion;
+
 using RTF.Framework;
+
+using FamilyInstance = Revit.Elements.FamilyInstance;
+using FamilySymbol = Revit.Elements.FamilySymbol;
+using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
     public class FamilyInstanceTests : RevitNodeTestBase
     {
+        public Autodesk.Revit.DB.XYZ InternalLocation(Autodesk.Revit.DB.FamilyInstance instance)
+        {
+            return (instance.Location as LocationPoint).Point;
+        }
+
         [Test]
         [TestModel(@".\MassWithBoxAndCone.rfa")]
-        public void ByCoordinates_ValidInput()
+        public void ByCoordinates_ProducesValidFamilyInstanceWithCorrectLocation()
         {
             var famSym = FamilySymbol.ByName("Box");
             var famInst = FamilyInstance.ByCoordinates(famSym, 0, 1, 2);
@@ -18,14 +30,19 @@ namespace DSRevitNodesTests
 
             var position = famInst.Location;
 
-            Assert.AreEqual(0, position.X);
-            Assert.AreEqual(1, position.Y);
-            Assert.AreEqual(2, position.Z);
+            position.ShouldBeApproximately(Point.ByCoordinates(0, 1, 2));
+    
+            // no unit conversion
+            var internalPos =
+                InternalLocation(famInst.InternalElement as Autodesk.Revit.DB.FamilyInstance);
+
+            (internalPos * UnitConverter.HostToDynamoFactor).ShouldBeApproximately(
+                Point.ByCoordinates(0, 1, 2));
         }
 
         [Test]
         [TestModel(@".\MassWithBoxAndCone.rfa")]
-        public void ByPoint_ValidInput()
+        public void ByPoint_ProducesValidFamilyInstanceWithCorrectLocation()
         {
             var famSym = FamilySymbol.ByName("Box");
             var pt = Point.ByCoordinates(0, 1, 2);
@@ -34,9 +51,14 @@ namespace DSRevitNodesTests
 
             var position = famInst.Location;
 
-            Assert.AreEqual(0, position.X);
-            Assert.AreEqual(1, position.Y);
-            Assert.AreEqual(2, position.Z);
+            position.ShouldBeApproximately(Point.ByCoordinates(0, 1, 2));
+
+            // no unit conversion
+            var internalPos =
+                InternalLocation(famInst.InternalElement as Autodesk.Revit.DB.FamilyInstance);
+
+            (internalPos * UnitConverter.HostToDynamoFactor).ShouldBeApproximately(
+                Point.ByCoordinates(0, 1, 2));
         }
 
         [Test]

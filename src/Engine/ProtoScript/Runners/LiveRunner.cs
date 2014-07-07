@@ -49,7 +49,7 @@ namespace ProtoScript.Runners
                 AstNodes.ForEach((a) => sb.AppendLine(a.ToString()));
             else
                 sb.AppendLine("AstNodes: null");
-            return sb.ToString();   
+            return sb.ToString();
 
         }
     }
@@ -96,7 +96,7 @@ namespace ProtoScript.Runners
             AddedSubtrees.ForEach((t) => sb.AppendLine("\t" + t.ToString()));
 
             sb.AppendLine("Modified Subtrees: " + ModifiedSubtrees.Count);
-            ModifiedSubtrees.ForEach((t) =>  sb.AppendLine("\t" +t.ToString()));
+            ModifiedSubtrees.ForEach((t) => sb.AppendLine("\t" + t.ToString()));
 
             return sb.ToString();
         }
@@ -107,13 +107,13 @@ namespace ProtoScript.Runners
     /// </summary>
     public class ChangeSetData
     {
-        public ChangeSetData(){}
+        public ChangeSetData() { }
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
-        public List<AssociativeNode> DeletedFunctionDefASTNodes; 
+        public List<AssociativeNode> DeletedFunctionDefASTNodes;
         public List<AssociativeNode> RemovedBinaryNodesFromModification;
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
         public List<AssociativeNode> ForceExecuteASTList;
-        public List<AssociativeNode> ModifiedFunctions; 
+        public List<AssociativeNode> ModifiedFunctions;
     }
 
     /// <summary>
@@ -151,7 +151,7 @@ namespace ProtoScript.Runners
             // Mark all graphnodes dirty which are associated with the force exec ASTs
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
         }
-     
+
 
         /// <summary>
         /// Deactivate a single graphnode regardless of its associated dependencies
@@ -833,18 +833,18 @@ namespace ProtoScript.Runners
         void BeginQueryNodeValue(Guid nodeGuid);
         void BeginQueryNodeValues(List<Guid> nodeGuid);
         #endregion
-        
+
         string GetCoreDump();
         void ResetVMAndResyncGraph(List<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
-		void ReInitializeLiveRunner();
+        void ReInitializeLiveRunner();
         Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
         event GraphUpdateReadyEventHandler GraphUpdateReady;
         event NodesToCodeCompletedEventHandler NodesToCodeCompleted;
-        
+
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -900,10 +900,7 @@ namespace ProtoScript.Runners
 
         private ProtoCore.Options coreOptions = null;
         private Options executionOptions = null;
-        private bool syncCoreConfigurations = false;
         private int deltaSymbols = 0;
-        private bool isPreloadingLibraries = false;
-        private int codeBlockCount = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
 
 
@@ -1056,7 +1053,6 @@ namespace ProtoScript.Runners
         public void SetOptions(Options options)
         {
             executionOptions = options;
-            syncCoreConfigurations = true; //request syncing the configuration
         }
 
 
@@ -1189,8 +1185,6 @@ namespace ProtoScript.Runners
             // Prints out the final Value of every symbol in the program
             // Traverse order:
             //  Exelist, Globals symbols
-
-            StringBuilder globaltrace = null;
 
             ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
             ProtoCore.DSASM.Mirror.ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
@@ -1329,7 +1323,7 @@ namespace ProtoScript.Runners
                 {
                     if (taskQueue.Count > 0)
                         task = taskQueue.Dequeue();
-                     
+
                     //The task has to be executed inside the critical region
                     //otherwise it will race with the sync based on the taskQueue count
 
@@ -1358,9 +1352,9 @@ namespace ProtoScript.Runners
             const int blockID = 0;
             ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(ProtoCore.DSASM.Constants.kWatchResultVar, blockID, runnerCore);
             return runtimeMirror;
-                
+
         }
-       
+
 
         /// <summary>
         /// This is being called currently as it uses the Expression interpreter which does not
@@ -1489,36 +1483,6 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// This function resets properties in LiveRunner core and compileStateTracker required in preparation for a subsequent run
-        /// </summary>
-        private void RetainVMStatesForDeltaExecution()
-        {
-            var cblist = runnerCore.CompleteCodeBlockList;
-
-            if (isPreloadingLibraries)
-            {
-                codeBlockCount = cblist.Count;
-            }
-            else
-            {
-                // In normal delta execution. Need to remove extra code blocks
-                // that added in this execution.
-                if (codeBlockCount > 0)
-                {
-                    int count = cblist.Count - codeBlockCount;
-                    if (count > 0)
-                    {
-                        cblist.RemoveRange(codeBlockCount, count);
-                    }
-                }
-                else
-                {
-                    cblist.Clear();
-                }
-            }
-        }
-
-        /// <summary>
         /// Compiles and executes input script in delta execution mode
         /// </summary>
         /// <param name="code"></param>
@@ -1530,12 +1494,7 @@ namespace ProtoScript.Runners
             }
 
             ResetForDeltaExecution();
-            bool succeeded = CompileAndExecute(code);
-
-            if (succeeded)
-            {
-                RetainVMStatesForDeltaExecution();
-            }
+            CompileAndExecute(code);
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
@@ -1556,12 +1515,7 @@ namespace ProtoScript.Runners
             }
 
             ResetForDeltaExecution();
-            bool succeeded = CompileAndExecute(dispatchASTList);
-
-            if (succeeded)
-            {
-                RetainVMStatesForDeltaExecution();
-            }
+            CompileAndExecute(dispatchASTList);
         }
 
 
@@ -1577,7 +1531,7 @@ namespace ProtoScript.Runners
 
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
-            
+
             // Prior to execution, apply state modifications to the VM given the delta AST's
             changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
 
@@ -1663,9 +1617,7 @@ namespace ProtoScript.Runners
             ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
             string code = codeGen.GenerateCode();
 
-            isPreloadingLibraries = true;
             UpdateCmdLineInterpreter(code);
-            isPreloadingLibraries = false;
         }
 
         /// <summary>
@@ -1695,7 +1647,7 @@ namespace ProtoScript.Runners
 
                 ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
                 string code = codeGen.GenerateCode();
-                                
+
                 int currentCI = runnerCore.ClassTable.ClassNodes.Count;
 
                 UpdateCmdLineInterpreter(code);
@@ -1707,10 +1659,10 @@ namespace ProtoScript.Runners
                 {
                     classNodes.Add(runnerCore.ClassTable.ClassNodes[i]);
                 }
-                
+
                 ProtoCore.Mirror.LibraryMirror libraryMirror = ProtoCore.Mirror.Reflection.Reflect(lib, classNodes, runnerCore);
                 libs.Add(libraryMirror);
-            }            
+            }
 
             return libs;
         }
@@ -1742,5 +1694,5 @@ namespace ProtoScript.Runners
 
         #endregion
     }
-    
+
 }

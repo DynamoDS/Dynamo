@@ -9,7 +9,7 @@ IF /I "%2"=="x64" set OPT_Platform=x64
 IF /I "%2"=="x86" set OPT_Platform=x86
 
 
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.dll *.xml *.config -XF *Tests.dll
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.dll *.xml *.config *.cer -XF *Tests.dll
 
 IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 (
 	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 %cwd%\temp\bin\Revit_2014 *.dll *.xml *.config -XF *Tests.dll
@@ -39,7 +39,7 @@ cd ..
 
 robocopy %cwd%\..\..\doc\distrib\dynamo_packages %cwd%\temp\dynamo_packages /e
 robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
-robocopy %cwd%\..\..\doc\distrib\Samples_070\Samples %cwd%\temp\Samples /s
+robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoASM.iss
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss

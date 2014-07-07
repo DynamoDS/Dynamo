@@ -31,7 +31,7 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             //Assert that there are some errors in the graph
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             dynSettings.Controller.RunExpression(true);
             var errorNodes = model.Nodes.Where(x => x.State == ElementState.Warning);
             Assert.Greater(errorNodes.Count(), 0);
@@ -41,12 +41,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void CanChangeLacingAndHaveElementsUpdate()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Core\LacingTest.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x.NickName == "Point.ByCoordinates");
             Assert.IsNotNull(xyzNode);
@@ -143,11 +141,9 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void SwitchDocuments()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             //open the workflow and run the expression
             string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
             Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression());
 

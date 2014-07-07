@@ -121,7 +121,7 @@ namespace Revit.Elements.Views
                 throw new ArgumentNullException("box");
             }
 
-            return new SectionView(box.ToRevitType(true));
+            return new SectionView(box.ToRevitType());
         }
 
         #endregion

@@ -16678,14 +16678,6 @@ namespace ProtoTest.DebugTests
             DebugTestFx.CompareDebugAndRunResults(src);
         }
 
-        [Test]
-        [Category("Debugger")]
-        public void DebugEQtest_Change_type_while_variable_is_watched__1()
-        {
-            String src =
-                @" import(""ProtoGeometry.dll"");// executing in single step debug...    WCS = CoordinateSystem.Identity(); // setup world coordinatesystemone   = Point.ByCartesianCoordinates(WCS, 5, 7.5, 0);two   = Point.ByCartesianCoordinates(WCS, 10, 7.5, 0);three = Point.ByCartesianCoordinates(WCS, 7.5, 5, 0);curve = Line.ByStartPointEndPoint({ one, two }, three); // curve as a collection of lines// set a watch on curve and expand...pointOnCurve = curve.PointAtParameter({ 0.25, 0.75 }); // make a redependent variable on curve// now update curve, chaning its type .. how does the watch  window behave?curve = Arc.ByPointsOnCurve(one, two, three); // curve as an arccurve = BSplineCurve.ByControlVertices({ one, two, three }, 2); // curve as Bspline curve ";
-            DebugTestFx.CompareDebugAndRunResults(src);
-        }
 
         [Test]
         [Category("Debugger")]
@@ -16702,15 +16694,6 @@ namespace ProtoTest.DebugTests
         {
             String src =
                 @" a = 0..10;b = a;b[2] = 100; // modifying a member of a  copy of a collectionsc = a;d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collection ";
-            DebugTestFx.CompareDebugAndRunResults(src);
-        }
-
-        [Test]
-        [Category("Debugger")]
-        public void DebugEQtest_Range_expression_with_replication_guide_1()
-        {
-            String src =
-                @" import(""ProtoGeometry.dll"");WCS = CoordinateSystem.Identity(); // setup world coordinatesystem// single step through these instructions// each change to points should force a re-execution of line 9points = Point.ByCartesianCoordinates(WCS, 9, 1, 0);points = Point.ByCartesianCoordinates(WCS, 1..5, 1..6, 0);curve  = BSplineCurve.ByControlVertices(points, 2);points = Point.ByCartesianCoordinates(WCS, (1..5)<1>, (1..6)<2>, 0);points = Point.ByCartesianCoordinates(WCS, (1..5)<2>, (1..6)<1>, 0);points = Point.ByCartesianCoordinates(WCS, 1..6, 1..5, 0);points = Point.ByCartesianCoordinates(WCS, (1..7)<2>, (1..4)<1>, 0);points = Point.ByCartesianCoordinates(WCS, (1..4)<2>, (1..7)<1>, 0);points = Point.ByCartesianCoordinates(WCS, (1..4)<1>, (1..7)<2>, 0);points = Point.ByCartesianCoordinates(WCS, 1..5, 1..6, 0); ";
             DebugTestFx.CompareDebugAndRunResults(src);
         }
 
