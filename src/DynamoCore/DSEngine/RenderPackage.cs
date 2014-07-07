@@ -60,6 +60,18 @@ namespace Dynamo.DSEngine
             set { lineStripVertexCounts = value; }
         }
 
+        public List<byte> PointVertexColors
+        {
+            get { return pointVertexColors; }
+            set { pointVertexColors = value; }
+        }
+
+        public List<byte> TriangleVertexColors
+        {
+            get { return triangleVertexColor; }
+            set { triangleVertexColor = value; }
+        }
+
         /// <summary>
         /// Store the number of items stored in the RenderPackage
         /// </summary>

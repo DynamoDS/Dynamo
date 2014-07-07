@@ -1,6 +1,8 @@
 ﻿using System;
 using DSNodeServices;
 using Revit.Elements;
+using Revit.GeometryConversion;
+
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -130,10 +132,7 @@ namespace Revit.Elements
         /// </summary>
         public double Elevation
         {
-            get
-            {
-                return InternalLevel.Elevation;
-            }
+            get { return InternalLevel.Elevation*UnitConverter.HostToDynamoFactor; }
         }
 
         /// <summary>
@@ -143,7 +142,7 @@ namespace Revit.Elements
         {
             get
             {
-                return InternalLevel.ProjectElevation;
+                return InternalLevel.ProjectElevation * UnitConverter.HostToDynamoFactor;
             }
         }
 
@@ -175,7 +174,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            return new Level(elevation, name);
+            return new Level(elevation * UnitConverter.DynamoToHostFactor, name);
         }
 
         /// <summary>
@@ -186,7 +185,7 @@ namespace Revit.Elements
         /// <returns></returns>
         public static Level ByElevation(double elevation)
         {
-            return new Level(elevation, null);
+            return new Level(elevation * UnitConverter.DynamoToHostFactor, null);
         }
 
         /// <summary>
@@ -202,7 +201,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("level");
             }
 
-            return new Level(level.Elevation + offset, null);
+            return new Level(level.Elevation + offset * UnitConverter.DynamoToHostFactor, null);
         }
 
         /// <summary>
@@ -225,7 +224,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            return new Level(level.Elevation + offset, name);
+            return new Level(level.Elevation + offset * UnitConverter.DynamoToHostFactor, name);
         }
 
         #endregion
@@ -250,7 +249,7 @@ namespace Revit.Elements
 
         public override string ToString()
         {
-            return string.Format("Level(Name={0}, Elevation={1})", InternalLevel.Name, InternalLevel.Elevation);
+            return string.Format("Level(Name={0}, Elevation={1})", Name, Elevation);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace ProtoScript.Runners
     public class DebugRunner
     {
         private bool inited;
-        private bool invalidated;
         private bool executionsuspended;
         private VMState lastState;
         private ProtoCore.Core core;
@@ -90,8 +89,6 @@ namespace ProtoScript.Runners
             else
             {
                 inited = false;
-                invalidated = true;
-
                 return false;
             }
         }
@@ -259,8 +256,6 @@ namespace ProtoScript.Runners
         {
             if (lastState != null)
                 lastState.Invalidate();
-
-            invalidated = true;
 
             try
             {

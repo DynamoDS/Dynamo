@@ -187,8 +187,8 @@ namespace Revit.Elements
             }
             if (plane == null)
                throw new Exception(" Curtain Panel is not planar");
-            Plane result = Plane.ByOriginNormal(plane.Origin.ToPoint(), plane.Normal.ToVector());
-            return result;
+
+             return plane.ToPlane();
          }
       }
 
@@ -210,7 +210,7 @@ namespace Revit.Elements
                   lengthVal += crv.Length;
                }
             }
-            return lengthVal;
+             return lengthVal*UnitConverter.HostToDynamoFactor;
          }
       }
 
@@ -242,7 +242,7 @@ namespace Revit.Elements
          }
       }
 
-      public double GetRectangularWidth
+      public double Width
       {
          get
          {
@@ -268,11 +268,11 @@ namespace Revit.Elements
                   throw new Exception(" Curtain Panel is not rectangular");
                result = cLoop.GetRectangularWidth(cLoop.GetPlane());
             }
-            return result;
+             return result*UnitConverter.HostToDynamoFactor;
          }
       }
 
-      public double GetRectangularHeight
+      public double Height
       {
          get
          {
@@ -298,7 +298,7 @@ namespace Revit.Elements
                   throw new Exception(" Curtain Panel is not rectangular");
                result = cLoop.GetRectangularHeight(cLoop.GetPlane());
             }
-            return result;
+            return result * UnitConverter.HostToDynamoFactor;
          }
       }
 

@@ -286,9 +286,6 @@ namespace GraphToDSCompiler
 
         static char NodesCountMarker = '¥';
         static char NodesContentMarker = 'Σ';
-        static char RemovedNodesListEndMarker = 'Ř';
-        static char AddedNodesListEndMarker = 'Ă';
-        static char ModifiedNodesListEndMarker = 'Ň';
         static char NodeListEndMarker = 'Ł';
         static char SyncDataEndMarker = '¡';
 
@@ -298,10 +295,7 @@ namespace GraphToDSCompiler
         static char ContentEndMarker = 'Ώ';
         static char ConnectionListCountMarker = 'Γ';
         static char ConnectionListElementMarker = 'ε';
-        static char InputListEndMarker = 'θ';
-        static char OutputListEndMarker = 'λ';
         static char ConnectionListEndMarker = 'δ';
-        static char SnapshotNodeEndMarker = 'ξ';
 
         static char ConnectionDataMemberMarker = 'ά';
 

@@ -147,7 +147,7 @@ namespace Revit.Elements
             get
             {
                 var pos = this.InternalFamilyInstance.Location as LocationPoint;
-                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+                return pos.Point.ToPoint();
             }
         }
 
@@ -172,7 +172,8 @@ namespace Revit.Elements
         /// <param name="structuralType">The type of the structural element - a beam, column, etc</param>
         /// <param name="structuralFamilySymbol">The FamilySymbol representing the structural type</param>
         /// <returns></returns>
-        public static StructuralFraming ByCurveLevelUpVectorAndType(Autodesk.DesignScript.Geometry.Curve curve, Level level, Autodesk.DesignScript.Geometry.Vector upVector, StructuralType structuralType, FamilySymbol structuralFamilySymbol)
+        public static StructuralFraming ByCurveLevelUpVectorAndType(Autodesk.DesignScript.Geometry.Curve curve, Level level, 
+            Autodesk.DesignScript.Geometry.Vector upVector, StructuralType structuralType, FamilySymbol structuralFamilySymbol)
         {
             if (curve == null)
             {

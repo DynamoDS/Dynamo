@@ -31,14 +31,7 @@ UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName=Dynamo 0.7.1
 UsePreviousAppDir=no
 
-;[Types]
-;Name: "full"; Description: "Full installation"
-;Name: "compact"; Description: "Compact installation"
-;Name: "custom"; Description: "Custom installation"; Flags: iscustom
-
 [Dirs]
-Name: "{app}\definitions"
-Name: "{app}\samples"
 Name: "{app}\dll"
 Name: "{app}\nodes"
 

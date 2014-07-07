@@ -1,15 +1,30 @@
 ﻿using Autodesk.DesignScript.Geometry;
-using Revit.Elements;
+using Autodesk.Revit.DB;
 using NUnit.Framework;
+using Revit.GeometryConversion;
 using RevitServices.Persistence;
-
 using RTF.Framework;
+using ModelText = Revit.Elements.ModelText;
+using ModelTextType = Revit.Elements.ModelTextType;
+using Plane = Autodesk.DesignScript.Geometry.Plane;
+using Point = Autodesk.DesignScript.Geometry.Point;
+using SketchPlane = Revit.Elements.SketchPlane;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
     public class ModelTextTests : GeometricRevitNodeTest
     {
+        internal double InternalDepth(Revit.Elements.ModelText text)
+        {
+            return (text.InternalElement as Autodesk.Revit.DB.ModelText).Depth;
+        }
+
+        internal XYZ InternalLocation(Revit.Elements.ModelText text)
+        {
+            return ((LocationPoint)text.InternalElement.Location).Point;
+        }
+
         [Test]
         [TestModel(@".\withModelText.rfa")]
         public void ByTextSketchPlaneAndPosition_ValidArgs()
@@ -23,13 +38,27 @@ namespace DSRevitNodesTests.Elements
             var modelTextType = ModelTextType.ByName(name);
 
             var sketchPlane = SketchPlane.ByPlane(plane);
+            var depth = 1;
+            var x = 10;
+            var y = 3;
+            var mt = ModelText.ByTextSketchPlaneAndPosition(text, sketchPlane, x, y, depth, modelTextType);
 
-            var structure = ModelText.ByTextSketchPlaneAndPosition(text, sketchPlane, 0, 0, 1, modelTextType);
-
-            Assert.NotNull(structure);
-            Assert.NotNull(structure.InternalElement);
+            Assert.NotNull(mt);
+            Assert.NotNull(mt.InternalElement);
             Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
-                 new ElementUUID( structure.InternalElement.UniqueId)));
+                 new ElementUUID( mt.InternalElement.UniqueId)));
+
+            mt.Depth.ShouldBeApproximately(depth);
+
+            // with unit conversion
+            InternalDepth(mt).ShouldBeApproximately(depth * UnitConverter.DynamoToHostFactor);
+
+            var expectedInternalLoc =
+                origin.InHostUnits()
+                    .Add(Vector.XAxis().Scale(x*UnitConverter.DynamoToHostFactor))
+                    .Add(Vector.YAxis().Scale(y*UnitConverter.DynamoToHostFactor));
+            InternalLocation(mt).ShouldBeApproximately(expectedInternalLoc);
+
         }
 
         [Test]
@@ -49,7 +78,6 @@ namespace DSRevitNodesTests.Elements
             Assert.Throws(typeof(System.ArgumentNullException), () => ModelText.ByTextSketchPlaneAndPosition(null, sketchPlane, 0, 0, 1, modelTextType));
             Assert.Throws(typeof(System.ArgumentNullException), () => ModelText.ByTextSketchPlaneAndPosition(text, null, 0, 0, 1, modelTextType));
             Assert.Throws(typeof(System.ArgumentNullException), () => ModelText.ByTextSketchPlaneAndPosition(text, sketchPlane, 0, 0, 1, null));
-
         }
 
     }
