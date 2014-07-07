@@ -158,22 +158,25 @@ namespace RevitServices.Persistence
         /// </summary>
         public static void Regenerate()
         {
-            if (TransactionManager.Instance.DoAssertInIdleThread)
+            if (!IdlePromise.IsInMainThread)
             {
-                IdlePromise.ExecuteOnIdleSync(() =>
-                 {
-                     TransactionManager.Instance.EnsureInTransaction(
-                                  DocumentManager.Instance.CurrentDBDocument);
-                     Instance.CurrentDBDocument.Regenerate();
-                     //To ensure the transaction is closed in the idle process
-                     //so that the element is updated after this.
-                     TransactionManager.Instance.ForceCloseTransaction();
-                 }
-                 );
-            }
-            else
-            {
-                Instance.CurrentDBDocument.Regenerate();
+                if (TransactionManager.Instance.DoAssertInIdleThread)
+                {
+                    IdlePromise.ExecuteOnIdleSync(() =>
+                     {
+                         TransactionManager.Instance.EnsureInTransaction(
+                                      DocumentManager.Instance.CurrentDBDocument);
+                         Instance.CurrentDBDocument.Regenerate();
+                         //To ensure the transaction is closed in the idle process
+                         //so that the element is updated after this.
+                         TransactionManager.Instance.ForceCloseTransaction();
+                     }
+                     );
+                }
+                else
+                {
+                    Instance.CurrentDBDocument.Regenerate();
+                }
             }
         }
     }

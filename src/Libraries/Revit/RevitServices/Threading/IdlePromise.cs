@@ -28,6 +28,31 @@ namespace RevitServices.Threading
     /// </summary>
     public static class IdlePromise
     {
+        static int mainThreadId = -1;
+        //This function is used for accessing the main thread Id.
+        //It must be set correctly before used.
+        public static int MainThreadId
+        {
+            get
+            {
+                return mainThreadId;
+            }
+            set
+            {
+                mainThreadId = value;
+            }
+        }
+
+        //This function is used to check whether the current thread is the main thread.
+        //It must be used after MainThreadId is set properly.
+        public static bool IsInMainThread
+        {
+            get
+            {
+                return System.Threading.Thread.CurrentThread.ManagedThreadId == mainThreadId;
+            }
+        }
+
         //The lock will be used to prevent write access to Promises by multiple threads
         //at the same time. For example, one thread might be calling the Enqueue method
         //while another thread is calling the Dequeue method.
