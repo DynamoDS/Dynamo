@@ -34,11 +34,11 @@ namespace Dynamo.Messages
         /// Send the results of the execution
         /// </summary>
         public event Answer SendAnswer;
-        protected void OnAnswer(string message, string id)
+        protected void OnAnswer(string message)
         {
             if (SendAnswer != null)
             {
-                SendAnswer(message, id);
+                SendAnswer(message, SessionId);
             }
         }
 
@@ -80,7 +80,11 @@ namespace Dynamo.Messages
         {
             if (Commands != null)
             {
-                Commands.ForEach(c => c.Execute(dynamoViewModel));
+                Commands.ForEach(c =>
+                {
+                    c.ShowResult += OnAnswer;
+                    c.Execute(dynamoViewModel);
+                });
             }
         }
 

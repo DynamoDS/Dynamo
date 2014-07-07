@@ -696,6 +696,21 @@ namespace Dynamo.Models
                 return null;
             }
 
+            NodeModel existing = null;
+            foreach (NodeModel item in CurrentWorkspace.Nodes)
+            {
+                if (item.GUID.Equals(nodeId) && item.Name.Equals(node.Name))
+                {
+                    existing = item;
+                    break;
+                }
+            }
+            // safely ignore a node of the same type with the same GUID
+            if (existing != null)
+            {
+                return existing;
+            }
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;

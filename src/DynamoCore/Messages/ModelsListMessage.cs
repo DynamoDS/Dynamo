@@ -9,7 +9,7 @@ namespace Dynamo.Messages
         internal override void Execute(ViewModels.DynamoViewModel dynamoViewModel)
         {
             string json = dynSettings.Controller.SearchViewModel.GetAllNodesWithCategoriesInJson();
-            OnAnswer(json, SessionId);
+            OnAnswer(json);
         }
     }
 }

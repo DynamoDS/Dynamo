@@ -1,5 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting;
 using System.Windows.Input;
+
+using Dynamo.DSEngine;
+using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Utilities;
 using System.Runtime.Serialization;
@@ -56,7 +63,7 @@ namespace Dynamo.Search.SearchElements
     /// <summary>
     /// A simple version of the SearchElementBase class needed for sending data to a web client
     /// </summary>
-    public class JsonNodeItem
+    public class NodeModelItem
     {
         [DataMember]
         public string Category { get; private set; }
@@ -82,7 +89,13 @@ namespace Dynamo.Search.SearchElements
         [DataMember]
         public string Keywords { get; private set; }
 
-        public JsonNodeItem(SearchElementBase node)
+        [DataMember]
+        public string[] Parameters { get; private set; }
+
+        [DataMember]
+        public string[] ReturnKeys { get; private set; }
+
+        public NodeModelItem(SearchElementBase node)
         {
             Category = node.FullCategoryName;
             Type = node.Type;
@@ -92,6 +105,49 @@ namespace Dynamo.Search.SearchElements
             Searchable = node.Searchable;
             Weight = node.Weight;
             Keywords = node.Keywords;
+
+            FunctionDescriptor functionItem = (dynSettings.Controller.EngineController.GetFunctionDescriptor(CreatingName));
+            if (functionItem != null)
+            {
+                Parameters = functionItem.Parameters.Select(elem => elem.Name).ToArray();
+
+                if (functionItem.ReturnKeys != null && functionItem.ReturnKeys.Any())
+                {
+                    ReturnKeys = functionItem.ReturnKeys.ToArray();
+                }
+                else
+                {
+                    ReturnKeys = new[] { functionItem.Type == FunctionType.Constructor ? functionItem.UnqualifedClassName : functionItem.ReturnType };
+                }
+            }
+            else
+            {
+                if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(CreatingName))
+                {
+                    TypeLoadData tld = dynSettings.Controller.BuiltInTypesByName[CreatingName];
+
+                    ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                    var newEl = (NodeModel)obj.Unwrap();
+
+                    Parameters = newEl.InPorts.Select(elem => elem.PortName).ToArray();
+                    ReturnKeys = newEl.OutPorts.Select(elem => elem.PortName).ToArray();
+                }
+                else if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(CreatingName))
+                {
+                    TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[CreatingName];
+
+                    ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                    var newEl = (NodeModel)obj.Unwrap();
+
+                    Parameters = newEl.InPorts.Select(elem => elem.PortName).ToArray();
+                    ReturnKeys = newEl.OutPorts.Select(elem => elem.PortName).ToArray();
+                }
+                else
+                {
+                    Parameters = new[] { "Input" };
+                    ReturnKeys = new[] { "Output" };
+                }
+            }
         }
     }
 }
