@@ -177,7 +177,7 @@ namespace Dynamo.Services
                 return;
 
             //Log PII containing version
-            loggerImpl.Error("Stack Trace", e.ToString());
+            loggerImpl.Error("StackTrace", e.ToString());
         }
 
         public static void FORCE_LogInfo(string tag, string data)

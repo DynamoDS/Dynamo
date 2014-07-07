@@ -1005,7 +1005,7 @@ namespace GraphToDSCompiler
                 ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode = p.root as ProtoCore.AST.AssociativeAST.CodeBlockNode;
                 n = p.GetParsedASTList(codeBlockNode);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //if syntax return SnapshotNodeType as None
                 return SnapshotNodeType.CodeBlock;
@@ -1336,7 +1336,7 @@ namespace GraphToDSCompiler
 
                 return true;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 buildStatus = null;
                 return false;

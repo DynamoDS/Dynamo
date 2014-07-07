@@ -780,8 +780,6 @@ namespace ProtoCore.DSASM
             ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
-            int blockDepth = 0;
-
             List<StackValue> registers = new List<StackValue>();
             SaveRegisters(registers);
 

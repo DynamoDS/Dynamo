@@ -216,7 +216,6 @@ namespace ProtoTestFx
                     try
                     {
                         runValue = runExecMirror.GetGlobalValue(symNode.name);
-                        Console.WriteLine(symNode.name + ": " + runValue);
                         lookupOk = true;
 
                     }

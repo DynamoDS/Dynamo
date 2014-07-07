@@ -130,11 +130,11 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var protoSpline = (Autodesk.DesignScript.Geometry.NurbsCurve)protoCurve;
 
-            protoSpline.StartPoint.AssertShouldBeApproximately(pts[0]);
-            protoSpline.EndPoint.AssertShouldBeApproximately(pts.Last());
+            protoSpline.StartPoint.ShouldBeApproximately(pts[0]);
+            protoSpline.EndPoint.ShouldBeApproximately(pts.Last());
 
-            protoSpline.TangentAtParameter(0.0).AssertShouldBeApproximately(revitSpline.Tangents[0]);
-            protoSpline.TangentAtParameter(1.0).AssertShouldBeApproximately(revitSpline.Tangents.Last());
+            protoSpline.TangentAtParameter(0.0).ShouldBeApproximately(revitSpline.Tangents[0]);
+            protoSpline.TangentAtParameter(1.0).ShouldBeApproximately(revitSpline.Tangents.Last());
 
             var tessPts = revitSpline.Tessellate();
 
@@ -190,10 +190,10 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Arc>(pc);
             var pa = (Autodesk.DesignScript.Geometry.Arc)pc;
 
-            (pa.SweepAngle * Math.PI / 180).AssertShouldBeApproximately(ep - sp);
+            (pa.SweepAngle * Math.PI / 180).ShouldBeApproximately(ep - sp);
 
-            pa.StartPoint.AssertShouldBeApproximately(re.GetEndPoint(0));
-            pa.EndPoint.AssertShouldBeApproximately(re.GetEndPoint(1));
+            pa.StartPoint.ShouldBeApproximately(re.GetEndPoint(0));
+            pa.EndPoint.ShouldBeApproximately(re.GetEndPoint(1));
 
             //var tessPts = re.Tessellate();
 
@@ -226,15 +226,15 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.EllipseArc>(pc);
             var pa = (Autodesk.DesignScript.Geometry.EllipseArc)pc;
 
-            pa.StartAngle.ToRadians().AssertShouldBeApproximately(sp);
-            (pa.SweepAngle.ToRadians()).AssertShouldBeApproximately(ep - sp);
+            pa.StartAngle.ToRadians().ShouldBeApproximately(sp);
+            (pa.SweepAngle.ToRadians()).ShouldBeApproximately(ep - sp);
 
-            pa.StartPoint.AssertShouldBeApproximately(re.GetEndPoint(0));
-            pa.EndPoint.AssertShouldBeApproximately(re.GetEndPoint(1));
+            pa.StartPoint.ShouldBeApproximately(re.GetEndPoint(0));
+            pa.EndPoint.ShouldBeApproximately(re.GetEndPoint(1));
 
-            pa.MajorAxis.Length.AssertShouldBeApproximately(rx);
-            pa.MinorAxis.Length.AssertShouldBeApproximately(ry);
-            pa.CenterPoint.AssertShouldBeApproximately(re.Center);
+            pa.MajorAxis.Length.ShouldBeApproximately(rx);
+            pa.MinorAxis.Length.ShouldBeApproximately(ry);
+            pa.CenterPoint.ShouldBeApproximately(re.Center);
 
             var tessPts = re.Tessellate();
 
@@ -269,12 +269,12 @@ namespace DSRevitNodesTests.GeometryConversion
             // no elliptical arcs yet
             //(pa.SweepAngle * Math.PI / 180).AssertShouldBeApproximately(ep - sp);
 
-            pa.StartPoint.AssertShouldBeApproximately(re.GetEndPoint(0));
-            pa.EndPoint.AssertShouldBeApproximately(re.GetEndPoint(1));
+            pa.StartPoint.ShouldBeApproximately(re.GetEndPoint(0));
+            pa.EndPoint.ShouldBeApproximately(re.GetEndPoint(1));
 
-            pa.MajorAxis.Length.AssertShouldBeApproximately(rx);
-            pa.MinorAxis.Length.AssertShouldBeApproximately(ry);
-            pa.CenterPoint.AssertShouldBeApproximately(re.Center);
+            pa.MajorAxis.Length.ShouldBeApproximately(rx);
+            pa.MinorAxis.Length.ShouldBeApproximately(ry);
+            pa.CenterPoint.ShouldBeApproximately(re.Center);
 
             //var tessPts = re.Tessellate();
 
