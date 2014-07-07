@@ -330,6 +330,11 @@ namespace ProtoScript.Runners
             return deltaAstList;
         }
 
+        /// <summary>
+        /// Traverse the list of ASTs and set the guid of the nested binary expressions
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="astList"></param>
         private void SetNestedLanguageBlockASTGuids(Guid guid, List<ProtoCore.AST.Node> astList)
         {
             foreach (ProtoCore.AST.Node node in astList)
@@ -351,72 +356,33 @@ namespace ProtoScript.Runners
                 if (rightNode is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
                 {
                     langblock = (rightNode as ProtoCore.AST.AssociativeAST.LanguageBlockNode).CodeBlockNode;
-                    if (langblock != null)
-                    {
-                        if (langblock is ProtoCore.AST.AssociativeAST.CodeBlockNode)
-                        {
-                            ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.AssociativeAST.CodeBlockNode;
-                            foreach (ProtoCore.AST.AssociativeAST.AssociativeNode assocNode in codeBlock.Body)
-                            {
-                                nextAstList.Add(assocNode as ProtoCore.AST.Node);
-                            }
-                        }
-                        else if (langblock is ProtoCore.AST.ImperativeAST.CodeBlockNode)
-                        {
-                            ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.ImperativeAST.CodeBlockNode;
-                            foreach (ProtoCore.AST.ImperativeAST.ImperativeNode imperativeNode in codeBlock.Body)
-                            {
-                                nextAstList.Add(imperativeNode as ProtoCore.AST.Node);
-                            }
-                        }
-                    }
                 }
-                else if (rightNode is ProtoCore.AST.ImperativeAST.LanguageBlockNode)
+                else if  (rightNode is ProtoCore.AST.ImperativeAST.LanguageBlockNode)
                 {
                     langblock = (rightNode as ProtoCore.AST.ImperativeAST.LanguageBlockNode).CodeBlockNode;
-                    if (langblock != null)
+                }
+
+                if (langblock != null)
+                {
+                    if (langblock is ProtoCore.AST.AssociativeAST.CodeBlockNode)
                     {
-                        if (langblock is ProtoCore.AST.AssociativeAST.CodeBlockNode)
+                        ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                        foreach (ProtoCore.AST.AssociativeAST.AssociativeNode assocNode in codeBlock.Body)
                         {
-                            ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.AssociativeAST.CodeBlockNode;
-                            foreach (ProtoCore.AST.AssociativeAST.AssociativeNode assocNode in codeBlock.Body)
-                            {
-                                nextAstList.Add(assocNode as ProtoCore.AST.Node);
-                            }
+                            nextAstList.Add(assocNode as ProtoCore.AST.Node);
                         }
-                        else if (langblock is ProtoCore.AST.ImperativeAST.CodeBlockNode)
+                    }
+                    else if (langblock is ProtoCore.AST.ImperativeAST.CodeBlockNode)
+                    {
+                        ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.ImperativeAST.CodeBlockNode;
+                        foreach (ProtoCore.AST.ImperativeAST.ImperativeNode imperativeNode in codeBlock.Body)
                         {
-                            ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.ImperativeAST.CodeBlockNode;
-                            foreach (ProtoCore.AST.ImperativeAST.ImperativeNode assocNode in codeBlock.Body)
-                            {
-                                nextAstList.Add(assocNode as ProtoCore.AST.Node);
-                            }
+                            nextAstList.Add(imperativeNode as ProtoCore.AST.Node);
                         }
                     }
                 }
                 SetNestedLanguageBlockASTGuids(guid, nextAstList);
             }
-            //{
-            //foreach (AssociativeNode node in astList)
-            //{
-            //    var bnode = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-            //    if (bnode != null)
-            //    {
-            //        bnode.guid = guid;
-            //        if (bnode.RightNode is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
-            //        {
-            //            ProtoCore.AST.AssociativeAST.LanguageBlockNode langCodeBlock = bnode.RightNode as ProtoCore.AST.AssociativeAST.LanguageBlockNode;
-            //            if (langCodeBlock != null)
-            //            {
-            //                ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlock = langCodeBlock.CodeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
-            //                if (codeBlock != null)
-            //                {
-            //                    SetNestedLanguageBlockASTGuids(guid, codeBlock.Body);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
         }
 
 
