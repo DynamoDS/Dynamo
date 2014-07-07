@@ -208,7 +208,7 @@ namespace DSCoreNodesUI
 
                     Items.Clear();
 
-                    // check the type of this object, if it's dynamic have to parse membernames and then get values
+                    // check the type of this object, if it's dynamic have to parse member names and then get values
                     if (objectinput is IDynamicMetaObjectProvider)
                     {
                         var names = new List<string>();
@@ -382,7 +382,7 @@ namespace DSCoreNodesUI
             sp.Children.Remove(last);
             comboboxes.Remove(last);
 
-            // remove it's index from the list of indicies
+            // remove its index from the list of indicies
             indicies.RemoveAt(Indicies.Count - 1);
             return last;
 
@@ -416,10 +416,10 @@ namespace DSCoreNodesUI
 
             //add a drop down list to the window
             var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
-            //addButton.Height = 20;
+            
 
             var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
-            //subButton.Height = 20;
+           
 
             // first add all buttons
             //
@@ -430,7 +430,7 @@ namespace DSCoreNodesUI
             subButton.VerticalAlignment = VerticalAlignment.Top;
 
 
-
+            // outer panel contains buttons
             var OuterWrapPanel = new WrapPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
@@ -440,7 +440,7 @@ namespace DSCoreNodesUI
             OuterWrapPanel.Children.Add(addButton);
             OuterWrapPanel.Children.Add(subButton);
 
-
+            // inner panel contains dropboxes
             var InnerStackPanel = new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,

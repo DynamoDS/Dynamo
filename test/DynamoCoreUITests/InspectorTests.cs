@@ -93,9 +93,9 @@ namespace Dynamo.Tests
         public void InspectorItemNamesAndIndicies()
         {
 
-
+            // load a saved file dyn file that takes a color constructor node and an inspector node
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "core", "inspector", "InspectorTest1.dyn");
-            Console.WriteLine(openPath);
+           
             Model.Open(openPath);
             Assert.DoesNotThrow(() => Controller.RunExpression());
 
@@ -125,7 +125,7 @@ namespace Dynamo.Tests
             
         }
 
-        [Test]
+       //stubs for future tests
         public void InspectorAddAndRemoveDropDowns()
         {
             //
