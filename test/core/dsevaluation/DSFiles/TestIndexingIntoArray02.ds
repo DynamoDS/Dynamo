@@ -1,1 +1,0 @@
-x=[Imperative]{    def ding()    {        return = {{1,2,3}, {4,5,6}};    }    return = ding()[1][1];}class A{    a:int;    constructor A(i:int)    {        a = i;    }}def foo(){    return = {A.A(1), A.A(2), A.A(3)};}y = foo()[1].a;

@@ -1,1 +1,0 @@
-class A{    x : int;    t : int;    constructor A( y)    {        x = y;    }} a1 = { A.A(1), A.A(2) };a1.t = 5;testx = a1.x;test = a1.t;

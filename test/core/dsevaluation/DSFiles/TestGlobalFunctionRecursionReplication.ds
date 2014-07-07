@@ -1,1 +1,0 @@
-def f(i : int){    local = [Imperative]    {        xx = 0;        if (i > 1)        {            return = f(i - 1) + i + xx;        }        return = i;    }    return = local;}x = {100,200,300};y = f(x);

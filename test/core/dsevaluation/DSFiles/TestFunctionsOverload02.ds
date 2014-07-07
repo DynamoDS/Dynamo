@@ -1,1 +1,0 @@
-i;j;[Associative]{    def f : int( p1 : int )    {	    x = p1 * 10;	    return = x;    }    def f : int( p1 : int, p2 : int )    {	    return = p1 + p2;    }    a = 2;    b = 20;    // Pasing variables to function overloads    i = f(a + 10);    j = f(a, b);}   

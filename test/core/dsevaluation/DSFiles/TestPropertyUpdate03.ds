@@ -1,1 +1,0 @@
-class A{    x : int;	    constructor A()    {        x = 1;    }}class B{    m : var;	    constructor B()    {        m = A.A();    }}p = B.B();a = p.m.x;p.m.x = 2;                

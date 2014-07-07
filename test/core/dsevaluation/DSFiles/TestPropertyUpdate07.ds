@@ -1,1 +1,0 @@
-class C{    x : int;    constructor C(i:int)    {        x = i;    }}i = 10;a = C.C(i);a.x = 15;v = a.x;i = 7;                

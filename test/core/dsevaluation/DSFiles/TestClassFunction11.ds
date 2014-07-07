@@ -1,1 +1,0 @@
-class Point{    context : var;    x : var;    constructor Create(cs : CoordinateSystem, xx : double)    {        context= cs;        x = xx;    }}class CoordinateSystem{    origin : var;    constructor Create(orig : Point)    {        origin = orig;    }}cs = null;p = Point.Create(cs, 10.0);cs2 = CoordinateSystem.Create(p);xval = cs2.origin.x;

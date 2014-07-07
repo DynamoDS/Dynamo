@@ -1,1 +1,0 @@
-class C{    x : int;    constructor C()    {        x = 1;    }}def f(a : C){    a.x = 10;    return = 0;}p = C.C();i = p.x;t = f(p);                

@@ -1,1 +1,0 @@
-class A{    fx :var;    constructor A(x : var)    {        fx = x;    }}fa = A.A(10..12);r1 = fa.fx;r2 = fa[0].fx; // 10r3 = fa.fx[0]; // 10

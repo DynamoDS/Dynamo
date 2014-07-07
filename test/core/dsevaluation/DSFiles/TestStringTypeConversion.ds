@@ -1,7 +1,0 @@
-def foo:bool(x:bool)
-{
-    return=x;
-}
-r1 = foo('h');
-r2 = 'h' && true;
-r3 = 'h' + 1;

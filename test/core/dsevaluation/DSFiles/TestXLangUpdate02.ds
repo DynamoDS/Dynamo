@@ -1,1 +1,0 @@
-a;b;[Associative]{    a = 1;    b = a;    a = 10;    [Imperative]    {        a = a + 1;    }}                

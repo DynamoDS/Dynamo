@@ -1,1 +1,0 @@
-class Base{    static x : int[];}t = Base.x;Base.x = { 1, 2 };                   

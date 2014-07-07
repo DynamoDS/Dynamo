@@ -1,1 +1,0 @@
-b;c;d;e;                        [Associative]                        {	                        a = 1.5..5..1.1;                            b = a[0];	                        c = a[1];	                        d = a[2];	                        e = a[3];                                                     }                        

@@ -1,1 +1,0 @@
-      def sum : double (p : double)    {           return = p + 10.0;    }    class Obj    {        val : var;		mx : var;		my : var;		mz : var;        constructor Obj(xx : double, yy : double, zz : double)        {            mx = xx;            my = yy;            mz = zz;            val = sum(zz);        }    }    p = Obj.Obj(0.0, 1.0, 2.0);    x = p.val;

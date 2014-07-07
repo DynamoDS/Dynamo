@@ -1,1 +1,0 @@
-c;[Associative]{    def foo : int ( a : int )    {        b = a + 1;    }	     c = foo(1);	}

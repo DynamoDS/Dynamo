@@ -1,1 +1,0 @@
-test;test2;test3;[Associative]{    def mult : int( s : int )		{		return = s * 2;	}    test = mult(5);    test2 = mult(2);    test3 = mult(mult(5));}

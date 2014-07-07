@@ -1,9 +1,0 @@
-
-a = {};
-a[true] = 42;
-def foo(x: var[]..[])
-{
-    return = x[true];
-}
-r = foo(a);
-

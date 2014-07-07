@@ -1,1 +1,0 @@
-	class Vector	{		mx : var;		my : var;				def init : int ()		{            my = 522;              return = 22;		}				constructor Vector(x : int)		{			mx = x;            aa = init(); // A local function called within the constructor		}	}	a = Vector.Vector(1);	b = a.mx;    c = a.my;    d = a.init();
