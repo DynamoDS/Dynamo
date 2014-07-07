@@ -30,7 +30,6 @@ namespace Dynamo.Core
         private bool cancelSet;
         private int? execInternval;
         private Thread evaluationThread = null;
-        public Thread EvaluationThread { get { return evaluationThread; } }
 
         public bool Running { get; protected set; }
 
@@ -39,17 +38,17 @@ namespace Dynamo.Core
         /// </summary>
         public bool NeedsAdditionalRun { get; protected set; }
 
-        private void PostCancellationRequest()
-        {
-            controller.EngineController.LiveRunnerCore.RequestCancellation();
-        }
-
         public void CancelAsync()
         {
             if (Running)
             {
                 cancelSet = true;
-                PostCancellationRequest();
+                controller.EngineController.LiveRunnerCore.RequestCancellation();
+                
+                // We need to wait for evaluation thread to complete after a cancellation
+                // until the LR and Engine controller are reset properly
+                if (evaluationThread != null)
+                    evaluationThread.Join();
             }
         }
 
@@ -93,7 +92,6 @@ namespace Dynamo.Core
                     Validity.Assert(Running);
                 }
                 RunAsync();
-
             }
             else
             {

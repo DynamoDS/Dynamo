@@ -1,0 +1,7 @@
+<Workspace Version="0.7.1.31252" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="1aef2484-bdf1-4010-a2c4-dbf2d40e357e" nickname="Code Block" x="108" y="42" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="b = [Imperative]&#xA;{&#xA;&#xA;    while(1)&#xA;    {&#xA;&#xA;    }&#xA;    return = 9;&#xA;}" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

@@ -12,12 +12,6 @@ namespace ProtoCore.Exceptions
 
     public class ExecutionCancelledException : Exception
     {
-        public override string Message
-        {
-            get
-            {
-                return "The execution has been cancelled!";
-            }
-        }
+        
     }
 }
