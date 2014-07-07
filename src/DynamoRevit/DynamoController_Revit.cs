@@ -244,6 +244,12 @@ namespace Dynamo
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 }
             }
+
+            var uiDoc = DocumentManager.Instance.CurrentUIDocument;
+            if (uiDoc != null)
+            {
+                DynamoRevit.SetRunEnabledBasedOnContext(uiDoc.ActiveView); 
+            }
         }
 
         /// <summary>
@@ -266,7 +272,7 @@ namespace Dynamo
             }
         }
 
-        private static string GetDocumentPointerMessage()
+        internal static string GetDocumentPointerMessage()
         {
             var docPath = DocumentManager.Instance.CurrentUIDocument.Document.PathName;
             var message = string.IsNullOrEmpty(docPath)

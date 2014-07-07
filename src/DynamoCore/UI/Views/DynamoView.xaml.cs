@@ -77,6 +77,18 @@ namespace Dynamo.Controls
             return app;
         }
 
+        public static DynamoView MakeSandbox(string commandFilePath)
+        {
+            var controller = DynamoController.MakeSandbox(commandFilePath);
+            
+            //create the view
+            var ui = new DynamoView();
+            ui.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = ui.Dispatcher;
+
+            return ui;
+        }
+
         public DynamoView()
         {
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;

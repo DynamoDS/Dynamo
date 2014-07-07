@@ -206,6 +206,8 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
+        List<NodeModelItem> allNodeModels;
+
         #endregion
 
         #region events
@@ -248,7 +250,7 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
             this.AddRootCategory(BuiltinNodeCategories.IO);
-            
+
         }
 
         private const char CATEGORY_DELIMITER = '.';
@@ -277,14 +279,14 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            RemoveEmptyRootCategory((BrowserRootElement) cat);
+            RemoveEmptyRootCategory((BrowserRootElement)cat);
         }
 
         public void RemoveEmptyRootCategory(BrowserRootElement rootEle)
         {
             if (!ContainsCategory(rootEle.Name))
                 return;
-            
+
             BrowserRootCategories.Remove(rootEle);
         }
 
@@ -292,7 +294,7 @@ namespace Dynamo.ViewModels
         /// Remove and empty category from browser and search by name. Useful when a single item is removed.
         /// </summary>
         /// <param name="categoryName">The category name, including delimiters</param>
-        public void RemoveEmptyCategory( string categoryName )
+        public void RemoveEmptyCategory(string categoryName)
         {
             var currentCat = GetCategoryByName(categoryName);
             if (currentCat == null)
@@ -318,7 +320,7 @@ namespace Dynamo.ViewModels
             if (ele is BrowserInternalElement && ele.Items.Count == 0)
             {
                 var internalEle = ele as BrowserInternalElement;
-                
+
                 internalEle.Parent.Items.Remove(internalEle);
                 RemoveEmptyCategory(internalEle.Parent);
             }
@@ -335,7 +337,7 @@ namespace Dynamo.ViewModels
             if (currentCat == null) return;
 
             RemoveCategory(currentCat);
-            
+
         }
 
         /// <summary>
@@ -390,7 +392,7 @@ namespace Dynamo.ViewModels
             }
 
             return splitCat;
-        } 
+        }
 
         /// <summary>
         ///     Add a category, given a delimited name
@@ -404,7 +406,7 @@ namespace Dynamo.ViewModels
                 return this.TryAddRootCategory("Uncategorized");
             }
 
-            if ( ContainsCategory(categoryName) )
+            if (ContainsCategory(categoryName))
             {
                 return GetCategoryByName(categoryName);
             }
@@ -429,7 +431,7 @@ namespace Dynamo.ViewModels
             }
 
             // attempt to add root category
-            var currentCat = TryAddRootCategory(splitCat[0]);    
+            var currentCat = TryAddRootCategory(splitCat[0]);
 
             for (var i = 1; i < splitCat.Count; i++)
             {
@@ -451,7 +453,7 @@ namespace Dynamo.ViewModels
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
 
             // support long nested categories like Math.Math.StaticMembers.Abs
-            var parentItem  = parent as BrowserInternalElement;
+            var parentItem = parent as BrowserInternalElement;
             while (parentItem != null)
             {
                 var grandParent = parentItem.Parent;
@@ -510,7 +512,7 @@ namespace Dynamo.ViewModels
             if (!split.Any())
                 return null;
 
-            var cat = (BrowserItem) BrowserRootCategories.FirstOrDefault(x => x.Name == split[0]);
+            var cat = (BrowserItem)BrowserRootCategories.FirstOrDefault(x => x.Name == split[0]);
 
             foreach (var splitName in split.GetRange(1, split.Count - 1))
             {
@@ -571,7 +573,7 @@ namespace Dynamo.ViewModels
 
                                 return;
                             }
-                            
+
                             // otherwise, first collapse all
                             foreach (var root in BrowserRootCategories)
                             {
@@ -620,7 +622,7 @@ namespace Dynamo.ViewModels
                             // for all of the other results, show them in their category
                             foreach (var ele in _searchElements)
                             {
-                                if ( t.Result.Contains(ele) )
+                                if (t.Result.Contains(ele))
                                 {
                                     ele.Visibility = true;
                                     ele.ExpandToRoot();
@@ -643,7 +645,7 @@ namespace Dynamo.ViewModels
                             }
 
                             SearchResults.Clear();
-                            _visibleSearchResults.ToList().ForEach(x => SearchResults.Add( (NodeSearchElement) x));
+                            _visibleSearchResults.ToList().ForEach(x => SearchResults.Add((NodeSearchElement)x));
                         }
 
                     }
@@ -797,7 +799,7 @@ namespace Dynamo.ViewModels
 
             if (_visibleSearchResults[SelectedIndex] is SearchElementBase)
             {
-                ( (SearchElementBase) _visibleSearchResults[SelectedIndex]).Execute();
+                ((SearchElementBase)_visibleSearchResults[SelectedIndex]).Execute();
             }
 
         }
@@ -820,7 +822,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="category">The name of the category - a string possibly separated with one period </param>
         /// <param name="item">The item to add as a child of that category</param>
-        public void TryAddCategoryAndItem( string category, BrowserInternalElement item )
+        public void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
 
             var cat = this.AddCategory(category);
@@ -886,7 +888,7 @@ namespace Dynamo.ViewModels
                     var searchElement = new DSFunctionNodeSearchElement(displayString, function);
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
-                    
+
                     // Add this search eleemnt to the search view
                     TryAddCategoryAndItem(category, searchElement);
 
@@ -909,28 +911,28 @@ namespace Dynamo.ViewModels
         public void Add(Type t)
         {
             // get name, category, attributes (this is terribly ugly...)
-            var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
+            var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
             var name = "";
             if (attribs.Length > 0)
             {
                 name = (attribs[0] as NodeNameAttribute).Name;
             }
 
-            attribs = t.GetCustomAttributes(typeof (NodeCategoryAttribute), false);
+            attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
             var cat = "";
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
             }
 
-            attribs = t.GetCustomAttributes(typeof (NodeSearchTagsAttribute), false);
+            attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
             var tags = new List<string>();
             if (attribs.Length > 0)
             {
                 tags = (attribs[0] as NodeSearchTagsAttribute).Tags;
             }
 
-            attribs = t.GetCustomAttributes(typeof (NodeDescriptionAttribute), false);
+            attribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
             var description = "";
             if (attribs.Length > 0)
             {
@@ -949,7 +951,7 @@ namespace Dynamo.ViewModels
             searchEle.SetSearchable(searchable);
 
             // if it's a revit search element, keep track of it
-            if ( cat.Equals(BuiltinNodeCategories.REVIT_API) )
+            if (cat.Equals(BuiltinNodeCategories.REVIT_API))
             {
                 this.RevitApiSearchElements.Add(searchEle);
                 if (!IncludeRevitAPIElements)
@@ -1109,25 +1111,29 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public string GetAllNodesWithCategoriesInJson()
+        public IEnumerable<NodeModelItem> GetAllNodeModelsWithCategories()
         {
-            List<JsonNodeItem> allNodes = new List<JsonNodeItem>();
-            foreach (var elem in BrowserRootCategories)
+            if (allNodeModels == null)
             {
-                allNodes.AddRange(GetNodesFromCategory(elem));
+                allNodeModels = new List<NodeModelItem>(); 
+                foreach (var elem in BrowserRootCategories)
+                {
+                    allNodeModels.AddRange(GetNodesFromCategory(elem));
+                }
             }
-                        
-            return JsonConvert.SerializeObject(allNodes);
+
+            return allNodeModels;
         }
 
-        private List<JsonNodeItem> GetNodesFromCategory(BrowserItem elem)
+
+        private IEnumerable<NodeModelItem> GetNodesFromCategory(BrowserItem elem)
         {
-            List<JsonNodeItem> result = new List<JsonNodeItem>();
+            var result = new List<NodeModelItem>();
             foreach (BrowserItem item in elem.Items)
             {
-                if (item is SearchElementBase) 
+                if (item is SearchElementBase)
                 {
-                    result.Add(new JsonNodeItem(item as SearchElementBase));
+                    result.Add(new NodeModelItem(item as SearchElementBase));
                 }
                 else
                 {

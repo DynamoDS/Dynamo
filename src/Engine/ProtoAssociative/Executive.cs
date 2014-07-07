@@ -131,7 +131,7 @@ namespace ProtoAssociative
                         core.assocCodegen = oldCodegen;
                     }
                 }
-                catch (ProtoCore.BuildHaltException e)
+                catch (ProtoCore.BuildHaltException)
                 {
 #if DEBUG
                     //core.BuildStatus.LogSemanticError(e.errorMsg);

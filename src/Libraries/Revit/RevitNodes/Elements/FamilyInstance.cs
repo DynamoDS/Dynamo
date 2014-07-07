@@ -160,11 +160,9 @@ namespace Revit.Elements
                 DocumentManager.Regenerate();
                 var pos = InternalFamilyInstance.Location as LocationPoint;
                 TransactionManager.Instance.TransactionTaskDone();
-                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+                return pos.Point.ToPoint();
             }
         }
-
-
 
         #endregion
 
@@ -180,15 +178,15 @@ namespace Revit.Elements
         {
             if (familySymbol == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("familySymbol");
             } 
             
             if (point == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("point");
             }
 
-            return new FamilyInstance(familySymbol.InternalFamilySymbol, new XYZ(point.X, point.Y, point.Z));
+            return new FamilyInstance(familySymbol.InternalFamilySymbol, point.ToXyz());
         }
 
         /// <summary>
@@ -208,7 +206,7 @@ namespace Revit.Elements
 
             var pt = Point.ByCoordinates(x, y, z);
 
-            return new FamilyInstance(familySymbol.InternalFamilySymbol, pt.ToXyz(true));
+            return ByPoint(familySymbol, pt);
         }
 
         /// <summary>
@@ -225,7 +223,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new FamilyInstance(familySymbol.InternalFamilySymbol, point.ToXyz(true), level.InternalLevel);
+            return new FamilyInstance(familySymbol.InternalFamilySymbol, point.ToXyz(), level.InternalLevel);
         }
 
         /// <summary>

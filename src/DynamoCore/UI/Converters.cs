@@ -1383,7 +1383,6 @@ namespace Dynamo.Controls
             if (value == null)
                 return "No file selected.";
 
-            const int maxChars = 30;
             var str = HttpUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
