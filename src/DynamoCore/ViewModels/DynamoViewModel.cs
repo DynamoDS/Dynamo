@@ -381,6 +381,16 @@ namespace Dynamo.ViewModels
 
             set
             {
+                // If the caller attempts to show the start page, but we are 
+                // currently in playback mode, then this will not be allowed
+                // (i.e. the start page will never be shown during a playback).
+                // 
+                if ((value == true) && (null != automationSettings))
+                {
+                    if (automationSettings.IsInPlaybackMode)
+                        return;
+                }
+
                 showStartPage = value;
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
@@ -878,8 +888,19 @@ namespace Dynamo.ViewModels
         /// <param name="parameters">The path the the file.</param>
         private void Open(object parameters)
         {
-            string xmlFilePath = parameters as string;
-            ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            try
+            {
+                string xmlFilePath = parameters as string;
+                ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log("Error opening file:" + e.Message);
+                dynSettings.DynamoLogger.Log(e);
+                return;
+            }            
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 

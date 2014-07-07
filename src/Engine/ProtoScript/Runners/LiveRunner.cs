@@ -900,10 +900,7 @@ namespace ProtoScript.Runners
 
         private ProtoCore.Options coreOptions = null;
         private Options executionOptions = null;
-        private bool syncCoreConfigurations = false;
         private int deltaSymbols = 0;
-        private bool isPreloadingLibraries = false;
-        private int codeBlockCount = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
 
 
@@ -1056,7 +1053,6 @@ namespace ProtoScript.Runners
         public void SetOptions(Options options)
         {
             executionOptions = options;
-            syncCoreConfigurations = true; //request syncing the configuration
         }
 
 
@@ -1189,8 +1185,6 @@ namespace ProtoScript.Runners
             // Prints out the final Value of every symbol in the program
             // Traverse order:
             //  Exelist, Globals symbols
-
-            StringBuilder globaltrace = null;
 
             ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
             ProtoCore.DSASM.Mirror.ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
@@ -1631,9 +1625,7 @@ namespace ProtoScript.Runners
             ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
             string code = codeGen.GenerateCode();
 
-            isPreloadingLibraries = true;
             UpdateCmdLineInterpreter(code);
-            isPreloadingLibraries = false;
         }
 
         /// <summary>

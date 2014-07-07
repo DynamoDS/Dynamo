@@ -169,7 +169,7 @@ namespace Revit.Elements
         /// <returns></returns>
         private static bool PositionUnchanged(Autodesk.Revit.DB.ModelText oldModelText, Autodesk.Revit.DB.SketchPlane newSketchPlane, double xCoordinateInPlane, double yCoordinateInPlane)
         {
-
+           
             var oldPosition = ((LocationPoint)oldModelText.Location).Point;
 
             var plane = newSketchPlane.GetPlane();
@@ -225,21 +225,15 @@ namespace Revit.Elements
         /// </summary>
         public double Depth
         {
-            get
-            {
-                return InternalModelText.Depth;
-            }
+            get { return InternalModelText.Depth*UnitConverter.HostToDynamoFactor; }
         }
 
         /// <summary>
         /// The Position of the ModelText Element
         /// </summary>
-        public XYZ Position
+        public Point Position
         {
-            get
-            {
-                return ((LocationPoint) InternalElement.Location).Point;
-            }
+            get { return ((LocationPoint)InternalElement.Location).Point.ToPoint(); }
         }
 
         #endregion
@@ -279,8 +273,8 @@ namespace Revit.Elements
                 throw new ArgumentNullException("modelTextType");
             }
 
-            return new ModelText(text, sketchPlane.InternalSketchPlane, xCoordinateInPlane, yCoordinateInPlane,
-                textDepth, modelTextType.InternalModelTextType);
+            return new ModelText(text, sketchPlane.InternalSketchPlane, xCoordinateInPlane * UnitConverter.DynamoToHostFactor, yCoordinateInPlane * UnitConverter.DynamoToHostFactor,
+                textDepth * UnitConverter.DynamoToHostFactor, modelTextType.InternalModelTextType);
         }
 
         #endregion

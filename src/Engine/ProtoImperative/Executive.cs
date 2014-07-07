@@ -45,7 +45,7 @@ namespace ProtoImperative
                     codegen.codeBlock.EventSink = sink;
                     blockId = codegen.Emit(codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode, graphNode);
                 }
-                catch (ProtoCore.BuildHaltException e)
+                catch (ProtoCore.BuildHaltException)
                 {
 #if DEBUG
                     //core.BuildStatus.LogSemanticError(e.errorMsg);

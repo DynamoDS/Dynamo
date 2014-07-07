@@ -140,32 +140,9 @@ def ApplyList(functionObject: _FunctionObject, params: var[]..[])
     }
 }
 
-def __GetOutput(outputs: var[]..[], key: var)
-{
-    return = outputs[key];
-}
-
 def __Compose(funcs : _FunctionObject[])
 {
     return = _ComposedFunctionObject(funcs);
-}
-
-def __ComposeBuffered(funcs: _FunctionObject[], amt: int, arg: var[]..[])
-{
-    return = [Imperative]
-    {
-        if (amt <= 1)
-        {
-            return = Apply(_ComposedFunctionObject(funcs), arg);
-        }
-        else
-        {
-            i = Count(funcs)-1;
-            first = funcs[i];
-            funcs[i] = Apply(first, arg);
-            return = _SingleFunctionObject(__ComposeBuffered, 3, { 0, 1 }, { funcs, amt-1, null }, true);
-        }
-    };
 }
 
 def MinimumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
@@ -381,33 +358,33 @@ def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
 
 def __Scan(accumulator: _FunctionObject, seed: var[]..[], lists: var[]..[])
 {
-    return = [Imperative]
+	return = [Imperative]
     {
         if (lists == null)
         {
             return = seed;
         }
 
-        //HACK: Transpose({{}}) returns { { null } }
+		//HACK: Transpose({{}}) returns { { null } }
 
-        noEmpties = { };
-        for (list in lists)
-        {
-            if (Count(list) > 0)
-                noEmpties[Count(noEmpties)] = list;
-        }
-        lists = noEmpties;
+		noEmpties = { };
+		for (list in lists)
+		{
+			if (Count(list) > 0)
+				noEmpties[Count(noEmpties)] = list;
+		}
+		lists = noEmpties;
 
         argLists = Transpose(lists);
         _acc = seed;
         
-        result = { _acc };
+		result = { _acc };
 
         for(argList in argLists)
         {
             argList[Count(argList)] = _acc;
             _acc = ApplyList(accumulator, argList);
-            result[Count(result)] = _acc;
+			result[Count(result)] = _acc;
         }
         
         return = result;
@@ -423,15 +400,15 @@ def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
             return = seed;
         }
 
-        //HACK: Transpose({{}}) returns { { null } }
+		//HACK: Transpose({{}}) returns { { null } }
 
-        noEmpties = { };
-        for (list in lists)
-        {
-            if (Count(list) > 0)
-                noEmpties[Count(noEmpties)] = list;
-        }
-        lists = noEmpties;
+		noEmpties = { };
+		for (list in lists)
+		{
+			if (Count(list) > 0)
+				noEmpties[Count(noEmpties)] = list;
+		}
+		lists = noEmpties;
 
         argLists = Transpose(lists);
         _acc = seed;
