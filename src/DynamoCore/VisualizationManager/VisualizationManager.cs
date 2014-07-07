@@ -529,13 +529,6 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
 
             renderManager.RenderComplete += RenderManagerOnRenderComplete;
-
-
-        }
-
-        private void RenderManagerOnRenderComplete(object sender, RenderCompletionEventArgs renderCompletionEventArgs)
-        {
-            OnRenderComplete(this, renderCompletionEventArgs);
         }
 
         private void UnregisterEventListeners()
@@ -550,6 +543,12 @@ namespace Dynamo
             renderManager.RenderComplete -= RenderManagerOnRenderComplete;
         }
 
+        private void RenderManagerOnRenderComplete(object sender,
+            RenderCompletionEventArgs renderCompletionEventArgs)
+        {
+            OnRenderComplete(this, renderCompletionEventArgs);
+        }
+
         /// <summary>
         /// Handler for the controller's RequestRedraw event.
         /// </summary>
@@ -558,7 +557,6 @@ namespace Dynamo
         private void Update(object sender, EventArgs e)
         {
             renderManager.RequestRenderAsync(new RenderTask());
-            //renderManager.Render();
         }
 
         private void Clear(object sender, EventArgs e)
