@@ -236,6 +236,13 @@ namespace Dynamo
         }
     }
 
+    /// <summary>
+    /// The RenderManager class handles render requests from VisualizationManager, 
+    /// schedule them to update render packages of nodes before sending them back 
+    /// to VisualizationManager for display. If this class is modified, please be 
+    /// sure that VisualizationManagerUITests are all passing.
+    /// </summary>
+    /// 
     class RenderManager
     {
         #region Private Class Data Members
@@ -272,6 +279,17 @@ namespace Dynamo
         /// <param name="renderTask"></param>
         public void RequestRenderAsync(RenderTask renderTask)
         {
+            if (DynamoController.IsTestMode)
+            {
+                // We can't go through the same queuing mechanism while the 
+                // RenderManager is running in unit-test scenario since the 
+                // completion event handler will never get to run on main thread 
+                // (and therefore results will not be populated).
+                // 
+                this.RenderExec(renderTask, false);
+                return;
+            }
+
             // Simplist strategy for now, always render everything. Note that 
             // we set the "task available" event while still having the lock on 
             // renderQueue so that there won't be race condition between this 
