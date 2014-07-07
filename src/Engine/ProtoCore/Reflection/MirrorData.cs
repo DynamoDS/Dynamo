@@ -103,7 +103,7 @@ namespace ProtoCore
             ///  Retrieve the stack value for this mirror
             /// </summary>
             /// <returns></returns>
-            //[System.Obsolete("Use Data property of this class")]
+            [System.Obsolete("Use Data property of this class")]
             public StackValue GetStackValue()
             {
                 return svData;
