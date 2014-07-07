@@ -17,15 +17,15 @@ using Dynamo.PackageManager;
 using Dynamo.Services;
 using Dynamo.TestInfrastructure;
 using Dynamo.UI;
+using Dynamo.UI.Prompts;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
 using DynamoUtilities;
 using Microsoft.Practices.Prism.ViewModel;
-using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using Dynamo.UI.Prompts;
+using String = System.String;
 
 namespace Dynamo
 {
@@ -91,7 +91,7 @@ namespace Dynamo
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public static bool IsTestMode 
+        public static bool IsTestMode
         {
             get { return testing; }
             set { testing = value; }
@@ -200,7 +200,6 @@ namespace Dynamo
                 EvaluationCompleted(sender, e);
         }
 
-
         #endregion
 
         #region Constructor and Initialization
@@ -220,18 +219,12 @@ namespace Dynamo
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
             {
-                controller = new DynamoController("None", updateManager,
-                    new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load(), corePath);
-
-                controller.DynamoViewModel = new DynamoViewModel(controller, null);
+                commandFilePath = null;
             }
-            else
-            {
-                controller = new DynamoController("None", updateManager,
+            controller = new DynamoController("None", updateManager,
                  new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load(), corePath);
 
-                controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
-            }
+            controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
 
             controller.VisualizationManager = new VisualizationManager();
             return controller;
@@ -255,7 +248,7 @@ namespace Dynamo
 
             //DynamoLoader.ClearCachedAssemblies();
             //DynamoLoader.LoadNodeModels();
-            
+
         }
 
         /// <summary>
@@ -274,7 +267,7 @@ namespace Dynamo
 
             
             PreferenceSettings = preferences;
-            ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
             SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
@@ -282,7 +275,7 @@ namespace Dynamo
             SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
 
@@ -293,7 +286,7 @@ namespace Dynamo
 
 
             //create the model
-            DynamoModel = new DynamoModel ();
+            DynamoModel = new DynamoModel();
             DynamoModel.AddHomeWorkspace();
             DynamoModel.CurrentWorkspace = DynamoModel.HomeSpace;
             DynamoModel.CurrentWorkspace.X = 0;
@@ -460,7 +453,7 @@ namespace Dynamo
                 dynSettings.DynamoLogger.Log(
 "Beginning engine reset");
 
-                
+
                 Reset();
 
 
@@ -509,5 +502,5 @@ namespace Dynamo
             return true;
         }
     }
-    
+
 }

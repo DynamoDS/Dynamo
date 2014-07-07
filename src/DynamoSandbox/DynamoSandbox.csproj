@@ -34,9 +34,14 @@
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml">
@@ -63,7 +68,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -78,6 +85,10 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoWebServer\DynamoWebServer.csproj">
+      <Project>{55636e8f-53b1-4e27-a0d7-68a00da13c92}</Project>
+      <Name>DynamoWebServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
+using Dynamo.Messages;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
@@ -12,6 +14,7 @@ namespace Dynamo.ViewModels
     {
         // Automation related data members.
         private AutomationSettings automationSettings = null;
+        
 
         #region Automation Related Methods
 

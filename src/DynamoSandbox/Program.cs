@@ -5,6 +5,7 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Services;
 using Dynamo.Utilities;
+using DynamoWebServer;
 
 namespace DynamoSandbox
 {
@@ -19,10 +20,19 @@ namespace DynamoSandbox
                 // DynamoSandbox.exe /c "C:\file path\file.xml"
                 // 
                 string commandFilePath = string.Empty;
+                bool turnOnServer = false;
+
                 for (int i = 0; i < args.Length; ++i)
                 {
-                    // Looking for '/c'
                     string arg = args[i];
+
+                    if (arg.ToLower() == "/server")
+                    {
+                        turnOnServer = true;
+                        continue;
+                    }
+
+                    // Looking for '/c'
                     if (arg.Length != 2 || (arg[0] != '/'))
                         continue;
 
@@ -34,7 +44,7 @@ namespace DynamoSandbox
                     }
                 }
 
-                DynamoView.MakeSandboxAndRun(commandFilePath);
+                DynamoView.MakeSandboxAndRun(commandFilePath, turnOnServer);
             }
             catch (Exception e)
             {
