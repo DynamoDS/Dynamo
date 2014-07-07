@@ -251,6 +251,8 @@ namespace Dynamo.Nodes
                 {
                     if (this.Code == "")
                     {
+                        // FixMe: we shouldn't remove empty codeblock if it was created in flood.
+                        //   mayby we need some check? Will be updated in next pull request
                         this.WorkSpace.UndoRecorder.PopFromUndoGroup();
                         Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
                         this.WorkSpace.Nodes.Remove(this);

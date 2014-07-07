@@ -8,6 +8,7 @@ using DynamoWebServer.Responses;
 using Dynamo.PackageManager;
 using Dynamo.Messages;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Dynamo.Utilities
 {
@@ -76,7 +77,8 @@ namespace Dynamo.Utilities
             msg.SessionId = sessionId;
             msg.SendAnswer += SendAnswerToWebSocket;
 
-            Application.Current.Dispatcher.Invoke(new Action(() => msg.Execute(Controller.DynamoViewModel)));
+            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
+                .Invoke(new Action(() => msg.Execute(Controller.DynamoViewModel)));
         }
 
         private static void SendAnswerToWebSocket(string answer, string sessionId)

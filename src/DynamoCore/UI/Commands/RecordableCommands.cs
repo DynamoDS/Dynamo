@@ -4,10 +4,15 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Serialization;
+using System.Text;
+using Autodesk.DesignScript.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
@@ -30,8 +35,8 @@ namespace Dynamo.ViewModels
             /// <summary>
             /// Settings that is used for serializing commands
             /// </summary>
-            static JsonSerializerSettings jsonSettings;
-            
+            protected static JsonSerializerSettings jsonSettings;
+
             /// <summary>
             /// Initialize commands serializing settings
             /// </summary>
@@ -39,7 +44,7 @@ namespace Dynamo.ViewModels
             {
                 jsonSettings = new JsonSerializerSettings()
                 {
-                    TypeNameHandling = TypeNameHandling.All,
+                    TypeNameHandling = TypeNameHandling.Objects,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
             }
@@ -71,6 +76,16 @@ namespace Dynamo.ViewModels
 
                 Tag = tag;
                 IsInPlaybackMode = false;
+            }
+
+            /// <summary>
+            /// Send the result of executing command to subscriber. 
+            /// </summary>
+            public event ShowMessage ShowResult;
+            protected void OnShowResult(string result)
+            {
+                if (ShowResult != null)
+                    ShowResult(result);
             }
 
             /// <summary>
@@ -288,6 +303,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// The delegate used for sending the result of executing command to subscriber. 
+        /// </summary>
+        /// <param name="message">Result message</param>
+        public delegate void ShowMessage(string message);
+
+        /// <summary>
         /// This class is base for those RecordableCommands that should have 
         /// Guid NodeId that causes the problems during deserialization
         /// </summary>
@@ -491,6 +512,140 @@ namespace Dynamo.ViewModels
         [DataContract]
         public class RunCancelCommand : RecordableCommand
         {
+            /// <summary>
+            /// The class that represents calculated result for a node
+            /// </summary>
+            [DataContract]
+            public class ExecutedNode
+            {
+                /// <summary>
+                /// The class that represents data for drawing a graphic primitive 
+                /// </summary>
+                public class Primitive
+                {
+                    /// <summary>
+                    /// Name of the graphic primitive
+                    /// </summary>
+                    [DataMember]
+                    public string PrimitiveType { get; private set; }
+
+                    /// <summary>
+                    /// Data that is needed for drawing this primitive. For example
+                    /// coordinates of a point
+                    /// </summary>
+                    [DataMember]
+                    public string PrimitiveData { get; private set; }
+
+                    public Primitive(string type, string data)
+                    {
+                        PrimitiveType = type;
+                        PrimitiveData = data;
+                    }
+                }
+
+                /// <summary>
+                /// Guid of the specified node
+                /// </summary>
+                [DataMember]
+                public string NodeID { get; private set; }
+
+                /// <summary>
+                /// State of the node after executing
+                /// </summary>
+                [DataMember]
+                public string State { get; private set; }
+
+                /// <summary>
+                /// State description. It is empty when state has Active or Dead value
+                /// </summary>
+                [DataMember]
+                public string StateMessage { get; private set; }
+
+                /// <summary>
+                /// String representing of the result object
+                /// </summary>
+                [DataMember]
+                public string Data { get; private set; }
+
+                /// <summary>
+                /// Indicates whether the result object should be drawn on the canvas
+                /// </summary>
+                [DataMember]
+                public bool IsGraphic { get; private set; }
+
+                /// <summary>
+                /// List of the graphic primitives that result object consist of.
+                /// It is empty for nongraphic objects
+                /// </summary>
+                [DataMember]
+                public List<Primitive> GraphicPrimitives { get; private set; }
+
+                public ExecutedNode(string id, string state, string stateMessage,
+                    string data, List<IRenderPackage> packages)
+                {
+                    this.NodeID = id;
+                    this.State = state;
+                    this.StateMessage = stateMessage;
+                    this.Data = data;
+                    GeneratePrimitives(packages);
+                }
+
+                private void GeneratePrimitives(List<IRenderPackage> packages)
+                {
+                    IsGraphic = packages != null && packages.Any();
+
+                    if (IsGraphic)
+                    {
+                        GraphicPrimitives = new List<Primitive>();
+                        foreach (var package in packages)
+                        {
+                            // Add points
+                            GraphicPrimitives.AddRange(GeneratePoints(package.PointVertices));
+
+                            var points = GeneratePoints(package.LineStripVertices);
+                            // Add lines
+                            GraphicPrimitives.AddRange(ConcatPoints(points, 2, "Line"));
+
+                            points = GeneratePoints(package.TriangleVertices);
+                            // Add triangles
+                            GraphicPrimitives.AddRange(ConcatPoints(points, 3, "Triangle"));
+                        }
+                    }
+                }
+
+                private List<Primitive> GeneratePoints(List<double> coordinates)
+                {
+                    if (coordinates == null)
+                        return null;
+                    string name = "Point";
+                    string data;
+                    var points = new List<Primitive>();
+                    for (int i = 2; i < coordinates.Count; i += 3)
+                    {
+                        data = "(" + coordinates[i - 2] + ";" + coordinates[i - 1] + ";" + coordinates[i] + ")";
+                        points.Add(new Primitive(name, data));
+                    }
+                    return points;
+                }
+
+                private List<Primitive> ConcatPoints(List<Primitive> points, int count, string newName)
+                {
+                    string data;
+                    var concatPoints = new List<Primitive>();
+                    while (points.Count >= count)
+                    {
+                        data = string.Empty;
+                        for (int j = 0; j < count; j++)
+                        {
+                            data += points[j].PrimitiveData;
+                        }
+                        points.RemoveRange(0, count);
+                        concatPoints.Add(new Primitive(newName, data));
+                    }
+                    return concatPoints;
+                }
+            }
+
             #region Public Class Methods
 
             public RunCancelCommand(bool showErrors, bool cancelRun)
@@ -530,7 +685,40 @@ namespace Dynamo.ViewModels
 
             protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
             {
+                dynSettings.Controller.VisualizationManager.RenderComplete += VisualizationManager_RenderComplete;
                 dynamoViewModel.RunCancelImpl(this);
+            }
+
+            private void VisualizationManager_RenderComplete(object sender, RenderCompletionEventArgs e)
+            {
+                var nodes = new List<ExecutedNode>();
+                foreach (var item in dynSettings.Controller.DynamoModel.NodeMap)
+                {
+                    string data;
+                    var codeBlock = item.Value as CodeBlockNodeModel;
+                    if (codeBlock != null)
+                    {
+                        List<string> inPorts = codeBlock.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
+                        List<string> outPorts = codeBlock.OutPorts.Select(port => "\"" + port.PortName + "\"").ToList();
+
+                        data = "{\"Code\":\"" + codeBlock.Code.Replace("\n", "\\n") + "\", \"InPorts\": [" +
+                            (inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "") + "], \"OutPorts\": [" +
+                            (outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "") + "]}";
+                    }
+                    else
+                    {
+                        data = (item.Value.CachedValue == null || (item.Value.CachedValue.Data == null && !item.Value.CachedValue.IsCollection) ? "null" :
+                               item.Value.CachedValue.IsCollection ? "Array" :
+                               item.Value.CachedValue.Data.ToString());
+                    }
+
+                    var execNode = new ExecutedNode(item.Key.ToString(), item.Value.State.ToString(), item.Value.ToolTipText, data, item.Value.RenderPackages);
+                    nodes.Add(execNode);
+                }
+
+                string nodesInfoMessage = JsonConvert.SerializeObject(nodes, jsonSettings);
+                OnShowResult(nodesInfoMessage);
+                dynSettings.Controller.VisualizationManager.RenderComplete -= VisualizationManager_RenderComplete;
             }
 
             protected override void SerializeCore(XmlElement element)

@@ -696,6 +696,21 @@ namespace Dynamo.Models
                 return null;
             }
 
+            NodeModel existing = null;
+            foreach (NodeModel item in CurrentWorkspace.Nodes)
+            {
+                if (item.GUID.Equals(nodeId) && item.Name.Equals(node.Name))
+                {
+                    existing = item;
+                    break;
+                }
+            }
+            // safely ignore a node of the same type with the same GUID
+            if (existing != null)
+            {
+                return existing;
+            }
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
@@ -784,8 +799,8 @@ namespace Dynamo.Models
             else
             {
                 Function func;
-
-                if (dynSettings.Controller.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
+                Guid guid;
+                if (Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeManager.GetNodeInstance(guid, out func))
                 {
                     result = func;
                 }
@@ -1493,6 +1508,9 @@ namespace Dynamo.Models
             };
 
             Workspaces.Add(workSpace);
+
+            workSpace.Nodes.ToList();
+            workSpace.Connectors.ToList();
 
             var functionDefinition = new CustomNodeDefinition(id)
             {
