@@ -541,7 +541,7 @@ namespace Revit.Elements
                 if (null != geomInst)
                 {
                     var transformedGeomElem // curves transformed into project coords
-                        = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                        = geomInst.GetSymbolGeometry(geomInst.Transform.Inverse);
                     GetCurves(transformedGeomElem, ref curves);
                 }
             }
@@ -559,7 +559,7 @@ namespace Revit.Elements
                 {
                     if (geob is GeometryInstance)
                     {
-                        GetFaces((geob as GeometryInstance).GetInstanceGeometry(), ref faces);
+                        GetFaces((geob as GeometryInstance).GetSymbolGeometry(), ref faces);
                     }
                     else if (geob is Autodesk.Revit.DB.Solid)
                     {
