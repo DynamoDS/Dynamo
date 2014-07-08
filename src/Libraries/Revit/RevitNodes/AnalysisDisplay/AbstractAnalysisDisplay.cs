@@ -222,11 +222,6 @@ namespace Revit.AnalysisDisplay
         }
 
         /// <summary>
-        /// This prime is used to store the primitive ID along with the Element Id
-        /// </summary>
-        private const int PrimitiveIdPrimeFactor = 1299721;
-
-        /// <summary>
         /// Set the SpatialFieldManager and PrimitiveId in Thread Local Storage
         /// </summary>
         /// <param name="manager"></param>
