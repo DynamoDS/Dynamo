@@ -50,7 +50,15 @@ namespace DynamoCoreUITests
             commandCallback = null;
             if (this.Controller != null)
             {
-                this.Controller.ShutDown(true);
+                // There are exceptions made to certain test cases where async evaluation 
+                // needs to be permitted. IsTestMode is marked as false for these test cases
+                // to emulate the real UI async scenario. Since the UI takes care of shutting down
+                // the controller in such a case, we need to make sure it is not shut down twice
+                // by checking for IsTestMode here as well
+                if (DynamoController.IsTestMode)
+                {
+                    this.Controller.ShutDown(true);
+                }
                 this.Controller = null;
             }
 
@@ -2683,6 +2691,64 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(0, cbn.OutPorts.Count);
                     Assert.AreEqual(0, cbn.InPorts.Count);
 
+                }
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        public void TestCancelExecution()
+        {
+            RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", false, (commandTag) =>
+            {
+                // We need to run asynchronously for this test case as we need to 
+                // simulate cancellation of execution from UI asynchoronously
+                DynamoController.IsTestMode = false; 
+
+                if (commandTag == "BeforeRun")
+                {
+                    AssertNullValues();
+                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, Controller.Runner.Running);
+                }
+                else if (commandTag == "AfterRun")
+                {
+                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(true, Controller.Runner.Running);
+                }
+                else if (commandTag == "AfterCancel")
+                {
+                    AssertNullValues();
+                }
+         
+            });
+            
+        }
+
+        [Test, RequiresSTA]
+        public void TestCancelExecutionWhileLoop()
+        {
+            RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", false, (commandTag) =>
+            {
+                // We need to run asynchronously for this test case as we need to 
+                // simulate cancellation of execution from UI asynchoronously
+                DynamoController.IsTestMode = false;
+
+                if (commandTag == "BeforeRun")
+                {
+                    AssertNullValues();
+                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, Controller.Runner.Running);
+                }
+                else if (commandTag == "AfterRun")
+                {
+                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(true, Controller.Runner.Running);
+                }
+                else if (commandTag == "AfterCancel")
+                {
+                    AssertNullValues();
                 }
 
             });
