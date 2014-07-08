@@ -261,13 +261,6 @@ namespace ProtoTestFx.TD
                 string path ="..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
                 if (!System.IO.Directory.Exists(path))
                     System.IO.Directory.CreateDirectory(path);    
-                //string newpath = path;
-                /*foreach (var item in substrings)
-                {
-                    //newpath = newpath.Join(item);
-                    if (!System.IO.Directory.Exists())
-                        System.IO.Directory.CreateDirectory(newpath);    
-                }*/
                 
                 createDSFile(fileName,path,sourceCode);
                 SetErrorMessage(errorstring);

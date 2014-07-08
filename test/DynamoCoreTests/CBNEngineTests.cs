@@ -21,13 +21,14 @@ using ProtoFFI;
 
 namespace Dynamo.Tests
 {
+    /// <summary>
+    /// The testframework to take the DesignScript code and dump into CBN for evaluation through Dynamo
+    /// 
+    /// </summary>
    
     public class CBNEngineTests : DSEvaluationUnitTest
     {
-        /// <summary>
-        /// The testframework to take the DesignScript code and dump into CBN for evaluation through Dynamo
-        /// 
-        /// </summary>
+        
 
         private TestFrameWork thisTest = new TestFrameWork();
         
