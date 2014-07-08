@@ -62,6 +62,8 @@ namespace DSCoreNodesUI
 
         }
 
+        public List<DynamoDropDownItem> membersandvals = new List<DynamoDropDownItem>();
+       
         /// <summary>
         /// value that keeps track of desired number of dropdowns
         /// </summary>
@@ -69,6 +71,7 @@ namespace DSCoreNodesUI
         /// <summary>
         /// collections of items - populated from public properties in PopulateItems()
         /// </summary>
+        /// 
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
         {
@@ -147,7 +150,7 @@ namespace DSCoreNodesUI
         /// <returns></returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-
+            StoreProperties();
             var outputobject = inputAstNodes[0];
             return new[]
             {
@@ -167,11 +170,18 @@ namespace DSCoreNodesUI
         }
 
 
-        private void PopulateItems()
+
+        /// <summary>
+        /// this method is run at evaluation time and collects the properties of the input object
+        /// hopefully running this method on eval will automatically wrap revit objects in neccesary transactions
+        /// to collect things like point locations
+        /// </summary>
+        private void StoreProperties()
         {
-            // getting the input object song and dance
+
             if (InPorts.All(x => x.Connectors.Count != 0))
             {
+
 
                 var inputnode = InPorts[0].Connectors[0].Start.Owner;
                 var inputIndex = InPorts[0].Connectors[0].Start.Index;
@@ -196,20 +206,10 @@ namespace DSCoreNodesUI
 
                     objectinput = objectinput as object;
 
-                    //before clearing the items and forcing updates
-                    // of the selections, lets grab all current selected indicies
-                    previous_indicies.Clear();
-                    foreach (combobox_selected_index_wrapper wrapper in Indicies)
-                    {
-                        var x = new combobox_selected_index_wrapper();
-                        x.SelectedIndex = wrapper.SelectedIndex;
-                        previous_indicies.Add(x);
-                    }
+                    membersandvals.Clear();
+                    // the input object exists, lets determine it's type and reflect over it.
 
-                    Items.Clear();
-
-                    // check the type of this object, if it's dynamic have to parse member names and then get values
-                    if (objectinput is IDynamicMetaObjectProvider)
+                      if (objectinput is IDynamicMetaObjectProvider)
                     {
                         var names = new List<string>();
                         var dynobj = objectinput as IDynamicMetaObjectProvider;
@@ -228,7 +228,7 @@ namespace DSCoreNodesUI
 
                             if (val != null)
                             {
-                                items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", name, val), val));
+                                membersandvals.Add(new DynamoDropDownItem(string.Format("{0}:{1}", name, val), val));
                             }
 
                         }
@@ -251,7 +251,7 @@ namespace DSCoreNodesUI
                         foreach (var prop in propertyInfos.ToList())
                         {
                             var val = prop.GetValue(objectinput, null);
-                            items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", prop.Name, val), val));
+                            membersandvals.Add(new DynamoDropDownItem(string.Format("{0}:{1}", prop.Name, val), val));
                         }
 
                     }
@@ -261,7 +261,41 @@ namespace DSCoreNodesUI
                 }
 
             }
+
         }
+
+
+        private void PopulateItems()
+        {
+           
+
+                    //before clearing the items and forcing updates
+                    // of the selections, lets grab all current selected indicies
+                    previous_indicies.Clear();
+                    foreach (combobox_selected_index_wrapper wrapper in Indicies)
+                    {
+                        var x = new combobox_selected_index_wrapper();
+                        x.SelectedIndex = wrapper.SelectedIndex;
+                        previous_indicies.Add(x);
+                    }
+
+                    Items.Clear();
+
+                    // now we just set items to equal membervals...
+                    foreach (DynamoDropDownItem dropdown in membersandvals)
+                    {
+
+                        Items.Add(new DynamoDropDownItem(dropdown.Name, dropdown.Item));
+
+                    }
+                   
+
+
+
+                }
+
+            
+        
         protected override void AddInput()
         {
             // instead of actually adding an input
