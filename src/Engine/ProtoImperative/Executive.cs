@@ -24,7 +24,7 @@ namespace ProtoImperative
             {
                 try
                 {
-                    ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, parentBlock);
+                    ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, callContext, parentBlock);
 
                     //(Fuqiang, Ayush) : The below code is to parse an Imperative code block. An imoerative code block should
                     // never need to be parsed at this stage, as it would be parsed by the Assoc parser.
@@ -45,7 +45,7 @@ namespace ProtoImperative
                     codegen.codeBlock.EventSink = sink;
                     blockId = codegen.Emit(codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode, graphNode);
                 }
-                catch (ProtoCore.BuildHaltException e)
+                catch (ProtoCore.BuildHaltException)
                 {
 #if DEBUG
                     //core.BuildStatus.LogSemanticError(e.errorMsg);

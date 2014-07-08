@@ -284,7 +284,13 @@
                             <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem" IsChecked="{Binding Path=IsShowingConnectors}" Command="{Binding ShowHideConnectorsCommand}">
                             </MenuItem>
                         </MenuItem>
-                        
+                        <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
+                                  Name="showGeometryInAlternateContextMenu" 
+                                  Focusable="False" 
+                                  Visibility="{Binding Path=Controller.VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=Controller.VisualizationManager.DrawToAlternateContext}">
+                        </MenuItem>
                         <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
                             <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" 
                                       IsChecked="{Binding Path=FullscreenWatchShowing}" Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
@@ -391,13 +397,6 @@
                                   IsCheckable="True" IsChecked="{Binding Path=UpdateManager.CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
                         <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
                                       IsCheckable="True" IsChecked="{Binding Path=UpdateManager.ForceUpdate, Mode=TwoWay}"/>
-                        <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
-                                  Name="showGeometryInAlternateContextMenu" 
-                                  Focusable="False" 
-                                  Visibility="{Binding Path=Controller.VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=Controller.VisualizationManager.DrawToAlternateContext}">
-                        </MenuItem>
                     </MenuItem>
                 </Menu>
 
@@ -1151,9 +1150,9 @@
                     ToolTip="Run Workflow (F5)"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <!--<Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
 
-                      Command="{Binding CancelRunCommand}" Margin="5"/>-->
+                      Command="{Binding CancelRunCommand}" Margin="5"/>
 
                     <CheckBox Margin="10"
                       Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"

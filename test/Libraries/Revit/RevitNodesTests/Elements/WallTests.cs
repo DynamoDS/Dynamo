@@ -2,26 +2,46 @@
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
+
+using Revit.GeometryConversion;
+
 using RevitServices.Persistence;
 using RTF.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class WallTests : RevitNodeTestBase
+    public class WallTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\Empty.rvt")]
-        public void ByCurveAndHeight_ValidArgs()
+        public void ByCurveAndHeight_ShouldCreateGeometricallyCorrectWall()
         {
-            var elevation = 0;
+            var elevation = 5;
             var level = Level.ByElevation(elevation);
             var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(10, 10, 0));
             var wallType = WallType.ByName( "Curtain Wall 1" );
 
             var wall = Wall.ByCurveAndHeight(line, 10, level, wallType);
 
-            Assert.NotNull(wall);
+            var bb = wall.BoundingBox.MinPoint;
+            
+            bb.Z.ShouldBeApproximately(elevation);
+        }
+
+        [Test]
+        [TestModel(@".\Empty.rvt")]
+        public void ByCurveAndLevels_ShouldCreateGeometricallyCorrectWall()
+        {
+            var elevation = 100;
+            var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 100), Point.ByCoordinates(10, 10, 100));
+            var level0 = Level.ByElevation(elevation);
+            var level1 = Level.ByElevation(elevation + 100);
+            var wallType = WallType.ByName("Curtain Wall 1");
+
+            var wall = Wall.ByCurveAndLevels(line, level0, level1, wallType);
+
+            wall.BoundingBox.MinPoint.Z.ShouldBeApproximately(elevation);
         }
 
         [Test]
@@ -35,25 +55,7 @@ namespace DSRevitNodesTests.Elements
 
             Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndHeight(null, 10, level, wallType));
             Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndHeight(line, 10, null, wallType));
-            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndHeight(line, 10, level, null));        
-        }
-
-        [Test]
-        [TestModel(@".\Empty.rvt")]
-        public void ByCurveAndLevels_ValidArgs()
-        {
-            // prevent rebinding when creating levels
-            ElementBinder.IsEnabled = false;
-
-            var elevation = 100;
-            var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 100), Point.ByCoordinates(10, 10, 100));
-            var level0 = Level.ByElevation(elevation);
-            var level1 = Level.ByElevation(elevation + 100);
-            var wallType = WallType.ByName("Curtain Wall 1");
-
-            var wall = Wall.ByCurveAndLevels(line, level0, level1, wallType);
-
-            Assert.NotNull(wall);
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndHeight(line, 10, level, null));
         }
 
         [Test]

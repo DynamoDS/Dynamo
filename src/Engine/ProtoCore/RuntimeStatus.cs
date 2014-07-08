@@ -162,8 +162,12 @@ namespace ProtoCore
 
             var warningMsg = string.Format(WarningMessage.kConsoleWarningMessage, 
                                            message, filename, line, col);
-            System.Console.WriteLine(warningMsg);
 
+            if (core.Options.Verbose)
+            {
+                System.Console.WriteLine(warningMsg);
+            }
+            
             if (WebMessageHandler != null)
             {
                 var outputMessage = new OutputMessage(warningMsg);

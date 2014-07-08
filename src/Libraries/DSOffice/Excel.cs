@@ -452,7 +452,7 @@ namespace DSOffice
                     wb.Save();
                     
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Exception is thrown when there is no existing workbook with the given filepath
                     wb = ExcelInterop.App.Workbooks.Add();

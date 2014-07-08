@@ -1469,9 +1469,6 @@ namespace Dynamo.Models
 
             Workspaces.Add(workSpace);
 
-            workSpace.Nodes.ToList();
-            workSpace.Connectors.ToList();
-
             var functionDefinition = new CustomNodeDefinition(id)
             {
                 WorkspaceModel = workSpace

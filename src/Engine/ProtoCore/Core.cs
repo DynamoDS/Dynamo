@@ -1138,12 +1138,16 @@ namespace ProtoCore
             // Update the functiond definition in the codeblocks
             int hash = CoreUtils.GetFunctionHash(functionDef);
 
+            ProcedureNode procNode = null;
+
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
                 int index = block.procedureTable.IndexOfHash(hash);
                 if (Constants.kInvalidIndex == index)
                     continue;
+
+                procNode = block.procedureTable.procList[index];
 
                 block.procedureTable.SetInactive(index);
 
@@ -1167,6 +1171,15 @@ namespace ProtoCore
 
                 break;
             }
+
+            if (null != procNode)
+            {
+                foreach (int cbID in procNode.ChildCodeBlocks)
+                {
+                    CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
+                }
+            }
+
 
             // Update the function definition in global function tables
             foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in FunctionTable.GlobalFuncTable)
@@ -1267,6 +1280,13 @@ namespace ProtoCore
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
+
+            // The main codeblock never goes out of scope
+            // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
+            // As of the current requirements, there is only 1 main scope, the rest are nested within.
+            CodeBlockIndex = CodeBlockList.Count;
+            RuntimeTableIndex = CodeBlockIndex;
+
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             // Jun this is where the temp solutions starts for implementing language blocks in delta execution
@@ -1428,6 +1448,7 @@ namespace ProtoCore
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
+            cancellationPending = false;
         }
 
         #region Trace Data Serialization Methods/Members
@@ -1609,6 +1630,15 @@ namespace ProtoCore
 
         private int tempVarId = 0;
         private int tempLanguageId = 0;
+
+        private bool cancellationPending = false;
+        public bool CancellationPending
+        {
+            get
+            {
+                return cancellationPending;
+            }
+        }
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AST.AssociativeAST.AssociativeNode AssocNode { get; set; }
@@ -1958,7 +1988,7 @@ namespace ProtoCore
             {
                 if (DSASM.CodeBlockType.kLanguage == codeBlock.blockType || DSASM.CodeBlockType.kFunction == codeBlock.blockType)
                 {
-                    Validity.Assert(codeBlock.codeBlockId < CodeBlockIndex);
+                    Validity.Assert(codeBlock.codeBlockId < RuntimeTableIndex);
                     istreamList[codeBlock.codeBlockId] = codeBlock.instrStream;
                 }
 
@@ -2016,6 +2046,8 @@ namespace ProtoCore
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
+            RuntimeTableIndex = CompleteCodeBlockList.Count;
+
             // Build the runtime symbols
             DSExecutable.runtimeSymbols = new DSASM.SymbolTable[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
@@ -2031,7 +2063,7 @@ namespace ProtoCore
             }
 
             // Build the executable instruction streams
-            DSExecutable.instrStreamList = new DSASM.InstructionStream[CodeBlockIndex];
+            DSExecutable.instrStreamList = new DSASM.InstructionStream[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
@@ -2206,6 +2238,17 @@ namespace ProtoCore
         {
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
+        }
+
+        public void RequestCancellation()
+        {
+            if (this.cancellationPending)
+            {
+                var message = "Cancellation cannot be requested twice";
+                throw new InvalidOperationException(message);
+            }
+
+            this.cancellationPending = true;
         }
     }
 }

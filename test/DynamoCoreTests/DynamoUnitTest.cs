@@ -139,9 +139,25 @@ namespace Dynamo.Tests
             }
         }
 
-        protected void GetPreviewValues()
+        protected IEnumerable<object> GetPreviewValues()
         {
-            Controller.DynamoModel.Nodes.ForEach(node => GetPreviewValue(node.GUID));
+            List<object> objects = new List<object>();
+            foreach(var node in Controller.DynamoModel.Nodes)
+            {
+                objects.Add(GetPreviewValue(node.GUID));
+            }
+            return objects;
+        }
+
+        protected void AssertNullValues()
+        {
+            foreach (var node in Controller.DynamoModel.Nodes)
+            {
+                string varname = GetVarName(node.GUID);
+                var mirror = GetRuntimeMirror(varname);
+                Assert.IsNull(mirror);
+            }
+            
         }
 
         protected object GetPreviewValue(System.Guid guid)
