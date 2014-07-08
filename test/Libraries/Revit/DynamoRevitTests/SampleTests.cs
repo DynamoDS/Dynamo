@@ -1203,7 +1203,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\Revit_Adaptive Component Placement.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Adaptive Component Placement.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -1251,7 +1251,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\Revit_ImportSolid.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\Revit_ImportSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
