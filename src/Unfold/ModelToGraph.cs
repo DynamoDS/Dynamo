@@ -10,7 +10,7 @@ namespace Unfold
 {
 
 
-    public static class Unfold
+    public static class Unfold_Planar
     {
         /// <summary>
         /// wrapper for edges and curves
@@ -418,7 +418,7 @@ namespace Unfold
                         // find adjacent faces in the dict
                         var subfaces = edge_dict[edgekey];
                         // find the graph verts that represent these faces
-                        var verts = Unfold.find_nodes_by_matching_faces(graph, subfaces);
+                        var verts = Unfold_Planar.find_nodes_by_matching_faces(graph, subfaces);
                         //remove dupe faces, not sure if these should really be removed
                         verts = verts.Distinct().ToList();
                         //need to remove self loops
@@ -437,7 +437,7 @@ namespace Unfold
                         // these are the verts this edge connects
                         foreach (var vert_to_connect_to in verts)
                         {
-                            EdgeLikeEntity wrapped_edge_on_this_graph_edge = Unfold.find_real_edge_by_two_faces(graph, subfaces, edge_dict);
+                            EdgeLikeEntity wrapped_edge_on_this_graph_edge = Unfold_Planar.find_real_edge_by_two_faces(graph, subfaces, edge_dict);
                             var current_graph_edge = new graph_edge(wrapped_edge_on_this_graph_edge, vertex, vert_to_connect_to);
                             vertex.Graph_Edges.Add(current_graph_edge);
                         }
