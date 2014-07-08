@@ -24,7 +24,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
- 	        Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
             AssertNoDummyNodes();
 
             // evaluate  graph
@@ -113,7 +113,7 @@ namespace Dynamo.Tests
 
             var refPtNodeId = "69dcdcdc-941f-46f9-8e8b-242b61e74e80";
             AssertPreviewCount(refPtNodeId, 36);
-            
+
             var refPt = GetPreviewValueAtIndex(refPtNodeId, 3) as ReferencePoint;
             Assert.IsNotNull(refPt);
             Assert.AreEqual(57, refPt.Y);
@@ -1194,5 +1194,85 @@ namespace Dynamo.Tests
 
 
         #endregion
+
+        #region New Samples Tests
+
+        [Test]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_Adaptive_Component_Placement()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\Revit_Adaptive Component Placement.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+
+            var refPtNodeId = "357e7a53-361c-4c1e-81ae-83e16213a39a";
+            AssertPreviewCount(refPtNodeId, 9);
+
+            // get all AdaptiveComponent.
+            for (int i = 0; i <= 8; i++)
+            {
+                var refPt = GetPreviewValueAtIndex(refPtNodeId, i) as AdaptiveComponent;
+                Assert.IsNotNull(refPt);
+            }
+
+            // change slider value and re-evaluate graph
+            IntegerSlider slider = model.CurrentWorkspace.NodeFromWorkspace
+                ("cc3ba87a-cc1f-4db6-99f2-769f3020e0df") as IntegerSlider;
+            slider.Value = 6;
+
+            RunCurrentModel();
+
+            AssertPreviewCount(refPtNodeId, 6);
+
+            // Now there should be only 6 AdaptiveComponent in Revit.
+            for (int i = 0; i <= 5; i++)
+            {
+                var refPt = GetPreviewValueAtIndex(refPtNodeId, i) as AdaptiveComponent;
+                Assert.IsNotNull(refPt);
+            }
+
+        }
+
+        [Test]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_ImportSolid()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\Revit_ImportSolid.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var NodeId = "e3fedc00-247a-4971-901c-7fcb063344c6";
+
+            // get imported geometry instance.
+            var geometryInstance = GetPreviewValue(NodeId) as ImportInstance;
+            Assert.IsNotNull(geometryInstance);
+
+        }
+
+        #endregion
     }
+
 }
