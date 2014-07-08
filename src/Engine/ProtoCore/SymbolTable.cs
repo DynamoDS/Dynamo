@@ -278,7 +278,7 @@ namespace ProtoCore.DSASM
         public int RuntimeIndex 
         { 
             get; 
-            private set; 
+            set; 
         }
 
         public IDictionary<int,SymbolNode> symbolList
