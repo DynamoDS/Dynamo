@@ -150,9 +150,13 @@ namespace Revit.AnalysisDisplay
         /// <param name="view"></param>
         /// <param name="samplePoints"></param>
         /// <param name="samples"></param>
+        /// <param name="perfomHostUnitconversion"></param>
         /// <returns></returns>
-        public static PointAnalysisDisplay ByViewPointsAndValues(View view,
-                        Autodesk.DesignScript.Geometry.Point[] samplePoints, double[] samples)
+        public static PointAnalysisDisplay ByViewPointsAndValues(
+                        View view,
+                        Autodesk.DesignScript.Geometry.Point[] samplePoints, 
+                        double[] samples, 
+                        bool perfomHostUnitconversion=true)
         {
 
             if (view == null)
@@ -173,6 +177,11 @@ namespace Revit.AnalysisDisplay
             if (samplePoints.Length != samples.Length)
             {
                 throw new Exception("The number of sample points and number of samples must be the same");
+            }
+
+            if (perfomHostUnitconversion)
+            {
+                samplePoints = samplePoints.Select(p => p.InHostUnits()).ToArray();
             }
 
             return new PointAnalysisDisplay(view.InternalView, samplePoints.ToXyzs(), samples);
