@@ -18,7 +18,6 @@ namespace Revit.AnalysisDisplay
     /// <summary>
     /// A Revit Point Analysis Display 
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
     [DSNodeServices.RegisterForTrace]
     public class FaceAnalysisDisplay : AbstractAnalysisDisplay
     {
