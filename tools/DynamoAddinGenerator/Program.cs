@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -96,6 +97,16 @@ namespace DynamoAddinGenerator
                 Console.WriteLine("Generating addins in {0}", prod.AddinsFolder);
 
                 var addinData = new DynamoAddinData(prod, dynamos.GetLatest());
+
+                if (prod.ProductName == "Vasari Beta 3")
+                {
+                    // Change the addin path because the AddinUtility 
+                    // reports this incorrectly for vasari
+                    var dir = Path.GetDirectoryName(addinData.AddinPath);
+                    var newDir = dir.Replace("Revit", "Vasari");
+                    addinData.AddinPath = Path.Combine(newDir, Path.GetFileName(addinData.AddinPath));
+                }
+
                 GenerateDynamoAddin(addinData);
             }
         }
