@@ -86,9 +86,7 @@ namespace Dynamo.Tests
                                 }
 
                             }
-                            else
-                            { 
-                            }
+                           
                     }
                 }
             }
@@ -111,7 +109,7 @@ namespace Dynamo.Tests
             ";
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Core core = thisTest.getTestCore();
+            ProtoCore.Core core = thisTest.GetTestCore();
             Guid guid = RunDSScriptInCBN(code);
             ProtoCore.Core dynamoCore =Controller.EngineController.LiveRunnerCore;
             CompareCores(core, dynamoCore,guid);

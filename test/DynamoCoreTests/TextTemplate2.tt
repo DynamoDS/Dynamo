@@ -61,7 +61,7 @@
          Write(CurrentIndent+"\";"+"\n");
  		
  		Write(CurrentIndent+"ExecutionMirror mirror = thisTest.RunScriptSource(code);"+"\n");
- 		Write(CurrentIndent+"ProtoCore.Core core = thisTest.getTestCore();"+"\n");
+ 		Write(CurrentIndent+"ProtoCore.Core core = thisTest.GetTestCore();"+"\n");
  		Write(CurrentIndent+"Guid guid = this.RunScriptDynamo(code);"+"\n");
  		Write(CurrentIndent+"ProtoCore.Core dynamoCore =Controller.EngineController.LiveRunnerCore;"+"\n");
  		Write(CurrentIndent+"this.CompareCores(core, dynamoCore,guid);"+"\n");

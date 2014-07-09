@@ -36,7 +36,7 @@ namespace ProtoTestFx.TD
             runner = new ProtoScriptTestRunner();
         }
 
-        public ProtoCore.Core getTestCore()
+        public ProtoCore.Core GetTestCore()
         {
             return testCore;
         }
