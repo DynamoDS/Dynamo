@@ -108,6 +108,14 @@ namespace DynamoAddinGenerator
         {
             Console.WriteLine("Generating addin {0}", data.AddinPath);
 
+            // If Revit has been installed, but not Run, the addins
+            // folder will not exist. We need to create it.
+            var dir = Path.GetDirectoryName(data.AddinPath);
+            if (dir!=null && !Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
             using (var tw = new StreamWriter(data.AddinPath, false))
             {
                 var addin = String.Format(
