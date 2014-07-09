@@ -11,6 +11,7 @@ namespace ProtoCore
     {
         public class Context
         {
+            public Guid guid { get; set; } 
             public string SourceCode { get; private set; }
             public Dictionary<string, Object> GlobalVarList { get; private set; }
             public Dictionary<string, bool> execFlagList { get; private set; }

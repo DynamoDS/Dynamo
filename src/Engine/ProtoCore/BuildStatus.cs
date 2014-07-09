@@ -418,6 +418,8 @@ namespace ProtoCore
             {
                 this.WebMsgHandler = new WebOutputStream(core);
             }
+
+            displayBuildResult = logErrors = LogWarnings = core.Options.Verbose;
         }
 
         public BuildStatus(Core core,bool LogWarnings, bool logErrors, bool displayBuildResult, System.IO.TextWriter writer = null)
@@ -540,11 +542,6 @@ namespace ProtoCore
 
         public void LogWarning(BuildData.WarningID warningID, string message, string fileName = null, int line = -1, int col = -1)
         { 
-            if (LogWarnings)
-            {
-                System.Console.WriteLine("{0}({1},{2}) Warning:{3}", fileName, line, col, message);
-            }
-
             var entry = new BuildData.WarningEntry 
             { 
                 ID = warningID, 
@@ -559,17 +556,22 @@ namespace ProtoCore
             {
             }
 
-            OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), fileName, line, col);
-            if (MessageHandler != null)
+            if (LogWarnings)
             {
-                MessageHandler.Write(outputmessage);
-                if (WebMsgHandler != null)
+                System.Console.WriteLine("{0}({1},{2}) Warning:{3}", fileName, line, col, message);
+
+                OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), fileName, line, col);
+                if (MessageHandler != null)
                 {
-                    OutputMessage webOutputMsg = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), "", line, col);
-                    WebMsgHandler.Write(webOutputMsg);
+                    MessageHandler.Write(outputmessage);
+                    if (WebMsgHandler != null)
+                    {
+                        OutputMessage webOutputMsg = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), "", line, col);
+                        WebMsgHandler.Write(webOutputMsg);
+                    }
+                    if (!outputmessage.Continue)
+                        throw new BuildHaltException(message);
                 }
-                if (!outputmessage.Continue)
-                    throw new BuildHaltException(message);
             }
         }
 
@@ -580,15 +582,15 @@ namespace ProtoCore
             if (displayBuildResult)
             {
                 System.Console.WriteLine(buildResult);
-            }
 
-            if (MessageHandler != null)
-            {
-                var outputMsg = new OutputMessage(buildResult);
-                MessageHandler.Write(outputMsg);
-                if (WebMsgHandler != null)
+                if (MessageHandler != null)
                 {
-                    WebMsgHandler.Write(outputMsg);
+                    var outputMsg = new OutputMessage(buildResult);
+                    MessageHandler.Write(outputMsg);
+                    if (WebMsgHandler != null)
+                    {
+                        WebMsgHandler.Write(outputMsg);
+                    }
                 }
             }
         }

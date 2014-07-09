@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using Autodesk.RevitAddIns;
 using Moq;
 using NUnit.Framework;
@@ -125,6 +126,27 @@ namespace DynamoAddinGenerator
             Assert.AreEqual(addinData.AddinPath, Path.Combine(prods.Products.First().AddinsFolder, "Dynamo.addin"));
             Assert.AreEqual(addinData.AssemblyPath, Path.Combine(DynamoVersions.dynamo_07x, "Revit_2014\\DynamoRevitVersionSelector.dll"));
             Assert.AreEqual(addinData.ClassName, "Dynamo.Applications.VersionLoader");
+        }
+
+        [Test]
+        public void CanGenerateAddinIfFolderDoesNotExist()
+        {
+            var mockAddinData = new Mock<IDynamoAddinData>();
+            var tmpDirectory = Path.Combine(Path.GetTempPath(), "testAddins");
+            var tmpAddinPath = Path.Combine(tmpDirectory, "Dynamo.addin");
+            mockAddinData.Setup(x => x.AddinPath).Returns(tmpAddinPath);
+
+            Assert.DoesNotThrow(() => Program.GenerateDynamoAddin(mockAddinData.Object));
+
+            if (File.Exists(tmpAddinPath))
+            {
+                File.Delete(tmpAddinPath);
+            }
+
+            if (Directory.Exists(tmpDirectory))
+            {
+                Directory.Delete(tmpDirectory);
+            }
         }
 
         private IDynamoInstall MockDynamoInstall(string path)
