@@ -11,13 +11,13 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.PackageManager
 {
-    public static class PackageUtilities
+    internal static class PackageUtilities
     {
         /// <summary>
         /// Obtain the packages from a list of packages that were created using a newer version
         /// of Dynamo than this one.
         /// </summary>
-        public static IEnumerable<Tuple<PackageHeader, PackageVersion>> FilterFuturePackages(
+        internal static IEnumerable<Tuple<PackageHeader, PackageVersion>> FilterFuturePackages(
             this IEnumerable<Tuple<PackageHeader, PackageVersion>> headerVersionPairs,
             Version currentAppVersion, int numberOfFieldsToCompare = 3)
         {
