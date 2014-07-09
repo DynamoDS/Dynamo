@@ -81,7 +81,7 @@ namespace Tessellation
                 {
                     var x = xDiv * gap;
                     var y = yDiv * gap;
-                    var z = random.Next(size) * gap * 0.3;
+                    var z = random.Next(size) * gap * 0.1;
 
                     var vertex = new Vertex(x, y, z);
                     vertices[yDiv, xDiv] = vertex;
@@ -101,6 +101,7 @@ namespace Tessellation
                 }
             }
 
+            triangles.ComputeNormals();
             return triangles;
         }
 
@@ -120,8 +121,8 @@ namespace Tessellation
             result.normals.AddRange(triangles.normals);
             result.colors.AddRange(triangles.colors);
 
-            double r0 = 255.0, g0 = 0.0, b0 = 128.0;
-            double r1 = 255.0, g1 = 255.0, b1 = 128.0;
+            double r0 = 255.0, g0 = 255.0, b0 = 128.0;
+            double r1 = 255.0, g1 = 0.0, b1 = 128.0;
 
             double x = light.X, y = light.Y, z = light.Z;
 
@@ -130,6 +131,11 @@ namespace Tessellation
                 var tx = result.vertices[i + 0];
                 var ty = result.vertices[i + 1];
                 var tz = result.vertices[i + 2];
+
+                // Offset vertices along z-axis (to avoid z fighting).
+                result.vertices[i + 2] = result.vertices[i + 2] + 0.2;
+                result.vertices[i + 5] = result.vertices[i + 5] + 0.2;
+                result.vertices[i + 8] = result.vertices[i + 8] + 0.2;
 
                 // Direction to light source.
                 double lx = x - tx, ly = y - ty, lz = z - tz;
@@ -184,10 +190,10 @@ namespace Tessellation
             normals.Add(vertex.ny);
             normals.Add(vertex.nz);
 
-            colors.Add(vertex.a);
             colors.Add(vertex.r);
             colors.Add(vertex.g);
             colors.Add(vertex.b);
+            colors.Add(vertex.a);
         }
 
         internal void ComputeNormals()

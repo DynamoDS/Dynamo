@@ -506,8 +506,8 @@ void Visualizer::RenderGeometries(
         pNodeGeometries->Render(mpGraphicsContext, Dimensionality::Low);
 
         // Draw primitives of higher dimensionality later (e.g. points and lines).
-        controlParams[0] = 3.0f;
-        mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
+        // controlParams[0] = 3.0f;
+        // mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeGeometries->Render(mpGraphicsContext, Dimensionality::High);
     }
 }
