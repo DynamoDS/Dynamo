@@ -14,7 +14,7 @@ namespace Unfold
     {
 
 
-       public static List<Point> FindPointsOfEdgeAD(List<Unfold_Planar.EdgeLikeEntity> edges, Point StartPointOnSharedEdge, Unfold_Planar.EdgeLikeEntity sharedEdge)
+       public static List<Point> FindPointsOfEdge_StartingAtPoint(List<Unfold_Planar.EdgeLikeEntity> edges, Point StartPointOnSharedEdge, Unfold_Planar.EdgeLikeEntity sharedEdge)
        {
            Unfold_Planar.EdgeLikeEntity found_edge = null;
 
@@ -43,18 +43,36 @@ namespace Unfold
        }
         public static Dictionary<string, object> CheckNormalConsistency(Unfold_Planar.FaceLikeEntity facetoRotate, Unfold_Planar.FaceLikeEntity referenceFace, Unfold_Planar.EdgeLikeEntity sharedEdge)
         {
+            // assumption that face A is rotation face
+            // and face B is reference face.
+            // D is a vert on A
+            //C is a vert on B
+            //Point A is the start point of the shared edge
 
             Curve sharedcurve = sharedEdge.Curve;
+
             Surface refsurface = referenceFace.SurfaceEntity;
             Surface rotsurface = facetoRotate.SurfaceEntity;
 
             List<Unfold_Planar.EdgeLikeEntity> refedegs = referenceFace.EdgeLikeEntities;
             List<Unfold_Planar.EdgeLikeEntity> rotedges = referenceFace.EdgeLikeEntities;
 
-            Vector AB = Vector.ByTwoPoints(sharedcurve.StartPoint, sharedcurve.EndPoint);
+            Vector AB = Vector.ByTwoPoints(sharedcurve.StartPoint, sharedcurve.EndPoint); //Edge from A TO B// this is the shared edge
+            Vector ABnorm = AB.Normalized();
 
-            List<Point> edgePoints = AlignPlanarFaces.FindPointsOfEdgeAD(rotedges,sharedEdge.Start,sharedEdge);
+            List<Point> ADedgePoints = AlignPlanarFaces.FindPointsOfEdge_StartingAtPoint(rotedges,sharedEdge.Start,sharedEdge);
 
+            Point ADstart = ADedgePoints[0];
+            Point ADend = ADedgePoints[1];
+
+           Vector ADVector =  Vector.ByTwoPoints(ADstart,ADend);
+           Vector ADnorm = ADVector.Normalized();
+
+           Vector firstCross = ABnorm.Cross(ADnorm);
+
+          Vector  rotFaceNormal = rotsurface.NormalAtParameter(.5, .5);
+
+           double abxad_dot_normal_rot_face =  firstCross.Dot(rotFaceNormal);
 
         }
     }
