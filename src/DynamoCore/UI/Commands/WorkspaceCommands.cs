@@ -13,8 +13,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
         private DelegateCommand _resetFitViewToggleCommand;
-        private DelegateCommand _togglePanCommand;
-        private DelegateCommand _toggleOrbitCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;

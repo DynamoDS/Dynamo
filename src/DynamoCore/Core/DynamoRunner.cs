@@ -29,6 +29,7 @@ namespace Dynamo.Core
 
         private bool cancelSet;
         private int? execInternval;
+        private Thread evaluationThread = null;
 
         public bool Running { get; protected set; }
 
@@ -39,9 +40,17 @@ namespace Dynamo.Core
 
         public void CancelAsync()
         {
-            cancelSet = true;
+            if (Running)
+            {
+                cancelSet = true;
+                controller.EngineController.LiveRunnerCore.RequestCancellation();
+                
+                // We need to wait for evaluation thread to complete after a cancellation
+                // until the LR and Engine controller are reset properly
+                if (evaluationThread != null)
+                    evaluationThread.Join();
+            }
         }
-
 
         public void RunExpression(int? executionInterval = null)
         {
@@ -95,7 +104,8 @@ namespace Dynamo.Core
 
         private void RunAsync()
         {
-            new Thread(RunSync).Start();
+            evaluationThread = new Thread(RunSync);
+            evaluationThread.Start();
         }
 
         private void RunSync()
@@ -117,7 +127,7 @@ namespace Dynamo.Core
         /// <summary>
         ///     Method to group together all the tasks associated with an execution being complete
         /// </summary>
-        public void RunComplete()
+        private void RunComplete()
         {
             controller.OnRunCompleted(this, false);
 
@@ -125,6 +135,12 @@ namespace Dynamo.Core
             {
                 Running = false;
                 controller.DynamoViewModel.RunEnabled = true;
+            }
+
+            if (cancelSet)
+            {
+                controller.Reset();
+                cancelSet = false;
             }
         }
 
