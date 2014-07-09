@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+
+using DSCore;
+
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
+
+using Greg.Responses;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -57,23 +63,6 @@ namespace Dynamo.Tests
             var loader = new PackageLoader(pkgDir);
             loader.LoadPackages();
             Assert.AreEqual(0, loader.LocalPackages.Count);
-        }
-
-        [Test]
-        public void IsGreaterVersionThan_StringString_ReturnsCorrectResults()
-        {
-            Assert.IsTrue(PackageUtilities.IsGreaterVersionThan("0.7.0", "0.0.5"));
-            Assert.IsTrue(PackageUtilities.IsGreaterVersionThan("1.7.0", "0.7.5"));
-            Assert.IsTrue(PackageUtilities.IsGreaterVersionThan("0.0.7", "0.0.5"));
-            Assert.IsTrue(PackageUtilities.IsGreaterVersionThan("2.7.0", "1.0.5"));
-            Assert.IsTrue(PackageUtilities.IsGreaterVersionThan("0.7.1", "0.7.0"));
-
-            Assert.IsFalse(PackageUtilities.IsGreaterVersionThan("0.7.0", "0.7.0"));
-            Assert.IsFalse(PackageUtilities.IsGreaterVersionThan("0.0.5", "0.7.0"));
-            Assert.IsFalse(PackageUtilities.IsGreaterVersionThan("0.7.5", "1.7.0"));
-            Assert.IsFalse(PackageUtilities.IsGreaterVersionThan("0.0.5", "0.0.7"));
-            Assert.IsFalse(PackageUtilities.IsGreaterVersionThan("1.0.5", "2.7.0"));
-            Assert.IsFalse(PackageUtilities.IsGreaterVersionThan( "0.7.0", "0.7.1"));
         }
 
         [Test]

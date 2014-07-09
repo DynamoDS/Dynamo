@@ -3,44 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Dynamo.Utilities;
+
 using Greg.Responses;
+
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.PackageManager
 {
     public static class PackageUtilities
     {
-
-        public static IEnumerable<Tuple<PackageHeader, string>> FilterFuturePackages(
-            this IEnumerable<Tuple<PackageHeader, string>> headerVersionPairs,
-            string currentVersion)
+        /// <summary>
+        /// Obtain the packages from a list of packages that were created using a newer version
+        /// of Dynamo than this one.
+        /// </summary>
+        public static IEnumerable<Tuple<PackageHeader, PackageVersion>> FilterFuturePackages(
+            this IEnumerable<Tuple<PackageHeader, PackageVersion>> headerVersionPairs,
+            Version currentAppVersion, int numberOfFieldsToCompare = 3)
         {
             foreach (var pair in headerVersionPairs)
             {
-                var header = pair.Item1;
-                var vname = pair.Item2;
+                var version = pair.Item2;
+                var depAppVersion = VersionUtilities.PartialParse(version.engine_version, numberOfFieldsToCompare);
 
-                var depVersion = header.versions.First(x => x.version == vname);
-
-                if (depVersion.engine_version.IsGreaterVersionThan(currentVersion))
+                if (depAppVersion > currentAppVersion)
                 {
                     yield return pair;
                 }
             }
         }
-
-        public static bool IsGreaterVersionThan(this string version, string versionToCompare)
-        {
-            var splitVersion = version.Split('.').Select(int.Parse).Take(3).ToList();
-            var splitVersionToCompare = versionToCompare.Split('.').Select(int.Parse).Take(3).ToList();
-
-            for (var i = 0; i < 3; i++)
-            {
-                if (splitVersion[i] > splitVersionToCompare[i]) return true;
-                if (splitVersion[i] < splitVersionToCompare[i]) return false;
-            }
-
-            return false;
-        }
-
     }
 }

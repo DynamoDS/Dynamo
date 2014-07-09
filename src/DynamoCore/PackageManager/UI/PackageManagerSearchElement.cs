@@ -77,7 +77,7 @@ namespace Dynamo.PackageManager
 
         public override void Execute()
         {
-            var version = _versionToDownload ?? this.Header.versions.Last();
+            var version = versionNumberToDownload ?? this.Header.versions.Last();
 
             string message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
 
@@ -107,10 +107,17 @@ namespace Dynamo.PackageManager
 
                 var headerVersionPairs = headers.Zip(
                     version.full_dependency_versions,
-                    (header, v) => new Tuple<PackageHeader, string>(header, v));
+                    (header, v) => new Tuple<PackageHeader, string>(header, v))
+                    .Select(
+                        (pair) =>
+                            new Tuple<PackageHeader, PackageVersion>(
+                            pair.Item1,
+                            pair.Item1.versions.First(x => x.version == pair.Item2)));
 
                 var dynamoVersion = dynSettings.Controller.DynamoViewModel.Version;
-                var futureDeps = headerVersionPairs.FilterFuturePackages(dynamoVersion);
+                var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
+
+                var futureDeps = headerVersionPairs.FilterFuturePackages(dynamoVersionParsed);
 
                 // show future dependency warning
                 if (futureDeps.Any())
@@ -164,7 +171,7 @@ namespace Dynamo.PackageManager
 
                 // form header version pairs and download and install all packages
                 headerVersionPairs
-                        .Select( x=> new PackageDownloadHandle(x.Item1, x.Item2))
+                        .Select( x => new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
                         .ForEach(x=>x.Start());
 
@@ -174,7 +181,7 @@ namespace Dynamo.PackageManager
 
         #region Properties 
 
-            private PackageVersion _versionToDownload = null;
+            private PackageVersion versionNumberToDownload = null;
 
             public List<Tuple<PackageVersion, DelegateCommand>> Versions
             {
@@ -184,7 +191,7 @@ namespace Dynamo.PackageManager
                         Header.versions.Select(
                             x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
                                 {
-                                    this._versionToDownload = x;
+                                    this.versionNumberToDownload = x;
                                     this.Execute();
                                 }, () => true))).ToList();
                 } 

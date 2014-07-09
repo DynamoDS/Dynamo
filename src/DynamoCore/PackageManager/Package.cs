@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager
             GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
             PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
             PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
-            UninstallCommand = new DelegateCommand(ShowDialogAndUninstall, CanUninstall);
+            UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
 
@@ -144,7 +144,6 @@ namespace Dynamo.PackageManager
 
         public void Load()
         {
-
             try
             {
                 GetAssemblies().Select(DynamoLoader.LoadNodesFromAssembly).SelectMany(x => x).ToList().ForEach(x => LoadedTypes.Add(x));
@@ -160,7 +159,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        public List<Assembly> GetAssemblies()
+        internal List<Assembly> GetAssemblies()
         {
             if (!Directory.Exists(BinaryDirectory)) 
                 return new List<Assembly>();
@@ -171,18 +170,18 @@ namespace Dynamo.PackageManager
                     .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
         }
 
-        public bool ContainsFile(string path)
+        internal bool ContainsFile(string path)
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return false;
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
-        public bool InUse()
+        internal bool InUse()
         {
             return (LoadedTypes.Any() || WorkspaceOpen() || CustomNodeInWorkspace() ) && Loaded;
         }
 
-        public bool CustomNodeInWorkspace()
+        private bool CustomNodeInWorkspace()
         {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
@@ -194,7 +193,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        public bool WorkspaceOpen()
+        private bool WorkspaceOpen()
         {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
@@ -208,15 +207,27 @@ namespace Dynamo.PackageManager
                         });
         }
 
-        internal void ShowDialogAndUninstall()
+        private void Uninstall()
         {
             var res = MessageBox.Show("Are you sure you want to uninstall " + this.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
-            Uninstall();
+            try
+            {
+                UninstallCore();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        internal void Uninstall()
+        private bool CanUninstall()
+        {
+            return !InUse();
+        }
+
+        internal void UninstallCore()
         {
             try
             {
@@ -226,16 +237,10 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
                 dynSettings.DynamoLogger.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
                 dynSettings.DynamoLogger.Log(e.GetType() + ": " + e.Message);
+                throw e;
             }
-
-        }
-
-        private bool CanUninstall()
-        {
-            return !InUse();
         }
 
         private void Deprecate()

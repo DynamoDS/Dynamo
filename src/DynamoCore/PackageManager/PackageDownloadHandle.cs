@@ -51,11 +51,11 @@ namespace Dynamo.PackageManager
             
         }
 
-        public PackageDownloadHandle(Greg.Responses.PackageHeader header, string version)
+        public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
         {
             this.Header = header;
             this.DownloadPath = "";
-            this.VersionName = version;
+            this.VersionName = version.version;
         }
 
         public void Start()

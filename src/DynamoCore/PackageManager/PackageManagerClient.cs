@@ -377,6 +377,13 @@ namespace Dynamo.PackageManager
                 x.DownloadState == PackageDownloadHandle.State.Error).ToList().ForEach(x=>Downloads.Remove(x));
         }
 
+        /// <summary>
+        /// This method downloads the package represented by the PackageDownloadHandle,
+        /// uninstalls its current installation if necessary, and installs the package.
+        /// 
+        /// Note that, if the package is already installed, must be uninstallable
+        /// </summary>
+        /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
@@ -399,7 +406,15 @@ namespace Dynamo.PackageManager
 
                                 var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                                 if (firstOrDefault != null)
-                                    firstOrDefault.Uninstall();
+                                {
+                                    try { firstOrDefault.UninstallCore(); }
+                                    catch
+                                    {
+                                        MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name + 
+                                            "  The package may need to be reinstalled manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    }
+                                    
+                                } 
 
                                 if (packageDownloadHandle.Extract(out dynPkg))
                                 {
