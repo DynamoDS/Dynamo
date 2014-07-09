@@ -51,7 +51,7 @@ namespace Tessellation
 
         public Triangles Triangles
         {
-            get { return null; }
+            get { return this.triangles; }
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace Tessellation
                 {
                     var x = xDiv * gap;
                     var y = yDiv * gap;
-                    var z = random.Next(size) * gap;
+                    var z = random.Next(size) * gap * 0.3;
 
                     var vertex = new Vertex(x, y, z);
                     vertices[yDiv, xDiv] = vertex;
@@ -112,6 +112,50 @@ namespace Tessellation
         private List<double> vertices = new List<double>();
         private List<double> normals = new List<double>();
         private List<byte> colors = new List<byte>();
+
+        public static Triangles DoShading(Triangles triangles, Point light)
+        {
+            Triangles result = new Triangles(0);
+            result.vertices.AddRange(triangles.vertices);
+            result.normals.AddRange(triangles.normals);
+            result.colors.AddRange(triangles.colors);
+
+            double r0 = 255.0, g0 = 0.0, b0 = 128.0;
+            double r1 = 255.0, g1 = 255.0, b1 = 128.0;
+
+            double x = light.X, y = light.Y, z = light.Z;
+
+            for (int i = 0, c = 0; i < result.vertices.Count; i = i + 9, c = c + 12)
+            {
+                var tx = result.vertices[i + 0];
+                var ty = result.vertices[i + 1];
+                var tz = result.vertices[i + 2];
+
+                // Direction to light source.
+                double lx = x - tx, ly = y - ty, lz = z - tz;
+                double nx = result.normals[i + 0];
+                double ny = result.normals[i + 1];
+                double nz = result.normals[i + 2];
+
+                var a = lx * nx + ly * ny + lz * nz;
+                var len0 = Math.Sqrt(lx * lx + ly * ly + lz * lz);
+                var len1 = Math.Sqrt(nx * nx + ny * ny + nz * nz);
+
+                // Compute the angle
+                var factor = Math.Acos(a / (len0 * len1)) / Math.PI;
+
+                byte r = ((byte)(r0 + ((r1 - r0) * factor)));
+                byte g = ((byte)(g0 + ((g1 - g0) * factor)));
+                byte b = ((byte)(b0 + ((b1 - b0) * factor)));
+
+                result.colors[c + 0] = result.colors[c + 4] = result.colors[c + 8] = r;
+                result.colors[c + 1] = result.colors[c + 5] = result.colors[c + 9] = g;
+                result.colors[c + 2] = result.colors[c + 6] = result.colors[c + 10] = b;
+                result.colors[c + 3] = result.colors[c + 7] = result.colors[c + 11] = 255;
+            }
+
+            return result;
+        }
 
         internal Triangles(int triangleCount)
         {
