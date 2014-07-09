@@ -1247,6 +1247,79 @@ namespace Dynamo.Tests
 
         [Test]
         [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_Color()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Color.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(16, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(21, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var refPtNodeId = "ecb2936d-6ee9-4b99-9ab1-24269ffedfc5";
+            AssertPreviewCount(refPtNodeId, 10);
+
+            // get all Walls.
+            for (int i = 0; i <= 9; i++)
+            {
+                var refPt = GetPreviewValueAtIndex(refPtNodeId, i) as Wall;
+                Assert.IsNotNull(refPt);
+            }
+        }
+
+        [Ignore]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_Floors_and_Framing()
+        {
+            // this test marked as Ignore because on running it is throwing error from Revit side.
+            // if I run it manually there is no error. Will discuss this with Ian
+
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Floors and Framing.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(31, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(35, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var floorByTypeAndLevel = "4074e4e4-c6ee-4413-8cbb-cc9af5b6127f";
+            AssertPreviewCount(floorByTypeAndLevel, 5);
+
+            // get all Floors.
+            for (int i = 0; i <= 4; i++)
+            {
+                var floors = GetPreviewValueAtIndex(floorByTypeAndLevel, i) as Floor;
+                Assert.IsNotNull(floors);
+            }
+
+            var structuralFraming = "205a479f-3b9e-4f4f-866e-6901fde3d9ca";
+            AssertPreviewCount(structuralFraming, 20);
+
+            // get all Structural Framing elements
+            for (int i = 0; i <= 19; i++)
+            {
+                var framing = GetPreviewValueAtIndex(structuralFraming, i) as StructuralFraming;
+                Assert.IsNotNull(framing);
+            }
+        }
+
+        [Test]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_ImportSolid()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1272,6 +1345,69 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_PlaceFamiliesByLevel_Set_Parameters()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine
+                (_testPath, @".\Samples\Revit_PlaceFamiliesByLevel_Set Parameters.dyn");
+
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var familyInstance = "026aadc9-644e-4e6c-b35c-bf1aec67045c";
+            AssertPreviewCount(familyInstance, 27);
+
+            // get all Family instances.
+            for (int i = 0; i <= 26; i++)
+            {
+                var family = GetPreviewValueAtIndex(familyInstance, i) as FamilyInstance;
+                Assert.IsNotNull(family);
+            }
+        }
+
+        [Test]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_StructuralFraming()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine
+                (_testPath, @".\Samples\Revit_StructuralFraming.dyn");
+
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var familyInstance = "e98dab6a-e6bc-4da8-84b6-d756caee48fe";
+            AssertPreviewCount(familyInstance, 9);
+
+            // get all Families.
+            for (int i = 0; i <= 8; i++)
+            {
+                var family = GetPreviewValueAtIndex(familyInstance, i) as StructuralFraming;
+                Assert.IsNotNull(family);
+            }
+        }
         #endregion
     }
 
