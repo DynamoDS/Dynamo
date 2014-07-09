@@ -119,6 +119,15 @@ namespace DSCoreNodesUI
                 RequestSelectChange(sender, e);
         }
 
+
+        public event EventHandler NeedNewProperties;
+        protected virtual void OnNeedNewProperties(object sender, EventArgs e)
+        {
+            if (NeedNewProperties != null)
+                NeedNewProperties(sender, e);
+        }
+
+
         public Inspector()
         {
             InPortData.Add(new PortData("object", "Object to Inspect"));
@@ -134,13 +143,14 @@ namespace DSCoreNodesUI
         }
 
         void Inspector_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
+        {   
             if (e.PropertyName != "IsUpdated")
                 return;
 
             if (InPorts.Any(x => x.Connectors.Count == 0))
                 return;
 
+            OnNeedNewProperties(this, EventArgs.Empty);
             OnRequestSelectChange(this, EventArgs.Empty);
         }
         /// <summary>
@@ -150,13 +160,21 @@ namespace DSCoreNodesUI
         /// <returns></returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            StoreProperties();
-            var outputobject = inputAstNodes[0];
-            return new[]
+            NeedNewProperties += delegate
             {
+                StoreProperties();
+            };
+                var outputobject = inputAstNodes[0];
+
+                return new[]
+            {   
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), outputobject)
             };
+
+
+            
         }
+
 
         //method for grabbing member values from a dynamic object, we use this for python objects...
         //  http://stackoverflow.com/questions/1926776/getting-a-value-from-a-dynamic-object-dynamically
@@ -506,6 +524,7 @@ namespace DSCoreNodesUI
 
             RequestSelectChange += delegate
             {
+               
                 DispatchOnUIThread(SetComboBoxes);
             };
         }
