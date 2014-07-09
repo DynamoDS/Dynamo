@@ -87,7 +87,7 @@ Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSel
 Type: filesandordirs; Name: {app}\dll
 
 [Run]
-Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
+Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
 Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
 Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: """{app}"""
 
