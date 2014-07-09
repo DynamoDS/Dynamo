@@ -3354,7 +3354,7 @@ c;
         {
             String code =
 @"
- import (""Math.dll"");
+import (""DSCoreNodes.dll"");
  a = -1.5;
  b = { -3, 0, -4.5 };
  a1 = Math.Abs( a ) ;
@@ -3371,7 +3371,7 @@ c;
         public void T068_Abs_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
 class A
 {
     x;
@@ -3431,7 +3431,8 @@ t7 = foo(2);
         {
             String code =
 @"
- import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
  a = -1.5;
  b = { -3, 0, -4.5 };
  a1 = Math.Cosh( a ) ;
@@ -3448,7 +3449,8 @@ t7 = foo(2);
         public void T068_Cosh_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -3508,7 +3510,8 @@ t7 = foo(2);
         {
             String code =
 @"
- import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
  x = 0;
  a1 = Math.DivRem( 1000, 300 ) ;
 ";
@@ -3520,7 +3523,8 @@ t7 = foo(2);
         public void T068_DivRem_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -3583,7 +3587,8 @@ t7 = foo();
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 a1 = Math.IEEERemainder( 3, 2 ) ;
 a2 = Math.IEEERemainder( 3..4, 2..3 ) ;
 ";
@@ -3596,7 +3601,8 @@ a2 = Math.IEEERemainder( 3..4, 2..3 ) ;
         public void T068_IEEERemainder_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -3656,7 +3662,8 @@ t7 = foo();
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 a1 = Math.Max( 1, 1.0 ) ;
 b1 = Math.Max( 2.5, 2.50 ) ;
 c1 = Math.Max( -2, -2.0 ) ;
@@ -3681,7 +3688,8 @@ t4 = Math.Max( -2..2, -2.1..2.1 ) ;
         public void T068_Max_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -3743,7 +3751,8 @@ t8 = 0;
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 a1 = Math.Min( 1, 1.0 ) ;
 b1 = Math.Min( 2.5, 2.50 ) ;
 c1 = Math.Min( -2, -2.0 ) ;
@@ -3766,7 +3775,8 @@ t4 = Math.Min( -2..2, -2.1..2.1 ) ;
         public void T068_Min_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -3828,7 +3838,8 @@ t8 = 0;
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 a1 = Math.Pow( 2, 2 ) ;
 b1 = Math.Pow( -2, -2 ) ;
 c1 = Math.Pow( 2.5, -2 ) ;
@@ -3851,7 +3862,8 @@ t4 = Math.Pow( -2..2, -2..2 ) ;
         public void T068_Pow_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -3913,7 +3925,8 @@ t8 = 0;
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 a1 = Math.Round( 2.04, 1 ) ;
 b1 = Math.Round( -2, 2 ) ;
 c1 = Math.Round( -2.578, 2 ) ;
@@ -3938,7 +3951,8 @@ t5 = Math.Round( 2.456, -2 ) ;
         public void T068_Round_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -4001,7 +4015,8 @@ t8 = 0;
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 a1 = Math.Round( 3.45, 1, MidpointRounding.ToEven) ;
 a2 = Math.Round( 3.45, 1, MidpointRounding.AwayFromZero);
 a3 = Math.Round( 3.45, MidpointRounding.ToEven) ;
@@ -4019,7 +4034,8 @@ a4 = Math.Round( 3.45, MidpointRounding.AwayFromZero);
         {
             String code =
 @"
- import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
  a = -1.5;
  b = { -3, 0, -4.5 };
  a1 = Math.Sign( a ) ;
@@ -4036,7 +4052,8 @@ a4 = Math.Round( 3.45, MidpointRounding.AwayFromZero);
         public void T068_Sign_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;
@@ -4096,7 +4113,8 @@ t7 = foo(-2);
         {
             String code =
 @"
- import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
  a = -4.5;
  b = { -1.5, 0, 13.5 };
  a1 = Math.Sinh( a ) ;
@@ -4112,7 +4130,8 @@ t7 = foo(-2);
         {
             String code =
 @"
- import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
  a = -4.567;
  b = { -1.5, 0.003, 13.098, 8 };
  a1 = Math.Truncate( a ) ;
@@ -4128,7 +4147,8 @@ t7 = foo(-2);
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 b1 = 1 > 0 ? Math.Rand() : 10 ;
 b2 = 1 > 0 ? Math.Rand(1..2, 2..3) : 10 ;
 test1 = 0;
@@ -4162,7 +4182,8 @@ c2 = 2;
         {
             String code =
 @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 t1 = Math.Factorial(0.9);
 t2 = Math.Factorial(1.9);
 t3 = Math.Factorial(1.5);
@@ -4179,7 +4200,8 @@ t4 = Math.Factorial(-1.5);
         public void T068_Factorial_2()
         {
             string code = @"
-import (""Math.dll"");
+import (""DSCoreNodes.dll"");
+
 class A
 {
     x;

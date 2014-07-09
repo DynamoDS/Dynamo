@@ -1,8 +1,11 @@
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore.AST.ImperativeAST
 {
@@ -14,11 +17,6 @@ namespace ProtoCore.AST.ImperativeAST
 
         public ImperativeNode(ImperativeNode rhs) : base(rhs)
         {
-        }
-
-        public override bool Equals(object other)
-        {
-            return base.Equals(other);
         }
 
         public override int GetHashCode()
@@ -37,6 +35,7 @@ namespace ProtoCore.AST.ImperativeAST
 
         public LanguageBlockNode(LanguageBlockNode rhs) : base(rhs)
         {
+            CodeBlockNode = ProtoCore.Utils.NodeUtils.Clone(rhs.CodeBlockNode);
             codeblock = new ProtoCore.LanguageCodeBlock(rhs.codeblock);
             Attributes = new List<ImperativeNode>();
             foreach (ImperativeNode aNode in rhs.Attributes)
@@ -49,6 +48,26 @@ namespace ProtoCore.AST.ImperativeAST
         public List<ImperativeNode> Attributes { get; set; }
         public ProtoCore.LanguageCodeBlock codeblock { get; set; }
         public Node CodeBlockNode { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as LanguageBlockNode;
+
+            // Compare language block properties
+            bool eqLangBlockProperties = codeblock.Equals(otherNode.codeblock);
+
+            // Compare language block contents
+            bool eqLangblockContents = CodeBlockNode is AssociativeNode && otherNode.CodeBlockNode is AssociativeNode
+                                    && (CodeBlockNode as AssociativeNode).Equals(otherNode.CodeBlockNode as AssociativeNode)
+                                    ||
+                                    CodeBlockNode is ImperativeNode && otherNode.CodeBlockNode is ImperativeNode
+                                    && (CodeBlockNode as ImperativeNode).Equals(otherNode.CodeBlockNode as ImperativeNode)
+                                    ;
+
+            bool eqAttribute = null != otherNode && Attributes.SequenceEqual(otherNode.Attributes);
+
+            return eqLangBlockProperties && eqLangblockContents && eqAttribute;
+        }
 
         public override string ToString()
         {
@@ -64,7 +83,10 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append("{");
             buf.Append("\n");
 
-            buf.Append(CodeBlockNode.ToString());
+            if (CodeBlockNode != null)
+            {
+                buf.Append(CodeBlockNode.ToString());
+            }
 
             buf.Append("\n");
             buf.Append("}");
@@ -92,6 +114,21 @@ namespace ProtoCore.AST.ImperativeAST
             }
         }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ArrayNameNode;
+            if (null == otherNode)
+                return false;
+
+            bool arrayDimEqual = (null == ArrayDimensions && null == otherNode.ArrayDimensions);
+            if (null != ArrayDimensions && null != otherNode.ArrayDimensions)
+            {
+                arrayDimEqual = EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions);
+            }
+
+            return arrayDimEqual;
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -108,6 +145,14 @@ namespace ProtoCore.AST.ImperativeAST
     public class GroupExpressionNode : ArrayNameNode
     {
         public ImperativeNode Expression { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as GroupExpressionNode;
+
+            return otherNode != null
+                && EqualityComparer<ImperativeNode>.Default.Equals(Expression, otherNode.Expression);
+        }
     }
 
     public class IdentifierNode : ArrayNameNode 
@@ -142,6 +187,17 @@ namespace ProtoCore.AST.ImperativeAST
         public string Value { get; set; }
         public string ArrayName { get; set; }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as IdentifierNode;
+            if (null == otherNode)
+                return false;
+
+            return EqualityComparer<string>.Default.Equals(Value, otherNode.Value) &&
+                   datatype.Equals(otherNode.datatype) &&
+                   base.Equals(otherNode);
+        }
+
         public override string ToString()
         {
             return Value.Replace("%", string.Empty) + base.ToString();
@@ -167,6 +223,12 @@ namespace ProtoCore.AST.ImperativeAST
             Value = rhs.Value;
         }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as IntNode;
+            return null != otherNode && Value.Equals(otherNode.Value);
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -185,6 +247,15 @@ namespace ProtoCore.AST.ImperativeAST
         public DoubleNode(DoubleNode rhs) : base(rhs)
         {
             Value = rhs.Value;
+        }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as DoubleNode;
+            if (null == otherNode)
+                return false;
+
+            return Value.Equals(otherNode.Value);
         }
 
         public override string ToString()
@@ -207,6 +278,15 @@ namespace ProtoCore.AST.ImperativeAST
             Value = rhs.Value;
         }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as BooleanNode;
+            if (null == otherNode)
+                return false;
+
+            return Value == otherNode.Value;
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -223,6 +303,15 @@ namespace ProtoCore.AST.ImperativeAST
         public CharNode(CharNode rhs)
         {
             value = rhs.value;
+        }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as CharNode;
+            if (null == otherNode || string.IsNullOrEmpty(value))
+                return false;
+
+            return EqualityComparer<string>.Default.Equals(value, otherNode.value);
         }
 
         public override string ToString()
@@ -244,6 +333,15 @@ namespace ProtoCore.AST.ImperativeAST
             value = rhs.value;
         }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as StringNode;
+            if (null == otherNode || null == value)
+                return false;
+
+            return value.Equals(otherNode.value);
+        }
+
         public override string ToString()
         {
             return "\"" + value + "\"";
@@ -255,6 +353,11 @@ namespace ProtoCore.AST.ImperativeAST
         public override string ToString()
         {
             return ProtoCore.DSDefinitions.Keyword.Null;
+        }
+
+        public override bool Equals(object other)
+        {
+            return other is NullNode;
         }
     }
 
@@ -287,6 +390,16 @@ namespace ProtoCore.AST.ImperativeAST
 
         public ImperativeNode Expr { get; set; }
         public ImperativeNode Type { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ArrayNode;
+            if (null == otherNode)
+                return false;
+
+            return EqualityComparer<ImperativeNode>.Default.Equals(Expr, otherNode.Expr) &&
+                   EqualityComparer<ImperativeNode>.Default.Equals(Type, otherNode.Type);
+        }
 
         public override string ToString()
         {
@@ -334,6 +447,17 @@ namespace ProtoCore.AST.ImperativeAST
                 ImperativeNode tempNode = ProtoCore.Utils.NodeUtils.Clone(argNode);
                 FormalArguments.Add(tempNode);
             }
+        }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as FunctionCallNode;
+            if (null == otherNode)
+                return false;
+
+            return EqualityComparer<ImperativeNode>.Default.Equals(Function, otherNode.Function) &&
+                   FormalArguments.SequenceEqual(otherNode.FormalArguments) &&
+                   base.Equals(otherNode);
         }
 
         public override string ToString()
@@ -406,6 +530,17 @@ namespace ProtoCore.AST.ImperativeAST
         public ProtoCore.Type ArgumentType { get; set; }
         public ImperativeNode NameNode { get; set; }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as VarDeclNode;
+            if (null == otherNode)
+                return false;
+
+            return memregion == otherNode.memregion &&
+                   ArgumentType.Equals(otherNode.ArgumentType) &&
+                   EqualityComparer<ImperativeNode>.Default.Equals(NameNode, otherNode.NameNode);
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -431,6 +566,15 @@ namespace ProtoCore.AST.ImperativeAST
     public class ReturnNode : ImperativeNode
     {
         public ImperativeNode ReturnExpr { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ReturnNode;
+            if (null == otherNode)
+                return false;
+
+            return null != ReturnExpr && ReturnExpr.Equals(otherNode.ReturnExpr);
+        }
     }
 
     public class ArgumentSignatureNode : ImperativeNode
@@ -445,6 +589,12 @@ namespace ProtoCore.AST.ImperativeAST
         public void AddArgument(VarDeclNode arg)
         {
             Arguments.Add(arg);
+        }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ArgumentSignatureNode;
+            return null != otherNode && Arguments.SequenceEqual(otherNode.Arguments);
         }
 
         public override string ToString()
@@ -480,6 +630,12 @@ namespace ProtoCore.AST.ImperativeAST
         }
 
         public List<ImperativeNode> list { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ExprListNode;
+            return null != otherNode && list.SequenceEqual(otherNode.list);
+        }
 
         public override string ToString()
         {
@@ -521,6 +677,12 @@ namespace ProtoCore.AST.ImperativeAST
 
         public List<ImperativeNode> Body { get; set; }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as CodeBlockNode;
+            return null != otherNode && Body.SequenceEqual(otherNode.Body);
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -537,6 +699,17 @@ namespace ProtoCore.AST.ImperativeAST
         public int localVars { get; set; }
         public ArgumentSignatureNode Signature { get; set; }
         public CodeBlockNode FunctionBody { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ConstructorDefinitionNode;
+            if (null == otherNode)
+                return false;
+
+            return localVars == otherNode.localVars &&
+                   EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
+                   EqualityComparer<CodeBlockNode>.Default.Equals(FunctionBody, otherNode.FunctionBody);
+        }
     }
 
     public class FunctionDefinitionNode : ImperativeNode
@@ -546,6 +719,24 @@ namespace ProtoCore.AST.ImperativeAST
         public CodeBlockNode FunctionBody { get; set; }
         public ProtoCore.Type ReturnType { get; set; }
         public ArgumentSignatureNode Signature { get; set; }
+
+        //only compare return type, attributes and signature
+        public override bool Equals(object other)
+        {
+            var otherNode = other as FunctionDefinitionNode;
+            if (null == otherNode)
+            {
+                return false;
+            }
+
+            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
+                   ReturnType.Equals(otherNode.ReturnType) &&
+                   Attributes.SequenceEqual(otherNode.Attributes);
+
+            bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
+
+            return equalSignature && equalBody;
+        }
     }
 
     public class InlineConditionalNode : ImperativeNode
@@ -553,6 +744,20 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode ConditionExpression { get; set; }
         public ImperativeNode TrueExpression { get; set; }
         public ImperativeNode FalseExpression { get; set; }
+
+        public override bool Equals(object other)
+        {
+            if (null == ConditionExpression || null == TrueExpression || null == FalseExpression)
+                return false;
+
+            var otherNode = other as InlineConditionalNode;
+            if (null == otherNode)
+                return false;
+
+            return ConditionExpression.Equals(otherNode.ConditionExpression) &&
+                   TrueExpression.Equals(otherNode.TrueExpression) &&
+                   FalseExpression.Equals(otherNode.FalseExpression);
+        }
 
         public override string ToString()
         {
@@ -572,6 +777,7 @@ namespace ProtoCore.AST.ImperativeAST
 
     public class BinaryExpressionNode : ImperativeNode
     {
+        public Guid guid { get; set; }
         public ImperativeNode LeftNode { get; set; }
         public ProtoCore.DSASM.Operator Optr { get; set; }
         public ImperativeNode RightNode { get; set; }
@@ -592,6 +798,20 @@ namespace ProtoCore.AST.ImperativeAST
             Optr = rhs.Optr;
             LeftNode = rhs.LeftNode == null ? null : ProtoCore.Utils.NodeUtils.Clone(rhs.LeftNode);
             RightNode = rhs.RightNode == null ? null : ProtoCore.Utils.NodeUtils.Clone(rhs.RightNode);
+        }
+
+        public override bool Equals(object other)
+        {
+            if (null == LeftNode || null == RightNode)
+                return false;
+
+            var otherNode = other as BinaryExpressionNode;
+            if (null == otherNode)
+                return false;
+
+            return LeftNode.Equals(otherNode.LeftNode) &&
+                   Optr.Equals(otherNode.Optr) &&
+                   RightNode.Equals(otherNode.RightNode);
         }
 
         public override string ToString()
@@ -648,6 +868,18 @@ namespace ProtoCore.AST.ImperativeAST
         public List<ImperativeNode> Body { get; set; }
         public ImperativeNode ElseIfBodyPosition { get; set; }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ElseIfBlock;
+            if (null == otherNode)
+            {
+                return false;
+            }
+
+            return Expr.Equals(otherNode.Expr)
+                    && otherNode != null && Body.SequenceEqual(otherNode.Body)
+                    && ElseIfBodyPosition.Equals(otherNode.ElseIfBodyPosition);
+        }
 
         public override string ToString()
         {
@@ -741,6 +973,22 @@ namespace ProtoCore.AST.ImperativeAST
         public List<ImperativeNode> ElseBody { get; set; }
         public ImperativeNode ElseBodyPosition { get; set; }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as IfStmtNode;
+            if (null == otherNode)
+            {
+                return false;
+            }
+
+            return IfExprNode.Equals(otherNode.IfExprNode)
+                    && otherNode != null && IfBody.SequenceEqual(otherNode.IfBody)
+                    && IfBodyPosition.Equals(otherNode.IfBodyPosition)
+                    && ElseIfList != null && IfBody.SequenceEqual(otherNode.ElseIfList)
+                    && ElseBody != null && IfBody.SequenceEqual(otherNode.ElseBody)
+                    && ElseBodyPosition.Equals(otherNode.ElseBodyPosition);
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -812,6 +1060,16 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode Expr { get; set; }
         public List<ImperativeNode> Body { get; set; }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as WhileStmtNode;
+            if (null == otherNode)
+            {
+                return false;
+            }
+
+            return Expr.Equals(otherNode.Expr) && otherNode != null && Body.SequenceEqual(otherNode.Body);
+        }
 
         public override string ToString()
         {
@@ -854,6 +1112,19 @@ namespace ProtoCore.AST.ImperativeAST
             Operator = rhs.Operator;
             Expression = ProtoCore.Utils.NodeUtils.Clone(rhs.Expression);
         }
+
+        public override bool Equals(object other)
+        {
+            if (null == Expression)
+                return false;
+
+            var otherNode = other as UnaryExpressionNode;
+            if (null == otherNode)
+                return false;
+
+            return Operator.Equals(otherNode.Operator) &&
+                   Expression.Equals(otherNode.Expression);
+        }
     }
 
     public class RangeExprNode : ArrayNameNode
@@ -878,6 +1149,19 @@ namespace ProtoCore.AST.ImperativeAST
             }
             stepoperator = rhs.stepoperator;
             HasRangeAmountOperator = rhs.HasRangeAmountOperator;
+        }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as RangeExprNode;
+            if (null == otherNode)
+                return false;
+
+            return FromNode.Equals(otherNode.FromNode) &&
+                   ToNode.Equals(otherNode.ToNode) &&
+                   stepoperator.Equals(otherNode.stepoperator) &&
+                   ((StepNode == otherNode.StepNode) || (StepNode != null && StepNode.Equals(otherNode.StepNode))) &&
+                   HasRangeAmountOperator == otherNode.HasRangeAmountOperator;
         }
 
         // Check if this can be unified associative range expr 
@@ -951,6 +1235,20 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode expression { get; set; }
         public List<ImperativeNode> body { get; set; }
 
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ForLoopNode;
+            if (null == otherNode)
+            {
+                return false;
+            }
+
+            return loopVar.Equals(otherNode.loopVar)
+                    && expression.Equals(otherNode.expression)
+                    && otherNode != null && body.SequenceEqual(otherNode.body);
+        }
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
@@ -999,6 +1297,17 @@ namespace ProtoCore.AST.ImperativeAST
             RightNode = ProtoCore.Utils.NodeUtils.Clone(rhs.RightNode);
         }
 
+        public override bool Equals(object other)
+        {
+            var otherNode = other as IdentifierListNode;
+            if (null == otherNode)
+                return false;
+
+            return EqualityComparer<ImperativeNode>.Default.Equals(LeftNode, otherNode.LeftNode) &&
+                   EqualityComparer<ImperativeNode>.Default.Equals(RightNode, otherNode.RightNode) &&
+                   Optr.Equals(otherNode.Optr);
+        }
+
         public override string ToString()
         {
             return LeftNode.ToString() + "." + RightNode.ToString();
@@ -1009,6 +1318,16 @@ namespace ProtoCore.AST.ImperativeAST
     {
         public ImperativeNode Identifier { get; set; }
         public ProtoCore.DSASM.UnaryOperator Operator { get; set; }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as PostFixNode;
+            if (null == otherNode)
+                return false;
+
+            return Operator.Equals(otherNode.Operator) &&
+                   Identifier.Equals(otherNode.Identifier);
+        }
     }
 
     public class BreakNode: ImperativeNode
@@ -1020,6 +1339,11 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append(";");
             return buf.ToString();
         }
+
+        public override bool Equals(object other)
+        {
+            return other is BreakNode;
+        }
     }
 
     public class ContinueNode: ImperativeNode
@@ -1030,6 +1354,11 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append(ProtoCore.DSDefinitions.Keyword.Continue);
             buf.Append(";");
             return buf.ToString();
+        }
+
+        public override bool Equals(object other)
+        {
+            return other is ContinueNode;
         }
     }
 

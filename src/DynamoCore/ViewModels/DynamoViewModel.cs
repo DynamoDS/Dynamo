@@ -17,6 +17,8 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Services;
 using DynamoUnits;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using System.Reflection;
 
 namespace Dynamo.ViewModels
 {
@@ -27,6 +29,8 @@ namespace Dynamo.ViewModels
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
     public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
+
+    public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
 
     public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
@@ -127,6 +131,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event RequestViewOperationHandler RequestViewOperation;
+        public void OnRequestViewOperation(ViewOperationEventArgs e)
+        {
+            if (RequestViewOperation != null)
+            {
+                RequestViewOperation(e);
+            }
+        }
+
         #endregion
 
         #region properties
@@ -139,6 +152,7 @@ namespace Dynamo.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
         private bool canNavigateBackground = false;
+        private bool showStartPage = false;
         private bool _watchEscapeIsDown = false;
 
         public DelegateCommand OpenCommand { get; set; }
@@ -165,6 +179,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand SaveAsCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
+        public DelegateCommand CloseHomeWorkspaceCommand { get; set; }
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
@@ -185,6 +200,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
+        public DelegateCommand DisplayStartPageCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }
@@ -196,6 +212,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
         public DelegateCommand TogglePanCommand { get; set; }
+        public DelegateCommand ToggleOrbitCommand { get; set; }
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
@@ -358,6 +375,29 @@ namespace Dynamo.ViewModels
             get { return dynSettings.Controller.IsUILocked; }
         }
 
+        public bool ShowStartPage
+        {
+            get { return this.showStartPage; }
+
+            set
+            {
+                // If the caller attempts to show the start page, but we are 
+                // currently in playback mode, then this will not be allowed
+                // (i.e. the start page will never be shown during a playback).
+                // 
+                if ((value == true) && (null != automationSettings))
+                {
+                    if (automationSettings.IsInPlaybackMode)
+                        return;
+                }
+
+                showStartPage = value;
+                RaisePropertyChanged("ShowStartPage");
+                if (DisplayStartPageCommand != null)
+                    DisplayStartPageCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         public bool WatchEscapeIsDown
         {
             get { return _watchEscapeIsDown; }
@@ -372,20 +412,19 @@ namespace Dynamo.ViewModels
 
         public bool WatchPreviewHitTest
         {
-            get { return ( WatchEscapeIsDown || CanNavigateBackground ); }
+            // This is directly opposite of "ShouldBeHitTestVisible".
+            get { return (WatchEscapeIsDown || CanNavigateBackground); }
+        }
+
+        public bool ShouldBeHitTestVisible
+        {
+            // This is directly opposite of "WatchPreviewHitTest".
+            get { return (!WatchEscapeIsDown && (!CanNavigateBackground)); }
         }
 
         public bool IsHomeSpace
         {
             get { return dynSettings.Controller.DynamoModel.CurrentWorkspace == dynSettings.Controller.DynamoModel.HomeSpace; }
-        }
-
-        public bool ShouldBeHitTestVisible
-        {
-            get
-            {
-                return !WatchEscapeIsDown;
-            }
         }
 
         public bool FullscreenWatchShowing
@@ -455,6 +494,8 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
+        public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
+        public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
 
         public ConnectorType ConnectorType
         {
@@ -521,8 +562,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynSettings.Controller.UpdateManager.AvailableVersion >
-                       dynSettings.Controller.UpdateManager.ProductVersion;
+                var um = dynSettings.Controller.UpdateManager;
+                if (um.ForceUpdate)
+                {
+                    return true;
+                }
+                return um.AvailableVersion > um.ProductVersion;
             }
         }
 
@@ -586,12 +631,28 @@ namespace Dynamo.ViewModels
             
             //Register for a notification when the update manager downloads an update
             dynSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            dynSettings.Controller.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
 
-            OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
-            ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
+            // Start page should not show up during test mode.
+            this.ShowStartPage = !DynamoController.IsTestMode;
+
+            #region File Handling Commands
+
+            OpenCommand = new DelegateCommand(Open, CanOpen);
+            OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
+            SaveCommand = new DelegateCommand(Save, CanSave);
+            SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
+            ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
+            ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
+            SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
+            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
+
+            #endregion
+
             WriteToLogCmd = new DelegateCommand(_model.WriteToLog, _model.CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(_model.PostUIActivation, _model.CanDoPostUIActivation);
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
@@ -602,20 +663,15 @@ namespace Dynamo.ViewModels
             GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
-            ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
-            SaveCommand = new DelegateCommand(_model.Save, _model.CanSave);
-            SaveAsCommand = new DelegateCommand(_model.SaveAs, _model.CanSaveAs);
             HomeCommand = new DelegateCommand(_model.Home, _model.CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
+            CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(_model.Delete, _model.CanDelete);
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
-            ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
-            SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
-            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
@@ -630,6 +686,7 @@ namespace Dynamo.ViewModels
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
+            DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
@@ -642,6 +699,7 @@ namespace Dynamo.ViewModels
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
@@ -651,7 +709,6 @@ namespace Dynamo.ViewModels
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
-            OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
 
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
@@ -660,7 +717,6 @@ namespace Dynamo.ViewModels
             ((DynamoLogger)dynSettings.DynamoLogger).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            //((VisualizationManager)dynSettings.Controller.VisualizationManager).PropertyChanged += VisualizationManager_PropertyChanged;
 
             this.Model.PropertyChanged += (e, args) =>
             {
@@ -694,21 +750,14 @@ namespace Dynamo.ViewModels
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");
-            RaisePropertyChanged("UpToDate");
+            RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        //void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    switch (e.PropertyName)
-        //    {
-        //        case "AlternateDrawingContextAvailable":
-        //            RaisePropertyChanged("AlternateDrawingContextAvailable");
-        //            break;
-        //        case "ShowGeometryInAlternateContext":
-        //            RaisePropertyChanged("ShowGeometryInAlternateContext");
-        //            break;
-        //    }
-        //}
+        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        {
+            Exit(true, true);
+            Controller.UpdateManager.HostApplicationBeginQuit();
+        }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -833,15 +882,133 @@ namespace Dynamo.ViewModels
             return fileDialog;
         }
 
-        public void OpenRecent(object path)
+        /// <summary>
+        /// Open a definition or workspace.
+        /// </summary>
+        /// <param name="parameters">The path the the file.</param>
+        private void Open(object parameters)
         {
-            var p = path as string;
-            this.Model.Open(p);
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            try
+            {
+                string xmlFilePath = parameters as string;
+                ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log("Error opening file:" + e.Message);
+                dynSettings.DynamoLogger.Log(e);
+                return;
+            }            
+            this.ShowStartPage = false; // Hide start page if there's one.
         }
 
-        public bool CanOpenRecent(object path)
+        private bool CanOpen(object parameters)
+        {
+            var filePath = parameters as string;
+            return ((!string.IsNullOrEmpty(filePath)) && File.Exists(filePath));
+        }
+
+        /// <summary>
+        /// Present the open dialogue and open the workspace that is selected.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ShowOpenDialogAndOpenResult(object parameter)
+        {
+            if (Model.HomeSpace.HasUnsavedChanges)
+            {
+                if (!AskUserToSaveWorkspaceOrCancel(Model.HomeSpace))
+                    return;
+            }
+
+            FileDialog _fileDialog = new OpenFileDialog()
+            {
+                Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*",
+                Title = "Open Dynamo Definition..."
+            };
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+            {
+                var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+            else // use the samples directory, if it exists
+            {
+                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+                string location = Path.GetDirectoryName(dynamoAssembly.Location);
+                string path = Path.Combine(location, "samples");
+
+                if (Directory.Exists(path))
+                    _fileDialog.InitialDirectory = path;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (CanOpen(_fileDialog.FileName))
+                    Open(_fileDialog.FileName);
+            }
+        }
+
+        private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
             return true;
+        }
+
+        private void OpenRecent(object path)
+        {
+            this.Open(path as string);
+        }
+
+        private bool CanOpenRecent(object path)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to save an the current workspace.
+        /// Assumes that workspace has already been saved.
+        /// </summary>
+        private void Save(object parameter)
+        {
+            if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+                SaveAs(Model.CurrentWorkspace.FileName);
+        }
+
+        private bool CanSave(object parameter)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Save the current workspace.
+        /// </summary>
+        /// <param name="parameters">The file path.</param>
+        private void SaveAs(object parameters)
+        {
+            var filePath = parameters as string;
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            var fi = new FileInfo(filePath);
+            SaveAs(fi.FullName);
+        }
+
+        internal bool CanSaveAs(object parameters)
+        {
+            return (parameters != null);
+        }
+
+        /// <summary>
+        /// Save the current workspace to a specific file path, if the path is null 
+        /// or empty, does nothing. If successful, the CurrentWorkspace.FileName
+        /// field is updated as a side effect.
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        internal void SaveAs(string path)
+        {
+            Model.CurrentWorkspace.SaveAs(path);
         }
 
         public virtual bool RunInDebug
@@ -1050,8 +1217,8 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (_model.CanSave(parameter))
-                    _model.Save(parameter);
+                if (CanSave(parameter))
+                    Save(parameter);
             }
         }
 
@@ -1080,7 +1247,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                _model.SaveAs(_fileDialog.FileName);
+                SaveAs(_fileDialog.FileName);
             }
         }
 
@@ -1095,6 +1262,12 @@ namespace Dynamo.ViewModels
                 return;
 
             CanNavigateBackground = !CanNavigateBackground;
+
+            if (CanNavigateBackground)
+                InstrumentationLogger.LogAnonymousScreen("Geometry");
+            else
+                InstrumentationLogger.LogAnonymousScreen("Nodes");
+
 
             if (!CanNavigateBackground)
             {
@@ -1179,14 +1352,8 @@ namespace Dynamo.ViewModels
 
         public void MakeNewHomeWorkspace(object parameter)
         {
-            // if the workspace is unsaved, prompt to save
-            // otherwise overwrite the home workspace with new workspace
-            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
-            {
-                Model.CurrentWorkspace = this.Model.HomeSpace;
-
-                _model.Clear(null);
-            }
+            if (ClearHomeWorkspaceInternal())
+                this.ShowStartPage = false; // Hide start page if there's one.
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
@@ -1194,7 +1361,70 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void CloseHomeWorkspace(object parameter)
+        {
+            if (ClearHomeWorkspaceInternal())
+            {
+                // If after closing the HOME workspace, and there are no other custom 
+                // workspaces opened at the time, then we should show the start page.
+                this.ShowStartPage = (Model.Workspaces.Count <= 1);
+            }
+        }
+
+        private bool CanCloseHomeWorkspace(object parameter)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// TODO(Ben): Both "CloseHomeWorkspace" and "MakeNewHomeWorkspace" are 
+        /// quite close in terms of functionality, but because their callers 
+        /// have different expectations in different scenarios, they remain 
+        /// separate now. A new task has been scheduled for them to be unified 
+        /// into one consistent way of handling.
+        /// 
+        ///     http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3813
+        /// 
+        /// </summary>
+        /// <returns>Returns true if the home workspace has been saved and 
+        /// cleared, or false otherwise.</returns>
+        /// 
+        private bool ClearHomeWorkspaceInternal()
+        {
+            // if the workspace is unsaved, prompt to save
+            // otherwise overwrite the home workspace with new workspace
+            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
+            {
+                Model.CurrentWorkspace = this.Model.HomeSpace;
+
+                _model.Clear(null);
+                return true;
+            }
+
+            return false;
+        }
+
         public void Exit(object allowCancel)
+        {
+            if (SetAllowCancelAndRequestUIClose(allowCancel))
+            {
+                return;
+            }
+
+            dynSettings.Controller.ShutDown(false);
+        }
+
+        internal void Exit(bool allowCancel, bool shutDownHost)
+        {
+            if (SetAllowCancelAndRequestUIClose(allowCancel))
+            {
+                return;
+            }
+
+            dynSettings.Controller.ShutDown(true);
+        }
+
+        private bool SetAllowCancelAndRequestUIClose(object allowCancel)
         {
             bool allowCancelBool = true;
             if (allowCancel != null)
@@ -1202,14 +1432,13 @@ namespace Dynamo.ViewModels
                 allowCancelBool = (bool)allowCancel;
             }
             if (!AskUserToSaveWorkspacesOrCancel(allowCancelBool))
-                return;
+                return true;
 
             exitInvoked = true;
 
             //request the UI to close its window
             OnRequestClose(this, EventArgs.Empty);
-
-            dynSettings.Controller.ShutDown(false);
+            return false;
         }
 
         internal bool CanExit(object allowCancel)
@@ -1398,7 +1627,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo/wiki");
+            Process.Start(Dynamo.UI.Configurations.DynamoWikiLink);
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -1408,7 +1637,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo");
+            Process.Start(Dynamo.UI.Configurations.GitHubDynamoLink);
         }
 
         internal bool CanGoToSourceCode(object parameter)
@@ -1416,7 +1645,17 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void Pan(object parameter)
+        private void DisplayStartPage(object parameter)
+        {
+            this.ShowStartPage = true;
+        }
+
+        private bool CanDisplayStartPage(object parameter)
+        {
+            return !this.ShowStartPage;
+        }
+
+        internal void Pan(object parameter)
         {
             Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", _model.CurrentWorkspace.X, _model.CurrentWorkspace.Y, _model.CurrentWorkspace.Zoom));
             var panType = parameter.ToString();
@@ -1445,39 +1684,62 @@ namespace Dynamo.ViewModels
             CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(parameter);
         }
 
-        internal bool CanPan(object parameter)
+        private bool CanPan(object parameter)
         {
             return true;
         }
 
-        public void ZoomIn(object parameter)
+        internal void ZoomIn(object parameter)
         {
-            CurrentSpaceViewModel.ZoomInCommand.Execute(parameter);
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.ZoomIn;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
+            CurrentSpaceViewModel.ZoomInInternal();
+            ZoomInCommand.RaiseCanExecuteChanged();
         }
 
-        internal bool CanZoomIn(object parameter)
+        private bool CanZoomIn(object parameter)
         {
-            return CurrentSpaceViewModel.ZoomInCommand.CanExecute(parameter);
+            return CurrentSpaceViewModel.CanZoomIn;
         }
 
-        public void ZoomOut(object parameter)
+        private void ZoomOut(object parameter)
         {
-            CurrentSpaceViewModel.ZoomOutCommand.Execute(parameter);
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.ZoomOut;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
+            CurrentSpaceViewModel.ZoomOutInternal();
+            ZoomOutCommand.RaiseCanExecuteChanged();
         }
 
-        internal bool CanZoomOut(object parameter)
+        private bool CanZoomOut(object parameter)
         {
-            return CurrentSpaceViewModel.ZoomOutCommand.CanExecute(parameter);
+            return CurrentSpaceViewModel.CanZoomOut;
         }
 
-        public void FitView(object parameter)
+        private void FitView(object parameter)
         {
-            CurrentSpaceViewModel.FitViewCommand.Execute(parameter);
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.FitView;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
+            CurrentSpaceViewModel.FitViewInternal();
         }
 
-        internal bool CanFitView(object parameter)
+        private bool CanFitView(object parameter)
         {
-            return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
+            return true;
         }
 
 #if USE_DSENGINE
@@ -1509,19 +1771,47 @@ namespace Dynamo.ViewModels
             return true;
         }
 #endif
-        public void TogglePan(object parameter)
+        internal void TogglePan(object parameter)
         {
-            CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);
+            CurrentSpaceViewModel.RequestTogglePanMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanTogglePan(object parameter)
         {
-            return CurrentSpaceViewModel.TogglePanCommand.CanExecute(parameter);
+            return true;
+        }
+
+        internal void ToggleOrbit(object parameter)
+        {
+            CurrentSpaceViewModel.RequestToggleOrbitMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
+        }
+
+        internal bool CanToggleOrbit(object parameter)
+        {
+            return true;
         }
 
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanEscape(object parameter)

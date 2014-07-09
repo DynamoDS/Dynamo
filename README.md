@@ -1,7 +1,6 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
 Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
-Dynamo runs as an addin on top of Autodesk Revit, extending the parametric functionality already provided.
 
 ## Contributors ##
 
@@ -30,11 +29,11 @@ Dynamo has been developed based on feedback from several parties including Arup,
 
 ## Running Dynamo ##
 
-The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014, and Autodesk Project Vasari Beta 3. 
+The current version will run as an addin for Autodesk Revit 2014, Autodesk Revit 2015, and Autodesk Project Vasari Beta 3, as well as a Stand-Alone application with more limited functionality. 
 
 ## Releases ##
 
-###0.7.1 Pre-Release###
+###0.7.1 ###
 - Package Manager is back
 - [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
 - Library Loading (Experimental)
@@ -45,7 +44,7 @@ The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014,
 - Automated graph organization
 - Node UI Enhancements
 - Preview Bubble overhaul
-- New Sample content
+- New Sample content and better first experience- 
 
 ###0.7.0###
 This is an alpha quality release which represents a significant refactoring of the underlying code.  There are some notable (temporary) restricitions to the functionality that is available in 0.6.3, and major enhancements to others. To allow users to continue work with 0.6.3 while exploring 0.7.0, this release can be installed side by side with older releases.  
@@ -171,6 +170,10 @@ The UserID is randomly generated when the application is first run. The SessionI
 http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor  
 http://opensource.org/licenses/lgpl-3.0.html  
 
+###CSharpAnalytics###
+https://github.com/AttackPattern/CSharpAnalytics  
+http://www.apache.org/licenses/LICENSE-2.0
+
 ###Helix3D###
 https://helixtoolkit.codeplex.com/  
 https://helixtoolkit.codeplex.com/license  
@@ -187,7 +190,7 @@ http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx
 http://msdn.microsoft.com/en-us/vstudio/dn501987
 
 ###Moq###
-http://www.nuget.org/packages/Moq/
+http://www.nuget.org/packages/Moq/  
 http://opensource.org/licenses/bsd-license.php
 
 ###MiConvexHull###
@@ -198,16 +201,25 @@ http://miconvexhull.codeplex.com/license
 http://ncalc.codeplex.com/  
 http://ncalc.codeplex.com/license  
 
+###NDesk Options###
+http://ndesk.org/Options#License
+
+###Newtonsoft JSON###
+https://github.com/JamesNK/Newtonsoft.Json  
+https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
+
 ###NUnit####
 http://www.nunit.org/  
 http://www.nunit.org/index.php?p=license&r=2.6.2  
 
 ###OpenSans font from Google###
-http://www.google.com/fonts/specimen/Open+Sans
+http://www.google.com/fonts/specimen/Open+Sans  
 http://www.apache.org/licenses/LICENSE-2.0.html
 
 ###Prism###
 http://msdn.microsoft.com/en-us/library/gg406140.aspx  
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
 
-
+###Revit Test Framework###
+https://github.com/DynamoDS/RevitTestFramework  
+http://opensource.org/licenses/MIT

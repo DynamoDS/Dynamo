@@ -35,8 +35,9 @@ namespace ProtoImperative
 
         private NodeBuilder nodeBuilder;
 
-        public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
+        public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
         {
+            context = callContext;
             //  dumpbytecode is optionally enabled
             //
             astNodes = new List<ImperativeNode>();
@@ -51,20 +52,11 @@ namespace ProtoImperative
             if (core.Options.IsDeltaExecution)
             {
                 codeBlock = GetDeltaCompileCodeBlock();
-                //if (core.Options.IsDeltaCompile)
-                //{
-                //    pc = codeBlock.instrStream.instrList.Count;
-                //}
-                //else
-                //{
-                //    pc = core.deltaCompileStartPC;
-                //}
             }
             else
             {
                 codeBlock = BuildNewCodeBlock();
             }
-            //codeBlock = BuildNewCodeBlock();
 
             if (null == parentBlock)
             {
@@ -77,7 +69,7 @@ namespace ProtoImperative
                 parentBlock.children.Add(codeBlock);
                 codeBlock.parent = parentBlock;
             }
-            core.CompleteCodeBlockList.Add(codeBlock);
+
             blockScope = 0;
 
             // Bouncing to this language codeblock from a function should immediatlet se the first instruction as the entry point
@@ -95,19 +87,7 @@ namespace ProtoImperative
         private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
         {
             ProtoCore.DSASM.CodeBlock cb = null;
-
-            // If the codeBlockindex is greater than the size of the codeblockList then it means that this imperative codeblock already exists
-            // Just retrieve it
-            if (core.CodeBlockList.Count > 1 && core.CodeBlockList.Count <= core.CodeBlockIndex)
-            {
-                cb = core.CodeBlockList[core.DeltaCodeBlockIndex];
-                core.DeltaCodeBlockIndex++;
-            }
-            else
-            {
-                cb = BuildNewCodeBlock();
-          //      core.CodeBlockList.Add(cb);
-            }
+            cb = BuildNewCodeBlock();
             Validity.Assert(null != cb);
             return cb;
         }
@@ -136,16 +116,17 @@ namespace ProtoImperative
              * */
 
             ProtoCore.DSASM.CodeBlock cb = new ProtoCore.DSASM.CodeBlock(
+                context.guid,
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
                 ProtoCore.Language.kImperative,
-                core.DeltaCodeBlockIndex,
+                core.CodeBlockIndex,
                 new ProtoCore.DSASM.SymbolTable("imperative lang block", core.RuntimeTableIndex),
-                new ProtoCore.DSASM.ProcedureTable(core.RuntimeTableIndex), false, core);
+                new ProtoCore.DSASM.ProcedureTable(core.RuntimeTableIndex), 
+                false, 
+                core);
 
             ++core.CodeBlockIndex;
             ++core.RuntimeTableIndex;
-
-            ++core.DeltaCodeBlockIndex;
 
             return cb;
         }
@@ -1234,6 +1215,12 @@ namespace ProtoImperative
                 }
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                // Save the guid of the current scope (which is stored in the current graphnodes) to the nested language block.
+                // This will be passed on to the nested language block that will be compiled
+                if (propogateUpdateGraphNode != null)
+                {
+                    context.guid = propogateUpdateGraphNode.guid;
+                }
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1631,23 +1618,24 @@ namespace ProtoImperative
 
             
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                    context.guid,
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
                     Language.kInvalid,
-                    core.DeltaCodeBlockIndex++,
+                    core.CodeBlockIndex,
                     new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("if"), core.RuntimeTableIndex++),
-                    null);
+                    null,
+                    false,
+                    core);
 
                 core.CodeBlockIndex++;
 
                 localCodeBlock.instrStream = codeBlock.instrStream;
                 localCodeBlock.parent = codeBlock;
                 codeBlock.children.Add(localCodeBlock);
-                
-
 
                 codeBlock = localCodeBlock;
-                core.CompleteCodeBlockList.Add(localCodeBlock);
                 EmitPushBlockID(localCodeBlock.codeBlockId);
+
                 // If-body
                 foreach (ImperativeNode ifBody in ifnode.IfBody)
                 {
@@ -1719,11 +1707,14 @@ namespace ProtoImperative
                         // Set the new codeblock as a new child of the current codeblock
                         // Set the new codeblock as the current codeblock
                         localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                            context.guid,
                             ProtoCore.DSASM.CodeBlockType.kConstruct,
                             Language.kInvalid,
-                            core.DeltaCodeBlockIndex++,
+                            core.CodeBlockIndex++,
                             new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("elseif"), core.RuntimeTableIndex++),
-                            null);
+                            null,
+                            false,
+                            core);
 
                         core.CodeBlockIndex++;
 
@@ -1731,7 +1722,6 @@ namespace ProtoImperative
                         localCodeBlock.parent = codeBlock;
                         codeBlock.children.Add(localCodeBlock);
                         codeBlock = localCodeBlock;
-                        core.CompleteCodeBlockList.Add(localCodeBlock);
                         EmitPushBlockID(localCodeBlock.codeBlockId);
                         foreach (ImperativeNode elseifBody in elseifNode.Body)
                         {
@@ -1786,11 +1776,14 @@ namespace ProtoImperative
                     // Set the new codeblock as a new child of the current codeblock
                     // Set the new codeblock as the current codeblock
                     localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
                         Language.kInvalid,
-                        core.DeltaCodeBlockIndex++,
+                        core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("else"), core.RuntimeTableIndex++),
-                        null);
+                        null,
+                        false,
+                        core);
 
                     core.CodeBlockIndex++;
 
@@ -1798,7 +1791,6 @@ namespace ProtoImperative
                     localCodeBlock.parent = codeBlock;
                     codeBlock.children.Add(localCodeBlock);
                     codeBlock = localCodeBlock;
-                    core.CompleteCodeBlockList.Add(localCodeBlock);
                     EmitPushBlockID(localCodeBlock.codeBlockId);
                     foreach (ImperativeNode elseBody in ifnode.ElseBody)
                     {
@@ -1896,13 +1888,14 @@ namespace ProtoImperative
                     // Set the new codeblock as a new child of the current codeblock
                     // Set the new codeblock as the current codeblock
                     ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
                         Language.kInvalid,
-                        core.DeltaCodeBlockIndex++,
+                        core.CodeBlockIndex++,
                         new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("while"), core.RuntimeTableIndex++),
                         null,
-                        true);
-
+                        true,
+                        core);
 
                     core.CodeBlockIndex++;
 
@@ -1910,7 +1903,6 @@ namespace ProtoImperative
                     localCodeBlock.parent = codeBlock;
                     codeBlock.children.Add(localCodeBlock);
                     codeBlock = localCodeBlock;
-                    core.CompleteCodeBlockList.Add(localCodeBlock);
                     backpatchMap.EntryTable[localCodeBlock.codeBlockId] = entry;
                     backpatchMap.BreakTable[localCodeBlock.codeBlockId] = new BackpatchTable();
                     

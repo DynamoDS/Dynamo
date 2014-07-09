@@ -60,8 +60,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private DispatcherTimer toolTipDelayTimer;
-
         #region constructors
 
         public dynNodeView()
@@ -354,9 +352,6 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
-                toolTipDelayTimer.Stop();
-
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Nickname double clicked!");

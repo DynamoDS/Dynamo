@@ -17,13 +17,11 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void FamilyTypeSelectorNode()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Selection\SelectFamily.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             //open the test file
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -68,7 +66,7 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             //open the test file
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 

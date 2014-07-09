@@ -52,6 +52,7 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -61,11 +62,16 @@ limitations under the License.
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSharpAnalytics.WinForms, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\CSharpAnalytics\CSharpAnalytics.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -141,13 +147,17 @@ limitations under the License.
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
+    <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
-    <Compile Include="UI\Controls\CanvasCheckBox.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\ImageBasedControls.cs" />
+    <Compile Include="UI\Controls\StartPage.xaml.cs">
+      <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <SubType>Code</SubType>
@@ -213,9 +223,6 @@ limitations under the License.
     <Compile Include="UI\StateMachine.cs" />
     <Compile Include="UI\Views\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
-      <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
@@ -419,6 +426,10 @@ limitations under the License.
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
+      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
+      <Name>DynamoCrypto</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
       <Project>{593be9fc-7482-4cd6-9f87-77e7ac5cdff2}</Project>
       <Name>GraphToDSCompiler</Name>
@@ -482,6 +493,10 @@ limitations under the License.
     <Page Include="UI\Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Controls\StartPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -580,10 +595,6 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\ZoomAndPanControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UI\Views\DynamoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -621,9 +632,6 @@ limitations under the License.
     <Resource Include="UI\Images\collapsestate_normal.png" />
     <Resource Include="UI\Images\expandstate_hover.png" />
     <Resource Include="UI\Images\expandstate_normal.png" />
-    <Resource Include="UI\Images\fitview_disabled.png" />
-    <Resource Include="UI\Images\fitview_hover.png" />
-    <Resource Include="UI\Images\fitview_normal.png" />
     <Resource Include="UI\Images\librarycollapse_hover.png" />
     <Resource Include="UI\Images\librarycollapse_normal.png" />
     <Resource Include="UI\Images\maximizewindow_hover.png" />
@@ -660,21 +668,10 @@ limitations under the License.
     <Resource Include="UI\Images\undo_disabled.png" />
     <Resource Include="UI\Images\undo_hover.png" />
     <Resource Include="UI\Images\undo_normal.png" />
-    <Resource Include="UI\Images\zoomin_disabled.png" />
-    <Resource Include="UI\Images\zoomin_hover.png" />
-    <Resource Include="UI\Images\zoomin_normal.png" />
-    <Resource Include="UI\Images\zoomout_disabled.png" />
-    <Resource Include="UI\Images\zoomout_hover.png" />
-    <Resource Include="UI\Images\zoomout_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\tick_selected.png" />
     <Resource Include="UI\Images\click_background.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\pan_disabled.png" />
-    <Resource Include="UI\Images\pan_hover.png" />
-    <Resource Include="UI\Images\pan_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\hand_drag.cur" />
@@ -758,6 +755,35 @@ limitations under the License.
     <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-out-states.png" />
+    <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-discussion.png" />
+    <Resource Include="UI\Images\StartPage\icon-dynamobim.png" />
+    <Resource Include="UI\Images\StartPage\icon-email.png" />
+    <Resource Include="UI\Images\StartPage\icon-github.png" />
+    <Resource Include="UI\Images\StartPage\icon-issues.png" />
+    <Resource Include="UI\Images\StartPage\icon-new.png" />
+    <Resource Include="UI\Images\StartPage\icon-open.png" />
+    <Resource Include="UI\Images\StartPage\icon-reference.png" />
+    <Resource Include="UI\Images\StartPage\icon-video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\task_dialog_future_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -700,7 +700,6 @@ namespace GraphToDSCompiler
     public class Func : Node
     {
         static internal string symb;
-        static internal uint guid;
         public string tempName;
         public bool isRange;
         public int argTypeRange;
@@ -748,7 +747,6 @@ namespace GraphToDSCompiler
     {
         public string tempName;
         static internal string symb;
-        static internal uint guid;
         public string replicationGuide;
         static internal string EQU() { symb = "="; return "="; }
         static internal string LSS() { symb = "<"; return "<"; }

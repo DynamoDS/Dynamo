@@ -1147,17 +1147,117 @@
         </Setter>
     </Style>
 
-    <Style x:Key="{x:Type dynui:CanvasCheckBox}"
-           TargetType="{x:Type dynui:CanvasCheckBox}">
+    <Style x:Key="StartPageListBox"
+           TargetType="ListBox">
         <Setter Property="SnapsToDevicePixels"
                 Value="true" />
         <Setter Property="OverridesDefaultStyle"
                 Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Hidden" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="true" />
+        <Setter Property="MaxHeight"
+                Value="190" />
+        <Setter Property="Margin"
+                Value="0,0,0,60" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBox">
+                    <ScrollViewer Margin="0,2,0,2"
+                                  Focusable="false">
+                        <StackPanel IsItemsHost="True" />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid Background="Transparent">
+                        <Grid.ToolTip>
+                            <Binding Path="ToolTip" />
+                        </Grid.ToolTip>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="31"
+                                   Margin="5,0,14,0"
+                                   Source="{Binding Icon}"
+                                   Visibility="{Binding IconVisibility}" />
+                            <TextBlock Text="{Binding Caption}"
+                                       Margin="6,7,0,8"
+                                       FontSize="14"
+                                       FontFamily="{StaticResource OpenSansRegular}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding SubScript}"
+                                       Margin="16,0,0,0"
+                                       Foreground="#888"
+                                       FontSize="10"
+                                       FontFamily="{StaticResource OpenSansRegular}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="StartPageListBoxItem"
+           TargetType="ListBoxItem">
+        <Setter Property="SnapsToDevicePixels"
+                Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="Border"
+                            Padding="2"
+                            SnapsToDevicePixels="true">
+                        <Border.Background>
+                            <SolidColorBrush Color="Transparent" />
+                        </Border.Background>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Disabled" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
+                                                                      Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                                                 Value="#a1dbff" />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected" />
+                                <VisualState x:Name="Selected" />
+                                <VisualState x:Name="SelectedUnfocused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type dynui:ImageCheckBox}"
+           TargetType="{x:Type dynui:ImageCheckBox}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="true" />
+        <Setter Property="Cursor"
+                Value="Hand" />
         <Setter Property="FocusVisualStyle"
                 Value="{DynamicResource CheckBoxFocusVisual}" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type dynui:CanvasCheckBox}">
+                <ControlTemplate TargetType="{x:Type dynui:ImageCheckBox}">
                     <Grid>
                         <Canvas>
                             <Canvas.Clip>
@@ -1231,6 +1331,157 @@
                                 </VisualState>
                                 <VisualState x:Name="Unchecked" />
                                 <VisualState x:Name="Indeterminate" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type dynui:ImageButton}"
+           TargetType="{x:Type dynui:ImageButton}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="true" />
+        <Setter Property="Cursor"
+                Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dynui:ImageButton}">
+                    <Grid>
+                        <Canvas>
+                            <Canvas.Clip>
+                                <RectangleGeometry>
+                                    <RectangleGeometry.Rect>
+                                        <MultiBinding Converter="{StaticResource ViewButtonClipRectConverter}">
+                                            <Binding Path="Width"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Path="Height"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                        </MultiBinding>
+                                    </RectangleGeometry.Rect>
+                                </RectangleGeometry>
+                            </Canvas.Clip>
+                            <Image Name="buttonStateImage">
+                                <Image.Width>
+                                    <Binding Path="Width"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </Image.Width>
+                                <Image.Source>
+                                    <Binding Path="StateImage"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </Image.Source>
+                                <Image.RenderTransform>
+                                    <TranslateTransform />
+                                </Image.RenderTransform>
+                            </Image>
+                        </Canvas>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="hoverOverAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="pressedAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="disabledAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type dynui:ImageRepeatButton}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="true" />
+        <Setter Property="Cursor"
+                Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dynui:ImageRepeatButton}">
+                    <Grid>
+                        <Canvas>
+                            <Canvas.Clip>
+                                <RectangleGeometry>
+                                    <RectangleGeometry.Rect>
+                                        <MultiBinding Converter="{StaticResource ViewButtonClipRectConverter}">
+                                            <Binding Path="Width"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Path="Height"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                        </MultiBinding>
+                                    </RectangleGeometry.Rect>
+                                </RectangleGeometry>
+                            </Canvas.Clip>
+                            <Image Name="buttonStateImage">
+                                <Image.Width>
+                                    <Binding Path="Width"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </Image.Width>
+                                <Image.Source>
+                                    <Binding Path="StateImage"
+                                             RelativeSource="{RelativeSource TemplatedParent}" />
+                                </Image.Source>
+                                <Image.RenderTransform>
+                                    <TranslateTransform />
+                                </Image.RenderTransform>
+                            </Image>
+                        </Canvas>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="hoverOverAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="pressedAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation x:Name="disabledAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Focused" />
+                                <VisualState x:Name="Unfocused" />
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                     </Grid>

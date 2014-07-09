@@ -50,12 +50,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void XYZByPolar()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZByPolar.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -63,12 +61,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void XYZBySphericalCoordinates()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZBySphericalCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -76,12 +72,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void XYZToPolarCoordinates()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZToPolarCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
@@ -89,12 +83,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void XYZToSphericalCoordinates()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZToSphericalCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
     }

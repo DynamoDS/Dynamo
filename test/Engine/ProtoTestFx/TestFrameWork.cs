@@ -50,7 +50,7 @@ namespace ProtoTestFx.TD
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            testCore.Options.Verbose = true;
+            testCore.Options.Verbose = false;
 //            testCore.Options.kDynamicCycleThreshold = 5;
             
             //FFI registration and cleanup
@@ -67,8 +67,7 @@ namespace ProtoTestFx.TD
             {
                  testImport = false;
             }
-            Console.WriteLine("CONFIG:\t" + cfgImport);
-            Console.WriteLine("CONFIG:\t" + cfgDebug);
+
             if (cfgDebug)
             {
                 testImport = cfgDebug;
