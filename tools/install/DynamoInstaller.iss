@@ -89,10 +89,10 @@ Type: filesandordirs; Name: {app}\dll
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
 Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
-Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: """{app}"""
+Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
 
 [UninstallRun]
-Filename: "{app}\DynamoAddinGenerator.exe"
+Filename: "{app}\DynamoAddinGenerator.exe"; Flags: runhidden;
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
