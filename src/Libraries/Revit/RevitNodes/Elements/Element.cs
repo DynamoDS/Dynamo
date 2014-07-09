@@ -559,7 +559,7 @@ namespace Revit.Elements
                 {
                     if (geob is GeometryInstance)
                     {
-                        GetFaces((geob as GeometryInstance).GetSymbolGeometry(), ref faces);
+                        GetFaces((geob as GeometryInstance).GetInstanceGeometry(), ref faces);
                     }
                     else if (geob is Autodesk.Revit.DB.Solid)
                     {
