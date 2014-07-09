@@ -120,13 +120,7 @@ namespace DSCoreNodesUI
         }
 
 
-        public event EventHandler NeedNewProperties;
-        protected virtual void OnNeedNewProperties(object sender, EventArgs e)
-        {
-            if (NeedNewProperties != null)
-                NeedNewProperties(sender, e);
-        }
-
+       
 
         public Inspector()
         {
@@ -138,7 +132,15 @@ namespace DSCoreNodesUI
             // subscribe this method to send an update event whenever any property on this object changes...
             // but that handler checks if IsUpdated is fired
             this.PropertyChanged += Inspector_PropertyChanged;
+            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
 
+        }
+
+
+        void Controller_EvaluationCompleted(object sender, EventArgs e)
+        {
+            StoreProperties();
+            OnRequestSelectChange(this,EventArgs.Empty);
 
         }
 
@@ -150,7 +152,7 @@ namespace DSCoreNodesUI
             if (InPorts.Any(x => x.Connectors.Count == 0))
                 return;
 
-            OnNeedNewProperties(this, EventArgs.Empty);
+          
             OnRequestSelectChange(this, EventArgs.Empty);
         }
         /// <summary>
@@ -160,10 +162,7 @@ namespace DSCoreNodesUI
         /// <returns></returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            NeedNewProperties += delegate
-            {
-                StoreProperties();
-            };
+            
                 var outputobject = inputAstNodes[0];
 
                 return new[]
