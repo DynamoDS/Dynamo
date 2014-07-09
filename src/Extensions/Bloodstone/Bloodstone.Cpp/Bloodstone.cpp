@@ -14,30 +14,44 @@ using namespace System;
 using namespace Dynamo::Bloodstone;
 using namespace System::Collections::Generic;
 using namespace Autodesk::DesignScript::Interfaces;
+using namespace DynamoUtilities;
 
 // ================================================================================
 // Static helper methods
 // ================================================================================
 
-static bool GetPointGeometries(IRenderPackage^ rp, PointGeometryData& data)
+static float Normalize(unsigned char value)
 {
+    const float inverse = 1.0f / 255.0f;
+    return ((float)(value * inverse));
+}
+
+static bool GetPointGeometries(IRenderPackage^ rp1, PointGeometryData& data)
+{
+    auto rp = dynamic_cast<IRenderPackage2 ^>(rp1);
     if (rp == nullptr || (rp->PointVertices->Count <= 0))
         return false;
 
     auto pv = rp->PointVertices;
+    auto pc = rp->PointVertexColors;
     auto count = rp->PointVertices->Count;
 
-    for (int p = 0; p < count; p = p + 3)
+    const float inv255 = 1.0f / 255.0f;
+
+    for (int p = 0, c = 0; p < count; p = p + 3, c = c + 4)
     {
         data.PushVertex((float) pv[p + 0], (float) pv[p + 1], (float) pv[p + 2]);
-        data.PushColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        data.PushColor(Normalize(pc[c + 0]), Normalize(pc[c + 1]),
+            Normalize(pc[c + 2]), Normalize(pc[c + 3]));
     }
 
     return true;
 }
 
-static bool GetLineStripGeometries(IRenderPackage^ rp, LineStripGeometryData& data)
+static bool GetLineStripGeometries(IRenderPackage^ rp1, LineStripGeometryData& data)
 {
+    auto rp = dynamic_cast<IRenderPackage2 ^>(rp1);
     if (rp == nullptr || (rp->LineStripVertices->Count <= 0))
         return false;
 
@@ -45,16 +59,12 @@ static bool GetLineStripGeometries(IRenderPackage^ rp, LineStripGeometryData& da
     auto lsc = rp->LineStripVertexColors;
     auto count = rp->LineStripVertices->Count;
 
-    float factor = 1.0f / 255.0f;
     for (int p = 0, c = 0; p < count; p = p + 3, c = c + 4)
     {
         data.PushVertex((float) lsv[p + 0], (float) lsv[p + 1], (float) lsv[p + 2]);
 
-        data.PushColor(
-            ((int)lsc[c + 0]) * factor,
-            ((int)lsc[c + 1]) * factor,
-            ((int)lsc[c + 2]) * factor,
-            ((int)lsc[c + 3]) * factor);
+        data.PushColor(Normalize(lsc[c + 0]), Normalize(lsc[c + 1]),
+            Normalize(lsc[c + 2]), Normalize(lsc[c + 3]));
     }
 
     auto lsvc = rp->LineStripVertexCounts;
@@ -65,20 +75,24 @@ static bool GetLineStripGeometries(IRenderPackage^ rp, LineStripGeometryData& da
     return true;
 }
 
-static bool GetTriangleGeometries(IRenderPackage^ rp, TriangleGeometryData& data)
+static bool GetTriangleGeometries(IRenderPackage^ rp1, TriangleGeometryData& data)
 {
+    auto rp = dynamic_cast<IRenderPackage2 ^>(rp1);
     if (rp == nullptr || (rp->TriangleVertices->Count <= 0))
         return false;
 
     auto tv = rp->TriangleVertices;
     auto tn = rp->TriangleNormals;
+    auto tc = rp->TriangleVertexColors;
     auto count = rp->TriangleVertices->Count;
 
-    for (int p = 0; p < count; p = p + 3)
+    for (int p = 0, c = 0; p < count; p = p + 3, c = c + 4)
     {
         data.PushVertex((float) tv[p + 0], (float) tv[p + 1], (float) tv[p + 2]);
         data.PushNormal((float) tn[p + 0], (float) tn[p + 1], (float) tn[p + 2]);
-        data.PushColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        data.PushColor(Normalize(tc[c + 0]), Normalize(tc[c + 1]),
+            Normalize(tc[c + 2]), Normalize(tc[c + 3]));
     }
 
     return true;
