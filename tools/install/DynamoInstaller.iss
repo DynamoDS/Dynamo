@@ -88,7 +88,7 @@ Type: filesandordirs; Name: {app}\dll
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
-Filename: "{app}\InstallASMForDynamo.exe";
+Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
 Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: """{app}"""
 
 [UninstallRun]
@@ -98,10 +98,19 @@ Filename: "{app}\DynamoAddinGenerator.exe"
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
 
 [Code]
+var
+silentFlag : String;
+
 { HANDLE INSTALL PROCESS STEPS }
 
 // added custom uninstall trigger based on http://stackoverflow.com/questions/2000296/innosetup-how-to-automatically-uninstall-previous-installed-version
 /////////////////////////////////////////////////////////////////////
+
+function GetSilentParam(Param: String): String;
+begin
+  Result := silentFlag;
+end;
+
 function GetUninstallString(): String;
 var
   sUnInstPath: String;
@@ -130,7 +139,17 @@ begin
 end;
 
 function InitializeSetup(): Boolean;
+var
+j: Cardinal;
 begin
+  for j := 1 to ParamCount do
+    begin
+      if (CompareText(ParamStr(j),'/verysilent') = 0)  then
+        silentFlag := '/VERYSILENT'
+      else
+        silentFlag := '';   
+    end;
+
   if (Revit2015Installed() or Revit2014Installed() or VasariInstalled()) then
     begin
     result := true;
