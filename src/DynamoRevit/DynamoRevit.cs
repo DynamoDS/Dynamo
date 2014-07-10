@@ -92,6 +92,8 @@ namespace Dynamo.Applications
 
                 RegisterAdditionalUpdaters(application);
 
+                RevThread.IdlePromise.MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+
                 return Result.Succeeded;
             }
             catch (Exception ex)
