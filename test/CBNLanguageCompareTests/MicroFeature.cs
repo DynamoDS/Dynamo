@@ -45,6 +45,7 @@ public void DoubleOp()
      ProtoCore.Core dynamoCore =Controller.EngineController.LiveRunnerCore;
      this.CompareCores(core, dynamoCore,guid);
      }
+
   [Test]
 [Category("LanguageCBNTest")]
 public void FunctionWithinConstr001()
