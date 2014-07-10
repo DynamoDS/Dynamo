@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI.WebControls;
-using System.Windows.Controls.Primitives;
 using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -371,30 +370,24 @@ namespace Dynamo.Nodes
                     break;
             }
 
-            var resultAst = new List<AssociativeNode>();
+            var resultAst = new List<AssociativeNode>
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, rhs)
+            };
 
             if (OutPortData.Count == 1)
             {
-                resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
-
                 var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
                 string outputIdentifier = outputIdentiferNode.ToString();
                 string thisIdentifier = AstIdentifierForPreview.ToString();
                 if (!string.Equals(outputIdentifier, thisIdentifier))
                 {
-                    resultAst.Add(
-                        AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
+                    resultAst.Add(AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
                 }
             }
             else
             {
-                var undefinedOutputs = Definition.ReturnKeys == null
-                    || !Definition.ReturnKeys.Any();
-
-                if (undefinedOutputs || !IsPartiallyApplied)
-                {
-                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
-                }
+                var undefinedOutputs = Definition.ReturnKeys == null || !Definition.ReturnKeys.Any();
 
                 resultAst.AddRange(
                     Enumerable.Range(0, OutPortData.Count)
@@ -407,44 +400,13 @@ namespace Dynamo.Nodes
                                         ArrayDimensions =
                                             new ArrayNode
                                             {
-                                                Expr = AstFactory.BuildStringNode(
-                                                    Definition.ReturnKeys.ElementAt(
-                                                        outputIdx))
+                                                Expr =
+                                                    new StringNode
+                                                    {
+                                                        value = Definition.ReturnKeys.ElementAt(outputIdx)
+                                                    }
                                             }
                                     }));
-
-                if (!undefinedOutputs && IsPartiallyApplied)
-                {
-                    var tmp = AstFactory.BuildIdentifier("__partial_" + GUID.ToString().Replace('-', '_'));
-                    resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
-                    resultAst.AddRange(
-                        Enumerable.Range(0, OutPortData.Count)
-                            .Select(
-                                outputIdx =>
-                                    AstFactory.BuildAssignment(
-                                        GetAstIdentifierForOutputIndex(outputIdx),
-                                        AstFactory.BuildFunctionCall(
-                                            "__Compose",
-                                            new List<AssociativeNode>
-                                            {
-                                                AstFactory.BuildExprList(
-                                                    new List<AssociativeNode>
-                                                    {
-                                                        AstFactory.BuildFunctionObject(
-                                                            "__GetOutput",
-                                                            2,
-                                                            new[] { 1 },
-                                                            new List<AssociativeNode>
-                                                            {
-                                                                AstFactory.BuildNullNode(),
-                                                                AstFactory.BuildStringNode(
-                                                                    Definition.ReturnKeys.ElementAt(
-                                                                        outputIdx))
-                                                            }),
-                                                        tmp
-                                                    })
-                                            }))));
-                }
             }
             return resultAst;
         }

@@ -152,11 +152,6 @@ def ApplyList(functionObject: _FunctionObject, params: var[]..[])
     }
 }
 
-def __GetOutput(outputs: var[]..[], key: var)
-{
-	return = outputs[key];
-}
-
 def __Compose(funcs : _FunctionObject[])
 {
     return = _ComposedFunctionObject(funcs);
