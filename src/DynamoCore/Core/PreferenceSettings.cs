@@ -33,6 +33,7 @@ namespace Dynamo
         #region Collect Information Settings
         public bool IsFirstRun { get; set; }
         public bool IsUsageReportingApproved { get; set; }
+        public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
         public int ConsoleHeight { get; set; }

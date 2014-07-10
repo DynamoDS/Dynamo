@@ -31,14 +31,7 @@ UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName=Dynamo 0.7.1
 UsePreviousAppDir=no
 
-;[Types]
-;Name: "full"; Description: "Full installation"
-;Name: "compact"; Description: "Compact installation"
-;Name: "custom"; Description: "Custom installation"; Flags: iscustom
-
 [Dirs]
-Name: "{app}\definitions"
-Name: "{app}\samples"
 Name: "{app}\dll"
 Name: "{app}\nodes"
 
@@ -96,7 +89,7 @@ Type: filesandordirs; Name: {app}\dll
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 Filename: "{app}\InstallASMForDynamo.exe";
-Filename: "{app}\DynamoAddinGenerator.exe";
+Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: """{app}"""
 
 [UninstallRun]
 Filename: "{app}\DynamoAddinGenerator.exe"

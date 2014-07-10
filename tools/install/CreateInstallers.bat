@@ -39,7 +39,7 @@ cd ..
 
 robocopy %cwd%\..\..\doc\distrib\dynamo_packages %cwd%\temp\dynamo_packages /e
 robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
-robocopy %cwd%\..\..\doc\distrib\Samples_070\Samples %cwd%\temp\Samples /s
+robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoASM.iss
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss

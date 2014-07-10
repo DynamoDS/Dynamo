@@ -1616,6 +1616,113 @@ namespace ProtoTest.Associative
             //thisTest.Verify("d", 1);
         }
 
+        /// <summary>
+        /// As member function is overloaded with %thisptr as the first
+        /// parameter, this test case tries to verify that method resolution
+        /// work properly for overloaded member function and non-overloaded
+        /// member function which has same signature. E.g.,
+        /// 
+        ///     void foo(x: X, y: X);
+        ///     void foo(%thisptr:X, x:X);
+        ///     
+        /// </summary>
+        [Test]
+        public void TestMethodResolutionForThisPtrs1()
+        {
+            string code = @"
+class A
+{
+    def foo()
+    {
+        return = 41;
+    }
+
+    def foo(x : A)
+    {
+        return = 42;
+    }
+
+    def foo(x : A, y: A)
+    {
+        return = 43;
+    }
+
+    def foo(x : A, y: A, z:A)
+    {
+        return = 44;
+    }
+}
+
+a = A();
+r1 = a.foo();
+r2 = a.foo(a);
+r3 = a.foo(a,a);
+r4 = a.foo(a,a,a);
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r1", 41);
+            thisTest.Verify("r2", 42);
+            thisTest.Verify("r3", 43);
+            thisTest.Verify("r4", 44);
+        }
+
+        [Test]
+        public void TestMethodResolutionForThisPtrs2()
+        {
+            string code = @"
+class A
+{
+    def foo(x: int)
+    {
+        return = 41;
+    }
+
+    static def foo(x : A, y: int)
+    {
+        return = 42;
+    }
+}
+
+a = A();
+r1 = a.foo(1);
+r2 = a.foo(a, 1);
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r1", 41);
+            thisTest.Verify("r2", 42);
+        }
+
+        [Test]
+        public void TestMethodResolutionForThisPtrs3()
+        {
+            string code = @"
+class A
+{
+    def foo(x: int)
+    {
+        return = 41;
+    }
+
+    static def foo(x : A, y: int)
+    {
+        return = 42;
+    }
+}
+
+a = A();
+r1 = a.foo({1});
+r2 = a.foo(a, {1});
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r1", new object[] {41});
+            thisTest.Verify("r2", new object[] {42});
+        }
     }
 }
 

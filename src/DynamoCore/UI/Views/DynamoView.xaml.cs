@@ -267,6 +267,29 @@ namespace Dynamo.Controls
             Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
+        void _vm_RequestViewOperation(ViewOperationEventArgs e)
+        {
+            if (_vm.CanNavigateBackground == false)
+                return;
+
+            switch (e.ViewOperation)
+            {
+                case ViewOperationEventArgs.Operation.FitView:
+                    background_preview.View.ZoomExtents();
+                    break;
+
+                case ViewOperationEventArgs.Operation.ZoomIn:
+                    var camera1 = background_preview.View.CameraController;
+                    camera1.Zoom(-0.5 * background_preview.View.ZoomSensitivity);
+                    break;
+
+                case ViewOperationEventArgs.Operation.ZoomOut:
+                    var camera2 = background_preview.View.CameraController;
+                    camera2.Zoom(0.5 * background_preview.View.ZoomSensitivity);
+                    break;
+            }
+        }
+
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
             // If first run, Collect Info Prompt will appear
@@ -275,6 +298,7 @@ namespace Dynamo.Controls
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
+            _vm.RequestViewOperation += _vm_RequestViewOperation;
             _vm.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
@@ -671,27 +695,17 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape)
-                return;
-
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-
-            _vm.WatchEscapeIsDown = true;
+            if (e.Key == Key.Escape)
+                _vm.WatchEscapeIsDown = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Escape)
-                return;
-
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-
-            _vm.WatchEscapeIsDown = false;
-            _vm.EscapeCommand.Execute(null);
+            if (e.Key == Key.Escape)
+            {
+                _vm.WatchEscapeIsDown = false;
+                _vm.EscapeCommand.Execute(null);
+            }
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)

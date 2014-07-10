@@ -30,6 +30,8 @@ namespace Dynamo.ViewModels
 
     public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
 
+    public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
+
     public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
         #region events
@@ -129,6 +131,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event RequestViewOperationHandler RequestViewOperation;
+        public void OnRequestViewOperation(ViewOperationEventArgs e)
+        {
+            if (RequestViewOperation != null)
+            {
+                RequestViewOperation(e);
+            }
+        }
+
         #endregion
 
         #region properties
@@ -201,6 +212,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
         public DelegateCommand TogglePanCommand { get; set; }
+        public DelegateCommand ToggleOrbitCommand { get; set; }
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
@@ -369,6 +381,16 @@ namespace Dynamo.ViewModels
 
             set
             {
+                // If the caller attempts to show the start page, but we are 
+                // currently in playback mode, then this will not be allowed
+                // (i.e. the start page will never be shown during a playback).
+                // 
+                if ((value == true) && (null != automationSettings))
+                {
+                    if (automationSettings.IsInPlaybackMode)
+                        return;
+                }
+
                 showStartPage = value;
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
@@ -390,20 +412,19 @@ namespace Dynamo.ViewModels
 
         public bool WatchPreviewHitTest
         {
-            get { return ( WatchEscapeIsDown || CanNavigateBackground ); }
+            // This is directly opposite of "ShouldBeHitTestVisible".
+            get { return (WatchEscapeIsDown || CanNavigateBackground); }
+        }
+
+        public bool ShouldBeHitTestVisible
+        {
+            // This is directly opposite of "WatchPreviewHitTest".
+            get { return (!WatchEscapeIsDown && (!CanNavigateBackground)); }
         }
 
         public bool IsHomeSpace
         {
             get { return dynSettings.Controller.DynamoModel.CurrentWorkspace == dynSettings.Controller.DynamoModel.HomeSpace; }
-        }
-
-        public bool ShouldBeHitTestVisible
-        {
-            get
-            {
-                return !WatchEscapeIsDown;
-            }
         }
 
         public bool FullscreenWatchShowing
@@ -473,6 +494,8 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
+        public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
+        public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
 
         public ConnectorType ConnectorType
         {
@@ -676,6 +699,7 @@ namespace Dynamo.ViewModels
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
@@ -864,8 +888,19 @@ namespace Dynamo.ViewModels
         /// <param name="parameters">The path the the file.</param>
         private void Open(object parameters)
         {
-            string xmlFilePath = parameters as string;
-            ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            try
+            {
+                string xmlFilePath = parameters as string;
+                ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log("Error opening file:" + e.Message);
+                dynSettings.DynamoLogger.Log(e);
+                return;
+            }            
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
@@ -1227,6 +1262,12 @@ namespace Dynamo.ViewModels
                 return;
 
             CanNavigateBackground = !CanNavigateBackground;
+
+            if (CanNavigateBackground)
+                InstrumentationLogger.LogAnonymousScreen("Geometry");
+            else
+                InstrumentationLogger.LogAnonymousScreen("Nodes");
+
 
             if (!CanNavigateBackground)
             {
@@ -1614,7 +1655,7 @@ namespace Dynamo.ViewModels
             return !this.ShowStartPage;
         }
 
-        public void Pan(object parameter)
+        internal void Pan(object parameter)
         {
             Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", _model.CurrentWorkspace.X, _model.CurrentWorkspace.Y, _model.CurrentWorkspace.Zoom));
             var panType = parameter.ToString();
@@ -1643,39 +1684,62 @@ namespace Dynamo.ViewModels
             CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(parameter);
         }
 
-        internal bool CanPan(object parameter)
+        private bool CanPan(object parameter)
         {
             return true;
         }
 
-        public void ZoomIn(object parameter)
+        internal void ZoomIn(object parameter)
         {
-            CurrentSpaceViewModel.ZoomInCommand.Execute(parameter);
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.ZoomIn;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
+            CurrentSpaceViewModel.ZoomInInternal();
+            ZoomInCommand.RaiseCanExecuteChanged();
         }
 
-        internal bool CanZoomIn(object parameter)
+        private bool CanZoomIn(object parameter)
         {
-            return CurrentSpaceViewModel.ZoomInCommand.CanExecute(parameter);
+            return CurrentSpaceViewModel.CanZoomIn;
         }
 
-        public void ZoomOut(object parameter)
+        private void ZoomOut(object parameter)
         {
-            CurrentSpaceViewModel.ZoomOutCommand.Execute(parameter);
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.ZoomOut;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
+            CurrentSpaceViewModel.ZoomOutInternal();
+            ZoomOutCommand.RaiseCanExecuteChanged();
         }
 
-        internal bool CanZoomOut(object parameter)
+        private bool CanZoomOut(object parameter)
         {
-            return CurrentSpaceViewModel.ZoomOutCommand.CanExecute(parameter);
+            return CurrentSpaceViewModel.CanZoomOut;
         }
 
-        public void FitView(object parameter)
+        private void FitView(object parameter)
         {
-            CurrentSpaceViewModel.FitViewCommand.Execute(parameter);
+            if (CanNavigateBackground)
+            {
+                var op = ViewOperationEventArgs.Operation.FitView;
+                OnRequestViewOperation(new ViewOperationEventArgs(op));
+                return;
+            }
+
+            CurrentSpaceViewModel.FitViewInternal();
         }
 
-        internal bool CanFitView(object parameter)
+        private bool CanFitView(object parameter)
         {
-            return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
+            return true;
         }
 
 #if USE_DSENGINE
@@ -1707,19 +1771,47 @@ namespace Dynamo.ViewModels
             return true;
         }
 #endif
-        public void TogglePan(object parameter)
+        internal void TogglePan(object parameter)
         {
-            CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);
+            CurrentSpaceViewModel.RequestTogglePanMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanTogglePan(object parameter)
         {
-            return CurrentSpaceViewModel.TogglePanCommand.CanExecute(parameter);
+            return true;
+        }
+
+        internal void ToggleOrbit(object parameter)
+        {
+            CurrentSpaceViewModel.RequestToggleOrbitMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
+        }
+
+        internal bool CanToggleOrbit(object parameter)
+        {
+            return true;
         }
 
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanEscape(object parameter)

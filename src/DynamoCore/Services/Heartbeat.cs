@@ -77,18 +77,21 @@ namespace Dynamo.Services
             {
                 try
                 {
-                    InstrumentationLogger.LogInfo("VersionInfo", GetVersionString());
-
-                    var difference = DateTime.Now.Subtract(startTime).TotalSeconds;
-                    InstrumentationLogger.FORCE_LogInfo("Heartbeat-Uptime-s",
-                        difference.ToString(CultureInfo.InvariantCulture));
+                    InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString() );
 
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
+                    InstrumentationLogger.LogPiiInfo("Node-usage", usage);
+                    InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
 
-                    InstrumentationLogger.LogInfo("Node-usage", usage);
-                    InstrumentationLogger.LogInfo("Nodes-with-errors", errors);
+                    string workspace =
+                        dynSettings.Controller.DynamoModel.CurrentWorkspace
+                                   .GetStringRepOfWorkspaceSync();
+
+                    InstrumentationLogger.LogPiiInfo("Workspace", workspace);
+
+
                 }
                 catch (Exception e)
                 {
@@ -129,6 +132,7 @@ namespace Dynamo.Services
         /// <returns></returns>
         private string PackFrequencyDict(Dictionary<String, int> frequencies)
         {
+            //@TODO(Luke): Merge with ComputeNodeFrequencies http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3842
             StringBuilder sb = new StringBuilder();
 
             foreach (String key in frequencies.Keys)
@@ -146,6 +150,7 @@ namespace Dynamo.Services
 
         private Dictionary<String, int> ComputeNodeFrequencies()
         {
+            //@TODO(Luke): Merge with ComputeNodeFrequencies http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3842
 
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
@@ -155,7 +160,7 @@ namespace Dynamo.Services
 
             foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
-                string fullName = node.GetType().FullName;
+                string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
 
@@ -179,7 +184,7 @@ namespace Dynamo.Services
                 if (node.State != ElementState.Error)
                     continue;
 
-                string fullName = node.GetType().FullName;
+                string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
                 

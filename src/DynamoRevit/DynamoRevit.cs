@@ -21,6 +21,7 @@ using Autodesk.Revit.UI.Events;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Services;
 using Dynamo.Utilities;
 
 using DynamoUnits;
@@ -256,6 +257,9 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
+                InstrumentationLogger.LogException(ex);
+                StabilityTracking.GetInstance().NotifyCrash();
+
                 //isRunning = false;
                 MessageBox.Show(ex.ToString());
 
@@ -316,12 +320,12 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private static void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
         {
-            SetRunEnabledBasedOnContext(e);
+            SetRunEnabledBasedOnContext(e.NewActiveView);
         }
 
-        public static void SetRunEnabledBasedOnContext(ViewActivatingEventArgs e)
+        public static void SetRunEnabledBasedOnContext(View newView)
         {
-            var view = e.NewActiveView as View3D;
+            var view = newView as View3D;
 
             if (view != null && view.IsPerspective
                 && dynSettings.Controller.Context != Context.VASARI_2013
@@ -335,7 +339,7 @@ namespace Dynamo.Applications
             else
             {
                 dynSettings.DynamoLogger.Log(
-                    string.Format("Active view is now {0}", e.NewActiveView.Name));
+                    string.Format("Active view is now {0}", newView.Name));
 
                 // If there is a current document, then set the run enabled
                 // state based on whether the view just activated is 
@@ -343,7 +347,7 @@ namespace Dynamo.Applications
                 if (DocumentManager.Instance.CurrentUIDocument != null)
                 {
                     dynSettings.Controller.DynamoViewModel.RunEnabled =
-                        e.NewActiveView.Document.Equals(DocumentManager.Instance.CurrentDBDocument);
+                        newView.Document.Equals(DocumentManager.Instance.CurrentDBDocument);
 
                     if (dynSettings.Controller.DynamoViewModel.RunEnabled == false)
                     {
@@ -377,6 +381,9 @@ namespace Dynamo.Applications
 
             try
             {
+                InstrumentationLogger.LogException(args.Exception);
+                StabilityTracking.GetInstance().NotifyCrash();
+
                 dynSettings.DynamoLogger.LogError("Dynamo Unhandled Exception");
                 dynSettings.DynamoLogger.LogError(exceptionMessage);
             }

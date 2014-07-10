@@ -33,7 +33,6 @@ namespace Dynamo.Nodes
         private bool useRl;
         private double rlf;
         private double threshold;
-        private bool reset;
 
         private readonly PortData psPort = new PortData("ps", "Particle System");
         private readonly PortData forcesPort = new PortData("forces", "Member forces.");
@@ -281,8 +280,6 @@ namespace Dynamo.Nodes
             CreateSpringsFromCurves(curves, points);
 
             DispatchOnUIThread(dynSettings.Controller.RequestClearDrawables);
-
-            reset = false;
         }
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
@@ -295,12 +292,7 @@ namespace Dynamo.Nodes
                 VerticalAlignment = VerticalAlignment.Top
             };
 
-            resetButt.Click += delegate
-                {
-                    reset = true;
-                    RequiresRecalc = true;
-                };
-
+            resetButt.Click += delegate { RequiresRecalc = true; };
             nodeUI.inputGrid.Children.Add(resetButt);
         }
     }

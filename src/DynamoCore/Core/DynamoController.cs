@@ -272,9 +272,7 @@ namespace Dynamo
 
             Context = context;
 
-            //Start heartbeat reporting
-            InstrumentationLogger.Start();
-
+            
             PreferenceSettings = preferences;
             ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
@@ -287,6 +285,12 @@ namespace Dynamo
             UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
+
+            //Start heartbeat reporting
+            //This needs to be done after the update manager has been initialised
+            //so that the version number can be reported
+            InstrumentationLogger.Start();
+
 
             //create the model
             DynamoModel = new DynamoModel ();
@@ -482,6 +486,11 @@ namespace Dynamo
             Process.Start(Configurations.GitHubBugReportingLink);
         }
 
+        internal void DownloadDynamo()
+        {
+            Process.Start(Configurations.DynamoDownloadLink);
+        }
+
         internal bool CanReportABug(object parameter)
         {
             return true;
@@ -499,6 +508,8 @@ namespace Dynamo
         {
             return true;
         }
+
+        
     }
     
 }

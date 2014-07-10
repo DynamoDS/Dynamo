@@ -99,11 +99,16 @@ namespace RevitServices.Persistence
         /// <param name="element">The UUID of the element to delete</param>
         public void DeleteElement(ElementUUID element)
         {
-            TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
+            ElementId id = ElementBinder.GetIdForUUID(CurrentDBDocument, element);
 
-            CurrentDBDocument.Delete(ElementBinder.GetIdForUUID(CurrentDBDocument, element));
+            if (null != id)
+            {
+                TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
 
-            TransactionManager.Instance.TransactionTaskDone();
+                CurrentDBDocument.Delete(id);
+
+                TransactionManager.Instance.TransactionTaskDone();
+            }
         }
 
 
@@ -160,6 +165,9 @@ namespace RevitServices.Persistence
                      TransactionManager.Instance.EnsureInTransaction(
                                   DocumentManager.Instance.CurrentDBDocument);
                      Instance.CurrentDBDocument.Regenerate();
+                     //To ensure the transaction is closed in the idle process
+                     //so that the element is updated after this.
+                     TransactionManager.Instance.ForceCloseTransaction();
                  }
                  );
             }
