@@ -11,7 +11,7 @@ using Unfold;
 namespace UnfoldTests
 {
     [TestFixture]
-    public class TopologyTests
+    public static class TopologyTests
     {
 
         public class InitialGraphTests
@@ -51,7 +51,19 @@ namespace UnfoldTests
             public void GraphCanBeGeneratedFromSurfaces()
             {
 
-               
+                HostFactory.Instance.StartUp();
+                Solid testcube = SetupCube();
+                List<Surface> surfaces = testcube.Faces.Select(x => x.SurfaceGeometry()).ToList();
+
+                Assert.AreEqual(surfaces.Count, 6);
+
+                List<Unfold_Planar.graph_vertex> graph = Unfold_Planar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
+
+                List<Object> face_objs = surfaces.Select(x => x as Object).ToList();
+
+                GraphHasVertForEachFace(graph, face_objs);
+
+                HostFactory.Instance.ShutDown();
                 //
             }
 
@@ -63,8 +75,8 @@ namespace UnfoldTests
 
                 foreach (var vertex in graph)
                 {
-                    var orginalface = vertex.Face.OriginalEntity;
-                    Assert.Contains(orginalface, faces);
+                    var originalface = vertex.Face.OriginalEntity;
+                    Assert.Contains(originalface, faces);
                 }
 
             }
