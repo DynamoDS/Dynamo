@@ -8,10 +8,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
-using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
-using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 
@@ -35,34 +33,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Indicates whether the node browser is visible or not
-        /// </summary>
-        //private Visibility _searchVisibility = Visibility.Collapsed;
-        //public Visibility SearchVisibility
-        //{
-        //    get { return _searchVisibility; }
-        //    set { _searchVisibility = value; RaisePropertyChanged("SearchVisibility"); }
-        //}
-
-        /// <summary>
-        ///     IncludeRevitAPIElements property
-        /// </summary>
-        /// <value>
-        ///     Specifies whether we are including Revit API elements in search.
-        /// </value>
-        private bool includeRevitApiElements;
-        public bool IncludeRevitAPIElements
-        {
-            get { return includeRevitApiElements; }
-            set
-            {
-                includeRevitApiElements = value;
-                RaisePropertyChanged("IncludeRevitAPIElements");
-                //ToggleIncludingRevitAPIElements();
-            }
-        }
-
-        /// <summary>
         /// Leaves of the browser - used for navigation
         /// </summary>
         private List<SearchElementBase> _searchElements = new List<SearchElementBase>();
@@ -82,8 +52,6 @@ namespace Dynamo.ViewModels
             {
                 searchText = value;
                 RaisePropertyChanged("SearchText");
-                //DynamoCommands.SearchCommand.Execute();
-                //SearchAndUpdateResults();
             }
         }
 
@@ -129,15 +97,6 @@ namespace Dynamo.ViewModels
         ///     A set of categories
         /// </value>
         private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
-
-        /// <summary>
-        ///     RevitApiSearchElements property
-        /// </summary>
-        /// <value>
-        ///     A collection of elements corresponding to the auto-generated Revit
-        ///     API elements
-        /// </value>
-        public List<SearchElementBase> RevitApiSearchElements { get; private set; }
 
         /// <summary>
         ///     Visible property
@@ -223,21 +182,30 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        /// <summary>
-        ///     The class constructor.
-        /// </summary>
-        /// <param name="bench"> Reference to dynBench object for logging </param>
+        private DynamoModel DynamoModel;
+
         public SearchViewModel()
         {
+            InitializeCore();
+        }
+
+        public SearchViewModel(DynamoModel model)
+        {
+            DynamoModel = model;
+            DynamoModel.CurrentWorkspaceChanged += UpdateWorkspaceSpecificSearchElements;
+
+            InitializeCore();
+        }
+
+        private void InitializeCore()
+        {
             SelectedIndex = 0;
-            RevitApiSearchElements = new List<SearchElementBase>();
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
             MaxNumSearchResults = 35;
             Visible = false;
             searchText = "";
-            IncludeRevitAPIElements = true; // revit api
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -246,7 +214,54 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
             this.AddRootCategory(BuiltinNodeCategories.IO);
-            
+        }
+
+        private NodeSearchElement InputNode;
+        private NodeSearchElement OutputNode;
+
+        /// <summary>
+        /// Show or reveal workspace specific search elements.  Nodes like the Input and Output 
+        /// node should be hidden in a home workspace.
+        /// </summary>
+        /// <param name="workspace"></param>
+        private void UpdateWorkspaceSpecificSearchElements(WorkspaceModel workspace)
+        {
+            if (InputNode == null)
+            {
+                var i = SearchElements.FirstOrDefault(x => x.Name == "Input");
+                InputNode = i != null ? i as NodeSearchElement : null;
+            }
+
+            if (OutputNode == null)
+            {
+                var o = SearchElements.FirstOrDefault(x => x.Name == "Output");
+                OutputNode = o != null ? o as NodeSearchElement : null;
+            }
+
+            var isCustomNodeWorkspace = workspace is CustomNodeWorkspaceModel;
+            var updateSearch = false;
+
+            if (InputNode != null && InputNode.Searchable != isCustomNodeWorkspace)
+            {
+                updateSearch = true;
+                InputNode.SetSearchable(isCustomNodeWorkspace);
+            }
+
+            if (OutputNode != null && OutputNode.Searchable != isCustomNodeWorkspace)
+            {
+                updateSearch = true;
+                OutputNode.SetSearchable(isCustomNodeWorkspace);
+            }
+
+            if (updateSearch) this.SearchAndUpdateResults();
+        }
+
+        ~SearchViewModel()
+        {
+            if (DynamoModel != null)
+            {
+                DynamoModel.CurrentWorkspaceChanged -= UpdateWorkspaceSpecificSearchElements;
+            }
         }
 
         private const char CATEGORY_DELIMITER = '.';
@@ -800,18 +815,6 @@ namespace Dynamo.ViewModels
 
         }
 
-        /// <summary>
-        ///     Adds a PackageHeader, recently downloaded from the Package Manager, to Search
-        /// </summary>
-        /// <param name="packageHeader">A PackageHeader object</param>
-        public void Add(PackageHeader packageHeader)
-        {
-            var searchEle = new PackageManagerSearchElement(packageHeader);
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
-                SearchDictionary.Add(searchEle, packageHeader.keywords);
-            SearchDictionary.Add(searchEle, searchEle.Description);
-        }
 
         /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
@@ -945,16 +948,6 @@ namespace Dynamo.ViewModels
             }
 
             searchEle.SetSearchable(searchable);
-
-            // if it's a revit search element, keep track of it
-            if ( cat.Equals(BuiltinNodeCategories.REVIT_API) )
-            {
-                this.RevitApiSearchElements.Add(searchEle);
-                if (!IncludeRevitAPIElements)
-                {
-                    return;
-                }
-            }
 
             if (!string.IsNullOrEmpty(cat))
             {

@@ -170,6 +170,16 @@ namespace Dynamo.Models
         }
     }
 
+    public class WorkspaceEventArgs
+    {
+        public WorkspaceModel Workspace { get; set; }
+
+        public WorkspaceEventArgs(WorkspaceModel workspace)
+        {
+            this.Workspace = workspace;
+        }
+    }
+
     public class ModelEventArgs : EventArgs
     {
         public ModelBase Model { get; private set; }
@@ -219,6 +229,7 @@ namespace Dynamo.Models
     /// </summary>
     public class DynamoModel : ModelBase
     {
+
         #region events
 
         public event EventHandler RequestLayoutUpdate;
@@ -234,6 +245,15 @@ namespace Dynamo.Models
             if (WorkspaceClearing != null)
             {
                 WorkspaceClearing(this, e);
+            }
+        }
+
+        public event WorkspaceHandler CurrentWorkspaceChanged;
+        public virtual void OnCurrentWorkspaceChanged(WorkspaceModel workspace)
+        {
+            if (CurrentWorkspaceChanged != null)
+            {
+                CurrentWorkspaceChanged(workspace);
             }
         }
 
@@ -329,6 +349,7 @@ namespace Dynamo.Models
                     if (_cspace != null)
                         _cspace.IsCurrentSpace = true;
 
+                    OnCurrentWorkspaceChanged(_cspace);
                     RaisePropertyChanged("CurrentWorkspace");
                 }
             }
