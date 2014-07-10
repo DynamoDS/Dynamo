@@ -7,20 +7,35 @@ using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
 using Autodesk.DesignScript.Interfaces;
 using Unfold;
+using System.Threading;
 
 namespace UnfoldTests
 {
-    [TestFixture]
-    public static class TopologyTests
+
+    public class HostSetupTest
+    {
+        [Test]
+        public void HostSimple()
+        {
+            Assert.DoesNotThrow(() => HostFactory.Instance.StartUp());
+
+            Assert.DoesNotThrow(() => HostFactory.Instance.ShutDown());
+        }
+
+    }
+
+
+    public class TopologyTests : HostFactorySetup
     {
 
+        [TestFixture]
         public class InitialGraphTests
         {
 
-            public Solid SetupCube() 
+            public Solid SetupCube()
             {
-               var rect = Rectangle.ByWidthHeight(1,1);
-               return rect.ExtrudeAsSolid(1);
+                var rect = Rectangle.ByWidthHeight(1, 1);
+                return rect.ExtrudeAsSolid(1);
             }
 
 
@@ -28,30 +43,29 @@ namespace UnfoldTests
 
 
             [Test]
-            public void GraphCanBeGeneratedFromFaces()
+            public  void GraphCanBeGeneratedFromFaces()
             {
-                HostFactory.Instance.StartUp();
-                Solid testcube =  SetupCube();
-                List<Face> faces  = testcube.Faces.ToList();
+                Solid testcube = SetupCube();
+                List<Face> faces = testcube.Faces.ToList();
 
-                Assert.AreEqual(faces.Count,6);
+                Assert.AreEqual(faces.Count, 6);
 
-               List<Unfold_Planar.graph_vertex>  graph =  Unfold_Planar.ModelTopology.GenerateTopologyFromFaces(faces);
+                List<Unfold_Planar.graph_vertex> graph = Unfold_Planar.ModelTopology.GenerateTopologyFromFaces(faces);
 
-               List<Object> face_objs = faces.Select(x => x as Object).ToList();
-               
+                List<Object> face_objs = faces.Select(x => x as Object).ToList();
+
                 GraphHasVertForEachFace(graph, face_objs);
 
-               HostFactory.Instance.ShutDown();
+
                 //
             }
-            
 
-             [Test]
-            public void GraphCanBeGeneratedFromSurfaces()
+
+            [Test]
+            public  void GraphCanBeGeneratedFromSurfaces()
             {
 
-                HostFactory.Instance.StartUp();
+
                 Solid testcube = SetupCube();
                 List<Surface> surfaces = testcube.Faces.Select(x => x.SurfaceGeometry()).ToList();
 
@@ -63,12 +77,12 @@ namespace UnfoldTests
 
                 GraphHasVertForEachFace(graph, face_objs);
 
-                HostFactory.Instance.ShutDown();
+
                 //
             }
 
-           
-            public void GraphHasVertForEachFace(List<Unfold_Planar.graph_vertex> graph, List<Object> faces)
+
+            public  void GraphHasVertForEachFace(List<Unfold_Planar.graph_vertex> graph, List<Object> faces)
             {
 
                 Assert.AreEqual(graph.Count, faces.Count);
@@ -81,13 +95,13 @@ namespace UnfoldTests
 
             }
 
-           
-            public void EveryFaceIsReachable()
+
+            public  void EveryFaceIsReachable()
             {
                 //
             }
-           
-            
+
+
 
 
         }
@@ -100,17 +114,17 @@ namespace UnfoldTests
                 //
             }
 
-           [Test]
+            [Test]
             public void TreeContainsAllFaces()
             {
-               //
+                //
             }
 
             [Test]
-           public void TreeContainsNoRepeatEdges()
-           {
+            public void TreeContainsNoRepeatEdges()
+            {
                 //
-           }
+            }
 
             [Test]
             public void AllFinishingTimesSet()

@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeometryLikeEntityTests.cs" />
+    <Compile Include="HostFactorySteup.cs" />
     <Compile Include="TopologyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
