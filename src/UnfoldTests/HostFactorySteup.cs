@@ -27,8 +27,8 @@ namespace UnfoldTests
             Console.WriteLine("shutting down");
             
            HostFactory.Instance.ShutDown();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+           GC.Collect();
+           GC.WaitForPendingFinalizers();
            
         }
 

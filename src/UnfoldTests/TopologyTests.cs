@@ -56,6 +56,7 @@ namespace UnfoldTests
 
                 GraphHasVertForEachFace(graph, face_objs);
 
+                GraphHasCorrectNumberOfEdges(24, graph);
 
                 //
             }
@@ -77,6 +78,7 @@ namespace UnfoldTests
 
                 GraphHasVertForEachFace(graph, face_objs);
 
+                GraphHasCorrectNumberOfEdges(24, graph);
 
                 //
             }
@@ -84,9 +86,9 @@ namespace UnfoldTests
 
             public  void GraphHasVertForEachFace(List<Unfold_Planar.graph_vertex> graph, List<Object> faces)
             {
-
+                
                 Assert.AreEqual(graph.Count, faces.Count);
-
+                Console.WriteLine("same number of faces as verts");
                 foreach (var vertex in graph)
                 {
                     var originalface = vertex.Face.OriginalEntity;
@@ -95,6 +97,24 @@ namespace UnfoldTests
 
             }
 
+
+            public void GraphHasCorrectNumberOfEdges(int expectedEdges, List<Unfold.Unfold_Planar.graph_vertex> graph)
+            {
+
+                List<Unfold_Planar.graph_edge> alledges = new List<Unfold_Planar.graph_edge>();
+
+                foreach (Unfold_Planar.graph_vertex vertex in graph)
+                {
+                    foreach(Unfold_Planar.graph_edge graphedge in vertex.Graph_Edges){
+
+                        alledges.Add(graphedge);
+                    }
+                }
+
+                Assert.AreEqual(expectedEdges, alledges.Count);
+                Console.WriteLine("correct number of edges");
+            
+            }
 
             public  void EveryFaceIsReachable()
             {
