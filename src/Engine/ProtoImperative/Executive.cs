@@ -24,7 +24,7 @@ namespace ProtoImperative
             {
                 try
                 {
-                    ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, parentBlock);
+                    ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, callContext, parentBlock);
 
                     //(Fuqiang, Ayush) : The below code is to parse an Imperative code block. An imoerative code block should
                     // never need to be parsed at this stage, as it would be parsed by the Assoc parser.

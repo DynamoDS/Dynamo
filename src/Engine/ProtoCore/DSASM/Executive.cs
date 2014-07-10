@@ -83,8 +83,7 @@ namespace ProtoCore.DSASM
         public bool isExplicitCall { get; set; }
 
         private List<AssociativeGraph.GraphNode> deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
-
-
+        
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
         /// <summary>
         /// Each symbol in this map is associated with a list of indices it was indexexd into
@@ -3280,6 +3279,11 @@ namespace ProtoCore.DSASM
 
             while (!terminate)
             {
+                if(core.CancellationPending)
+                {
+                    throw new ExecutionCancelledException();
+                }
+
                 if (pc >= istream.instrList.Count || pc < 0)
                 {
                     break;
@@ -4793,6 +4797,8 @@ namespace ProtoCore.DSASM
             }
             return new List<List<ReplicationGuide>>();
         }
+
+        #region Opcode Handlers
 
         private void NONE_Handler(Instruction instruction)
         {
@@ -8142,6 +8148,8 @@ namespace ProtoCore.DSASM
             pc++;
             return;
         }
+
+        #endregion
 
         private void Exec(Instruction instruction)
         {
