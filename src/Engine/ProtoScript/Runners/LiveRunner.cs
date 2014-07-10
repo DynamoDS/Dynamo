@@ -933,6 +933,7 @@ namespace ProtoScript.Runners
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
         Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
+        Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1788,6 +1789,30 @@ namespace ProtoScript.Runners
             {
                 Guid guid = w.FirstOrDefault().GraphNodeGuid;
                 ret[guid] = new List<ProtoCore.RuntimeData.WarningEntry>(w);
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Returns build warnings.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
+        {
+            // Group all warnings by their expression ids, and only keep the last
+            // warning for each expression, and then group by GUID.  
+            var warnings = runnerCore.BuildStatus
+                                     .Warnings
+                                     .Where(w => !w.GraphNodeGuid.Equals(Guid.Empty))
+                                     .OrderBy(w => w.GraphNodeGuid)
+                                     .GroupBy(w => w.GraphNodeGuid);
+
+            var ret = new Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>>();
+            foreach (var w in warnings)
+            {
+                Guid guid = w.FirstOrDefault().GraphNodeGuid;
+                ret[guid] = new List<ProtoCore.BuildData.WarningEntry>(w);
             }
 
             return ret;
