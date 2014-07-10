@@ -1477,97 +1477,6 @@
             Returns height distance.                         Note: This return the input dimensions of the Cuboid, NOT the                   actual world space dimensions. In other words, if you create a Cuboid                   width (X-axis) length 10, and transform it to a CoordinateSystem with                   2 times scaling in X, the width will still be 10. ASM does not allow you                   to extract the Vertices of a body in any predictable order, so it                    impossible to determine the dimensions after a transform.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
-            <summary>
-            Get a string representation of the Cone
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
-             <summary>
-             Create a Cone with given base radius at start Point, extending to a  apex at end Point.
-             </summary>
-            <search>
-            cone
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>
-            Create a Cone with axis from start Point to end Point, with given  radiuses at start and end. This object does not have an apex, and can be thought of as a trimmed Cone.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>
-            Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular base in the CoordinateSystem XY Plane.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>
-            Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular bases in the CoordinateSystem XY Plane.
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cone.StartPoint">
-            <summary>
-            The start point
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cone.EndPoint">
-            <summary>
-            The end point
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cone.RadiusRatio">
-            <summary>
-            Ratio between the top and bottom radius
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cone.StartRadius">
-            <summary>
-            The radius at the base
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cone.EndRadius">
-            <summary>
-            The radius at the bottom
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cone.Height">
-            <summary>
-            The total height
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
-            <summary>
-            Get a string representation of the Cylinder
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ByRadiusHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>
-            Construct a Solid Cylinder defined by a parent CoordinateSystem, the radius, and the height of the cylinder
-            </summary>
-            <param name="coordinateSystem">The parent CoordinateSystem of the Cylinder.  The bottom circular Face of the Cylinder is at the Origin of the CoordinateSystem.</param>
-            <param name="radius">The radius of the cylinder</param>
-            <param name="height">The height of the cylinder</param>
-            <returns></returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>
-            Construct a Solid Cylinder given the bottom and top center point of the Cylinder.
-            </summary>
-            <param name="startPoint">The center of the bottom circular face of the Cylinder</param>
-            <param name="endPoint">The center of the top circular face of the Cylinder</param>
-            <param name="radius">The radius of the Cylinder</param>
-            <returns></returns>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Radius">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Height">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
             <summary>
             Get a string representation of the PolyCurve
@@ -1636,6 +1545,64 @@
         <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
             <summary>
             Number if curves of the polycurve
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
+            <summary>
+            Get a string representation of the Cone
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
+             <summary>
+             Create a Cone with given base radius at start Point, extending to a  apex at end Point.
+             </summary>
+            <search>
+            cone
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
+            <summary>
+            Create a Cone with axis from start Point to end Point, with given  radiuses at start and end. This object does not have an apex, and can be thought of as a trimmed Cone.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
+            <summary>
+            Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular base in the CoordinateSystem XY Plane.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
+            <summary>
+            Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular bases in the CoordinateSystem XY Plane.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cone.StartPoint">
+            <summary>
+            The start point
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cone.EndPoint">
+            <summary>
+            The end point
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cone.RadiusRatio">
+            <summary>
+            Ratio between the top and bottom radius
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cone.StartRadius">
+            <summary>
+            The radius at the base
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cone.EndRadius">
+            <summary>
+            The radius at the bottom
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cone.Height">
+            <summary>
+            The total height
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.ToString">
@@ -2108,6 +2075,19 @@
             Get a string representation of the Rectangle
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(System.Double,System.Double)">
+            <summary>
+            Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
+             <summary>
+             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and (Plane Y axis length).
+             </summary>
+            <search>
+            rectangle
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
@@ -2122,19 +2102,6 @@
             <summary>
             Create a Rectangle by four corner Points.
             </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(System.Double,System.Double)">
-            <summary>
-            Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-             <summary>
-             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and (Plane Y axis length).
-             </summary>
-            <search>
-            rectangle
-            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Width">
             <summary>
@@ -2404,6 +2371,26 @@
         <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.MaxPoint">
             <summary>
             The maximum point
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
+            <summary>
+            Get a string representation of the Cylinder
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ByRadiusHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
+            <summary>
+            Construct a Solid Cylinder defined by a parent CoordinateSystem, the radius, and the height of the cylinder
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>
+            Construct a Solid Cylinder given the bottom and top center point of the Cylinder.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Radius">
+            <summary>
+            The radius of the Cylinder
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometrySettings.Reset">

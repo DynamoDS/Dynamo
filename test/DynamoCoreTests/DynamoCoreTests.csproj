@@ -84,10 +84,12 @@
     <Compile Include="Nodes\FormulaTests.cs" />
     <Compile Include="Nodes\HigherOrder.cs" />
     <Compile Include="Nodes\IfTest.cs" />
+    <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="TimeStampOrderingTests.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
+    <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
