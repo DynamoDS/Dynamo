@@ -18,9 +18,8 @@ namespace Dynamo.Tests
     {
         public void OpenModel(string relativeFilePath)
         {
-            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
         }
 
         public void RunModel(string relativeDynFilePath)
@@ -954,6 +953,23 @@ namespace Dynamo.Tests
             
         }
 
+        [Test]
+        public void TestProxyCustomNode()
+        {
+            // foobar.dyn reference to bar.dyf, bar.dyf references to foo.dyf
+            // which cannot be found, so foo.dyf would be a proxy custom node,
+            // as opening a dyn file will compile all custom nodes, the 
+            // compilation of that proxy custom node should have any problem.
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
+            Assert.IsTrue(
+                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "bar.dyf"))
+                != null);
+
+            string openPath = Path.Combine(examplePath, "foobar.dyn");
+
+            Assert.DoesNotThrow(() => RunModel(openPath));
+        }
     }
 }

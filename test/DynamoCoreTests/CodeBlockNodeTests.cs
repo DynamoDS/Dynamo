@@ -259,9 +259,8 @@ b = c[w][x][y][z];";
         [Test]
         public void Defect_MAGN_784()
         {
-            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
-            model.Open(openPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanUndo);
             Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanRedo);

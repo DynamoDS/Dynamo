@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProtoCore.DSASM
 {
@@ -67,6 +68,7 @@ namespace ProtoCore.DSASM
 
     public class CodeBlock
     {
+        public Guid guid { get; set; }
         public CodeBlockType blockType { get; set; }
 
         public CodeBlock parent { get; set; }
@@ -85,21 +87,30 @@ namespace ProtoCore.DSASM
 
         public bool isBreakable { get; set; }
 
-        public CodeBlock(CodeBlockType type, ProtoCore.Language langId, int codeBlockId, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock = false, ProtoCore.Core core = null)
+        public CodeBlock(Guid guid, CodeBlockType type, ProtoCore.Language langId, int cbID, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock = false, ProtoCore.Core core = null)
         {
+            this.guid = guid;
             blockType = type;
 
             parent = null;
             children = new List<CodeBlock>();
 
             language = langId;
-            this.codeBlockId = codeBlockId;
             instrStream = new InstructionStream(langId, core);
 
             symbolTable = symbols;
             procedureTable = procTable;
 
             isBreakable = isBreakableBlock;
+            core.CompleteCodeBlockList.Add(this);
+            this.codeBlockId = core.CompleteCodeBlockList.Count - 1;
+
+            symbols.RuntimeIndex = this.codeBlockId;
+
+            if (core.ProcNode != null)
+            {
+                core.ProcNode.ChildCodeBlocks.Add(codeBlockId);
+            }
         }
 
         public bool IsMyAncestorBlock(int blockId)

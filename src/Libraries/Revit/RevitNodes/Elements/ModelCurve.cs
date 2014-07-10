@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
+
 using Revit.GeometryConversion;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
+
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
@@ -18,7 +20,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit ModelCurve
     /// </summary>
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
     public class ModelCurve : CurveElement
     {
         #region Private constructors
@@ -90,9 +92,9 @@ namespace Revit.Elements
 
             InternalSetCurveElement(mc);
             if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
-               DocumentManager.Instance.DeleteElement(oldId);
+                DocumentManager.Instance.DeleteElement(oldId);
             if (makeReferenceCurve)
-               mc.ChangeToReferenceLine();
+                mc.ChangeToReferenceLine();
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -147,7 +149,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("curve");
             }
 
-            return new ModelCurve(curve.ToRevitType(), false);
+            return new ModelCurve(ExtractLegalRevitCurve(curve), false);
         }
 
         // <summary>
@@ -157,12 +159,15 @@ namespace Revit.Elements
         /// <returns></returns>
         public static ModelCurve ReferenceCurveByCurve(Autodesk.DesignScript.Geometry.Curve curve)
         {
-           if (curve == null)
-           {
-              throw new ArgumentNullException("curve");
-           }
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curve");
+            }
 
-           return new ModelCurve(curve.ToRevitType(), true);
+            if (!Document.IsFamilyDocument)
+                throw new Exception("Revit can only create a ReferenceCurve in a family document!");
+
+           return new ModelCurve(ExtractLegalRevitCurve(curve), true);
         }
 
         #endregion
@@ -185,6 +190,24 @@ namespace Revit.Elements
         #endregion
 
         #region Helper methods
+
+        private static Autodesk.Revit.DB.Curve ExtractLegalRevitCurve(Autodesk.DesignScript.Geometry.Curve curve)
+        {
+            // PB:  PolyCurves may have discontinuities that prevent them from being turned into legal Revit ModelCurves.
+            // Moreover, a single ModelCurve may not be a composite or multiple curves.
+
+            // One could add a static method to ModelCurve that is an overload of ByCurve - ModelCurve[] ByCurve(PolyCurve).
+            // But, this adds an unnecessary high level of complexity to the Element rebinding code.  Hence, we will go the
+            // more straightforward route of just providing an informative error message to the user.
+            if (curve is PolyCurve)
+            {
+                throw new Exception(
+                    "Revit does not support turning PolyCurves into ModelCurves.  "
+                        + "Try exploding your PolyCurve into multiple Curves.");
+            }
+
+            return curve.ToRevitType();
+        }
 
         private static bool hasMethodResetSketchPlane = true;
 
@@ -263,16 +286,6 @@ namespace Revit.Elements
             return ElementId.InvalidElementId;
         }
 
-        private static XYZ MeanXYZ(List<XYZ> pts)
-        {
-            return pts.Aggregate(new XYZ(), (i, p) => i.Add(p)).Divide(pts.Count);
-        }
-
-        private static XYZ MakeXYZ(Vector<double> vec)
-        {
-            return new XYZ(vec[0], vec[1], vec[2]);
-        }
-
         private static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
         {
             //cases to handle
@@ -326,31 +339,20 @@ namespace Revit.Elements
             for (int iPoint = 0; iPoint < points.Count; iPoint++)
                 xyzs.Add(points[iPoint]);
 
-            XYZ meanPt;
-            List<XYZ> orderedEigenvectors;
-            PrincipalComponentsAnalysis(xyzs, out meanPt, out orderedEigenvectors);
-            var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
-            var plane = Document.Application.Create.NewPlane(normal, meanPt);
-            return plane;
+            var bestFitPlane =
+                Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints(xyzs.ToPoints(false));
+
+            return bestFitPlane.ToPlane(false);
         }
 
         private static Autodesk.Revit.DB.SketchPlane GetSketchPlaneFromCurve(Curve c)
         {
             Plane plane = GetPlaneFromCurve(c, false);
-            Autodesk.Revit.DB.SketchPlane sp = null;
-            sp = Document.IsFamilyDocument ?
-                Document.FamilyCreate.NewSketchPlane(plane) :
-                Document.Create.NewSketchPlane(plane);
-
-            return sp;
+            return Autodesk.Revit.DB.SketchPlane.Create(Document, plane);
         }
 
         private static Curve Flatten3dCurveOnPlane(Curve c, Plane plane)
         {
-            XYZ meanPt = null;
-            List<XYZ> orderedEigenvectors;
-            XYZ normal;
-
             if (c is Autodesk.Revit.DB.HermiteSpline)
             {
                 var hs = c as Autodesk.Revit.DB.HermiteSpline;
@@ -370,10 +372,10 @@ namespace Revit.Elements
                 var ns = c as Autodesk.Revit.DB.NurbSpline;
                 if (plane == null)
                 {
-                   PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
-                   normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
+                    var bestFitPlane = Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints(
+                        ns.CtrlPoints.ToList().ToPoints(false));
 
-                   plane = Document.Application.Create.NewPlane(normal, meanPt);
+                    plane = bestFitPlane.ToPlane(false);
                 }
 
                 var projPoints = new List<XYZ>();
@@ -387,35 +389,6 @@ namespace Revit.Elements
             }
 
             return c;
-        }
-
-        // TODO: refactor this somewhere else
-        private static void PrincipalComponentsAnalysis(List<XYZ> pts, out XYZ meanXYZ, out List<XYZ> orderEigenvectors)
-        {
-            var meanPt = MeanXYZ(pts);
-            meanXYZ = meanPt;
-
-            var l = pts.Count();
-            var ctrdMat = DenseMatrix.Create(3, l, (r, c) => pts[c][r] - meanPt[r]);
-            var covarMat = (1 / ((double)pts.Count - 1)) * ctrdMat * ctrdMat.Transpose();
-
-            var eigen = covarMat.Evd();
-
-            var valPairs = new List<Tuple<double, Vector<double>>>
-                {
-                    new Tuple<double, Vector<double>>(eigen.EigenValues()[0].Real, eigen.EigenVectors().Column(0)),
-                    new Tuple<double, Vector<double>>(eigen.EigenValues()[1].Real, eigen.EigenVectors().Column(1)),
-                    new Tuple<double, Vector<double>>(eigen.EigenValues()[2].Real, eigen.EigenVectors().Column(2))
-                };
-
-            var sortEigVecs = valPairs.OrderByDescending((x) => x.Item1).ToList();
-
-            orderEigenvectors = new List<XYZ>
-                {
-                    MakeXYZ( sortEigVecs[0].Item2 ),
-                    MakeXYZ( sortEigVecs[1].Item2 ),
-                    MakeXYZ( sortEigVecs[2].Item2 )
-                };
         }
 
         #endregion

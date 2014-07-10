@@ -562,7 +562,7 @@ namespace Dynamo.DSEngine
         private void PreloadLibraries()
         {
             GraphUtilities.Reset();
-            libraries = DynamoPaths.PreloadLibraries;
+            libraries = DynamoPathManager.Instance.PreloadLibraries;
             GraphUtilities.PreloadAssembly(libraries);
         }
 
@@ -681,7 +681,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            if (!Nodes.Utilities.ResolveLibraryPath(ref library))
+            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using ProtoCore.Utils;
 using System.IO;
 using ProtoCore.DSASM;
+using ProtoCore.AST.AssociativeAST;
 
 namespace GraphToDSCompiler
 {
@@ -410,7 +411,6 @@ namespace GraphToDSCompiler
 
             }
 
-            GetBuiltInMethods();
         }
 
         /// <summary>
@@ -739,18 +739,9 @@ namespace GraphToDSCompiler
             }
         }
 
-        /// <summary>
-        /// Parses DS sourcecode
-        /// 1. Checks for syntax
-        /// 2. Preseves sourcecode comments
-        /// 3. Appends a temporary assignment variable "%t=" to a statement, if the statement is non-assignement
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="parseSuccess"></param>
-        /// <returns></returns>
-        private static List<string> ParseCore(string expression, ref bool parseSuccess)
+        private static IEnumerable<ProtoCore.AST.Node> ParseUserCodeCore(string expression, string postfixGuid, ref bool parseSuccess)
         {
-            List<string> compiled = new List<string>();
+            List<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
 
             ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
             ProtoCore.AST.Node codeBlockNode = Parse(expression, out commentNode);
@@ -758,19 +749,16 @@ namespace GraphToDSCompiler
             List<ProtoCore.AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
             Validity.Assert(nodes != null);
 
-            int cNodeNum = 0;
-            if (nodes.Count == 0)
-            {
-                InsertCommentsInCode(null, null, commentNode, ref cNodeNum, ref compiled, expression);
-                return compiled;
-            }
-            
+            int index = 0;
             foreach (var node in nodes)
             {
                 ProtoCore.AST.AssociativeAST.AssociativeNode n = node as ProtoCore.AST.AssociativeAST.AssociativeNode;
                 ProtoCore.Utils.Validity.Assert(n != null);
 
-                
+                // Append the temporaries only if it is not a function def or class decl
+                bool isFunctionOrClassDef = n is FunctionDefinitionNode || n is ClassDeclNode;
+
+                // Handle non Binary expression nodes separately
                 if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
                 {
                     core.BuildStatus.LogSemanticError("Modifier Blocks are not supported currently.");
@@ -778,145 +766,84 @@ namespace GraphToDSCompiler
                 else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
                 {
                     core.BuildStatus.LogSemanticError("Import statements are not supported in CodeBlock Nodes.");
-                }
-                else if (n is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
+                }            
+                else if (isFunctionOrClassDef)
                 {
-                    core.BuildStatus.LogSemanticError("Language blocks are not supported in CodeBlock Nodes.");
-                }
-
-
-                string stmt = string.Empty; 
-
-                // Append the temporaries only if it is not a function def or class decl
-                bool isFunctionOrClassDef = n is ProtoCore.AST.AssociativeAST.FunctionDefinitionNode || n is ProtoCore.AST.AssociativeAST.ClassDeclNode;
-
-                if (isFunctionOrClassDef)
-                {
-                    ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(new List<ProtoCore.AST.AssociativeAST.AssociativeNode>{ n });
-                    stmt = codegen.GenerateCode();
+                    // Add node as it is
+                    astNodes.Add(node);
                 }
                 else
                 {
-                    ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(new List<ProtoCore.AST.AssociativeAST.AssociativeNode>{ n });
-                    stmt = codegen.GenerateCode();
-                    ProtoCore.AST.AssociativeAST.BinaryExpressionNode ben = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                    // Handle temporary naming for temporary Binary exp. nodes and non-assignment nodes
+                    BinaryExpressionNode ben = node as BinaryExpressionNode;
                     if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
                     {
-                        ProtoCore.AST.AssociativeAST.IdentifierNode lNode = ben.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
+                        ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
+                        if (mNode != null)
+                        {
+                            core.BuildStatus.LogSemanticError("Modifier Blocks are not supported currently.");
+                        }
+                        IdentifierNode lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
                         {
-                            stmt = stmt.Replace(ProtoCore.DSASM.Constants.kTempProcConstant, "%t");
+                            string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                            BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
+                            astNodes.Add(newNode);
+                        }
+                        else
+                        {
+                            // Add node as it is
+                            astNodes.Add(node);
                         }
                     }
                     else
                     {
                         // These nodes are non-assignment nodes
-                        // When parsed by CodeGenDS, non-assignment nodes do not contain a terminate line ";\n"
-                        // Append it here
-                        stmt = "%t =" + stmt + ProtoCore.DSASM.Constants.termline;
+                        string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                        BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
+                        astNodes.Add(newNode);
                     }
                 }
-
-                compiled.Add(stmt);
-                
-                InsertCommentsInCode(stmt, node, commentNode, ref cNodeNum, ref compiled, expression);
-                
-            }
-            InsertCommentsInCode(null, null, commentNode, ref cNodeNum, ref compiled, expression);
-
-            return compiled;
+            }            
+            return astNodes;
         }
 
-        // TODO:DEPRECATE
-        /*public static void CompileExpression(string expression, List<string> compiled, out List<string> errors)
+        private static IEnumerable<ProtoCore.AST.Node> ParseUserCode(string expression, string postfixGuid)
         {
-            errors = CompileExpression(expression, compiled);
-        }*/
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="compiled"></param>
-        /// <param name="errors"></param>
-        public static void CompileExpression(string expression, out List<string> compiled)
-        {
-            expression = expression.Replace("\r\n", "\n");
-            int oldIndex = 0;
-            compiled = new List<string>();
-
-            bool parseSuccess = false;
+            IEnumerable<ProtoCore.AST.Node> astNodes = new List<ProtoCore.AST.Node>();
 
             if (expression == null)
-                return;
+                return astNodes;
 
+            expression = expression.Replace("\r\n", "\n");
+            
+            bool parseSuccess = false;
             try
             {
-                //List<string> statements = new List<string>();
-                compiled = ParseCore(expression, ref parseSuccess);
+                return ParseUserCodeCore(expression, postfixGuid, ref parseSuccess);
             }
-            catch 
+            catch
             {
-                // For function and class declaration nodes
-                if(parseSuccess)
-                    return;
+                // For modifier blocks, language blocks, etc. that are currently ignored
+                if (parseSuccess)
+                    return astNodes;
 
-                // For invalid functional associative statement errors like for "a+b;"
                 // Reset core above as we don't wish to propagate these errors - pratapa
                 core.ResetForPrecompilation();
 
-                compiled = GenerateStatements(oldIndex, expression);
-                /*string code = ParseNonAssignment(expression);
-                bool success = false;
-                try
-                {
-                    compiled = ParseCore(code, ref success);
-                }
-                catch { }*/                
-                return;
+                // Use manual parsing for invalid functional associative statement errors like for "a+b;"
+                return ParseNonAssignments(expression, postfixGuid);
             }
-
-            // TODO: Aparajit: Check with Jun if this is required for handling function definitions
-            // Currently it's not required due to the above checks for function and class definition nodes
-            /*do
-            {
-                index = expression.IndexOf("def ", index);
-                if (index != -1)
-                {
-                    string sub = expression.Substring(oldIndex, index - oldIndex);
-                    sub.TrimEnd(' ');
-                    string rest = expression.Substring(index);
-                    rest.Trim();
-                    if (sub.EndsWith("\n")) 
-                    {
-                        sub = sub.Substring(0, sub.Length - 1); 
-                        rest = "\n" + rest; 
-                    }
-                    string[] expr = GetStatementsString(sub);//.Split(';');
-                    foreach (string s in expr)
-                        compiled.Add(s);
-                    string func = GetFunctionString(rest);
-                    compiled.Add(func);
-                    index += func.Length;
-                    oldIndex = index + 1;
-                }
-            } 
-            while (index != -1);*/           
-            
         }
 
-        private static List<string> GenerateStatements(int oldIndex, string expression)
+        private static IEnumerable<ProtoCore.AST.Node> ParseNonAssignments(string expression, string postfixGuid)
         {
-
             List<string> compiled = new List<string>();
-            if (oldIndex > expression.Length) ;
-            else
-            {
-                string sub = expression.Substring(oldIndex);
-                string[] expr = GetStatementsString(sub);
-                foreach (string s in expr)
-                    compiled.Add(s);
-            }
+
+            string[] expr = GetStatementsString(expression);
+            foreach (string s in expr)
+                compiled.Add(s);
+
             for (int i = 0; i < compiled.Count(); i++)
             {
                 if (compiled[i].StartsWith("\n"))
@@ -926,41 +853,45 @@ namespace GraphToDSCompiler
                     string original = compiled[i];
                     for (int j = 0; j < original.Length; j++)
                     {
-                        if (!original[j].Equals('\n')) { lastPosButOne = j; break; } else newlines += original[j];
+                        if (!original[j].Equals('\n')) 
+                        { 
+                            lastPosButOne = j; 
+                            break; 
+                        } 
+                        else 
+                            newlines += original[j];
                     }
                     string newStatement = original.Substring(lastPosButOne);
-                    if (!IsNotAssigned(newStatement)) newStatement = "%t =" + newStatement;
+
+                    if (!IsNotAssigned(newStatement))
+                    {
+                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
+                        newStatement = name + " = " + newStatement;
+                    }
                     compiled[i] = newlines + newStatement;
                 }
                 else
-                    if (!IsNotAssigned(compiled[i])) compiled[i] = "%t =" + compiled[i];
+                {
+                    if (!IsNotAssigned(compiled[i]))
+                    {
+                        string name = string.Format("temp_{0}_{1}", i, postfixGuid);
+                        compiled[i] = name + " = " + compiled[i];
+                    }
+                }
             }
-            return compiled;
-        }
-
-        private static List<string> ParseNonAssignment(string expression)
-        {
-            //string code = "";
-            List<string> compiled = new List<string>();
-            string[] stmts = expression.Split(';');
-
-            for (int i = 0; i < stmts.Length; ++i )
+            StringBuilder newCode = new StringBuilder();
+            compiled.ForEach(x => newCode.Append(x));
+            CodeBlockNode commentNode = null;
+           
+            try
             {
-                string stmt = stmts[i].Trim();
-                if (!string.IsNullOrWhiteSpace(stmt))
-                    stmt += ";";
-                else
-                    continue;
-
-                int index = stmt.IndexOf('=');
-                if (index == -1)
-                    stmt = "%t =" + stmt;
-
-                //code += stmt + "\n";
-                compiled.Add(stmt);
+                ProtoCore.AST.Node codeBlockNode = Parse(newCode.ToString(), out commentNode);
+                return ParserUtils.GetAstNodes(codeBlockNode);
             }
-            //return code;
-            return compiled;
+            catch (Exception)
+            {
+                return new List<ProtoCore.AST.Node>();
+            }
         }
 
         private static bool IsNotAssigned(string code)
@@ -976,34 +907,7 @@ namespace GraphToDSCompiler
         private static string[] GetStatementsString(string input)
         {
             var expr = new List<string>();
-            //int index = 0;
-            //int oldIndex = 0;
-            //do
-            //{
-            //    index = input.IndexOf("{", index);
-            //    if (index != -1)
-            //    {                    
-            //        string sub;
-            //        if (index < input.Length - 1) { if (input[index + 1].Equals('\n')) index += 1; }
-            //        sub = input.Substring(0, index);                    
-            //        int equalIndex = sub.LastIndexOf('=');
-            //        sub = input.Substring(0, equalIndex);                           //enable the open brace to be on the next line of the identifier
-            //        int newLineIndex = sub.LastIndexOf('\n');
-            //        if (newLineIndex != -1)
-            //        {
-            //            sub = input.Substring(oldIndex, newLineIndex - oldIndex + 1);
-            //        }
-            //        //expr.Add(sub);
-            //        expr.AddRange(GetBinaryStatementsList(sub));
-            //        oldIndex = newLineIndex != -1? newLineIndex : 0;
-            //        index = input.IndexOf('}', index);
-            //        expr.Add(input.Substring(oldIndex, index - oldIndex + 1));
-            //        //index++;
-            //        oldIndex = index+1;
-            //    }
-            //} while (index != -1);
-            //if (oldIndex != input.Length - 1)
-            //    expr.AddRange(GetBinaryStatementsList(input.Substring(oldIndex)));
+            
             expr.AddRange(GetBinaryStatementsList(input));
             return expr.ToArray();
         }
@@ -1057,48 +961,6 @@ namespace GraphToDSCompiler
         }
 
         /// <summary>
-        /// Takes in a string and returns a list of unbound variables and the line numbers for output lines.
-        /// </summary>
-        /// <param name="compilableText"></param>
-        /// <param name="inputLines"></param>
-        /// <param name="outputLines"></param>
-        /// <returns>Returns true if compilation succeeded, or false otherwise. Returning true may still 
-        /// result in warnings, which suggests that the compilation was successful with warning.</returns>
-        public static bool GetInputOutputInfo(string compilableText, Dictionary<int, List<VariableLine>> inputLines, HashSet<VariableLine> outputLines)
-        {
-            if (string.IsNullOrEmpty(compilableText))
-                throw new ArgumentNullException("code", "8686D4A8");
-
-            if (null != inputLines)
-                inputLines.Clear();
-            if (null != outputLines)
-                outputLines.Clear();
-
-            try
-            {
-                BuildCore(true);
-                int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                ProtoCore.BuildStatus status = PreCompile(compilableText, core, out blockId);
-
-                if( status.ErrorCount > 0)
-                   return false;
-
-                var warnings = status.Warnings;
-
-                if (null != inputLines)
-                    GetInputLines(compilableText, warnings, inputLines);
-                if (null != outputLines)
-                    GetOutputLines(compilableText, core, outputLines);
-                
-                return true;
-            }
-            catch (Exception exception)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Takes in a string and returns a list of AST nodes and a list of unbound variables
         /// </summary>
         /// <param name="compilableText"></param>
@@ -1143,7 +1005,7 @@ namespace GraphToDSCompiler
                 ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode = p.root as ProtoCore.AST.AssociativeAST.CodeBlockNode;
                 n = p.GetParsedASTList(codeBlockNode);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //if syntax return SnapshotNodeType as None
                 return SnapshotNodeType.CodeBlock;
@@ -1185,7 +1047,7 @@ namespace GraphToDSCompiler
         /// <param name="core"></param>
         /// <param name="blockId"></param>
         /// <returns></returns>
-        private static ProtoCore.BuildStatus PreCompile(string code, ProtoCore.Core core, out int blockId)
+        private static ProtoCore.BuildStatus PreCompile(string code, ProtoCore.Core core, out int blockId, CodeBlockNode codeBlock = null)
         {
             bool buildSucceeded = false;
 
@@ -1206,7 +1068,7 @@ namespace GraphToDSCompiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
 
-                core.Executives[id].Compile(out blockId, null, globalBlock, context);
+                core.Executives[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
 
                 core.BuildStatus.ReportBuildResult();
 
@@ -1222,24 +1084,6 @@ namespace GraphToDSCompiler
             }
 
             return core.BuildStatus;
-        }
-
-        // TODO: Deprecate as it's used in the deprecated version of GetInputOutputInfo
-        private static void GetInputVariables(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
-            Dictionary<string, int> inputLines)
-        {
-            IEnumerable<ProtoCore.BuildData.WarningEntry> iter1 = warnings;
-            int count = 0;
-            foreach (ProtoCore.BuildData.WarningEntry warning in iter1)
-            {
-                if (warning.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
-                {
-                    int start = warning.Message.IndexOf("'");
-                    int end = warning.Message.IndexOf("'", start + 1);
-                    ++count;
-                    inputLines.Add(warning.Message.Substring(start + 1, end - start - 1), warning.Line);
-                }
-            }
         }
 
         private static List<VariableLine> DfsTraverse(ProtoCore.AST.AssociativeAST.AssociativeNode node)
@@ -1326,7 +1170,7 @@ namespace GraphToDSCompiler
             }
         }*/
 
-        private static void GetInputLines(string compilableText, IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
+        private static void GetInputLines(IEnumerable<ProtoCore.AST.Node> astNodes, IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
             Dictionary<int, List<VariableLine>> inputLines)
         {
             List<VariableLine> warningVLList = GetVarLineListFromWarning(warnings);
@@ -1335,7 +1179,7 @@ namespace GraphToDSCompiler
                 return;
 
             int stmtNumber = 1;
-            foreach (var node in core.AstNodeList)
+            foreach (var node in astNodes)
             {
                 // Only binary expression need warnings. 
                 // Function definition nodes do not have input and output ports
@@ -1386,71 +1230,34 @@ namespace GraphToDSCompiler
             return ProtoCore.Utils.ParserUtils.Parse(core, statement, out commentNode);
         }
 
-        public static bool Parse(ParseParam parseParams)
+        /// <summary>
+        /// Pre-compiles DS code in code block node, 
+        /// checks for syntax, converts non-assignments to assignments,
+        /// stores list of AST nodes, errors and warnings
+        /// Evaluates and stores list of unbound identifiers
+        /// </summary>
+        /// <param name="parseParams"></param>
+        /// <returns></returns>
+        public static bool PreCompileCodeBlock(ParseParam parseParams)
         {
-            // TODO: Use the compile expression to format the code by adding 
-            // the required %t temp vars needed for non assignment statements
-            var compiledExpressions = new List<String>();
-            CompileExpression(parseParams.OriginalCode, out compiledExpressions);
+            string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
-            var postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
-
-            int index = 0;
-            StringBuilder codeToParse = new StringBuilder();
-            foreach (var expression in compiledExpressions)
-            {
-                var updatedExpression = expression;
-                if (expression.IndexOf("%t") != -1)
-                {
-                    string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
-                    parseParams.AppendTemporaryVariable(name);
-                    updatedExpression = updatedExpression.Replace("%t", name);
-                }
-
-                codeToParse.Append(updatedExpression);
-            }
-
-            parseParams.ProcessedCode = codeToParse.ToString();
-
-            // Catch the errors thrown by compile expression, 
-            // namely function modiferstack and class decl found
+            // Parse code to generate AST and add temporaries to non-assignment nodes
+            IEnumerable<ProtoCore.AST.Node> astNodes = ParseUserCode(parseParams.OriginalCode, postfixGuid);
+            
+            // Catch the syntax errors and errors for unsupported 
+            // language constructs thrown by compile expression
             if (core.BuildStatus.ErrorCount > 0)
             {
                 parseParams.AppendErrors(core.BuildStatus.Errors);
                 parseParams.AppendWarnings(core.BuildStatus.Warnings);
                 return false;
             }
+            parseParams.AppendParsedNodes(astNodes);
 
-            // Parse and compile the code to get the result AST nodes as well 
-            // as any errors or warnings that were caught by the compiler
-            ProtoCore.BuildStatus buildStatus;
-            var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
-            List<ProtoCore.AST.Node> nodeList = new List<ProtoCore.AST.Node>();
-
-            ParseCodeBlockNodeStatements(parseParams.ProcessedCode,
-                out unboundIdentifiers, out nodeList, out buildStatus);
-
-            parseParams.AppendErrors(buildStatus.Errors);
-            parseParams.AppendWarnings(buildStatus.Warnings);
-
-            // Get the unboundIdentifiers from the warnings
-            foreach (KeyValuePair<int, List<VariableLine>> kvp in unboundIdentifiers)
-            {
-                foreach (VariableLine vl in kvp.Value)
-                    parseParams.AppendUnboundIdentifier(vl.variable);
-            }
-
-            if (nodeList != null)
-            {
-                // TODO: Why don't we use the "nodeList" as it is?
-                // Can we not avoid another "Parse" method call here?
-                // 
-                ProtoCore.AST.AssociativeAST.CodeBlockNode cNode = null;
-                var codeBlockNode = Parse(parseParams.ProcessedCode, out cNode);
-                parseParams.AppendParsedNodes(ParserUtils.GetAstNodes(codeBlockNode));
-            }
-
-            return true;
+            // Compile the code to get the resultant unboundidentifiers  
+            // and any errors or warnings that were caught by the compiler and cache them in parseParams
+            return CompileCodeBlockAST(parseParams);
         }
 
         public static List<ProtoCore.AST.Node> ParseCodeBlock(string code)
@@ -1487,44 +1294,50 @@ namespace GraphToDSCompiler
             return p.GetParsedASTList(cbn);
         }
 
-        // TODO: To Deprecate: Currently used in GetInputOutputInfo() overload used in ProtoTest.GraphCompiler.MicroFeatureTests
-        // 
-
-        public static bool ParseCodeBlockNodeStatements(string compilableText,
-            out Dictionary<int, List<VariableLine>> unboundIdentifiers, out List<ProtoCore.AST.Node> astNodes, out ProtoCore.BuildStatus buildStatus)
+        private static bool CompileCodeBlockAST(ParseParam parseParams)
         {
-            unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
+            Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
             IEnumerable<ProtoCore.BuildData.WarningEntry> warnings = null;
 
-            if (string.IsNullOrEmpty(compilableText))
-                throw new ArgumentNullException("code", "8686D4A8");
-
-            if (null != unboundIdentifiers)
-                unboundIdentifiers.Clear();
+            ProtoCore.BuildStatus buildStatus = null;
             try
             {
                 BuildCore(true);
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                //ProtoCore.BuildStatus status = PreCompile(compilableText, core, out blockId);
-                buildStatus = PreCompile(compilableText, core, out blockId);
+                CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+                List<AssociativeNode> nodes = new List<AssociativeNode>();
+                foreach (var i in parseParams.ParsedNodes)
+                {
+                    AssociativeNode assocNode = i as AssociativeNode;
+
+                    if (assocNode != null)
+                        nodes.Add(NodeUtils.Clone(assocNode));  
+                }
+                codeblock.Body.AddRange(nodes);
+
+                buildStatus = PreCompile(string.Empty, core, out blockId, codeblock);
+
+                parseParams.AppendErrors(buildStatus.Errors);
+                parseParams.AppendWarnings(buildStatus.Warnings);
 
                 if (buildStatus.ErrorCount > 0)
                 {
-                    astNodes = null;
                     return false;
                 }
-
                 warnings = buildStatus.Warnings;
 
-                if (null != unboundIdentifiers)
-                    GetInputLines(compilableText, warnings, unboundIdentifiers);
+                // Get the unboundIdentifiers from the warnings
+                GetInputLines(parseParams.ParsedNodes, warnings, unboundIdentifiers);                
+                foreach (KeyValuePair<int, List<VariableLine>> kvp in unboundIdentifiers)
+                {
+                    foreach (VariableLine vl in kvp.Value)
+                        parseParams.AppendUnboundIdentifier(vl.variable);
+                }
 
-                astNodes = core.AstNodeList;
                 return true;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                astNodes = null;
                 buildStatus = null;
                 return false;
             }

@@ -557,9 +557,11 @@ namespace ProtoCore.Lang
                 if (isReplicatingCall)
                 {
                     arguments[0] = lhs;
+                    context.IsReplicating = true;
                 }
                 else if (!arguments[0].IsDefaultArgument)
                 {
+                    context.IsReplicating = false;
                     arguments.RemoveAt(0);
                 }
             }
@@ -837,7 +839,8 @@ namespace ProtoCore.Lang
             List<String> rowsCollection = new List<String>();
             List<Object[]> CSVdatalist = new List<Object[]>();
             int colNum = 0;
-            using (StreamReader sr = File.OpenText(path))
+            var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using (var sr = new StreamReader(fileStream))
             {
 
                 while (!sr.EndOfStream)

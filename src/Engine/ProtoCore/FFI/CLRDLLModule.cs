@@ -1168,17 +1168,27 @@ namespace ProtoFFI
         }
     }
 
+    /// <summary>
+    ///     It keeps FFI class's attributes.
+    /// </summary>
     public class FFIClassAttributes : ClassAttributes
     {
+        private Attribute[] attributes;
+        /// <summary>
+        /// FFI class attributes.
+        /// </summary>
+        public IEnumerable<Attribute> Attributes
+        {
+            get { return attributes; }
+        }
+
         public FFIClassAttributes(Type type)
         {
             if (type == null)
-            {
-                return;
-            }
+                throw new ArgumentNullException("type");
 
-            object[] attrs = type.GetCustomAttributes(false);
-            foreach (var attr in attrs)
+            attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray(); 
+            foreach (var attr in attributes)
             {
                 if (attr is IsVisibleInDynamoLibraryAttribute)
                 {
@@ -1189,14 +1199,26 @@ namespace ProtoFFI
         }
     }
 
+    /// <summary>
+    /// It keeps FFI method's attributes.
+    /// </summary>
     public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {
+        private Attribute[] attributes;
+        /// <summary>
+        /// FFI method attributes.
+        /// </summary>
+        public IEnumerable<Attribute> Attributes
+        {
+            get { return attributes; }
+        }
+        public bool AllowRankReduction { get; protected set; }
+        public bool RequireTracing { get; protected set; }
+
         public FFIMethodAttributes(MethodInfo method)
         {
             if (method == null)
-            {
-                return;
-            }
+                throw new ArgumentException("method");
 
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;
@@ -1205,13 +1227,14 @@ namespace ProtoFFI
                 baseAttributes = new FFIClassAttributes(type);
                 CLRModuleType.SetTypeAttributes(type, baseAttributes);
             }
+
             if (null != baseAttributes)
             {
                 HiddenInLibrary = baseAttributes.HiddenInLibrary;
             }
 
-            object[] attrs = method.GetCustomAttributes(false);
-            foreach (var attr in attrs)
+            attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
+            foreach (var attr in attributes)
             {
                 if (attr is AllowRankReductionAttribute)
                 {

@@ -15,12 +15,10 @@ namespace Dynamo.Tests
         [TestModel(@".\RayBounce\RayBounce.rvt")]
         public void RayBounce()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\RayBounce\RayBounce.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             //ensure that the bounce curve count is the same

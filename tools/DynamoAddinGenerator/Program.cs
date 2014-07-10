@@ -9,8 +9,16 @@ namespace DynamoAddinGenerator
 {
     class Program
     {
+        private static string debugPath = string.Empty;
+
         static void Main(string[] args)
         {
+            if (args.Length > 0)
+            {
+                // First argument should be the debug assembly path
+                debugPath = args[0];
+            }
+
             var allProducts = RevitProductUtility.GetAllInstalledRevitProducts();
             var prodColl = new RevitProductCollection(allProducts.Select(x=>new DynamoRevitProduct(x)));
             if (!prodColl.Products.Any())
@@ -19,7 +27,7 @@ namespace DynamoAddinGenerator
                 return;
             }
 
-            var installs = DynamoInstallCollection.FindDynamoInstalls();
+            var installs = DynamoInstallCollection.FindDynamoInstalls(debugPath);
             var dynamoColl = new DynamoInstallCollection(installs);
             if (!dynamoColl.Installs.Any())
             {
@@ -88,6 +96,16 @@ namespace DynamoAddinGenerator
                 Console.WriteLine("Generating addins in {0}", prod.AddinsFolder);
 
                 var addinData = new DynamoAddinData(prod, dynamos.GetLatest());
+
+                if (prod.ProductName == "Vasari Beta 3")
+                {
+                    // Change the addin path because the AddinUtility 
+                    // reports this incorrectly for vasari
+                    var dir = Path.GetDirectoryName(addinData.AddinPath);
+                    var newDir = dir.Replace("Revit", "Vasari");
+                    addinData.AddinPath = Path.Combine(newDir, Path.GetFileName(addinData.AddinPath));
+                }
+
                 GenerateDynamoAddin(addinData);
             }
         }
@@ -99,6 +117,14 @@ namespace DynamoAddinGenerator
         internal static void GenerateDynamoAddin(IDynamoAddinData data)
         {
             Console.WriteLine("Generating addin {0}", data.AddinPath);
+
+            // If Revit has been installed, but not Run, the addins
+            // folder will not exist. We need to create it.
+            var dir = Path.GetDirectoryName(data.AddinPath);
+            if (dir!=null && !Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
 
             using (var tw = new StreamWriter(data.AddinPath, false))
             {

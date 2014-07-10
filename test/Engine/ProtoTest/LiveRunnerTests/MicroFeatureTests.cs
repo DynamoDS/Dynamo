@@ -1648,26 +1648,6 @@ z=Point.ByCoordinates(y,a,a);
             }
         }
 
-        [Test]
-        public void TestImperative01()
-        {
-            List<string> codes = new List<string>() 
-            {
-                "i = [Imperative] {a = 1;b = a;a = 10;return = b;}"
-            };
-            Guid guid = System.Guid.NewGuid();
-
-            // add two nodes
-            IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guid, codes[idx])).ToList();
-
-            var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
-
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("i");
-            StackValue value = mirror.GetData().GetStackValue();
-            Assert.AreEqual(value.opdata, 1);
-        }
 
         [Test]
         public void TestModify01()
@@ -3031,6 +3011,43 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestPersistentValuesOnUpdate()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");", 
+                "a = 10; b = 20;", 
+                "t = TestPersistentNodeValues(); t = t.Add(a,b); p = t.Sum;",
+                "a = 15; b = 25;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN's
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[1]));
+            Guid guid2 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("p", 30);
+
+
+            // Modify the 4th line to a = 15; b = 25;
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Expected value of Sum is 70 (30 + 15 +25)
+            AssertValue("p", 70);
+
+        }
+
+        [Test]
         public void TestCodeblockModification06()
         {
             List<string> codes = new List<string>() 
@@ -4034,6 +4051,32 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         }
 
         [Test]
+        public void TestReExecute02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"a = 1;", 
+                @"a = 2;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+
+            // Modify
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
+        [Test]
         public void TestReExecuteOnModifiedNode01()
         {
             List<string> codes = new List<string>() 
@@ -4671,9 +4714,547 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
         }
 
+        [Test]
+        public void TestImperativeExecution01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "i = [Imperative] {a = 1;b = a;a = 10;return = b;}"
+            };
+            Guid guid = System.Guid.NewGuid();
+
+            // add two nodes
+            IEnumerable<int> index = Enumerable.Range(0, codes.Count);
+            var added = index.Select(idx => CreateSubTreeFromCode(guid, codes[idx])).ToList();
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("i");
+            StackValue value = mirror.GetData().GetStackValue();
+            Assert.AreEqual(value.opdata, 1);
+        }
 
         [Test]
-        public void TestNestedLanguageBlockExecution()
+        public void TestImperativeExecution02()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestImperativeExecution03()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    if (x > 2)
+    {
+        x = 10;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestImperativeExecution04()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    if (x > 2)
+    {
+        x = 10;
+    }
+    else
+    {
+        x = 11;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 11);
+        }
+
+        [Test]
+        public void TestImperativeExecution05()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 2;
+    if (x > 1)
+    {
+        x = 10;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 10);
+        }
+
+        [Test]
+        public void TestImperativeExecution06()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 0;
+    n = 1..5;
+    for (i in n)
+    {
+        x = x + i;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 15);
+        }
+
+        [Test]
+        public void TestImperativeExecution07()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+a = [Imperative]
+{
+    x = 0;
+    n = 1..5;
+    for (i in n)
+    {
+        x = x + i;
+        break;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+        }
+
+        [Test]
+        public void TestImperativeExecution08()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"
+x = 10;
+a = [Imperative]
+{
+    return = x + 1;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 11);
+        }
+
+
+        [Test]
+        public void TestImperativeDeltaExecution01()
+        {
+            List<string> codes = new List<string>() 
+            {
+               
+@"
+a = [Imperative]
+{
+    return = 1;
+}
+", 
+
+@"
+a = [Imperative]
+{
+    return = 2;
+}
+"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+
+            // Modify the language block and verify
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestImperativeDeltaExecution02()
+        {
+            List<string> codes = new List<string>() 
+            {
+               
+@"
+a = [Imperative]
+{
+    x = 1;
+    if (x > 1)
+    {
+        x = 10;
+    }
+    return = x;
+}
+", 
+
+@"
+a = [Imperative]
+{
+    x = 2;
+    if (x > 1)
+    {
+        x = 10;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+
+            // Modify the language block and verify
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 10);
+        }
+
+        [Test]
+        public void TestImperativeDeltaExecution03()
+        {
+            List<string> codes = new List<string>() 
+            {
+               
+@"
+a = [Imperative]
+{
+    x = 1;
+    if (x > 1)
+    {
+        x = 10;
+    }
+    return = x;
+}
+", 
+
+@"
+a = [Imperative]
+{
+    x = 1;
+    if (x > 1)
+    {
+        x = 10;
+    }
+    else
+    {
+        x = 100;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+
+            // Modify the language block and verify
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 100);
+        }
+
+        [Test]
+        public void TestImperativeDeltaExecution04()
+        {
+            List<string> codes = new List<string>() 
+            {
+               
+@"
+a = [Imperative]
+{
+    x = 1;
+    if (x > 0)
+    {
+        x = 10;
+    }
+    return = x;
+}
+", 
+
+@"
+a = [Imperative]
+{
+    x = 1;
+    if (x > 0)
+    {
+        x = 100;
+    }
+    return = x;
+}
+"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 10);
+
+            // Modify the language block and verify
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 100);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockExecution01()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+r = [Imperative]
+{
+    if (true)
+    {
+        return = [Associative] { return = 42; }
+    }
+    return = null;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 42);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockExecution02()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+def foo()
+{
+    return = [Associative]
+    {
+        return = [Imperative]
+        {
+            return = [Associative]
+            {
+                t = 1;
+                return = t;
+            }
+        }
+    }
+}
+
+a = foo();
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockExecution03()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+def func()
+{
+    v = [Associative]
+    {
+        return = [Imperative]
+        {
+            t = false;
+            if(true)
+            {
+                return = 1;
+            }
+
+            return = 2;
+        }
+    }
+    return = v;
+}
+
+a = func();
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution01()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+r = [Associative]
+{
+    return = [Imperative] 
+    { 
+        return = 1; 
+    }
+}
+"
+,
+@"
+r = [Associative]
+{
+    return = [Imperative] 
+    { 
+        return = 2; 
+    }
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 1);
+
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 2);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution02()
         {
             List<string> codes = new List<string>() 
             {
@@ -4710,7 +5291,53 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
 
-            AssertValue("r", 43);
+            AssertValue("r", 45);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution03()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+a = [Associative]
+{
+    b = [Imperative]
+    {
+        return = 1 + 2; //  Modifying this line should re-execute the entire language block 'a = [Associative]{...}'
+    }
+    c = b + 10;
+    return = c;
+}
+"
+,
+@"
+a = [Associative]
+{
+    b = [Imperative]
+    {
+        return = 2 + 2; //  Modifying this line should re-execute the entire language block 'a = [Associative]{...}'
+    }
+    c = b + 10;
+    return = c;
+}
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 13);
+
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 14);
         }
     }
 

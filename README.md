@@ -1,7 +1,6 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
 Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
-Dynamo runs as an addin on top of Autodesk Revit, extending the parametric functionality already provided.
 
 ## Contributors ##
 
@@ -30,18 +29,22 @@ Dynamo has been developed based on feedback from several parties including Arup,
 
 ## Running Dynamo ##
 
-The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014, and Autodesk Project Vasari Beta 3. 
+The current version will run as an addin for Autodesk Revit 2014, Autodesk Revit 2015, and Autodesk Project Vasari Beta 3, as well as a Stand-Alone application with more limited functionality. 
 
 ## Releases ##
 
-###0.7.1 Pre-Release###
-- Package Manager is Back
-- 0.6.3 files will be upgraded to 0.7 format
+###0.7.1 ###
+- Package Manager is back
+- [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
 - Library Loading (Experimental)
 - Stability Improvments
 - Revit Elements created and Selected during a session will be rememebered in later sessions.
 - Visualization Performance improvments
-- Navigation Improvements
+- 3d/Graph Navigation Improvements
+- Automated graph organization
+- Node UI Enhancements
+- Preview Bubble overhaul
+- New Sample content and better first experience- 
 
 ###0.7.0###
 This is an alpha quality release which represents a significant refactoring of the underlying code.  There are some notable (temporary) restricitions to the functionality that is available in 0.6.3, and major enhancements to others. To allow users to continue work with 0.6.3 while exploring 0.7.0, this release can be installed side by side with older releases.  
@@ -167,6 +170,10 @@ The UserID is randomly generated when the application is first run. The SessionI
 http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor  
 http://opensource.org/licenses/lgpl-3.0.html  
 
+###CSharpAnalytics###
+https://github.com/AttackPattern/CSharpAnalytics  
+http://www.apache.org/licenses/LICENSE-2.0
+
 ###Helix3D###
 https://helixtoolkit.codeplex.com/  
 https://helixtoolkit.codeplex.com/license  
@@ -183,7 +190,7 @@ http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx
 http://msdn.microsoft.com/en-us/vstudio/dn501987
 
 ###Moq###
-http://www.nuget.org/packages/Moq/
+http://www.nuget.org/packages/Moq/  
 http://opensource.org/licenses/bsd-license.php
 
 ###MiConvexHull###
@@ -194,107 +201,25 @@ http://miconvexhull.codeplex.com/license
 http://ncalc.codeplex.com/  
 http://ncalc.codeplex.com/license  
 
+###NDesk Options###
+http://ndesk.org/Options#License
+
+###Newtonsoft JSON###
+https://github.com/JamesNK/Newtonsoft.Json  
+https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
+
 ###NUnit####
 http://www.nunit.org/  
 http://www.nunit.org/index.php?p=license&r=2.6.2  
 
 ###OpenSans font from Google###
-http://www.google.com/fonts/specimen/Open+Sans
+http://www.google.com/fonts/specimen/Open+Sans  
 http://www.apache.org/licenses/LICENSE-2.0.html
 
 ###Prism###
 http://msdn.microsoft.com/en-us/library/gg406140.aspx  
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
 
-
-###ASM v. 219###
-© 2014 Autodesk, Inc.  All rights reserved.   
-
-
-All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon previous installation of Autodesk Revit or Autodesk Vasari. 
-
-
-
-Trademarks  
-
-
-Autodesk and T-Splines are registered trademarks or trademarks of Autodesk, Inc., and/or its subsidiaries and/or affiliates.  
-
-
-Intel, Xeon and Pentium are registered trademarks or trademarks of Intel Corporation or its subsidiaries in the United States and other countries.  
-
-
-Spatial, ACIS, and SAT are either registered trademarks or trademarks of Spatial Corp. in the United States and/or other countries. 
-
-
-D-Cubed is a trademark of Siemens Industry Software Limited. 
-
-
-Rhino is a trademark of Robert McNeel & Associates. 
-
-
-All other brand names, product names or trademarks belong to their respective holders. 
-
-
-
-Patents 
-
-Protected by each of the following Patents: 7,274,364 
-
-
-
-Third-Party Software Credits and Attributions 
-
-This software is based in part on the works of the following: 
-
-
-ACIS® © 1989–2001 Spatial Corp. 
-
-
-
-Portions related to Intel® Threading Building Blocks v.4.1 are Copyright (C) 2005-2012 Intel Corporation.  All Rights Reserved. 
-
-
-
-Portions related to Intel® Math Kernel Library v.10.0.3 (www.intel.com/software/products/mkl) are Copyright (C) 2000–2008, Intel Corporation. All rights reserved. 
-
-
-
-This work contains the following software owned by Siemens Industry Software Limited: 
-
-
-D-CubedTM HLM © 2013. Siemens Industry Software Limited. All Rights Reserved. 
-
-D-CubedTM CDM © 2013. Siemens Industry Software Limited. All Rights Reserved.  
-
-
-
-This Autodesk software contains CLAPACK v.3.2.1. 
-
-Copyright (c) 1992-2011 The University of Tennessee and The University of Tennessee Research Foundation.  All rights reserved. 
-
-Copyright (c) 2000-2011 The University of California Berkeley. All rights reserved. 
-
-Copyright (c) 2006-2011 The University of Colorado Denver.  All rights reserved. 
-
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met: 
-
-
-- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. 
-
-
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer listed in this license in the documentation and/or other materials provided with the distribution. 
-
-
-- Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission. 
-
-
-The copyright holders provide no reassurances that the source code provided does not infringe any patent, copyright, or any other intellectual property rights of third parties.  The copyright holders disclaim any liability to any recipient for claims brought against recipient by any third party for infringement of that parties intellectual property rights. 
-
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-
-
-
-This Autodesk software contains Eigen 3.2.0.  Eigen is licensed under the Mozilla Public License v.2.0, which can be found at http://www.mozilla.org/MPL/2.0/.   A text copy of this license and the source code for Eigen v.3.2.0 (and modifications made by Autodesk, if any) are included on the media provided by Autodesk or with the download of this Autodesk software.   
+###Revit Test Framework###
+https://github.com/DynamoDS/RevitTestFramework  
+http://opensource.org/licenses/MIT

@@ -15,7 +15,7 @@ namespace ProtoAssociative
 		{
 		}
 
-        public override bool Compile(out int blockId, ProtoCore.DSASM.CodeBlock parentBlock, ProtoCore.LanguageCodeBlock langBlock, ProtoCore.CompileTime.Context callContext, ProtoCore.DebugServices.EventSink sink, ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
+        public override bool Compile(out int blockId, ProtoCore.DSASM.CodeBlock parentBlock, ProtoCore.LanguageCodeBlock langBlock, ProtoCore.CompileTime.Context callContext, ProtoCore.DebugServices.EventSink sink = null, ProtoCore.AST.Node codeBlockNode = null, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             Validity.Assert(langBlock != null);
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -35,7 +35,7 @@ namespace ProtoAssociative
                         {
                             if (core.CodeBlockList.Count == 0)
                             {
-                                core.assocCodegen = new ProtoAssociative.CodeGen(core, parentBlock);
+                                core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
                             }
                             else 
                             {
@@ -45,7 +45,7 @@ namespace ProtoAssociative
                             }
                         }
                         else
-                            core.assocCodegen = new ProtoAssociative.CodeGen(core, parentBlock);
+                            core.assocCodegen = new ProtoAssociative.CodeGen(core, callContext, parentBlock);
                     }
 
                     if (null != core.AssocNode)
@@ -131,7 +131,7 @@ namespace ProtoAssociative
                         core.assocCodegen = oldCodegen;
                     }
                 }
-                catch (ProtoCore.BuildHaltException e)
+                catch (ProtoCore.BuildHaltException)
                 {
 #if DEBUG
                     //core.BuildStatus.LogSemanticError(e.errorMsg);

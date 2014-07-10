@@ -93,6 +93,35 @@ namespace DSRevitNodesTests.GeometryConversion
 
         [Test]
         [TestModel(@".\empty.rfa")]
+        public void NurbsCurve_ProvidesGoodApproximationForDegree2Curve()
+        {
+            var pts = new[]
+            {
+                Point.ByCoordinates(0, 0, 0)
+                , Point.ByCoordinates(0, 1, 1)
+                , Point.ByCoordinates(0, 1, 0)
+            };
+
+            var bspline = NurbsCurve.ByPoints(pts, 2);
+            var revitCurve = bspline.ToRevitType(false);
+
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.NurbSpline>(revitCurve);
+
+            var revitSpline = (Autodesk.Revit.DB.NurbSpline)revitCurve;
+            Assert.AreEqual(3, revitSpline.Degree);
+            var tessPts = revitSpline.Tessellate().Select(x => x.ToPoint(false));
+
+            //assert the tesselation is very close to original curve
+            foreach (var pt in tessPts)
+            {
+                var closestPt = bspline.GetClosestPoint(pt);
+                Assert.Less( closestPt.DistanceTo(pt), 1e-6 );
+            }
+
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
         public void EllipseArc_Basic()
         {
             var o = Point.ByCoordinates(1, 2, 3);
@@ -107,12 +136,12 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitEllipse = (Autodesk.Revit.DB.Ellipse)revitCurve;
 
-            revitEllipse.GetEndParameter(0).ToDegrees().AssertShouldBeApproximately(ellipseArc.StartAngle);
-            revitEllipse.GetEndParameter(1).ToDegrees().AssertShouldBeApproximately(ellipseArc.StartAngle + ellipseArc.SweepAngle);
-            revitEllipse.GetEndPoint(0).AssertShouldBeApproximately(ellipseArc.StartPoint);
-            revitEllipse.GetEndPoint(1).AssertShouldBeApproximately(ellipseArc.EndPoint);
+            revitEllipse.GetEndParameter(0).ToDegrees().ShouldBeApproximately(ellipseArc.StartAngle);
+            revitEllipse.GetEndParameter(1).ToDegrees().ShouldBeApproximately(ellipseArc.StartAngle + ellipseArc.SweepAngle);
+            revitEllipse.GetEndPoint(0).ShouldBeApproximately(ellipseArc.StartPoint);
+            revitEllipse.GetEndPoint(1).ShouldBeApproximately(ellipseArc.EndPoint);
 
-            revitEllipse.Length.AssertShouldBeApproximately(ellipseArc.Length);
+            revitEllipse.Length.ShouldBeApproximately(ellipseArc.Length);
 
             // ClosestPointTo fails in ProtoGeometry
             var tessPts = revitEllipse.Tessellate().Select(x => x.ToPoint(false));
@@ -142,9 +171,9 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitArc = (Autodesk.Revit.DB.Arc) revitCurve;
 
-            circ.CenterPoint.AssertShouldBeApproximately(revitArc.Center.ToPoint(false));
-            circ.Radius.AssertShouldBeApproximately(revitArc.Radius);
-            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).AssertShouldBeApproximately(1);
+            circ.CenterPoint.ShouldBeApproximately(revitArc.Center.ToPoint(false));
+            circ.Radius.ShouldBeApproximately(revitArc.Radius);
+            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
         } 
 
@@ -163,9 +192,9 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitArc = (Autodesk.Revit.DB.Arc) revitCurve;
 
-            circ.CenterPoint.AssertShouldBeApproximately( revitArc.Center.ToPoint(false) );
-            circ.Radius.AssertShouldBeApproximately( revitArc.Radius );
-            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).AssertShouldBeApproximately(1);
+            circ.CenterPoint.ShouldBeApproximately( revitArc.Center.ToPoint(false) );
+            circ.Radius.ShouldBeApproximately( revitArc.Radius );
+            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).ShouldBeApproximately(1);
 
         } 
 
@@ -185,8 +214,8 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitArc = (Autodesk.Revit.DB.Line)revitCurve;
 
-            line.StartPoint.AssertShouldBeApproximately(revitArc.GetEndPoint(0).ToPoint(false));
-            line.EndPoint.AssertShouldBeApproximately( revitArc.GetEndPoint(1).ToPoint(false) );
+            line.StartPoint.ShouldBeApproximately(revitArc.GetEndPoint(0).ToPoint(false));
+            line.EndPoint.ShouldBeApproximately( revitArc.GetEndPoint(1).ToPoint(false) );
         }
 
         [Test]
@@ -207,14 +236,14 @@ namespace DSRevitNodesTests.GeometryConversion
 
             Assert.IsAssignableFrom<Autodesk.Revit.DB.CylindricalHelix>(revitCurve);
 
-            helix.StartPoint.AssertShouldBeApproximately(revitCurve.GetEndPoint(0).ToPoint(false));
-            helix.EndPoint.AssertShouldBeApproximately(revitCurve.GetEndPoint(1).ToPoint(false));
+            helix.StartPoint.ShouldBeApproximately(revitCurve.GetEndPoint(0).ToPoint(false));
+            helix.EndPoint.ShouldBeApproximately(revitCurve.GetEndPoint(1).ToPoint(false));
 
             var revitHelix = (Autodesk.Revit.DB.CylindricalHelix)revitCurve;
 
-            revitHelix.Pitch.AssertShouldBeApproximately(p);
-            revitHelix.Height.AssertShouldBeApproximately(9 * p);
-            revitHelix.GetEndPoint(0).AssertShouldBeApproximately(s);
+            revitHelix.Pitch.ShouldBeApproximately(p);
+            revitHelix.Height.ShouldBeApproximately(9 * p);
+            revitHelix.GetEndPoint(0).ShouldBeApproximately(s);
         }
 
         [Test]
@@ -234,14 +263,14 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var revitEllipse = (Autodesk.Revit.DB.Ellipse)revitCurve;
 
-            ellipse.StartPoint.AssertShouldBeApproximately(revitCurve.GetEndPoint(0).ToPoint(false));
-            ellipse.EndPoint.AssertShouldBeApproximately(revitCurve.GetEndPoint(1).ToPoint(false));
+            ellipse.StartPoint.ShouldBeApproximately(revitCurve.GetEndPoint(0).ToPoint(false));
+            ellipse.EndPoint.ShouldBeApproximately(revitCurve.GetEndPoint(1).ToPoint(false));
 
-            revitEllipse.Center.AssertShouldBeApproximately(Point.ByCoordinates(1, 2, 3));
-            revitEllipse.XDirection.AssertShouldBeApproximately(Vector.YAxis());
-            revitEllipse.YDirection.AssertShouldBeApproximately(Vector.XAxis().Reverse());
-            revitEllipse.RadiusX.AssertShouldBeApproximately(10);
-            revitEllipse.RadiusY.AssertShouldBeApproximately(5);
+            revitEllipse.Center.ShouldBeApproximately(Point.ByCoordinates(1, 2, 3));
+            revitEllipse.XDirection.ShouldBeApproximately(Vector.YAxis());
+            revitEllipse.YDirection.ShouldBeApproximately(Vector.XAxis().Reverse());
+            revitEllipse.RadiusX.ShouldBeApproximately(10);
+            revitEllipse.RadiusY.ShouldBeApproximately(5);
 
         } 
     }

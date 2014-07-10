@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Documents;
 using System.Xml.Serialization;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using DynamoUnits;
+
+using DynamoUtilities;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -21,18 +21,19 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DYNAMO_TEST_PATH = null;
-        const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private DynamoLengthUnit _lengthUnit;
         private DynamoAreaUnit _areaUnit;
         private DynamoVolumeUnit _volumeUnit;
         private string _numberFormat;
+        private string lastUpdateDownloadPath;
 
         // Variables of the settings that will be persistent
 
         #region Collect Information Settings
         public bool IsFirstRun { get; set; }
         public bool IsUsageReportingApproved { get; set; }
+        public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
         public int ConsoleHeight { get; set; }
@@ -98,6 +99,22 @@ namespace Dynamo
         public double WindowW { get; set; }
         public double WindowH { get; set; }
 
+        public string LastUpdateDownloadPath
+        {
+            get { return lastUpdateDownloadPath; }
+            set
+            {
+                if (!File.Exists(value))
+                {
+                    lastUpdateDownloadPath = "";
+                }
+                else
+                {
+                    lastUpdateDownloadPath = value; 
+                }
+            }
+        }
+
         public PreferenceSettings()
         {
             WindowH = 768;
@@ -115,6 +132,7 @@ namespace Dynamo
             AreaUnit = DynamoAreaUnit.SquareMeter;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
             NumberFormat = "f3";
+            LastUpdateDownloadPath = "";
         }
 
         /// <summary>
@@ -212,15 +230,7 @@ namespace Dynamo
         {
             try
             {
-                string appDataFolder = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.ApplicationData);
-
-                appDataFolder = Path.Combine(appDataFolder, DYNAMO_SETTINGS_DIRECTORY);
-                
-                if (Directory.Exists(appDataFolder) == false)
-                    Directory.CreateDirectory(appDataFolder);
-                
-                return (Path.Combine(appDataFolder, DYNAMO_SETTINGS_FILE));
+                return (Path.Combine(DynamoPathManager.Instance.AppData, DYNAMO_SETTINGS_FILE));
             }
             catch (Exception)
             {

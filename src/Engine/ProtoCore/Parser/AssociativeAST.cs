@@ -58,11 +58,24 @@ namespace ProtoCore.AST.AssociativeAST
         public LanguageCodeBlock codeblock { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
 
-        //only comparing attributes and codeblock at the moment
         public override bool Equals(object other)
         {
             var otherNode = other as LanguageBlockNode;
-            return null != otherNode && Attributes.SequenceEqual(otherNode.Attributes);
+
+            // Compare language block properties
+            bool eqLangBlockProperties = codeblock.Equals(otherNode.codeblock);
+
+            // Compare language block contents
+            bool eqLangblockContents = CodeBlockNode is AssociativeNode && otherNode.CodeBlockNode is AssociativeNode
+                                    && (CodeBlockNode as AssociativeNode).Equals(otherNode.CodeBlockNode as AssociativeNode)
+                                    ||
+                                    CodeBlockNode is ImperativeNode && otherNode.CodeBlockNode is ImperativeNode
+                                    && (CodeBlockNode as ImperativeNode).Equals(otherNode.CodeBlockNode as ImperativeNode)
+                                    ;
+
+            bool eqAttribute = null != otherNode && Attributes.SequenceEqual(otherNode.Attributes);
+
+            return eqLangBlockProperties && eqLangblockContents && eqAttribute;
         }
 
         public override int GetHashCode()
@@ -1213,8 +1226,6 @@ namespace ProtoCore.AST.AssociativeAST
     public class MethodAttributes
     {
         public bool HiddenInLibrary { get; protected set; }
-        public bool AllowRankReduction { get; protected set; }
-        public bool RequireTracing { get; protected set; }
         public IEnumerable<string> ReturnKeys
         {
             get
@@ -1605,6 +1616,30 @@ namespace ProtoCore.AST.AssociativeAST
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
         }
+
+        /// <summary>
+         /// Create a Binary assignment node from a given lhs identifier and given right node
+         /// with line and col properties of rhs node
+         /// </summary>
+         /// <param name="lhs"></param>
+         /// <param name="rhs"></param>
+         public BinaryExpressionNode(IdentifierNode lhs, AssociativeNode rhs)
+             : base(rhs)
+         {
+             isSSAAssignment = false;
+             isSSAPointerAssignment = false;
+             isSSAFirstAssignment = false;
+             isMultipleAssign = false;
+             exprUID = Constants.kInvalidIndex;
+             modBlkUID = Constants.kInvalidIndex;
+             OriginalAstID = ID;
+             guid = System.Guid.Empty;
+            
+             Optr = Operator.assign;
+             LeftNode = lhs;
+             RightNode = NodeUtils.Clone(rhs);
+             
+         }
 
         public override bool Equals(object other)
         {

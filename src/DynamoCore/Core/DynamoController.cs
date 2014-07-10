@@ -207,14 +207,15 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
+            var corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            DynamoPathManager.Instance.InitializeCore(corePath);
+
             DynamoController controller;
-            var logger = new DynamoLogger();
+            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
             dynSettings.DynamoLogger = logger;
 
             var updateManager = new UpdateManager.UpdateManager(logger);
-
-            var corePath =
-                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
@@ -263,8 +264,6 @@ namespace Dynamo
         public DynamoController(string context, IUpdateManager updateManager,
             IWatchHandler watchHandler, IPreferences preferences, string corePath)
         {
-            DynamoPaths.SetupDynamoPathsCore(corePath);
-
             DebugSettings = new DebugSettings();
 
             IsCrashing = false;
@@ -273,9 +272,7 @@ namespace Dynamo
 
             Context = context;
 
-            //Start heartbeat reporting
-            InstrumentationLogger.Start();
-
+            
             PreferenceSettings = preferences;
             ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
@@ -285,11 +282,15 @@ namespace Dynamo
             SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
-            UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
-            UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
             UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
+
+            //Start heartbeat reporting
+            //This needs to be done after the update manager has been initialised
+            //so that the version number can be reported
+            InstrumentationLogger.Start();
+
 
             //create the model
             DynamoModel = new DynamoModel ();
@@ -299,7 +300,7 @@ namespace Dynamo
             DynamoModel.CurrentWorkspace.Y = 0;
 
             // custom node loader
-            CustomNodeManager = new CustomNodeManager(DynamoPaths.UserDefinitions);
+            CustomNodeManager = new CustomNodeManager(DynamoPathManager.Instance.UserDefinitions);
 
             SearchViewModel = new SearchViewModel();
 
@@ -311,6 +312,7 @@ namespace Dynamo
             DisposeLogic.IsShuttingDown = false;
 
             EngineController = new EngineController(this);
+            CustomNodeManager.RecompileAllNodes(EngineController);
 
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
@@ -354,20 +356,6 @@ namespace Dynamo
             }
         }
 
-        void updateManager_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
-        {
-            UpdateManager.QuitAndInstallUpdate();
-        }
-
-        void updateManager_ShutdownRequested(object sender, EventArgs e)
-        {
-            UIDispatcher.Invoke((Action) delegate
-            {
-                ShutDown(true);
-                UpdateManager.HostApplicationBeginQuit(this, e);
-            });
-        }
-
         #endregion
 
         public virtual void
@@ -395,6 +383,7 @@ namespace Dynamo
             }
 
             EngineController = new EngineController(this);
+            CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
         public void RequestRedraw()
@@ -497,6 +486,11 @@ namespace Dynamo
             Process.Start(Configurations.GitHubBugReportingLink);
         }
 
+        internal void DownloadDynamo()
+        {
+            Process.Start(Configurations.DynamoDownloadLink);
+        }
+
         internal bool CanReportABug(object parameter)
         {
             return true;
@@ -514,6 +508,8 @@ namespace Dynamo
         {
             return true;
         }
+
+        
     }
     
 }

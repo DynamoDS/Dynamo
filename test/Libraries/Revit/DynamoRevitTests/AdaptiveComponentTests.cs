@@ -19,7 +19,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByFace.dyn");
             string testPath = Path.GetFullPath(testFilePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -39,7 +39,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByCurve.dyn");
             string testPath = Path.GetFullPath(testFilePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -64,7 +64,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponent.dyn");
             string testPath = Path.GetFullPath(testFilePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 

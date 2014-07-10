@@ -83,8 +83,7 @@ namespace ProtoCore.DSASM
         public bool isExplicitCall { get; set; }
 
         private List<AssociativeGraph.GraphNode> deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
-
-
+        
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
         /// <summary>
         /// Each symbol in this map is associated with a list of indices it was indexexd into
@@ -780,8 +779,6 @@ namespace ProtoCore.DSASM
             ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
-            int blockDepth = 0;
-
             List<StackValue> registers = new List<StackValue>();
             SaveRegisters(registers);
 
@@ -805,14 +802,8 @@ namespace ProtoCore.DSASM
                 Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex);
                 AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
 
-                // Allow only if this is a recursive call
-                // It is recursive if the current function scope is equal to the function to call
-                bool isRecursive = fNode.classScope == currentScopeClass && fNode.procId == currentScopeFunction;
-                if (isRecursive)
-                {
-                    // Get the graphnodes of the function from the instruction stream and retrive the execution states
-                    execStates = depgraph.GetExecutionStatesAtScope(currentScopeClass, currentScopeFunction);
-                }
+                // Get the graphnodes of the function from the instruction stream and retrive the execution states
+                execStates = depgraph.GetExecutionStatesAtScope(currentScopeClass, currentScopeFunction);
             }
             
 
@@ -2799,9 +2790,15 @@ namespace ProtoCore.DSASM
 
             GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
+            // Get execution states
+            List<bool> execStateRestore = new List<bool>();
+            execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
+
             // Pop function stackframe as this is not allowed in Ret/Retc in debug mode
             rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
-            rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
+
+            //int execstates = (int)rmem.GetAtRelative(StackFrame.kFrameIndexExecutionStates).opdata;
+            rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count); 
 
 
             ResumeRegistersFromStackExceptRX();
@@ -3282,6 +3279,11 @@ namespace ProtoCore.DSASM
 
             while (!terminate)
             {
+                if(core.CancellationPending)
+                {
+                    throw new ExecutionCancelledException();
+                }
+
                 if (pc >= istream.instrList.Count || pc < 0)
                 {
                     break;
@@ -4795,6 +4797,8 @@ namespace ProtoCore.DSASM
             }
             return new List<List<ReplicationGuide>>();
         }
+
+        #region Opcode Handlers
 
         private void NONE_Handler(Instruction instruction)
         {
@@ -6971,14 +6975,17 @@ namespace ProtoCore.DSASM
             bool explicitCall = CallingConvention.CallType.kExplicit == callType || CallingConvention.CallType.kExplicitBase == callType;
             isExplicitCall = explicitCall;
 
+            List<bool> execStateRestore = new List<bool>();
             if (!core.Options.IDEDebugMode || core.ExecMode == InterpreterMode.kExpressionInterpreter)
             {
                 int localCount = 0;
                 int paramCount = 0;
                 GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
+                execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
+
                 rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
-                rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
+                rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count);
 
                 if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
                 {
@@ -7024,6 +7031,17 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
+
+            // Now that the stack frame is popped off, we can retrieve the returned scope
+            int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+
+            // This resotring execution states is only permitted if the current scope is still in a function
+            if (currentScopeFunction != Constants.kGlobalScope)
+            {
+                RestoreGraphNodeExecutionStates(execStateRestore);
+            }
+
             return;
         }
 
@@ -7158,6 +7176,47 @@ namespace ProtoCore.DSASM
             return;
         }
 
+        private List<bool> RetrieveExecutionStatesFromStack(int localSize, int paramSize)
+        {
+            // Retrieve the execution execution states 
+            List<bool> execStateRestore = new List<bool>();
+            int execstates = (int)rmem.GetAtRelative(StackFrame.kFrameIndexExecutionStates).opdata;
+            if (execstates > 0)
+            {
+                int offset = StackFrame.kStackFrameSize + localSize + paramSize;
+                for (int n = 0; n < execstates; ++n)
+                {
+                    int relativeIndex = -offset - n - 1;
+                    StackValue svState = rmem.GetAtRelative(relativeIndex);
+                    Validity.Assert(svState.IsBoolean);
+                    execStateRestore.Add(svState.opdata == 0 ? false : true);
+                }
+            }
+            return execStateRestore;
+        }
+
+        private void RestoreGraphNodeExecutionStates(List<bool> execStateRestore)
+        {
+            // Restore the execution states
+            if (execStateRestore.Count > 0)
+            {
+                // Get the instruction stream where the current function resides in
+                StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexFunctionBlock));
+                Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex);
+                AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
+
+                int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+
+                List<AssociativeGraph.GraphNode> graphNodesInScope = depgraph.GetGraphNodesAtScope(currentScopeClass, currentScopeFunction);
+                Validity.Assert(execStateRestore.Count == graphNodesInScope.Count);
+                for (int n = 0; n < execStateRestore.Count; ++n)
+                {
+                    graphNodesInScope[n].isDirty = execStateRestore[n];
+                }
+            }
+        }
+
         private void RETURN_Handler(Instruction instruction)
         {
             isGlobScope = true;
@@ -7217,25 +7276,13 @@ namespace ProtoCore.DSASM
                 int paramCount = 0;
                 GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
-                // Retrieve the execution execution states 
-                int execstates = (int)rmem.GetAtRelative(StackFrame.kFrameIndexExecutionStates).opdata;
-                if (execstates > 0)
-                {
-                    int offset = StackFrame.kStackFrameSize + localCount + paramCount;
-                    for (int n = 0; n < execstates; ++n)
-                    {
-                        int relativeIndex = -offset - n - 1; 
-                        StackValue svState = rmem.GetAtRelative(relativeIndex);
-                        Validity.Assert(svState.IsBoolean);
-                        execStateRestore.Add(svState.opdata == 0 ? false : true);
-                    }
-                }
+                execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
 
                 // Pop the stackframe
                 rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
 
                 // Get the size of the stackframe and all variable size contents (local, args and exec states)
-                int stackFrameSize = StackFrame.kStackFrameSize + localCount + paramCount + execstates;
+                int stackFrameSize = StackFrame.kStackFrameSize + localCount + paramCount + execStateRestore.Count;
                 rmem.PopFrame(stackFrameSize);
 
                 if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
@@ -7297,34 +7344,15 @@ namespace ProtoCore.DSASM
 
                 }
             }
-            
-            // Restore the execution states
-            if (execStateRestore.Count > 0)
+
+            // Now that the stack frame is popped off, we can retrieve the returned scope
+            int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+
+            // This resotring execution states is only permitted if the current scope is still in a function
+            if (currentScopeFunction != Constants.kGlobalScope)
             {
-                // Now that the stack frame is popped off, we can retrieve the returned scope
-                // Get graphnodes at the current scope after the return
-                int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-
-                bool isReturningFromRecursiveCall = procNode.procId == currentScopeFunction;
-                if (isReturningFromRecursiveCall)
-                {
-                    // Since there are execution states retrieved from the stack frame,
-                    // this means that we must be returning to a function and not the global scope
-                    Validity.Assert(currentScopeFunction != Constants.kGlobalScope);
-
-                    // Get the instruction stream where the current function resides in
-                    StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexFunctionBlock));
-                    Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex);
-                    AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
-
-                    List<AssociativeGraph.GraphNode> graphNodesInScope = depgraph.GetGraphNodesAtScope(currentScopeClass, currentScopeFunction);
-                    Validity.Assert(execStateRestore.Count == graphNodesInScope.Count);
-                    for (int n = 0; n < execStateRestore.Count; ++n)
-                    {
-                        graphNodesInScope[n].isDirty = execStateRestore[n];
-                    }
-                }
+                RestoreGraphNodeExecutionStates(execStateRestore);
             }
 
             return;
@@ -8120,6 +8148,8 @@ namespace ProtoCore.DSASM
             pc++;
             return;
         }
+
+        #endregion
 
         private void Exec(Instruction instruction)
         {

@@ -145,6 +145,21 @@ namespace Dynamo.Models
         }
     }
 
+    public class ViewOperationEventArgs : EventArgs
+    {
+        public enum Operation
+        {
+            FitView, ZoomIn, ZoomOut
+        }
+
+        public ViewOperationEventArgs(Operation operation)
+        {
+            this.ViewOperation = operation;
+        }
+
+        public Operation ViewOperation { get; private set; }
+    }
+
     public class PointEventArgs : EventArgs
     {
         public Point Point { get; set; }
@@ -416,18 +431,6 @@ namespace Dynamo.Models
             }
 
             Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
-        }
-
-        internal bool CanShowOpenDialogAndOpenResultCommand(object parameter)
-        {
-            return true;
-        }
-
-        internal bool CanOpen(object parameters)
-        {
-            if (File.Exists(parameters.ToString()))
-                return true;
-            return false;
         }
 
         internal void OpenInternal(string xmlPath)
@@ -807,14 +810,6 @@ namespace Dynamo.Models
             return true;
         }
 
-        internal bool CanSaveAs(object parameters)
-        {
-            if (parameters == null)
-                return false;
-
-            return true;
-        }
-
         internal bool CanClear(object parameter)
         {
             return true;
@@ -869,11 +864,6 @@ namespace Dynamo.Models
             OnDeletionComplete(this, EventArgs.Empty);
         }
 
-        internal bool CanSave(object parameter)
-        {
-            return true;
-        }
-
         /// <summary>
         /// Called when a node is added to a workspace
         /// </summary>
@@ -898,16 +888,11 @@ namespace Dynamo.Models
 
             WorkspaceViewModel wvm = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
 
-            if (wvm.CurrentState == WorkspaceViewModel.StateMachine.State.Connection)
-            {
-                if (node == wvm.ActiveConnector.ActiveStartPort.Owner)
-                    wvm.CancelActiveState();
-            }
+            if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
+                wvm.CancelActiveState();
 
             if (NodeDeleted != null)
-            {
                 NodeDeleted(node);
-            }
         }
 
         /// <summary>
@@ -1007,68 +992,6 @@ namespace Dynamo.Models
         #endregion
 
         #region public methods
-
-        /// <summary>
-        /// Present the open dialogue and open the workspace that is selected.
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void ShowOpenDialogAndOpenResult(object parameter)
-        {
-            var vm = dynSettings.Controller.DynamoViewModel;
-
-            if (vm.Model.HomeSpace.HasUnsavedChanges && !vm.AskUserToSaveWorkspaceOrCancel(vm.Model.HomeSpace))
-            {
-                return;
-            }
-
-            FileDialog _fileDialog = null;
-
-            if (_fileDialog == null)
-            {
-                _fileDialog = new OpenFileDialog()
-                {
-                    Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*",
-                    Title = "Open Dynamo Definition..."
-                };
-            }
-
-            // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
-            {
-                var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
-                _fileDialog.InitialDirectory = fi.DirectoryName;
-            }
-            else // use the samples directory, if it exists
-            {
-                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
-                string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string path = Path.Combine(location, "samples");
-
-                if (Directory.Exists(path))
-                {
-                    _fileDialog.InitialDirectory = path;
-                }
-            }
-
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
-            {
-                //if (OpenCommand.CanExecute(_fileDialog.FileName))
-                //    OpenCommand.Execute(_fileDialog.FileName);
-                if (CanOpen(_fileDialog.FileName))
-                    Open(_fileDialog.FileName);
-            }
-        }
-
-        /// <summary>
-        /// Open a definition or workspace.
-        /// </summary>
-        /// <param name="parameters">The path the the file.</param>
-        public void Open(object parameters)
-        {
-            string xmlFilePath = parameters as string;
-            var command = new DynCmd.OpenFileCommand(xmlFilePath);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
-        }
 
         public void HideWorkspace(WorkspaceModel workspace)
         {
@@ -1243,6 +1166,14 @@ namespace Dynamo.Models
 
                 var dynamoModel = dynSettings.Controller.DynamoModel;
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
+
+                if (fileVersion > currentVersion)
+                {
+                    bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
+                    if (!resume)
+                        return false;                    
+                }
+
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
@@ -1261,6 +1192,12 @@ namespace Dynamo.Models
 
                         dynSettings.DynamoLogger.Log(message);
                     }
+
+                    //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
+                    //needs to be forced to be migrated. The version number needs to be changed from
+                    //0.7.0.x to 0.6.0.0.
+                    if (fileVersion == new Version(0, 7, 0, 0))
+                        fileVersion = new Version(0, 6, 0, 0);
 
                     MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
                     MigrationManager.Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion);
@@ -1557,9 +1494,6 @@ namespace Dynamo.Models
 
             Workspaces.Add(workSpace);
 
-            workSpace.Nodes.ToList();
-            workSpace.Connectors.ToList();
-
             var functionDefinition = new CustomNodeDefinition(id)
             {
                 WorkspaceModel = workSpace
@@ -1803,39 +1737,6 @@ namespace Dynamo.Models
         public void CreateConnection(object parameters)
         {
             CreateConnectionInternal(parameters);
-        }
-
-        /// <summary>
-        ///     Save the current workspace to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentWorkspace.FileName field is updated as a side effect
-        /// </summary>
-        /// <param name="path">The path to save to</param>
-        internal void SaveAs(string path)
-        {
-            CurrentWorkspace.SaveAs(path);
-        }
-
-        /// <summary>
-        /// Save the current workspace.
-        /// </summary>
-        /// <param name="parameters">The file path.</param>
-        public void SaveAs(object parameters)
-        {
-            if (parameters == null)
-                return;
-
-            var fi = new FileInfo(parameters.ToString());
-
-            SaveAs(fi.FullName);
-        }
-
-        /// <summary>
-        ///     Attempts to save an the current workspace. Assumes that workspace has already been saved.
-        /// </summary>
-        public void Save(object parameter)
-        {
-            if (!String.IsNullOrEmpty(CurrentWorkspace.FileName))
-                SaveAs(CurrentWorkspace.FileName);
         }
 
         /// <summary>

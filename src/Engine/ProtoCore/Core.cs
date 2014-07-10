@@ -1006,15 +1006,6 @@ namespace ProtoCore
         // unlike the codeblocklist which only stores the outer most code blocks
         public List<CodeBlock> CompleteCodeBlockList { get; set; }
 
-
-
-        /// <summary>
-        /// The delta codeblock index tracks the current number of new language blocks created at compile time for every new compile phase
-        /// </summary>
-        public int DeltaCodeBlockIndex { get; set; }
-
-        // TODO Jun: Refactor this and similar indices into a logical grouping of block incrementing variables 
-
         /// <summary>
         /// ForLoopBlockIndex tracks the current number of new for loop blocks created at compile time for every new compile phase
         /// It is reset for delta compilation
@@ -1103,11 +1094,15 @@ namespace ProtoCore
         public List<string> LoadedDLLs = new List<string>();
         public int deltaCompileStartPC { get; set; }
 
+        public IDictionary<string, CallSite> CallsiteCache { get; set; }
 
-        public bool EnableCallsiteExecutionState { get; set; }
-        public CallsiteExecutionState csExecutionState { get; set; }
-
-        public Dictionary<int, CallSite> CallsiteCache { get; set; }
+        /// <summary>
+        /// This is a mapping of the current guid and number of callsites that appear within that guid.
+        /// Language only execution contains only 1 guid for the entire program.
+        /// Execution within a visual programming host means 1 guid per node, where 1 node contains a set of DS code.
+        /// Each of the callsite instances are mapped to a guid and an instance count.
+        /// </summary>
+        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
         public List<ProtoCore.AST.AssociativeAST.AssociativeNode> CachedSSANodes { get; set; }
 
 
@@ -1143,12 +1138,16 @@ namespace ProtoCore
             // Update the functiond definition in the codeblocks
             int hash = CoreUtils.GetFunctionHash(functionDef);
 
+            ProcedureNode procNode = null;
+
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
                 int index = block.procedureTable.IndexOfHash(hash);
                 if (Constants.kInvalidIndex == index)
                     continue;
+
+                procNode = block.procedureTable.procList[index];
 
                 block.procedureTable.SetInactive(index);
 
@@ -1172,6 +1171,15 @@ namespace ProtoCore
 
                 break;
             }
+
+            if (null != procNode)
+            {
+                foreach (int cbID in procNode.ChildCodeBlocks)
+                {
+                    CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
+                }
+            }
+
 
             // Update the function definition in global function tables
             foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in FunctionTable.GlobalFuncTable)
@@ -1272,7 +1280,13 @@ namespace ProtoCore
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
-            DeltaCodeBlockIndex = 0;
+
+            // The main codeblock never goes out of scope
+            // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
+            // As of the current requirements, there is only 1 main scope, the rest are nested within.
+            CodeBlockIndex = CodeBlockList.Count;
+            RuntimeTableIndex = CodeBlockIndex;
+
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             // Jun this is where the temp solutions starts for implementing language blocks in delta execution
@@ -1422,28 +1436,19 @@ namespace ProtoCore
             builtInsLoaded = false;
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
-            csExecutionState = null;
-            EnableCallsiteExecutionState = false;
 
-            // TODO: Remove check once fully implemeted
-            if (EnableCallsiteExecutionState)
-            {
-                csExecutionState = CallsiteExecutionState.LoadState();
-            }
-            else
-            {
-                csExecutionState = new CallsiteExecutionState();
-            }
-            CallsiteCache = new Dictionary<int, CallSite>();
+            CallsiteCache = new Dictionary<string, CallSite>();
             CachedSSANodes = new List<AssociativeNode>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
             ASTToCallSiteMap = new Dictionary<int, CallSite>();
+            CallsiteGuidMap = new Dictionary<Guid, int>();
 
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
+            cancellationPending = false;
         }
 
         #region Trace Data Serialization Methods/Members
@@ -1493,7 +1498,7 @@ namespace ProtoCore
                 // Get a list of GraphNode objects that correspond to this node.
                 var graphNodeIds = graphNodes.
                     Where(gn => gn.guid == nodeGuid).
-                    Select(gn => gn.UID);
+                    Select(gn => gn.CallsiteIdentifier);
 
                 if (graphNodeIds.Count() <= 0)
                     continue;
@@ -1625,6 +1630,15 @@ namespace ProtoCore
 
         private int tempVarId = 0;
         private int tempLanguageId = 0;
+
+        private bool cancellationPending = false;
+        public bool CancellationPending
+        {
+            get
+            {
+                return cancellationPending;
+            }
+        }
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AST.AssociativeAST.AssociativeNode AssocNode { get; set; }
@@ -1974,7 +1988,7 @@ namespace ProtoCore
             {
                 if (DSASM.CodeBlockType.kLanguage == codeBlock.blockType || DSASM.CodeBlockType.kFunction == codeBlock.blockType)
                 {
-                    Validity.Assert(codeBlock.codeBlockId < CodeBlockIndex);
+                    Validity.Assert(codeBlock.codeBlockId < RuntimeTableIndex);
                     istreamList[codeBlock.codeBlockId] = codeBlock.instrStream;
                 }
 
@@ -2032,6 +2046,8 @@ namespace ProtoCore
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
+            RuntimeTableIndex = CompleteCodeBlockList.Count;
+
             // Build the runtime symbols
             DSExecutable.runtimeSymbols = new DSASM.SymbolTable[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
@@ -2047,7 +2063,7 @@ namespace ProtoCore
             }
 
             // Build the executable instruction streams
-            DSExecutable.instrStreamList = new DSASM.InstructionStream[CodeBlockIndex];
+            DSExecutable.instrStreamList = new DSASM.InstructionStream[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
@@ -2192,7 +2208,7 @@ namespace ProtoCore
                                           FunctionTable, 
                                           Options.ExecutionMode);
             }
-            else if (!CallsiteCache.TryGetValue(graphNode.UID, out csInstance))
+            else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
                 var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
@@ -2203,7 +2219,7 @@ namespace ProtoCore
                                           Options.ExecutionMode,
                                           traceData);
 
-                CallsiteCache.Add(graphNode.UID, csInstance);
+                CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
                 ASTToCallSiteMap[graphNode.AstID] = csInstance;
 
@@ -2222,6 +2238,17 @@ namespace ProtoCore
         {
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
+        }
+
+        public void RequestCancellation()
+        {
+            if (this.cancellationPending)
+            {
+                var message = "Cancellation cannot be requested twice";
+                throw new InvalidOperationException(message);
+            }
+
+            this.cancellationPending = true;
         }
     }
 }

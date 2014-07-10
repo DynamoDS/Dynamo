@@ -309,8 +309,7 @@ namespace DynamoCoreUITests
             double initY = workspaceModel.Y;
 
             // Zoom to max zoom value
-            if (workspaceVM.FitViewCommand.CanExecute(null))
-                workspaceVM.FitViewCommand.Execute(null);
+            workspaceVM.FitViewInternal();
             
             // Check for no changes
             Assert.AreEqual(workspaceModel.Zoom, initZoom);
@@ -332,8 +331,7 @@ namespace DynamoCoreUITests
             CreateNodeOnCurrentWorkspace();
 
             // Zoom to max zoom value
-            if (workspaceVM.FitViewCommand.CanExecute(null))
-                workspaceVM.FitViewCommand.Execute(null);
+            workspaceVM.FitViewInternal();
 
             // Check for no changes
             Assert.AreNotEqual(workspaceModel.Zoom, initZoom);
@@ -357,8 +355,7 @@ namespace DynamoCoreUITests
             CreateNodeOnCurrentWorkspace();
 
             // Zoom to max zoom value
-            if (workspaceVM.FitViewCommand.CanExecute(null))
-                workspaceVM.FitViewCommand.Execute(null);
+            workspaceVM.FitViewInternal();
 
             // Check for no changes
             Assert.AreNotEqual(workspaceModel.Zoom, initZoom);
@@ -384,8 +381,7 @@ namespace DynamoCoreUITests
             for (int i = 0; i < 100; i++)
             {
                 // Zoom to max zoom value
-                if (workspaceVM.FitViewCommand.CanExecute(null))
-                    workspaceVM.FitViewCommand.Execute(null);
+                workspaceVM.FitViewInternal();
             }
 
             // Not crashed
@@ -403,8 +399,7 @@ namespace DynamoCoreUITests
 
             CreateNodeOnCurrentWorkspace();
 
-            if (workspaceVM.FitViewCommand.CanExecute(null))
-                workspaceVM.FitViewCommand.Execute(null);
+            workspaceVM.FitViewInternal();
 
             double curZoom = workspaceModel.Zoom;
             double curX = workspaceModel.X;
@@ -413,8 +408,7 @@ namespace DynamoCoreUITests
             // Do some zoom action before FitView again
             Vm.ZoomIn(null);
 
-            if (workspaceVM.FitViewCommand.CanExecute(null))
-                workspaceVM.FitViewCommand.Execute(null);
+            workspaceVM.FitViewInternal();
 
             // Check actual zoom
             Assert.AreEqual(workspaceModel.Zoom, curZoom);
@@ -433,8 +427,7 @@ namespace DynamoCoreUITests
 
             CreateNodeOnCurrentWorkspace();
 
-            if (workspaceVM.FitViewCommand.CanExecute(null))
-                workspaceVM.FitViewCommand.Execute(null);
+            workspaceVM.FitViewInternal();
 
             double curZoom = workspaceModel.Zoom;
             double curX = workspaceModel.X;
@@ -443,8 +436,7 @@ namespace DynamoCoreUITests
             // Do some pan action before FitView again
             Vm.Pan("Up" as object);
 
-            if (workspaceVM.FitViewCommand.CanExecute(null))
-                workspaceVM.FitViewCommand.Execute(null);
+            workspaceVM.FitViewInternal();
 
             // Check actual zoom
             Assert.AreEqual(workspaceModel.Zoom, curZoom);

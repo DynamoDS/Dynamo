@@ -46,7 +46,7 @@ namespace Dynamo.Tests
             string assDir = fi.DirectoryName;
 
             // Setup the core paths
-            DynamoPaths.SetupDynamoPathsCore(Path.GetFullPath(assDir + @"\.."));
+            DynamoPathManager.Instance.InitializeCore(Path.GetFullPath(assDir + @"\.."));
 
             StartDynamo();
 
@@ -65,7 +65,7 @@ namespace Dynamo.Tests
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(DynamoPaths.Packages, "Dynamo Sample Custom Nodes", "dyf");
+            string defsLoc = Path.Combine(DynamoPathManager.Instance.Packages, "Dynamo Sample Custom Nodes", "dyf");
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
@@ -96,7 +96,7 @@ namespace Dynamo.Tests
 
         void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
         {
-            DynamoRevit.SetRunEnabledBasedOnContext(e);
+            DynamoRevit.SetRunEnabledBasedOnContext(e.NewActiveView);
         }
 
         private void StartDynamo()
@@ -111,7 +111,7 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-                var logger = new DynamoLogger();
+                var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
                 dynSettings.DynamoLogger = logger;
                 var updateManager = new UpdateManager.UpdateManager(logger);
 
@@ -201,14 +201,12 @@ namespace Dynamo.Tests
 
         protected void OpenAndRun(string subPath)
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, subPath);
             string testPath = Path.GetFullPath(samplePath);
 
             Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
@@ -217,12 +215,10 @@ namespace Dynamo.Tests
 
         public void OpenModel(string relativeFilePath)
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_samplesPath, relativeFilePath);
             string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
         }
 
         public void RunCurrentModel()

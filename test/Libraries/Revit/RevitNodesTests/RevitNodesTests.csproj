@@ -75,6 +75,7 @@
     <Compile Include="Elements\DividedPathTests.cs" />
     <Compile Include="Elements\DividedSurfaceTests.cs" />
     <Compile Include="Elements\DocumentTests.cs" />
+    <Compile Include="Elements\ElementTests.cs" />
     <Compile Include="Elements\FloorTests.cs" />
     <Compile Include="Elements\FloorTypeTests.cs" />
     <Compile Include="Elements\GridTests.cs" />
@@ -107,12 +108,17 @@
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoFaceTests.cs" />
+    <Compile Include="GeometryConversion\RevitToProtoSolidTests.cs" />
     <Compile Include="GeometrySanityCheck.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GeometricRevitNodeTest.cs" />
     <Compile Include="RevitNodeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
