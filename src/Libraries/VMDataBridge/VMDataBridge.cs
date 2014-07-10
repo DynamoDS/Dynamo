@@ -69,7 +69,7 @@ namespace VMDataBridge
             Action<string, object> bridgeData = BridgeData;
 
             return AstFactory.BuildFunctionCall(
-                "VMDataBridge.DataBridge", "BridgeData",  //bridgeData,
+                bridgeData,
                 new List<AssociativeNode> { AstFactory.BuildStringNode(id.ToString()), input });
         }
     }
