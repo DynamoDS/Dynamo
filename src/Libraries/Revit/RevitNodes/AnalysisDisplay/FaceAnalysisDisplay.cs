@@ -115,7 +115,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="sampleUvPoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, ElementFaceReference elementFaceReference,
+        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, object elementFaceReference,
                         double[][] sampleUvPoints, double[] samples)
         {
 
@@ -144,7 +144,7 @@ namespace Revit.AnalysisDisplay
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
 
-            return new FaceAnalysisDisplay(view.InternalView, elementFaceReference.InternalReference, sampleUvPoints.ToUvs(), samples);
+            return new FaceAnalysisDisplay(view.InternalView, ElementFaceReference.TryGetFaceReference(elementFaceReference).InternalReference, sampleUvPoints.ToUvs(), samples);
         }
 
         #endregion
