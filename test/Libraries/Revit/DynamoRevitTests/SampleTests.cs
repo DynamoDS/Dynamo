@@ -1197,7 +1197,7 @@ namespace Dynamo.Tests
 
         #region New Samples Tests
 
-        [Test]
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Adaptive_Component_Placement()
         {
@@ -1245,7 +1245,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Color()
         {
@@ -1275,7 +1275,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Ignore]
+        [Ignore, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Floors_and_Framing()
         {
@@ -1318,7 +1318,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test]
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_ImportSolid()
         {
@@ -1345,7 +1345,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_PlaceFamiliesByLevel_Set_Parameters()
         {
@@ -1377,7 +1377,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test]
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_StructuralFraming()
         {
