@@ -22,7 +22,19 @@ namespace Unfold
             {
                 EdgeLikeEntity objitem = obj as EdgeLikeEntity;
                 var otherval = objitem.Start.ToString() + objitem.End.ToString();
-                return otherval == this.Start.ToString() + this.End.ToString();
+                 
+                 //equals will return true even if the start and end point are reversed since on one object this should be
+                // the same edge, if this is equal is not implemented this way surface perimeter curves fail to be located correctly 
+                 // in hash tables
+
+                 if (otherval == this.Start.ToString() + this.End.ToString() || otherval == this.End.ToString() + this.Start.ToString()){
+                     return true;
+                 }
+                 else{
+
+                     return false;
+                 }
+                 
 
 
             }
@@ -47,7 +59,7 @@ namespace Unfold
             {
                 Start = curve.StartPoint;
                 End = curve.EndPoint;
-                Curve = Curve;
+                Curve = curve;
                 // not sure I should be storing this here as well, but if so, then should eliminate edgewrapper class
                 Real_Edge = null;
 
@@ -59,11 +71,14 @@ namespace Unfold
             {
                 unchecked // Overflow is fine, just wrap
                 {
-                    int hash = 17;
-                    // Suitable nullity checks etc, of course :)
-                    hash = hash * 23 + Start.ToString().GetHashCode();
-                    hash = hash * 23 + End.ToString().GetHashCode();
+                    //implementing XOR hashcode since a curve defined edge should hash to the same value even if its
+                    // start and end points are stored in the reverse fields.  Is there something better?
+
+                    int hash = this.Start.ToString().GetHashCode() ^ this.End.ToString().GetHashCode();
+                    Console.WriteLine(this);
+                    Console.WriteLine(hash);
                     return hash;
+                    
                 }
             }
 
