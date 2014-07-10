@@ -45,7 +45,7 @@ namespace VMDataBridge
         /// </summary>
         /// <param name="guid"></param>
         /// <param name="data"></param>
-        //[IsVisibleInDynamoLibrary(false)]
+        [IsVisibleInDynamoLibrary(false)]
         public static void BridgeData(string guid, [ArbitraryDimensionArrayImport] object data)
         {
             Guid id;
