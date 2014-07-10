@@ -5339,6 +5339,89 @@ a = [Associative]
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 14);
         }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution04()
+        {
+            string code = @"
+
+def func_11546f565974453bae527393c546bbff: var[]..[](x1 : var[]..[])
+{
+    tSSA_152_e492b6a8fc29471aaa45faf8224737f3 = x1;
+    x1_ffa07effe6744bd395ebba8bdd23725c = tSSA_152_e492b6a8fc29471aaa45faf8224737f3;
+    tSSA_153_e492b6a8fc29471aaa45faf8224737f3 = x1_ffa07effe6744bd395ebba8bdd23725c;
+    x2_ffa07effe6744bd395ebba8bdd23725c = tSSA_153_e492b6a8fc29471aaa45faf8224737f3;
+    tSSA_154_e492b6a8fc29471aaa45faf8224737f3 = x2_ffa07effe6744bd395ebba8bdd23725c;
+    x2_46afd41b5dd34f05a17e6e03e502c58c = tSSA_154_e492b6a8fc29471aaa45faf8224737f3;
+    tSSA_155_e492b6a8fc29471aaa45faf8224737f3 = x2_46afd41b5dd34f05a17e6e03e502c58c;
+    x3_46afd41b5dd34f05a17e6e03e502c58c = tSSA_155_e492b6a8fc29471aaa45faf8224737f3;
+    var_42b8b1146b104707a53e30da98186619 = [Associative]
+    {
+        return = [Imperative]
+        {
+            temp_0_d2020fc4_a07a_40c5_b73f_7b00eece1801_d2020fc4a07a40c5b73f7b00eece1801 = False;
+            if(temp_0_d2020fc4_a07a_40c5_b73f_7b00eece1801_d2020fc4a07a40c5b73f7b00eece1801)
+            {
+                var_059069c11c06408eac52d7ca9c6d0792 = [Associative]
+                {
+                    return = [Imperative]
+                    {
+                        temp_0_7f9ff9e5_b2ea_408d_8a43_020caf0f2146_7f9ff9e5b2ea408d8a43020caf0f2146 = True;
+                        if(temp_0_7f9ff9e5_b2ea_408d_8a43_020caf0f2146_7f9ff9e5b2ea408d8a43020caf0f2146)
+                        {
+                            x2_a61607c2dcec4e46aacddccd1ea4b0a5 = x2_ffa07effe6744bd395ebba8bdd23725c;
+                            x4_a61607c2dcec4e46aacddccd1ea4b0a5 = x2_a61607c2dcec4e46aacddccd1ea4b0a5;
+                            return = x4_a61607c2dcec4e46aacddccd1ea4b0a5;
+
+                        }
+                        else
+                        {
+                            x5_2138c68cf2424f8396b6d12eb51a83e8 = 42;
+                            return = x5_2138c68cf2424f8396b6d12eb51a83e8;
+
+                        }
+
+                    }
+                    ;
+
+                }
+                ;
+                result_d15288db1fed4ada9573bb086072dd58 = var_059069c11c06408eac52d7ca9c6d0792;
+                x7_d15288db1fed4ada9573bb086072dd58 = result_d15288db1fed4ada9573bb086072dd58;
+                return = x7_d15288db1fed4ada9573bb086072dd58;
+
+            }
+            else
+            {
+                x8_5b0645749f8b4369ba959cdc54401bcd = 1024;
+                x8_ddd3427761ab4ab4be4d2162b2d3ef18 = x8_5b0645749f8b4369ba959cdc54401bcd;
+                x9_ddd3427761ab4ab4be4d2162b2d3ef18 = x8_ddd3427761ab4ab4be4d2162b2d3ef18;
+                return = x9_ddd3427761ab4ab4be4d2162b2d3ef18;
+
+            }
+
+        }
+        ;
+
+    }
+    ;
+    tSSA_156_e492b6a8fc29471aaa45faf8224737f3 = var_42b8b1146b104707a53e30da98186619;
+    var_d46628382595480aaa8a582644b05b02 = tSSA_156_e492b6a8fc29471aaa45faf8224737f3;
+    tSSA_157_e492b6a8fc29471aaa45faf8224737f3 = var_d46628382595480aaa8a582644b05b02;
+    return = tSSA_157_e492b6a8fc29471aaa45faf8224737f3;
+}
+
+x = 5;
+r = func_11546f565974453bae527393c546bbff(x);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 1024);
+        }
     }
 
 }
