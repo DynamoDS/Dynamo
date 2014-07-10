@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +10,6 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
-using DSCore;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -20,7 +18,9 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Lang;
+
+using VMDataBridge;
+
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.Nodes
@@ -136,7 +136,7 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Children.Add(View);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
-            VMDataBridge.RegisterCallback(
+            DataBridge.RegisterCallback(
                 GUID,
                 obj =>
                     nodeUI.Dispatcher.Invoke(
@@ -223,15 +223,16 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            return new[]
+            if (IsPartiallyApplied)
             {
-                IsPartiallyApplied
-                    ? AstFactory.BuildAssignment(
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
                         AstFactory.BuildFunctionObject(
                             new IdentifierListNode
                             {
-                                LeftNode = AstFactory.BuildIdentifier("VMDataBridge"),
+                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
                                 RightNode = AstFactory.BuildIdentifier("BridgeData")
                             },
                             2,
@@ -241,14 +242,18 @@ namespace Dynamo.Nodes
                                 AstFactory.BuildStringNode(GUID.ToString()),
                                 AstFactory.BuildNullNode()
                             }))
-                    : AstFactory.BuildFunctionCall(
-                        new Action<string, object>(VMDataBridge.BridgeData),
-                        new List<AssociativeNode>
-                        {
-                            AstFactory.BuildStringNode(GUID.ToString()),
-                            inputAstNodes[0]
-                        })
+                };
+            }
+
+            var resultAst = new[]
+            {
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    DataBridge.GenerateBridgeDataAst(GUID, inputAstNodes[0])),
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
+
+            return resultAst;
         }
 
         #region IWatchViewModel interface

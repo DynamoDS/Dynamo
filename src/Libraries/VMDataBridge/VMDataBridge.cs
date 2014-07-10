@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Autodesk.DesignScript.Runtime;
 
-namespace DSCore
+using ProtoCore.AST.AssociativeAST;
+
+namespace VMDataBridge
 {
     /// <summary>
     ///     Provides callback registration by GUID, allows for hooking Actions into the VM.
     /// </summary>
-    public static class VMDataBridge
+    public static class DataBridge
     {
-        private static readonly Dictionary<Guid, Action<object>> Callbacks = new Dictionary<Guid, Action<object>>();
+        private static readonly Dictionary<Guid, Action<object>> callbacks =
+            new Dictionary<Guid, Action<object>>();
 
         /// <summary>
         ///     Registers a callback for a given GUID.
@@ -21,7 +23,7 @@ namespace DSCore
         [SupressImportIntoVM]
         public static void RegisterCallback(Guid id, Action<object> callback)
         {
-            Callbacks[id] = callback;
+            callbacks[id] = callback;
         }
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace DSCore
         [SupressImportIntoVM]
         public static bool UnregisterCallback(Guid id)
         {
-            return Callbacks.Remove(id);
+            return callbacks.Remove(id);
         }
 
         /// <summary>
@@ -43,6 +45,7 @@ namespace DSCore
         /// </summary>
         /// <param name="guid"></param>
         /// <param name="data"></param>
+        //[IsVisibleInDynamoLibrary(false)]
         public static void BridgeData(string guid, [ArbitraryDimensionArrayImport] object data)
         {
             Guid id;
@@ -50,8 +53,24 @@ namespace DSCore
                 return;
 
             Action<object> callback;
-            if (Callbacks.TryGetValue(id, out callback))
+            if (callbacks.TryGetValue(id, out callback))
                 callback(data);
+        }
+
+        /// <summary>
+        ///     Produces AST that, when executed by the VM, will perform Data Bridging
+        ///     by calling BridgeData.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="input"></param>
+        [SupressImportIntoVM]
+        public static AssociativeNode GenerateBridgeDataAst(Guid id, AssociativeNode input)
+        {
+            Action<string, object> bridgeData = BridgeData;
+
+            return AstFactory.BuildFunctionCall(
+                "VMDataBridge.DataBridge", "BridgeData",  //bridgeData,
+                new List<AssociativeNode> { AstFactory.BuildStringNode(id.ToString()), input });
         }
     }
 }
