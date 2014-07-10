@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerClient()
         {
-            Client = new Client(null, "http://54.225.121.251"); 
+            Client = new Client(null, "http://www.dynamopackages.com"); 
             this.CachedPackageList = new List<PackageManagerSearchElement>();
         }
 
@@ -119,7 +119,7 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            return !PackageUtilities.IsNewerVersion(currentVersion, header._id);
+            return !Greg.Utility.PackageUtilities.IsNewerVersion(currentVersion, header._id);
         }
 
         public bool IsUserPackageOwner(string packageId)
@@ -377,9 +377,15 @@ namespace Dynamo.PackageManager
                 x.DownloadState == PackageDownloadHandle.State.Error).ToList().ForEach(x=>Downloads.Remove(x));
         }
 
+        /// <summary>
+        /// This method downloads the package represented by the PackageDownloadHandle,
+        /// uninstalls its current installation if necessary, and installs the package.
+        /// 
+        /// Note that, if the package is already installed, must be uninstallable
+        /// </summary>
+        /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
-
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             Downloads.Add( packageDownloadHandle );
 
@@ -400,7 +406,15 @@ namespace Dynamo.PackageManager
 
                                 var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                                 if (firstOrDefault != null)
-                                    firstOrDefault.UninstallCommand.Execute();
+                                {
+                                    try { firstOrDefault.UninstallCore(); }
+                                    catch
+                                    {
+                                        MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name + 
+                                            "  The package may need to be reinstalled manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    }
+                                    
+                                } 
 
                                 if (packageDownloadHandle.Extract(out dynPkg))
                                 {
