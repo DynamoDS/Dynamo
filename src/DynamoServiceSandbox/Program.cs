@@ -23,17 +23,9 @@ namespace DynamoServiceSandbox
                 // DynamoSandbox.exe /c "C:\file path\file.xml"
                 // 
                 string commandFilePath = string.Empty;
-                bool enableServer = false;
-
                 for (int i = 0; i < args.Length; ++i)
                 {
                     string arg = args[i];
-
-                    if (arg.ToLower() == "/server")
-                    {
-                        enableServer = true;
-                        continue;
-                    }
 
                     // Looking for '/c'
                     if (arg.Length != 2 || (arg[0] != '/'))
@@ -48,11 +40,10 @@ namespace DynamoServiceSandbox
                 }
 
                 var ui = DynamoView.MakeSandbox(commandFilePath);
-                if (enableServer)
-                {
-                    WebApiServer.Run();
-                    dynSettings.EnableServer();
-                }
+
+                WebApiServer.Run();
+                dynSettings.EnableServer();
+
                 Application app = new Application();
                 app.Run(ui);
             }

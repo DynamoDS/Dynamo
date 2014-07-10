@@ -8,6 +8,7 @@ using DynamoWebServer.Responses;
 using Dynamo.PackageManager;
 using Dynamo.Messages;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Dynamo.Utilities
 {
@@ -72,20 +73,21 @@ namespace Dynamo.Utilities
         /// <param name="sessionId">Current session Id</param>
         public static void ExecuteMessageFromSocket(string message, string sessionId)
         {
-            Message msg = Message.Deserialize(message);
-            msg.SessionId = sessionId;
-            msg.SendAnswer += SendAnswerToWebSocket;
+            Message msg = MessageHandler.DeserializeMessage(message);
+            MessageHandler handler = new MessageHandler(msg, sessionId);
+            handler.ResultReady += SendAnswerToWebSocket;
 
-            Application.Current.Dispatcher.Invoke(new Action(() => msg.Execute(Controller.DynamoViewModel)));
+            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
+                .Invoke(new Action(() => handler.Execute(Controller.DynamoViewModel)));
         }
 
-        private static void SendAnswerToWebSocket(string answer, string sessionId)
+        private static void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
         {
             WebSocketServer.SendResponse(new ComputationResponse()
             {
                 Status = ResponceStatuses.Success,
-                NodesInJson = answer
-            }, sessionId);
+                Nodes = e.Message
+            }, e.SessionID);
         }
 
         private static void LogInfo(string message, string sessionId)

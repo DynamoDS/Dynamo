@@ -90,11 +90,11 @@ namespace Dynamo.Search.SearchElements
         public string Keywords { get; private set; }
 
         [DataMember]
-        public string[] Parameters { get; private set; }
+        public IEnumerable<string> Parameters { get; private set; }
 
         [DataMember]
-        public string[] ReturnKeys { get; private set; }
-
+        public IEnumerable<string> ReturnKeys { get; private set; }
+        
         public NodeModelItem(SearchElementBase node)
         {
             Category = node.FullCategoryName;
@@ -106,14 +106,20 @@ namespace Dynamo.Search.SearchElements
             Weight = node.Weight;
             Keywords = node.Keywords;
 
-            FunctionDescriptor functionItem = (dynSettings.Controller.EngineController.GetFunctionDescriptor(CreatingName));
+            PopulateKeysAndParameters();
+        }
+
+        private void PopulateKeysAndParameters()
+        {
+            var controller = dynSettings.Controller.EngineController;
+            var functionItem = (controller.GetFunctionDescriptor(CreatingName));
             if (functionItem != null)
             {
-                Parameters = functionItem.Parameters.Select(elem => elem.Name).ToArray();
+                Parameters = functionItem.Parameters.Select(elem => elem.Name);
 
                 if (functionItem.ReturnKeys != null && functionItem.ReturnKeys.Any())
                 {
-                    ReturnKeys = functionItem.ReturnKeys.ToArray();
+                    ReturnKeys = functionItem.ReturnKeys;
                 }
                 else
                 {
@@ -122,25 +128,24 @@ namespace Dynamo.Search.SearchElements
             }
             else
             {
+                TypeLoadData tld = null;
+                
                 if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(CreatingName))
                 {
-                    TypeLoadData tld = dynSettings.Controller.BuiltInTypesByName[CreatingName];
-
-                    ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                    var newEl = (NodeModel)obj.Unwrap();
-
-                    Parameters = newEl.InPorts.Select(elem => elem.PortName).ToArray();
-                    ReturnKeys = newEl.OutPorts.Select(elem => elem.PortName).ToArray();
+                    tld = dynSettings.Controller.BuiltInTypesByName[CreatingName];
                 }
                 else if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(CreatingName))
                 {
-                    TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[CreatingName];
+                    tld = dynSettings.Controller.BuiltInTypesByNickname[CreatingName];
+                }
 
+                if (tld != null)
+                {
                     ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                     var newEl = (NodeModel)obj.Unwrap();
 
-                    Parameters = newEl.InPorts.Select(elem => elem.PortName).ToArray();
-                    ReturnKeys = newEl.OutPorts.Select(elem => elem.PortName).ToArray();
+                    Parameters = newEl.InPorts.Select(elem => elem.PortName);
+                    ReturnKeys = newEl.OutPorts.Select(elem => elem.PortName);
                 }
                 else
                 {

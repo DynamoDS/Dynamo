@@ -2,6 +2,6 @@
 {
     public class ComputationResponse : Response
     {
-        public string NodesInJson { get; set; }
+        public string Nodes { get; set; }
     }
 }
