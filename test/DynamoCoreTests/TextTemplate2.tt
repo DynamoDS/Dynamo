@@ -1,0 +1,77 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+ <#@ assembly name="System.Core" #>
+ <#@ import namespace="System.Linq" #>
+ <#@ import namespace="System.IO" #>
+ <#@ import namespace="System.Text" #>
+ <#@ import namespace="System.Collections.Generic" #>
+ <#@ output extension=".cs" #>
+ 
+ <#
+ Write("using System;"+"\n");
+ Write("using System.Collections.Generic;"+"\n");
+ Write("using System.IO;"+"\n");
+ Write("using NUnit.Framework;"+"\n");
+ Write("using Dynamo;"+"\n");
+ Write("using ProtoCore;"+"\n");
+ Write("using ProtoCore.DSASM;"+"\n");
+ Write("using ProtoCore.DSASM.Mirror;"+"\n");
+ Write("using ProtoCore.Lang;"+"\n");
+ Write("using System.Linq;"+"\n");
+ Write("using ProtoTestFx;"+"\n");
+ Write("using ProtoTest.TD;"+"\n");
+ Write("using ProtoTestFx.TD;"+"\n");
+ Write("using Dynamo.DSEngine;"+"\n");
+ Write("using Dynamo.Utilities;"+"\n");
+ Write("using Dynamo.ViewModels;"+"\n");
+ Write("using System.Text;"+"\n");
+ Write("using ProtoCore.Utils;"+"\n");
+ Write("using ProtoFFI;"+"\n");
+ Write("namespace Dynamo.Tests"+"\n");
+ Write("{"+"\n");
+ Write("public class MicrofeatureTests : CBNEngineTests"+"\n");
+ Write("{"+"\n");
+ Write("public TestFrameWork thisTest = new TestFrameWork();"+"\n");
+ 	   string dirPath="C:\\DDSGit\\Dynamo\\test\\core\\dsevaluation\\DSFiles\\";
+ 	   string[] filePaths = Directory.GetFiles(dirPath, "*.ds");
+       foreach( string item in filePaths)
+ 	   {
+ #>
+ <#
+ 
+ 		string[] lines = System.IO.File.ReadAllLines(item);
+ 		
+ 		string[] substrings = item.Split('\\');
+ 		int c=substrings.Count();
+ 		string[] fileName=substrings[c-1].Split('.');
+         Write("[Test]"+"\n");
+ 		Write("[Category(\"LanguageCBNTest\")]"+"\n");
+         Write(CurrentIndent+"public void "+fileName[0]+"()"+"\n");
+ 		PushIndent("     ");
+         Write(CurrentIndent+"{"+"\n");
+         Write(CurrentIndent+"string code ="+"\n");
+ 		PushIndent("     ");
+         Write(CurrentIndent+"@\""+"\n");
+ 		PopIndent();
+ 		foreach (string i in lines)
+ 		{
+ 		 string newi=i.Replace("    ",string.Empty);
+		 string lns=newi.Replace("\"","\"\"");
+ 			Write(CurrentIndent+lns+"\n");
+ 		}
+         Write(CurrentIndent+"\";"+"\n");
+ 		
+ 		Write(CurrentIndent+"ExecutionMirror mirror = thisTest.RunScriptSource(code);"+"\n");
+ 		Write(CurrentIndent+"ProtoCore.Core core = thisTest.GetTestCore();"+"\n");
+ 		Write(CurrentIndent+"Guid guid = this.RunScriptDynamo(code);"+"\n");
+ 		Write(CurrentIndent+"ProtoCore.Core dynamoCore =Controller.EngineController.LiveRunnerCore;"+"\n");
+ 		Write(CurrentIndent+"this.CompareCores(core, dynamoCore,guid);"+"\n");
+ 		Write(CurrentIndent+"}"+"\n");
+ 		PopIndent();
+ #>
+ <#
+ }
+     Write("}"+"\n");
+     Write("}"+"\n");
+ #>
+ 
+

@@ -16,6 +16,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace ProtoTestFx.TD
 {
@@ -29,14 +30,16 @@ namespace ProtoTestFx.TD
         bool testDebug;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
-       
-
-        
+ 
         public TestFrameWork()
         {
             runner = new ProtoScriptTestRunner();
         }
 
+        public ProtoCore.Core GetTestCore()
+        {
+            return testCore;
+        }
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
@@ -82,6 +85,7 @@ namespace ProtoTestFx.TD
         /// Build a Core with default options and contains no function or class entries
         /// </summary>
         /// <returns></returns>
+        
         public ProtoCore.Core SetupEmptyTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
@@ -179,7 +183,7 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <param name="sourceCode">The String contains the ds codes</param>
         /// <returns></returns>
-        public ExecutionMirror RunScriptSource(string sourceCode, string errorstring = "", string includePath = "")
+        public virtual ExecutionMirror RunScriptSource(string sourceCode, string errorstring = "", string includePath = "")
         {
             
             if (testImport)
@@ -248,6 +252,16 @@ namespace ProtoTestFx.TD
                     }
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
+                String fileName = TestContext.CurrentContext.Test.Name + ".ds";
+                String folderName = TestContext.CurrentContext.Test.FullName;
+
+                string[] substrings = folderName.Split('.');
+
+                string path ="..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
+                if (!System.IO.Directory.Exists(path))
+                    System.IO.Directory.CreateDirectory(path);    
+                
+                createDSFile(fileName,path,sourceCode);
                 SetErrorMessage(errorstring);
                 return testMirror;
             }
@@ -290,6 +304,7 @@ namespace ProtoTestFx.TD
                       File.Delete(fullPath);
                   }
                   FileStream files = new System.IO.FileStream(fullPath, System.IO.FileMode.Append, System.IO.FileAccess.Write);
+            
                   System.IO.StreamWriter sw = new System.IO.StreamWriter(files);
                   
                   sw.WriteLine(code);

@@ -57,7 +57,9 @@ namespace DSIronPython
             catch (Exception e)
             {
                 OnEvaluationEnd(false, engine, scope, code, bindingValues);
-                throw e;
+                var eo = engine.GetService<ExceptionOperations>();
+                string error = eo.FormatException(e);
+                throw new Exception(error);
             }
 
             OnEvaluationEnd(true, engine, scope, code, bindingValues);
