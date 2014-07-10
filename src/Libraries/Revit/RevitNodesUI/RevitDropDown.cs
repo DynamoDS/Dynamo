@@ -378,7 +378,7 @@ namespace DSRevitNodesUI
         }
     }
 
-    [NodeName("All Categories")]
+    [NodeName("Categories")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All built-in categories.")]
     [IsDesignScriptCompatible]
