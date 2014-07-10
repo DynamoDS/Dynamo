@@ -18,8 +18,8 @@ namespace VMDataBridge
         /// <summary>
         ///     Registers a callback for a given GUID.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="callback"></param>
+        /// <param name="id">Guid used to identify the callback.</param>
+        /// <param name="callback">Action to be invoked with data from the VM.</param>
         [SupressImportIntoVM]
         public static void RegisterCallback(Guid id, Action<object> callback)
         {
@@ -29,8 +29,7 @@ namespace VMDataBridge
         /// <summary>
         ///     Unregisters a callback for a given GUID.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Guid identifying the callback to be removed.</param>
         [SupressImportIntoVM]
         public static bool UnregisterCallback(Guid id)
         {
@@ -38,13 +37,14 @@ namespace VMDataBridge
         }
 
         /// <summary>
-        ///     Calls the registered callback for the given guid string
-        ///     with the given data. This is safe to include in standalone
-        ///     DS scripts, since if there are no callbacks registered
-        ///     then the method will do nothing.
+        ///     Calls the registered callback for the given guid string with the given data.
+        ///     This is safe to include in standalone DS scripts, since if there are no callbacks
+        ///     registered then the method will do nothing.
         /// </summary>
-        /// <param name="guid"></param>
-        /// <param name="data"></param>
+        /// <param name="guid">
+        ///     String representation of a guid identifying which registered callback to invoke.
+        /// </param>
+        /// <param name="data">Data to be passed to the callback.</param>
         [IsVisibleInDynamoLibrary(false)]
         public static void BridgeData(string guid, [ArbitraryDimensionArrayImport] object data)
         {
@@ -61,8 +61,8 @@ namespace VMDataBridge
         ///     Produces AST that, when executed by the VM, will perform Data Bridging
         ///     by calling BridgeData.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="input"></param>
+        /// <param name="id">Guid identifying which registered callback to be invoked.</param>
+        /// <param name="input">AST representing the data to be passed to the callback.</param>
         [SupressImportIntoVM]
         public static AssociativeNode GenerateBridgeDataAst(Guid id, AssociativeNode input)
         {
