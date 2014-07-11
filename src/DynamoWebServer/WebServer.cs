@@ -2,19 +2,43 @@
 using System.Configuration;
 using System.Net;
 using DynamoWebServer.Responses;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 using SuperSocket.SocketBase;
+using SuperSocket.SocketBase.Config;
+
 using SuperWebSocket;
 
 namespace DynamoWebServer
 {
     public delegate void MessageEventHandler(string message, string sessionId);
-    
-    public class WebServer
+
+    public class WebServer : IServer
     {
+
+        #region Init
+
+        static readonly JsonSerializerSettings JsonSettings;
+        static WebServer()
+        {
+            JsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Objects,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+        }
+
+        private WebSocketServer socketServer;
+
+        #endregion
+
+        #region IServer
+
         public event MessageEventHandler ReceivedMessage;
         public event MessageEventHandler Info;
         public event MessageEventHandler Error;
-        private WebSocketServer socketServer;
 
         public void Start()
         {
@@ -24,7 +48,13 @@ namespace DynamoWebServer
             socketServer = new WebSocketServer();
             try
             {
-                if (!socketServer.Setup(httpBindingAddress, httpBindingport))
+                if (!socketServer.Setup(new RootConfig(), new ServerConfig
+                {
+                    Port = httpBindingport,
+                    Ip = httpBindingAddress,
+                    MaxConnectionNumber = 100,
+                    ReceiveBufferSize = 256 * 1024
+                }))
                 {
                     LogError("Failed to setup!", "");
                     LogError("DynamoWebServer: failed to setup its socketserver", "");
@@ -54,15 +84,16 @@ namespace DynamoWebServer
             var session = socketServer.GetAppSessionByID(sessionId);
             if (session != null)
             {
-                session.Send(response.Status + "\n" + response.GetResponse());
-                LogInfo("Web socket: send [Status: " + response.Status + "\n" + response.GetResponse() + "]", session.SessionID);
+                session.Send(JsonConvert.SerializeObject(response, JsonSettings));
+                LogInfo("Web socket: send [Status: " + response.Status + "]", session.SessionID);
             }
             else
             {
-                LogError("Web socket: can`t send response, socket not initialized! No clients connected? \n  SessionId: [" + sessionId + "]", session.SessionID);
+                LogError("Web socket: can`t send response, socket not initialized! No clients connected? \n  SessionId: [" + sessionId + "]", sessionId);
             }
-            
         }
+
+        #endregion
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
@@ -79,8 +110,11 @@ namespace DynamoWebServer
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
         {
             LogInfo("Web socket: recived [" + message + "]", session.SessionID);
-            session.Send(DateTime.Now.ToShortDateString() + " Message recived: " + message);
-            session.Send("Session ID: " + session.SessionID);
+            SendResponse(new ContentResponse()
+            {
+                Message = DateTime.Now.ToShortDateString() + " Message received"
+            }, session.SessionID);
+
             if (ReceivedMessage != null)
             {
                 try
@@ -89,7 +123,10 @@ namespace DynamoWebServer
                 }
                 catch (Exception ex)
                 {
-                    session.Send("Received command was not executed, reason: " + ex.Message);
+                    SendResponse(new ContentResponse()
+                    {
+                        Message = "Received command was not executed, reason: " + ex.Message
+                    }, session.SessionID);
                 }
             }
         }

@@ -4,60 +4,44 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{55636E8F-53B1-4E27-A0D7-68A00DA13C92}</ProjectGuid>
+    <ProjectGuid>{C1797B15-C8F9-46CD-A642-A7AF08963459}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamoWebServer</RootNamespace>
-    <AssemblyName>DynamoWebServer</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>SocketTest</RootNamespace>
+    <AssemblyName>SocketTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\AnyCPU\Debug\</OutputPath>
+    <OutputPath>..\..\..\bin\AnyCPU\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\AnyCPU\Release\</OutputPath>
+    <OutputPath>..\..\..\bin\AnyCPU\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+      <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Moq, Version=4.2.1402.2112, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\extern\Moq\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.Common, Version=1.5.3.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\SuperWebSocket\SuperSocket.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.SocketBase, Version=1.5.3.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\SuperWebSocket\SuperSocket.SocketBase.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.SocketEngine, Version=1.5.3.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\SuperWebSocket\SuperSocket.SocketEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperWebSocket, Version=0.8.0.0, Culture=neutral, PublicKeyToken=7ba53b9a7cef5d1c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\SuperWebSocket\SuperWebSocket.dll</HintPath>
+      <HintPath>..\..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -66,12 +50,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Responses\ComputationResponse.cs" />
-    <Compile Include="Responses\ContentResponse.cs" />
-    <Compile Include="Responses\Response.cs" />
-    <Compile Include="WebServer.cs" />
+    <Compile Include="SocketTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\DynamoWebServer\DynamoWebServer.csproj">
+      <Project>{55636e8f-53b1-4e27-a0d7-68a00da13c92}</Project>
+      <Name>DynamoWebServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

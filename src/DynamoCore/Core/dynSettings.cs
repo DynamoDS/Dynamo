@@ -8,6 +8,7 @@ using DynamoWebServer.Responses;
 using Dynamo.PackageManager;
 using Dynamo.Messages;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Dynamo.Utilities
 {
@@ -21,7 +22,7 @@ namespace Dynamo.Utilities
         public static PackageLoader PackageLoader { get; internal set; }
         public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
         public static DynamoController Controller { get; set; }
-        public static WebServer WebSocketServer { get; private set; }
+        public static IServer WebSocketServer { get; private set; }
 
         private static PackageManagerClient _packageManagerClient;
         public static PackageManagerClient PackageManagerClient
@@ -54,9 +55,9 @@ namespace Dynamo.Utilities
             return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
         }
 
-        public static void EnableServer()
+        public static void EnableServer(IServer server)
         {
-            WebSocketServer = new WebServer();
+            WebSocketServer = server;
 
             WebSocketServer.ReceivedMessage += ExecuteMessageFromSocket;
             WebSocketServer.Info += LogInfo;
@@ -76,10 +77,11 @@ namespace Dynamo.Utilities
             msg.SessionId = sessionId;
             msg.SendAnswer += SendAnswerToWebSocket;
 
-            Application.Current.Dispatcher.Invoke(new Action(() => msg.Execute(Controller.DynamoViewModel)));
+            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
+                .Invoke(new Action(() => msg.Execute(Controller.DynamoViewModel)));
         }
 
-        private static void SendAnswerToWebSocket(string answer, string sessionId)
+        public static void SendAnswerToWebSocket(string answer, string sessionId)
         {
             WebSocketServer.SendResponse(new ComputationResponse()
             {

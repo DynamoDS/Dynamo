@@ -29,8 +29,8 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
 using DynamoUtilities;
+using DynamoWebServer;
 
 using String = System.String;
 
@@ -69,12 +69,24 @@ namespace Dynamo.Controls
 
             if (turnOnServer)
             {
-                dynSettings.EnableServer();
+                dynSettings.EnableServer(new WebServer());
             }
 
             app.Run(ui);
 
             return app;
+        }
+
+        public static DynamoView MakeSandbox(string commandFilePath)
+        {
+            var controller = DynamoController.MakeSandbox(commandFilePath);
+            
+            //create the view
+            var ui = new DynamoView();
+            ui.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = ui.Dispatcher;
+
+            return ui;
         }
 
         public DynamoView()
