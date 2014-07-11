@@ -5339,6 +5339,59 @@ a = [Associative]
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 14);
         }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution04()
+        {
+            string code = @"
+def func_1: var[]..[](x1 : var[]..[])
+{
+    x2 = x1;
+    var_1 = [Associative]
+    {
+        return = [Imperative]
+        {
+            if (False)
+            {
+                var_2 = [Associative]
+                {
+                    return = [Imperative]
+                    {
+                        if(True)
+                        {
+                            return = x2;
+                        }
+                        else
+                        {
+                            x3 = 42;
+                            return = x3;
+                        }
+                    }
+                }
+
+                return = var_2;
+            }
+            else
+            {
+                x4 = 1024;
+                return = x4;
+            }
+        }
+    }
+    return = var_1;
+}
+
+x = 5;
+r = func_1(x);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 1024);
+        }
     }
 
 }
