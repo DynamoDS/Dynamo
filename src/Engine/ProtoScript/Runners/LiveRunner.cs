@@ -114,6 +114,7 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
         public List<AssociativeNode> ForceExecuteASTList;
         public List<AssociativeNode> ModifiedFunctions;
+        public List<AssociativeNode> ModifiedNestedLangBlock;
     }
 
     /// <summary>
@@ -139,6 +140,7 @@ namespace ProtoScript.Runners
 
         private void ApplyChangeSetModified(ChangeSetData changeSet)
         {
+            ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
             // Mark all graphnodes dependent on the modified functions as dirty
@@ -151,7 +153,7 @@ namespace ProtoScript.Runners
             // Mark all graphnodes dirty which are associated with the force exec ASTs
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
         }
-
+        
 
         /// <summary>
         /// Deactivate a single graphnode regardless of its associated dependencies
@@ -194,6 +196,30 @@ namespace ProtoScript.Runners
             }
         }
 
+        /// <summary>
+        /// Removes the modified nested block from the VM codegens in preparation for the next run
+        /// </summary>
+        /// <param name="modifuedGuids"></param>
+        private void ClearModifiedNestedBlocks(List<AssociativeNode> astNodes)
+        {
+            BinaryExpressionNode bnode = null;
+            foreach (AssociativeNode node in astNodes)
+            {
+                bnode = node as BinaryExpressionNode;
+                if (bnode.RightNode is LanguageBlockNode)
+                {
+                    if (core.CodeBlockList[0].children != null)
+                    {
+                        core.CodeBlockList[0].children.RemoveAll(x => x.guid == bnode.guid);
+                    }
+
+                    // Remove from the global codeblocks
+                    core.CodeBlockList.RemoveAll(x => x.guid == bnode.guid);// && x.AstID == bnode.OriginalAstID);
+                    // Remove from the runtime codeblocks
+                    core.CompleteCodeBlockList.RemoveAll(x => x.guid == bnode.guid);// && x.AstID == bnode.OriginalAstID);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -294,6 +320,8 @@ namespace ProtoScript.Runners
                             {
                                 bnode.guid = st.GUID;
                             }
+
+                            SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
                         }
                     }
                 }
@@ -302,6 +330,62 @@ namespace ProtoScript.Runners
             return deltaAstList;
         }
 
+        /// <summary>
+        /// Traverse the list of ASTs and set the guid of the nested binary expressions
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="astList"></param>
+        private void SetNestedLanguageBlockASTGuids(Guid guid, List<ProtoCore.AST.Node> astList)
+        {
+            foreach (ProtoCore.AST.Node node in astList)
+            {
+                ProtoCore.AST.Node rightNode = null;
+                if (node is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
+                {
+                    (node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode).guid = guid;
+                    rightNode = (node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode).RightNode;
+                }
+                else if (node is ProtoCore.AST.ImperativeAST.BinaryExpressionNode)
+                {
+                    (node as ProtoCore.AST.ImperativeAST.BinaryExpressionNode).guid = guid;
+                    rightNode = (node as ProtoCore.AST.ImperativeAST.BinaryExpressionNode).RightNode;
+                }
+
+                ProtoCore.AST.Node langblock = null;
+                List<ProtoCore.AST.Node> nextAstList = new List<ProtoCore.AST.Node>();
+                if (rightNode is ProtoCore.AST.AssociativeAST.LanguageBlockNode)
+                {
+                    langblock = (rightNode as ProtoCore.AST.AssociativeAST.LanguageBlockNode).CodeBlockNode;
+                }
+                else if  (rightNode is ProtoCore.AST.ImperativeAST.LanguageBlockNode)
+                {
+                    langblock = (rightNode as ProtoCore.AST.ImperativeAST.LanguageBlockNode).CodeBlockNode;
+                }
+
+                if (langblock != null)
+                {
+                    if (langblock is ProtoCore.AST.AssociativeAST.CodeBlockNode)
+                    {
+                        ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                        foreach (ProtoCore.AST.AssociativeAST.AssociativeNode assocNode in codeBlock.Body)
+                        {
+                            nextAstList.Add(assocNode as ProtoCore.AST.Node);
+                        }
+                    }
+                    else if (langblock is ProtoCore.AST.ImperativeAST.CodeBlockNode)
+                    {
+                        ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlock = langblock as ProtoCore.AST.ImperativeAST.CodeBlockNode;
+                        foreach (ProtoCore.AST.ImperativeAST.ImperativeNode imperativeNode in codeBlock.Body)
+                        {
+                            nextAstList.Add(imperativeNode as ProtoCore.AST.Node);
+                        }
+                    }
+                }
+                SetNestedLanguageBlockASTGuids(guid, nextAstList);
+            }
+        }
+
+
         private IEnumerable<AssociativeNode> GetDeltaAstListModified(IEnumerable<Subtree> modifiedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
@@ -309,6 +393,7 @@ namespace ProtoScript.Runners
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
             csData.ForceExecuteASTList = new List<AssociativeNode>();
+            csData.ModifiedNestedLangBlock = new List<AssociativeNode>();
 
             if (modifiedSubTrees == null)
             {
@@ -410,6 +495,8 @@ namespace ProtoScript.Runners
                     {
                         bnode.guid = st.GUID;
                     }
+
+                    SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
                 }
             }
             return deltaAstList;
@@ -562,36 +649,43 @@ namespace ProtoScript.Runners
                     modifiedASTList.Add(node);
 
                     BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                    if (null != bnode && bnode.LeftNode is IdentifierNode)
+                    if (null != bnode)
                     {
-                        string lhsName = (bnode.LeftNode as IdentifierNode).Name;
-                        Validity.Assert(null != lhsName && string.Empty != lhsName);
-                        if (CoreUtils.IsSSATemp(lhsName))
+                        if (bnode.RightNode is LanguageBlockNode)
                         {
-                            // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                            // this means that it was a modified variable within the previous expression.
-                            // Inherit its expression ID 
-                            foreach (AssociativeNode prevNode in st.AstNodes)
+                            csData.ModifiedNestedLangBlock.Add(bnode);
+                        }
+                        else if (bnode.LeftNode is IdentifierNode)
+                        {
+                            string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                            Validity.Assert(null != lhsName && string.Empty != lhsName);
+                            if (CoreUtils.IsSSATemp(lhsName))
                             {
-                                BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                                if (null != prevBinaryNode)
+                                // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                                // this means that it was a modified variable within the previous expression.
+                                // Inherit its expression ID 
+                                foreach (AssociativeNode prevNode in st.AstNodes)
                                 {
-                                    IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                    if (null != prevIdent)
+                                    BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                    if (null != prevBinaryNode)
                                     {
-                                        if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                        IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                        if (null != prevIdent)
                                         {
-                                            bnode.InheritID(prevBinaryNode.ID);
-                                            bnode.exprUID = prevBinaryNode.exprUID;
+                                            if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                            {
+                                                bnode.InheritID(prevBinaryNode.ID);
+                                                bnode.exprUID = prevBinaryNode.exprUID;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            // Handle re-defined lhs expressions
-                            HandleRedefinedLHS(bnode, st.AstNodes);
+                            else
+                            {
+                                // Handle re-defined lhs expressions
+                                HandleRedefinedLHS(bnode, st.AstNodes);
+                            }
                         }
                     }
                 }
@@ -900,10 +994,7 @@ namespace ProtoScript.Runners
 
         private ProtoCore.Options coreOptions = null;
         private Options executionOptions = null;
-        private bool syncCoreConfigurations = false;
         private int deltaSymbols = 0;
-        private bool isPreloadingLibraries = false;
-        private int codeBlockCount = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
 
 
@@ -1056,7 +1147,6 @@ namespace ProtoScript.Runners
         public void SetOptions(Options options)
         {
             executionOptions = options;
-            syncCoreConfigurations = true; //request syncing the configuration
         }
 
 
@@ -1189,8 +1279,6 @@ namespace ProtoScript.Runners
             // Prints out the final Value of every symbol in the program
             // Traverse order:
             //  Exelist, Globals symbols
-
-            StringBuilder globaltrace = null;
 
             ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
             ProtoCore.DSASM.Mirror.ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
@@ -1623,9 +1711,7 @@ namespace ProtoScript.Runners
             ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
             string code = codeGen.GenerateCode();
 
-            isPreloadingLibraries = true;
             UpdateCmdLineInterpreter(code);
-            isPreloadingLibraries = false;
         }
 
         /// <summary>
