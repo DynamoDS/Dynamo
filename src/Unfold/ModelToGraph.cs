@@ -293,6 +293,9 @@ namespace Unfold
             public List<EdgeLikeEntity> Fold_Edge { get; set; }
             public int Finish_Time { get; set; }
 
+            // for cycle detection using tarjans
+            public int Index { get; set; }
+            public int LowLink { get; set; }
 
             public graph_vertex(FaceLikeEntity face)
             {
@@ -473,7 +476,7 @@ namespace Unfold
             {
 
 
-
+                // *refactor this out as a clone method or graph utility/ext method on List<graph_vertex> types
                 ///this is really a clone method in next 3 for loops
                 //create new verts and store them in a new list
                 List<graph_vertex> graph_to_traverse = new List<graph_vertex>();
