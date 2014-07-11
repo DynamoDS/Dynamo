@@ -261,6 +261,7 @@ namespace ProtoTestFx.TD
                 if (!System.IO.Directory.Exists(path))
                     System.IO.Directory.CreateDirectory(path);    
                 
+                //Remove the comment to dump the tests
                 createDSFile(fileName,path,sourceCode);
                 SetErrorMessage(errorstring);
                 return testMirror;

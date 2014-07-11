@@ -28,7 +28,7 @@
  Write("using ProtoFFI;"+"\n");
  Write("namespace Dynamo.Tests"+"\n");
  Write("{"+"\n");
- Write("public class TestName : CBNEngineTests"+"\n");
+ Write("public class ChangeMe : CBNEngineTests"+"\n");
  Write("{"+"\n");
  Write("public TestFrameWork thisTest = new TestFrameWork();"+"\n");
  	   string dirPath="C:\\DDSGit\\Dynamo\\test\\core\\dsevaluation\\DSFiles\\";
@@ -62,7 +62,7 @@
  		
  		Write(CurrentIndent+"ExecutionMirror mirror = thisTest.RunScriptSource(code);"+"\n");
  		Write(CurrentIndent+"ProtoCore.Core core = thisTest.GetTestCore();"+"\n");
- 		Write(CurrentIndent+"Guid guid = this.RunScriptDynamo(code);"+"\n");
+ 		Write(CurrentIndent+"Guid guid = this.RunDSScriptInCBN(code);"+"\n");
  		Write(CurrentIndent+"ProtoCore.Core dynamoCore =Controller.EngineController.LiveRunnerCore;"+"\n");
  		Write(CurrentIndent+"this.CompareCores(core, dynamoCore,guid);"+"\n");
  		Write(CurrentIndent+"}"+"\n");
