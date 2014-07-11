@@ -101,6 +101,7 @@ namespace ProtoCore
             public string Message;
             public int Line;
             public int Column;
+            public Guid GraphNodeGuid;
             public string FileName;
         }
     }
@@ -540,7 +541,7 @@ namespace ProtoCore
             throw new BuildHaltException(msg);
         }
 
-        public void LogWarning(BuildData.WarningID warningID, string message, string fileName = null, int line = -1, int col = -1)
+        public void LogWarning(BuildData.WarningID warningID, string message, string fileName = null, int line = -1, int col = -1, System.Guid guid = default(Guid))
         { 
             var entry = new BuildData.WarningEntry 
             { 
@@ -548,6 +549,7 @@ namespace ProtoCore
                 Message = message, 
                 Line = line, 
                 Column = col, 
+                GraphNodeGuid = guid,
                 FileName = fileName 
             };
             warnings.Add(entry);
