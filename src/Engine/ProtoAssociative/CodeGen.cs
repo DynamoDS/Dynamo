@@ -343,7 +343,7 @@ namespace ProtoAssociative
             return null;
         }
 
-        private bool CyclicDependencyTest(ProtoCore.AssociativeGraph.GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2, Guid guid = default(Guid))
+        private bool CyclicDependencyTest(ProtoCore.AssociativeGraph.GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
         {
             if (null == node || node.updateNodeRefList.Count == 0)
             {
@@ -375,7 +375,8 @@ namespace ProtoAssociative
                 string symbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol.name;
                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kInvalidStaticCyclicDependency, symbol1, symbol2);
 
-                core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency, message, core.CurrentDSFileName, guid: guid);
+                core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency, message, core.CurrentDSFileName, 
+                    guid: node == null ? default(Guid) : node.guid);
                 firstNode.isCyclic = true;
 
                 cyclicSymbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol;
@@ -4919,7 +4920,7 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitMemberVariables(ClassDeclNode classDecl, Guid guid = default(Guid))
+        private void EmitMemberVariables(ClassDeclNode classDecl, GraphNode graphNode = null)
         {
             // Class member variable pass
             // Populating each class entry symbols with their respective member variables
@@ -4945,7 +4946,7 @@ namespace ProtoAssociative
                         // this class.
                         if (unPopulatedClasses.ContainsKey(baseClassIndex))
                         {
-                            EmitMemberVariables(unPopulatedClasses[baseClassIndex], guid);
+                            EmitMemberVariables(unPopulatedClasses[baseClassIndex], graphNode);
                             globalClassIndex = thisClassIndex;
                         }
 
@@ -5073,7 +5074,8 @@ namespace ProtoAssociative
                         if (type == (int)PrimitiveType.kInvalidType)
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kTypeUndefined, typeName);
-                            core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, vardecl.line, vardecl.col, guid);
+                            core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, vardecl.line, vardecl.col, 
+                                graphNode == null ? default(Guid) : graphNode.guid);
                             prop.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                         }
                         else
@@ -5126,7 +5128,7 @@ namespace ProtoAssociative
         }
 
         private void EmitClassDeclNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone,
-            Guid guid = default(Guid))
+            GraphNode graphNode = null)
         {
             ClassDeclNode classDecl = node as ClassDeclNode;
 
@@ -5252,7 +5254,7 @@ namespace ProtoAssociative
             }
             else if (ProtoCore.DSASM.AssociativeCompilePass.kClassMemVar == compilePass)
             {
-                EmitMemberVariables(classDecl, guid);
+                EmitMemberVariables(classDecl, graphNode);
             }
             else if (ProtoCore.DSASM.AssociativeCompilePass.kClassMemFuncSig == compilePass)
             {
@@ -5477,8 +5479,10 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitConstructorDefinitionNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone, System.Guid guid = default(Guid))
+        private void EmitConstructorDefinitionNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone, GraphNode gNode = null)
         {
+            Guid guid = gNode == null ? default(Guid) : gNode.guid; 
+
             ConstructorDefinitionNode funcDef = node as ConstructorDefinitionNode;
             ProtoCore.DSASM.CodeBlockType originalBlockType = codeBlock.blockType;
             codeBlock.blockType = ProtoCore.DSASM.CodeBlockType.kFunction;
@@ -5530,7 +5534,7 @@ namespace ProtoAssociative
                             Validity.Assert(false, "Check generated AST");
                         }
 
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, guid);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
                         localProcedure.argTypeList.Add(argType);
                         ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
@@ -5571,7 +5575,7 @@ namespace ProtoAssociative
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, guid);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
                         argList.Add(argType);
                     }
                 }
@@ -5780,8 +5784,10 @@ namespace ProtoAssociative
         }
 
 
-        private void EmitFunctionDefinitionNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone, Guid guid = default(Guid))
+        private void EmitFunctionDefinitionNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone, GraphNode graphNode = null)
         {
+            Guid guid = graphNode == null ? default(Guid) : graphNode.guid;
+
             bool parseGlobalFunctionBody = null == localProcedure && ProtoCore.DSASM.AssociativeCompilePass.kGlobalFuncBody == compilePass;
             bool parseMemberFunctionBody = ProtoCore.DSASM.Constants.kGlobalScope != globalClassIndex && ProtoCore.DSASM.AssociativeCompilePass.kClassMemFuncBody == compilePass;
 
@@ -5866,7 +5872,7 @@ namespace ProtoAssociative
                             Validity.Assert(false, "Check generated AST");
                         }
 
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, guid);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, graphNode);
                         // We dont directly allocate arguments now
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
                         
@@ -5936,7 +5942,7 @@ namespace ProtoAssociative
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, guid);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, graphNode);
                         argList.Add(argType);
                     }
                 }
@@ -8687,7 +8693,7 @@ namespace ProtoAssociative
                     SymbolNode cyclicSymbol2 = null;
                     if (core.Options.staticCycleCheck)
                     {
-                        if (!CyclicDependencyTest(graphNode, ref cyclicSymbol1, ref cyclicSymbol2, graphNode == null ? default(Guid) : graphNode.guid))
+                        if (!CyclicDependencyTest(graphNode, ref cyclicSymbol1, ref cyclicSymbol2))
                         {
                             Validity.Assert(null != cyclicSymbol1);
                             Validity.Assert(null != cyclicSymbol2);
@@ -9224,7 +9230,7 @@ namespace ProtoAssociative
             codeBlock.instrStream.dependencyGraph.Push(retNode);
         }
 
-        private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, Guid guid = default(Guid))
+        private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, GraphNode graphNode = null)
         {
             Validity.Assert(argNode != null);
             if (argNode == null)
@@ -9236,7 +9242,8 @@ namespace ProtoAssociative
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
-                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, argNode.line, argNode.col, guid);
+                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, argNode.line, argNode.col, 
+                    graphNode == null ? default(Guid) : graphNode.guid);
             }
 
             int rank = argNode.ArgumentType.rank;
@@ -9390,15 +9397,15 @@ namespace ProtoAssociative
             }
             else if (node is ClassDeclNode)
             {
-                EmitClassDeclNode(node, ref inferedType, subPass, graphNode == null ? default(Guid) : graphNode.guid);
+                EmitClassDeclNode(node, ref inferedType, subPass, graphNode);
             }
             else if (node is ConstructorDefinitionNode)
             {
-                EmitConstructorDefinitionNode(node, ref inferedType, subPass, graphNode == null ? default(Guid) : graphNode.guid);                
+                EmitConstructorDefinitionNode(node, ref inferedType, subPass, graphNode);                
             }
             else if (node is FunctionDefinitionNode)
             {
-                EmitFunctionDefinitionNode(node, ref inferedType, subPass, graphNode == null ? default(Guid) : graphNode.guid);            
+                EmitFunctionDefinitionNode(node, ref inferedType, subPass, graphNode);            
             }
             else if (node is FunctionCallNode)
             {

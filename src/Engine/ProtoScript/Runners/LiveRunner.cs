@@ -932,8 +932,8 @@ namespace ProtoScript.Runners
         void ResetVMAndResyncGraph(List<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
-        Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
-        Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
+        IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1774,7 +1774,7 @@ namespace ProtoScript.Runners
         /// Returns runtime warnings.
         /// </summary>
         /// <returns></returns>
-        public Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
         {
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
@@ -1798,7 +1798,7 @@ namespace ProtoScript.Runners
         /// Returns build warnings.
         /// </summary>
         /// <returns></returns>
-        public Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
+        public IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
         {
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  

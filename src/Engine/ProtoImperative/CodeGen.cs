@@ -1353,7 +1353,7 @@ namespace ProtoImperative
                             Validity.Assert(false, "Check generated AST");
                         }
 
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, guid);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
                         int symbolIndex = AllocateArg(paramNode.Value, localProcedure.procId, argType);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
                         {
@@ -1388,7 +1388,7 @@ namespace ProtoImperative
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, guid);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
                         argList.Add(argType);
                     }
                 }
@@ -1950,11 +1950,11 @@ namespace ProtoImperative
             }
         }
 
-        private void EmitVarDeclNode(ImperativeNode node, ref ProtoCore.Type inferedType, Guid guid = default(Guid))
+        private void EmitVarDeclNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             VarDeclNode varNode = node as VarDeclNode;
 
-            ProtoCore.Type type = BuildArgumentTypeFromVarDeclNode(varNode, guid);
+            ProtoCore.Type type = BuildArgumentTypeFromVarDeclNode(varNode, graphNode);
             type.rank = 0;
 
             // TODO Jun: Create a class table for holding the primitive and custom data types
@@ -3379,7 +3379,7 @@ namespace ProtoImperative
             return functionSig.ToString();
         }
 
-        private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, Guid guid = default(Guid))
+        private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             ProtoCore.Utils.Validity.Assert(argNode != null);
             if (argNode == null)
@@ -3391,7 +3391,8 @@ namespace ProtoImperative
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
-                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, argNode.line, argNode.col, guid);
+                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, argNode.line, argNode.col, 
+                    graphNode == null ? default(Guid) : graphNode.guid);
             }
 
             int rank = argNode.ArgumentType.rank;
@@ -3490,7 +3491,7 @@ namespace ProtoImperative
             }
             else if (node is VarDeclNode)
             {
-                EmitVarDeclNode(node, ref inferedType, graphNode == null ? default(Guid) : graphNode.guid);
+                EmitVarDeclNode(node, ref inferedType, graphNode);
             }
             else if (node is ExprListNode)
             {
