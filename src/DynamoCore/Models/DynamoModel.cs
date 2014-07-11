@@ -723,13 +723,6 @@ namespace Dynamo.Models
                 node.Y = y;
             }
 
-            if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspaceModel)
-            {
-                string format = "Cannot place '{0}' in HomeWorkspace (GUID: {1})";
-                WriteToLog(string.Format(format, nodeName, nodeId));
-                return null;
-            }
-
             CurrentWorkspace.Nodes.Add(node);
             node.WorkSpace = CurrentWorkspace;
 
