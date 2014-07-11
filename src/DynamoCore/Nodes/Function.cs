@@ -567,7 +567,7 @@ namespace Dynamo.Nodes
     [NodeDescription("A function parameter, use with custom nodes")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
-    [NodeSearchable(false)]
+    [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     public partial class Symbol : NodeModel
     {
@@ -651,7 +651,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("A function output, use with custom nodes")]
     [IsInteractive(false)]
-    [NodeSearchable(false)]
+    [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     public partial class Output : NodeModel
     {
