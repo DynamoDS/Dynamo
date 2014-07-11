@@ -36,13 +36,13 @@
       <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoGeometry">
-      <HintPath>..\..\bin\AnyCPU\Debug\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\bin\AnyCPU\Debug\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
