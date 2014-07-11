@@ -14,7 +14,7 @@ namespace Dynamo.Tests
     [TestFixture]
     class InspectorTests : DynamoTestUI
     {
-
+        // use reflection to grab properties from DSFunction node
         private static List<object> BuildTestValuesFromReflection(DSFunction ColorNode)
         {
             var OutputID = ColorNode.GetAstIdentifierForOutputIndex(0).Name;
@@ -90,7 +90,7 @@ namespace Dynamo.Tests
 
 
         [Test]
-        public void InspectorItemNamesAndIndicies()
+        public void InspectorItemNamesAndIndiciesFromDSColor()
         {
 
             // load a saved file dyn file that takes a color constructor node and an inspector node
@@ -120,25 +120,27 @@ namespace Dynamo.Tests
 
            List<object> testvalues = BuildTestValuesFromReflection(ColorNode);
            AssertMatchingItemValues(inspectornode, testvalues);
-
-
-            
         }
 
+
+
+
        //stubs for future tests
-        public void InspectorAddAndRemoveDropDowns()
+        public void InspectorAddAndRemoveDropDowns ()
         {
-            //
+                
+          // does this need to be a recorded test?      
+
         }
 
         public void InspectorRemoveInputAndRun()
         {
-            //
+            //// does this need to be a recorded test?   
         }
 
         public void InspectorChangeSelections()
         {
-            //
+            //// does this need to be a recorded test?   
         }
 
 

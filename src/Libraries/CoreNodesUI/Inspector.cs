@@ -61,9 +61,12 @@ namespace DSCoreNodesUI
 
 
         }
-
+        // this list of items that storeproperties actually populates
+        // PopulateItems() adds these items to the Items list, this is done
+        // so that we can collect the properties outside of the UiThread.
+        // Observalble collection Items complains about being modified since it is databound to comboboxes
         public List<DynamoDropDownItem> membersandvals = new List<DynamoDropDownItem>();
-       
+
         /// <summary>
         /// value that keeps track of desired number of dropdowns
         /// </summary>
@@ -112,15 +115,15 @@ namespace DSCoreNodesUI
         /// </summary>
         private List<int> loaded_indices = new List<int>();
 
-        public event EventHandler RequestSelectChange;
-        protected virtual void OnRequestSelectChange(object sender, EventArgs e)
+        public event EventHandler UiNeedsUpdate;
+        protected virtual void OnUiNeedsUpdate(object sender, EventArgs e)
         {
-            if (RequestSelectChange != null)
-                RequestSelectChange(sender, e);
+            if (UiNeedsUpdate != null)
+                UiNeedsUpdate(sender, e);
         }
 
 
-       
+
 
         public Inspector()
         {
@@ -136,24 +139,24 @@ namespace DSCoreNodesUI
 
         }
 
-
+        // only grab properties via reflection when controller fires eval completed, then dispatch ui changes
         void Controller_EvaluationCompleted(object sender, EventArgs e)
         {
             StoreProperties();
-            OnRequestSelectChange(this,EventArgs.Empty);
+            OnUiNeedsUpdate(this, EventArgs.Empty);
 
         }
 
         void Inspector_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {   
+        {
             if (e.PropertyName != "IsUpdated")
                 return;
 
             if (InPorts.Any(x => x.Connectors.Count == 0))
                 return;
 
-          
-            OnRequestSelectChange(this, EventArgs.Empty);
+
+            OnUiNeedsUpdate(this, EventArgs.Empty);
         }
         /// <summary>
         /// pass through of the object to the output
@@ -162,16 +165,16 @@ namespace DSCoreNodesUI
         /// <returns></returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            
-                var outputobject = inputAstNodes[0];
 
-                return new[]
+            var outputobject = inputAstNodes[0];
+
+            return new[]
             {   
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), outputobject)
             };
 
 
-            
+
         }
 
 
@@ -226,7 +229,7 @@ namespace DSCoreNodesUI
                     membersandvals.Clear();
                     // the input object exists, lets determine it's type and reflect over it.
 
-                      if (objectinput is IDynamicMetaObjectProvider)
+                    if (objectinput is IDynamicMetaObjectProvider)
                     {
                         var names = new List<string>();
                         var dynobj = objectinput as IDynamicMetaObjectProvider;
@@ -255,7 +258,7 @@ namespace DSCoreNodesUI
 
 
 
-                    // if object was not dynamic use regular reflection
+                  // if object was not dynamic use regular reflection
                     else
                     {
                         var propertyInfos = objectinput.GetType().GetProperties(
@@ -284,35 +287,35 @@ namespace DSCoreNodesUI
 
         private void PopulateItems()
         {
-           
-
-                    //before clearing the items and forcing updates
-                    // of the selections, lets grab all current selected indicies
-                    previous_indicies.Clear();
-                    foreach (combobox_selected_index_wrapper wrapper in Indicies)
-                    {
-                        var x = new combobox_selected_index_wrapper();
-                        x.SelectedIndex = wrapper.SelectedIndex;
-                        previous_indicies.Add(x);
-                    }
-
-                    Items.Clear();
-
-                    // now we just set items to equal membervals...
-                    foreach (DynamoDropDownItem dropdown in membersandvals)
-                    {
-
-                        Items.Add(new DynamoDropDownItem(dropdown.Name, dropdown.Item));
-
-                    }
-                   
 
 
+            //before clearing the items and forcing updates
+            // of the selections, lets grab all current selected indicies
+            previous_indicies.Clear();
+            foreach (combobox_selected_index_wrapper wrapper in Indicies)
+            {
+                var x = new combobox_selected_index_wrapper();
+                x.SelectedIndex = wrapper.SelectedIndex;
+                previous_indicies.Add(x);
+            }
 
-                }
+            Items.Clear();
 
-            
-        
+            // now we just set items to equal membervals...
+            foreach (DynamoDropDownItem dropdown in membersandvals)
+            {
+
+                Items.Add(new DynamoDropDownItem(dropdown.Name, dropdown.Item));
+
+            }
+
+
+
+
+        }
+
+
+
         protected override void AddInput()
         {
             // instead of actually adding an input
@@ -321,7 +324,7 @@ namespace DSCoreNodesUI
             numDropDowns = numDropDowns + 1;
 
             RequiresRecalc = true;
-            OnRequestSelectChange(this, EventArgs.Empty);
+            OnUiNeedsUpdate(this, EventArgs.Empty);
         }
 
         protected override void RemoveInput()
@@ -331,7 +334,7 @@ namespace DSCoreNodesUI
                 numDropDowns = numDropDowns - 1;
 
                 RequiresRecalc = true;
-                OnRequestSelectChange(this, EventArgs.Empty);
+                OnUiNeedsUpdate(this, EventArgs.Empty);
             }
         }
 
@@ -467,10 +470,10 @@ namespace DSCoreNodesUI
 
             //add a drop down list to the window
             var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
-            
+
 
             var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
-           
+
 
             // first add all buttons
             //
@@ -521,9 +524,9 @@ namespace DSCoreNodesUI
             }
 
 
-            RequestSelectChange += delegate
+            UiNeedsUpdate += delegate
             {
-               
+
                 DispatchOnUIThread(SetComboBoxes);
             };
         }
