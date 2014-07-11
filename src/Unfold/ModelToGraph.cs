@@ -6,38 +6,28 @@ using System.Threading.Tasks;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using Unfold.Interfaces;
+
 namespace Unfold
 {
+    
 
+ 
 
-    public static class Unfold_Planar
+    public static class UnfoldPlanar
     {
+
+
+        
+
+
         /// <summary>
         /// wrapper for edges and curves
         /// </summary>
-        public class EdgeLikeEntity
+        public class EdgeLikeEntity:IUnfoldEdge
         {
 
-             public override bool Equals(object obj)
-            {
-                EdgeLikeEntity objitem = obj as EdgeLikeEntity;
-                var otherval = objitem.Start.ToString() + objitem.End.ToString();
-                 
-                 //equals will return true even if the start and end point are reversed since on one object this should be
-                // the same edge, if this is equal is not implemented this way surface perimeter curves fail to be located correctly 
-                 // in hash tables
-
-                 if (otherval == this.Start.ToString() + this.End.ToString() || otherval == this.End.ToString() + this.Start.ToString()){
-                     return true;
-                 }
-                 else{
-
-                     return false;
-                 }
-                 
-
-
-            }
+           
 
             public Point Start { get; set; }
             public Point End { get; set; }
@@ -66,8 +56,10 @@ namespace Unfold
 
             }
 
+          
+         
 
-            public override int GetHashCode()
+            public int GetSpatialHashCode()
             {
                 unchecked // Overflow is fine, just wrap
                 {
@@ -78,10 +70,29 @@ namespace Unfold
                     Console.WriteLine(this);
                     Console.WriteLine(hash);
                     return hash;
-                    
+
                 }
             }
 
+            public bool SpatialEquals(ISpatialEquatable obj)
+            {
+                IUnfoldEdge objitem = obj as IUnfoldEdge;
+                var otherval = objitem.Start.ToString() + objitem.End.ToString();
+
+                //equals will return true even if the start and end point are reversed since on one object this should be
+                // the same edge, if this is equal is not implemented this way surface perimeter curves fail to be located correctly 
+                // in hash tables
+
+                if (otherval == this.Start.ToString() + this.End.ToString() || otherval == this.End.ToString() + this.Start.ToString())
+                {
+                    return true;
+                }
+                else
+                {
+
+                    return false;
+                }
+            }
         }
 
         /// <summary>
@@ -127,74 +138,10 @@ namespace Unfold
             }
 
 
-          /*  public override bool Equals(object obj)
-            {
-                throw new NotImplementedException();
-                EdgeLikeEntity objitem = obj as EdgeLikeEntity;
-                var otherval = objitem.Start.ToString() + objitem.End.ToString();
-                return otherval == this.Start.ToString() + this.End.ToString();
-
-
-            }
-
-
-            public override int GetHashCode()
-            {
-                throw new NotImplementedException();
-                unchecked // Overflow is fine, just wrap
-                {
-                    int hash = 17;
-                    // Suitable nullity checks etc, of course :)
-                    hash = hash * 23 + Start.ToString().GetHashCode();
-                    hash = hash * 23 + End.ToString().GetHashCode();
-                    return hash;
-                }
-            }
-            */
+        
         }
         
-        /// <summary>
-        /// A wrapper for an Edge object so that it can be hashed
-        /// </summary>
-        public class EdgeWrapper
-        {
-
-            public override bool Equals(object obj)
-            {
-                EdgeWrapper objitem = obj as EdgeWrapper;
-                var otherval = objitem.Start.ToString() + objitem.End.ToString();
-                return otherval == this.Start.ToString() + this.End.ToString();
-
-
-            }
-           
-            public Point Start { get; set; }
-            public Point End { get; set; }
-            public Edge Real_Edge { get; set; }
-            public EdgeWrapper(Edge edge)
-            {
-                Start = edge.StartVertex.PointGeometry;
-                End = edge.EndVertex.PointGeometry;
-                Real_Edge = edge;
-                
-                
-
-            }
-            
-
-            public override int GetHashCode()
-            {
-                unchecked // Overflow is fine, just wrap
-                {
-                    int hash = 17;
-                    // Suitable nullity checks etc, of course :)
-                    hash = hash * 23 + Start.ToString().GetHashCode();
-                    hash = hash * 23 + End.ToString().GetHashCode();
-                    return hash;
-                }
-            }
-
-        }
+       
 
         /// <summary>
         /// method for finding a shared edge given a list of faces
@@ -272,10 +219,6 @@ namespace Unfold
                 Head = head;
                 Real_Edge = edge;
             }
-
-
-
-
 
         }
 
@@ -436,7 +379,7 @@ namespace Unfold
                         // find adjacent faces in the dict
                         var subfaces = edge_dict[edgekey];
                         // find the graph verts that represent these faces
-                        var verts = Unfold_Planar.find_nodes_by_matching_faces(graph, subfaces);
+                        var verts = UnfoldPlanar.find_nodes_by_matching_faces(graph, subfaces);
                         //remove dupe faces, not sure if these should really be removed
                         verts = verts.Distinct().ToList();
                         //need to remove self loops
@@ -455,7 +398,7 @@ namespace Unfold
                         // these are the verts this edge connects
                         foreach (var vert_to_connect_to in verts)
                         {
-                            EdgeLikeEntity wrapped_edge_on_this_graph_edge = Unfold_Planar.find_real_edge_by_two_faces(graph, subfaces, edge_dict);
+                            EdgeLikeEntity wrapped_edge_on_this_graph_edge = UnfoldPlanar.find_real_edge_by_two_faces(graph, subfaces, edge_dict);
                             var current_graph_edge = new graph_edge(wrapped_edge_on_this_graph_edge, vertex, vert_to_connect_to);
                             vertex.Graph_Edges.Add(current_graph_edge);
                         }

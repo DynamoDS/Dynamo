@@ -16,37 +16,37 @@ namespace UnfoldTests
     {
 
 
-        public static List<Unfold_Planar.graph_vertex> CloneGraph(List<Unfold_Planar.graph_vertex> graph)
+        public static List<UnfoldPlanar.graph_vertex> CloneGraph(List<UnfoldPlanar.graph_vertex> graph)
              
         {
             ///this is really a clone method in next 3 for loops
                 //create new verts and store them in a new list
-                List<Unfold_Planar.graph_vertex> graph_to_traverse = new List<Unfold_Planar.graph_vertex>();
-                foreach (Unfold_Planar.graph_vertex vert_to_copy in graph)
+                List<UnfoldPlanar.graph_vertex> graph_to_traverse = new List<UnfoldPlanar.graph_vertex>();
+                foreach (UnfoldPlanar.graph_vertex vert_to_copy in graph)
                 {
-                    var vert = new Unfold_Planar.graph_vertex(vert_to_copy.Face);
+                    var vert = new UnfoldPlanar.graph_vertex(vert_to_copy.Face);
                     graph_to_traverse.Add(vert);
                 }
 
                 
                 // build the rest of the graphcopy - set the other properties of the verts correctly
-                foreach (Unfold_Planar.graph_vertex vert_to_copy in graph)
+                foreach (UnfoldPlanar.graph_vertex vert_to_copy in graph)
                 {   
-                    List<Unfold_Planar.graph_vertex> vertlist = Unfold.Unfold_Planar.find_nodes_by_matching_faces(graph_to_traverse, new List<Unfold_Planar.FaceLikeEntity>() { vert_to_copy.Face });
-                    Unfold_Planar.graph_vertex vert = vertlist[0];
+                    List<UnfoldPlanar.graph_vertex> vertlist = Unfold.UnfoldPlanar.find_nodes_by_matching_faces(graph_to_traverse, new List<UnfoldPlanar.FaceLikeEntity>() { vert_to_copy.Face });
+                    UnfoldPlanar.graph_vertex vert = vertlist[0];
                     vert.Explored = false;
                     vert.Finish_Time = 1000000000;//infin
                     vert.Parent = null;
 
-                    foreach (Unfold.Unfold_Planar.graph_edge edge_to_copy in vert_to_copy.Graph_Edges)
+                    foreach (Unfold.UnfoldPlanar.graph_edge edge_to_copy in vert_to_copy.Graph_Edges)
                     {
 
                         // find the same faces in the new graph, the nodes that represent these faces...// but we must make sure that these nodes
                         // that are returned are the ones inside the new graph
                         // may make sense to add a property that either is a name , id, or graph owner ...
-                        List<Unfold_Planar.graph_vertex> newtail = Unfold_Planar.find_nodes_by_matching_faces(graph_to_traverse, new List<Unfold_Planar.FaceLikeEntity>() { edge_to_copy.Tail.Face });
-                        List<Unfold_Planar.graph_vertex> newhead = Unfold_Planar.find_nodes_by_matching_faces(graph_to_traverse, new List<Unfold_Planar.FaceLikeEntity>() { edge_to_copy.Head.Face });
-                        Unfold_Planar.graph_edge edge = new Unfold_Planar.graph_edge(edge_to_copy.Real_Edge, newtail[0], newhead[0]);
+                        List<UnfoldPlanar.graph_vertex> newtail = UnfoldPlanar.find_nodes_by_matching_faces(graph_to_traverse, new List<UnfoldPlanar.FaceLikeEntity>() { edge_to_copy.Tail.Face });
+                        List<UnfoldPlanar.graph_vertex> newhead = UnfoldPlanar.find_nodes_by_matching_faces(graph_to_traverse, new List<UnfoldPlanar.FaceLikeEntity>() { edge_to_copy.Head.Face });
+                        UnfoldPlanar.graph_edge edge = new UnfoldPlanar.graph_edge(edge_to_copy.Real_Edge, newtail[0], newhead[0]);
                         vert.Graph_Edges.Add(edge);
                     }
 
@@ -63,13 +63,13 @@ namespace UnfoldTests
         {
 
         static int Index;
-        static Stack<Unfold_Planar.graph_vertex> VertStack;
-        static   List<Unfold_Planar.graph_vertex> graphcopy;
-        static List<List<Unfold_Planar.graph_vertex>> stronglyConnectedComponents;
+        static Stack<UnfoldPlanar.graph_vertex> VertStack;
+        static   List<UnfoldPlanar.graph_vertex> graphcopy;
+        static List<List<UnfoldPlanar.graph_vertex>> stronglyConnectedComponents;
 
       
         //use for cycle detection to assert that the BFS tree has no cycles and is a tree
-        public static List<List<Unfold_Planar.graph_vertex>> CycleDetect(List<Unfold_Planar.graph_vertex> graph)
+        public static List<List<UnfoldPlanar.graph_vertex>> CycleDetect(List<UnfoldPlanar.graph_vertex> graph)
         
         {
           
@@ -81,9 +81,9 @@ namespace UnfoldTests
              vert.LowLink = -1;
             }
 
-             stronglyConnectedComponents = new List<List<Unfold_Planar.graph_vertex>>();
+             stronglyConnectedComponents = new List<List<UnfoldPlanar.graph_vertex>>();
              Index = 0;
-            VertStack = new Stack<Unfold_Planar.graph_vertex>();
+            VertStack = new Stack<UnfoldPlanar.graph_vertex>();
            
             graphcopy = GraphWithTags;
             foreach (var vert in GraphWithTags) 
@@ -99,7 +99,7 @@ namespace UnfoldTests
         return stronglyConnectedComponents;
         }
         
-            private static void checkStrongConnect(Unfold_Planar.graph_vertex vertex){
+            private static void checkStrongConnect(UnfoldPlanar.graph_vertex vertex){
                 vertex.Index = Index;
                 vertex.LowLink = Index;
                 Index = Index + 1;
@@ -107,7 +107,7 @@ namespace UnfoldTests
 
                 var adjlist = vertex.Graph_Edges.Select(x=>x.Head).ToList();
 
-                foreach (Unfold_Planar.graph_vertex AdjVert in adjlist)
+                foreach (UnfoldPlanar.graph_vertex AdjVert in adjlist)
                 {
 
                     if (AdjVert.Index < 0)
@@ -129,8 +129,8 @@ namespace UnfoldTests
                 if (vertex.LowLink == vertex.Index)
                 {
 
-                    var components = new List<Unfold_Planar.graph_vertex>();
-                    Unfold_Planar.graph_vertex X;
+                    var components = new List<UnfoldPlanar.graph_vertex>();
+                    UnfoldPlanar.graph_vertex X;
 
                     do
                     {
@@ -192,7 +192,7 @@ namespace UnfoldTests
                 
                 Assert.AreEqual(faces.Count, 6);
 
-                List<Unfold_Planar.graph_vertex> graph = Unfold_Planar.ModelTopology.GenerateTopologyFromFaces(faces);
+                List<UnfoldPlanar.graph_vertex> graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces(faces);
 
                 List<Object> face_objs = faces.Select(x => x as Object).ToList();
 
@@ -215,7 +215,7 @@ namespace UnfoldTests
 
                 Assert.AreEqual(surfaces.Count, 6);
 
-                List<Unfold_Planar.graph_vertex> graph = Unfold_Planar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
+                List<UnfoldPlanar.graph_vertex> graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
 
                 List<Object> face_objs = surfaces.Select(x => x as Object).ToList();
 
@@ -227,7 +227,7 @@ namespace UnfoldTests
             }
 
 
-            public  void GraphHasVertForEachFace(List<Unfold_Planar.graph_vertex> graph, List<Object> faces)
+            public  void GraphHasVertForEachFace(List<UnfoldPlanar.graph_vertex> graph, List<Object> faces)
             {
                 
                 Assert.AreEqual(graph.Count, faces.Count);
@@ -241,14 +241,14 @@ namespace UnfoldTests
             }
 
 
-            public void GraphHasCorrectNumberOfEdges(int expectedEdges, List<Unfold.Unfold_Planar.graph_vertex> graph)
+            public void GraphHasCorrectNumberOfEdges(int expectedEdges, List<Unfold.UnfoldPlanar.graph_vertex> graph)
             {
 
-                List<Unfold_Planar.graph_edge> alledges = new List<Unfold_Planar.graph_edge>();
+                List<UnfoldPlanar.graph_edge> alledges = new List<UnfoldPlanar.graph_edge>();
 
-                foreach (Unfold_Planar.graph_vertex vertex in graph)
+                foreach (UnfoldPlanar.graph_vertex vertex in graph)
                 {
-                    foreach(Unfold_Planar.graph_edge graphedge in vertex.Graph_Edges){
+                    foreach(UnfoldPlanar.graph_edge graphedge in vertex.Graph_Edges){
 
                         alledges.Add(graphedge);
                     }
