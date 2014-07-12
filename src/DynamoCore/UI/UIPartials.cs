@@ -563,7 +563,7 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            watchTree = new WatchTree();
+            _watchTree = new WatchTree();
 
             // MAGN-2446: Fixes the maximum width/height of watch node so it won't 
             // go too crazy on us. Note that this is only applied to regular watch 
@@ -571,16 +571,16 @@ namespace Dynamo.Nodes
             // 
             nodeUI.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
             nodeUI.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
-            nodeUI.PresentationGrid.Children.Add(watchTree);
+            nodeUI.PresentationGrid.Children.Add(_watchTree);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
             if (Root == null)
                 Root = new WatchViewModel();
-            watchTree.DataContext = Root;
+            _watchTree.DataContext = Root;
 
             RequestBindingUnhook += delegate
             {
-                BindingOperations.ClearAllBindings(watchTree.treeView1);
+                BindingOperations.ClearAllBindings(_watchTree.treeView1);
             };
 
             RequestBindingRehook += delegate
@@ -590,7 +590,7 @@ namespace Dynamo.Nodes
                     Mode = BindingMode.TwoWay,
                     Source = Root,
                 };
-                watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
+                _watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
             };
 
             var checkedBinding = new Binding("ShowRawData")
