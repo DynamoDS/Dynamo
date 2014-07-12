@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Mirror;
+
+using VMDataBridge;
 
 namespace Dynamo.Nodes
 {
@@ -25,9 +28,9 @@ namespace Dynamo.Nodes
     {
         #region private members
 
-        private WatchTree _watchTree;
-
-        private WatchViewModel _root;
+        private WatchTree watchTree;
+        private WatchViewModel root;
+        private object watchObject;
 
         #endregion
 
@@ -38,17 +41,17 @@ namespace Dynamo.Nodes
         /// </summary>
         public WatchViewModel Root
         {
-            get { return _root; }
+            get { return root; }
             set
             {
-                _root = value;
+                root = value;
                 RaisePropertyChanged("Root");
             }
         }
 
         #endregion
 
-        private const string nullString = "null";
+        private const string NULL_STRING = "null";
 
         #region events
 
@@ -79,20 +82,19 @@ namespace Dynamo.Nodes
             {
                 p.PortDisconnected += p_PortDisconnected;
             }
-
-            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
         }
 
-        void Controller_EvaluationCompleted(object sender, EventArgs e)
+        private void EvaluationCompleted(object o)
         {
             DispatchOnUIThread(
                 delegate
                 {
+                    watchObject = o;
+
                     //unhook the binding
                     OnRequestBindingUnhook(EventArgs.Empty);
 
                     Root.Children.Clear();
-
                     Root.Children.Add(GetWatchNode());
 
                     //rehook the binding
@@ -105,25 +107,23 @@ namespace Dynamo.Nodes
         /// Update the watch content from the given MirrorData and returns WatchNode.
         /// </summary>
         /// <param name="data">The Mirror data for which watch content is needed.</param>
-        /// <param name="prefix">Prefix string used for formatting the content.</param>
-        /// <param name="index">Index of input data if it is a part of a collection.</param>
-        /// <param name="isListMember">Specifies if this data belongs to a collection.</param>
-        /// <returns>WatchNode</returns>
-        public static WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
+        /// <param name="path"></param>
+        /// <param name="showRawData"></param>
+        public static WatchViewModel Process(object data, string path, bool showRawData = true)
         {
-            WatchViewModel node = null;
+            WatchViewModel node;
 
-            if (data == null || data.IsNull)
+            if (data == null)
             {
-                node = new WatchViewModel(nullString, path);
+                node = new WatchViewModel(NULL_STRING, path);
             }
-            else if (data.IsCollection)
+            else if (data is ICollection)
             {
-                var list = data.GetElements();
+                var list = data as ICollection;
 
                 node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", path, true);
 
-                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
+                foreach (var e in list.Cast<object>().Select((x, i) => new { Element = x, Index = i }))
                 {
                     node.Children.Add(Process(e.Element, path + ":" + e.Index, showRawData));
                 }
@@ -143,6 +143,7 @@ namespace Dynamo.Nodes
         /// <param name="e"></param>
         private void p_PortDisconnected(object sender, EventArgs e)
         {
+            watchObject = null;
             if (Root != null)
                 Root.Children.Clear();
         }
@@ -159,11 +160,42 @@ namespace Dynamo.Nodes
                 RequestBindingRehook(this, e);
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        protected override void OnBuilt()
         {
-            var resultAst = new List<AssociativeNode>
+            DataBridge.RegisterCallback(GUID, EvaluationCompleted);
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            if (IsPartiallyApplied)
             {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0])
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionObject(
+                            new IdentifierListNode
+                            {
+                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
+                                RightNode = AstFactory.BuildIdentifier("BridgeData")
+                            },
+                            2,
+                            new[] { 0 },
+                            new List<AssociativeNode>
+                            {
+                                AstFactory.BuildStringNode(GUID.ToString()),
+                                AstFactory.BuildNullNode()
+                            }))
+                };
+            }
+
+            var resultAst = new[]
+            {
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    DataBridge.GenerateBridgeDataAst(GUID, inputAstNodes[0])),
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 
             return resultAst;
@@ -182,24 +214,13 @@ namespace Dynamo.Nodes
         /// <returns>WatchNode</returns>
         internal WatchViewModel GetWatchNode()
         {
-            if (this.InPorts[0].Connectors.Count == 0)
-            {
-                return new WatchViewModel(nullString, AstIdentifierForPreview.Name);
-            }
-            else
-            {
-                var inputVar = this.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
-
-                //Get RuntimeMirror for input ast identifier.
-                var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
-                if (null == mirror)
-                    return new WatchViewModel(nullString, inputVar);
-
-                //Get MirrorData from the RuntimeMirror
-                var mirrorData = mirror.GetData();
-
-                return Root != null ? Process(mirrorData, inputVar, Root.ShowRawData) : Process(mirrorData, inputVar);
-            }
+            var inputVar = IsPartiallyApplied
+                ? AstIdentifierForPreview.Name
+                : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
+            
+            return Root != null
+                ? Process(watchObject, inputVar, Root.ShowRawData)
+                : Process(watchObject, inputVar);
         }
 
         public override void UpdateRenderPackage()
