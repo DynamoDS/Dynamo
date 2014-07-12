@@ -676,7 +676,7 @@ namespace Dynamo.DSEngine
 
             if (importedFunctionGroups.ContainsKey(library))
             {
-                string errorMessage = string.Format("Library {0} is already loaded.", library);
+                string errorMessage = string.Format("Library {0} has been loaded.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }

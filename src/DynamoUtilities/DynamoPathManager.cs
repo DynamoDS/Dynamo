@@ -171,7 +171,6 @@ namespace DynamoUtilities
 #endif
             var coreLibs = new List<string>
             {
-                "VMDataBridge.dll",
                 "ProtoGeometry.dll",
                 "DSCoreNodes.dll",
                 "DSOffice.dll",
