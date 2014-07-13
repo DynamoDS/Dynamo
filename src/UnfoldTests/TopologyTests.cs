@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Autodesk.DesignScript.Interfaces;
 using Unfold;
 using System.Threading;
+using Unfold.Interfaces;
 
 namespace UnfoldTests
 {
@@ -45,14 +46,14 @@ namespace UnfoldTests
 
 
             [Test]
-            public  void GraphCanBeGeneratedFromFaces()
+            public  void GraphCanBeGeneratedFromFaces() 
             {
                 Solid testcube = SetupCube();
                 List<Face> faces = testcube.Faces.ToList();
                 
                 Assert.AreEqual(faces.Count, 6);
 
-                List<UnfoldPlanar.graph_vertex> graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces(faces);
+               var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces<UnfoldPlanar.EdgeLikeEntity,UnfoldPlanar.FaceLikeEntity>(faces);
 
                 List<Object> face_objs = faces.Select(x => x as Object).ToList();
 
@@ -87,7 +88,9 @@ namespace UnfoldTests
             }
 
 
-            public  void GraphHasVertForEachFace(List<UnfoldPlanar.graph_vertex> graph, List<Object> faces)
+            public  void GraphHasVertForEachFace<K,T>(List<UnfoldPlanar.graph_vertex<K,T>> graph, List<Object> faces)
+            where T:IUnfoldPlanarFace
+            where K:IUnfoldEdge
             {
                 
                 Assert.AreEqual(graph.Count, faces.Count);
@@ -101,12 +104,12 @@ namespace UnfoldTests
             }
 
 
-            public void GraphHasCorrectNumberOfEdges(int expectedEdges, List<Unfold.UnfoldPlanar.graph_vertex> graph)
+            public void GraphHasCorrectNumberOfEdges<K,T>(int expectedEdges, List<UnfoldPlanar.graph_vertex<K,T>> graph) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
             {
 
-                List<UnfoldPlanar.graph_edge> alledges = new List<UnfoldPlanar.graph_edge>();
+                List<UnfoldPlanar.graph_edge<K,T>> alledges = new List<UnfoldPlanar.graph_edge<K,T>>();
 
-                foreach (UnfoldPlanar.graph_vertex vertex in graph)
+                foreach (UnfoldPlanar.graph_vertex<K,T> vertex in graph)
                 {
                     foreach(UnfoldPlanar.graph_edge graphedge in vertex.Graph_Edges){
 

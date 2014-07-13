@@ -39,15 +39,17 @@ namespace Unfold.Interfaces
         }
 
 
-        interface IUnfoldPlanarFace
+       public interface IUnfoldPlanarFace<K> where K:IUnfoldEdge
         {
              Object OriginalEntity { get; set; }
              Surface SurfaceEntity { get; set; }
-             List<IUnfoldEdge> EdgeLikeEntities { get; set; }
+             List<K> EdgeLikeEntities { get; set; }
+           
+           
 
         }
 
-        interface IUnfoldEdge : ISpatialEquatable
+      public  interface IUnfoldEdge : ISpatialEquatable
         {
             Point Start { get; set; }
             Point End { get; set; }

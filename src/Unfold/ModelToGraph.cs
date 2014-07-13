@@ -99,9 +99,9 @@ namespace Unfold
         /// This is a wrapper type for face like entities so that unfolding methods can operate both on faces/edges or surfaces/adjacent-curves
         /// There are overloads for building this class from faces or surfaces
         /// </summary>
-        public class FaceLikeEntity
+        public class FaceLikeEntity:IUnfoldPlanarFace<EdgeLikeEntity>
         {
-
+            
             public Object OriginalEntity { get; set; }
             public Surface SurfaceEntity {get; set;}
             public List<EdgeLikeEntity> EdgeLikeEntities { get; set; }
@@ -150,14 +150,14 @@ namespace Unfold
         /// <summary>
         /// a graph edge_ stores head and tail and the  wrapped geometry edgeLikeEntity that this graph edge represents
         /// </summary>
-        public class graph_edge
+        public class graph_edge<K,T> where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
         {
 
-            public graph_vertex Tail { get; set; }
-            public graph_vertex Head { get; set; }
-            public EdgeLikeEntity Real_Edge { get; set; }
+            public graph_vertex<K,T> Tail { get; set; }
+            public graph_vertex<K,T> Head { get; set; }
+            public K Real_Edge { get; set; }
 
-            public graph_edge(EdgeLikeEntity edge, graph_vertex tail, graph_vertex head)
+            public graph_edge (K edge, graph_vertex<K,T> tail, graph_vertex<K,T> head)
             {
                 Tail = tail;
                 Head = head;
@@ -170,12 +170,12 @@ namespace Unfold
         /// graph vertex, represents a face, stores list of outoging edges
         /// parent,explored,finishtime, and fold edge will be set during BFS or another traversal method
         /// </summary>
-        public class graph_vertex<T> where T: IUnfoldPlanarFace
+        public class graph_vertex<K,T> where T: IUnfoldPlanarFace<K> where K:IUnfoldEdge
         {
 
-            public FaceLikeEntity Face{ get; set; }
-            public HashSet<graph_edge> Graph_Edges { get; set; }
-            public graph_vertex<T> Parent { get; set; }
+            public T Face{ get; set; }
+            public HashSet<graph_edge<K,T>> Graph_Edges { get; set; }
+            public graph_vertex<K,T> Parent { get; set; }
             public Boolean Explored { get; set; }
             public List<EdgeLikeEntity> Fold_Edge { get; set; }
             public int Finish_Time { get; set; }
@@ -184,16 +184,16 @@ namespace Unfold
             public int Index { get; set; }
             public int LowLink { get; set; }
 
-            public graph_vertex(FaceLikeEntity face)
+            public graph_vertex(T face)
             {
                 Face = face;
-                Graph_Edges = new HashSet<graph_edge>();
+                Graph_Edges = new HashSet<graph_edge<K,T>>();
             }
 
 
             public override bool Equals(object obj)
             {
-                graph_vertex<T> objitem = obj as graph_vertex<T>;
+                graph_vertex<K,T> objitem = obj as graph_vertex<K,T>;
                 var otherval = objitem.Face;
                 return otherval.Equals(this.Face);
             }
@@ -224,25 +224,29 @@ namespace Unfold
             /// <param name="faces"></param>
             /// <returns></returns>
 
+            // These user facing methods will need to be wrapped to return different types 
+            // since we do not want to expose generic types to dynamo
 
-            public static List<graph_vertex> GenerateTopologyFromFaces(List<Face> faces)
+            public static List<graph_vertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromFaces(List<Face> faces)  
+               
             {
 
                 List<FaceLikeEntity> wrappedFaces = faces.Select(x => new FaceLikeEntity(x)).ToList();
 
 
 
-                return GenerateTopology(wrappedFaces);
+                return GenerateTopology<EdgeLikeEntity, FaceLikeEntity>(wrappedFaces);
             }
 
-            public static List<graph_vertex> GenerateTopologyFromSurfaces(List<Surface> surfaces)
+            public static List<graph_vertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromSurfaces(List<Surface> surfaces)
+               
             {
 
                 List<FaceLikeEntity> wrappedSurfaces = surfaces.Select(x => new FaceLikeEntity(x)).ToList();
 
 
 
-                return GenerateTopology(wrappedSurfaces);
+                return GenerateTopology<EdgeLikeEntity, FaceLikeEntity>(wrappedSurfaces);
             }
 
 
@@ -255,13 +259,13 @@ namespace Unfold
             /// </summary>
             /// <param name="faces"></param>
             /// <returns></returns>
-            private static List<graph_vertex> GenerateTopology(List<FaceLikeEntity> facelikes)
+            private static List<graph_vertex<K,T>> GenerateTopology<K,T>(List<T> facelikes) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
             {
-                Dictionary<EdgeLikeEntity, List<FaceLikeEntity>> edgeDict = new Dictionary<EdgeLikeEntity, List<FaceLikeEntity>>();
-                foreach (FaceLikeEntity facelike in facelikes)
+                Dictionary<K, List<T>> edgeDict = new Dictionary<K, List<T>>();
+                foreach (T facelike in facelikes)
                 {
 
-                    foreach (EdgeLikeEntity edgelike in facelike.EdgeLikeEntities)
+                    foreach (K edgelike in facelike.EdgeLikeEntities)
                     {
                          // EdgeLikeEntity edgekey = new EdgeLikeEntity(edgelike);
                         // no longer need to wrap up the key, it's already wrapped up
@@ -275,12 +279,12 @@ namespace Unfold
                         }
                         else
                         {
-                            edgeDict.Add(edgekey, new List<FaceLikeEntity>() { facelike });
+                            edgeDict.Add(edgekey, new List<T>() { facelike });
                         }
                     }
                 }
 
-                List<graph_vertex> graph = ModelGraph.GenGraph(facelikes, edgeDict);
+                var graph = ModelGraph.GenGraph(facelikes, edgeDict);
                 return graph;
             }
 
@@ -298,21 +302,21 @@ namespace Unfold
             /// <param name="faces"></param>
             /// <param name="edge_dict"></param>
             /// <returns></returns>
-            public static List<graph_vertex> GenGraph(List<FaceLikeEntity> facelikes, Dictionary<EdgeLikeEntity, List<FaceLikeEntity>> edge_dict)
+            public static List<graph_vertex<K,T>> GenGraph<T,K>(List<T> facelikes, Dictionary<K, List<T>> edge_dict) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
             {
-                List<graph_vertex> graph = new List<graph_vertex>();
+                List<graph_vertex<K,T>> graph = new List<graph_vertex<K,T>>();
                 // first build the graph nodes, just referencing faces
-                foreach (FaceLikeEntity face in facelikes)
+                foreach (T face in facelikes)
                 {
-                    var current_vertex = new graph_vertex(face);
+                    var current_vertex = new graph_vertex<K,T>(face);
                     graph.Add(current_vertex);
                 }
 
                 // then build edges, need to use edge dict to do this
-                foreach (graph_vertex vertex in graph)
+                foreach (graph_vertex<K,T> vertex in graph)
                 {
-                    FaceLikeEntity facelike = vertex.Face;
-                    foreach (EdgeLikeEntity edgelike in facelike.EdgeLikeEntities)
+                    T facelike = vertex.Face;
+                    foreach (K edgelike in facelike.EdgeLikeEntities)
                     {
 
                         //var edgekey = new EdgeLikeEntity(edge);
@@ -323,13 +327,13 @@ namespace Unfold
                         // find adjacent faces in the dict
                         var subfaces = edge_dict[edgekey];
                         // find the graph verts that represent these faces
-                        var verts = UnfoldPlanar.find_nodes_by_matching_faces(graph, subfaces);
+                        var verts = GraphUtilities.find_nodes_by_matching_faces(graph, subfaces);
                         //remove dupe faces, not sure if these should really be removed
                         verts = verts.Distinct().ToList();
                         //need to remove self loops
                         //build list of toremove, then remove them
-                        var toremove = new List<graph_vertex>();
-                        foreach (graph_vertex testvert in verts)
+                        var toremove = new List<graph_vertex<K,T>>();
+                        foreach (graph_vertex<K,T> testvert in verts)
                         {
                             if (testvert == vertex)
                             {
@@ -342,8 +346,8 @@ namespace Unfold
                         // these are the verts this edge connects
                         foreach (var vert_to_connect_to in verts)
                         {
-                            EdgeLikeEntity wrapped_edge_on_this_graph_edge = UnfoldPlanar.find_real_edge_by_two_faces(graph, subfaces, edge_dict);
-                            var current_graph_edge = new graph_edge(wrapped_edge_on_this_graph_edge, vertex, vert_to_connect_to);
+                            K wrapped_edge_on_this_graph_edge = GraphUtilities.find_real_edge_by_two_faces<T,K>(graph, subfaces, edge_dict);
+                            var current_graph_edge = new graph_edge<K,T>(wrapped_edge_on_this_graph_edge, vertex, vert_to_connect_to);
                             vertex.Graph_Edges.Add(current_graph_edge);
                         }
 
@@ -359,46 +363,12 @@ namespace Unfold
             // might be better to create new verts, or implement Icloneable
 
             [MultiReturn(new[] {"tree geo","BFS tree"})]
-            public static Dictionary<string,object> BFS(List<graph_vertex> graph)
+            public static Dictionary<string,object> BFS<K,T>(List<graph_vertex<K,T>> graph) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
             {
 
-
-                // *refactor this out as a clone method or graph utility/ext method on List<graph_vertex> types
-                ///this is really a clone method in next 3 for loops
-                //create new verts and store them in a new list
-                List<graph_vertex> graph_to_traverse = new List<graph_vertex>();
-                foreach (graph_vertex vert_to_copy in graph)
-                {
-                    var vert = new graph_vertex(vert_to_copy.Face);
-                    graph_to_traverse.Add(vert);
-                }
-
+              var graphToTraverse =  GraphUtilities.CloneGraph<K,T>(graph);
+               
                 
-                // build the rest of the graphcopy - set the other properties of the verts correctly
-                foreach (graph_vertex vert_to_copy in graph)
-                {   
-                    List<graph_vertex> vertlist = find_nodes_by_matching_faces(graph_to_traverse, new List<FaceLikeEntity>() { vert_to_copy.Face });
-                    graph_vertex vert = vertlist[0];
-                    vert.Explored = false;
-                    vert.Finish_Time = 1000000000;//infin
-                    vert.Parent = null;
-
-                    foreach (graph_edge edge_to_copy in vert_to_copy.Graph_Edges)
-                    {
-
-                        // find the same faces in the new graph, the nodes that represent these faces...// but we must make sure that these nodes
-                        // that are returned are the ones inside the new graph
-                        // may make sense to add a property that either is a name , id, or graph owner ...
-                        List<graph_vertex> newtail = find_nodes_by_matching_faces(graph_to_traverse, new List<FaceLikeEntity>() { edge_to_copy.Tail.Face });
-                        List<graph_vertex> newhead = find_nodes_by_matching_faces(graph_to_traverse, new List<FaceLikeEntity>() { edge_to_copy.Head.Face });
-                        graph_edge edge = new graph_edge(edge_to_copy.Real_Edge, newtail[0], newhead[0]);
-                        vert.Graph_Edges.Add(edge);
-                    }
-
-
-
-                }
-
                 // now can start actually traversing the graph and building a tree.
 
                 Queue<graph_vertex> Q = new Queue<graph_vertex>();
