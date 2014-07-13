@@ -226,12 +226,12 @@ namespace Unfold
         /// graph vertex, represents a face, stores list of outoging edges
         /// parent,explored,finishtime, and fold edge will be set during BFS or another traversal method
         /// </summary>
-        public class graph_vertex
+        public class graph_vertex<T> where T: IUnfoldPlanarFace
         {
 
             public FaceLikeEntity Face{ get; set; }
             public HashSet<graph_edge> Graph_Edges { get; set; }
-            public graph_vertex Parent { get; set; }
+            public graph_vertex<T> Parent { get; set; }
             public Boolean Explored { get; set; }
             public List<EdgeLikeEntity> Fold_Edge { get; set; }
             public int Finish_Time { get; set; }
@@ -249,7 +249,7 @@ namespace Unfold
 
             public override bool Equals(object obj)
             {
-                graph_vertex objitem = obj as graph_vertex;
+                graph_vertex<T> objitem = obj as graph_vertex<T>;
                 var otherval = objitem.Face;
                 return otherval.Equals(this.Face);
             }

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlignPlanarFaces.cs" />
+    <Compile Include="GraphUtilities.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="ModelToGraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
