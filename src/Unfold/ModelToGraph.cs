@@ -143,65 +143,9 @@ namespace Unfold
         
        
 
-        /// <summary>
-        /// method for finding a shared edge given a list of faces
-        /// </summary>
-        /// <param name="graph"></param>
-        /// <param name="facelikes"></param>
-        /// <param name="edgedict"></param>
-        /// <returns></returns>
-        public static EdgeLikeEntity find_real_edge_by_two_faces(List<graph_vertex> graph, List<FaceLikeEntity> facelikes, Dictionary<EdgeLikeEntity, List<FaceLikeEntity>> edgedict)
-        {
-            foreach (KeyValuePair<EdgeLikeEntity, List<FaceLikeEntity>> entry in edgedict)
-            {
-                var match = 0;
-                foreach (FaceLikeEntity face in facelikes)
-                {
-                    if (entry.Value.Contains(face))
-                    {
-                        match = match + 1;
-                    }
-                    else
-                    {
-                        break;
-                    }
+        
 
-
-                }
-                if (match == facelikes.Count)
-                {
-                    return entry.Key;
-                }
-
-
-
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// method to find a list of nodes that represent a list of faces
-        /// </summary>
-        /// <param name="nodes"></param>
-        /// <param name="faces"></param>
-        /// <returns></returns>
-        public static List<graph_vertex> find_nodes_by_matching_faces(List<graph_vertex> nodes, List<FaceLikeEntity> facelikes)
-        {
-
-            List<graph_vertex> output = new List<graph_vertex>();
-
-            foreach (var face in facelikes)
-            {
-                foreach (var node in nodes)
-                {
-                    if (face.Equals(node.Face) && (output.Contains(node) == false))
-                    {
-                        output.Add(node);
-                    }
-                }
-            }
-            return output;
-        }
+        
 
         /// <summary>
         /// a graph edge_ stores head and tail and the  wrapped geometry edgeLikeEntity that this graph edge represents
