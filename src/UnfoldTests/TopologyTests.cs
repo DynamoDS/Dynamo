@@ -53,7 +53,7 @@ namespace UnfoldTests
                 
                 Assert.AreEqual(faces.Count, 6);
 
-               var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces<UnfoldPlanar.EdgeLikeEntity,UnfoldPlanar.FaceLikeEntity>(faces);
+               var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces(faces);
 
                 List<Object> face_objs = faces.Select(x => x as Object).ToList();
 
@@ -61,7 +61,7 @@ namespace UnfoldTests
 
                 GraphHasCorrectNumberOfEdges(24, graph);
                 
-                var sccs = GraphUtilities.tarjansAlgo.CycleDetect(graph);
+                var sccs = GraphUtilities.tarjansAlgo<UnfoldPlanar.EdgeLikeEntity,UnfoldPlanar.FaceLikeEntity>.CycleDetect(graph);
                 //
             }
 
@@ -76,7 +76,7 @@ namespace UnfoldTests
 
                 Assert.AreEqual(surfaces.Count, 6);
 
-                List<UnfoldPlanar.graph_vertex> graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
+               var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
 
                 List<Object> face_objs = surfaces.Select(x => x as Object).ToList();
 
@@ -88,8 +88,8 @@ namespace UnfoldTests
             }
 
 
-            public  void GraphHasVertForEachFace<K,T>(List<UnfoldPlanar.graph_vertex<K,T>> graph, List<Object> faces)
-            where T:IUnfoldPlanarFace
+            public  void GraphHasVertForEachFace<K,T>(List<UnfoldPlanar.GraphVertex<K,T>> graph, List<Object> faces)
+            where T:IUnfoldPlanarFace<K>
             where K:IUnfoldEdge
             {
                 
@@ -104,14 +104,14 @@ namespace UnfoldTests
             }
 
 
-            public void GraphHasCorrectNumberOfEdges<K,T>(int expectedEdges, List<UnfoldPlanar.graph_vertex<K,T>> graph) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
+            public void GraphHasCorrectNumberOfEdges<K,T>(int expectedEdges, List<UnfoldPlanar.GraphVertex<K,T>> graph) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
             {
 
-                List<UnfoldPlanar.graph_edge<K,T>> alledges = new List<UnfoldPlanar.graph_edge<K,T>>();
+                List<UnfoldPlanar.GraphEdge<K,T>> alledges = new List<UnfoldPlanar.GraphEdge<K,T>>();
 
-                foreach (UnfoldPlanar.graph_vertex<K,T> vertex in graph)
+                foreach (UnfoldPlanar.GraphVertex<K,T> vertex in graph)
                 {
-                    foreach(UnfoldPlanar.graph_edge graphedge in vertex.Graph_Edges){
+                    foreach(UnfoldPlanar.GraphEdge<K,T> graphedge in vertex.Graph_Edges){
 
                         alledges.Add(graphedge);
                     }

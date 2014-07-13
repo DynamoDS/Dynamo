@@ -13,17 +13,17 @@ namespace Unfold.Interfaces
         // this class is a comparator that we feed to the constructor of any dictionaries 
         // we want to use these equals and hashcode methods
         // this is done so we do not need to override the equals and hashcode methods on the orignal objects
-        public class SpatiallyEquatableComparer : IEqualityComparer<ISpatialEquatable>
+        public class SpatiallyEquatableComparer<S> : IEqualityComparer<S> where S:ISpatialEquatable
         {
 
-            public bool Equals(ISpatialEquatable x, ISpatialEquatable y)
+            public bool Equals(S x, S y)
             {
 
                 return x.SpatialEquals(y);
 
             }
 
-            public int GetHashCode(ISpatialEquatable spatial)
+            public int GetHashCode(S spatial)
             {
                 return spatial.GetSpatialHashCode();
             }

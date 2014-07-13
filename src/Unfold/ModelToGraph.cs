@@ -150,14 +150,14 @@ namespace Unfold
         /// <summary>
         /// a graph edge_ stores head and tail and the  wrapped geometry edgeLikeEntity that this graph edge represents
         /// </summary>
-        public class graph_edge<K,T> where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
+        public class GraphEdge<K,T> where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
         {
 
-            public graph_vertex<K,T> Tail { get; set; }
-            public graph_vertex<K,T> Head { get; set; }
+            public GraphVertex<K,T> Tail { get; set; }
+            public GraphVertex<K,T> Head { get; set; }
             public K Real_Edge { get; set; }
 
-            public graph_edge (K edge, graph_vertex<K,T> tail, graph_vertex<K,T> head)
+            public GraphEdge (K edge, GraphVertex<K,T> tail, GraphVertex<K,T> head)
             {
                 Tail = tail;
                 Head = head;
@@ -170,30 +170,30 @@ namespace Unfold
         /// graph vertex, represents a face, stores list of outoging edges
         /// parent,explored,finishtime, and fold edge will be set during BFS or another traversal method
         /// </summary>
-        public class graph_vertex<K,T> where T: IUnfoldPlanarFace<K> where K:IUnfoldEdge
+        public class GraphVertex<K,T> where T: IUnfoldPlanarFace<K> where K:IUnfoldEdge
         {
 
             public T Face{ get; set; }
-            public HashSet<graph_edge<K,T>> Graph_Edges { get; set; }
-            public graph_vertex<K,T> Parent { get; set; }
+            public HashSet<GraphEdge<K,T>> Graph_Edges { get; set; }
+            public GraphVertex<K,T> Parent { get; set; }
             public Boolean Explored { get; set; }
-            public List<EdgeLikeEntity> Fold_Edge { get; set; }
+            public List<K> Fold_Edge { get; set; }
             public int Finish_Time { get; set; }
 
             // for cycle detection using tarjans
             public int Index { get; set; }
             public int LowLink { get; set; }
 
-            public graph_vertex(T face)
+            public GraphVertex(T face)
             {
                 Face = face;
-                Graph_Edges = new HashSet<graph_edge<K,T>>();
+                Graph_Edges = new HashSet<GraphEdge<K,T>>();
             }
 
 
             public override bool Equals(object obj)
             {
-                graph_vertex<K,T> objitem = obj as graph_vertex<K,T>;
+                GraphVertex<K,T> objitem = obj as GraphVertex<K,T>;
                 var otherval = objitem.Face;
                 return otherval.Equals(this.Face);
             }
@@ -227,7 +227,7 @@ namespace Unfold
             // These user facing methods will need to be wrapped to return different types 
             // since we do not want to expose generic types to dynamo
 
-            public static List<graph_vertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromFaces(List<Face> faces)  
+            public static List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromFaces(List<Face> faces)  
                
             {
 
@@ -238,7 +238,7 @@ namespace Unfold
                 return GenerateTopology<EdgeLikeEntity, FaceLikeEntity>(wrappedFaces);
             }
 
-            public static List<graph_vertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromSurfaces(List<Surface> surfaces)
+            public static List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromSurfaces(List<Surface> surfaces)
                
             {
 
@@ -259,9 +259,9 @@ namespace Unfold
             /// </summary>
             /// <param name="faces"></param>
             /// <returns></returns>
-            private static List<graph_vertex<K,T>> GenerateTopology<K,T>(List<T> facelikes) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
+            private static List<GraphVertex<K,T>> GenerateTopology<K,T>(List<T> facelikes) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
             {
-                Dictionary<K, List<T>> edgeDict = new Dictionary<K, List<T>>();
+                Dictionary<K, List<T>> edgeDict = new Dictionary<K, List<T>>(new Unfold.Interfaces.SpatiallyEquatableComparer<K>());
                 foreach (T facelike in facelikes)
                 {
 
@@ -302,18 +302,18 @@ namespace Unfold
             /// <param name="faces"></param>
             /// <param name="edge_dict"></param>
             /// <returns></returns>
-            public static List<graph_vertex<K,T>> GenGraph<T,K>(List<T> facelikes, Dictionary<K, List<T>> edge_dict) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
+            public static List<GraphVertex<K,T>> GenGraph<T,K>(List<T> facelikes, Dictionary<K, List<T>> edge_dict) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K>
             {
-                List<graph_vertex<K,T>> graph = new List<graph_vertex<K,T>>();
+                List<GraphVertex<K,T>> graph = new List<GraphVertex<K,T>>();
                 // first build the graph nodes, just referencing faces
                 foreach (T face in facelikes)
                 {
-                    var current_vertex = new graph_vertex<K,T>(face);
+                    var current_vertex = new GraphVertex<K,T>(face);
                     graph.Add(current_vertex);
                 }
 
                 // then build edges, need to use edge dict to do this
-                foreach (graph_vertex<K,T> vertex in graph)
+                foreach (GraphVertex<K,T> vertex in graph)
                 {
                     T facelike = vertex.Face;
                     foreach (K edgelike in facelike.EdgeLikeEntities)
@@ -332,8 +332,8 @@ namespace Unfold
                         verts = verts.Distinct().ToList();
                         //need to remove self loops
                         //build list of toremove, then remove them
-                        var toremove = new List<graph_vertex<K,T>>();
-                        foreach (graph_vertex<K,T> testvert in verts)
+                        var toremove = new List<GraphVertex<K,T>>();
+                        foreach (GraphVertex<K,T> testvert in verts)
                         {
                             if (testvert == vertex)
                             {
@@ -347,7 +347,7 @@ namespace Unfold
                         foreach (var vert_to_connect_to in verts)
                         {
                             K wrapped_edge_on_this_graph_edge = GraphUtilities.find_real_edge_by_two_faces<T,K>(graph, subfaces, edge_dict);
-                            var current_graph_edge = new graph_edge<K,T>(wrapped_edge_on_this_graph_edge, vertex, vert_to_connect_to);
+                            var current_graph_edge = new GraphEdge<K,T>(wrapped_edge_on_this_graph_edge, vertex, vert_to_connect_to);
                             vertex.Graph_Edges.Add(current_graph_edge);
                         }
 
@@ -363,7 +363,7 @@ namespace Unfold
             // might be better to create new verts, or implement Icloneable
 
             [MultiReturn(new[] {"tree geo","BFS tree"})]
-            public static Dictionary<string,object> BFS<K,T>(List<graph_vertex<K,T>> graph) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
+            public static Dictionary<string,object> BFS<K,T>(List<GraphVertex<K,T>> graph) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
             {
 
               var graphToTraverse =  GraphUtilities.CloneGraph<K,T>(graph);
@@ -371,11 +371,11 @@ namespace Unfold
                 
                 // now can start actually traversing the graph and building a tree.
 
-                Queue<graph_vertex> Q = new Queue<graph_vertex>();
+                Queue<GraphVertex<K,T>> Q = new Queue<GraphVertex<K,T>>();
 
                 List<Autodesk.DesignScript.Geometry.DesignScriptEntity> tree = new List<Autodesk.DesignScript.Geometry.DesignScriptEntity>();
 
-                graph_vertex root = graph_to_traverse.First();
+                GraphVertex<K, T> root = graphToTraverse.First();
                 root.Finish_Time = 0;
                 root.Parent = null;
                 Q.Enqueue(root);
@@ -383,24 +383,24 @@ namespace Unfold
                 while (Q.Count > 0)
                 {
 
-                    graph_vertex current_vertex = Q.Dequeue();
+                    GraphVertex<K,T> current_vertex = Q.Dequeue();
 
                     //generate some geometry to visualize the BFS tree
                     Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
                     Sphere nodecenter = Sphere.ByCenterPointRadius(center, 1);
                     tree.Add(nodecenter);
 
-                    foreach (graph_edge vedge in current_vertex.Graph_Edges)
+                    foreach (GraphEdge<K,T> vedge in current_vertex.Graph_Edges)
                     {
 
-                        graph_vertex V = vedge.Head;
+                        GraphVertex<K,T> V = vedge.Head;
                         if (V.Explored == false)
                         {
                             V.Explored = true;
                             V.Finish_Time = current_vertex.Finish_Time + 1;
                             V.Parent = current_vertex;
 
-                            V.Fold_Edge = new List<EdgeLikeEntity>() { vedge.Real_Edge };
+                            V.Fold_Edge = new List<K>() { vedge.Real_Edge };
 
                             Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
                             Line line = Line.ByStartPointEndPoint(center, child_center);
@@ -417,7 +417,7 @@ namespace Unfold
                 return new Dictionary<string, object> 
                 {   
                     { "tree geo", (tree)},
-                    {"BFS tree",(graph_to_traverse)}
+                    {"BFS tree",(graphToTraverse)}
                 
                 };
             }
