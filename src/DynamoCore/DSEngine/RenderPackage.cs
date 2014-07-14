@@ -5,7 +5,7 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.DSEngine
 {
-    public class RenderPackage: DynamoUtilities.IRenderPackage2, IDisposable
+    public class RenderPackage: IRenderPackage, IDisposable
     {
         private IntPtr nativeRenderPackage;
 

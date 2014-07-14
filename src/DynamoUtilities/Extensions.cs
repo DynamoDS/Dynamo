@@ -16,10 +16,4 @@ namespace DynamoUtilities
         //    return string.Format("{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);
         //}
     }
-
-    public interface IRenderPackage2 : IRenderPackage
-    {
-        List<byte> PointVertexColors { get; set; }
-        List<byte> TriangleVertexColors { get; set; }
-    }
 }

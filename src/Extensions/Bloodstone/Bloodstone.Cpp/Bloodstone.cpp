@@ -26,9 +26,8 @@ static float Normalize(unsigned char value)
     return ((float)(value * inverse));
 }
 
-static bool GetPointGeometries(IRenderPackage^ rp1, PointGeometryData& data)
+static bool GetPointGeometries(IRenderPackage^ rp, PointGeometryData& data)
 {
-    auto rp = dynamic_cast<IRenderPackage2 ^>(rp1);
     if (rp == nullptr || (rp->PointVertices->Count <= 0))
         return false;
 
@@ -49,9 +48,8 @@ static bool GetPointGeometries(IRenderPackage^ rp1, PointGeometryData& data)
     return true;
 }
 
-static bool GetLineStripGeometries(IRenderPackage^ rp1, LineStripGeometryData& data)
+static bool GetLineStripGeometries(IRenderPackage^ rp, LineStripGeometryData& data)
 {
-    auto rp = dynamic_cast<IRenderPackage2 ^>(rp1);
     if (rp == nullptr || (rp->LineStripVertices->Count <= 0))
         return false;
 
@@ -75,9 +73,8 @@ static bool GetLineStripGeometries(IRenderPackage^ rp1, LineStripGeometryData& d
     return true;
 }
 
-static bool GetTriangleGeometries(IRenderPackage^ rp1, TriangleGeometryData& data)
+static bool GetTriangleGeometries(IRenderPackage^ rp, TriangleGeometryData& data)
 {
-    auto rp = dynamic_cast<IRenderPackage2 ^>(rp1);
     if (rp == nullptr || (rp->TriangleVertices->Count <= 0))
         return false;
 
