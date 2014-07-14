@@ -331,6 +331,14 @@ namespace Revit.Elements
             param.Set(value == false ? 0 : 1);
         }
 
+        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, SIUnit value)
+        {
+            if(param.StorageType != StorageType.Double)
+                throw new Exception("The parameter's storage type is not an integer.");
+
+            param.Set(value.ConvertToHostUnits());
+        }
+
         #endregion
 
         /// <summary>
