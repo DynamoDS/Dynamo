@@ -128,6 +128,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bloodstone.Cpp", "Extension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bloodstone.Net", "Extensions\Bloodstone\Bloodstone.Net\Bloodstone.Net.csproj", "{54C12D23-B989-45F4-9681-3A8716F30050}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoGraphics", "DynamoGraphics\DynamoGraphics.csproj", "{DDAFCD50-BF43-4EEA-B1F2-410E76C2104E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -334,6 +336,10 @@ Global
 		{54C12D23-B989-45F4-9681-3A8716F30050}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54C12D23-B989-45F4-9681-3A8716F30050}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54C12D23-B989-45F4-9681-3A8716F30050}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDAFCD50-BF43-4EEA-B1F2-410E76C2104E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDAFCD50-BF43-4EEA-B1F2-410E76C2104E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDAFCD50-BF43-4EEA-B1F2-410E76C2104E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDAFCD50-BF43-4EEA-B1F2-410E76C2104E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
