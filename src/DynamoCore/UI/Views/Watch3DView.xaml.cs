@@ -455,6 +455,9 @@ namespace Dynamo.Controls
             var meshSel = new MeshGeometry3D();
             var verts = new Point3DCollection(meshVertCount);
             var vertsSel = new Point3DCollection(meshVertSelCount);
+            var vertsDict = new Dictionary<string, Tuple<int, Point3D>>();
+            var vertsSelDict = new Dictionary<string, Tuple<int, Point3D>>();
+
             var norms = new Vector3DCollection(meshVertCount);
             var normsSel = new Vector3DCollection(meshVertSelCount);
             var tris = new Int32Collection(meshVertCount);
@@ -464,14 +467,14 @@ namespace Dynamo.Controls
             {
                 ConvertPoints(package, points, text);
                 ConvertLines(package, lines, redLines, greenLines, blueLines, text);
-                ConvertMeshes(package, verts, norms, tris);
+                ConvertMeshes(package, vertsDict, norms, tris);
             }
 
             foreach (var package in selPackages)
             {
                 ConvertPoints(package, pointsSelected, text);
                 ConvertLines(package, linesSelected, redLines, greenLines, blueLines, text);
-                ConvertMeshes(package, vertsSel, normsSel, trisSel);
+                ConvertMeshes(package, vertsSelDict, normsSel, trisSel);
             }
 
             sw.Stop();
@@ -482,6 +485,9 @@ namespace Dynamo.Controls
             {
                 vm.CheckForLatestRenderCommand.Execute(e.TaskId);
             }
+
+            vertsDict.Values.ToList().ForEach(x=>verts.Add(x.Item2));
+            vertsSelDict.Values.ToList().ForEach(x => vertsSel.Add(x.Item2));
 
             points.Freeze();
             pointsSelected.Freeze();
@@ -618,7 +624,7 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(RenderPackage p,
-            ICollection<Point3D> points, ICollection<Vector3D> norms,
+            Dictionary<string,Tuple<int,Point3D>> points, ICollection<Vector3D> norms,
             ICollection<int> tris)
         {
             for (int i = 0; i < p.TriangleVertices.Count; i+=3)
@@ -631,35 +637,19 @@ namespace Dynamo.Controls
                                             p.TriangleNormals[i + 1],
                                             p.TriangleNormals[i + 2]);
 
-                //find a matching point
-                //compare the angle between the normals
-                //to discern a 'break' angle for adjacent faces
-                //int foundIndex = -1;
-                //for (int j = 0; j < points.Count; j++)
-                //{
-                //    var testPt = points[j];
-                //    var testNorm = norms[j];
-                //    var ang = Vector3D.AngleBetween(normal, testNorm);
+                var hash = new_point.X + ":" + new_point.Y + ":" + new_point.Z + ":" + 
+                    normal.X + ":" + normal.Y + ":" + normal.Z;
 
-                //    if (new_point.X == testPt.X &&
-                //        new_point.Y == testPt.Y &&
-                //        new_point.Z == testPt.Z &&
-                //        ang > 90.0000)
-                //    {
-                //        foundIndex = j;
-                //        break;
-                //    }
-                //}
-
-                //if (foundIndex != -1)
-                //{
-                //    tris.Add(foundIndex);
-                //    continue;
-                //}
-                    
-                tris.Add(points.Count);
-                points.Add(new_point);
-                norms.Add(normal);
+                if (!points.ContainsKey(hash))
+                {
+                    tris.Add(points.Count);
+                    points.Add(hash, new Tuple<int,Point3D>(points.Count, new_point));
+                    norms.Add(normal);
+                }
+                else
+                {
+                    tris.Add(points[hash].Item1);
+                }
             }
 
             if (tris.Count > 0)
