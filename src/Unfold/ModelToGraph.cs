@@ -177,8 +177,8 @@ namespace Unfold
             public HashSet<GraphEdge<K,T>> Graph_Edges { get; set; }
             public GraphVertex<K,T> Parent { get; set; }
             public Boolean Explored { get; set; }
-            public List<K> Fold_Edge { get; set; }
             public int Finish_Time { get; set; }
+            public HashSet<GraphEdge<K, T>> TreeEdges { get; set; }
 
             // for cycle detection using tarjans
             public int Index { get; set; }
@@ -188,8 +188,10 @@ namespace Unfold
             {
                 Face = face;
                 Graph_Edges = new HashSet<GraphEdge<K,T>>();
+                TreeEdges = new HashSet<GraphEdge<K, T>>();
             }
 
+           
 
             public override bool Equals(object obj)
             {
@@ -365,9 +367,12 @@ namespace Unfold
             [MultiReturn(new[] {"tree geo","BFS tree"})]
             public static Dictionary<string,object> BFS<K,T>(List<GraphVertex<K,T>> graph) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
             {
-
-              var graphToTraverse =  GraphUtilities.CloneGraph<K,T>(graph);
                
+              // this is a clone of the graph that we modify to store the tree edges on
+              var graphToTraverse =  GraphUtilities.CloneGraph<K,T>(graph);
+                // this is the final form of the graph, we can replace references to the graph edges with only tree edges
+                // and treat this tree as a graph
+              List<GraphVertex<K, T>> TreeTransformedToGraph;
                 
                 // now can start actually traversing the graph and building a tree.
 
@@ -384,7 +389,7 @@ namespace Unfold
                 {
 
                     GraphVertex<K,T> current_vertex = Q.Dequeue();
-
+              
                     //generate some geometry to visualize the BFS tree
                     Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
                     Sphere nodecenter = Sphere.ByCenterPointRadius(center, 1);
@@ -400,8 +405,9 @@ namespace Unfold
                             V.Finish_Time = current_vertex.Finish_Time + 1;
                             V.Parent = current_vertex;
 
-                            V.Fold_Edge = new List<K>() { vedge.Real_Edge };
+                            current_vertex.TreeEdges.Add(vedge);
 
+                          
                             Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
                             Line line = Line.ByStartPointEndPoint(center, child_center);
                             tree.Add(line);
@@ -414,11 +420,23 @@ namespace Unfold
                     current_vertex.Explored = true;
 
                 }
+
+
+                TreeTransformedToGraph = GraphUtilities.CloneGraph<K, T>(graphToTraverse);
+
+                foreach (var Vertex in TreeTransformedToGraph)
+                {
+                    Vertex.Graph_Edges = Vertex.TreeEdges;
+                    //Vertex.TreeEdges.Clear();
+
+                }
+
+
                 return new Dictionary<string, object> 
                 {   
                     { "tree geo", (tree)},
-                    {"BFS tree",(graphToTraverse)}
-                
+                    {"BFS intermediate",(graphToTraverse)},
+                    {"BFS finished", (TreeTransformedToGraph)}
                 };
             }
         }

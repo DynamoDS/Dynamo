@@ -109,6 +109,20 @@ namespace Unfold
                     vert.Graph_Edges.Add(edge);
                 }
 
+                // same logic for tree edges
+
+                foreach (Unfold.UnfoldPlanar.GraphEdge<K, T> edge_to_copy in vert_to_copy.TreeEdges)
+                {
+
+                    // find the same faces in the new graph, the nodes that represent these faces...// but we must make sure that these nodes
+                    // that are returned are the ones inside the new graph
+                    // may make sense to add a property that either is a name , id, or graph owner ...
+                    List<UnfoldPlanar.GraphVertex<K, T>> newtail = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { edge_to_copy.Tail.Face });
+                    List<UnfoldPlanar.GraphVertex<K, T>> newhead = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { edge_to_copy.Head.Face });
+                    UnfoldPlanar.GraphEdge<K, T> edge = new UnfoldPlanar.GraphEdge<K, T>(edge_to_copy.Real_Edge, newtail[0], newhead[0]);
+                    vert.TreeEdges.Add(edge);
+                }
+
 
 
             }
