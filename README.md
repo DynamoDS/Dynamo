@@ -5,7 +5,7 @@ Dynamo is a Visual Programming language that aims to be accessible to both non-p
 ## Contributors ##
 
 * [Ian Keough](https://github.com/ikeough): Started the project, main developer.
-* [Steve Elliott](https://github.com/Steell): VM, language, and node developer. Functional programming specialist.
+* [Steve Elliott](https://github.com/Steell): Language and node developer. Functional programming specialist.
 * [Peter Boyer](https://github.com/pboyer): Package manager and geometry developer.
 * [Lev Lipkin](https://github.com/LevL): Revit node designer, Revit interaction specialist.
 * [Matt Jezyk](https://github.com/tatlin): Product management, requirements gathering, and node designer.

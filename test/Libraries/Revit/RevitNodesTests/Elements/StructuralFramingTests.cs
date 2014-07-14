@@ -1,4 +1,5 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
@@ -51,5 +52,18 @@ namespace DSRevitNodesTests.Elements
             Assert.Throws(typeof(System.ArgumentNullException), () => StructuralFraming.ByCurveLevelUpVectorAndType(line, level, up, structuralType, null));
         }
 
+        [Test]
+        [TestModel(@".\StructuralFramingLocationTest.rvt")]
+        public void TestLocationOfStructuralFraming()
+        {
+            var e = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true).FirstOrDefault();
+            Assert.NotNull(e);
+
+            var beam = e as StructuralFraming;
+            Assert.NotNull(beam);
+            var curve = beam.Location;
+            Assert.NotNull(curve.StartPoint);
+            Assert.NotNull(curve.EndPoint);
+        }
     }
 }
