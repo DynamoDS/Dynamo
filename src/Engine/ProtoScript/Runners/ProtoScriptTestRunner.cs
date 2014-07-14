@@ -261,7 +261,15 @@ namespace ProtoScript.Runners
                 core.Rmem.PushGlobFrame(core.GlobOffset);
                 core.RunningBlock = blockId;
 
-                Execute(core, new ProtoCore.Runtime.Context());
+                try
+                {
+                    Execute(core, new ProtoCore.Runtime.Context());
+                }
+                catch (ProtoCore.Exceptions.ExecutionCancelledException e)
+                {
+                    Console.WriteLine("The execution has been cancelled!");             
+                }
+                
                 if (!isTest)
                 {
                     core.Heap.Free();

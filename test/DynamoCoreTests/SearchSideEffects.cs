@@ -26,8 +26,6 @@ namespace Dynamo.Tests
         [Test]
         public void WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch()
         {
-            Assert.Inconclusive("Porting : Formula");
-
             // goto custom node workspace
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
@@ -52,8 +50,6 @@ namespace Dynamo.Tests
         [Test]
         public void WhenCustomNodeWorkspaceIsFocusedInputAndOutputNodesArePresentInSearch()
         {
-            Assert.Inconclusive("Porting : Formula");
-
             // goto custom node workspace
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
