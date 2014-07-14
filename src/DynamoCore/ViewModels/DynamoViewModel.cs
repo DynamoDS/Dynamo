@@ -77,15 +77,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event EventHandler WorkspaceChanged;
-        public virtual void OnWorkspaceChanged(object sender, EventArgs e)
-        {
-            if (WorkspaceChanged != null)
-            {
-                WorkspaceChanged(this, e);
-            }
-        }
-
         public event EventHandler RequestClose;
         public virtual void OnRequestClose(Object sender, EventArgs e)
         {
@@ -717,23 +708,6 @@ namespace Dynamo.ViewModels
             ((DynamoLogger)dynSettings.DynamoLogger).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-
-            this.Model.PropertyChanged += (e, args) =>
-            {
-                if (args.PropertyName == "CurrentWorkspace" && dynSettings.Controller.DynamoModel.CurrentWorkspace != null)
-                {
-                    var visibleWorkspace =
-                        (dynSettings.Controller.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel);
-
-                    dynSettings.Controller.SearchViewModel.SearchElements
-                        .Where(x => x.Name == "Input" || x.Name == "Output")
-                        .OfType<NodeSearchElement>()
-                        .ToList()
-                        .ForEach(x => x.SetSearchable(visibleWorkspace));
-
-                    dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
-                }
-            };
 
             this.RecentFiles = new ObservableCollection<string>( Controller.PreferenceSettings.RecentFiles );
             this.RecentFiles.CollectionChanged += (sender, args) =>
