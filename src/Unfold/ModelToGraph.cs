@@ -11,23 +11,14 @@ using Unfold.Interfaces;
 namespace Unfold
 {
     
-
- 
-
     public static class UnfoldPlanar
     {
-
-
-        
-
 
         /// <summary>
         /// wrapper for edges and curves
         /// </summary>
         public class EdgeLikeEntity:IUnfoldEdge
         {
-
-           
 
             public Point Start { get; set; }
             public Point End { get; set; }
@@ -41,8 +32,7 @@ namespace Unfold
                 Curve = edge.CurveGeometry;
                 // not sure I should be storing this here as well, but if so, then should eliminate edgewrapper class
                 Real_Edge = edge;
-                
-
+              
             }
 
             public EdgeLikeEntity(Curve curve)
@@ -55,9 +45,6 @@ namespace Unfold
 
 
             }
-
-          
-         
 
             public int GetSpatialHashCode()
             {
@@ -142,11 +129,6 @@ namespace Unfold
         }
         
        
-
-        
-
-        
-
         /// <summary>
         /// a graph edge_ stores head and tail and the  wrapped geometry edgeLikeEntity that this graph edge represents
         /// </summary>
