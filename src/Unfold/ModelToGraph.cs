@@ -502,10 +502,14 @@ namespace Unfold
                 Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
 
                 var newParentSurface = PolySurface.ByJoinedSurfaces(new List<Surface>() { rotatedFace, parent.Face.SurfaceEntity });
+                    
+                    
 
                 parent.Face = new FaceLikeEntity(newParentSurface);
 
                 child.RemoveFromGraph(sortedtree);
+                  
+
                 }
 
                 return sortedtree.Select(x=>x.Face.SurfaceEntity).ToList();

@@ -98,8 +98,10 @@ namespace Unfold
                 UnfoldPlanar.GraphVertex<K,T> vert = vertlist[0];
                 vert.Explored = vert_to_copy.Explored;
                 vert.Finish_Time = vert_to_copy.Finish_Time;
-                vert.Parent = vert_to_copy.Parent;
-
+                if (vert_to_copy.Parent != null)
+                {
+                    vert.Parent = graph_to_traverse.Where(x => x.Equals(vert_to_copy.Parent)).First();
+                }
                 foreach (Unfold.UnfoldPlanar.GraphEdge<K,T> edge_to_copy in vert_to_copy.Graph_Edges)
                 {
 
