@@ -117,7 +117,7 @@
                 </TextBox>
             
                 <TextBlock FontSize ="14" IsHitTestVisible="False" Padding="2,0,5,0" Margin ="0" Foreground="#666" Grid.Column="1" VerticalAlignment="Center" 
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search</TextBlock>
+                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" HorizontalAlignment="Center">Search</TextBlock>
             
                 <Button Name="SearchCancelButton" Grid.Column="2"
                         Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
