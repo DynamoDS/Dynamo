@@ -2343,7 +2343,7 @@ r3 = 'h' + 1;";
         public void TestGlobalFunctionRecursion100()
         {
             string code =
-@"def f(i : int){    local = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    return = local;}x = 100;y = f(x);";
+@"def f(i : int){    loc = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    return = loc;}x = 100;y = f(x);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 5050);
         }
@@ -2352,7 +2352,7 @@ r3 = 'h' + 1;";
         public void TestGlobalFunctionRecursion100_GlobalIncrement()
         {
             string code =
-@"global = 0;def f(i : int){    local = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    global = global + 1;    return = local;}x = 100;y = f(x);z = global;";
+@"global = 0;def f(i : int){    loc = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    global = global + 1;    return = loc;}x = 100;y = f(x);z = global;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 5050);
             thisTest.Verify("z", 100);
@@ -2362,7 +2362,7 @@ r3 = 'h' + 1;";
         public void TestGlobalFunctionRecursion100_GlobalIncrementInFunction01()
         {
             string code =
-@"global = 0;def g(){    global = global + 1;    return = 0;}def f(i : int){    local = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    t = g();    return = local;}x = 100;y = f(x);z = global;";
+@"global = 0;def g(){    global = global + 1;    return = 0;}def f(i : int){    loc = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    t = g();    return = loc;}x = 100;y = f(x);z = global;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 5050);
             thisTest.Verify("z", 100);
@@ -2372,7 +2372,7 @@ r3 = 'h' + 1;";
         public void TestGlobalFunctionRecursion100_GlobalIncrementInFunction02()
         {
             string code =
-@"global = 0;def g(){    global = global + 1;    return = 0;}def h(){    global = global + 1;    return = 0;}def f(i : int){    local = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    s = g();    t = h();    return = local;}x = 100;y = f(x);z = global;";
+@"global = 0;def g(){    global = global + 1;    return = 0;}def h(){    global = global + 1;    return = 0;}def f(i : int){    loc = [Imperative]    {        a = 0;        if (i > 1)        {            return = f(i - 1) + i + a;        }        return = i;    }    s = g();    t = h();    return = loc;}x = 100;y = f(x);z = global;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 5050);
             thisTest.Verify("z", 200);
@@ -2382,7 +2382,7 @@ r3 = 'h' + 1;";
         public void TestGlobalFunctionRecursionReplication()
         {
             string code =
-@"def f(i : int){    local = [Imperative]    {        xx = 0;        if (i > 1)        {            return = f(i - 1) + i + xx;        }        return = i;    }    return = local;}x = {100,200,300};y = f(x);";
+@"def f(i : int){    loc = [Imperative]    {        xx = 0;        if (i > 1)        {            return = f(i - 1) + i + xx;        }        return = i;    }    return = loc;}x = {100,200,300};y = f(x);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", new Object[] { 5050, 20100, 45150 });
         }
@@ -2512,5 +2512,153 @@ b = a[0];
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", 1);
         }
+
+        [Test]
+        public void TestLocalKeywordDeclaration01()
+        {
+            string code =
+@"
+a : local = 1;       
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+        }
+
+
+        [Test]
+        public void TestLocalKeywordDeclaration02()
+        {
+            string code =
+@"
+a : local = 1;       
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclaration03()
+        {
+            string code =
+@"
+a : local int = 1;       
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclaration04()
+        {
+            string code =
+@"
+a : local = 1;      
+b : local int = 2;       
+c = a + b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 3);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclaration05()
+        {
+            string code =
+@"
+a : local int = 1;      
+b : local int = 2;       
+c = a + b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 3);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclaration06()
+        {
+            string code =
+@"
+a : local int = 1;      
+b : local int = 2;       
+c : local int = a + b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 3);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclaration07()
+        {
+            string code =
+@"
+i = [Associative]
+{
+    a : local int = 1;      
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 1);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclaration08()
+        {
+            string code =
+@"
+i = [Associative]
+{
+    a : local int = 1;      
+    b : local int = 2;       
+    return = a + b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 3);
+        }
+
+                [Test]
+        public void TestLocalKeywordDeclaration09()
+        {
+            string code =
+@"
+i = [Imperative]
+{
+    a : local int = 1;      
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 1);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclaration10()
+        {
+            string code =
+@"
+i = [Imperative]
+{
+    a : local int = 1;      
+    b : local int = 2;       
+    return = a + b;
+}
+";          
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 3);
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ01()
+        {
+            String code =
+@"  
+a : int local = 1;   // 'local' should come before any type specifier";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
     }
 }
