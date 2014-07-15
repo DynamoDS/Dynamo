@@ -491,8 +491,8 @@ namespace Unfold
                 var sortedtree = tree.OrderBy(x => x.Finish_Time).ToList();
 
 
-                while (sortedtree.Count > 1)
-                {
+               // while (sortedtree.Count > 1)
+              //  {
                 var child = sortedtree.Last();
                 var parent = child.Parent;
                 //weak code, shoould have a method for this - find edge that leads to
@@ -502,17 +502,17 @@ namespace Unfold
                 Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
 
                 var newParentSurface = PolySurface.ByJoinedSurfaces(new List<Surface>() { rotatedFace, parent.Face.SurfaceEntity });
-                    
-                    
 
-                parent.Face = new FaceLikeEntity(newParentSurface);
+                return new List<Surface>() { newParentSurface };
 
-                child.RemoveFromGraph(sortedtree);
+               // parent.Face = new FaceLikeEntity(newParentSurface);
+
+               // child.RemoveFromGraph(sortedtree);
                   
 
-                }
+             //   }
 
-                return sortedtree.Select(x=>x.Face.SurfaceEntity).ToList();
+               // return sortedtree.Select(x=>x.Face.SurfaceEntity).ToList();
             }
 
         }
