@@ -405,10 +405,10 @@ namespace ProtoCore.AST.AssociativeAST
             if (null == otherNode)
                 return false;
 
-            return EqualityComparer<string>.Default.Equals(Value, otherNode.Value) && 
+            return IsLocal == otherNode.IsLocal &&
+                   EqualityComparer<string>.Default.Equals(Value, otherNode.Value) && 
                    datatype.Equals(otherNode.datatype) && 
-                   base.Equals(otherNode) &&
-                   IsLocal == otherNode.IsLocal;
+                   base.Equals(otherNode);
         }
 
         public override int GetHashCode()
