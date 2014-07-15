@@ -829,6 +829,7 @@ namespace DSCore
         #region UniqueItems Comparer
         private class DistinctComparer : IEqualityComparer<object>
         {
+            private static readonly ObjectComparer comparer = new ObjectComparer();
             internal static readonly IEqualityComparer<object> Instance = new DistinctComparer();
 
             bool IEqualityComparer<object>.Equals(object x, object y)
@@ -850,6 +851,11 @@ namespace DSCore
             private static bool Eq(IList x, IList y)
             {
                 return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
+            }
+
+            private static bool Eq(object x, object y)
+            {
+                return comparer.Compare(x, y) == 0;
             }
         }
         #endregion
