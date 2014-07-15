@@ -10,6 +10,8 @@ namespace Dynamo.Graphics
 {
     public class VisualizerHwndHost : HwndHost, IDisposable
     {
+        #region Class Data Members
+
         internal const int WS_CHILD = 0x40000000;
         internal const int WS_VISIBLE = 0x10000000;
         internal const int LBS_NOTIFY = 0x00000001;
@@ -18,8 +20,15 @@ namespace Dynamo.Graphics
         internal const int WS_VSCROLL = 0x00200000;
         internal const int WS_BORDER = 0x00800000;
 
+        private Visualizer visualizer = null;
         private IntPtr hwndVisualizer = IntPtr.Zero;
         private System.Windows.Size dimension;
+
+        #endregion
+
+        #region Public Class Operational Methods/Properties
+
+        internal Visualizer Visualizer { get { return visualizer; } }
 
         public VisualizerHwndHost(double width, double height)
         {
@@ -35,8 +44,17 @@ namespace Dynamo.Graphics
         // {
         // }
 
+        #endregion
+
+        #region Protected Overridable Methods
+
         protected override void Dispose(bool disposing)
         {
+            if (this.visualizer != null)
+            {
+                this.visualizer.Destroy();
+                this.visualizer = null;
+            }
         }
 
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
@@ -44,16 +62,36 @@ namespace Dynamo.Graphics
             var width = ((int)dimension.Width);
             var height = ((int)dimension.Height);
 
-            hwndVisualizer = CreateWindowEx(0, "static", "", WS_CHILD | WS_VISIBLE,
-                0, 0, width, height, hwndParent.Handle, (IntPtr)HOST_ID, 
-                IntPtr.Zero, IntPtr.Zero);
+            hwndVisualizer = CreateWindowEx(0, "static", "",
+                WS_CHILD | WS_VISIBLE, 0, 0, width, height, hwndParent.Handle,
+                (IntPtr)HOST_ID, IntPtr.Zero, IntPtr.Zero);
 
+            visualizer = new Visualizer(hwndVisualizer);
             return new HandleRef(this, hwndVisualizer);
         }
 
         protected override IntPtr WndProc(IntPtr hwnd, int msg,
             IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            switch (msg)
+            {
+                case 0x000F: // WM_PAINT
+                    {
+                        if (this.visualizer != null)
+                        {
+                            var width = ((int)dimension.Width);
+                            var height = ((int)dimension.Height);
+                            this.visualizer.Render(width, height);
+                        }
+
+                        break;
+                    }
+
+                case 0x0014: // WM_ERASEBKGND
+                    handled = true;
+                    return System.IntPtr.Zero;
+            }
+
             handled = false;
             return System.IntPtr.Zero;
         }
@@ -61,6 +99,8 @@ namespace Dynamo.Graphics
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
         }
+
+        #endregion
 
         #region PInvoke Class Static Methods
 
