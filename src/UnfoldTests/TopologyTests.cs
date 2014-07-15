@@ -42,16 +42,7 @@ namespace UnfoldTests
             where T : IUnfoldPlanarFace<K>
         {
 
-            List<UnfoldPlanar.GraphEdge<K, T>> alledges = new List<UnfoldPlanar.GraphEdge<K, T>>();
-
-            foreach (UnfoldPlanar.GraphVertex<K, T> vertex in graph)
-            {
-                foreach (UnfoldPlanar.GraphEdge<K, T> graphedge in vertex.Graph_Edges)
-                {
-
-                    alledges.Add(graphedge);
-                }
-            }
+           var alledges =  GraphUtilities.GetAllGraphEdges(graph);
 
             Assert.AreEqual(expectedEdges, alledges.Count);
             Console.WriteLine("correct number of edges");

@@ -173,7 +173,33 @@ namespace Unfold
                 TreeEdges = new HashSet<GraphEdge<K, T>>();
             }
 
-           
+           // Method to remove this graphvertex from graph and to remove all edges which point to it
+            // from other nodes in the graph
+            public void RemoveFromGraph(List<UnfoldPlanar.GraphVertex<K,T>> graph){
+
+                //collect all edges
+              var allGraphEdges =  GraphUtilities.GetAllGraphEdges(graph);
+              var edgesToRemove = new List<GraphEdge<K,T>>();
+              
+                // mark all edges we need to remove
+                foreach (var edge in allGraphEdges){
+                    if (edge.Head == this)
+                    {
+                        edgesToRemove.Add(edge);
+                    }
+                }
+                // iterate the graph again, if during traversal we see 
+                    // a marked edge, remove it
+
+                    foreach(var vertex in graph){
+
+                        vertex.Graph_Edges.ExceptWith(edgesToRemove);                    
+                    }
+                //finally remove the node
+                     graph.Remove(this);
+            }
+
+
 
             public override bool Equals(object obj)
             {
@@ -422,5 +448,48 @@ namespace Unfold
                 };
             }
         }
+
+        public static class PlanarUnfolder
+        {
+
+            public static List<Surface> PlanarUnfold(List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> tree)
+            {
+                // this algorithm is a first test of recursive unfolding - overlapping is expected
+
+                //algorithm pseudocode follows:
+                //Find the last ranked finishing time node in the BFS tree
+                //Find the parent of this vertex
+                //Fold them over their shared edge ( rotate child to be coplanar with parent)
+                //merge the resulting faces into a polysurface
+                // make this new surface the Face property in parent node
+                //remove the child node we started with from the tree
+                //repeat, until there is only one node in the tree.
+                // at this point all faces should be coplanar with this surface
+
+                var sortedtree = tree.OrderBy(x => x.Finish_Time).ToList();
+
+
+                while (sortedtree.Count > 1)
+                {
+                var child = sortedtree.Last();
+                var parent = child.Parent;
+                //weak code, shoould have a method for this - find edge that leads to
+                var edge = parent.Graph_Edges.Where(x => x.Head == child).First();
+
+                int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
+
+                var newParentSurface = PolySurface.ByJoinedSurfaces(new List<Surface>() { rotatedFace, parent.Face.SurfaceEntity });
+
+                parent.Face = new FaceLikeEntity(newParentSurface);
+
+                child.RemoveFromGraph(sortedtree);
+                }
+
+                return sortedtree.Select(x=>x.Face.SurfaceEntity).ToList();
+            }
+
+        }
+
     }
 }

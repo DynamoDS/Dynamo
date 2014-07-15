@@ -133,7 +133,7 @@ namespace Unfold
         //   http://stackoverflow.com/questions/6643076/tarjan-cycle-detection-help-c-sharp
         //  http://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
         public static class tarjansAlgo<K,T> where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
-        {
+       {
 
             static int Index;
             static Stack<UnfoldPlanar.GraphVertex<K,T>> VertStack;
@@ -219,8 +219,23 @@ namespace Unfold
                 }
 
             }
+        }
+            public static List<UnfoldPlanar.GraphEdge<K, T>> GetAllGraphEdges<K,T>(List<UnfoldPlanar.GraphVertex<K, T>> graph) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K> 
+            {
+             var alledges = new List<UnfoldPlanar.GraphEdge<K, T>>();
+        
+            foreach (UnfoldPlanar.GraphVertex<K, T> vertex in graph)
+            {
+                foreach (UnfoldPlanar.GraphEdge<K, T> graphedge in vertex.Graph_Edges)
+                {
 
+                    alledges.Add(graphedge);
+                }
+
+            }
+            return alledges;
+          } 
         }
 
     }
-}
+
