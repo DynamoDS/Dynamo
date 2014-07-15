@@ -147,6 +147,7 @@ limitations under the License.
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
+    <Compile Include="PackageManager\PackageUtilities.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
@@ -231,6 +232,7 @@ limitations under the License.
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
+    <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
@@ -332,7 +334,6 @@ limitations under the License.
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\DynamoLoader.cs" />
     <Compile Include="Core\NodeCollapser.cs" />
-    <Compile Include="Search\SearchElements\CommandElement.cs" />
     <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />
