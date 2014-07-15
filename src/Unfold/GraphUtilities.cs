@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Unfold.Interfaces;
+using Autodesk.DesignScript.Runtime;
 
 namespace Unfold
 {
+    [SupressImportIntoVM]
+   
     public static class GraphUtilities
     {
 
@@ -93,9 +96,9 @@ namespace Unfold
             {
                 List<UnfoldPlanar.GraphVertex<K,T>> vertlist = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { vert_to_copy.Face });
                 UnfoldPlanar.GraphVertex<K,T> vert = vertlist[0];
-                vert.Explored = false;
-                vert.Finish_Time = 1000000000;//infin
-                vert.Parent = null;
+                vert.Explored = vert_to_copy.Explored;
+                vert.Finish_Time = vert_to_copy.Finish_Time;
+                vert.Parent = vert_to_copy.Parent;
 
                 foreach (Unfold.UnfoldPlanar.GraphEdge<K,T> edge_to_copy in vert_to_copy.Graph_Edges)
                 {

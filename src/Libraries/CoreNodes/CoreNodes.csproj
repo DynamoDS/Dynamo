@@ -51,9 +51,15 @@
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,9 +83,15 @@
     <Compile Include="String.cs" />
     <Compile Include="Thread.cs" />
     <Compile Include="Types.cs" />
+    <Compile Include="Unfold.cs" />
     <Compile Include="Web.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Unfold\Unfold.csproj">
+      <Project>{9f323554-489d-4d6a-9c96-4ccfdaf1478f}</Project>
+      <Name>Unfold</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>

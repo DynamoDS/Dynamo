@@ -13,7 +13,7 @@ namespace Unfold
     
     public static class UnfoldPlanar
     {
-
+          [SupressImportIntoVM]
         /// <summary>
         /// wrapper for edges and curves
         /// </summary>
@@ -81,7 +81,8 @@ namespace Unfold
                 }
             }
         }
-
+      
+        [SupressImportIntoVM]
         /// <summary>
         /// This is a wrapper type for face like entities so that unfolding methods can operate both on faces/edges or surfaces/adjacent-curves
         /// There are overloads for building this class from faces or surfaces
@@ -127,8 +128,8 @@ namespace Unfold
 
         
         }
-        
-       
+
+         [SupressImportIntoVM]
         /// <summary>
         /// a graph edge_ stores head and tail and the  wrapped geometry edgeLikeEntity that this graph edge represents
         /// </summary>
@@ -147,7 +148,8 @@ namespace Unfold
             }
 
         }
-
+        
+        [SupressImportIntoVM]
         /// <summary>
         /// graph vertex, represents a face, stores list of outoging edges
         /// parent,explored,finishtime, and fold edge will be set during BFS or another traversal method
@@ -224,7 +226,7 @@ namespace Unfold
 
 
 
-
+          [SupressImportIntoVM]
         public static class ModelTopology
         {
 
@@ -300,6 +302,7 @@ namespace Unfold
 
 
         }
+          [SupressImportIntoVM]
         public static class ModelGraph
         {
 
@@ -452,6 +455,25 @@ namespace Unfold
         public static class PlanarUnfolder
         {
 
+        public static List<Surface> DSPLanarUnfoldFullFromFace(List<Face> faces)
+            {
+
+                var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces(faces);
+
+
+                //perform BFS on the graph and get back the tree
+                var nodereturn = UnfoldPlanar.ModelGraph.BFS<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(graph);
+                object tree = nodereturn["BFS finished"];
+
+                var casttree = tree as List<UnfoldPlanar.GraphVertex<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>>;
+
+
+                return PlanarUnfold(casttree);
+
+
+            }
+
+
             public static List<Surface> PlanarUnfold(List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> tree)
             {
                 // this algorithm is a first test of recursive unfolding - overlapping is expected
@@ -474,7 +496,7 @@ namespace Unfold
                 var child = sortedtree.Last();
                 var parent = child.Parent;
                 //weak code, shoould have a method for this - find edge that leads to
-                var edge = parent.Graph_Edges.Where(x => x.Head == child).First();
+                var edge = parent.Graph_Edges.Where(x => x.Head.Equals(child)).First();
 
                 int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
                 Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;

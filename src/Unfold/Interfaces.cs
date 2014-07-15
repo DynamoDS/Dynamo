@@ -5,7 +5,7 @@ using System.Text;
 using Unfold;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Autodesk.DesignScript.Runtime;
 
 namespace Unfold.Interfaces
 {
@@ -13,6 +13,7 @@ namespace Unfold.Interfaces
         // this class is a comparator that we feed to the constructor of any dictionaries 
         // we want to use these equals and hashcode methods
         // this is done so we do not need to override the equals and hashcode methods on the orignal objects
+      [SupressImportIntoVM]
         public class SpatiallyEquatableComparer<S> : IEqualityComparer<S> where S:ISpatialEquatable
         {
 
@@ -38,7 +39,7 @@ namespace Unfold.Interfaces
 
         }
 
-
+     [SupressImportIntoVM]
        public interface IUnfoldPlanarFace<K> where K:IUnfoldEdge
         {
              Object OriginalEntity { get; set; }
@@ -48,7 +49,7 @@ namespace Unfold.Interfaces
            
 
         }
-
+     [SupressImportIntoVM]
       public  interface IUnfoldEdge : ISpatialEquatable
         {
             Point Start { get; set; }
