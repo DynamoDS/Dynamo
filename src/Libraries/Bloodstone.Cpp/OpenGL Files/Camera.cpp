@@ -128,10 +128,16 @@ void Camera::ResizeViewportCore(int width, int height)
 
 void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
 {
+    if (pBoundingBox->IsInitialized() == false)
+        return;
+
     // Get the bound box center and its radius.
     auto configuration = mConfiguration;
     float boxCenter[3], radius = 0.0f;
     pBoundingBox->Get(&boxCenter[0], radius);
+
+    if (radius <= 0.0f) // Bounding box is empty.
+        return;
 
     // Calculate the distance from eye to the center.
     auto halfFov = configuration.fieldOfView * 0.5f;

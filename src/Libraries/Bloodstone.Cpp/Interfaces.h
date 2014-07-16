@@ -204,6 +204,11 @@ namespace Dynamo { namespace Bloodstone {
             memset(&mBox[0], 0, sizeof(mBox));
         }
 
+        bool IsInitialized(void) const
+        {
+            return this->mInitialized;
+        }
+
         void Invalidate(void)
         {
             this->mInitialized = false;

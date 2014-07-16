@@ -22,7 +22,7 @@ Scene::Scene(Visualizer^ visualizer) :
     mControlParamsIndex(-1),
     mpShaderProgram(nullptr),
     mpNodeGeometries(nullptr),
-    mVisualizer(nullptr)
+    mVisualizer(visualizer)
 {
     // Create storage for storing nodes and their geometries.
     mpNodeGeometries = new std::map<std::wstring, NodeGeometries*>();
@@ -89,6 +89,9 @@ void Scene::RenderScene(void)
         boundingBox.EvaluateBox(innerBox);
         geometries.push_back(iterator->second);
     }
+
+    if (geometries.size() <= 0)
+        return; // Nothing to render right now.
 
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
     pGraphicsContext->EnableAlphaBlend();
