@@ -96,12 +96,14 @@ namespace Unfold
            // public List<Point> Points { get; set; }
 
             public FaceLikeEntity(Surface surface)
-            {
+            { 
+                //Removing this construction for testing will remove asap ** This is broken because MAGN 3322
                 // wrap up the curves or edges
-                var pericurves = surface.PerimeterCurves();
-               List<EdgeLikeEntity> ees =  pericurves.Select(x => new EdgeLikeEntity(x)).ToList();
-                EdgeLikeEntities = ees;
-               //store the surface
+               // var pericurves = surface.PerimeterCurves();
+            //   List<EdgeLikeEntity> ees =  pericurves.Select(x => new EdgeLikeEntity(x)).ToList();
+            //    EdgeLikeEntities = ees;
+            
+                //store the surface
                 SurfaceEntity = surface;
 
                 OriginalEntity = surface;
@@ -156,13 +158,14 @@ namespace Unfold
         /// </summary>
         public class GraphVertex<K,T> where T: IUnfoldPlanarFace<K> where K:IUnfoldEdge
         {
-
+            public T UnfoldPolySurface { get; set; }
             public T Face{ get; set; }
             public HashSet<GraphEdge<K,T>> Graph_Edges { get; set; }
             public GraphVertex<K,T> Parent { get; set; }
             public Boolean Explored { get; set; }
             public int Finish_Time { get; set; }
             public HashSet<GraphEdge<K, T>> TreeEdges { get; set; }
+            
 
             // for cycle detection using tarjans
             public int Index { get; set; }
@@ -171,6 +174,7 @@ namespace Unfold
             public GraphVertex(T face)
             {
                 Face = face;
+                UnfoldPolySurface = face;
                 Graph_Edges = new HashSet<GraphEdge<K,T>>();
                 TreeEdges = new HashSet<GraphEdge<K, T>>();
             }
@@ -491,28 +495,29 @@ namespace Unfold
                 var sortedtree = tree.OrderBy(x => x.Finish_Time).ToList();
 
 
-               // while (sortedtree.Count > 1)
-              //  {
-                var child = sortedtree.Last();
-                var parent = child.Parent;
-                //weak code, shoould have a method for this - find edge that leads to
-                var edge = parent.Graph_Edges.Where(x => x.Head.Equals(child)).First();
+                while (sortedtree.Count > 1)
+                {
+                    // child is the highest finish time remaining in the list.
+                    var child = sortedtree.Last();
+                    var parent = child.Parent;
+                    //weak code, shoould have a method for this - find edge that leads to
+                    var edge = parent.Graph_Edges.Where(x => x.Head.Equals(child)).First();
 
-                int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
-                Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
+                    int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                    Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.UnfoldPolySurface, parent.Face, edge.Real_Edge) as Surface;
 
-                var newParentSurface = PolySurface.ByJoinedSurfaces(new List<Surface>() { rotatedFace, parent.Face.SurfaceEntity });
+                    var newParentSurface = PolySurface.ByJoinedSurfaces(new List<Surface>() { rotatedFace, parent.UnfoldPolySurface.SurfaceEntity });
 
-                return new List<Surface>() { newParentSurface };
+                    //return new List<Surface>() { newParentSurface };
 
-               // parent.Face = new FaceLikeEntity(newParentSurface);
+                    parent.UnfoldPolySurface = new FaceLikeEntity(newParentSurface);
 
-               // child.RemoveFromGraph(sortedtree);
+                    child.RemoveFromGraph(sortedtree);
                   
 
-             //   }
+                }
 
-               // return sortedtree.Select(x=>x.Face.SurfaceEntity).ToList();
+                return sortedtree.Select(x=>x.UnfoldPolySurface.SurfaceEntity).ToList();
             }
 
         }
