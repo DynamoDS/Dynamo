@@ -71,6 +71,7 @@ namespace Dynamo { namespace Bloodstone {
         void ShowWindow(bool show);
         void RequestFrameUpdate(void);
         HWND GetWindowHandle(void);
+        Scene^ GetScene(void);
         IGraphicsContext* GetGraphicsContext(void);
 
     private:

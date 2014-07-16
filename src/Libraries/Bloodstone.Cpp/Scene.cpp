@@ -196,8 +196,9 @@ void Scene::UpdateNodeGeometries(NodeDetailsType^ nodeDetails)
 
 void Scene::RenderGeometries(const std::vector<NodeGeometries *>& geometries)
 {
+    float alpha = 1.0f;
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
-    // mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
+    mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
 
     float rgbaColor[4] = { 0 }, controlParams[4] = { 0 };
     auto iterator = geometries.begin();

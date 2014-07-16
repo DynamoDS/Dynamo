@@ -68,6 +68,11 @@ HWND Visualizer::GetWindowHandle(void)
     return this->mhWndVisualizer;
 }
 
+Scene^ Visualizer::GetScene(void)
+{
+    return this->mpScene;
+}
+
 IGraphicsContext* Visualizer::GetGraphicsContext(void)
 {
     return this->mpGraphicsContext;

@@ -392,7 +392,8 @@ namespace Dynamo.Controls
             foreach (var geometry in geometries)
                 details.Add(geometry.Key, new NodeDetails(0, geometry.Value));
 
-            visualizer.CurrentVisualizer.UpdateNodeDetails(details);
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            scene.UpdateNodeDetails(details);
         }
 
 #endif
