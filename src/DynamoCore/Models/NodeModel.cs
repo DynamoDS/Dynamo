@@ -1811,6 +1811,13 @@ namespace Dynamo.Models
         public List<string> Tags { get; set; }
     }
 
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    public class NotSearchableInHomeWorkspace : Attribute
+    { }
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    public class NotSearchableInCustomNodeWorkspace : Attribute
+    { }
 
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class IsInteractiveAttribute : Attribute

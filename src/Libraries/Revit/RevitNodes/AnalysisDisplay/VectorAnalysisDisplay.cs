@@ -16,7 +16,6 @@ namespace Revit.AnalysisDisplay
     /// <summary>
     /// A Revit Vector Analysis Display 
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
     [DSNodeServices.RegisterForTrace]
     public class VectorAnalysisDisplay : AbstractAnalysisDisplay
     {

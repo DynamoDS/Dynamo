@@ -557,9 +557,11 @@ namespace ProtoCore.Lang
                 if (isReplicatingCall)
                 {
                     arguments[0] = lhs;
+                    context.IsReplicating = true;
                 }
                 else if (!arguments[0].IsDefaultArgument)
                 {
+                    context.IsReplicating = false;
                     arguments.RemoveAt(0);
                 }
             }

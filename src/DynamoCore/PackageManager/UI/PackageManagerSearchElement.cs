@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 
@@ -68,9 +75,23 @@ namespace Dynamo.PackageManager
                 } , TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
+        private static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
+            IEnumerable<PackageHeader> headers, PackageVersion version)
+        {
+  
+            return headers.Zip(
+                version.full_dependency_versions,
+                (header, v) => new Tuple<PackageHeader, string>(header, v))
+                .Select(
+                    (pair) =>
+                        new Tuple<PackageHeader, PackageVersion>(
+                        pair.Item1,
+                        pair.Item1.versions.First(x => x.version == pair.Item2)));
+        } 
+
         public override void Execute()
         {
-            var version = _versionToDownload ?? this.Header.versions.Last();
+            var version = versionNumberToDownload ?? this.Header.versions.Last();
 
             string message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
 
@@ -98,9 +119,47 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
+                var allPackageVersions = ListRequiredPackageVersions(headers, version);
+
+                // Determine if there are any dependencies that are made with a newer version
+                // of Dynamo (this includes the root package)
+                var dynamoVersion = dynSettings.Controller.DynamoViewModel.Version;
+                var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
+                var futureDeps = allPackageVersions.FilterFuturePackages(dynamoVersionParsed);
+
+                // If any of the required packages use a newer version of Dynamo, show a dialog to the user
+                // allowing them to cancel the package download
+                if (futureDeps.Any())
+                {
+                    var sb = new StringBuilder();
+
+                    sb.AppendLine(
+                        "The following packages use a newer version of Dynamo than you are currently using: ");
+                    sb.AppendLine();
+
+                    foreach (var elem in futureDeps)
+                    {
+                        sb.AppendLine(elem.Item1.name + " " + elem.Item2);
+                    }
+
+                    sb.AppendLine();
+                    sb.AppendLine("Do you want to continue?");
+
+                    // If the user
+                    if (MessageBox.Show(
+                        sb.ToString(),
+                        "Package Uses Newer Version of Dynamo!",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+                
                 var localPkgs = dynSettings.PackageLoader.LocalPackages;
 
-                // if a package is already installed we need to uninstall it
+                // if a package is already installed we need to uninstall it, allowing
+                // the user to cancel if they do not want to uninstall the package
                 foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
                 {
                     if (localPkg == null) continue;
@@ -122,8 +181,8 @@ namespace Dynamo.PackageManager
                 }
 
                 // form header version pairs and download and install all packages
-                headers.Zip(version.full_dependency_versions, (header, v) => new Tuple<PackageHeader, string>(header, v))
-                        .Select( x=> new PackageDownloadHandle(x.Item1, x.Item2))
+                allPackageVersions
+                        .Select( x => new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
                         .ForEach(x=>x.Start());
 
@@ -133,7 +192,7 @@ namespace Dynamo.PackageManager
 
         #region Properties 
 
-            private PackageVersion _versionToDownload = null;
+            private PackageVersion versionNumberToDownload = null;
 
             public List<Tuple<PackageVersion, DelegateCommand>> Versions
             {
@@ -143,7 +202,7 @@ namespace Dynamo.PackageManager
                         Header.versions.Select(
                             x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
                                 {
-                                    this._versionToDownload = x;
+                                    this.versionNumberToDownload = x;
                                     this.Execute();
                                 }, () => true))).ToList();
                 } 

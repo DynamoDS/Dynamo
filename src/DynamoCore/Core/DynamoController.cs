@@ -291,18 +291,18 @@ namespace Dynamo
             //so that the version number can be reported
             InstrumentationLogger.Start();
 
-
             //create the model
             DynamoModel = new DynamoModel ();
             DynamoModel.AddHomeWorkspace();
+
+            SearchViewModel = new SearchViewModel(DynamoModel);
+
             DynamoModel.CurrentWorkspace = DynamoModel.HomeSpace;
             DynamoModel.CurrentWorkspace.X = 0;
             DynamoModel.CurrentWorkspace.Y = 0;
 
             // custom node loader
             CustomNodeManager = new CustomNodeManager(DynamoPathManager.Instance.UserDefinitions);
-
-            SearchViewModel = new SearchViewModel();
 
             dynSettings.PackageLoader = new PackageLoader();
 
@@ -508,6 +508,8 @@ namespace Dynamo
         {
             return true;
         }
+
+        
     }
     
 }

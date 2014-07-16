@@ -8,10 +8,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
-using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
-using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 
@@ -35,34 +33,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Indicates whether the node browser is visible or not
-        /// </summary>
-        //private Visibility _searchVisibility = Visibility.Collapsed;
-        //public Visibility SearchVisibility
-        //{
-        //    get { return _searchVisibility; }
-        //    set { _searchVisibility = value; RaisePropertyChanged("SearchVisibility"); }
-        //}
-
-        /// <summary>
-        ///     IncludeRevitAPIElements property
-        /// </summary>
-        /// <value>
-        ///     Specifies whether we are including Revit API elements in search.
-        /// </value>
-        private bool includeRevitApiElements;
-        public bool IncludeRevitAPIElements
-        {
-            get { return includeRevitApiElements; }
-            set
-            {
-                includeRevitApiElements = value;
-                RaisePropertyChanged("IncludeRevitAPIElements");
-                //ToggleIncludingRevitAPIElements();
-            }
-        }
-
-        /// <summary>
         /// Leaves of the browser - used for navigation
         /// </summary>
         private List<SearchElementBase> _searchElements = new List<SearchElementBase>();
@@ -82,8 +52,6 @@ namespace Dynamo.ViewModels
             {
                 searchText = value;
                 RaisePropertyChanged("SearchText");
-                //DynamoCommands.SearchCommand.Execute();
-                //SearchAndUpdateResults();
             }
         }
 
@@ -129,15 +97,6 @@ namespace Dynamo.ViewModels
         ///     A set of categories
         /// </value>
         private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
-
-        /// <summary>
-        ///     RevitApiSearchElements property
-        /// </summary>
-        /// <value>
-        ///     A collection of elements corresponding to the auto-generated Revit
-        ///     API elements
-        /// </value>
-        public List<SearchElementBase> RevitApiSearchElements { get; private set; }
 
         /// <summary>
         ///     Visible property
@@ -223,21 +182,30 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        /// <summary>
-        ///     The class constructor.
-        /// </summary>
-        /// <param name="bench"> Reference to dynBench object for logging </param>
+        private DynamoModel DynamoModel;
+
         public SearchViewModel()
         {
+            InitializeCore();
+        }
+
+        public SearchViewModel(DynamoModel model)
+        {
+            DynamoModel = model;
+            DynamoModel.CurrentWorkspaceChanged += RevealWorkspaceSpecificNodes;
+
+            InitializeCore();
+        }
+
+        private void InitializeCore()
+        {
             SelectedIndex = 0;
-            RevitApiSearchElements = new List<SearchElementBase>();
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
             MaxNumSearchResults = 35;
             Visible = false;
             searchText = "";
-            IncludeRevitAPIElements = true; // revit api
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -246,10 +214,247 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
             this.AddRootCategory(BuiltinNodeCategories.IO);
-            
         }
 
+
+        private List<NodeSearchElement> NodesHiddenInHomeWorkspace = new List<NodeSearchElement>();
+        private List<NodeSearchElement> NodesHiddenInCustomNodeWorkspace = new List<NodeSearchElement>(); 
+
+        /// <summary>
+        /// Show or reveal workspace specific search elements.  These are usually declared using an attribute
+        /// on a subclass of NodeModel.
+        /// </summary>
+        /// <param name="workspace"></param>
+        private void RevealWorkspaceSpecificNodes(WorkspaceModel workspace)
+        {
+            var isCustomNodeWorkspace = workspace is CustomNodeWorkspaceModel;
+            var updateSearch = false;
+
+            foreach (var ele in NodesHiddenInHomeWorkspace)
+            {
+                updateSearch = true;
+                ele.SetSearchable(isCustomNodeWorkspace);
+            }
+
+            foreach (var ele in NodesHiddenInCustomNodeWorkspace)
+            {
+                updateSearch = true;
+                ele.SetSearchable(!isCustomNodeWorkspace);
+            }
+
+            if (updateSearch) this.SearchAndUpdateResults();
+        }
+
+        ~SearchViewModel()
+        {
+            if (DynamoModel != null)
+            {
+                DynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
+            }
+        }
+
+        #region Search
+
+        /// <summary>
+        ///     Performs a search using the given string as query, but does not update
+        ///     the SearchResults object.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        internal List<SearchElementBase> Search(string search)
+        {
+            if (string.IsNullOrEmpty(search) || search == "Search...")
+            {
+                return _searchElements;
+            }
+
+            return SearchDictionary.Search(search, MaxNumSearchResults);
+
+        }
+
+        /// <summary>
+        ///     Performs a search using the internal SearcText as the query and
+        ///     updates the observable SearchResults property.
+        /// </summary>
+        internal void SearchAndUpdateResults()
+        {
+            SearchAndUpdateResults(SearchText);
+        }
+
+        /// <summary>
+        ///     Asynchronously performs a search and updates the observable SearchResults property.
+        /// </summary>
+        /// <param name="query"> The search query </param>
+        public void SearchAndUpdateResults(string query)
+        {
+            if (Visible != true)
+                return;
+
+            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
+            {
+                lock (SearchDictionary)
+                {
+                    return Search(query);
+                }
+            }).ContinueWith((t) =>
+            {
+
+                lock (_visibleSearchResults)
+                {
+
+                    // deselect the last selected item
+                    if (_visibleSearchResults.Count > SelectedIndex)
+                    {
+                        _visibleSearchResults[SelectedIndex].IsSelected = false;
+                    }
+
+                    // clear visible results list
+                    _visibleSearchResults.Clear();
+
+                    // if the search query is empty, go back to the default treeview
+                    if (string.IsNullOrEmpty(query))
+                    {
+
+                        foreach (var ele in BrowserRootCategories)
+                        {
+                            ele.CollapseToLeaves();
+                            ele.SetVisibilityToLeaves(true);
+                        }
+
+                        // hide the top result
+                        _topResult.Visibility = false;
+
+                        return;
+                    }
+
+                    // otherwise, first collapse all
+                    foreach (var root in BrowserRootCategories)
+                    {
+                        root.CollapseToLeaves();
+                        root.SetVisibilityToLeaves(false);
+                    }
+
+                    //// if there are any results, add the top result 
+                    if (t.Result.Any() && t.Result.ElementAt(0) is NodeSearchElement)
+                    {
+                        _topResult.Items.Clear();
+
+                        var firstRes = (t.Result.ElementAt(0) as NodeSearchElement);
+
+                        var copy = firstRes.Copy();
+
+                        var catName = firstRes.FullCategoryName.Replace(".", " > ");
+
+                        // if the category name is too long, we strip off the interior categories
+                        if (catName.Length > 50)
+                        {
+                            var s = catName.Split('>').Select(x => x.Trim()).ToList();
+                            if (s.Count() > 4)
+                            {
+                                s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                                catName = System.String.Join(" > ", s);
+                            }
+                        }
+
+                        var breadCrumb = new BrowserInternalElement(catName, _topResult);
+                        breadCrumb.AddChild(copy);
+                        _topResult.AddChild(breadCrumb);
+
+                        _topResult.SetVisibilityToLeaves(true);
+                        copy.ExpandToRoot();
+
+                    }
+
+                    // for all of the other results, show them in their category
+                    foreach (var ele in _searchElements)
+                    {
+                        if (t.Result.Contains(ele))
+                        {
+                            ele.Visibility = true;
+                            ele.ExpandToRoot();
+                        }
+                    }
+
+                    // create an ordered list of visible search results
+                    var baseBrowserItem = new BrowserRootElement("root");
+                    foreach (var root in BrowserRootCategories)
+                    {
+                        baseBrowserItem.Items.Add(root);
+                    }
+
+                    baseBrowserItem.GetVisibleLeaves(ref _visibleSearchResults);
+
+                    if (_visibleSearchResults.Any())
+                    {
+                        this.SelectedIndex = 0;
+                        _visibleSearchResults[0].IsSelected = true;
+                    }
+
+                    SearchResults.Clear();
+                    _visibleSearchResults.ToList().ForEach(x => SearchResults.Add((NodeSearchElement)x));
+                }
+
+            }
+                    , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+        }
+
+        /// <summary>
+        ///     Synchronously performs a search using the current SearchText
+        /// </summary>
+        /// <param name="query"> The search query </param>
+        public void SearchAndUpdateResultsSync()
+        {
+            SearchAndUpdateResultsSync(SearchText);
+        }
+
+        /// <summary>
+        ///     Synchronously Performs a search and updates the observable SearchResults property
+        ///     on the current thread.
+        /// </summary>
+        /// <param name="query"> The search query </param>
+        public void SearchAndUpdateResultsSync(string query)
+        {
+            var result = Search(query);
+
+            SearchResults.Clear();
+            foreach (var node in result)
+            {
+                SearchResults.Add(node);
+            }
+            SelectedIndex = 0;
+        }
+
+        #endregion
+
+        #region Categories
+
         private const char CATEGORY_DELIMITER = '.';
+
+        /// <summary>
+        ///     Attempt to add a new category to the browser and an item as one of its children
+        /// </summary>
+        /// <param name="category">The name of the category - a string possibly separated with one period </param>
+        /// <param name="item">The item to add as a child of that category</param>
+        public void TryAddCategoryAndItem(string category, BrowserInternalElement item)
+        {
+
+            var cat = this.AddCategory(category);
+            cat.AddChild(item);
+
+            item.FullCategoryName = category;
+
+            var searchEleItem = item as SearchElementBase;
+            if (searchEleItem != null)
+                _searchElements.Add(searchEleItem);
+
+        }
 
         public void RemoveEmptyCategories()
         {
@@ -524,155 +729,9 @@ namespace Dynamo.ViewModels
             return category.Items.FirstOrDefault(x => x.Name == catName);
         }
 
-        /// <summary>
-        ///     Asynchronously performs a search and updates the observable SearchResults property.
-        /// </summary>
-        /// <param name="query"> The search query </param>
-        public void SearchAndUpdateResults(string query)
-        {
-            if (Visible != true)
-                return;
+        #endregion
 
-            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
-                {
-                    lock (SearchDictionary)
-                    {
-                        return Search(query);
-                    }
-                }).ContinueWith((t) =>
-                    {
-
-                        lock (_visibleSearchResults)
-                        {
-
-                            // deselect the last selected item
-                            if (_visibleSearchResults.Count > SelectedIndex)
-                            {
-                                _visibleSearchResults[SelectedIndex].IsSelected = false;
-                            }
-
-                            // clear visible results list
-                            _visibleSearchResults.Clear();
-
-                            // if the search query is empty, go back to the default treeview
-                            if (string.IsNullOrEmpty(query))
-                            {
-
-                                foreach (var ele in BrowserRootCategories)
-                                {
-                                    ele.CollapseToLeaves();
-                                    ele.SetVisibilityToLeaves(true);
-                                }
-
-                                // hide the top result
-                                _topResult.Visibility = false;
-
-                                return;
-                            }
-                            
-                            // otherwise, first collapse all
-                            foreach (var root in BrowserRootCategories)
-                            {
-                                root.CollapseToLeaves();
-                                root.SetVisibilityToLeaves(false);
-                            }
-
-                            //// if there are any results, add the top result 
-                            if (t.Result.Any() && t.Result.ElementAt(0) is NodeSearchElement)
-                            {
-                                _topResult.Items.Clear();
-
-                                var firstRes = (t.Result.ElementAt(0) as NodeSearchElement);
-
-                                var copy = firstRes.Copy();
-
-                                var catName = firstRes.FullCategoryName.Replace(".", " > ");
-
-                                // if the category name is too long, we strip off the interior categories
-                                if (catName.Length > 50)
-                                {
-                                    var s = catName.Split('>').Select(x => x.Trim()).ToList();
-                                    if (s.Count() > 4)
-                                    {
-                                        s = new List<string>()
-                                        {
-                                            s[0],
-                                            "...",
-                                            s[s.Count - 3],
-                                            s[s.Count - 2],
-                                            s[s.Count - 1]
-                                        };
-                                        catName = System.String.Join(" > ", s);
-                                    }
-                                }
-
-                                var breadCrumb = new BrowserInternalElement(catName, _topResult);
-                                breadCrumb.AddChild(copy);
-                                _topResult.AddChild(breadCrumb);
-
-                                _topResult.SetVisibilityToLeaves(true);
-                                copy.ExpandToRoot();
-
-                            }
-
-                            // for all of the other results, show them in their category
-                            foreach (var ele in _searchElements)
-                            {
-                                if ( t.Result.Contains(ele) )
-                                {
-                                    ele.Visibility = true;
-                                    ele.ExpandToRoot();
-                                }
-                            }
-
-                            // create an ordered list of visible search results
-                            var baseBrowserItem = new BrowserRootElement("root");
-                            foreach (var root in BrowserRootCategories)
-                            {
-                                baseBrowserItem.Items.Add(root);
-                            }
-
-                            baseBrowserItem.GetVisibleLeaves(ref _visibleSearchResults);
-
-                            if (_visibleSearchResults.Any())
-                            {
-                                this.SelectedIndex = 0;
-                                _visibleSearchResults[0].IsSelected = true;
-                            }
-
-                            SearchResults.Clear();
-                            _visibleSearchResults.ToList().ForEach(x => SearchResults.Add( (NodeSearchElement) x));
-                        }
-
-                    }
-                    , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-        }
-
-        /// <summary>
-        ///     Synchronously performs a search using the current SearchText
-        /// </summary>
-        /// <param name="query"> The search query </param>
-        public void SearchAndUpdateResultsSync()
-        {
-            SearchAndUpdateResultsSync(SearchText);
-        }
-
-        /// <summary>
-        ///     Synchronously Performs a search and updates the observable SearchResults property
-        ///     on the current thread.
-        /// </summary>
-        /// <param name="query"> The search query </param>
-        public void SearchAndUpdateResultsSync(string query)
-        {
-            var result = Search(query);
-
-            SearchResults.Clear();
-            foreach (var node in result)
-            {
-                SearchResults.Add(node);
-            }
-            SelectedIndex = 0;
-        }
+        #region Selection
 
         /// <summary>
         ///     Increments the selected element by 1, unless it is the last element already
@@ -697,31 +756,9 @@ namespace Dynamo.ViewModels
             SelectedIndex = SelectedIndex - 1;
         }
 
-        /// <summary>
-        ///     Performs a search using the internal SearcText as the query and
-        ///     updates the observable SearchResults property.
-        /// </summary>
-        internal void SearchAndUpdateResults()
-        {
-            SearchAndUpdateResults(SearchText);
-        }
+        #endregion
 
-        /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
-        /// </summary>
-        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="search"> The search query </param>
-        internal List<SearchElementBase> Search(string search)
-        {
-            if (string.IsNullOrEmpty(search) || search == "Search...")
-            {
-                return _searchElements;
-            }
-
-            return SearchDictionary.Search(search, MaxNumSearchResults);
-
-        }
+        #region Search field manipulation
 
         /// <summary>
         ///     If there's a period in the SearchText property, remove text
@@ -779,6 +816,8 @@ namespace Dynamo.ViewModels
             SearchText = SearchResults[SelectedIndex].Name;
         }
 
+        #endregion
+
         /// <summary>
         ///     Runs the Execute() method of the current selected SearchElementBase object
         ///     amongst the SearchResults.
@@ -797,38 +836,6 @@ namespace Dynamo.ViewModels
             {
                 ( (SearchElementBase) _visibleSearchResults[SelectedIndex]).Execute();
             }
-
-        }
-
-        /// <summary>
-        ///     Adds a PackageHeader, recently downloaded from the Package Manager, to Search
-        /// </summary>
-        /// <param name="packageHeader">A PackageHeader object</param>
-        public void Add(PackageHeader packageHeader)
-        {
-            var searchEle = new PackageManagerSearchElement(packageHeader);
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
-                SearchDictionary.Add(searchEle, packageHeader.keywords);
-            SearchDictionary.Add(searchEle, searchEle.Description);
-        }
-
-        /// <summary>
-        ///     Attempt to add a new category to the browser and an item as one of its children
-        /// </summary>
-        /// <param name="category">The name of the category - a string possibly separated with one period </param>
-        /// <param name="item">The item to add as a child of that category</param>
-        public void TryAddCategoryAndItem( string category, BrowserInternalElement item )
-        {
-
-            var cat = this.AddCategory(category);
-            cat.AddChild(item);
-
-            item.FullCategoryName = category;
-
-            var searchEleItem = item as SearchElementBase;
-            if (searchEleItem != null)
-                _searchElements.Add(searchEleItem);
 
         }
 
@@ -935,7 +942,7 @@ namespace Dynamo.ViewModels
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags);
+            var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;
@@ -946,13 +953,25 @@ namespace Dynamo.ViewModels
 
             searchEle.SetSearchable(searchable);
 
-            // if it's a revit search element, keep track of it
-            if ( cat.Equals(BuiltinNodeCategories.REVIT_API) )
+            attribs = t.GetCustomAttributes(typeof(NotSearchableInHomeWorkspace), false);
+            if (attribs.Length > 0)
             {
-                this.RevitApiSearchElements.Add(searchEle);
-                if (!IncludeRevitAPIElements)
+                this.NodesHiddenInHomeWorkspace.Add(searchEle);
+                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
+                    this.DynamoModel.CurrentWorkspace is HomeWorkspaceModel)
                 {
-                    return;
+                    searchEle.SetSearchable(false); 
+                }
+            }
+
+            attribs = t.GetCustomAttributes(typeof(NotSearchableInCustomNodeWorkspace), false);
+            if (attribs.Length > 0)
+            {
+                this.NodesHiddenInCustomNodeWorkspace.Add(searchEle);
+                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
+                    this.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel)
+                {
+                    searchEle.SetSearchable(false);
                 }
             }
 
@@ -1060,6 +1079,8 @@ namespace Dynamo.ViewModels
             return this.Add(nodeInfo);
         }
 
+        #region Commands
+
         public void Search(object parameter)
         {
             if (dynSettings.Controller != null)
@@ -1106,5 +1127,8 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        #endregion
+
     }
 }
