@@ -16,6 +16,7 @@ namespace Dynamo { namespace Bloodstone {
     class GeometryData;
     class NodeGeometries;
     class BoundingBox;
+    ref class Scene;
 
     public ref class NodeDetails
     {
@@ -64,7 +65,7 @@ namespace Dynamo { namespace Bloodstone {
         static System::IntPtr Create(System::IntPtr hwndParent, int width, int height);
         static void Destroy(void);
         static Visualizer^ CurrentInstance(void);
-        static LRESULT _stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+        static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Public class methods.
         HWND GetWindowHandle(void);
@@ -94,6 +95,7 @@ namespace Dynamo { namespace Bloodstone {
 
         // Class instance data members.
         HWND mhWndVisualizer;
+        Scene^ mpScene;
         IGraphicsContext* mpGraphicsContext;
 
         int mAlphaParamIndex;
@@ -105,5 +107,14 @@ namespace Dynamo { namespace Bloodstone {
         // Node data.
         std::vector<std::vector<std::wstring> *>* mpGeomsOnDepthLevel;
         std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
+    };
+
+    public ref class Scene
+    {
+    public:
+        Scene(IGraphicsContext* pGraphicsContext);
+
+    private:
+        IGraphicsContext* mpGraphicsContext;
     };
 } }
