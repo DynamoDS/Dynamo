@@ -53,25 +53,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BloodstoneWindow.xaml.cs">
-      <DependentUpon>BloodstoneWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SynthesizedGraph.cs" />
     <Compile Include="GraphVisualHost.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="VisualizerHwndHost.cs" />
-    <Page Include="BloodstoneControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="BloodstoneControl.xaml.cs">
-      <DependentUpon>BloodstoneControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="BloodstoneWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
