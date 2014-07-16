@@ -299,6 +299,7 @@ COMPILER DesignScriptParser
         return ((_number == pt.kind) || (_float == pt.kind));
     }
 
+    /*
     private bool IsTypedVariable()
     {
         Token pt = la;
@@ -311,6 +312,74 @@ COMPILER DesignScriptParser
         }
         scanner.ResetPeek();
         return false;
+    }
+    */
+
+    private bool IsLocalVariable()
+    {
+        Token pt = la;
+        bool isLocal = false;
+
+        if (_ident == pt.kind) 
+        {
+            pt = scanner.Peek();
+            if (":" == pt.val)
+            { 
+                pt = scanner.Peek();
+                if (_kw_local == pt.kind) 
+                {
+                    isLocal = true;
+                }
+            }
+        }
+        scanner.ResetPeek();
+        return isLocal;
+    }
+
+    private bool IsTypedVariable()
+    {
+        Token pt = la;
+        bool isTyped = false;
+
+        if (_ident == pt.kind) 
+        {
+            pt = scanner.Peek();
+            if (":" == pt.val)
+            { 
+                pt = scanner.Peek();
+                if (_ident == pt.kind) 
+                {
+                    isTyped = true;
+                }
+            }
+        }
+        scanner.ResetPeek();
+        return isTyped;
+    }
+
+    private bool IsLocallyTypedVariable()
+    {
+        Token pt = la;
+        bool isLocallyTyped = false;
+
+        if (_ident == pt.kind) 
+        {
+            pt = scanner.Peek();
+            if (":" == pt.val)
+            { 
+                pt = scanner.Peek();
+                if (_kw_local == pt.kind) 
+                {
+                    pt = scanner.Peek();
+                    if (_ident == pt.kind) 
+                    {
+                        isLocallyTyped = true;
+                    }
+                }
+            }
+        }
+        scanner.ResetPeek();
+        return isLocallyTyped;
     }
 	
 	private bool IsFullClosure()
@@ -593,6 +662,7 @@ TOKENS
     kw_break = "break".
     kw_continue = "continue".
     kw_static = "static".
+    kw_local = "local".
 
     literal_true = "true".
     literal_false = "false".

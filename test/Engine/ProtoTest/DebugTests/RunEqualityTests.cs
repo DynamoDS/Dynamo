@@ -2943,7 +2943,7 @@ namespace ProtoTest.DebugTests
         public void DebugEQTestDynamicArray001()
         {
             String code =
-                @"[Imperative]{    range = 1..10;    local = {};    c = 0;    for(i in range)    {        local[c] = i + 1;        c = c + 1;    }}";
+                @"[Imperative]{    range = 1..10;    loc = {};    c = 0;    for(i in range)    {        loc[c] = i + 1;        c = c + 1;    }}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
         [Test, Ignore]
@@ -3005,7 +3005,7 @@ namespace ProtoTest.DebugTests
         public void DebugEQLanguageBlockReturn02()
         {
             String code =
-@"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            local = 20;            return = local;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }    ";
+@"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            loc = 20;            return = loc;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }    ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -11312,7 +11312,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQT28_defect_1465706__DynamicArray_Imperative_2()
         {
-            string code = @"[Imperative]{    def test (i:int)    {        local = {};        for(j in i)        {            local[j] = j;        }        return = local;    }    a={3,4,5};    t = test(a);    r = {t[0][3], t[1][4], t[2][5]};    return = r;}";
+            string code = @"[Imperative]{    def test (i:int)    {        loc = {};        for(j in i)        {            loc[j] = j;        }        return = loc;    }    a={3,4,5};    t = test(a);    r = {t[0][3], t[1][4], t[2][5]};    return = r;}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -14845,13 +14845,13 @@ namespace ProtoTest.DebugTests
         [Test, Ignore]
         public void DebugEQTV49_Defect_1456110()
         {
-            string code = @"def recursion : int(a : int){    local = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = local;}a = 10;[Imperative]{	x = recursion(a); }";
+            string code = @"def recursion : int(a : int){    loc = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = loc;}a = 10;[Imperative]{	x = recursion(a); }";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
         [Test, Ignore]
         public void DebugEQTV49_Defect_1456110_2()
         {
-            string code = @"def recursion : int(a : int){    local = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = local;}a = 10;[Imperative]{	x = recursion(a); }";
+            string code = @"def recursion : int(a : int){    loc = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = loc;}a = 10;[Imperative]{	x = recursion(a); }";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -16262,7 +16262,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQblockassign_associative()
         {
-            string code = @"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            local = 20;            return = local;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }";
+            string code = @"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            loc = 20;            return = loc;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -16480,7 +16480,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQimperative_Replication_1467070()
         {
-            string code = @"[Imperative]{        def test (i:int)        {                local = {};                for(j in i)                {                        local[j] = j;                                        }                return = local;        }a={3,4,5};        t = test(a);return = t;}";
+            string code = @"[Imperative]{        def test (i:int)        {                loc = {};                for(j in i)                {                        loc[j] = j;                                        }                return = loc;        }a={3,4,5};        t = test(a);return = t;}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -16543,7 +16543,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQnesting()
         {
-            string code = @"[Imperative]{	a = 10;	if(a >= 10)	{		x = a * 2;		[Associative]		{			local = x * a;		}	}}";
+            string code = @"[Imperative]{	a = 10;	if(a >= 10)	{		x = a * 2;		[Associative]		{			loc = x * a;		}	}}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 

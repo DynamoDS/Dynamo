@@ -334,7 +334,6 @@ limitations under the License.
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\DynamoLoader.cs" />
     <Compile Include="Core\NodeCollapser.cs" />
-    <Compile Include="Search\SearchElements\CommandElement.cs" />
     <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />

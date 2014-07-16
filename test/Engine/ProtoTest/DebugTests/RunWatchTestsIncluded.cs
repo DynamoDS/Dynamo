@@ -107,8 +107,8 @@ namespace ProtoTest.DebugTests
         ret = p;       
         d = [Imperative]
         {
-            local = 20;
-            return = local;
+            loc = 20;
+            return = loc;
         }
         return = ret * 100 + d;
     }
@@ -877,7 +877,7 @@ b = 2;
 		x = a * 2;
 		[Associative]
 		{
-			local = x * a;
+			loc = x * a;
 		}
 	}
 }";
@@ -34916,12 +34916,12 @@ r;
 {
     def test (i:int)
     {
-        local = {};
+        loc = {};
         for(j in i)
         {
-            local[j] = j;
+            loc[j] = j;
         }
-        return = local;
+        return = loc;
     }
     a={3,4,5};
     t = test(a);
@@ -40269,7 +40269,7 @@ x = foo( 0 );
             string src = @"
 def recursion : int(a : int)
 {
-    local = [Imperative]
+    loc = [Imperative]
     {
         if (a <= 0)
         {
@@ -40277,7 +40277,7 @@ def recursion : int(a : int)
         }
         return = a + recursion(a - 1);
     }
-    return = local;
+    return = loc;
 }
 a = 10;
 [Imperative]
@@ -40297,7 +40297,7 @@ a = 10;
             string src = @"
 def recursion : int(a : int)
 {
-    local = [Imperative]
+    loc = [Imperative]
     {
         if (a <= 0)
         {
@@ -40305,7 +40305,7 @@ def recursion : int(a : int)
         }
         return = a + recursion(a - 1);
     }
-    return = local;
+    return = loc;
 }
 a = 10;
 [Imperative]
@@ -53373,13 +53373,13 @@ n = Count(arr);
 {
         def test (i:int)
         {
-                local = {};
+                loc = {};
                 for(j in i)
                 {
-                        local[j] = j;
+                        loc[j] = j;
                         
                 }
-                return = local;
+                return = loc;
         }
 a={3,4,5};
         t = test(a);

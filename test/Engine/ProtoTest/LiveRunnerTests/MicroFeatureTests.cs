@@ -1,3 +1,4 @@
+﻿
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5340,7 +5341,6 @@ a = [Associative]
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 14);
         }
-
         [Test]
         public void TestNestedLanguageBlockReExecution04()
         {
@@ -5352,13 +5352,13 @@ def func_1: var[]..[](x1 : var[]..[])
     {
         return = [Imperative]
         {
-            if (False)
+            if (false)
             {
                 var_2 = [Associative]
                 {
                     return = [Imperative]
                     {
-                        if(True)
+                        if(true)
                         {
                             return = x2;
                         }
@@ -5391,8 +5391,59 @@ r = func_1(x);
             added.Add(CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            AssertValue("x", 1024);
+            AssertValue("r", 1024);
         }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution05()
+        {
+            string code = @"
+def foo()
+{
+    x2 = 5;
+    v1 = [Associative]
+    {
+        return = [Imperative]
+        {
+            if (false)
+            { 
+                v2 = [Associative]
+                {
+                    return = [Imperative]
+                    {
+                        if(true)
+                        {
+                            return = 10;
+                        }
+                        else
+                        {
+                            return = 15;
+                        }
+                    }
+                }
+                return = v2;
+            }
+            else
+            {
+                return = 20;
+            }
+        }
+    }
+    return = v1;
+}
+
+x = foo();
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 20);
+        }
+
     }
 
 }
+
