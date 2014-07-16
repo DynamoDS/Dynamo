@@ -1154,22 +1154,34 @@ namespace ProtoCore
 #else
 
         /// <summary>
-        /// Verifies the allocation of a variable in the current scope only.
+        /// Verifies the allocation of a variable in the given symbol table
         /// </summary>
         /// <param name="name"></param>
         /// <param name="classScope"></param>
         /// <param name="functionScope"></param>
+        /// <param name="symbolTable"></param>
         /// <param name="symbol"></param>
         /// <param name="isAccessible"></param>
         /// <returns></returns>
         protected bool VerifyAllocationInScope(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
         {
+            SymbolTable symbolTable = null;
+            if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
+            {
+                symbolTable = codeBlock.symbolTable;
+            }
+            else
+            {
+                symbolTable = core.ClassTable.ClassNodes[classScope].symbols;
+            }
+
             symbol = null;
             isAccessible = false;
-            int symbolIndex = codeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+            //int symbolIndex = symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+            int symbolIndex = symbolTable.IndexOf(name, classScope, functionScope);
             if (symbolIndex != Constants.kInvalidIndex)
             {
-                symbol = codeBlock.symbolTable.symbolList[symbolIndex];
+                symbol = symbolTable.symbolList[symbolIndex];
                 isAccessible = true;
                 return true;
             }

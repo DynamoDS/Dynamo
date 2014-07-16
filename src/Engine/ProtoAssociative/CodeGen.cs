@@ -7748,22 +7748,31 @@ namespace ProtoAssociative
             if (null != localProcedure && leftNodeRef.nodeList.Count > 0)
             {
                 firstSymbol = leftNodeRef.nodeList[0].symbol;
-                if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
+
+                // Check if this symbol being modified in this function is allocated in the current scope.
+                // If it is, then it means this symbol is not a member and is local to this function
+                ProtoCore.DSASM.SymbolNode symbolnode = null;
+                bool isAccessible = false;
+                bool isLocalVariable = isLocalVariable = VerifyAllocationInScope(firstSymbol.name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                if (!isLocalVariable)
                 {
-                    if (firstSymbol.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
+                    if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
                     {
-                        // Does the symbol belong on the same class or class heirarchy as the function calling it
-                        if (firstSymbol.classScope == localProcedure.classScope)
+                        if (firstSymbol.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
                         {
-                            localProcedure.updatedProperties.Push(leftNodeRef);
-                        }
-                        else
-                        {
-                            if (localProcedure.classScope > 0)
+                            // Does the symbol belong on the same class or class heirarchy as the function calling it
+                            if (firstSymbol.classScope == localProcedure.classScope)
                             {
-                                if (core.ClassTable.ClassNodes[localProcedure.classScope].IsMyBase(firstSymbol.classScope))
+                                localProcedure.updatedProperties.Push(leftNodeRef);
+                            }
+                            else
+                            {
+                                if (localProcedure.classScope > 0)
                                 {
-                                    localProcedure.updatedProperties.Push(leftNodeRef);
+                                    if (core.ClassTable.ClassNodes[localProcedure.classScope].IsMyBase(firstSymbol.classScope))
+                                    {
+                                        localProcedure.updatedProperties.Push(leftNodeRef);
+                                    }
                                 }
                             }
                         }
@@ -7909,28 +7918,34 @@ namespace ProtoAssociative
                 ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
                 ProcedureNode procNode = thisClass.vtable.procList[globalProcIndex];
 
-                string identName = (binaryExpr.LeftNode as IdentifierNode).Value;
-                if (!procNode.name.Equals(ProtoCore.DSASM.Constants.kSetterPrefix + identName))
+                IdentifierNode identNode = (binaryExpr.LeftNode as IdentifierNode);
+                string identName = identNode.Value;
+
+                // Local variables are not appended with 'this'
+                if (!identNode.IsLocal)
                 {
-                    SymbolNode symbolnode;
-                    bool isAccessible = false;
-                    bool isAllocated = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                    if (symbolnode != null &&
-                        symbolnode.classScope != Constants.kGlobalScope &&
-                        symbolnode.functionIndex == Constants.kGlobalScope)
+                    if (!procNode.name.Equals(ProtoCore.DSASM.Constants.kSetterPrefix + identName))
                     {
-                        var thisNode = nodeBuilder.BuildIdentfier(ProtoCore.DSDefinitions.Keyword.This);
-                        var thisIdentListNode = nodeBuilder.BuildIdentList(thisNode, binaryExpr.LeftNode);
-                        var newAssignment = nodeBuilder.BuildBinaryExpression(thisIdentListNode, binaryExpr.RightNode);
-                        NodeUtils.CopyNodeLocation(newAssignment, bnode);
+                        SymbolNode symbolnode;
+                        bool isAccessible = false;
+                        bool isAllocated = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
 
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != binaryExpr.exprUID)
+                        if (symbolnode != null &&
+                            symbolnode.classScope != Constants.kGlobalScope &&
+                            symbolnode.functionIndex == Constants.kGlobalScope)
                         {
-                            (newAssignment as BinaryExpressionNode).exprUID = binaryExpr.exprUID;
+                            var thisNode = nodeBuilder.BuildIdentfier(ProtoCore.DSDefinitions.Keyword.This);
+                            var thisIdentListNode = nodeBuilder.BuildIdentList(thisNode, binaryExpr.LeftNode);
+                            var newAssignment = nodeBuilder.BuildBinaryExpression(thisIdentListNode, binaryExpr.RightNode);
+                            NodeUtils.CopyNodeLocation(newAssignment, bnode);
+
+                            if (ProtoCore.DSASM.Constants.kInvalidIndex != binaryExpr.exprUID)
+                            {
+                                (newAssignment as BinaryExpressionNode).exprUID = binaryExpr.exprUID;
+                            }
+                            EmitBinaryExpressionNode(newAssignment, ref inferedType, isBooleanOp, graphNode, subPass, isTempExpression);
+                            return true;
                         }
-                        EmitBinaryExpressionNode(newAssignment, ref inferedType, isBooleanOp, graphNode, subPass, isTempExpression);
-                        return true;
                     }
                 }
             }

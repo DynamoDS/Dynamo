@@ -2660,6 +2660,43 @@ a : int local = 1;   // 'local' should come before any type specifier";
             });
         }
 
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ02()
+        {
+            String code =
+@"  
+local = 1;   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ03()
+        {
+            String code =
+@"  
+local : int = 1;   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ04()
+        {
+            String code =
+@"  
+local = [Imperative] { return = 1; };   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
         [Test]
         public void TestLocalKeywordFromLanguageBlock01()
         {
@@ -2777,6 +2814,61 @@ p = f();
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("p", 2);
+        }
+
+        [Test]
+        public void TestLocalFromMemberFunction01()
+        {
+            string code =
+@"
+class C
+{
+    a : int = 1;
+    def f()
+    {
+        a : local = 2;
+        return = a;
+    }
+}
+p = C.C();
+x = p.a;
+y = p.f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
+        }
+
+        [Test]
+        public void TestLocalFromMemberFunction02()
+        {
+            string code =
+@"
+class C
+{
+    a : int = 1;
+    def f()
+    {
+        a : local = 2;
+        return = a;
+    }
+
+
+    def g()
+    {
+        a : local = 3;
+        return = a;
+    }
+}
+p = C.C();
+x = p.a;
+y = p.f();
+z = p.g();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
+            thisTest.Verify("z", 3);
         }
 
         [Test]
