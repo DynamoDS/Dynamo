@@ -114,11 +114,6 @@
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="Resources\Resource.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +121,14 @@
     <None Include="Resources\Shaders\phong.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DynamoUtilities\DynamoUtilities.csproj">
+    <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ProtoInterface">
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

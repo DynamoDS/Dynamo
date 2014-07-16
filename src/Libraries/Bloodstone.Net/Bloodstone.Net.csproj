@@ -103,7 +103,12 @@
     <Resource Include="Resources\Cursors\hand_drag.cur" />
     <Resource Include="Resources\Cursors\hand_pan.cur" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Bloodstone.Cpp\Bloodstone.vcxproj">
+      <Project>{c1e084ab-af20-4d56-b9e3-e606c4df6ecf}</Project>
+      <Name>Bloodstone.Cpp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\slider-thumb.png" />
   </ItemGroup>
