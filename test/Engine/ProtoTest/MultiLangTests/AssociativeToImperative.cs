@@ -122,7 +122,7 @@ namespace ProtoTest.MultiLangTests
         public void LanguageBlockReturn02()
         {
             String code =
-@"a;[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            local = 20;            return = local;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }    ";
+@"a;[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            loc = 20;            return = loc;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }    ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1020);

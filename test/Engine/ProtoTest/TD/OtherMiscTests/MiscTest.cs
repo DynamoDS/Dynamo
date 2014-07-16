@@ -783,13 +783,13 @@ n = Count(arr);
 {
         def test (i:int)
         {
-                local = {};
+                loc = {};
                 for(j in i)
                 {
-                        local[j] = j;
+                        loc[j] = j;
                         
                 }
-                return = local;
+                return = loc;
         }
 a={3,4,5};
         t = test(a);
