@@ -68,11 +68,10 @@ namespace Dynamo { namespace Bloodstone {
         static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Public class methods.
-        HWND GetWindowHandle(void);
         void ShowWindow(bool show);
-        void BlendGeometryLevels(float blendingFactor);
-        void UpdateNodeDetails(NodeDetailsType^ nodeDetails);
-        void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
+        void RequestFrameUpdate(void);
+        HWND GetWindowHandle(void);
+        IGraphicsContext* GetGraphicsContext(void);
 
     private:
 
@@ -80,13 +79,6 @@ namespace Dynamo { namespace Bloodstone {
         Visualizer();
         void Initialize(HWND hWndParent, int width, int height);
         void Uninitialize(void);
-        void UpdateNodeGeometries(NodeDetailsType^ nodeDetails);
-        void AssociateToDepthValues(NodeDetailsType^ nodeDetails);
-        void GetGeometriesAtDepth(int depth, std::vector<NodeGeometries *>& geometries);
-        void GetBoundingBox(std::vector<NodeGeometries *>& geometries, BoundingBox& box);
-        void RequestFrameUpdate(void);
-        void RenderWithBlendingFactor(void);
-        void RenderGeometries(const std::vector<NodeGeometries *>& geometries, float alpha);
         LRESULT ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam);
         LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -97,24 +89,29 @@ namespace Dynamo { namespace Bloodstone {
         HWND mhWndVisualizer;
         Scene^ mpScene;
         IGraphicsContext* mpGraphicsContext;
-
-        int mAlphaParamIndex;
-        int mColorParamIndex;
-        int mControlParamsIndex;
-        float mBlendingFactor;
-        IShaderProgram* mpShaderProgram;
-
-        // Node data.
-        std::vector<std::vector<std::wstring> *>* mpGeomsOnDepthLevel;
-        std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
     };
 
     public ref class Scene
     {
     public:
-        Scene(IGraphicsContext* pGraphicsContext);
+        Scene(Visualizer^ visualizer);
+        void Initialize(int width, int height);
+        void Destroy(void);
+        void RenderScene(void);
+        void UpdateNodeDetails(NodeDetailsType^ nodeDetails);
+        void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
 
     private:
-        IGraphicsContext* mpGraphicsContext;
+        void UpdateNodeGeometries(NodeDetailsType^ nodeDetails);
+        void RenderGeometries(const std::vector<NodeGeometries *>& geometries);
+
+    private:
+        int mAlphaParamIndex;
+        int mColorParamIndex;
+        int mControlParamsIndex;
+        IShaderProgram* mpShaderProgram;
+
+        Visualizer^ mVisualizer;
+        std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
     };
 } }
