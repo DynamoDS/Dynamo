@@ -22,12 +22,17 @@ using Element = Revit.Elements.Element;
 
 namespace Dynamo.Nodes
 {
+    public delegate List<ElementId> ElementsSelectionDelegate(string message, out object selectionReference);
+
+    public delegate List<ElementId> ElementsSelectionUpdateDelegate(object selectionReference);
+
     public abstract class DSSelectionBase : NodeModel, IWpfNode
     {
         protected bool _canSelect = true;
         protected string _selectionText ="";
         protected string _selectionMessage;
         protected string _selectButtonContent;
+        protected object _selectionTarget;
 
         /// <summary>
         /// The text that describes this selection.
@@ -585,9 +590,17 @@ namespace Dynamo.Nodes
 
     public abstract class DSElementsSelection : DSSelectionBase
     {
-        protected Func<string, List<ElementId>> SelectionAction;
+        /// <summary>
+        /// The function to invoke during selection.
+        /// </summary>
+        protected ElementsSelectionDelegate SelectionAction;
 
-        private List<string> selectedUniqueIds = new List<string>();
+        /// <summary>
+        /// The function to invoke during update.
+        /// </summary>
+        protected ElementsSelectionUpdateDelegate Update;
+
+        protected List<string> selectedUniqueIds = new List<string>();
         private List<ElementId> selectedElements = new List<ElementId>();
         private Document selectionOwner;
 
@@ -646,7 +659,7 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected DSElementsSelection(Func<string, List<ElementId>> action, string message)
+        protected DSElementsSelection(ElementsSelectionDelegate action, string message)
         {
             SelectionAction = action;
             _selectionMessage = message;
@@ -658,13 +671,6 @@ namespace Dynamo.Nodes
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
             dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
             dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
-        }
-
-        void Controller_RevitDocumentChanged(object sender, EventArgs e)
-        {
-            SelectedElement.Clear();
-            RaisePropertyChanged("SelectedElement");
-            RaisePropertyChanged("SelectionText");
         }
 
         public override void Destroy()
@@ -679,6 +685,13 @@ namespace Dynamo.Nodes
 
         #region ElementSync
 
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement.Clear();
+            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectionText");
+        }
+
         void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
             if (SelectedElement != null && document == selectionOwner)
@@ -687,12 +700,17 @@ namespace Dynamo.Nodes
             }
         }
 
-        void Updater_ElementsModified(IEnumerable<string> updated)
+        protected virtual void Updater_ElementsModified(IEnumerable<string> updated)
         {
             if (SelectedElement != null && selectedUniqueIds.Any(updated.Contains))
             {
-
                 RequiresRecalc = true;
+
+                if (Update != null && _selectionTarget != null)
+                {
+                    SelectedElement.Clear();
+                    SelectedElement = Update.Invoke(_selectionTarget);
+                }
             }
         }
 
@@ -766,7 +784,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedElement = SelectionAction(_selectionMessage);
+                SelectedElement = SelectionAction(_selectionMessage, out _selectionTarget);
                 RaisePropertyChanged("SelectionText");
 
                 RequiresRecalc = true;
@@ -1087,7 +1105,12 @@ namespace Dynamo.Nodes
     public class DSDividedSurfaceFamiliesSelection : DSElementsSelection
     {
         public DSDividedSurfaceFamiliesSelection()
-            :base(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface."){}
+            : base(
+                SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection,
+                "Select a divided surface.")
+        {
+            Update = SelectionHelper.GetFamilyInstancesFromDividedSurface;
+        }
     }
 
     [NodeName("Select Model Elements")]
