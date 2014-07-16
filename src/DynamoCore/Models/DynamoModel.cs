@@ -1620,6 +1620,7 @@ namespace Dynamo.Models
                 nodeLookup.Add(node.GUID, newGuid);
 
                 string nodeName = node.GetType().ToString();
+
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
 #if USE_DSENGINE
@@ -1634,7 +1635,14 @@ namespace Dynamo.Models
                 xmlDoc.AppendChild(dynEl);
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                createdModels.Add(CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl));
+                var newNode = CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl);
+                createdModels.Add(newNode);
+
+                newNode.ArgumentLacing = node.ArgumentLacing;
+                if (!string.IsNullOrEmpty(node.NickName))
+                {
+                    newNode.NickName = node.NickName;
+                }
             }
 
             OnRequestLayoutUpdate(this, EventArgs.Empty);
