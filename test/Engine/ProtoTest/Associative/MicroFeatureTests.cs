@@ -2617,7 +2617,7 @@ i = [Associative]
             thisTest.Verify("i", 3);
         }
 
-                [Test]
+        [Test]
         public void TestLocalKeywordDeclaration09()
         {
             string code =
@@ -2658,6 +2658,177 @@ a : int local = 1;   // 'local' should come before any type specifier";
             {
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
+        }
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock01()
+        {
+            string code =
+@"
+a = 1;
+b = [Imperative]
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock02()
+        {
+            string code =
+@"
+a = 1;
+b = [Imperative]
+{
+    a : local = 2;
+    return = a;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock03()
+        {
+            string code =
+@"
+a = 1;
+b = [Associative]
+{
+    a : local = 2;
+    return = a;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock04()
+        {
+            string code =
+@"
+a = 1;
+b = [Associative]
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromFunction01()
+        {
+            string code =
+@"
+a = 1;
+def f()
+{
+    a : local = 2;
+    return = a;
+}
+
+p = f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromFunction02()
+        {
+            string code =
+@"
+a = 1;
+def f()
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+p = f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromImperative01()
+        {
+            string code =
+@"
+a = [Imperative]
+{
+    a : local = 1;
+    b = 0;
+    if (a == 1)
+    {
+        a : local = 2;
+        b = a;
+    }
+    else
+    {
+        a : local = 3;
+        b = a;
+    }
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromImperative02()
+        {
+            string code =
+@"
+a = [Imperative]
+{
+    a : local = 1;
+    b = 0;
+    if (a != 1)
+    {
+        a : local = 2;
+        b = a;
+    }
+    else
+    {
+        a : local = 3;
+        b = a;
+    }
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 3);
         }
 
     }

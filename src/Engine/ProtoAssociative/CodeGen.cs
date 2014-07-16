@@ -8415,10 +8415,20 @@ namespace ProtoAssociative
                     }
 
                     //int type = (int)ProtoCore.PrimitiveType.kTypeVoid;
+                    bool isLocalDeclaration = t.IsLocal;
                     bool isAccessible = false;
-                    bool isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                    int runtimeIndex = (!isAllocated || !isAccessible) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
+                    bool isAllocated = false;
 
+                    if (isLocalDeclaration)
+                    {
+                        isAllocated = VerifyAllocationInScope(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                    }
+                    else
+                    {
+                        isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                    }
+
+                    int runtimeIndex = (!isAllocated || !isAccessible) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
                     if (isAllocated && !isAccessible)
                     {
                         string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, t.Name);
