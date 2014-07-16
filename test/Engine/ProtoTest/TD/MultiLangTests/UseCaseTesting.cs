@@ -506,7 +506,6 @@ i = 5;
         [Test]
         public void T014_Robert_2012_09_14_MultipleNestedLanguage()
         {
-            string errmsg = "";
             string code =
     @"
             

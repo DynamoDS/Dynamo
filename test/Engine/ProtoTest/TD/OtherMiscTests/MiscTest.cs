@@ -652,6 +652,7 @@ a=5;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ProtoGeometry")]
         public void Comments_Nested()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -671,6 +672,7 @@ p2 = Point.ByCoordinates(0,0,0);";
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void Comments_Negative()
         {
             Assert.Fail("1467117 -IDE doesn't print any output if first few lines are commented out in way for ex. /* /* */  ");
@@ -921,6 +923,7 @@ return = t;
 
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestKeyword_reserved_1467551_4()
         {
             String code =

@@ -1618,6 +1618,7 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestAdd01()
         {
             List<string> codes = new List<string>() 

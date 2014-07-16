@@ -308,6 +308,7 @@ b4 = Math.Ceiling(a4); //null
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void T80585_Count()
         {
             string code = @"
@@ -346,6 +347,7 @@ b4 = Count(a4); //0";
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void language_functions_test_1()
         {
             string code = @"
@@ -447,6 +449,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void set_operation_functions_test_1()
         {
             string code = @"

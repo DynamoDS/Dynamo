@@ -4378,9 +4378,11 @@ val = v[0];";
         }
 
         [Test]
+        [Category("Failing")]
         public void T78_Defect_1467146_Class_Update_With_Replication_3()
         {
-            string err = "1467224 Sprint25: rev 3352: method dispatch over heterogeneous array is not correct ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
+            string err = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct";
             string code = @"class A
 {
 static def execute(b : A)

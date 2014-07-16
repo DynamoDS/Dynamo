@@ -291,7 +291,7 @@ namespace ProtoTestFx.TD
             return testMirror;
         }
 
-        public ExecutionMirror VerifyRunScriptSource(string sourceCode, string errorstring, string importPath = null)
+        public ExecutionMirror VerifyRunScriptSource(string sourceCode, string errorstring = "", string importPath = null)
         {
             Assert.DoesNotThrow(() => testMirror = RunScriptSource(sourceCode, errorstring, importPath), errorstring);
                 return testMirror;
