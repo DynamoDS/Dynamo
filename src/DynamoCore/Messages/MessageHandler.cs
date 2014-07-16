@@ -120,12 +120,25 @@ namespace Dynamo.Messages
                 }
                 else
                 {
-                    data = (item.Value.CachedValue == null || (item.Value.CachedValue.Data == null && !item.Value.CachedValue.IsCollection) ? "null" :
-                           item.Value.CachedValue.IsCollection ? "Array" :
-                           item.Value.CachedValue.Data.ToString());
+                    data = "null";
+                    if (item.Value.CachedValue != null)
+                    {
+                        if (item.Value.CachedValue.IsCollection)
+                        {
+                            data = "Array";
+                        }
+                        else
+                        {
+                            if (item.Value.CachedValue.Data != null)
+                            {
+                                data = item.Value.CachedValue.Data.ToString();
+                            }
+                        }
+                    }
                 }
 
-                var execNode = new ExecutedNode(item.Key.ToString(), item.Value.State.ToString(), item.Value.ToolTipText, data, item.Value.RenderPackages);
+                var execNode = new ExecutedNode(item.Key.ToString(), item.Value.State.ToString(),
+                    item.Value.ToolTipText, data, item.Value.RenderPackages);
                 nodes.Add(execNode);
             }
 

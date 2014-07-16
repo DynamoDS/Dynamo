@@ -59,19 +59,14 @@ namespace Dynamo.Controls
 
         public static Application MakeSandboxAndRun(string commandFilePath, bool turnOnServer)
         {
-            var controller = DynamoController.MakeSandbox(commandFilePath);
-            var app = new Application();
-
-            //create the view
-            var ui = new DynamoView();
-            ui.DataContext = controller.DynamoViewModel;
-            controller.UIDispatcher = ui.Dispatcher;
+            var ui = MakeSandbox(commandFilePath);
 
             if (turnOnServer)
             {
                 dynSettings.EnableServer();
             }
 
+            var app = new Application();
             app.Run(ui);
 
             return app;
