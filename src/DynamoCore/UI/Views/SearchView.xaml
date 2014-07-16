@@ -93,32 +93,34 @@
                 BorderBrush="#3F3F3F"
                 Grid.Row="1">
             <Grid Name="SearchTextBoxGrid"  Height="30" VerticalAlignment="Center" MouseEnter="SearchTextBoxGrid_MouseEnter" MouseLeave="SearchTextBoxGrid_MouseLeave">
-                                    <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Name="IconAndTextBlockWidth" Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-                                        <Image x:Name="SearchIcon"
-                   Grid.Column="0"
-                   Source="/DynamoCore;component/UI/Images/search_normal.png"
-                   Width="25"
-                   Height="25"
-                   Margin="10,0,0,0"
-                   VerticalAlignment="Center"/>
-            
+                <StackPanel Name="SearchIconAndTextBlockGrid" HorizontalAlignment="Center" MinWidth="280">                
+                        <Image x:Name="SearchIcon"
+                            Source="/DynamoCore;component/UI/Images/search_normal.png"
+                            Width="25"
+                            Height="26"
+                            Margin="-70,2,0,2"
+                            VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"/>
+                        
+                        <TextBlock FontSize ="14" IsHitTestVisible="False" Foreground="#666" VerticalAlignment="Center" 
+                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" HorizontalAlignment="Center" Grid.Column="2" Height="18" Width="48" Margin="0,-30,0,0">Search</TextBlock>
+                </StackPanel>
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
                          Foreground="#DDD"
-                         Background="Transparent" BorderThickness="0" FontSize ="14" Padding="0,0,5,0" Margin ="0"
-                         IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Center" Text="{Binding Path=SearchText,Mode=TwoWay}"
-                         Grid.Column="1" MinWidth="280" CaretBrush="#DDD">
-                </TextBox>
-            
-                <TextBlock FontSize ="14" IsHitTestVisible="False" Padding="2,0,5,0" Margin ="0" Foreground="#666" Grid.Column="1" VerticalAlignment="Center" 
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" HorizontalAlignment="Center">Search</TextBlock>
-            
+                         Background="Transparent" BorderThickness="0" FontSize ="14" 
+                         IsEnabled="True" TextChanged="SearchTextBox_TextChanged" 
+                         
+                         VerticalAlignment="Center" 
+                         Text="{Binding Path=SearchText,Mode=TwoWay}" 
+                         MinWidth="280" 
+                         CaretBrush="#DDD" Margin="26,7,-6,5" Grid.ColumnSpan="3"/>
+
                 <Button Name="SearchCancelButton" Grid.Column="2"
                         Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                         Click="SearchCancelButton_Click"
@@ -599,7 +601,7 @@
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
                         <Border Height="30">
-                            <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                            <TextBlock  Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
                         </Border>
 
                     </HierarchicalDataTemplate>

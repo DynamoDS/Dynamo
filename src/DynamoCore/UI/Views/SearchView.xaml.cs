@@ -322,12 +322,14 @@ namespace Dynamo.Search
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
-        }
+            IconAndTextBlockWidth.Width = new GridLength(100);
+            }
 
         private void SearchTextBoxGrid_MouseLeave(object sender, MouseEventArgs e)
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
+            IconAndTextBlockWidth.Width = GridLength.Auto;
         }
 
         private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
