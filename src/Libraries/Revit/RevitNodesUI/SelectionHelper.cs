@@ -4,7 +4,6 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI.Selection;
-using Dynamo;
 using Dynamo.Utilities;
 using RevitServices.Persistence;
 
@@ -57,7 +56,7 @@ namespace Revit.Interactivity
             return DocumentManager.Instance.CurrentDBDocument.GetElement(curveRef) as CurveElement;
         }
 
-        public static List<ElementId> RequestMultipleCurveElementsSelection(string message)
+        public static List<ElementId> RequestMultipleCurveElementsSelection(string message, out object selectionTarget)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -68,6 +67,11 @@ namespace Revit.Interactivity
 
             var ca = new ElementArray();
             ISelectionFilter selFilter = new CurveSelectionFilter();
+
+            // Don't pass anything back, as everything we care about will be
+            // passed in the element list.
+            selectionTarget = null;
+
             return doc.Selection.PickElementsByRectangle(//selFilter,
                 "Window select multiple curves.").Select(x => x.Id).ToList();
 
@@ -379,9 +383,20 @@ namespace Revit.Interactivity
             return xyzRef;
         }
 
-        public static List<ElementId> RequestDividedSurfaceFamilyInstancesSelection(string message)
+        public static List<ElementId> RequestDividedSurfaceFamilyInstancesSelection(string message, out object selectionTarget)
         {
             var ds = RequestDividedSurfaceSelection(message);
+
+            var result = GetFamilyInstancesFromDividedSurface(ds);
+
+            selectionTarget = ds;
+
+            return result;
+        }
+
+        public static List<ElementId> GetFamilyInstancesFromDividedSurface(object selectionTarget)
+        {
+            var ds = selectionTarget as DividedSurface;
 
             var result = new List<ElementId>();
 
@@ -413,7 +428,6 @@ namespace Revit.Interactivity
 
                 u = u + 1;
             }
-
             return result;
         }
     }
