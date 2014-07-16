@@ -7,6 +7,8 @@ using DSNodeServices;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System.Linq;
+using Dynamo.Nodes;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -37,214 +39,15 @@ namespace Dynamo.TestInfrastructure
 
             new Thread(() =>
                 {
-                    bool passed = false;
-
                     try
                     {
+                        CodeBlockNodeTest(writer);
+                        ConnectorTest(writer);
 
-                        for (int i = 0; i < 1000; i++)
-                        {
-                            writer.WriteLine("##### - Beginning run: " + i);
-
-                            var nodes = dynamoController.DynamoModel.Nodes;
-
-                            writer.WriteLine("### - Beginning eval");
-
-
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
-                                {
-                                    DynamoViewModel.RunCancelCommand runCancel =
-                                        new DynamoViewModel.RunCancelCommand(false, false);
-                                    dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
-
-                                }));
-
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
-                            {
-                                Thread.Sleep(10);
-                            }
-
-                            writer.WriteLine("### - Eval complete");
-                            writer.Flush();
-                            writer.WriteLine("### - Beginning readout");
-
-
-                            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
-
-                            foreach (NodeModel n in nodes)
-                            {
-                                if (n.OutPorts.Count > 0)
-                                {
-                                    Guid guid = n.GUID;
-                                    Object data = n.GetValue(0).Data;
-                                    String val = data != null ? data.ToString() : "null";
-                                    valueMap.Add(guid, val);
-                                    writer.WriteLine(guid + " :: " + val);
-                                    writer.Flush();
-
-                                }
-                            }
-
-                            writer.WriteLine("### - Readout complete");
-                            writer.Flush();
-                            writer.WriteLine("### - Beginning delete");
-                            NodeModel node = nodes[rand.Next(nodes.Count)];
-                            writer.WriteLine("### - Deletion target: " + node.GUID);
-
-
-                            List<AbstractMutator> mutators = new List<AbstractMutator>()
-                                {
-                                    new CodeBlockNodeMutator(rand), new DeleteNodeMutator(rand)
-                                };
-
-
-                            AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
-                            
-                            int numberOfUndosNeeded = mutator.Mutate();
-
-
-                            Thread.Sleep(100);
-
-                            writer.WriteLine("### - delete complete");
-                            writer.Flush();
-                            writer.WriteLine("### - Beginning re-exec");
-
-
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
-                                {
-                                    DynamoViewModel.RunCancelCommand runCancel =
-                                        new DynamoViewModel.RunCancelCommand(false, false);
-                                    dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
-
-                                }));
-
-                            Thread.Sleep(100);
-
-                            writer.WriteLine("### - re-exec complete");
-                            writer.Flush();
-                            writer.WriteLine("### - Beginning undo");
-
-
-                            for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
-                            {
-                                dynamoController.UIDispatcher.Invoke(new Action(() =>
-                                    {
-                                        DynamoViewModel.UndoRedoCommand undoCommand =
-                                            new DynamoViewModel.UndoRedoCommand(
-                                                DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                        dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
-
-                                    }));
-
-                                Thread.Sleep(100);
-
-                            }
-
-
-                            writer.WriteLine("### - undo complete");
-                            writer.Flush();
-                            writer.WriteLine("### - Beginning re-exec");
-
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
-                                {
-                                    DynamoViewModel.RunCancelCommand runCancel =
-                                        new DynamoViewModel.RunCancelCommand(false, false);
-
-                                    dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
-
-                                }));
-                            Thread.Sleep(10);
-
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
-                            {
-                                Thread.Sleep(10);
-                            }
-
-                            writer.WriteLine("### - re-exec complete");
-                            writer.Flush();
-                            writer.WriteLine("### - Beginning readback");
-
-
-                            foreach (NodeModel n in nodes)
-                            {
-                                if (n.OutPorts.Count > 0)
-                                {
-                                    try
-                                    {
-
-
-
-                                        String valmap = valueMap[n.GUID].ToString();
-                                        Object data = n.GetValue(0).Data;
-                                        String nodeVal = data != null ? data.ToString() : "null";
-
-                                        if (valmap != nodeVal)
-                                        {
-
-                                            writer.WriteLine("!!!!!!!!!!! Read-back failed");
-                                            writer.WriteLine(n.GUID);
-
-
-                                            writer.WriteLine("Was: " + nodeVal);
-                                            writer.WriteLine("Should have been: " + valmap);
-                                            writer.Flush();
-                                            return;
-
-
-                                            Debug.WriteLine("==========> Failure on run: " + i);
-                                            Debug.WriteLine("Lookup map failed to agree");
-                                            Validity.Assert(false);
-
-                                        }
-                                    }
-                                    catch (Exception)
-                                    {
-                                        writer.WriteLine("!!!!!!!!!!! Read-back failed");
-                                        writer.Flush();
-                                        return;
-                                    }
-                                }
-                            }
-
-                            /*
-                        UIDispatcher.Invoke(new Action(() =>
-                        {
-                            DynamoViewModel.ForceRunCancelCommand runCancelForce =
-    new DynamoViewModel.ForceRunCancelCommand(false,
-                                              false);
-                        DynamoViewModel.ExecuteCommand(runCancelForce);
-    
-                            }));
-                        while (DynamoViewModel.Controller.Runner.Running)
-                        {
-                            Thread.Sleep(10);
-                        }
-                        foreach (NodeModel n in nodes)
-                        {
-                            if (n.OutPorts.Count > 0)
-                            {
-                                String valmap = valueMap[n.GUID].ToString();
-                                String nodeVal = n.GetValue(0).Data.ToString();
-
-                                if (valmap != nodeVal)
-                                {
-                                    Debug.WriteLine("==========> Failure on run: " + i);
-                                    Debug.WriteLine("Lookup map failed to agree");
-                                    Validity.Assert(false);
-
-                                }
-                            }
-                        }
-                        */
-
-
-                        }
-
-                        passed = true;
                     }
                     finally
                     {
-                        dynSettings.DynamoLogger.Log("Fuzz testing: " + (passed ? "pass" : "FAIL"));
+                        dynSettings.DynamoLogger.Log("Fuzz testing finished.");
 
                         writer.Flush();
                         writer.Close();
@@ -255,6 +58,296 @@ namespace Dynamo.TestInfrastructure
                 }).
                 Start();
 
+        }
+
+        private void CodeBlockNodeTest(StreamWriter writer)
+        {
+            bool passed = false;
+            try
+            {
+                Random rand = new Random(1);
+
+                for (int i = 0; i < 10; i++)
+                {
+                    writer.WriteLine("##### - Beginning run: " + i);
+
+                    var nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == typeof(CodeBlockNodeModel)).ToList();
+
+                    writer.WriteLine("### - Beginning eval");
+
+
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                    }));
+
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+
+                    writer.WriteLine("### - Eval complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning readout");
+
+
+                    Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            Guid guid = n.GUID;
+                            Object data = n.GetValue(0).Data;
+                            String val = data != null ? data.ToString() : "null";
+                            valueMap.Add(guid, val);
+                            writer.WriteLine(guid + " :: " + val);
+                            writer.Flush();
+
+                        }
+                    }
+
+                    writer.WriteLine("### - Readout complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning delete");
+                    NodeModel node = nodes[rand.Next(nodes.Count)];
+                    writer.WriteLine("### - Deletion target: " + node.GUID);
+
+
+                    List<AbstractMutator> mutators = new List<AbstractMutator>()
+                                {
+                                    new CodeBlockNodeMutator(rand), new DeleteNodeMutator(rand)
+                                };
+
+
+                    AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
+
+                    int numberOfUndosNeeded = mutator.Mutate();
+
+
+                    Thread.Sleep(100);
+
+                    writer.WriteLine("### - delete complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning re-exec");
+
+
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                    }));
+
+                    Thread.Sleep(100);
+
+                    writer.WriteLine("### - re-exec complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning undo");
+
+
+                    for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                    {
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.UndoRedoCommand undoCommand =
+                                new DynamoViewModel.UndoRedoCommand(
+                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+
+                        }));
+
+                        Thread.Sleep(100);
+
+                    }
+
+
+                    writer.WriteLine("### - undo complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning re-exec");
+
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                    }));
+                    Thread.Sleep(10);
+
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+
+                    writer.WriteLine("### - re-exec complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning readback");
+
+
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            try
+                            {
+                                String valmap = valueMap[n.GUID].ToString();
+                                Object data = n.GetValue(0).Data;
+                                String nodeVal = data != null ? data.ToString() : "null";
+
+                                if (valmap != nodeVal)
+                                {
+
+                                    writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                                    writer.WriteLine(n.GUID);
+
+
+                                    writer.WriteLine("Was: " + nodeVal);
+                                    writer.WriteLine("Should have been: " + valmap);
+                                    writer.Flush();
+                                    return;
+
+
+                                    Debug.WriteLine("==========> Failure on run: " + i);
+                                    Debug.WriteLine("Lookup map failed to agree");
+                                    Validity.Assert(false);
+
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                                writer.Flush();
+                                return;
+                            }
+                        }
+                    }
+
+                    /*
+                UIDispatcher.Invoke(new Action(() =>
+                {
+                    DynamoViewModel.ForceRunCancelCommand runCancelForce =
+    new DynamoViewModel.ForceRunCancelCommand(false,
+                                      false);
+                DynamoViewModel.ExecuteCommand(runCancelForce);
+    
+                    }));
+                while (DynamoViewModel.Controller.Runner.Running)
+                {
+                    Thread.Sleep(10);
+                }
+                foreach (NodeModel n in nodes)
+                {
+                    if (n.OutPorts.Count > 0)
+                    {
+                        String valmap = valueMap[n.GUID].ToString();
+                        String nodeVal = n.GetValue(0).Data.ToString();
+
+                        if (valmap != nodeVal)
+                        {
+                            Debug.WriteLine("==========> Failure on run: " + i);
+                            Debug.WriteLine("Lookup map failed to agree");
+                            Validity.Assert(false);
+
+                        }
+                    }
+                }
+                */
+
+
+                }
+
+                passed = true;
+            }
+            finally
+            {
+                dynSettings.DynamoLogger.Log("CodeBlockNodeTest : " + (passed ? "pass" : "FAIL"));
+            }
+        }
+
+        private void ConnectorTest(StreamWriter writer)
+        {
+            bool passed = false;
+
+            try
+            {
+                writer.WriteLine("##### - Beginning run");
+
+                List<NodeModel> nodes1 = dynamoController.DynamoModel.Nodes.Where(x => x.GetType() == typeof(DoubleInput)).ToList();
+                List<NodeModel> nodes2 = dynamoController.DynamoModel.Nodes.Where(x => x.GetType() == typeof(DSFunction)).ToList();
+                Random rand = new Random(1);
+                int randVal = rand.Next(nodes1.Count);
+                NodeModel node = nodes1.Count > 0 ? nodes1[randVal] : null;
+                randVal = rand.Next(nodes2.Count);
+                NodeModel node2 = nodes2.Count > 0 ? nodes2[randVal] : null;
+
+                if ((node != null) && (node2 != null))
+                {
+                    List<ConnectorModel> firstNodeConnectors = node.AllConnectors.ToList();
+                    List<int> counts = new List<int>();
+
+                    foreach (ConnectorModel connector in firstNodeConnectors)
+                    {
+                        //let's remember the indexes
+                        int startIndex = connector.Start.Index;
+                        int endIndex = connector.End.Index;
+
+                        foreach (PortModel port in node.OutPorts)
+                            counts.Add(port.Connectors.Count);
+
+                        dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.DeleteModelCommand delCommand =
+                                new DynamoViewModel.DeleteModelCommand(connector.GUID);
+
+                            dynamoController.DynamoViewModel.ExecuteCommand(delCommand);
+
+                        }));
+
+                        if (node.OutPorts[startIndex].IsConnected)
+                            writer.WriteLine("### - Connector wasn't deleted");
+                        else
+                            writer.WriteLine("### - Connector was deleted");
+
+                        dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.MakeConnectionCommand mcCommand =
+                                new DynamoViewModel.MakeConnectionCommand(node.GUID, startIndex, PortType.OUTPUT, DynamoViewModel.MakeConnectionCommand.Mode.Begin);
+
+                            dynamoController.DynamoViewModel.ExecuteCommand(mcCommand);
+
+                        }));
+
+                        dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.MakeConnectionCommand mcCommand =
+                                new DynamoViewModel.MakeConnectionCommand(node2.GUID, endIndex, PortType.INPUT, DynamoViewModel.MakeConnectionCommand.Mode.End);
+
+                            dynamoController.DynamoViewModel.ExecuteCommand(mcCommand);
+
+                        }));
+
+                        for (int i = 0; i < counts.Count; i++)
+                        {
+                            if (node.OutPorts[i].Connectors.Count != counts[i])
+                                writer.WriteLine("### - Connector wasn't recreated");
+                            else
+                                writer.WriteLine("### - Connector was recreated");
+                        }
+                    }
+
+                    passed = true;
+                }
+            }
+            finally
+            {
+                dynSettings.DynamoLogger.Log("ConnectorTest : " + (passed ? "pass" : "FAIL"));
+            }
         }
     }
 }
