@@ -667,9 +667,9 @@ x1; x2; x3; x4;
         public void TestDynamicArray001()
         {
             String code =
-@"local;[Imperative]{    range = 1..10;    local = {};    c = 0;    for(i in range)    {        local[c] = i + 1;        c = c + 1;    }}";
+@"loc;[Imperative]{    range = 1..10;    loc = {};    c = 0;    for(i in range)    {        loc[c] = i + 1;        c = c + 1;    }}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Lang.Obj o = mirror.GetFirstValue("local");
+            ProtoCore.Lang.Obj o = mirror.GetFirstValue("loc");
             ProtoCore.DSASM.Mirror.DsasmArray arr = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue((Int64)arr.members[0].Payload == 2);
         }
