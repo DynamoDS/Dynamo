@@ -11,37 +11,58 @@ using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.GeometryReferences;
 
+using Edge = Autodesk.Revit.DB.Edge;
+using Face = Autodesk.Revit.DB.Face;
+
 namespace Revit.GeometryConversion
 {
-    [IsVisibleInDynamoLibrary(false)]
     [SupressImportIntoVM]
     public static class RevitToProtoFace
     {
-        public static Surface ToProtoType(this Autodesk.Revit.DB.Face revitFace, 
-            bool performHostUnitConversion = true)
+        public static IEnumerable<Surface> ToProtoType(this Autodesk.Revit.DB.Face revitFace,
+          bool performHostUnitConversion = true)
         {
-            if (revitFace == null) return null;
+            if (revitFace == null) throw new ArgumentNullException("revitFace");
 
-            var dyFace = (dynamic) revitFace;
-            List<PolyCurve> edgeLoops = EdgeLoopsAsPolyCurves(dyFace);
-            Surface untrimmedSrf = SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
-            var converted = untrimmedSrf != null ? untrimmedSrf.TrimWithEdgeLoops(edgeLoops.ToArray()) : null;
+            var revitEdgeLoops = EdgeLoopPartition.GetAllEdgeLoopsFromRevitFace(revitFace);
+            var partitionedRevitEdgeLoops = EdgeLoopPartition.ByEdgeLoopsAndFace(revitFace, revitEdgeLoops);
 
-            if (converted == null) return null;
+            var listSurface = new List<Surface>();
 
-            converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
+            foreach (var edgeloopPartition in partitionedRevitEdgeLoops)
+            {
+                // convert the trimming curves
+                var edgeLoops = EdgeLoopsAsPolyCurves(revitFace, edgeloopPartition);
 
-            var revitRef = revitFace.Reference;
-            return revitRef != null ? ElementFaceReference.AddTag(converted, revitRef) : converted;
+                // convert the underrlying surface
+                var dyFace = (dynamic)revitFace;
+                Surface untrimmedSrf = SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
+                if (untrimmedSrf == null) throw new Exception("Failed to extract surface");
+
+                // trim the surface
+                Surface converted = untrimmedSrf.TrimWithEdgeLoops(edgeLoops);
+
+                // perform unit conversion if necessary
+                converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
+
+                // if possible, apply revit reference
+                var revitRef = revitFace.Reference;
+                if (revitRef != null) converted = ElementFaceReference.AddTag(converted, revitRef);
+
+                listSurface.Add(converted);
+            }
+
+            return listSurface;
         }
 
-        internal static List<PolyCurve> EdgeLoopsAsPolyCurves(Autodesk.Revit.DB.Face face)
+        private static List<PolyCurve> EdgeLoopsAsPolyCurves(Face face, 
+            IEnumerable<IEnumerable<Edge>> edgeLoops)
         {
-            return face.EdgeLoops.Cast<EdgeArray>()
-                .Select(x => x.Cast<Autodesk.Revit.DB.Edge>())
-                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)).ToArray())
+            return edgeLoops
+                .Select(x => x.Select(t => t.AsCurveFollowingFace(face).ToProtoType(false)))
                 .Select(PolyCurve.ByJoinedCurves)
                 .ToList();
         }
+
     }
 }
