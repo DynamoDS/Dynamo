@@ -212,6 +212,8 @@ void Scene::SelectNodes(Strings^ identifiers, SelectMode selectMode)
         else
             pNodeSceneData->SetSelected(true);
     }
+
+    mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
 void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
@@ -226,6 +228,13 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
     {
         auto pNodeSceneData = *iterator;
         pNodeSceneData->GetColor(&rgbaColor[0]);
+
+        if (pNodeSceneData->GetSelected()) {
+            rgbaColor[0] = 154.0f / 255.0f;
+            rgbaColor[1] = 206.0f / 255.0f;
+            rgbaColor[2] = 235.0f / 255.0f;
+        }
+
         mpShaderProgram->SetParameter(mColorParamIndex, &rgbaColor[0], 4);
 
         // Draw primitives of lower dimensionality first (e.g. points and lines).
@@ -233,9 +242,9 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
         mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::Low);
 
-        // Draw primitives of higher dimensionality later (e.g. points and lines).
-        // controlParams[0] = 3.0f;
-        // mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
+        // Draw primitives of higher dimensionality later (e.g. triangles).
+        controlParams[0] = 3.0f;
+        mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::High);
     }
 }
