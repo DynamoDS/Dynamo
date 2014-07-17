@@ -5,7 +5,9 @@
 
 using namespace Dynamo::Bloodstone;
 
-NodeSceneData::NodeSceneData(const std::wstring& nodeId) : mNodeId(nodeId)
+NodeSceneData::NodeSceneData(const std::wstring& nodeId) :
+    mNodeId(nodeId),
+    mNodeSelected(false)
 {
     mNodeRgbaColor[0] = mNodeRgbaColor[1] = 1.0f;
     mNodeRgbaColor[2] = mNodeRgbaColor[3] = 1.0f;
@@ -31,6 +33,16 @@ void NodeSceneData::ClearVertexBuffers(void)
 
     mVertexBuffers.clear();
     mBoundingBox.Invalidate();
+}
+
+bool NodeSceneData::GetSelected(void) const
+{
+    return this->mNodeSelected;
+}
+
+void NodeSceneData::SetSelected(bool selected)
+{
+    this->mNodeSelected = selected;
 }
 
 void NodeSceneData::GetColor(float* pRgbaColor) const

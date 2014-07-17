@@ -18,7 +18,10 @@ namespace Dynamo { namespace Bloodstone {
     class BoundingBox;
     ref class Scene;
 
+    typedef Gen::IEnumerable<System::String^> Strings;
     typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, Ds::IRenderPackage^>> RenderPackages;
+
+    public enum class SelectMode { AddToExisting, ClearExisting };
 
     public ref class VisualizerWnd
     {
@@ -62,8 +65,9 @@ namespace Dynamo { namespace Bloodstone {
         void Initialize(int width, int height);
         void Destroy(void);
         void RenderScene(void);
-        void UpdateNodeGeometries(RenderPackages^ nodeDetails);
-        void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
+        void UpdateNodeGeometries(RenderPackages^ geometries);
+        void RemoveNodeGeometries(Strings^ identifiers);
+        void SelectNodes(Strings^ identifiers, SelectMode selectMode);
 
     private:
         void RenderGeometries(const std::vector<NodeSceneData *>& geometries);
@@ -75,6 +79,6 @@ namespace Dynamo { namespace Bloodstone {
         IShaderProgram* mpShaderProgram;
 
         VisualizerWnd^ mVisualizer;
-        std::map<std::wstring, NodeSceneData*>* mpNodeGeometries;
+        std::map<std::wstring, NodeSceneData*>* mpNodeSceneData;
     };
 } }

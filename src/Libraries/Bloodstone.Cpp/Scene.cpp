@@ -21,11 +21,11 @@ Scene::Scene(VisualizerWnd^ visualizer) :
     mColorParamIndex(-1),
     mControlParamsIndex(-1),
     mpShaderProgram(nullptr),
-    mpNodeGeometries(nullptr),
+    mpNodeSceneData(nullptr),
     mVisualizer(visualizer)
 {
     // Create storage for storing nodes and their geometries.
-    mpNodeGeometries = new std::map<std::wstring, NodeSceneData*>();
+    mpNodeSceneData = new std::map<std::wstring, NodeSceneData*>();
 }
 
 void Scene::Initialize(int width, int height)
@@ -59,16 +59,16 @@ void Scene::Initialize(int width, int height)
 
 void Scene::Destroy(void)
 {
-    if (this->mpNodeGeometries != nullptr)
+    if (this->mpNodeSceneData != nullptr)
     {
-        auto iterator = mpNodeGeometries->begin();
-        for (; iterator != mpNodeGeometries->end(); ++iterator) {
-            auto pNodeGeometries = iterator->second;
-            delete pNodeGeometries;
+        auto iterator = mpNodeSceneData->begin();
+        for (; iterator != mpNodeSceneData->end(); ++iterator) {
+            auto pNodeSceneData = iterator->second;
+            delete pNodeSceneData;
         }
 
-        delete this->mpNodeGeometries;
-        this->mpNodeGeometries = nullptr;
+        delete this->mpNodeSceneData;
+        this->mpNodeSceneData = nullptr;
     }
 
     if (this->mpShaderProgram != nullptr) {
@@ -82,8 +82,8 @@ void Scene::RenderScene(void)
     std::vector<NodeSceneData *> geometries;
 
     BoundingBox boundingBox;
-    auto iterator = mpNodeGeometries->begin();
-    for (; iterator != mpNodeGeometries->end(); ++iterator) {
+    auto iterator = mpNodeSceneData->begin();
+    for (; iterator != mpNodeSceneData->end(); ++iterator) {
         BoundingBox innerBox;
         iterator->second->GetBoundingBox(&innerBox);
         boundingBox.EvaluateBox(innerBox);
@@ -119,18 +119,18 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         System::String^ nodeId = geometry->Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
-        NodeSceneData* pNodeGeometries = nullptr;
-        auto found = mpNodeGeometries->find(identifier);
-        if (found != mpNodeGeometries->end())
+        NodeSceneData* pNodeSceneData = nullptr;
+        auto found = mpNodeSceneData->find(identifier);
+        if (found != mpNodeSceneData->end())
         {
-            pNodeGeometries = found->second;
-            pNodeGeometries->ClearVertexBuffers();
+            pNodeSceneData = found->second;
+            pNodeSceneData->ClearVertexBuffers();
         }
         else
         {
-            pNodeGeometries = new NodeSceneData(identifier);
-            mpNodeGeometries->insert(std::pair<std::wstring, NodeSceneData*>
-                (identifier, pNodeGeometries));
+            pNodeSceneData = new NodeSceneData(identifier);
+            mpNodeSceneData->insert(std::pair<std::wstring, NodeSceneData*>
+                (identifier, pNodeSceneData));
         }
 
         PointGeometryData pointData(pRenderPackage->PointVertices->Count / 3);
@@ -138,7 +138,7 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         {
             auto pVertexBuffer = pGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(pointData);
-            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+            pNodeSceneData->AppendVertexBuffer(pVertexBuffer);
         }
 
         LineStripGeometryData lineData(0);
@@ -146,7 +146,7 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         {
             auto pVertexBuffer = pGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(lineData);
-            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+            pNodeSceneData->AppendVertexBuffer(pVertexBuffer);
         }
 
         TriangleGeometryData triangleData(pRenderPackage->TriangleVertices->Count / 3);
@@ -154,12 +154,12 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         {
             auto pVertexBuffer = pGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(triangleData);
-            pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
+            pNodeSceneData->AppendVertexBuffer(pVertexBuffer);
         }
 
         // Finally, determine the bounding box for these geometries.
         BoundingBox boundingBox;
-        pNodeGeometries->GetBoundingBox(&boundingBox);
+        pNodeSceneData->GetBoundingBox(&boundingBox);
         outerBoundingBox.EvaluateBox(boundingBox);
     }
 
@@ -169,21 +169,45 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
     mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
-void Scene::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
+void Scene::RemoveNodeGeometries(Strings^ identifiers)
 {
     for each (System::String^ identifier in identifiers)
     {
         System::String^ nodeId = identifier->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
-        auto found = mpNodeGeometries->find(identifier);
-        if (found == mpNodeGeometries->end())
+        auto found = mpNodeSceneData->find(identifier);
+        if (found == mpNodeSceneData->end())
             continue; // The node does not have any associated geometries.
 
         // Release the node geometry ownership from map.
-        NodeSceneData* pNodeGeometries = found->second;
-        mpNodeGeometries->erase(found);
-        delete pNodeGeometries; // Release node geometries and its resources.
+        NodeSceneData* pNodeSceneData = found->second;
+        mpNodeSceneData->erase(found);
+        delete pNodeSceneData; // Release node geometries and its resources.
+    }
+}
+
+void Scene::SelectNodes(Strings^ identifiers, SelectMode selectMode)
+{
+    if (selectMode == SelectMode::ClearExisting) {
+        auto iterator = mpNodeSceneData->begin();
+        for (; iterator != mpNodeSceneData->end(); ++iterator) {
+            auto pNodeSceneData = iterator->second;
+            pNodeSceneData->SetSelected(false); // Clear selection.
+        }
+    }
+
+    for each (System::String^ identifier in identifiers)
+    {
+        System::String^ nodeId = identifier->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+
+        auto found = mpNodeSceneData->find(identifier);
+        if (found == mpNodeSceneData->end())
+            continue; // The node does not have any associated geometries.
+
+        NodeSceneData* pNodeSceneData = found->second;
+        pNodeSceneData->SetSelected(true);
     }
 }
 
@@ -197,18 +221,18 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
     auto iterator = geometries.begin();
     for (; iterator != geometries.end(); ++iterator)
     {
-        auto pNodeGeometries = *iterator;
-        pNodeGeometries->GetColor(&rgbaColor[0]);
+        auto pNodeSceneData = *iterator;
+        pNodeSceneData->GetColor(&rgbaColor[0]);
         mpShaderProgram->SetParameter(mColorParamIndex, &rgbaColor[0], 4);
 
         // Draw primitives of lower dimensionality first (e.g. points and lines).
         controlParams[0] = 1.0f;
         mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
-        pNodeGeometries->Render(pGraphicsContext, Dimensionality::Low);
+        pNodeSceneData->Render(pGraphicsContext, Dimensionality::Low);
 
         // Draw primitives of higher dimensionality later (e.g. points and lines).
         // controlParams[0] = 3.0f;
         // mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
-        pNodeGeometries->Render(pGraphicsContext, Dimensionality::High);
+        pNodeSceneData->Render(pGraphicsContext, Dimensionality::High);
     }
 }

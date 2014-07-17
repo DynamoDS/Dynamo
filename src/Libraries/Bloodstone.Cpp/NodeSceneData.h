@@ -1,6 +1,6 @@
 
-#ifndef _NODEGEOMETRIES_H_
-#define _NODEGEOMETRIES_H_
+#ifndef _NODESCENEDATA_H_
+#define _NODESCENEDATA_H_
 
 #include "Interfaces.h"
 
@@ -21,6 +21,8 @@ namespace Dynamo { namespace Bloodstone {
 
         const std::wstring GetNodeId(void) const;
         void ClearVertexBuffers(void);
+        bool GetSelected(void) const;
+        void SetSelected(bool selected);
         void GetColor(float* pRgbaColor) const;
         void SetColor(float red, float green, float blue, float alpha);
         void AppendVertexBuffer(IVertexBuffer* pVertexBuffer);
@@ -28,6 +30,7 @@ namespace Dynamo { namespace Bloodstone {
         void GetBoundingBox(BoundingBox* pBoundingBox) const;
 
     private:
+        bool mNodeSelected;
         float mNodeRgbaColor[4];
         BoundingBox mBoundingBox;
         std::wstring mNodeId;
