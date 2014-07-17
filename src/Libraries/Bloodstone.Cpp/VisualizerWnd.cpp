@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "Bloodstone.h"
 #include "Utilities.h"
-#include "NodeGeometries.h"
+#include "NodeSceneData.h"
 #include "Resources\resource.h"
 
 #include <msclr/marshal_cppstd.h>

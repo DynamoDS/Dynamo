@@ -13,11 +13,11 @@ namespace Dynamo { namespace Bloodstone {
         Low, High
     };
 
-    class NodeGeometries
+    class NodeSceneData
     {
     public:
-        NodeGeometries(const std::wstring& nodeId);
-        ~NodeGeometries(void);
+        NodeSceneData(const std::wstring& nodeId);
+        ~NodeSceneData(void);
 
         const std::wstring GetNodeId(void) const;
         void ClearVertexBuffers(void);

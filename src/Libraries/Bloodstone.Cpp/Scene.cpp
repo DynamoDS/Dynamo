@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "Bloodstone.h"
 #include "Utilities.h"
-#include "NodeGeometries.h"
+#include "NodeSceneData.h"
 #include "Resources\resource.h"
 
 #include <msclr/marshal_cppstd.h>
@@ -25,7 +25,7 @@ Scene::Scene(VisualizerWnd^ visualizer) :
     mVisualizer(visualizer)
 {
     // Create storage for storing nodes and their geometries.
-    mpNodeGeometries = new std::map<std::wstring, NodeGeometries*>();
+    mpNodeGeometries = new std::map<std::wstring, NodeSceneData*>();
 }
 
 void Scene::Initialize(int width, int height)
@@ -79,7 +79,7 @@ void Scene::Destroy(void)
 
 void Scene::RenderScene(void)
 {
-    std::vector<NodeGeometries *> geometries;
+    std::vector<NodeSceneData *> geometries;
 
     BoundingBox boundingBox;
     auto iterator = mpNodeGeometries->begin();
@@ -119,7 +119,7 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         System::String^ nodeId = geometry->Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
-        NodeGeometries* pNodeGeometries = nullptr;
+        NodeSceneData* pNodeGeometries = nullptr;
         auto found = mpNodeGeometries->find(identifier);
         if (found != mpNodeGeometries->end())
         {
@@ -128,8 +128,8 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         }
         else
         {
-            pNodeGeometries = new NodeGeometries(identifier);
-            mpNodeGeometries->insert(std::pair<std::wstring, NodeGeometries*>
+            pNodeGeometries = new NodeSceneData(identifier);
+            mpNodeGeometries->insert(std::pair<std::wstring, NodeSceneData*>
                 (identifier, pNodeGeometries));
         }
 
@@ -181,13 +181,13 @@ void Scene::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
             continue; // The node does not have any associated geometries.
 
         // Release the node geometry ownership from map.
-        NodeGeometries* pNodeGeometries = found->second;
+        NodeSceneData* pNodeGeometries = found->second;
         mpNodeGeometries->erase(found);
         delete pNodeGeometries; // Release node geometries and its resources.
     }
 }
 
-void Scene::RenderGeometries(const std::vector<NodeGeometries *>& geometries)
+void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
 {
     float alpha = 1.0f;
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();

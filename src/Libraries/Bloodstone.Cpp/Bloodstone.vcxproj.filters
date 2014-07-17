@@ -39,13 +39,13 @@
     <ClInclude Include="OpenGL Files\OpenInterfaces.h">
       <Filter>OpenGL Files</Filter>
     </ClInclude>
-    <ClInclude Include="NodeGeometries.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeSceneData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,9 +71,6 @@
     <ClCompile Include="OpenGL Files\Camera.cpp">
       <Filter>OpenGL Files</Filter>
     </ClCompile>
-    <ClCompile Include="NodeGeometries.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VisualizerWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeSceneData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -89,7 +89,7 @@
   <ItemGroup>
     <ClInclude Include="Bloodstone.h" />
     <ClInclude Include="Interfaces.h" />
-    <ClInclude Include="NodeGeometries.h" />
+    <ClInclude Include="NodeSceneData.h" />
     <ClInclude Include="OpenGL Files\OpenInterfaces.h" />
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -103,7 +103,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Bloodstone.cpp" />
-    <ClCompile Include="NodeGeometries.cpp" />
+    <ClCompile Include="NodeSceneData.cpp" />
     <ClCompile Include="OpenGL Files\Buffers.cpp" />
     <ClCompile Include="OpenGL Files\Camera.cpp" />
     <ClCompile Include="OpenGL Files\GraphicsContext.cpp" />

@@ -14,7 +14,7 @@ namespace Dynamo { namespace Bloodstone {
     class IShaderProgram;
     class IVertexBuffer;
     class GeometryData;
-    class NodeGeometries;
+    class NodeSceneData;
     class BoundingBox;
     ref class Scene;
 
@@ -66,7 +66,7 @@ namespace Dynamo { namespace Bloodstone {
         void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
 
     private:
-        void RenderGeometries(const std::vector<NodeGeometries *>& geometries);
+        void RenderGeometries(const std::vector<NodeSceneData *>& geometries);
 
     private:
         int mAlphaParamIndex;
@@ -75,6 +75,6 @@ namespace Dynamo { namespace Bloodstone {
         IShaderProgram* mpShaderProgram;
 
         VisualizerWnd^ mVisualizer;
-        std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
+        std::map<std::wstring, NodeSceneData*>* mpNodeGeometries;
     };
 } }

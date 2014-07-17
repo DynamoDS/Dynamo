@@ -1,27 +1,27 @@
 
 #include "stdafx.h"
 #include "Interfaces.h"
-#include "NodeGeometries.h"
+#include "NodeSceneData.h"
 
 using namespace Dynamo::Bloodstone;
 
-NodeGeometries::NodeGeometries(const std::wstring& nodeId) : mNodeId(nodeId)
+NodeSceneData::NodeSceneData(const std::wstring& nodeId) : mNodeId(nodeId)
 {
     mNodeRgbaColor[0] = mNodeRgbaColor[1] = 1.0f;
     mNodeRgbaColor[2] = mNodeRgbaColor[3] = 1.0f;
 }
 
-NodeGeometries::~NodeGeometries(void)
+NodeSceneData::~NodeSceneData(void)
 {
     ClearVertexBuffers();
 }
 
-const std::wstring NodeGeometries::GetNodeId(void) const
+const std::wstring NodeSceneData::GetNodeId(void) const
 {
     return this->mNodeId;
 }
 
-void NodeGeometries::ClearVertexBuffers(void)
+void NodeSceneData::ClearVertexBuffers(void)
 {
     auto iterator = mVertexBuffers.begin();
     for (; iterator != mVertexBuffers.end(); ++iterator) {
@@ -33,7 +33,7 @@ void NodeGeometries::ClearVertexBuffers(void)
     mBoundingBox.Invalidate();
 }
 
-void NodeGeometries::GetColor(float* pRgbaColor) const
+void NodeSceneData::GetColor(float* pRgbaColor) const
 {
     pRgbaColor[0] = mNodeRgbaColor[0];
     pRgbaColor[1] = mNodeRgbaColor[1];
@@ -41,7 +41,7 @@ void NodeGeometries::GetColor(float* pRgbaColor) const
     pRgbaColor[3] = mNodeRgbaColor[3];
 }
 
-void NodeGeometries::SetColor(float red, float green, float blue, float alpha)
+void NodeSceneData::SetColor(float red, float green, float blue, float alpha)
 {
     mNodeRgbaColor[0] = red;
     mNodeRgbaColor[1] = green;
@@ -49,7 +49,7 @@ void NodeGeometries::SetColor(float red, float green, float blue, float alpha)
     mNodeRgbaColor[3] = alpha;
 }
 
-void NodeGeometries::AppendVertexBuffer(IVertexBuffer* pVertexBuffer)
+void NodeSceneData::AppendVertexBuffer(IVertexBuffer* pVertexBuffer)
 {
 #ifdef _DEBUG
 
@@ -69,7 +69,7 @@ void NodeGeometries::AppendVertexBuffer(IVertexBuffer* pVertexBuffer)
     this->mBoundingBox.EvaluateBox(boundingBox);
 }
 
-void NodeGeometries::Render(IGraphicsContext* pGraphicsContext, Dimensionality dimensionality) const
+void NodeSceneData::Render(IGraphicsContext* pGraphicsContext, Dimensionality dimensionality) const
 {
     auto iterator = mVertexBuffers.begin();
     for (; iterator != mVertexBuffers.end(); ++iterator)
@@ -92,7 +92,7 @@ void NodeGeometries::Render(IGraphicsContext* pGraphicsContext, Dimensionality d
     }
 }
 
-void NodeGeometries::GetBoundingBox(BoundingBox* pBoundingBox) const
+void NodeSceneData::GetBoundingBox(BoundingBox* pBoundingBox) const
 {
     (*pBoundingBox) = mBoundingBox;
 }

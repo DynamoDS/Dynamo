@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Bloodstone.h"
 #include "Utilities.h"
-#include "NodeGeometries.h"
+#include "NodeSceneData.h"
 #include "OpenGL Files\OpenInterfaces.h"
 #include "Resources\resource.h"
 
