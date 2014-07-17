@@ -7,6 +7,9 @@ using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
+using RevitServices.Persistence;
+using RevitServices.Transactions;
+
 using RTF.Framework;
 
 using Form = Revit.Elements.Form;
@@ -104,6 +107,9 @@ namespace DSRevitNodesTests
             var faceRef = form.ElementFaceReferences.First();
 
             var pt = ReferencePoint.ByParametersOnFaceReference(faceRef, 0.5, 0.5);
+
+            // necessary in order to eval the point on the face
+            TransactionManager.Instance.ForceCloseTransaction();
 
             Assert.NotNull(pt);
             pt.X.ShouldBeApproximately(-18.19622727891606);

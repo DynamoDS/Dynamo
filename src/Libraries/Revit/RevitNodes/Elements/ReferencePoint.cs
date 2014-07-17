@@ -225,7 +225,6 @@ namespace Revit.Elements
         {
             get
             {
-                DocumentManager.Regenerate();
                 return InternalReferencePoint.Position.ToPoint();
             }
         }
