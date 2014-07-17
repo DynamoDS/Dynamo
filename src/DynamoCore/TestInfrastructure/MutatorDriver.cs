@@ -289,7 +289,6 @@ namespace Dynamo.TestInfrastructure
                 if ((node != null) && (node2 != null))
                 {
                     List<ConnectorModel> firstNodeConnectors = node.AllConnectors.ToList();
-                    List<int> counts = new List<int>();
 
                     foreach (ConnectorModel connector in firstNodeConnectors)
                     {
@@ -297,48 +296,35 @@ namespace Dynamo.TestInfrastructure
                         int startIndex = connector.Start.Index;
                         int endIndex = connector.End.Index;
 
-                        foreach (PortModel port in node.OutPorts)
-                            counts.Add(port.Connectors.Count);
-
                         dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.DeleteModelCommand delCommand =
-                                new DynamoViewModel.DeleteModelCommand(connector.GUID);
+                                new DynamoViewModel.DeleteModelCommand(node.GUID);
 
                             dynamoController.DynamoViewModel.ExecuteCommand(delCommand);
 
                         }));
 
-                        if (node.OutPorts[startIndex].IsConnected)
+                        if (node2.InPorts[endIndex].IsConnected)
                             writer.WriteLine("### - Connector wasn't deleted");
                         else
                             writer.WriteLine("### - Connector was deleted");
 
-                        dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
                         {
-                            DynamoViewModel.MakeConnectionCommand mcCommand =
-                                new DynamoViewModel.MakeConnectionCommand(node.GUID, startIndex, PortType.OUTPUT, DynamoViewModel.MakeConnectionCommand.Mode.Begin);
-
-                            dynamoController.DynamoViewModel.ExecuteCommand(mcCommand);
+                            DynamoViewModel.UndoRedoCommand undoCommand =
+                                new DynamoViewModel.UndoRedoCommand(
+                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
 
                         }));
 
-                        dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
-                        {
-                            DynamoViewModel.MakeConnectionCommand mcCommand =
-                                new DynamoViewModel.MakeConnectionCommand(node2.GUID, endIndex, PortType.INPUT, DynamoViewModel.MakeConnectionCommand.Mode.End);
+                        Thread.Sleep(100);
 
-                            dynamoController.DynamoViewModel.ExecuteCommand(mcCommand);
-
-                        }));
-
-                        for (int i = 0; i < counts.Count; i++)
-                        {
-                            if (node.OutPorts[i].Connectors.Count != counts[i])
-                                writer.WriteLine("### - Connector wasn't recreated");
-                            else
-                                writer.WriteLine("### - Connector was recreated");
-                        }
+                        if (node2.InPorts[endIndex].IsConnected)
+                            writer.WriteLine("### - Connector was recreated");
+                        else
+                            writer.WriteLine("### - ### - Connector wasn't recreated");
                     }
 
                     passed = true;
