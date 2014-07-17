@@ -692,6 +692,12 @@ namespace ProtoTestFx.TD
             }
         }
 
+        public void AssertPointer(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            Assert.IsTrue(mirror.GetData().IsPointer);
+        }
+
         public void CleanUp()
         {
             testCore.Cleanup();
