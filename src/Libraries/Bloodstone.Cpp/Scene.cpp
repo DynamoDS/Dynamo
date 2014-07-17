@@ -16,7 +16,7 @@ extern bool GetPointGeometries(IRenderPackage^ rp, PointGeometryData& data);
 extern bool GetLineStripGeometries(IRenderPackage^ rp, LineStripGeometryData& data);
 extern bool GetTriangleGeometries(IRenderPackage^ rp, TriangleGeometryData& data);
 
-Scene::Scene(Visualizer^ visualizer) : 
+Scene::Scene(VisualizerWnd^ visualizer) : 
     mAlphaParamIndex(-1),
     mColorParamIndex(-1),
     mControlParamsIndex(-1),

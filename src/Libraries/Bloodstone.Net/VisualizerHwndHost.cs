@@ -17,9 +17,9 @@ namespace Dynamo.Bloodstone
             dimension = new System.Windows.Size(width, height);
         }
 
-        internal Visualizer CurrentVisualizer
+        internal VisualizerWnd CurrentVisualizer
         {
-            get { return Visualizer.CurrentInstance(); }
+            get { return VisualizerWnd.CurrentInstance(); }
         }
 
         // internal VisualizerHwndHost()
@@ -33,14 +33,14 @@ namespace Dynamo.Bloodstone
 
         protected override void Dispose(bool disposing)
         {
-            Visualizer.Destroy();
+            VisualizerWnd.Destroy();
         }
 
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
         {
             var width = ((int)dimension.Width);
             var height = ((int)dimension.Height);
-            var hwndVisualizer = Visualizer.Create(hwndParent.Handle, width, height);
+            var hwndVisualizer = VisualizerWnd.Create(hwndParent.Handle, width, height);
             return new HandleRef(this, hwndVisualizer);
         }
 
@@ -53,7 +53,7 @@ namespace Dynamo.Bloodstone
 
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
-            Visualizer.Destroy();
+            VisualizerWnd.Destroy();
         }
 
         #region PInvoke Class Static Methods

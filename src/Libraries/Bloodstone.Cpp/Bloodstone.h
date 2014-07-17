@@ -57,14 +57,14 @@ namespace Dynamo { namespace Bloodstone {
 
     typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, NodeDetails^>> NodeDetailsType;
 
-    public ref class Visualizer
+    public ref class VisualizerWnd
     {
     public:
 
         // Static class methods
         static System::IntPtr Create(System::IntPtr hwndParent, int width, int height);
         static void Destroy(void);
-        static Visualizer^ CurrentInstance(void);
+        static VisualizerWnd^ CurrentInstance(void);
         static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Public class methods.
@@ -77,14 +77,14 @@ namespace Dynamo { namespace Bloodstone {
     private:
 
         // Private class instance methods.
-        Visualizer();
+        VisualizerWnd();
         void Initialize(HWND hWndParent, int width, int height);
         void Uninitialize(void);
         LRESULT ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam);
         LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Static class data member.
-        static Visualizer^ mVisualizer = nullptr;
+        static VisualizerWnd^ mVisualizer = nullptr;
 
         // Class instance data members.
         HWND mhWndVisualizer;
@@ -95,7 +95,7 @@ namespace Dynamo { namespace Bloodstone {
     public ref class Scene
     {
     public:
-        Scene(Visualizer^ visualizer);
+        Scene(VisualizerWnd^ visualizer);
         void Initialize(int width, int height);
         void Destroy(void);
         void RenderScene(void);
@@ -112,7 +112,7 @@ namespace Dynamo { namespace Bloodstone {
         int mControlParamsIndex;
         IShaderProgram* mpShaderProgram;
 
-        Visualizer^ mVisualizer;
+        VisualizerWnd^ mVisualizer;
         std::map<std::wstring, NodeGeometries*>* mpNodeGeometries;
     };
 } }

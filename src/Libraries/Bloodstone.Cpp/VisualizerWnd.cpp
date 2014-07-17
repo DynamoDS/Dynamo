@@ -14,43 +14,43 @@ using namespace Autodesk::DesignScript::Interfaces;
 
 LRESULT _stdcall LocalWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    return Visualizer::WndProc(hWnd, msg, wParam, lParam);
+    return VisualizerWnd::WndProc(hWnd, msg, wParam, lParam);
 }
 
-System::IntPtr Visualizer::Create(System::IntPtr hWndParent, int width, int height)
+System::IntPtr VisualizerWnd::Create(System::IntPtr hWndParent, int width, int height)
 {
-    if (Visualizer::mVisualizer == nullptr)
+    if (VisualizerWnd::mVisualizer == nullptr)
     {
         auto hParent = ((HWND) hWndParent.ToPointer());
-        Visualizer::mVisualizer = gcnew Visualizer();
-        Visualizer::mVisualizer->Initialize(hParent, width, height);
+        VisualizerWnd::mVisualizer = gcnew VisualizerWnd();
+        VisualizerWnd::mVisualizer->Initialize(hParent, width, height);
     }
 
-    return System::IntPtr(Visualizer::mVisualizer->GetWindowHandle());
+    return System::IntPtr(VisualizerWnd::mVisualizer->GetWindowHandle());
 }
 
-void Visualizer::Destroy(void)
+void VisualizerWnd::Destroy(void)
 {
-    if (Visualizer::mVisualizer != nullptr) {
-        Visualizer::mVisualizer->Uninitialize();
-        Visualizer::mVisualizer = nullptr;
+    if (VisualizerWnd::mVisualizer != nullptr) {
+        VisualizerWnd::mVisualizer->Uninitialize();
+        VisualizerWnd::mVisualizer = nullptr;
     }
 }
 
-Visualizer^ Visualizer::CurrentInstance(void)
+VisualizerWnd^ VisualizerWnd::CurrentInstance(void)
 {
-    return Visualizer::mVisualizer;
+    return VisualizerWnd::mVisualizer;
 }
 
-LRESULT Visualizer::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT VisualizerWnd::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (Visualizer::mVisualizer == nullptr)
+    if (VisualizerWnd::mVisualizer == nullptr)
         return ::DefWindowProc(hWnd, msg, wParam, lParam);
 
-    return Visualizer::mVisualizer->ProcessMessage(hWnd, msg, wParam, lParam);
+    return VisualizerWnd::mVisualizer->ProcessMessage(hWnd, msg, wParam, lParam);
 }
 
-void Visualizer::ShowWindow(bool show)
+void VisualizerWnd::ShowWindow(bool show)
 {
     if (::IsWindow(this->mhWndVisualizer)) {
         auto cmd = show ? SW_SHOW : SW_HIDE;
@@ -58,37 +58,37 @@ void Visualizer::ShowWindow(bool show)
     }
 }
 
-void Visualizer::RequestFrameUpdate(void)
+void VisualizerWnd::RequestFrameUpdate(void)
 {
     ::InvalidateRect(this->mhWndVisualizer, nullptr, true); // Update window.
 }
 
-HWND Visualizer::GetWindowHandle(void)
+HWND VisualizerWnd::GetWindowHandle(void)
 {
     return this->mhWndVisualizer;
 }
 
-Scene^ Visualizer::GetScene(void)
+Scene^ VisualizerWnd::GetScene(void)
 {
     return this->mpScene;
 }
 
-IGraphicsContext* Visualizer::GetGraphicsContext(void)
+IGraphicsContext* VisualizerWnd::GetGraphicsContext(void)
 {
     return this->mpGraphicsContext;
 }
 
-Visualizer::Visualizer() : 
+VisualizerWnd::VisualizerWnd() : 
     mhWndVisualizer(nullptr),
     mpScene(nullptr),
     mpGraphicsContext(nullptr)
 {
 }
 
-void Visualizer::Initialize(HWND hWndParent, int width, int height)
+void VisualizerWnd::Initialize(HWND hWndParent, int width, int height)
 {
     if (mhWndVisualizer != nullptr) {
-        auto message = L"'Visualizer::Initialize' cannot be called twice.";
+        auto message = L"'VisualizerWnd::Initialize' cannot be called twice.";
         throw gcnew System::InvalidOperationException(gcnew String(message));
     }
 
@@ -117,7 +117,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpScene->Initialize(width, height);
 }
 
-void Visualizer::Uninitialize(void)
+void VisualizerWnd::Uninitialize(void)
 {
     if (this->mpScene != nullptr) {
         this->mpScene->Destroy();
@@ -136,7 +136,7 @@ void Visualizer::Uninitialize(void)
     }
 }
 
-LRESULT Visualizer::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT VisualizerWnd::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 {
     auto x = GET_X_LPARAM(lParam);
     auto y = GET_Y_LPARAM(lParam);
@@ -168,7 +168,7 @@ LRESULT Visualizer::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam)
     return 0L; // Message processed.
 }
 
-LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT VisualizerWnd::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
