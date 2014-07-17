@@ -18,44 +18,7 @@ namespace Dynamo { namespace Bloodstone {
     class BoundingBox;
     ref class Scene;
 
-    public ref class NodeDetails
-    {
-    public:
-        NodeDetails(int depth, Ds::IRenderPackage^ renderPackage)
-        {
-            this->depth = depth;
-            this->renderPackage = renderPackage;
-            this->red = this->green = this->blue = 1.0;
-        }
-
-        void SetColor(double red, double green, double blue)
-        {
-            this->red   = ((red < 0.0 ? 0.0 : red) > 1.0 ? 1.0 : red);
-            this->green = ((green < 0.0 ? 0.0 : green) > 1.0 ? 1.0 : green);
-            this->blue  = ((blue < 0.0 ? 0.0 : blue) > 1.0 ? 1.0 : blue);
-        }
-
-        property int Depth
-        {
-            int get() { return this->depth; }
-        }
-
-        property Ds::IRenderPackage^ RenderPackage
-        {
-            Ds::IRenderPackage^ get() { return this->renderPackage; }
-        }
-
-        property double Red     { double get() { return this->red;   } }
-        property double Green   { double get() { return this->green; } }
-        property double Blue    { double get() { return this->blue;  } }
-
-    private:
-        int depth;
-        double red, green, blue;
-        Ds::IRenderPackage^ renderPackage;
-    };
-
-    typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, NodeDetails^>> NodeDetailsType;
+    typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, Ds::IRenderPackage^>> RenderPackages;
 
     public ref class VisualizerWnd
     {
@@ -99,11 +62,10 @@ namespace Dynamo { namespace Bloodstone {
         void Initialize(int width, int height);
         void Destroy(void);
         void RenderScene(void);
-        void UpdateNodeDetails(NodeDetailsType^ nodeDetails);
+        void UpdateNodeGeometries(RenderPackages^ nodeDetails);
         void RemoveNodeGeometries(Gen::IEnumerable<System::String^>^ nodes);
 
     private:
-        void UpdateNodeGeometries(NodeDetailsType^ nodeDetails);
         void RenderGeometries(const std::vector<NodeGeometries *>& geometries);
 
     private:

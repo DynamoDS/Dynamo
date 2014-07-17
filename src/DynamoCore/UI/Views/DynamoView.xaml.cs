@@ -387,13 +387,8 @@ namespace Dynamo.Controls
             var geometries = e.Geometries.ToDictionary(
                     item => item.Key.ToString(), item => item.Value);
 
-            var details = new Dictionary<string, NodeDetails>();
-
-            foreach (var geometry in geometries)
-                details.Add(geometry.Key, new NodeDetails(0, geometry.Value));
-
             var scene = visualizer.CurrentVisualizer.GetScene();
-            scene.UpdateNodeDetails(details);
+            scene.UpdateNodeGeometries(geometries);
         }
 
 #endif

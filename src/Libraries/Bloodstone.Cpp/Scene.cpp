@@ -105,42 +105,18 @@ void Scene::RenderScene(void)
     RenderGeometries(geometries);
 }
 
-void Scene::UpdateNodeDetails(NodeDetailsType^ nodeDetails)
-{
-    UpdateNodeGeometries(nodeDetails);
-    mVisualizer->RequestFrameUpdate(); // Update window.
-}
-
-void Scene::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
-{
-    for each (System::String^ identifier in identifiers)
-    {
-        System::String^ nodeId = identifier->ToLower();
-        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
-
-        auto found = mpNodeGeometries->find(identifier);
-        if (found == mpNodeGeometries->end())
-            continue; // The node does not have any associated geometries.
-
-        // Release the node geometry ownership from map.
-        NodeGeometries* pNodeGeometries = found->second;
-        mpNodeGeometries->erase(found);
-        delete pNodeGeometries; // Release node geometries and its resources.
-    }
-}
-
-void Scene::UpdateNodeGeometries(NodeDetailsType^ nodeDetails)
+void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
 {
     BoundingBox outerBoundingBox;
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
 
-    for each (KeyValuePair<System::String^, NodeDetails^>^ detail in nodeDetails)
+    for each (KeyValuePair<System::String^, Ds::IRenderPackage^>^ geometry in geometries)
     {
-        auto pRenderPackage = detail->Value->RenderPackage;
+        auto pRenderPackage = geometry->Value;
         if (pRenderPackage == nullptr)
             continue;
 
-        System::String^ nodeId = detail->Key->ToLower();
+        System::String^ nodeId = geometry->Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
         NodeGeometries* pNodeGeometries = nullptr;
@@ -181,12 +157,6 @@ void Scene::UpdateNodeGeometries(NodeDetailsType^ nodeDetails)
             pNodeGeometries->AppendVertexBuffer(pVertexBuffer);
         }
 
-        // Set the color of this node.
-        float r = ((float)detail->Value->Red);
-        float g = ((float)detail->Value->Green);
-        float b = ((float)detail->Value->Blue);
-        pNodeGeometries->SetColor(r, g, b, 1.0f);
-
         // Finally, determine the bounding box for these geometries.
         BoundingBox boundingBox;
         pNodeGeometries->GetBoundingBox(&boundingBox);
@@ -195,6 +165,26 @@ void Scene::UpdateNodeGeometries(NodeDetailsType^ nodeDetails)
 
     auto pCamera = pGraphicsContext->GetDefaultCamera();
     pCamera->FitToBoundingBox(&outerBoundingBox);
+
+    mVisualizer->RequestFrameUpdate(); // Update window.
+}
+
+void Scene::RemoveNodeGeometries(IEnumerable<System::String^>^ identifiers)
+{
+    for each (System::String^ identifier in identifiers)
+    {
+        System::String^ nodeId = identifier->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+
+        auto found = mpNodeGeometries->find(identifier);
+        if (found == mpNodeGeometries->end())
+            continue; // The node does not have any associated geometries.
+
+        // Release the node geometry ownership from map.
+        NodeGeometries* pNodeGeometries = found->second;
+        mpNodeGeometries->erase(found);
+        delete pNodeGeometries; // Release node geometries and its resources.
+    }
 }
 
 void Scene::RenderGeometries(const std::vector<NodeGeometries *>& geometries)
