@@ -717,6 +717,13 @@ namespace Dynamo.Models
                 return null;
             }
 
+            // find nodes with of the same type with the same GUID
+            var query = CurrentWorkspace.Nodes.Where((n) => { return n.GUID.Equals(nodeId) && n.Name.Equals(node.Name); });
+
+            // safely ignore a node of the same type with the same GUID
+            if (query.Any())
+                return query.First();
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
@@ -798,8 +805,8 @@ namespace Dynamo.Models
             else
             {
                 Function func;
-
-                if (dynSettings.Controller.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
+                Guid guid;
+                if (Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeManager.GetNodeInstance(guid, out func))
                 {
                     result = func;
                 }

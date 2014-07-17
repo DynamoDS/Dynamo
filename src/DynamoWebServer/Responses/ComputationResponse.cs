@@ -1,17 +1,7 @@
-﻿using System;
-using Newtonsoft.Json;
-
-namespace DynamoWebServer.Responses
+﻿namespace DynamoWebServer.Responses
 {
     public class ComputationResponse : Response
     {
-        public Guid[] Nodes { get; set; }
-
-        public string NodesInJson { get; set; }
-
-        public override string GetResponse()
-        {
-            return NodesInJson;
-        }
+        public string Nodes { get; set; }
     }
 }

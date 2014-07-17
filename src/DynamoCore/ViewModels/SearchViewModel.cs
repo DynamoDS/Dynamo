@@ -165,6 +165,9 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
+        private string serializedNodesList;
+        List<NodeModelItem> allNodeModels;
+
         #endregion
 
         #region events
@@ -1132,23 +1135,37 @@ namespace Dynamo.ViewModels
 
         public string GetAllNodesWithCategoriesInJson()
         {
-            List<JsonNodeItem> allNodes = new List<JsonNodeItem>();
-            foreach (var elem in BrowserRootCategories)
+            if (serializedNodesList == null)
             {
-                allNodes.AddRange(GetNodesFromCategory(elem));
+                GetAllNodeModelsWithCategories();
             }
-                        
-            return JsonConvert.SerializeObject(allNodes);
+            return serializedNodesList;
         }
 
-        private List<JsonNodeItem> GetNodesFromCategory(BrowserItem elem)
+        public List<NodeModelItem> GetAllNodeModelsWithCategories()
         {
-            List<JsonNodeItem> result = new List<JsonNodeItem>();
+            if (allNodeModels == null)
+            {
+                allNodeModels = new List<NodeModelItem>();
+                foreach (var elem in BrowserRootCategories)
+                {
+                    allNodeModels.AddRange(GetNodesFromCategory(elem));
+                }
+
+                serializedNodesList = JsonConvert.SerializeObject(allNodeModels);
+            }
+            return allNodeModels;
+        }
+
+
+        private List<NodeModelItem> GetNodesFromCategory(BrowserItem elem)
+        {
+            var result = new List<NodeModelItem>();
             foreach (BrowserItem item in elem.Items)
             {
                 if (item is SearchElementBase) 
                 {
-                    result.Add(new JsonNodeItem(item as SearchElementBase));
+                    result.Add(new NodeModelItem(item as SearchElementBase));
                 }
                 else
                 {
