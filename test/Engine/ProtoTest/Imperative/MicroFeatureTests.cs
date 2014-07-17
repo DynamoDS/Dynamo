@@ -1176,7 +1176,7 @@ a : local = 1;      // Tagging a variable local at the global scope has no seman
 b : local = a;
 c = [Imperative]
 {
-    a : local = 2 // Updating local 'a' should not update global 'a'
+    a : local = 2; // Updating local 'a' should not update global 'a'
     return = a;
 }
 ";
