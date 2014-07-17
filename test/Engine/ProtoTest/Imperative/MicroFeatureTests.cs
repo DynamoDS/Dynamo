@@ -1023,5 +1023,166 @@ class VisibilityAttribute
             thisTest.Verify("r2", true);
             thisTest.Verify("r3", Convert.ToInt64('h') + 1);
         }
+
+        [Test]
+        public void TestLocalKeyword01()
+        {
+            string code =
+@"
+i = [Imperative]
+{
+    a : local int = 1;      
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 1);
+        }
+
+        [Test]
+        public void TestLocalKeyword02()
+        {
+            string code =
+@"
+i = [Imperative]
+{
+    a : local int = 1;      
+    b : local int = 2;       
+    return = a + b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 3);
+        }
+
+        [Test]
+        public void TestLocalKeyword03()
+        {
+            string code =
+@"
+a = 1;
+b = [Imperative]
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeyword04()
+        {
+            string code =
+@"
+a = 1;
+b = [Imperative]
+{
+    a : local = 2;
+    return = a;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+
+        [Test]
+        public void TestLocalKeyword05()
+        {
+            string code =
+@"
+a = [Imperative]
+{
+    a : local = 1;
+    b = 0;
+    if (a == 1)
+    {
+        a : local = 2;
+        b = a;
+    }
+    else
+    {
+        a : local = 3;
+        b = a;
+    }
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 2);
+        }
+
+        [Test]
+        public void TestLocalKeyword06()
+        {
+            string code =
+@"
+a = [Imperative]
+{
+    a : local = 1;
+    b = 0;
+    if (a != 1)
+    {
+        a : local = 2;
+        b = a;
+    }
+    else
+    {
+        a : local = 3;
+        b = a;
+    }
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 3);
+        }
+
+                [Test]
+        public void TestLocalVariableNoUpdate01()
+        {
+            string code =
+@"
+a = 1;
+b = a;
+c = [Imperative]
+{
+    a : local = 2; // Updating local 'a' should not update global 'a'
+    return = 1;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 1);
+        }
+
+        [Test]
+        public void TestLocalVariableNoUpdate02()
+        {
+            string code =
+@"
+a : local = 1;      // Tagging a variable local at the global scope has no semantic effect
+b : local = a;
+c = [Imperative]
+{
+    a : local = 2 // Updating local 'a' should not update global 'a'
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 2);
+        }
     }
 }
