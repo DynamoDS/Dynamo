@@ -1182,14 +1182,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS078_userdefinedToUserdefinedArray_Imperative()
         {
             string code =
                 @"class A                    {                                a:int;                                constructor A (b:int)                                {                                        a=b;                            }                    }a1;                [Imperative]                {                        a : A[] =  A.A(1) ;                        a1 = a.a;                }";
-
-            string error = " ";
-            thisTest.RunScriptSource(code, error);
-            //Assert.Fail("1467240 - Sprint 26 - Rev 3426 user defined type not convertible to bool");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3943
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a1", new object[] { 1 });
         }
 

@@ -25,6 +25,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestBuildAST_01()
         {
             //==============================================
