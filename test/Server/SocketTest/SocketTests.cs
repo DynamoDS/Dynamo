@@ -30,7 +30,7 @@ namespace Dynamo.Tests
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNode.txt");
             string createCommand = File.ReadAllLines(commandPath)[0];
 
-            dynSettings.ExecuteMessageFromSocket(createCommand, "");
+            dynSettings.ExecuteFromSocket(createCommand, "");
 
             Assert.IsTrue(Controller.DynamoModel.Nodes.Any(node => node.GUID.ToString() == GUID));
         }
@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\updateNode.txt");
             string updateCommand = File.ReadAllLines(commandPath)[0];
 
-            dynSettings.ExecuteMessageFromSocket(updateCommand, "");
+            dynSettings.ExecuteFromSocket(updateCommand, "");
 
             var doubleInput = Controller.DynamoModel.Nodes.First(
                     node => node.GUID.ToString() == GUID) as DoubleInput;
@@ -61,7 +61,7 @@ namespace Dynamo.Tests
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\deleteNode.txt");
             string deleteCommand = File.ReadAllLines(commandPath)[0];
 
-            dynSettings.ExecuteMessageFromSocket(deleteCommand, "");
+            dynSettings.ExecuteFromSocket(deleteCommand, "");
             Assert.IsFalse(Controller.DynamoModel.Nodes.Any(node => node.GUID.ToString() == GUID));
         }
 
@@ -74,7 +74,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanSendResponse()
         {
-            dynSettings.SendAnswerToWebSocket(null, new ResultReadyEventArgs("Test message")
+            dynSettings.SendResponseToClient(null, new ResultReadyEventArgs("Test message")
             {
                 SessionID = "Test Id"
             });

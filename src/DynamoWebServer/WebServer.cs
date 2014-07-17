@@ -36,7 +36,7 @@ namespace DynamoWebServer
 
         #region IServer
 
-        public event MessageEventHandler ReceivedMessage;
+        public event MessageEventHandler MessageReceived;
         public event MessageEventHandler Info;
         public event MessageEventHandler Error;
 
@@ -52,7 +52,7 @@ namespace DynamoWebServer
                 {
                     Port = httpBindingport,
                     Ip = httpBindingAddress,
-                    MaxConnectionNumber = 100,
+                    MaxConnectionNumber = 5,
                     ReceiveBufferSize = 256 * 1024
                 }))
                 {
@@ -115,11 +115,11 @@ namespace DynamoWebServer
                 Message = DateTime.Now.ToShortDateString() + " Message received"
             }, session.SessionID);
 
-            if (ReceivedMessage != null)
+            if (MessageReceived != null)
             {
                 try
                 {
-                    ReceivedMessage(message, session.SessionID);
+                    MessageReceived(message, session.SessionID);
                 }
                 catch (Exception ex)
                 {

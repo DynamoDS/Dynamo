@@ -59,7 +59,7 @@ namespace Dynamo.Utilities
         {
             WebSocketServer = server;
 
-            WebSocketServer.ReceivedMessage += ExecuteMessageFromSocket;
+            WebSocketServer.MessageReceived += ExecuteFromSocket;
             WebSocketServer.Info += LogInfo;
             WebSocketServer.Error += LogError;
 
@@ -71,21 +71,21 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="message">Serialized message from client</param>
         /// <param name="sessionId">Current session Id</param>
-        public static void ExecuteMessageFromSocket(string message, string sessionId)
+        public static void ExecuteFromSocket(string message, string sessionId)
         {
             Message msg = MessageHandler.DeserializeMessage(message);
-            MessageHandler handler = new MessageHandler(msg, sessionId);
-            handler.ResultReady += SendAnswerToWebSocket;
+            var handler = new MessageHandler(msg, sessionId);
+            handler.ResultReady += SendResponseToClient;
 
             (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
                 .Invoke(new Action(() => handler.Execute(Controller.DynamoViewModel)));
         }
 
-        public static void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
+        public static void SendResponseToClient(object sender, ResultReadyEventArgs e)
         {
             WebSocketServer.SendResponse(new ComputationResponse()
             {
-                Status = ResponceStatuses.Success,
+                Status = ResponseStatus.Success,
                 Nodes = e.Message
             }, e.SessionID);
         }

@@ -4,7 +4,7 @@ namespace DynamoWebServer
 {
     public interface IServer
     {
-        event MessageEventHandler ReceivedMessage;
+        event MessageEventHandler MessageReceived;
         event MessageEventHandler Info;
         event MessageEventHandler Error;
 
