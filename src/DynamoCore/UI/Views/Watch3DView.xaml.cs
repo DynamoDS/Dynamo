@@ -262,15 +262,21 @@ namespace Dynamo.Controls
                 return;
             }
 
-            Dispatcher.Invoke(new Action(delegate
+            Action getBranchVisualization = (() =>
             {
-                var vm = (IWatchViewModel) DataContext;
-
+                var vm = (IWatchViewModel)DataContext;
                 if (vm.GetBranchVisualizationCommand.CanExecute(e.TaskId))
-                {
                     vm.GetBranchVisualizationCommand.Execute(e.TaskId);
-                }
-            }));
+            });
+
+            var dispatcher = dynSettings.Controller.UIDispatcher;
+            if ((dispatcher != null) && dispatcher.CheckAccess())
+                getBranchVisualization(); // We are on main thread.
+            else
+            {
+                // Schedule the call on the main thread.
+                Dispatcher.Invoke(getBranchVisualization);
+            }
         }
 
         /// <summary>
@@ -497,14 +503,28 @@ namespace Dynamo.Controls
             normsSel.Freeze();
             trisSel.Freeze();
 
-            Dispatcher.Invoke(new Action<Point3DCollection, Point3DCollection,
-                Point3DCollection, Point3DCollection, Point3DCollection, Point3DCollection,
-                Point3DCollection, Point3DCollection, Vector3DCollection, Int32Collection, 
-                Point3DCollection, Vector3DCollection, Int32Collection, MeshGeometry3D,
-                MeshGeometry3D, List<BillboardTextItem>>(SendGraphicsToView), DispatcherPriority.Render,
-                               new object[] {points, pointsSelected, lines, linesSelected, redLines, 
-                                   greenLines, blueLines, verts, norms, tris, vertsSel, normsSel, 
-                                   trisSel, mesh, meshSel, text});
+            var dispatcher = dynSettings.Controller.UIDispatcher;
+            if ((dispatcher != null) && dispatcher.CheckAccess())
+            {
+                SendGraphicsToView(points, pointsSelected, lines, linesSelected, redLines,
+                    greenLines, blueLines, verts, norms, tris, vertsSel, normsSel,
+                    trisSel, mesh, meshSel, text);
+            }
+            else
+            {
+                var sendGraphicsToView = new Action<Point3DCollection, Point3DCollection,
+                    Point3DCollection, Point3DCollection, Point3DCollection, Point3DCollection,
+                    Point3DCollection, Point3DCollection, Vector3DCollection, Int32Collection,
+                    Point3DCollection, Vector3DCollection, Int32Collection, MeshGeometry3D,
+                    MeshGeometry3D, List<BillboardTextItem>>(SendGraphicsToView);
+
+                Dispatcher.Invoke(sendGraphicsToView, DispatcherPriority.Render, new object[]
+                {
+                    points, pointsSelected, lines, linesSelected, redLines, 
+                    greenLines, blueLines, verts, norms, tris, vertsSel, normsSel, 
+                    trisSel, mesh, meshSel, text
+                });
+            }
         }
 
         private void SendGraphicsToView(Point3DCollection points, Point3DCollection pointsSelected,

@@ -160,6 +160,7 @@ namespace DynamoCoreUITests
             //flip off the line node's preview upstream
             var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsUpstreamVisible = false;
+            Thread.Sleep(1000);
 
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
@@ -227,6 +228,7 @@ namespace DynamoCoreUITests
             var lineNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             var port = lineNode.InPorts.First();
             port.Disconnect(port.Connectors.First());
+            dynSettings.Controller.RunExpression(null);
 
             //ensure that the visualization no longer contains
             //the renderables for the line node
