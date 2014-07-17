@@ -1,7 +1,10 @@
-﻿namespace DynamoWebServer.Responses
+﻿using System;
+using Newtonsoft.Json;
+
+namespace DynamoWebServer.Responses
 {
     public class ComputationResponse : Response
     {
-        public string NodesInJson { get; set; }
+        public string Nodes { get; set; }
     }
 }

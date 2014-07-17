@@ -170,6 +170,16 @@ namespace Dynamo.Models
         }
     }
 
+    public class WorkspaceEventArgs
+    {
+        public WorkspaceModel Workspace { get; set; }
+
+        public WorkspaceEventArgs(WorkspaceModel workspace)
+        {
+            this.Workspace = workspace;
+        }
+    }
+
     public class ModelEventArgs : EventArgs
     {
         public ModelBase Model { get; private set; }
@@ -219,6 +229,7 @@ namespace Dynamo.Models
     /// </summary>
     public class DynamoModel : ModelBase
     {
+
         #region events
 
         public event EventHandler RequestLayoutUpdate;
@@ -234,6 +245,15 @@ namespace Dynamo.Models
             if (WorkspaceClearing != null)
             {
                 WorkspaceClearing(this, e);
+            }
+        }
+
+        public event WorkspaceHandler CurrentWorkspaceChanged;
+        public virtual void OnCurrentWorkspaceChanged(WorkspaceModel workspace)
+        {
+            if (CurrentWorkspaceChanged != null)
+            {
+                CurrentWorkspaceChanged(workspace);
             }
         }
 
@@ -329,6 +349,7 @@ namespace Dynamo.Models
                     if (_cspace != null)
                         _cspace.IsCurrentSpace = true;
 
+                    OnCurrentWorkspaceChanged(_cspace);
                     RaisePropertyChanged("CurrentWorkspace");
                 }
             }
@@ -696,17 +717,17 @@ namespace Dynamo.Models
                 return null;
             }
 
+            // find nodes with of the same type with the same GUID
+            var query = CurrentWorkspace.Nodes.Where((n) => { return n.GUID.Equals(nodeId) && n.Name.Equals(node.Name); });
+
+            // safely ignore a node of the same type with the same GUID
+            if (query.Any())
+                return query.First();
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
                 node.Y = y;
-            }
-
-            if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspaceModel)
-            {
-                string format = "Cannot place '{0}' in HomeWorkspace (GUID: {1})";
-                WriteToLog(string.Format(format, nodeName, nodeId));
-                return null;
             }
 
             CurrentWorkspace.Nodes.Add(node);
@@ -784,8 +805,8 @@ namespace Dynamo.Models
             else
             {
                 Function func;
-
-                if (dynSettings.Controller.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
+                Guid guid;
+                if (Guid.TryParse(name, out guid) && dynSettings.Controller.CustomNodeManager.GetNodeInstance(guid, out func))
                 {
                     result = func;
                 }

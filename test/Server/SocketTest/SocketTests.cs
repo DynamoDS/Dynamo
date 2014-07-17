@@ -1,15 +1,12 @@
-﻿using System.IO;
-using System.Linq;
-
+﻿using Dynamo.Messages;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-
 using DynamoWebServer;
 using DynamoWebServer.Responses;
-
 using Moq;
-
 using NUnit.Framework;
+using System.IO;
+using System.Linq;
 
 namespace Dynamo.Tests
 {
@@ -77,7 +74,10 @@ namespace Dynamo.Tests
         [Test]
         public void CanSendResponse()
         {
-            dynSettings.SendAnswerToWebSocket("Test message", "Test Id");
+            dynSettings.SendAnswerToWebSocket(null, new ResultReadyEventArgs("Test message")
+            {
+                SessionID = "Test Id"
+            });
 
             mock.Verify(m => m.SendResponse(It.IsAny<Response>(), It.IsAny<string>()));
         }

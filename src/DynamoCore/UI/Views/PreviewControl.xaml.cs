@@ -299,14 +299,29 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            this.smallContentGrid.Measure(new Size()
-            {
+            Size maxSize = new Size(){
                 Width = Configurations.MaxCondensedPreviewWidth,
                 Height = Configurations.MaxCondensedPreviewHeight
-            });
+            };
+
+            this.smallContentGrid.Measure(maxSize);
+            Size smallContentGridSize = this.smallContentGrid.DesiredSize;
+
+            foreach (UIElement child in smallContentGrid.Children)
+            {
+                child.Measure(maxSize);
+                if (child.DesiredSize.Width > smallContentGridSize.Width)
+                {
+                    smallContentGridSize.Width = child.DesiredSize.Width + 10;
+                }
+                if (child.DesiredSize.Height > smallContentGridSize.Height)
+                {
+                    smallContentGridSize.Height = child.DesiredSize.Height + 10;
+                }
+            }
 
             // Add padding since we are sizing the centralizedGrid.
-            return ContentToControlSize(this.smallContentGrid.DesiredSize);
+            return ContentToControlSize(smallContentGridSize);
         }
 
         private Size ComputeLargeContentSize()

@@ -8,6 +8,8 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Serialization;
+
+
 namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
@@ -30,8 +32,8 @@ namespace Dynamo.ViewModels
             /// <summary>
             /// Settings that is used for serializing commands
             /// </summary>
-            static JsonSerializerSettings jsonSettings;
-            
+            protected static JsonSerializerSettings jsonSettings;
+
             /// <summary>
             /// Initialize commands serializing settings
             /// </summary>
@@ -39,7 +41,7 @@ namespace Dynamo.ViewModels
             {
                 jsonSettings = new JsonSerializerSettings()
                 {
-                    TypeNameHandling = TypeNameHandling.All,
+                    TypeNameHandling = TypeNameHandling.Objects,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
             }
@@ -286,6 +288,12 @@ namespace Dynamo.ViewModels
 
             #endregion
         }
+
+        /// <summary>
+        /// The delegate used for sending the result of executing command to subscriber. 
+        /// </summary>
+        /// <param name="message">Result message</param>
+        public delegate void ShowMessage(string message);
 
         /// <summary>
         /// This class is base for those RecordableCommands that should have 
