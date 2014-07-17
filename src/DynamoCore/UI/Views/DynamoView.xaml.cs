@@ -36,6 +36,7 @@ using Dynamo.UI.Commands;
 using Autodesk.DesignScript.Interfaces;
 using System.Collections.Generic;
 using Dynamo.Bloodstone;
+using System.Collections.Specialized;
 
 namespace Dynamo.Controls
 {
@@ -470,7 +471,7 @@ namespace Dynamo.Controls
             _installedPkgsView.Focus();
         }
 
-        void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ClipBoard_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
@@ -517,8 +518,31 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+#if BLOODSTONE
+            var scene = visualizer.CurrentVisualizer.GetScene();
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    var list = e.NewItems.OfType<NodeModel>().ToList();
+                    var nodes = list.Select(n => n.GUID.ToString());
+                    scene.SelectNodes(nodes, Dynamo.Bloodstone.SelectMode.AddToExisting);
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    var old = e.OldItems.OfType<NodeModel>().ToList();
+                    var removed = old.Select(n => n.GUID.ToString());
+                    scene.SelectNodes(removed, Dynamo.Bloodstone.SelectMode.RemoveFromExisting);
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    var empty = new List<string>(); // Empty node list.
+                    scene.SelectNodes(empty, Dynamo.Bloodstone.SelectMode.ClearExisting);
+                    break;
+            }
+#endif
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
         }

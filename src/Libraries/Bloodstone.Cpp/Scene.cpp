@@ -207,7 +207,10 @@ void Scene::SelectNodes(Strings^ identifiers, SelectMode selectMode)
             continue; // The node does not have any associated geometries.
 
         NodeSceneData* pNodeSceneData = found->second;
-        pNodeSceneData->SetSelected(true);
+        if (selectMode == SelectMode::RemoveFromExisting)
+            pNodeSceneData->SetSelected(false);
+        else
+            pNodeSceneData->SetSelected(true);
     }
 }
 

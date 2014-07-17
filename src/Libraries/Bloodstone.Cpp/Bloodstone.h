@@ -21,7 +21,7 @@ namespace Dynamo { namespace Bloodstone {
     typedef Gen::IEnumerable<System::String^> Strings;
     typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, Ds::IRenderPackage^>> RenderPackages;
 
-    public enum class SelectMode { AddToExisting, ClearExisting };
+    public enum class SelectMode { AddToExisting, RemoveFromExisting, ClearExisting };
 
     public ref class VisualizerWnd
     {
