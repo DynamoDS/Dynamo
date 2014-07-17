@@ -222,10 +222,12 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
     mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
 
-    float rgbaColor[4] = { 0 }, controlParams[4] = { 0 };
     auto iterator = geometries.begin();
     for (; iterator != geometries.end(); ++iterator)
     {
+        float rgbaColor[4] = { 0 };
+        float controlParams[4] = { 0 };
+
         auto pNodeSceneData = *iterator;
         pNodeSceneData->GetColor(&rgbaColor[0]);
 
@@ -233,6 +235,7 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
             rgbaColor[0] = 154.0f / 255.0f;
             rgbaColor[1] = 206.0f / 255.0f;
             rgbaColor[2] = 235.0f / 255.0f;
+            controlParams[1] = 1.0f; // Override color.
         }
 
         mpShaderProgram->SetParameter(mColorParamIndex, &rgbaColor[0], 4);

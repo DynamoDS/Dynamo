@@ -13,6 +13,8 @@ uniform float alpha;
 //  controlParams[0]: "1.0" for rendering points/lines
 //                    "3.0" for rendering triangles
 // 
+//  controlParams[1]: "1.0" for overriding color.
+// 
 uniform vec4 controlParams;
 
 const vec3 lightPosition = vec3(5000.0, 55000.0, 10000.0);
