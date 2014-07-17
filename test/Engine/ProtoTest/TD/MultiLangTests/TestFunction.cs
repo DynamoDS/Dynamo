@@ -4273,7 +4273,7 @@ x = foo( 0 );
             string code = @"
 def recursion : int(a : int)
 {
-    local = [Imperative]
+    loc = [Imperative]
     {
         if (a <= 0)
         {
@@ -4281,7 +4281,7 @@ def recursion : int(a : int)
         }
         return = a + recursion(a - 1);
     }
-    return = local;
+    return = loc;
 }
 a = 10;
 [Imperative]

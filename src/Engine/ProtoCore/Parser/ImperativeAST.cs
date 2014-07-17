@@ -181,11 +181,13 @@ namespace ProtoCore.AST.ImperativeAST
             };
 
             Value = rhs.Value;
+            IsLocal = false;
         }
 
         public ProtoCore.Type datatype { get; set; }
         public string Value { get; set; }
         public string ArrayName { get; set; }
+        public bool IsLocal { get; set; }
 
         public override bool Equals(object other)
         {
@@ -193,9 +195,10 @@ namespace ProtoCore.AST.ImperativeAST
             if (null == otherNode)
                 return false;
 
-            return EqualityComparer<string>.Default.Equals(Value, otherNode.Value) &&
-                   datatype.Equals(otherNode.datatype) &&
-                   base.Equals(otherNode);
+            return  IsLocal == otherNode.IsLocal &&
+                    EqualityComparer<string>.Default.Equals(Value, otherNode.Value) &&
+                    datatype.Equals(otherNode.datatype) &&
+                    base.Equals(otherNode);
         }
 
         public override string ToString()
