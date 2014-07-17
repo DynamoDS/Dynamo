@@ -221,18 +221,21 @@ namespace Dynamo.Search
 
         void SearchViewModel_RequestFocusSearch(object sender, EventArgs e)
         {
-            SearchTextBox.Focus();
+            //SearchTextBox.Focus();
         }
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
+            {
                 binding.UpdateSource();
+            }
 
             searchTimer.IsEnabled = true;
             searchTimer.Stop();
             searchTimer.Start();
+            
         }
 
         void SearchTimerTick(object sender, EventArgs e)
@@ -322,14 +325,12 @@ namespace Dynamo.Search
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
-            IconAndTextBlockWidth.Width = new GridLength(100);
-            }
+        }
 
         private void SearchTextBoxGrid_MouseLeave(object sender, MouseEventArgs e)
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
-            IconAndTextBlockWidth.Width = GridLength.Auto;
         }
 
         private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
@@ -339,8 +340,13 @@ namespace Dynamo.Search
 
         private void ClearSearchBox()
         {
-            SearchTextBox.Text = "";
-            Keyboard.Focus(SearchTextBox);
+            SearchTextBox.Text = null;
+            //Keyboard.Focus(SearchTextBox);
+        }
+
+        private void SearchTextBox_MouseDown(Object sender, MouseButtonEventArgs e)
+        {
+            SearchTextBox.Text = " ";
         }
 
     }

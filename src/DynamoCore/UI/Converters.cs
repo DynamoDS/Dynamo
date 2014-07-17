@@ -179,7 +179,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value is string && !string.IsNullOrEmpty(value as string))
+            if (value is string && !string.IsNullOrWhiteSpace(value as string))
             {
                 return Visibility.Collapsed;
             }
@@ -1584,6 +1584,24 @@ namespace Dynamo.Controls
             if(parameter.ToString() == dynSettings.Controller.PreferenceSettings.NumberFormat)
                 return true;
             return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class StringToWidth : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string && (value as string)!=string.Empty)
+            {
+                return new GridLength(100);
+            }
+            Keyboard.ClearFocus();
+            return GridLength.Auto;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

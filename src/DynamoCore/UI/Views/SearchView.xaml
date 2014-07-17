@@ -21,6 +21,7 @@
         <ResourceDictionary>
             <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+            <controls:StringToWidth x:Key="StringToWidth"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
@@ -92,14 +93,16 @@
         <Border BorderThickness="0,0,0,1"
                 BorderBrush="#3F3F3F"
                 Grid.Row="1">
-            <Grid Name="SearchTextBoxGrid"  Height="30" VerticalAlignment="Center" MouseEnter="SearchTextBoxGrid_MouseEnter" MouseLeave="SearchTextBoxGrid_MouseLeave">
+            <Grid Name="SearchTextBoxGrid"  Height="30" VerticalAlignment="Center" 
+                  MouseEnter="SearchTextBoxGrid_MouseEnter"
+                  MouseLeave="SearchTextBoxGrid_MouseLeave">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Name="IconAndTextBlockWidth" Width="Auto"/>
+                <ColumnDefinition Width="{Binding Path=SearchText, Converter={StaticResource StringToWidth}}"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-                <StackPanel Name="SearchIconAndTextBlockGrid" HorizontalAlignment="Center" MinWidth="280">                
+                <StackPanel Name="SearchIconAndTextBlockGrid" HorizontalAlignment="Center" MinWidth="280" >                
                         <Image x:Name="SearchIcon"
                             Source="/DynamoCore;component/UI/Images/search_normal.png"
                             Width="25"
@@ -115,6 +118,7 @@
                          Foreground="#DDD"
                          Background="Transparent" BorderThickness="0" FontSize ="14" 
                          IsEnabled="True" TextChanged="SearchTextBox_TextChanged" 
+                         PreviewMouseDown="SearchTextBox_MouseDown"
                          
                          VerticalAlignment="Center" 
                          Text="{Binding Path=SearchText,Mode=TwoWay}" 
