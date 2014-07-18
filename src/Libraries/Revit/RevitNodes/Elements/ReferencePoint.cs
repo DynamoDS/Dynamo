@@ -80,6 +80,9 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(InternalElement);
+
+            // otherwise the point value is invalid for downstream requests
+            DocumentManager.Regenerate();
         }
 
         /// <summary>
