@@ -25,11 +25,16 @@ namespace Dynamo.Core
         /// </summary>
         protected static Object RunControlMutex = new object();
 
-        private readonly DynamoController controller = dynSettings.Controller;
+        private readonly DynamoModel dynamoModel;
 
         private bool cancelSet;
         private int? execInternval;
         private Thread evaluationThread = null;
+
+        public DynamoRunner(DynamoModel dynamoModel)
+        {
+            this.dynamoModel = dynamoModel;
+        }
 
         public bool Running { get; protected set; }
 
@@ -43,7 +48,7 @@ namespace Dynamo.Core
             if (Running)
             {
                 cancelSet = true;
-                controller.EngineController.LiveRunnerCore.RequestCancellation();
+                dynamoModel.EngineController.LiveRunnerCore.RequestCancellation();
                 
                 // We need to wait for evaluation thread to complete after a cancellation
                 // until the LR and Engine controller are reset properly
@@ -73,18 +78,18 @@ namespace Dynamo.Core
                 // is obtained.
                 // 
                 IEnumerable<KeyValuePair<Guid, List<string>>> traceData =
-                    controller.DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
-                controller.DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
-                controller.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
+                    dynamoModel.HomeSpace.PreloadedTraceData;
+                dynamoModel.HomeSpace.PreloadedTraceData = null; // Reset.
+                dynamoModel.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
                 //We are now considered running
                 Running = true;
             }
 
-            if (!DynamoController.IsTestMode)
+            if (!dynamoModel.IsTestMode)
             {
                 //Setup background worker
-                controller.DynamoViewModel.RunEnabled = false;
+                dynamoModel.RunEnabled = false;
 
                 //As we are the only place that is allowed to activate this, it is a trap door, so this is safe
                 lock (RunControlMutex)
@@ -129,17 +134,17 @@ namespace Dynamo.Core
         /// </summary>
         private void RunComplete()
         {
-            controller.OnRunCompleted(this, false);
+            dynamoModel.OnRunCompleted(this, false);
 
             lock (RunControlMutex)
             {
                 Running = false;
-                controller.DynamoViewModel.RunEnabled = true;
+                dynamoModel.RunEnabled = true;
             }
 
             if (cancelSet)
             {
-                controller.Reset();
+                dynamoModel.Reset();
                 cancelSet = false;
             }
         }
@@ -153,22 +158,22 @@ namespace Dynamo.Core
             {
                 sw.Start();
 
-                controller.EngineController.GenerateGraphSyncData(
-                    controller.DynamoViewModel.Model.HomeSpace.Nodes);
+                dynamoModel.EngineController.GenerateGraphSyncData(
+                    dynamoModel.HomeSpace.Nodes);
 
                 //No additional work needed
-                if (controller.EngineController.HasPendingGraphSyncData)
+                if (dynamoModel.EngineController.HasPendingGraphSyncData)
                     Eval();
             }
             catch (Exception ex)
             {
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
-                    dynSettings.DynamoLogger.Log(ex);
+                    dynamoModel.Logger.Log(ex);
 
                 OnRunCancelled(true);
 
-                if (DynamoController.IsTestMode) // Throw exception for NUnit.
+                if (dynamoModel.IsTestMode) // Throw exception for NUnit.
                     throw new Exception(ex.Message + ":" + ex.StackTrace);
             }
             finally
@@ -176,32 +181,32 @@ namespace Dynamo.Core
                 sw.Stop();
 
                 InstrumentationLogger.LogAnonymousEvent("Run", "Eval");
-                InstrumentationLogger.LogAnonymousTimedEvent("Perf", "EvalTime", sw.Elapsed); 
+                InstrumentationLogger.LogAnonymousTimedEvent("Perf", "EvalTime", sw.Elapsed);
 
-                dynSettings.DynamoLogger.Log(
+                dynamoModel.Logger.Log(
                     string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
 
-            controller.OnEvaluationCompleted(this, EventArgs.Empty);
+            dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
         private void Eval()
         {
             //Print some stuff if we're in debug mode
-            if (controller.DynamoViewModel.RunInDebug) { }
+            if (dynamoModel.RunInDebug) { }
 
             // We have caught all possible exceptions in UpdateGraph call, I am 
             // not certain if this try-catch block is still meaningful or not.
             try
             {
                 Exception fatalException = null;
-                bool updated = controller.EngineController.UpdateGraph(ref fatalException);
+                bool updated = dynamoModel.EngineController.UpdateGraph(ref fatalException);
 
                 // If there's a fatal exception, show it to the user, unless of course 
                 // if we're running in a unit-test, in which case there's no user. I'd 
                 // like not to display the dialog and hold up the continuous integration.
                 // 
-                if (DynamoController.IsTestMode == false && (fatalException != null))
+                if (dynamoModel.IsTestMode == false && (fatalException != null))
                 {
                     Action showFailureMessage =
                         () => Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
@@ -211,8 +216,9 @@ namespace Dynamo.Core
                     // schedule the message to show up when the UI gets around and 
                     // handle it.
                     // 
-                    if (controller.UIDispatcher != null)
-                        controller.UIDispatcher.BeginInvoke(showFailureMessage);
+                    // KILLDYNSETTINGS: should not be using the UIDispatcher here
+                    if (dynamoModel.UIDispatcher != null)
+                        dynamoModel.UIDispatcher.BeginInvoke(showFailureMessage);
                 }
 
                 // Currently just use inefficient way to refresh preview values. 
@@ -222,7 +228,7 @@ namespace Dynamo.Core
                 if (updated)
                 {
                     ObservableCollection<NodeModel> nodes =
-                        controller.DynamoViewModel.Model.HomeSpace.Nodes;
+                        dynamoModel.HomeSpace.Nodes;
                     foreach (NodeModel node in nodes)
                         node.IsUpdated = true;
                 }
@@ -231,14 +237,14 @@ namespace Dynamo.Core
             {
                 /* Evaluation failed due to error */
 
-                dynSettings.DynamoLogger.Log(ex);
+                dynamoModel.Logger.Log(ex);
 
                 OnRunCancelled(true);
 
                 //If we are testing, we need to throw an exception here
                 //which will, in turn, throw an Assert.Fail in the 
                 //Evaluation thread.
-                if (DynamoController.IsTestMode)
+                if (dynamoModel.IsTestMode)
                     throw new Exception(ex.Message);
             }
         }

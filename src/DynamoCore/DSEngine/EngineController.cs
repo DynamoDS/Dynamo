@@ -30,7 +30,7 @@ namespace Dynamo.DSEngine
         private SyncDataManager syncDataManager;
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
-        private DynamoModel dynamoModel;
+        private readonly DynamoModel dynamoModel;
 
         private Object MacroMutex = new Object();
 
@@ -123,7 +123,7 @@ namespace Dynamo.DSEngine
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.DynamoLogger.Log("Failed to get mirror for variable: " + variableName + "; reason: " +
+                    dynamoModel.Logger.Log("Failed to get mirror for variable: " + variableName + "; reason: " +
                                                  ex.Message);
                 }
 

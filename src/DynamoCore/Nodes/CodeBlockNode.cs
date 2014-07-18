@@ -32,6 +32,7 @@ namespace Dynamo.Nodes
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
         private bool shouldFocus = true;
+        private readonly DynamoLogger logger;
 
         private struct Formatting
         {
@@ -65,8 +66,6 @@ namespace Dynamo.Nodes
         /// <param name="errorMessage"> Error message to be displayed </param>
         private void ProcessError()
         {
-            dynSettings.DynamoLogger.Log("Error in Code Block Node");
-
             previewVariable = null;
         }
 

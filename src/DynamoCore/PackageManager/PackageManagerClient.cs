@@ -17,7 +17,6 @@ using Greg.Utility;
 
 namespace Dynamo.PackageManager
 {
-
     public delegate void AuthenticationRequestHandler(PackageManagerClient sender);
 
     /// <summary>
@@ -143,6 +142,7 @@ namespace Dynamo.PackageManager
 
         public bool Upvote(string packageId)
         {
+            // KILLDYNSETTINGS - This should live on the Model
             dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             try

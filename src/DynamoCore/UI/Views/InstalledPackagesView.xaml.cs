@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -21,15 +22,18 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class InstalledPackagesView : Window
     {
-        public InstalledPackagesView()
+        private readonly DynamoModel dynamoModel;
+
+        public InstalledPackagesView(DynamoModel dynamoModel)
         {
-            this.DataContext = dynSettings.PackageLoader;
+            this.dynamoModel = dynamoModel;
+            this.DataContext = dynamoModel.Loader.PackageLoader;
             InitializeComponent();
         }
 
         private void BrowseOnline_OnClick(object sender, RoutedEventArgs e)
         {
-            dynSettings.PackageManagerClient.GoToWebsite();
+            dynamoModel.PackageManagerClient.GoToWebsite();
         }
 
         private void MoreButton_OnClick(object sender, RoutedEventArgs e)
@@ -37,13 +41,6 @@ namespace Dynamo.PackageManager.UI
             var button = (Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.IsOpen = true;
-            
-            //if (e.LeftButton == MouseButtonState.Pressed)
-            //{
-
-
-
-            //}
         }
 
     }

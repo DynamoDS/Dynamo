@@ -47,6 +47,7 @@ namespace Dynamo.Services
                 if (DynamoController.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
+                // KILLDYNSETTINGS - Static reference to non-static object
                 if (dynSettings.Controller != null)
                     return dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
                 
@@ -131,6 +132,7 @@ namespace Dynamo.Services
         
         }
 
+        // KILLDYNSETTINGS - This is abominable - passing a window?
         public void CheckIsFirstRun(Window ownerWindow)
         {
             // First run of Dynamo

@@ -4,6 +4,8 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.ViewModels;
+
 using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
@@ -19,16 +21,17 @@ namespace Dynamo.Utilities
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="args"></param>
-        public static void Collapse(IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args=null)
+        public static void Collapse(DynamoViewModel dynamoViewModel, IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args=null)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
 
             if (args == null || !args.Success)
             {
                 args = new FunctionNamePromptEventArgs();
-                dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(null, args);
 
-                //if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
+                // KILLDYNSETTINGS - This should nothave access to the ViewModel
+                dynamoViewModel.OnRequestsFunctionNamePrompt(null, args);
+
                 if (!args.Success)
                 {
                     return;
@@ -506,10 +509,12 @@ namespace Dynamo.Utilities
 
             // save and load the definition from file
             newNodeDefinition.SyncWithWorkspace(true, true);
-            dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
+            dynamoViewModel.Model.Workspaces.Add(newNodeWorkspace);
 
             string name = newNodeDefinition.FunctionId.ToString();
-            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode(avgX, avgY, name);
+
+            // KILLDYNSETTINGS - What does this expect?
+            var collapsedNode = dynamoViewModel.Model.CurrentWorkspace.AddNode(avgX, avgY, name);
             undoRecorder.RecordCreationForUndo(collapsedNode);
 
             // place the node as intended, not centered

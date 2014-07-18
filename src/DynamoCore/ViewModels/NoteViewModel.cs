@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
         //{
         //    get
         //    {
-        //        if(dynSettings.Controller.DynamoViewModel.CurrentWorkspace.Notes.Contains(_model))
+        //        if(dynSettings.Controller.DynamoViewModel.CurrentWorkspace.Notes.Contains(Model))
         //            return true;
         //        return false;
         //    }
@@ -95,16 +95,16 @@ namespace Dynamo.ViewModels
 
         private void Select(object parameter)
         {
-            //if (!_model.IsSelected)
+            //if (!Model.IsSelected)
             //{
             //    if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
             //    {
             //        DynamoSelection.Instance.ClearSelection();
             //    }
 
-            //    if (!DynamoSelection.Instance.Selection.Contains(_model))
+            //    if (!DynamoSelection.Instance.Selection.Contains(Model))
             //    {
-            //        DynamoSelection.Instance.Selection.Add(_model);
+            //        DynamoSelection.Instance.Selection.Add(Model);
             //    }
 
             //}
@@ -112,7 +112,7 @@ namespace Dynamo.ViewModels
             //{
             //    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             //    {
-            //        DynamoSelection.Instance.Selection.Remove(_model);
+            //        DynamoSelection.Instance.Selection.Remove(Model);
             //    }
             //}
 

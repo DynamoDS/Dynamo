@@ -116,7 +116,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void CanZoom()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
             double zoom;
             
@@ -209,7 +209,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void CanPanLeft()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -231,7 +231,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void CanPanRight()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -253,7 +253,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void CanPanUp()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -275,7 +275,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void CanPanDown()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -301,7 +301,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void FitViewWithNoNodes()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             double initZoom = workspaceModel.Zoom;
@@ -321,7 +321,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void CanFitView()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             double initZoom = workspaceModel.Zoom;

@@ -29,7 +29,7 @@ namespace Dynamo.Models
 
         #region internal members
 
-        private DynamoModel dynamoModel;
+        protected DynamoModel dynamoModel;
         private string _fileName;
         private string _name;
         private double _height = 100;
@@ -499,7 +499,7 @@ namespace Dynamo.Models
                 if (c != null)
                     this.Connectors.Add(c);
 
-                OnConnectorAdded(c);
+                this.dynamoModel.OnConnectorAdded(c);
 
                 return c;
             }
@@ -524,19 +524,15 @@ namespace Dynamo.Models
             {
                 var args = new ModelEventArgs(noteModel, true);
 
-                // KILLDYNSETTINGS
-                DynamoModelEvents vm = Controller.DynamoViewModel;
-                vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
+                // KILLDYNSETTINGS - where should this live?
+                this.dynamoModel.OnRequestNodeCentered(this, args);
             }
 
             noteModel.Text = "New Note";
-            if (!string.IsNullOrEmpty(command.NoteText))
-                noteModel.Text = command.NoteText;
+            if (!string.IsNullOrEmpty(text))
+                noteModel.Text = text;
 
-            if (null == workspace)
-                workspace = CurrentWorkspace;
-
-            workspace.Notes.Add(noteModel);
+            this.Notes.Add(noteModel);
             return noteModel;
         }
 
@@ -817,34 +813,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// After command framework is implemented, this method should now be only 
-        /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
-        /// way for any other code paths to convert nodes to code programmatically. 
-        /// For that we now have ConvertNodesToCodeInternal which takes in more 
-        /// configurable arguments.
-        /// </summary>
-        /// <param name="parameters">This is not used and should always be null,
-        /// otherwise an ArgumentException will be thrown.</param>
-        /// 
-        internal void NodeToCode(object parameters)
-        {
-            if (null != parameters) // See above for details of this exception.
-            {
-                const string message = "Internal error, argument must be null";
-                throw new ArgumentException(message, "parameters");
-            }
-
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynCmd.ConvertNodesToCodeCommand(nodeID);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
-        }
-
-        internal bool CanNodeToCode(object parameters)
-        {
-            return DynamoSelection.Instance.Selection.Count > 0;
-        }
-
         internal void ConvertNodesToCodeInternal(Guid nodeId)
         {
             IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
@@ -852,7 +820,7 @@ namespace Dynamo.Models
                 return;
 
             Dictionary<string, string> variableNameMap;
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
+            string code = this.dynamoModel.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
             //UndoRedo Action Group----------------------------------------------
             UndoRecorder.BeginActionGroup();
@@ -918,7 +886,7 @@ namespace Dynamo.Models
             #endregion
 
             #region Step II. Create the new code block node
-            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX / nodeCount, totalY / nodeCount);
+            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX / nodeCount, totalY / nodeCount );
             UndoRecorder.RecordCreationForUndo(codeBlockNode);
             Nodes.Add(codeBlockNode);
             #endregion
@@ -932,7 +900,7 @@ namespace Dynamo.Models
             //End UndoRedo Action Group------------------------------------------
 
             // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
+            var placedNode = this.dynamoModel.Nodes.Find((node) => node.GUID == nodeId);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -955,11 +923,13 @@ namespace Dynamo.Models
         ///     Updates relevant parameters on save
         /// </summary>
         /// <param name="model">The workspace that was just saved</param>
-        private static void OnWorkspaceSaved(WorkspaceModel model)
+        private void OnWorkspaceSaved(WorkspaceModel model)
         {
             model.LastSaved = DateTime.Now;
             model.HasUnsavedChanges = false;
-            dynSettings.Controller.DynamoViewModel.AddToRecentFiles(model.FileName);
+
+            // KILLDYNSETTINGS - just expose this as an event on dynamoModel
+            this.dynamoModel.OnRecentFilesUpdated(model.FileName);
         }
 
         private void MarkUnsaved(
@@ -1406,7 +1376,6 @@ namespace Dynamo.Models
                 return String.Empty;
 
         }
-
 
     }
 }

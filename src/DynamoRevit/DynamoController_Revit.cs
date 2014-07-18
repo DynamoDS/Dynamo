@@ -252,7 +252,7 @@ namespace Dynamo
         ///     Callback for registering an authentication provider with the package manager
         /// </summary>
         /// <param name="client">The client, to which the provider will be attached</param>
-        internal void RegisterSingleSignOn(PackageManagerClient client)
+        internal void RegisterSingleSignOn(PackageManager.PackageManagerClient client)
         {
             singleSignOnAssembly = singleSignOnAssembly ?? LoadSSONet();
             client.Client.Provider = client.Client.Provider

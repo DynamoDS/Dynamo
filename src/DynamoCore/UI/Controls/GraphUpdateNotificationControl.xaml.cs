@@ -23,7 +23,6 @@ namespace DynamoCore.UI.Controls
                 "UpdateNotificationControl-OnInstallButtonClicked");
 
             dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
-
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Dynamo.PackageManager
     {
         public string RootPackagesDirectory { get; private set; }
 
-        public PackageLoader() : this( Path.Combine (DynamoLoader.GetDynamoDirectory(), DynamoPathManager.Instance.Packages) )
+        public PackageLoader() : this( Path.Combine (DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages) )
         {
         }
 

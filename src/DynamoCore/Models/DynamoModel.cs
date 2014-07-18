@@ -18,6 +18,7 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.Search;
 using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
@@ -64,6 +65,9 @@ namespace Dynamo.Models
         internal DebugSettings DebugSettings { get; private set; }
         internal NodeFactory NodeFactory { get; private set; }
 
+        public LibrarySearchModel SearchViewModel { get; private set; }
+
+
         // requires refactoring
 
         // KILLDYNSETTINGS: nasty
@@ -72,8 +76,6 @@ namespace Dynamo.Models
         // KILLDYNSETTINGS: should be static
         public IUpdateManager UpdateManager { get; private set; }
 
-        // KILLDYNSETTINGS: should just be a model
-        public SearchViewModel SearchViewModel { get; private set; }
 
         // KILLDYNSETTINGS: kill this
         public DynamoController Controller { get; private set; }
@@ -135,8 +137,6 @@ namespace Dynamo.Models
             get { return builtinTypesByTypeName; }
         }
 
-        
-
         public bool IsShowingConnectors
         {
             get { return this.PreferenceSettings.ShowConnector; }
@@ -175,9 +175,8 @@ namespace Dynamo.Models
             get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
-        public static bool RunEnabled { get; set; }
-
-        public static bool RunInDebug { get; set; }
+        public bool RunEnabled { get; set; }
+        public bool RunInDebug { get; set; }
 
         /// <summary>
         /// All nodes in all workspaces. 
@@ -239,6 +238,7 @@ namespace Dynamo.Models
 
             this.AddHomeWorkspace();
 
+            
             SearchViewModel = new SearchViewModel(this);
 
             this.CurrentWorkspace = this.HomeSpace;
@@ -507,7 +507,7 @@ namespace Dynamo.Models
 
         internal bool OpenDefinition(string xmlPath)
         {
-            var workspaceInfo = WorkspaceHeader.FromPath(xmlPath);
+            var workspaceInfo = WorkspaceHeader.FromPath(this, xmlPath);
 
             if (workspaceInfo == null)
             {
@@ -640,7 +640,7 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void AddHomeWorkspace()
         {
-            var workspace = new HomeWorkspaceModel()
+            var workspace = new HomeWorkspaceModel(this)
             {
                 WatchChanges = true
             };
@@ -1040,7 +1040,7 @@ namespace Dynamo.Models
                                                             double workspaceOffsetY = 0)
         {
 
-            var workSpace = new CustomNodeWorkspaceModel(
+            var workSpace = new CustomNodeWorkspaceModel(this,
                 name, category, description, workspaceOffsetX, workspaceOffsetY)
             {
                 WatchChanges = true

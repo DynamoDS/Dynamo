@@ -661,7 +661,7 @@ namespace Dynamo.PackageManager
 
                 if (newpkg) this.DynamoModel.Loader.PackageLoader.LocalPackages.Add(Package);
 
-                var handle = this.DynamoModel.PackageManagerClient.Publish(Package, files, IsNewVersion);
+                var handle = this.DynamoModel.PackageManager.Publish(Package, files, IsNewVersion);
 
                 if (handle == null)
                     throw new Exception("Failed to authenticate.  Are you logged in?");

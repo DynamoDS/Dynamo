@@ -44,16 +44,6 @@ namespace Dynamo.Utilities
 
         #region Methods
 
-        public string GetDynamoDirectory()
-        {
-            if (String.IsNullOrEmpty(_dynamoDirectory))
-            {
-                var dynamoAssembly = Assembly.GetExecutingAssembly();
-                _dynamoDirectory = Path.GetDirectoryName(dynamoAssembly.Location);
-            }
-            return _dynamoDirectory;
-        }
-
         /// <summary>
         /// Load all types which inherit from NodeModel whose assemblies are located in
         /// the bin/nodes directory. Add the types to the searchviewmodel and

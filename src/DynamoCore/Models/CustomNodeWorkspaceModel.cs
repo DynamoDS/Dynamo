@@ -15,24 +15,24 @@ namespace Dynamo.Models
     {
         #region Contructors
 
-        public CustomNodeWorkspaceModel()
-            : this("", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel)
+            : this(dynamoModel, "", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
-        public CustomNodeWorkspaceModel(String name, String category)
-            : this(name, category, "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, String name, String category)
+            : this(dynamoModel, name, category, "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
-        public CustomNodeWorkspaceModel(String name, String category, string description, double x, double y)
-            : this(name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, String name, String category, string description, double x, double y)
+            : this(dynamoModel, name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
         {
         }
 
-        public CustomNodeWorkspaceModel(
+        public CustomNodeWorkspaceModel(DynamoModel dynamoModel, 
             String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base(name, e, c, x, y)
+            : base(dynamoModel, name, e, c, x, y)
         {
             WatchChanges = true;
             HasUnsavedChanges = false;
@@ -54,7 +54,7 @@ namespace Dynamo.Models
 
         public CustomNodeDefinition CustomNodeDefinition
         {
-            get { return dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this); }
+            get { return dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
         }
 
         public override void Modified()
@@ -70,7 +70,7 @@ namespace Dynamo.Models
 
         public List<Function> GetExistingNodes()
         {
-            return dynSettings.Controller.DynamoModel.AllNodes
+            return dynamoModel.AllNodes
                 .OfType<Function>()
                 .Where(el => el.Definition == CustomNodeDefinition)
                 .ToList();
@@ -104,7 +104,7 @@ namespace Dynamo.Models
             if (originalPath == null)
             {
                 CustomNodeDefinition.AddToSearch();
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
+                dynamoModel.SearchViewModel.SearchAndUpdateResultsSync();
                 CustomNodeDefinition.UpdateCustomNodeManager();
             }
 
@@ -123,16 +123,16 @@ namespace Dynamo.Models
                 var newDef = CustomNodeDefinition;
 
                 // reload the original funcdef from its path
-                dynSettings.CustomNodeManager.Remove(originalGuid);
-                dynSettings.CustomNodeManager.AddFileToPath(originalPath);
-                var origDef = dynSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
+                dynamoModel.CustomNodeManager.Remove(originalGuid);
+                dynamoModel.CustomNodeManager.AddFileToPath(originalPath);
+                var origDef = dynamoModel.CustomNodeManager.GetFunctionDefinition(originalGuid);
                 if (origDef == null)
                 {
                     return false;
                 }
 
                 // reassign existing nodes to point to newly deserialized function def
-                dynSettings.Controller.DynamoModel.AllNodes
+                dynamoModel.AllNodes
                         .OfType<Function>()
                         .Where(el => el.Definition.FunctionId == originalGuid)
                         .ToList()

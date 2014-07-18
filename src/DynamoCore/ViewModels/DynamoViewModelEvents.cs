@@ -10,8 +10,6 @@ namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
-        #region events
-
         public event EventHandler RequestManagePackagesDialog;
         public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
         {
@@ -41,7 +39,7 @@ namespace Dynamo.ViewModels
         public void OnRequestAuthentication()
         {
             if (RequestAuthentication != null)
-                RequestAuthentication(model.PackageManagerClient);
+                RequestAuthentication(model.PackageManager);
         }
 
         public event ImageSaveEventHandler RequestSaveImage;
@@ -113,8 +111,6 @@ namespace Dynamo.ViewModels
                 RequestViewOperation(e);
             }
         }
-
-        #endregion
 
     }
 }

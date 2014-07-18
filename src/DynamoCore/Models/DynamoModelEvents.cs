@@ -75,11 +75,14 @@ namespace Dynamo.Models
                 CleaningUp(this, e);
         }
 
+
+        // KILLDYNSETTINGS - All of these events should likely live on WorkspaceModel
+
         /// <summary>
         /// Event triggered when a node is added to a workspace
         /// </summary>
         public event NodeHandler NodeAdded;
-        private void OnNodeAdded(NodeModel node)
+        internal void OnNodeAdded(NodeModel node)
         {
             AddNodeToMap(node);
 
@@ -93,10 +96,11 @@ namespace Dynamo.Models
         /// Event triggered when a node is deleted
         /// </summary>
         public event NodeHandler NodeDeleted;
-        private void OnNodeDeleted(NodeModel node)
+        internal void OnNodeDeleted(NodeModel node)
         {
             RemoveNodeFromMap(node);
 
+            // KILLDYNSETTINGS: this indicates that this should be an event on DynamoViewModel
             WorkspaceViewModel wvm = Controller.DynamoViewModel.CurrentSpaceViewModel;
 
             if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
@@ -110,7 +114,7 @@ namespace Dynamo.Models
         /// Event triggered when a connector is added.
         /// </summary>
         public event ConnectorHandler ConnectorAdded;
-        private void OnConnectorAdded(ConnectorModel connector)
+        internal void OnConnectorAdded(ConnectorModel connector)
         {
             if (ConnectorAdded != null)
             {

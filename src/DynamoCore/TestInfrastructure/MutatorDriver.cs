@@ -17,7 +17,7 @@ namespace Dynamo.TestInfrastructure
     /// </summary>
     public class MutatorDriver
     {
-        private DynamoViewModel dynamoViewModel;
+        private readonly DynamoViewModel dynamoViewModel;
 
         public MutatorDriver(DynamoViewModel dynamoViewModel)
         {
@@ -96,7 +96,7 @@ namespace Dynamo.TestInfrastructure
 
                             List<AbstractMutator> mutators = new List<AbstractMutator>()
                                 {
-                                    new CodeBlockNodeMutator(rand), new DeleteNodeMutator(rand)
+                                    new CodeBlockNodeMutator(dynamoViewModel, rand), new DeleteNodeMutator(dynamoViewModel, rand)
                                 };
 
 

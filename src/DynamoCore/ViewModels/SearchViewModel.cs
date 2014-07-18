@@ -166,6 +166,7 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region events
+
         public event EventHandler RequestFocusSearch;
         public virtual void OnRequestFocusSearch(object sender, EventArgs e)
         {

@@ -22,14 +22,19 @@ namespace Dynamo.Nodes
     [IsMetaNode]
     public partial class Function : NodeModel
     {
-        protected internal Function(CustomNodeDefinition def)
+        private readonly DynamoModel dynamoModel;
+
+        protected internal Function(DynamoModel dynamoModel, CustomNodeDefinition def)
         {
+            this.dynamoModel = dynamoModel;
             Definition = def;
             ResyncWithDefinition();
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public Function() { }
+        // KILLDYNSETTINGS - does this need to exist?
+        public Function()
+        {}
 
         public new string Name
         {

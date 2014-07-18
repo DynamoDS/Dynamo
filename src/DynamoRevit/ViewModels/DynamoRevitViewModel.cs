@@ -1,10 +1,11 @@
-﻿using Dynamo.ViewModels;
+﻿using Dynamo.Models;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
     public class DynamoRevitViewModel : DynamoViewModel
     {
-        public DynamoRevitViewModel(DynamoController controller, string commandFilePath) : base(controller, commandFilePath) { }
+        public DynamoRevitViewModel(DynamoModel dynamoModel, string commandFilePath) : base(dynamoModel, commandFilePath) { }
 
         public override bool CanRunDynamically
         {

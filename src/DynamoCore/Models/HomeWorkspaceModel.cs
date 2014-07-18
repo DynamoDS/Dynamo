@@ -11,18 +11,13 @@ namespace Dynamo.Models
     {
         private DispatcherTimer runExpressionTimer;
 
-        public HomeWorkspaceModel()
-            : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public HomeWorkspaceModel(DynamoModel dynamoModel)
+            : this(dynamoModel, new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
         }
 
-        public HomeWorkspaceModel(double x, double y)
-            : this(new List<NodeModel>(), new List<ConnectorModel>(), x, y)
-        {
-        }
-
-        public HomeWorkspaceModel(IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base("Home", e, c, x, y)
+        public HomeWorkspaceModel(DynamoModel dynamoModel, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
+            : base(dynamoModel, "Home", e, c, x, y)
         {
         }
 
@@ -30,17 +25,16 @@ namespace Dynamo.Models
         {
             (sender as DispatcherTimer).Stop();
 
-            var controller = dynSettings.Controller;
-            controller.Runner.RunExpression();
+            this.dynamoModel.RunExpression();
         }
 
         public override void Modified()
         {
             base.Modified();
 
-            var controller = dynSettings.Controller;
-            if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
+            if (this.dynamoModel.DynamicRunEnabled)
             {
+
 #if USE_DSENGINE
                 // This dispatch timer is to avoid updating graph too frequently.
                 // It happens when we are modifying a bunch of connections in 

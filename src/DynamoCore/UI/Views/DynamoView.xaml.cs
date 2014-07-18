@@ -43,7 +43,7 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
 
-        private DynamoViewModel _vm = null;
+        private DynamoViewModel dynamoViewModel = null;
         private Stopwatch _timer = null;
         private StartPageViewModel startPage = null;
 
@@ -62,8 +62,8 @@ namespace Dynamo.Controls
             var app = new Application();
 
             //create the view
-            var ui = new DynamoView();
-            ui.DataContext = controller.DynamoViewModel;
+            var ui = new DynamoView(controller);
+            ui.DataContext = controller;
             controller.UIDispatcher = ui.Dispatcher;
 
             app.Run(ui);
@@ -73,6 +73,8 @@ namespace Dynamo.Controls
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
+            this.dynamoViewModel = dynamoViewModel;
+
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 
             _timer = new Stopwatch();
@@ -92,10 +94,10 @@ namespace Dynamo.Controls
             // of the available monitors.
             if (CheckVirtualScreenSize())
             {
-                Left = dynSettings.Controller.PreferenceSettings.WindowX;
-                Top = dynSettings.Controller.PreferenceSettings.WindowY;
-                Width = dynSettings.Controller.PreferenceSettings.WindowW;
-                Height = dynSettings.Controller.PreferenceSettings.WindowH;
+                Left = dynamoViewModel.Model.PreferenceSettings.WindowX;
+                Top = dynamoViewModel.Model.PreferenceSettings.WindowY;
+                Width = dynamoViewModel.Model.PreferenceSettings.WindowW;
+                Height = dynamoViewModel.Model.PreferenceSettings.WindowH;
             }
             else
             {
@@ -119,15 +121,15 @@ namespace Dynamo.Controls
             // On Ian's Windows 8 setup, when Dynamo is maximized, the origin
             // saves at -8,-8. There doesn't seem to be any documentation on this
             // so we'll put in a 10 pixel check to still allow the window to maximize.
-            if (dynSettings.Controller.PreferenceSettings.WindowX < ox - 10 ||
-                dynSettings.Controller.PreferenceSettings.WindowY < oy - 10)
+            if (dynamoViewModel.Model.PreferenceSettings.WindowX < ox - 10 ||
+                dynamoViewModel.Model.PreferenceSettings.WindowY < oy - 10)
             {
                 return false;
             }
 
             // Check that the window is smaller than the available area.
-            if (dynSettings.Controller.PreferenceSettings.WindowW > w ||
-                dynSettings.Controller.PreferenceSettings.WindowH > h)
+            if (dynamoViewModel.Model.PreferenceSettings.WindowW > w ||
+                dynamoViewModel.Model.PreferenceSettings.WindowH > h)
             {
                 return false;
             }
@@ -137,16 +139,16 @@ namespace Dynamo.Controls
 
         void DynamoView_LocationChanged(object sender, EventArgs e)
         {
-            dynSettings.Controller.PreferenceSettings.WindowX = Left;
-            dynSettings.Controller.PreferenceSettings.WindowY = Top;
+            dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
+            dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
 
             Debug.WriteLine("Resetting window location to {0}:{1}", Left, Top);
         }
 
         void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            dynSettings.Controller.PreferenceSettings.WindowW = e.NewSize.Width;
-            dynSettings.Controller.PreferenceSettings.WindowH = e.NewSize.Height;
+            dynamoViewModel.Model.PreferenceSettings.WindowW = e.NewSize.Width;
+            dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
 
             Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
@@ -158,7 +160,7 @@ namespace Dynamo.Controls
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
             newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
-            newScriptButton.ShortcutCommand = _vm.NewHomeWorkspaceCommand;
+            newScriptButton.ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand;
             newScriptButton.ShortcutCommandParameter = null;
             newScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/new_normal.png";
             newScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/new_disabled.png";
@@ -166,7 +168,7 @@ namespace Dynamo.Controls
 
             ShortcutBarItem openScriptButton = new ShortcutBarItem();
             openScriptButton.ShortcutToolTip = "Open [Ctrl + O]";
-            openScriptButton.ShortcutCommand = _vm.ShowOpenDialogAndOpenResultCommand;
+            openScriptButton.ShortcutCommand = dynamoViewModel.ShowOpenDialogAndOpenResultCommand;
             openScriptButton.ShortcutCommandParameter = null;
             openScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/open_normal.png";
             openScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/open_disabled.png";
@@ -174,7 +176,7 @@ namespace Dynamo.Controls
 
             ShortcutBarItem saveButton = new ShortcutBarItem();
             saveButton.ShortcutToolTip = "Save [Ctrl + S]";
-            saveButton.ShortcutCommand = _vm.ShowSaveDialogIfNeededAndSaveResultCommand;
+            saveButton.ShortcutCommand = dynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
             saveButton.ShortcutCommandParameter = null;
             saveButton.ImgNormalSource = "/DynamoCore;component/UI/Images/save_normal.png";
             saveButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/save_disabled.png";
@@ -182,7 +184,7 @@ namespace Dynamo.Controls
 
             ShortcutBarItem screenShotButton = new ShortcutBarItem();
             screenShotButton.ShortcutToolTip = "Export Workspace As Image";
-            screenShotButton.ShortcutCommand = _vm.ShowSaveImageDialogAndSaveResultCommand;
+            screenShotButton.ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand;
             screenShotButton.ShortcutCommandParameter = null;
             screenShotButton.ImgNormalSource = "/DynamoCore;component/UI/Images/screenshot_normal.png";
             screenShotButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/screenshot_disabled.png";
@@ -190,7 +192,7 @@ namespace Dynamo.Controls
 
             ShortcutBarItem undoButton = new ShortcutBarItem();
             undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
-            undoButton.ShortcutCommand = _vm.UndoCommand;
+            undoButton.ShortcutCommand = dynamoViewModel.UndoCommand;
             undoButton.ShortcutCommandParameter = null;
             undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
             undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
@@ -198,7 +200,7 @@ namespace Dynamo.Controls
 
             ShortcutBarItem redoButton = new ShortcutBarItem();
             redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
-            redoButton.ShortcutCommand = _vm.RedoCommand;
+            redoButton.ShortcutCommand = dynamoViewModel.RedoCommand;
             redoButton.ShortcutCommandParameter = null;
             redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
@@ -206,7 +208,7 @@ namespace Dynamo.Controls
 
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
-            //updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
+            //updateButton.ShortcutCommand = dynamoViewModel.CheckForUpdateCommand;
             //updateButton.ShortcutCommandParameter = null;
             //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
             //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
@@ -246,7 +248,7 @@ namespace Dynamo.Controls
         /// 
         private void InitializeStartPage()
         {
-            if (DynamoController.IsTestMode) // No start screen in unit testing.
+            if (dynamoViewModel.Model.IsTestMode) // No start screen in unit testing.
                 return;
 
             if (this.startPage == null)
@@ -267,9 +269,9 @@ namespace Dynamo.Controls
             Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
-        void _vm_RequestViewOperation(ViewOperationEventArgs e)
+        void DynamoViewModelRequestViewOperation(ViewOperationEventArgs e)
         {
-            if (_vm.CanNavigateBackground == false)
+            if (dynamoViewModel.CanNavigateBackground == false)
                 return;
 
             switch (e.ViewOperation)
@@ -296,13 +298,13 @@ namespace Dynamo.Controls
             UsageReportingManager.Instance.CheckIsFirstRun(this);
 
             this.WorkspaceTabs.SelectedIndex = 0;
-            _vm = (DataContext as DynamoViewModel);
-            _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
-            _vm.RequestViewOperation += _vm_RequestViewOperation;
-            _vm.PostUiActivationCommand.Execute(null);
+            dynamoViewModel = (DataContext as DynamoViewModel);
+            dynamoViewModel.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
+            dynamoViewModel.RequestViewOperation += DynamoViewModelRequestViewOperation;
+            dynamoViewModel.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
-            dynSettings.DynamoLogger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
+            dynamoViewModel.Model.Logger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
             InitializeStartPage();
@@ -312,38 +314,40 @@ namespace Dynamo.Controls
 #endif
             #region Search initialization
 
-            var search = new SearchView { DataContext = dynSettings.Controller.SearchViewModel };
+            var search = new SearchView(
+                this.dynamoViewModel.Model.SearchViewModel,
+                this.dynamoViewModel);
             sidebarGrid.Children.Add(search);
-            dynSettings.Controller.SearchViewModel.Visible = true;
+            dynamoViewModel.Model.SearchViewModel.Visible = true;
 
             #endregion
 
             //PACKAGE MANAGER
-            _vm.RequestPackagePublishDialog += _vm_RequestRequestPackageManagerPublish;
-            _vm.RequestManagePackagesDialog += _vm_RequestShowInstalledPackages;
-            _vm.RequestPackageManagerSearchDialog += _vm_RequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
+            dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
+            dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
-            _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
+            dynamoViewModel.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
-            _vm.RequestClose += _vm_RequestClose;
-            _vm.RequestSaveImage += _vm_RequestSaveImage;
-            _vm.SidebarClosed += _vm_SidebarClosed;
+            dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
+            dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
+            dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
 
-            dynSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
-            dynSettings.Controller.RequestTaskDialog += Controller_RequestTaskDialog;
+            dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
+            dynamoViewModel.Model.RequestTaskDialog += Controller_RequestTaskDialog;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
-            _vm.RequestUserSaveWorkflow += _vm_RequestUserSaveWorkflow;
+            dynamoViewModel.RequestUserSaveWorkflow += DynamoViewModelRequestUserSaveWorkflow;
 
-            dynSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
+            dynamoViewModel.Model.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
             //ABOUT WINDOW
-            _vm.RequestAboutWindow += _vm_RequestAboutWindow;
+            dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
             // Kick start the automation run, if possible.
-            _vm.BeginCommandPlayback(this);
+            dynamoViewModel.BeginCommandPlayback(this);
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -352,11 +356,11 @@ namespace Dynamo.Controls
         }
 
         private UI.Views.AboutWindow _aboutWindow;
-        void _vm_RequestAboutWindow(DynamoViewModel model)
+        void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
             if (_aboutWindow == null)
             {
-                _aboutWindow = new AboutWindow(dynSettings.DynamoLogger, model);
+                _aboutWindow = new AboutWindow(dynamoViewModel.Model.Logger, model);
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
@@ -367,7 +371,7 @@ namespace Dynamo.Controls
         }
 
         private PackageManagerPublishView _pubPkgView;
-        void _vm_RequestRequestPackageManagerPublish(PublishPackageViewModel model)
+        void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             if (_pubPkgView == null)
             {
@@ -383,11 +387,11 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-        void _vm_RequestShowPackageManagerSearch(object s, EventArgs e)
+        void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (_pkgSearchVM == null)
             {
-                _pkgSearchVM = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.Model.PackageManager);
             }
 
             if (_searchPkgsView == null)
@@ -404,11 +408,11 @@ namespace Dynamo.Controls
         }
 
         private InstalledPackagesView _installedPkgsView;
-        void _vm_RequestShowInstalledPackages(object s, EventArgs e)
+        void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
         {
             if (_installedPkgsView == null)
             {
-                _installedPkgsView = new InstalledPackagesView();
+                _installedPkgsView = new InstalledPackagesView(this.dynamoViewModel.Model);
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
 
@@ -419,11 +423,11 @@ namespace Dynamo.Controls
 
         void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            _vm.CopyCommand.RaiseCanExecuteChanged();
-            _vm.PasteCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
         }
 
-        void _vm_RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
+        void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
             if (e.Workspace is CustomNodeWorkspaceModel)
@@ -450,7 +454,7 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                _vm.ShowSaveDialogIfNeededAndSave(e.Workspace);
+                dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
                 e.Success = true;
             }
             else if (result == MessageBoxResult.Cancel)
@@ -466,8 +470,8 @@ namespace Dynamo.Controls
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            _vm.CopyCommand.RaiseCanExecuteChanged();
-            _vm.PasteCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
         }
         
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
@@ -488,7 +492,7 @@ namespace Dynamo.Controls
         //    PackageManagerLoginButton.IsEnabled = e.Enabled;
         //}
 
-        void _vm_RequestSaveImage(object sender, ImageSaveEventArgs e)
+        void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
@@ -507,13 +511,13 @@ namespace Dynamo.Controls
 
                 // connectors are most often within the bounding box of the nodes and notes
 
-                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes)
+                foreach (NodeModel n in dynamoViewModel.Model.CurrentWorkspace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Notes)
+                foreach (NoteModel n in dynamoViewModel.Model.CurrentWorkspace.Notes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
@@ -540,17 +544,17 @@ namespace Dynamo.Controls
                 }
                 catch
                 {
-                    dynSettings.DynamoLogger.Log("Failed to save the Workspace an image.");
+                    dynamoViewModel.Model.Logger.Log("Failed to save the Workspace an image.");
                 }
             }
         }
 
-        void _vm_RequestClose(object sender, EventArgs e)
+        void DynamoViewModelRequestClose(object sender, EventArgs e)
         {
             Close();
         }
 
-        void _vm_SidebarClosed(object sender, EventArgs e)
+        void DynamoViewModelSidebarClosed(object sender, EventArgs e)
         {
             LibraryClicked(sender, e);
         }
@@ -560,7 +564,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void _vm_RequestsFunctionNamePrompt(object sender, FunctionNamePromptEventArgs e)
+        void DynamoViewModelRequestsFunctionNamePrompt(object sender, FunctionNamePromptEventArgs e)
         {
             ShowNewFunctionDialog(e);
         }
@@ -578,7 +582,7 @@ namespace Dynamo.Controls
 
             do
             {
-                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
+                var dialog = new FunctionNamePrompt(dynamoViewModel.Model.SearchViewModel.Categories)
                 {
                     categoryBox = { Text = e.Category },
                     DescriptionInput = { Text = e.Description },
@@ -609,7 +613,7 @@ namespace Dynamo.Controls
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Name != dialog.Text && dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(dialog.Text))
+                else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 {
                     error = "A built-in node with the given name already exists.";
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
@@ -637,10 +641,10 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            if (_vm.exitInvoked)
+            if (dynamoViewModel.exitInvoked)
                 return;
 
-            var res = _vm.AskUserToSaveWorkspacesOrCancel();
+            var res = dynamoViewModel.AskUserToSaveWorkspacesOrCancel();
             if (!res)
             {
                 e.Cancel = true;
@@ -650,9 +654,9 @@ namespace Dynamo.Controls
             SizeChanged -= DynamoView_SizeChanged;
             LocationChanged -= DynamoView_LocationChanged;
 
-            if (!DynamoController.IsTestMode)
+            if (!dynamoViewModel.Model.IsTestMode)
             {
-                dynSettings.Controller.ShutDown(false);
+                dynamoViewModel.Model.ShutDown(false);
             }
 
         }
@@ -661,33 +665,33 @@ namespace Dynamo.Controls
         {
             Debug.WriteLine("Dynamo window closed.");
 
-            _vm.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
+            dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
 
             //PACKAGE MANAGER
-            _vm.RequestPackagePublishDialog -= _vm_RequestRequestPackageManagerPublish;
-            _vm.RequestManagePackagesDialog -= _vm_RequestShowInstalledPackages;
-            _vm.RequestPackageManagerSearchDialog -= _vm_RequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
+            dynamoViewModel.RequestManagePackagesDialog -= DynamoViewModelRequestShowInstalledPackages;
+            dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
-            _vm.RequestsFunctionNamePrompt -= _vm_RequestsFunctionNamePrompt;
+            dynamoViewModel.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
 
-            _vm.RequestClose -= _vm_RequestClose;
-            _vm.RequestSaveImage -= _vm_RequestSaveImage;
-            _vm.SidebarClosed -= _vm_SidebarClosed;
+            dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
+            dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
+            dynamoViewModel.SidebarClosed -= DynamoViewModelSidebarClosed;
 
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
 
-            _vm.RequestUserSaveWorkflow -= _vm_RequestUserSaveWorkflow;
+            dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
 
-            if (dynSettings.Controller != null)
+            if (dynamoViewModel.Model != null)
             {
-                dynSettings.Controller.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
-                dynSettings.Controller.RequestTaskDialog -= Controller_RequestTaskDialog;
-                dynSettings.Controller.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
+                dynamoViewModel.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
+                dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
+                dynamoViewModel.Model.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
             }
 
             //ABOUT WINDOW
-            _vm.RequestAboutWindow -= _vm_RequestAboutWindow;
+            dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
         }
 
         // the key press event is being intercepted before it can get to
@@ -696,29 +700,29 @@ namespace Dynamo.Controls
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                _vm.WatchEscapeIsDown = true;
+                dynamoViewModel.WatchEscapeIsDown = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
-                _vm.WatchEscapeIsDown = false;
-                _vm.EscapeCommand.Execute(null);
+                dynamoViewModel.WatchEscapeIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
             }
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_vm != null)
+            if (dynamoViewModel != null)
             {
-                int workspace_index = _vm.CurrentWorkspaceIndex;
+                int workspace_index = dynamoViewModel.CurrentWorkspaceIndex;
 
                 //this condition is added for shutdown when we are clearing
                 //the workspace collection
                 if (workspace_index == -1) return;
 
-                var workspace_vm = _vm.Workspaces[workspace_index];
+                var workspace_vm = dynamoViewModel.Workspaces[workspace_index];
                 workspace_vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
                 workspace_vm.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
 
@@ -802,21 +806,22 @@ namespace Dynamo.Controls
         {
             var path = (string)((MenuItem)sender).Tag;
 
-            if (_vm.IsUILocked)
-                _vm.QueueLoad(path);
+            if (dynamoViewModel.IsUILocked)
+                dynamoViewModel.QueueLoad(path);
             else
             {
-                var workspace = _vm.Model.HomeSpace;
+                var workspace = dynamoViewModel.Model.HomeSpace;
                 if (workspace.HasUnsavedChanges)
                 {
-                    if (!_vm.AskUserToSaveWorkspaceOrCancel(workspace))
+                    if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
                         return; // User has not saved his/her work.
                 }
 
-                if (dynSettings.Controller.DynamoModel.CanGoHome(null))
-                    dynSettings.Controller.DynamoModel.Home(null);
+                // KILLDYNSETTINGS - CanGoHome should live on the ViewModel
+                if (dynamoViewModel.Model.CanGoHome(null))
+                    dynamoViewModel.Model.Home(null);
 
-                _vm.OpenCommand.Execute(path);
+                dynamoViewModel.OpenCommand.Execute(path);
             }
         }
 
@@ -824,7 +829,7 @@ namespace Dynamo.Controls
         {
             BindingExpression be = ((MenuItem)sender).GetBindingExpression(MenuItem.HeaderProperty);
             WorkspaceViewModel wsvm = (WorkspaceViewModel)be.DataItem;
-            WorkspaceTabs.SelectedIndex = _vm.Workspaces.IndexOf(wsvm);
+            WorkspaceTabs.SelectedIndex = dynamoViewModel.Workspaces.IndexOf(wsvm);
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
 
@@ -1089,21 +1094,21 @@ namespace Dynamo.Controls
             _workspaceResizeTimer.IsEnabled = false;
 
             // end of timer processing
-            if (_vm == null)
+            if (dynamoViewModel == null)
                 return;
-            _vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
+            dynamoViewModel.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
 
             Debug.WriteLine("Resizing workspace children.");
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            _vm.IsMouseDown = true;
+            dynamoViewModel.IsMouseDown = true;
 		}
 
         private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            _vm.IsMouseDown = false;
+            dynamoViewModel.IsMouseDown = false;
 		}
 
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
@@ -1118,7 +1123,7 @@ namespace Dynamo.Controls
        
         private void RunButton_OnClick(object sender, RoutedEventArgs e)
         {
-            dynSettings.ReturnFocusToSearch();
+            dynamoViewModel.ReturnFocusToSearch();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
@@ -1128,14 +1133,14 @@ namespace Dynamo.Controls
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                if (_vm.Model.HomeSpace.HasUnsavedChanges && !_vm.AskUserToSaveWorkspaceOrCancel(_vm.Model.HomeSpace))
+                if (dynamoViewModel.Model.HomeSpace.HasUnsavedChanges && !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(dynamoViewModel.Model.HomeSpace))
                 {
                     return;
                 }
 
-                if (_vm.OpenCommand.CanExecute(files[0]))
+                if (dynamoViewModel.OpenCommand.CanExecute(files[0]))
                 {
-                    _vm.OpenCommand.Execute(files[0]);
+                    dynamoViewModel.OpenCommand.Execute(files[0]);
                 }
                 
             }

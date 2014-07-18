@@ -17,7 +17,7 @@ namespace Dynamo.Models
 
         }
 
-        public static WorkspaceHeader FromPath(string path)
+        public static WorkspaceHeader FromPath(DynamoModel dynamoModel, string path)
         {
             try
             {
@@ -71,11 +71,11 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                Logger.Log("There was an error opening the workbench.");
-                Logger.Log(ex);
+                dynamoModel.Logger.Log("There was an error opening the workbench.");
+                dynamoModel.Logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
-                if (DynamoController.IsTestMode)
+                if (dynamoModel.IsTestMode)
                     throw ex; // Rethrow for NUnit.
 
                 return null;

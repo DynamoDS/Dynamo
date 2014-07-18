@@ -444,7 +444,9 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
         }
 
+        // KILLDYNSETTINGS: This should be a field that throws an exception when null
         public Dispatcher UIDispatcher { get; set; }
+
         public IWatchHandler WatchHandler { get; set; }
         public IVisualizationManager VisualizationManager { get; set; }
 
@@ -467,6 +469,11 @@ namespace Dynamo.ViewModels
         internal bool CanCancelRunCmd(object parameter)
         {
             return true;
+        }
+
+        public void ReturnFocusToSearch()
+        {
+            model.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
         }
 
         internal void RunExprCmd(object parameters)
@@ -1057,7 +1064,7 @@ namespace Dynamo.ViewModels
 
         public virtual Function CreateFunction(CustomNodeDefinition customNodeDefinition)
         {
-            return new Function(customNodeDefinition);
+            return new Function(this.Model, customNodeDefinition);
         }
 
         /// <summary>
