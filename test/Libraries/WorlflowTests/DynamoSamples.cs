@@ -180,6 +180,7 @@ namespace Dynamo.Tests
             //============================================================================
             // Examples from Last Section of DYN files (there are total 6 sections)
             // This section is for Writing entire code in CBN
+            // Calling function with different argument in CBN
 
             // Writing entire code in CBN to create some Geometry object.
             string nodeID = "e4a7b57e-420d-41d1-bdef-cea7956fbd3b";
@@ -193,7 +194,6 @@ namespace Dynamo.Tests
             var cbnNodeID = "8dce8e89-1d9d-4ffe-b6ea-e7251ab1368b";
             AssertPreviewCount(cbnNodeID, 24);
 
-            // Calling function with different argument in CBN
             for (int i = 0; i <= 23; i++)
             {
                 var nurbsCurve1 = GetPreviewValueAtIndex(cbnNodeID, i) as NurbsCurve;
@@ -219,7 +219,7 @@ namespace Dynamo.Tests
             string lineNodeID = "e93fee37-1901-4162-8f73-6b5e98c1167f";
             AssertPreviewCount(lineNodeID, 6);
 
-            // There should be 6 line gets created with Shortest lacing.
+            // There should be 6 line created with Shortest lacing.
             for (int i = 0; i <= 5; i++)
             {
                 var line = GetPreviewValueAtIndex(lineNodeID, i) as Line;
@@ -230,7 +230,7 @@ namespace Dynamo.Tests
             string lineNodeID1 = "de2b1391-95e0-4b3d-b7f0-43d03d5c5b5a";
             AssertPreviewCount(lineNodeID1, 10);
 
-            // There should be 6 line gets created with Shortest lacing.
+            // There should be 10 lines created with Shortest lacing.
             for (int i = 0; i <= 9; i++)
             {
                 var line = GetPreviewValueAtIndex(lineNodeID1, i) as Line;
@@ -497,21 +497,19 @@ namespace Dynamo.Tests
             string resultPath = GetSampleDirectory() + "ImportExport\\helix.csv";
             // Although old path is a hard coded but that is not going to change 
             // because it is saved in DYN which we have added in Samples folder.
-
             filename.Value = filename.Value.Replace
                 ("C:\\ProgramData\\Dynamo\\0.7\\samples\\ImportExport\\helix.csv", resultPath);
 
             RunCurrentModel();
 
-            // Shortest Lacing
             string lineNodeID = "0cde47c6-106f-4a0a-9566-872fd23a0a20";
             AssertPreviewCount(lineNodeID, 201);
 
             // There should be 201 Points.
             for (int i = 0; i <= 200; i++)
             {
-                var line = GetPreviewValueAtIndex(lineNodeID, i) as Point;
-                Assert.IsNotNull(line);
+                var point = GetPreviewValueAtIndex(lineNodeID, i) as Point;
+                Assert.IsNotNull(point);
             }
         }
     }
