@@ -10,6 +10,8 @@
 #include "../../../../extern/OpenGL/glm/glm/gtc/matrix_transform.hpp"
 #include "../../../../extern/OpenGL/glm/glm/gtc/type_ptr.hpp"
 
+#include "gl/gl.h" // Legacy OpenGL APIs to be included last.
+
 namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 
 #define DEFGLPROC(t, n)     static t n;
@@ -18,13 +20,17 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
                                 n = ((t) wglGetProcAddress(#n));        \
                                 message.append(#n);                     \
                                 if (n == nullptr) {                     \
-                                    successful = false;                 \
                                     OutputDebugStringA(#n);             \
                                     OutputDebugStringA(" [FAILED]\n");  \
                                     message.append(" [FAILED]\n");      \
                                 } else {                                \
                                     message.append(" [SUCEEDED]\n");    \
                                 }                                       \
+                            }
+
+#define GETLEGACYPROC(n)    {                                           \
+                                if (n == nullptr)                       \
+                                    n = ::n;                            \
                             }
 
     class GL
@@ -34,8 +40,6 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         {
             // These values are to be populated by 'GETGLPROC' macro.
             std::string message;
-            bool successful = true;
-
             OutputDebugString(L"\nBegin OpenGL Initialization...\n");
 
             GETGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
@@ -83,11 +87,21 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
             GETGLPROC(PFNGLBLENDFUNCSEPARATEPROC,           glBlendFuncSeparate);
             GETGLPROC(PFNGLPOINTSIZEPROC,                   glPointSize);
 
+            GETLEGACYPROC(glGetString);
+            GETLEGACYPROC(glViewport);
+            GETLEGACYPROC(glClear);
+            GETLEGACYPROC(glClearColor);
+            GETLEGACYPROC(glPointSize);
+            GETLEGACYPROC(glGetIntegerv);
+            GETLEGACYPROC(glEnable);
+            GETLEGACYPROC(glDisable);
+            GETLEGACYPROC(glPolygonMode);
+
             auto pMessageData = message.c_str();
             OutputDebugStringA(pMessageData);
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
 
-            return successful;
+            return true;
         }
 
         DEFGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
