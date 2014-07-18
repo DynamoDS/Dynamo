@@ -1,11 +1,12 @@
 
 #include "stdafx.h"
-#include "Interfaces.h"
+#include "Bloodstone.h"
 #include "NodeSceneData.h"
 
 using namespace Dynamo::Bloodstone;
 
 NodeSceneData::NodeSceneData(const std::wstring& nodeId) :
+    mRenderMode(RenderMode::Shaded),
     mNodeId(nodeId),
     mNodeSelected(false)
 {
@@ -23,16 +24,9 @@ const std::wstring NodeSceneData::GetNodeId(void) const
     return this->mNodeId;
 }
 
-void NodeSceneData::ClearVertexBuffers(void)
+void NodeSceneData::GetBoundingBox(BoundingBox* pBoundingBox) const
 {
-    auto iterator = mVertexBuffers.begin();
-    for (; iterator != mVertexBuffers.end(); ++iterator) {
-        auto pVertexBuffer = *iterator;
-        delete pVertexBuffer;
-    }
-
-    mVertexBuffers.clear();
-    mBoundingBox.Invalidate();
+    (*pBoundingBox) = mBoundingBox;
 }
 
 bool NodeSceneData::GetSelected(void) const
@@ -59,6 +53,28 @@ void NodeSceneData::SetColor(float red, float green, float blue, float alpha)
     mNodeRgbaColor[1] = green;
     mNodeRgbaColor[2] = blue;
     mNodeRgbaColor[3] = alpha;
+}
+
+RenderMode NodeSceneData::GetRenderMode(void) const
+{
+    return this->mRenderMode;
+}
+
+void NodeSceneData::SetRenderMode(RenderMode renderMode)
+{
+    this->mRenderMode = renderMode;
+}
+
+void NodeSceneData::ClearVertexBuffers(void)
+{
+    auto iterator = mVertexBuffers.begin();
+    for (; iterator != mVertexBuffers.end(); ++iterator) {
+        auto pVertexBuffer = *iterator;
+        delete pVertexBuffer;
+    }
+
+    mVertexBuffers.clear();
+    mBoundingBox.Invalidate();
 }
 
 void NodeSceneData::AppendVertexBuffer(IVertexBuffer* pVertexBuffer)
@@ -102,9 +118,4 @@ void NodeSceneData::Render(IGraphicsContext* pGraphicsContext, Dimensionality di
 
         pGraphicsContext->RenderVertexBuffer(pVertexBuffer);
     }
-}
-
-void NodeSceneData::GetBoundingBox(BoundingBox* pBoundingBox) const
-{
-    (*pBoundingBox) = mBoundingBox;
 }

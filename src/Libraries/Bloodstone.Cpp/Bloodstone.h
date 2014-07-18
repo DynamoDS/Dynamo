@@ -22,6 +22,7 @@ namespace Dynamo { namespace Bloodstone {
     typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, Ds::IRenderPackage^>> RenderPackages;
 
     public enum class SelectMode { AddToExisting, RemoveFromExisting, ClearExisting };
+    public enum class RenderMode { Shaded, Primitive };
 
     public ref class VisualizerWnd
     {
@@ -70,6 +71,7 @@ namespace Dynamo { namespace Bloodstone {
         void UpdateNodeGeometries(RenderPackages^ geometries);
         void RemoveNodeGeometries(Strings^ identifiers);
         void SelectNodes(Strings^ identifiers, SelectMode selectMode);
+        void SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode);
 
     private:
         void RenderGeometries(const std::vector<NodeSceneData *>& geometries);

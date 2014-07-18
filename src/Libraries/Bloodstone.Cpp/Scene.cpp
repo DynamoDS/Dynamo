@@ -216,6 +216,22 @@ void Scene::SelectNodes(Strings^ identifiers, SelectMode selectMode)
     mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
+void Scene::SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode)
+{
+    for each (System::String^ identifier in identifiers)
+    {
+        System::String^ nodeId = identifier->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+
+        auto found = mpNodeSceneData->find(identifier);
+        if (found == mpNodeSceneData->end())
+            continue; // The node does not have any associated geometries.
+
+        NodeSceneData* pNodeSceneData = found->second;
+        pNodeSceneData->SetRenderMode(renderMode);
+    }
+}
+
 void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
 {
     float alpha = 1.0f;
@@ -246,7 +262,9 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::Low);
 
         // Draw primitives of higher dimensionality later (e.g. triangles).
-        controlParams[0] = 3.0f;
+        if (pNodeSceneData->GetRenderMode() == RenderMode::Shaded)
+            controlParams[0] = 3.0f;
+
         mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::High);
     }
