@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -22,12 +23,11 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class InstalledPackagesView : Window
     {
-        private readonly DynamoModel dynamoModel;
+        private readonly DynamoModel viewModel;
 
-        public InstalledPackagesView(DynamoModel dynamoModel)
+        public InstalledPackagesView(InstalledPackagesViewModel viewModel)
         {
-            this.dynamoModel = dynamoModel;
-            this.DataContext = dynamoModel.Loader.PackageLoader;
+            this.DataContext = viewModel;
             InitializeComponent();
         }
 

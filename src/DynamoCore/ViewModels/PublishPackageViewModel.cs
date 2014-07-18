@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
@@ -37,9 +38,7 @@ namespace Dynamo.PackageManager
 
         #region Properties
 
-        public Dispatcher Dispatcher { get; internal set; }
-
-        public DynamoModel DynamoModel { get; set; }
+        private readonly DynamoViewModel dynamoViewModel;
 
         /// <summary>
         /// A event called when publishing was a success
@@ -59,7 +58,7 @@ namespace Dynamo.PackageManager
                 {
                     this._uploading = value;
                     this.RaisePropertyChanged("Uploading");
-                    Dispatcher.BeginInvoke(
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
                         (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -149,7 +148,7 @@ namespace Dynamo.PackageManager
                 {
                     this._name = value;
                     this.RaisePropertyChanged("Name");
-                    this.Dispatcher.BeginInvoke(
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -215,7 +214,7 @@ namespace Dynamo.PackageManager
                 {
                     this._Description = value;
                     this.RaisePropertyChanged("Description");
-                    this.Dispatcher.BeginInvoke(
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -277,7 +276,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MinorVersion = value;
                     this.RaisePropertyChanged("MinorVersion");
-                    this.Dispatcher.BeginInvoke(
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -300,7 +299,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._BuildVersion = value;
                     this.RaisePropertyChanged("BuildVersion");
-                    this.Dispatcher.BeginInvoke(
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -323,7 +322,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MajorVersion = value;
                     this.RaisePropertyChanged("MajorVersion");
-                    this.Dispatcher.BeginInvoke(
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -407,42 +406,37 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="client"> Reference to to the PackageManagerClient object for the app </param>
-        public PublishPackageViewModel( DynamoModel dynamoModel, Dispatcher dispatcher )
+        public PublishPackageViewModel( DynamoViewModel dynamoViewModel )
         {
-            this.Dispatcher = dispatcher;
-            this.DynamoModel = dynamoModel;
-
+            this.dynamoViewModel = dynamoViewModel;
             this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.Dependencies = new ObservableCollection<PackageDependency>();
         }
 
-        public static PublishPackageViewModel FromLocalPackage(DynamoModel dynamoModel, Dispatcher dispatcher, Package l)
+        public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
         {
-            var vm = new PublishPackageViewModel(dynamoModel, dispatcher)
-                {
-                    Group = l.Group,
-                    Description = l.Description,
-                    Keywords = l.Keywords != null ? String.Join(" ", l.Keywords ) : ""
-                };
-
-            vm.FunctionDefinitions =
-                l.LoadedCustomNodes.Select(x => dynamoModel.CustomNodeManager.GetFunctionDefinition(x.Guid)).ToList();
-
-            if (l.VersionName != null)
+            var vm = new PublishPackageViewModel(dynamoViewModel)
             {
-                var parts = l.VersionName.Split('.');
-                if (parts.Count() == 3)
-                {
-                    vm.MajorVersion = parts[0];
-                    vm.MinorVersion = parts[1];
-                    vm.BuildVersion = parts[2];
-                }
-            }
+                Group = l.Group,
+                Description = l.Description,
+                Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
+                FunctionDefinitions =
+                    l.LoadedCustomNodes.Select(
+                        x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
+                        .ToList(),
+                Name = l.Name,
+                Package = l
+            };
 
-            vm.Name = l.Name;
-            vm.Package = l;
+            if (l.VersionName == null) return vm;
 
+            var parts = l.VersionName.Split('.');
+            if (parts.Count() != 3) return vm;
+
+            vm.MajorVersion = parts[0];
+            vm.MinorVersion = parts[1];
+            vm.BuildVersion = parts[2];
             return vm;
 
         }        
@@ -509,9 +503,9 @@ namespace Dynamo.PackageManager
             var files =
                 allFuncs.Select(f => f.WorkspaceModel.FileName)
                         .Where(p =>
-                                (this.DynamoModel.Loader.PackageLoader.IsUnderPackageControl(p) &&
-                                (this.DynamoModel.Loader.PackageLoader.GetOwnerPackage(p).Name == this.Name) || 
-                                !this.DynamoModel.Loader.PackageLoader.IsUnderPackageControl(p)));
+                                (this.dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p) &&
+                                (this.dynamoViewModel.Model.Loader.PackageLoader.GetOwnerPackage(p).Name == this.Name) || 
+                                !this.dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p)));
 
             // union with additional files
             files = files.Union(this.AdditionalFiles);
@@ -526,7 +520,7 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<PackageDependency> GetAllDependencies()
         {
-            var pkgLoader = this.DynamoModel.Loader.PackageLoader;
+            var pkgLoader = this.dynamoViewModel.Model.Loader.PackageLoader;
 
             // get all of dependencies from custom nodes and additional files
             var allFilePackages =
@@ -559,14 +553,14 @@ namespace Dynamo.PackageManager
         private IEnumerable<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
         {
             // TODO: include descriptions for all compiled nodes
-            var pkgLoader = this.DynamoModel.Loader.PackageLoader;
+            var pkgLoader = this.dynamoViewModel.Model.Loader.PackageLoader;
 
             // collect the name-description pairs for every custom node
             return
                 AllFuncDefs()
                     .Where(p =>
                                 (pkgLoader.IsUnderPackageControl(p) &&
-                                pkgLoader.GetOwnerPackage(p).Name == this.Name) || !DynamoModel.Loader.PackageLoader.IsUnderPackageControl(p))
+                                pkgLoader.GetOwnerPackage(p).Name == this.Name) || !dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p))
                         .Select(x => new Tuple<string, string>(x.WorkspaceModel.Name, !String.IsNullOrEmpty(x.WorkspaceModel.Description) ? x.WorkspaceModel.Description : "No description provided" ));
         }
 
@@ -596,9 +590,9 @@ namespace Dynamo.PackageManager
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(this.DynamoModel.CurrentWorkspace.FileName))
+            if (!string.IsNullOrEmpty(this.dynamoViewModel.Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(this.DynamoModel.CurrentWorkspace.FileName);
+                var fi = new FileInfo(this.dynamoViewModel.Model.CurrentWorkspace.FileName);
                 fDialog.InitialDirectory = fi.DirectoryName;
             }
             else // use the definitions directory
@@ -612,14 +606,14 @@ namespace Dynamo.PackageManager
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
 
-                var nodeInfo = this.DynamoModel.CustomNodeManager.AddFileToPath(fDialog.FileName);
+                var nodeInfo = this.dynamoViewModel.Model.CustomNodeManager.AddFileToPath(fDialog.FileName);
                 if (nodeInfo != null)
                 {
                     // add the new packages folder to path
-                    this.DynamoModel.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(fDialog.FileName));
-                    this.DynamoModel.CustomNodeManager.UpdateSearchPath();
+                    this.dynamoViewModel.Model.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(fDialog.FileName));
+                    this.dynamoViewModel.Model.CustomNodeManager.UpdateSearchPath();
 
-                    var funcDef = this.DynamoModel.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                    var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
 
                     if (funcDef != null && this.FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                     {
@@ -645,7 +639,7 @@ namespace Dynamo.PackageManager
             {
                 var newpkg = Package == null;
 
-                Package = Package ?? new Package("", this.Name, this.FullVersion);
+                Package = Package ?? new Package(this.dynamoViewModel.Model, "", this.Name, this.FullVersion);
 
                 Package.VersionName = FullVersion;
                 Package.Description = Description;
@@ -659,9 +653,9 @@ namespace Dynamo.PackageManager
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
 
-                if (newpkg) this.DynamoModel.Loader.PackageLoader.LocalPackages.Add(Package);
+                if (newpkg) this.dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
 
-                var handle = this.DynamoModel.PackageManagerClient.Publish(Package, files, IsNewVersion);
+                var handle = this.dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion);
 
                 if (handle == null)
                     throw new Exception("Failed to authenticate.  Are you logged in?");
@@ -673,7 +667,7 @@ namespace Dynamo.PackageManager
             catch (Exception e)
             {
                 ErrorString = e.Message;
-                this.DynamoModel.Logger.Log(e);
+                this.dynamoViewModel.Model.Logger.Log(e);
             }
 
         }

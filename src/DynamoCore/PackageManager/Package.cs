@@ -68,14 +68,6 @@ namespace Dynamo.PackageManager
 
         public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this);  } }
 
-        public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
-        public DelegateCommand GetLatestVersionCommand { get; set; }
-        public DelegateCommand PublishNewPackageVersionCommand { get; set; }
-        public DelegateCommand UninstallCommand { get; set; }
-        public DelegateCommand PublishNewPackageCommand { get; set; }
-        public DelegateCommand DeprecateCommand { get; set; }
-        public DelegateCommand UndeprecateCommand { get; set; }
-
         public ObservableCollection<Type> LoadedTypes { get; set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
         public ObservableCollection<PackageDependency> Dependencies { get; set; }
@@ -84,6 +76,7 @@ namespace Dynamo.PackageManager
 
         public Package(DynamoModel dynamoModel, string directory, string name, string versionName)
         {
+            this.dynamoModel = dynamoModel;
             this.Loaded = false;
             this.RootDirectory = directory;
             this.Name = name;
@@ -91,19 +84,6 @@ namespace Dynamo.PackageManager
             this.LoadedTypes = new ObservableCollection<Type>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
-
-            ToggleTypesVisibleInManagerCommand = new DelegateCommand(ToggleTypesVisibleInManager, CanToggleTypesVisibleInManager);
-            GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
-            PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
-            PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
-            UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
-            DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
-            UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
-
-            dynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            dynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            dynamoModel.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
-            dynamoModel.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
         }
 
         public static Package FromDirectory(string rootPath, DynamoModel dynamoModel)
@@ -225,7 +205,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void RefreshCustomNodesFromDirectory()
+        internal void RefreshCustomNodesFromDirectory()
         {
             this.LoadedCustomNodes.Clear();
             dynamoModel.CustomNodeManager
@@ -234,99 +214,6 @@ namespace Dynamo.PackageManager
                         .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
 
-        private void Uninstall()
-        {
-            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.No) return;
-
-            try
-            {
-                UninstallCore();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private bool CanUninstall()
-        {
-            return !InUse();
-        }
-
-        private void Deprecate()
-        {
-            var res = MessageBox.Show("Are you sure you want to deprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.No) return;
-
-            dynamoModel.PackageManagerClient.Deprecate(this.Name);
-        }
-
-        private bool CanDeprecate()
-        {
-            return true;
-        }
-
-        private void Undeprecate()
-        {
-            var res = MessageBox.Show("Are you sure you want to undeprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.No) return;
-
-            dynamoModel.PackageManagerClient.Undeprecate(this.Name);
-        }
-
-        private bool CanUndeprecate()
-        {
-            return true;
-        }
-
-        private void PublishNewPackageVersion()
-        {
-            this.RefreshCustomNodesFromDirectory();
-            var vm = PublishPackageViewModel.FromLocalPackage(this);
-            vm.IsNewVersion = true;
-
-            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private bool CanPublishNewPackageVersion()
-        {
-            return true;
-        }
-
-        private void PublishNewPackage()
-        {
-            this.RefreshCustomNodesFromDirectory();
-            var vm = PublishPackageViewModel.FromLocalPackage(this);
-            vm.IsNewVersion = false;
-
-            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private bool CanPublishNewPackage()
-        {
-            return true;
-        }
-
-        private void GetLatestVersion()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool CanGetLatestVersion()
-        {
-            return false;
-        }
-
-        private void ToggleTypesVisibleInManager()
-        {
-            this.TypesVisibleInManager = !this.TypesVisibleInManager;
-        }
-
-        private bool CanToggleTypesVisibleInManager()
-        {
-            return true;
-        }
         
     }
 }
