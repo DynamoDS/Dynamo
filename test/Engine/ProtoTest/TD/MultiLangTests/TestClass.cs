@@ -535,13 +535,12 @@ x1 = xx.x;
 x2 = 3;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object v1 = null;
-            thisTest.Verify("x1", v1);
-            thisTest.Verify("xx", v1);
+            thisTest.Verify("x1", new object[]{1});
+            thisTest.AssertPointer("xx");
             thisTest.Verify("x2", 3);
         }
 
-        [Test]
+        [Test] 
         [Category("SmokeTest")]
         public void T15_Class_Constructor_Negative_1467598()
         {
@@ -567,9 +566,8 @@ x1 = xx.x;
 x2 = 3;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object v1 = null;
-            thisTest.Verify("x1", v1);
-            thisTest.Verify("xx", v1);
+            thisTest.Verify("x1", new object[]{1});
+            thisTest.AssertPointer("xx");
             thisTest.Verify("x2", 3);
         }
 
@@ -1837,9 +1835,10 @@ t1 = a.x1;
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T43_Defect_1461479_3()
         {
-            Assert.Fail("1461984 - Sprint 19 : Rev 1880 : Update issue with static properties ");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3949
 
             string code = @"
 class A
@@ -2734,8 +2733,6 @@ x2 = derivedpoint.B;
         [Category("SmokeTest")]
         public void T53_Undefined_Class_As_Parameter_1463738_3()
         {
-            //Assert.Fail("1467236 - Sprint25: rev 3418 : REGRESSION : Cyclic dependency detected in updated on class instances inside function calls");
-
             string code = @"
 class Parent
 {
@@ -2772,8 +2769,8 @@ test2 = modify( derivedpoint );
 x1 = oldPoint.A;
 x2 = derivedpoint.B;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object n1 = null;
-            thisTest.Verify("x1", n1);
+            thisTest.Verify("test1", null);
+            thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 9);
 
         }
@@ -2895,9 +2892,6 @@ x2 = derivedpoint.B;
         [Test]
         public void T53_Undefined_Class_As_Parameter_1463738_7()
         {
-            //Assert.Fail("1467097 - Sprint 24 - Rev 2761 - if var is used as a argument to function and call function with defined class it goes into a loop and hangs DS ");
-            Assert.Fail("1467236 - Sprint25: rev 3418 : REGRESSION : Cyclic dependency detected in updated on class instances inside function calls");
-
             string code = @"
 class Parent
 {
@@ -3133,7 +3127,6 @@ y = test.foo (1);
         [Test]
         public void T55_Defect_1460616()
         {
-            //Assert.Fail("1467189 - Sprint24 : rev 3181 : REGRESSION : DS goes into infinite loop with class having 'this' pointer");
             string code = @"
 class A
 { 
@@ -3180,9 +3173,11 @@ x3 = a3.x;
         }
 
         [Test]
+        [Category("Failing")]
         public void TV55_Defect_1460616_1()
         {
-            Assert.Fail("1467189 - Sprint24 : rev 3181 : REGRESSION : DS goes into infinite loop with class having 'this' pointer");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3952
+            Assert.Fail("MAGN-3952 DS goes into infinite loop with class having 'this' pointer");
             string code = @"
 class A
 { 
@@ -4308,7 +4303,7 @@ test = pointGroup.X;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
             Object n1 = null;
-            thisTest.Verify("c", 1);
+            thisTest.Verify("c", 0);
             thisTest.Verify("c1", n1);
         }
 
@@ -4401,9 +4396,11 @@ v = A.execute(arr);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T78_Defect_1467146_Class_Update_With_Replication_4()
         {
-            string str = "DNL-1467475 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
+            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
             string code = @"class A
 {
 static def execute(b : A)
@@ -4634,6 +4631,7 @@ t = a.x;
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T83_Defect_1463232_3()
         {
             String code =
@@ -4646,8 +4644,9 @@ a = {A.A(),A.A()};
 t = a.x;
 }
 ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1694
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            string errmsg = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            string errmsg = "MAGN-1694 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("t", new Object[] { n1, n1 });
@@ -4778,6 +4777,7 @@ a.y = 5;
         }
 
         [Test]
+        [Category("Failing")]
         public void T85_Defect_1467247_3()
         {
             string code = @"
@@ -4797,6 +4797,7 @@ a = A.A();
 a1 = a.foo();
 a.x = 4;
 ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1507
             string errmsg = "1467254 - Sprint25: rev 3468 : REGRESSION: class property update is not propagating";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a1", 5);
@@ -5098,11 +5099,13 @@ r = x.foo();
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T92_default_argument_1467384()
         {
             String code =
             @"class test
                 {
+                    t : int;
                     def test(t : int = 4)
                     {
                         return = t;
@@ -5110,7 +5113,8 @@ r = x.foo();
                 }
                 a = test.test().t;
                 ";
-            string error = " 1467384  - Sprint 27 - Rev 4210 default arguments are not working inside class ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3950
+            string error = "MAGN-3950 Default arguments are not working for class member";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("a", 4, 0);
         }
@@ -5343,7 +5347,7 @@ r = b.foo();
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("r", null);
+            thisTest.Verify("r", 200);
 
         }
 
@@ -5379,7 +5383,7 @@ r = b.foo();
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("r", null);
+            thisTest.Verify("r", 200);
         }
 
         [Test]
@@ -5396,9 +5400,9 @@ class test
 a = test.test();
 a.foo = 1;
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5418,9 +5422,9 @@ a = test.test();
     a.foo = 1;
 }
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5433,9 +5437,9 @@ class test{    }
 a = test.test();
 a.b = 1;
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Class 'test' does not have a property 'b'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5475,9 +5479,9 @@ class test1 extends test
 a = test.test();
 a.foo = 1;
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5502,9 +5506,9 @@ a = test.test();
 a.foo = 1;
 }
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5525,9 +5529,9 @@ class test1 extends test
 a = test1.test1();
 a.foo = 1;
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5552,9 +5556,9 @@ a = test1.test1();
 a.foo = 1;
 }
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5579,9 +5583,9 @@ def foo1()
 a = foo1();
 a.foo = 1;
 ";
-            string error = "1467443 Error on incorrect set property is not helpful ";
+            string error = "Class 'test' does not have a property 'foo'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -6010,6 +6014,7 @@ r = a.x;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T99_1467469
             ()
         {
@@ -6022,7 +6027,8 @@ b = B.B();
 c = 1 == 2;
 d = a == b;
             ";
-            string error = "";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3951
+            string error = "MAGN-3951 Equality of Pointer types not working properly";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("d", false);
             thisTest.Verify("c", false);
@@ -6106,6 +6112,7 @@ r2 = b1.count;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T95_1467421_4()
         {
             String code =
@@ -6125,7 +6132,8 @@ b1 = A.A();
 r = a1.count;
 r2 = b1.count;
 ";
-            string error = "";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3949
+            string error = "MAGN-3949 Crash in language with static property update case";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { 4, 5, 6 });
             thisTest.Verify("r2", new object[] { 4, 5, 6 });
@@ -6519,6 +6527,7 @@ test2 = wall[0].func(wall[1]);  // 3; expected test1=test2
         }
 
         [Test]
+        [Category("Failing")]
         public void T98_Class_Static_Property_Using_Global_Variable()
         {
             String code =
@@ -6530,7 +6539,8 @@ class A
 }
 test1 = A.a;
 ";
-            string error = "DNL-1467557 Update issue : when a static property is defined using a global variable, the value is  not getting updated";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1512
+            string error = "MAGN-1512 Update issue : when a static property is defined using a global variable, the value is  not getting updated";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", 3);
         }

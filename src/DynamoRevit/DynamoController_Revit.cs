@@ -176,6 +176,15 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
+            SetupPython();
+
+            Runner = new DynamoRunner_Revit(this);
+
+            reactor = Reactor.GetInstance();
+        }
+
+        private void SetupPython()
+        {
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
             //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((IList<Element> elements) => elements.Select(e=>e.ToDSType(true)));
@@ -190,13 +199,9 @@ namespace Dynamo
                 var marshaler = new DataMarshaler();
                 marshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
 
-                Func<WrappedElement, object> unwrap = marshaler.Marshal;
+                Func<object, object> unwrap = marshaler.Marshal;
                 scope.SetVariable("UnwrapElement", unwrap);
             };
-
-            Runner = new DynamoRunner_Revit(this);
-
-            reactor = Reactor.GetInstance();
         }
 
         public RevitServicesUpdater Updater { get; private set; }
