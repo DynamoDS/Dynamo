@@ -5,6 +5,9 @@ using System.Text;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using DynamoWebServer.Responses;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -22,8 +25,6 @@ namespace Dynamo.Messages
             };
         }
 
-        private Message message;
-
         public MessageHandler(Message msg, string sessionId)
         {
             this.message = msg;
@@ -32,6 +33,7 @@ namespace Dynamo.Messages
 
         #region Class Data Members
 
+        private Message message;
         public string SessionId { get; private set; }
 
         /// <summary>
@@ -80,17 +82,28 @@ namespace Dynamo.Messages
 
         internal void Execute(DynamoViewModel dynamoViewModel)
         {
-            if (message != null && message.Commands != null)
+            if (message is RecordableCommandsMessage)
             {
+                var recordableCommandMsg = (RecordableCommandsMessage) message;
+
                 var manager = dynSettings.Controller.VisualizationManager;
-                foreach (var c in message.Commands)
+                foreach (var command in recordableCommandMsg.Commands)
                 {
-                    if (c is DynamoViewModel.RunCancelCommand)
+                    if (command is DynamoViewModel.RunCancelCommand)
                     {
                         manager.RenderComplete += ModifiedNodesData;
                     }
-                    c.Execute(dynamoViewModel);
+                    command.Execute(dynamoViewModel);
                 }
+                return;
+            }
+
+            if (message is ModelsListMessage)
+            {
+                OnResultReady(this, new ResultReadyEventArgs(new ModelsListResponse
+                {
+                    Models = dynSettings.Controller.SearchViewModel.GetAllNodeModelsWithCategories()
+                }));
             }
         }
 
@@ -142,8 +155,10 @@ namespace Dynamo.Messages
                 nodes.Add(execNode);
             }
 
-            string nodesInfoMessage = JsonConvert.SerializeObject(nodes, JsonSettings);
-            OnResultReady(this, new ResultReadyEventArgs(nodesInfoMessage));
+            OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
+            {
+                Nodes = nodes
+            }));
             dynSettings.Controller.VisualizationManager.RenderComplete -= ModifiedNodesData;
         }
 

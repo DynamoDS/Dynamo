@@ -83,11 +83,7 @@ namespace Dynamo.Utilities
 
         private static void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
         {
-            WebSocketServer.SendResponse(new ComputationResponse()
-            {
-                Status = ResponceStatuses.Success,
-                Nodes = e.Message
-            }, e.SessionID);
+            WebSocketServer.SendResponse(e.Response, e.SessionID);
         }
 
         private static void LogInfo(string message, string sessionId)

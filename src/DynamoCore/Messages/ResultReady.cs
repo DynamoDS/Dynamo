@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+using DynamoWebServer.Responses;
 
 namespace Dynamo.Messages
 {
@@ -9,12 +8,12 @@ namespace Dynamo.Messages
 
     public class ResultReadyEventArgs : EventArgs
     {
-        public ResultReadyEventArgs(string message) 
+        public ResultReadyEventArgs(Response response) 
         {
-            this.Message = message;
+            this.Response = response;
         }
 
-        public string Message { get; private set; }
+        public Response Response { get; private set; }
         public string SessionID { get; set; }
     }
 }

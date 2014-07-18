@@ -1,7 +1,9 @@
-﻿namespace DynamoWebServer.Responses
+﻿using System.Collections.Generic;
+
+namespace DynamoWebServer.Responses
 {
     public class ComputationResponse : Response
     {
-        public string Nodes { get; set; }
+        public IEnumerable<object> Nodes { get; set; }
     }
 }

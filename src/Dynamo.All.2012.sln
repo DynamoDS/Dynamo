@@ -107,14 +107,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloodRunner", "FloodRunner\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWebServer", "DynamoWebServer\DynamoWebServer.csproj", "{55636E8F-53B1-4E27-A0D7-68A00DA13C92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "DynamoUtilitiesTests\DynamoUtilitiesTests.csproj", "{AB735028-22B0-4083-9CC5-805C582818EA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServiceSandbox", "DynamoServiceSandbox\DynamoServiceSandbox.csproj", "{7EB124D0-96D6-43E5-92A1-59B4A7D6FAD8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{91263D6D-D36F-4800-8CF5-B29999A1F03E} = {91263D6D-D36F-4800-8CF5-B29999A1F03E}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoService", "DynamoService\DynamoService.csproj", "{91263D6D-D36F-4800-8CF5-B29999A1F03E}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLayout", "Engine\GraphLayout\GraphLayout.csproj", "{C2595B04-856D-40AE-8B99-4804C7A70708}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "DynamoUtilitiesTests\DynamoUtilitiesTests.csproj", "{AB735028-22B0-4083-9CC5-805C582818EA}"
