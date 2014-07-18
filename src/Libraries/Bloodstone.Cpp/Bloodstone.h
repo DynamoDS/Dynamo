@@ -34,6 +34,7 @@ namespace Dynamo { namespace Bloodstone {
         static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Public class methods.
+        bool IsGraphicsContextCreated(void);
         void ShowWindow(bool show);
         void RequestFrameUpdate(void);
         HWND GetWindowHandle(void);
@@ -44,7 +45,7 @@ namespace Dynamo { namespace Bloodstone {
 
         // Private class instance methods.
         VisualizerWnd();
-        void Initialize(HWND hWndParent, int width, int height);
+        bool Initialize(HWND hWndParent, int width, int height);
         void Uninitialize(void);
         LRESULT ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lParam);
         LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -53,6 +54,7 @@ namespace Dynamo { namespace Bloodstone {
         static VisualizerWnd^ mVisualizer = nullptr;
 
         // Class instance data members.
+        bool mGraphicsContextCreated;
         HWND mhWndVisualizer;
         Scene^ mpScene;
         IGraphicsContext* mpGraphicsContext;
