@@ -188,7 +188,7 @@ void GraphicsContext::BeginRenderFrameCore(HDC deviceContext) const
     ::GetClientRect(this->mRenderWindow, &rcClient);
 
     GL::glViewport(0, 0, rcClient.right, rcClient.bottom);
-    GL::glClearColor(0.117647f, 0.117647f, 0.117647f, 1.0f); // RGB(30, 30, 30)
+    GL::glClearColor(0.941176f, 0.941176f, 0.941176f, 1.0f); // #F0F0F0
     GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 

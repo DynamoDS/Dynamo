@@ -1063,8 +1063,9 @@
                       Height="5"
                       Width="Auto"
                       HorizontalAlignment="Stretch" 
-                      VerticalAlignment="Stretch" 
-                      Margin="0" Background="Transparent"
+                      VerticalAlignment="Stretch"
+                      Margin="0"
+                      Background="Gray"
                       Cursor="/DynamoCore;component/UI/Images/resize_vertical.cur"/>
 
         <Border Name="visualizerHostElement"
