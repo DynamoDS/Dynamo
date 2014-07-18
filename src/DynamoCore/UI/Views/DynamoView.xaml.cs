@@ -389,7 +389,8 @@ namespace Dynamo.Controls
                     item => item.Key.ToString(), item => item.Value);
 
             var scene = visualizer.CurrentVisualizer.GetScene();
-            scene.UpdateNodeGeometries(geometries);
+            if (scene != null)
+                scene.UpdateNodeGeometries(geometries);
         }
 
 #endif
@@ -522,25 +523,27 @@ namespace Dynamo.Controls
         {
 #if BLOODSTONE
             var scene = visualizer.CurrentVisualizer.GetScene();
-
-            switch (e.Action)
+            if (scene != null)
             {
-                case NotifyCollectionChangedAction.Add:
-                    var list = e.NewItems.OfType<NodeModel>().ToList();
-                    var nodes = list.Select(n => n.GUID.ToString());
-                    scene.SelectNodes(nodes, Dynamo.Bloodstone.SelectMode.AddToExisting);
-                    break;
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        var list = e.NewItems.OfType<NodeModel>().ToList();
+                        var nodes = list.Select(n => n.GUID.ToString());
+                        scene.SelectNodes(nodes, Dynamo.Bloodstone.SelectMode.AddToExisting);
+                        break;
 
-                case NotifyCollectionChangedAction.Remove:
-                    var old = e.OldItems.OfType<NodeModel>().ToList();
-                    var removed = old.Select(n => n.GUID.ToString());
-                    scene.SelectNodes(removed, Dynamo.Bloodstone.SelectMode.RemoveFromExisting);
-                    break;
+                    case NotifyCollectionChangedAction.Remove:
+                        var old = e.OldItems.OfType<NodeModel>().ToList();
+                        var removed = old.Select(n => n.GUID.ToString());
+                        scene.SelectNodes(removed, Dynamo.Bloodstone.SelectMode.RemoveFromExisting);
+                        break;
 
-                case NotifyCollectionChangedAction.Reset:
-                    var empty = new List<string>(); // Empty node list.
-                    scene.SelectNodes(empty, Dynamo.Bloodstone.SelectMode.ClearExisting);
-                    break;
+                    case NotifyCollectionChangedAction.Reset:
+                        var empty = new List<string>(); // Empty node list.
+                        scene.SelectNodes(empty, Dynamo.Bloodstone.SelectMode.ClearExisting);
+                        break;
+                }
             }
 #endif
             _vm.CopyCommand.RaiseCanExecuteChanged();

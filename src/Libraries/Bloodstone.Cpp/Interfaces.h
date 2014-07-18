@@ -448,9 +448,9 @@ namespace Dynamo { namespace Bloodstone {
         {
         }
 
-        void Initialize(HWND hWndOwner)
+        bool Initialize(HWND hWndOwner)
         {
-            this->InitializeCore(hWndOwner);
+            return this->InitializeCore(hWndOwner);
         }
 
         void Uninitialize(void)
@@ -516,7 +516,7 @@ namespace Dynamo { namespace Bloodstone {
         }
 
     protected:
-        virtual void InitializeCore(HWND hWndOwner) = 0;
+        virtual bool InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
         virtual ICamera* GetDefaultCameraCore(void) const = 0;
 

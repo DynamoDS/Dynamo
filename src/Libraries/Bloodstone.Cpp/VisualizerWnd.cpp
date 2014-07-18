@@ -23,7 +23,8 @@ System::IntPtr VisualizerWnd::Create(System::IntPtr hWndParent, int width, int h
     {
         auto hParent = ((HWND) hWndParent.ToPointer());
         VisualizerWnd::mVisualizer = gcnew VisualizerWnd();
-        VisualizerWnd::mVisualizer->Initialize(hParent, width, height);
+        if (VisualizerWnd::mVisualizer->Initialize(hParent, width, height))
+			VisualizerWnd::mVisualizer->mGraphicsContextCreated = true;
     }
 
     return System::IntPtr(VisualizerWnd::mVisualizer->GetWindowHandle());
@@ -48,6 +49,11 @@ LRESULT VisualizerWnd::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         return ::DefWindowProc(hWnd, msg, wParam, lParam);
 
     return VisualizerWnd::mVisualizer->ProcessMessage(hWnd, msg, wParam, lParam);
+}
+
+bool VisualizerWnd::IsGraphicsContextCreated(void)
+{
+	return this->mGraphicsContextCreated;
 }
 
 void VisualizerWnd::ShowWindow(bool show)
@@ -79,13 +85,14 @@ IGraphicsContext* VisualizerWnd::GetGraphicsContext(void)
 }
 
 VisualizerWnd::VisualizerWnd() : 
+	mGraphicsContextCreated(false),
     mhWndVisualizer(nullptr),
     mpScene(nullptr),
     mpGraphicsContext(nullptr)
 {
 }
 
-void VisualizerWnd::Initialize(HWND hWndParent, int width, int height)
+bool VisualizerWnd::Initialize(HWND hWndParent, int width, int height)
 {
     if (mhWndVisualizer != nullptr) {
         auto message = L"'VisualizerWnd::Initialize' cannot be called twice.";
@@ -111,10 +118,12 @@ void VisualizerWnd::Initialize(HWND hWndParent, int width, int height)
     // Initialize graphics context for rendering.
     auto contextType = IGraphicsContext::ContextType::OpenGL;
     mpGraphicsContext = IGraphicsContext::Create(contextType);
-    mpGraphicsContext->Initialize(mhWndVisualizer);
+    if (mpGraphicsContext->Initialize(mhWndVisualizer) == false)
+		return false;
 
     mpScene = gcnew Scene(this);
     mpScene->Initialize(width, height);
+	return true;
 }
 
 void VisualizerWnd::Uninitialize(void)
@@ -170,6 +179,9 @@ LRESULT VisualizerWnd::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lPara
 
 LRESULT VisualizerWnd::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	if (this->mGraphicsContextCreated == false)
+        return ::DefWindowProc(hWnd, msg, wParam, lParam);
+
     switch (msg)
     {
     case WM_PAINT:

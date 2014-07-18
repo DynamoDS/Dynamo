@@ -16,17 +16,26 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 #define INITGLPROC(t, n)    t GL::n = nullptr;
 #define GETGLPROC(t, n)     {                                           \
                                 n = ((t) wglGetProcAddress(#n));        \
+								message.append(#n);					    \
                                 if (n == nullptr) {                     \
+									successful = false;					\
                                     OutputDebugStringA(#n);             \
                                     OutputDebugStringA(" [FAILED]\n");  \
-                                }                                       \
+									message.append(" [FAILED]\n");		\
+                                } else {                                \
+									message.append(" [SUCEEDED]\n");	\
+								}										\
                             }
 
     class GL
     {
     public:
-        static void Initialize()
+        static bool Initialize()
         {
+			// These values are to be populated by 'GETGLPROC' macro.
+			std::string message;
+			bool successful = true;
+
             OutputDebugString(L"\nBegin OpenGL Initialization...\n");
 
             GETGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
@@ -74,7 +83,11 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
             GETGLPROC(PFNGLBLENDFUNCSEPARATEPROC,           glBlendFuncSeparate);
             GETGLPROC(PFNGLPOINTSIZEPROC,                   glPointSize);
 
+			auto pMessageData = message.c_str();
+			OutputDebugStringA(pMessageData);
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
+
+			return successful;
         }
 
         DEFGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
@@ -131,7 +144,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         GraphicsContext();
 
     protected:
-        virtual void InitializeCore(HWND hWndOwner);
+        virtual bool InitializeCore(HWND hWndOwner);
         virtual void UninitializeCore(void);
         virtual ICamera* GetDefaultCameraCore(void) const;
         virtual IVertexShader* CreateVertexShaderCore(
