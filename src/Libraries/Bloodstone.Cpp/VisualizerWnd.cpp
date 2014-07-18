@@ -24,7 +24,7 @@ System::IntPtr VisualizerWnd::Create(System::IntPtr hWndParent, int width, int h
         auto hParent = ((HWND) hWndParent.ToPointer());
         VisualizerWnd::mVisualizer = gcnew VisualizerWnd();
         if (VisualizerWnd::mVisualizer->Initialize(hParent, width, height))
-			VisualizerWnd::mVisualizer->mGraphicsContextCreated = true;
+            VisualizerWnd::mVisualizer->mGraphicsContextCreated = true;
     }
 
     return System::IntPtr(VisualizerWnd::mVisualizer->GetWindowHandle());
@@ -53,7 +53,7 @@ LRESULT VisualizerWnd::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 bool VisualizerWnd::IsGraphicsContextCreated(void)
 {
-	return this->mGraphicsContextCreated;
+    return this->mGraphicsContextCreated;
 }
 
 void VisualizerWnd::ShowWindow(bool show)
