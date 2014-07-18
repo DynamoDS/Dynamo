@@ -43,7 +43,7 @@ Name: "DynamoForVasariBeta3"; Description: "Dynamo For Vasari Beta 3"; Types: fu
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 
 [Files]
-;RevitInstallDetective (extracted to temp during install)
+;RevitInstallDetective (must be extracted manually in InitializeSetup)
 Source: "Extra\RevitInstallDetective.exe"; Flags: dontcopy
 Source: "Extra\RevitAddinUtility.dll"; Flags: dontcopy
 
@@ -62,7 +62,7 @@ Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skip
 Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
 
-;AddinGenerator/RevitInstallDetective
+;AddinGenerator
 Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2014 DynamoForRevit2015
 Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
 
