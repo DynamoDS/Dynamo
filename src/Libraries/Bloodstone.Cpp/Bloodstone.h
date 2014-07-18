@@ -34,7 +34,7 @@ namespace Dynamo { namespace Bloodstone {
         static LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Public class methods.
-		bool IsGraphicsContextCreated(void);
+        bool IsGraphicsContextCreated(void);
         void ShowWindow(bool show);
         void RequestFrameUpdate(void);
         HWND GetWindowHandle(void);
@@ -54,7 +54,7 @@ namespace Dynamo { namespace Bloodstone {
         static VisualizerWnd^ mVisualizer = nullptr;
 
         // Class instance data members.
-		bool mGraphicsContextCreated;
+        bool mGraphicsContextCreated;
         HWND mhWndVisualizer;
         Scene^ mpScene;
         IGraphicsContext* mpGraphicsContext;

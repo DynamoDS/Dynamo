@@ -16,15 +16,15 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 #define INITGLPROC(t, n)    t GL::n = nullptr;
 #define GETGLPROC(t, n)     {                                           \
                                 n = ((t) wglGetProcAddress(#n));        \
-								message.append(#n);					    \
+                                message.append(#n);                     \
                                 if (n == nullptr) {                     \
-									successful = false;					\
+                                    successful = false;                 \
                                     OutputDebugStringA(#n);             \
                                     OutputDebugStringA(" [FAILED]\n");  \
-									message.append(" [FAILED]\n");		\
+                                    message.append(" [FAILED]\n");      \
                                 } else {                                \
-									message.append(" [SUCEEDED]\n");	\
-								}										\
+                                    message.append(" [SUCEEDED]\n");    \
+                                }                                       \
                             }
 
     class GL
@@ -32,9 +32,9 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
     public:
         static bool Initialize()
         {
-			// These values are to be populated by 'GETGLPROC' macro.
-			std::string message;
-			bool successful = true;
+            // These values are to be populated by 'GETGLPROC' macro.
+            std::string message;
+            bool successful = true;
 
             OutputDebugString(L"\nBegin OpenGL Initialization...\n");
 
@@ -83,11 +83,11 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
             GETGLPROC(PFNGLBLENDFUNCSEPARATEPROC,           glBlendFuncSeparate);
             GETGLPROC(PFNGLPOINTSIZEPROC,                   glPointSize);
 
-			auto pMessageData = message.c_str();
-			OutputDebugStringA(pMessageData);
+            auto pMessageData = message.c_str();
+            OutputDebugStringA(pMessageData);
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
 
-			return successful;
+            return successful;
         }
 
         DEFGLPROC(PFNGLGETSTRINGPROC,                   glGetString);

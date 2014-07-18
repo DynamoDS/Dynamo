@@ -83,13 +83,13 @@ bool GraphicsContext::InitializeCore(HWND hWndOwner)
     if (::SetPixelFormat(hDeviceContext, format, &descriptor) == false) {
         auto message = L"'SetPixelFormat' method call failed";
         throw gcnew InvalidOperationException(gcnew String(message));
-	}
+    }
 
     HGLRC tempContext = ::wglCreateContext(hDeviceContext);
     ::wglMakeCurrent(hDeviceContext, tempContext);
 
     if (GL::Initialize() == false) // Initialize OpenGL extension.
-		return false;
+        return false;
 
     int major = -1, minor = -1;
     GL::glGetIntegerv(GL_MAJOR_VERSION, &major);
@@ -127,7 +127,7 @@ bool GraphicsContext::InitializeCore(HWND hWndOwner)
     // Default states of our renderer.
     GL::glEnable(GL_DEPTH_TEST);
     GL::glPointSize(4.0f);
-	return true;
+    return true;
 }
 
 void GraphicsContext::UninitializeCore(void)

@@ -85,7 +85,7 @@ IGraphicsContext* VisualizerWnd::GetGraphicsContext(void)
 }
 
 VisualizerWnd::VisualizerWnd() : 
-	mGraphicsContextCreated(false),
+    mGraphicsContextCreated(false),
     mhWndVisualizer(nullptr),
     mpScene(nullptr),
     mpGraphicsContext(nullptr)
@@ -119,11 +119,11 @@ bool VisualizerWnd::Initialize(HWND hWndParent, int width, int height)
     auto contextType = IGraphicsContext::ContextType::OpenGL;
     mpGraphicsContext = IGraphicsContext::Create(contextType);
     if (mpGraphicsContext->Initialize(mhWndVisualizer) == false)
-		return false;
+        return false;
 
     mpScene = gcnew Scene(this);
     mpScene->Initialize(width, height);
-	return true;
+    return true;
 }
 
 void VisualizerWnd::Uninitialize(void)
@@ -179,7 +179,7 @@ LRESULT VisualizerWnd::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lPara
 
 LRESULT VisualizerWnd::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	if (this->mGraphicsContextCreated == false)
+    if (this->mGraphicsContextCreated == false)
         return ::DefWindowProc(hWnd, msg, wParam, lParam);
 
     switch (msg)
