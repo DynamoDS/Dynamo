@@ -71,6 +71,30 @@
                               CommandParameter="CrossProduct"
                               Header="Cross Product" />
                 </MenuItem>
+                <MenuItem Header="Render Style">
+                    <MenuItem Header="Phong Shading"
+                              IsCheckable="True"
+                              Command="{Binding Path=SetNodeRenderStyleCommand}"
+                              CommandParameter="Shaded">
+                        <MenuItem.IsChecked>
+                            <Binding Path="RenderStyle"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource RenderStyleToCheckedConverter}"
+                                     ConverterParameter="Shaded" />
+                        </MenuItem.IsChecked>
+                    </MenuItem>
+                    <MenuItem Header="Primitive Color"
+                              IsCheckable="True"
+                              Command="{Binding Path=SetNodeRenderStyleCommand}"
+                              CommandParameter="Primitive">
+                        <MenuItem.IsChecked>
+                            <Binding Path="RenderStyle"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource RenderStyleToCheckedConverter}"
+                                     ConverterParameter="Primitive" />
+                        </MenuItem.IsChecked>
+                    </MenuItem>
+                </MenuItem>
                 <MenuItem Name="isVisible_cm"
                           Header="Preview"
                           IsChecked="{Binding Path=IsVisible}"

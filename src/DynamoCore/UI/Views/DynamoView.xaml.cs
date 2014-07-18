@@ -393,6 +393,16 @@ namespace Dynamo.Controls
                 scene.UpdateNodeGeometries(geometries);
         }
 
+        internal void OnNodePropertyUpdated(NodeModel node)
+        {
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            if (scene != null)
+            {
+                var nodes = new List<string>() { node.GUID.ToString() };
+                scene.SetNodeRenderMode(nodes, node.RenderStyle);
+            }
+        }
+
 #endif
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)

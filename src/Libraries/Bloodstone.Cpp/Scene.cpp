@@ -230,6 +230,8 @@ void Scene::SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode)
         NodeSceneData* pNodeSceneData = found->second;
         pNodeSceneData->SetRenderMode(renderMode);
     }
+
+    mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
 void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)

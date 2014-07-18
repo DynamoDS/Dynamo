@@ -162,6 +162,11 @@ namespace Dynamo.Controls
                 case "IsUpdated":
                     HandleCacheValueUpdated();
                     break;
+
+                case "RenderStyle":
+                    var view = WPF.FindUpVisualTree<DynamoView>(this);
+                    view.OnNodePropertyUpdated(viewModel.NodeLogic);
+                    break;
             }
         }
 

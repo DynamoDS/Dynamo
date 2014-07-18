@@ -13,6 +13,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
+using Dynamo.Bloodstone;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -30,6 +31,7 @@ namespace Dynamo.Models
 
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
+        private RenderMode renderStyle = RenderMode.Shaded;
         private bool displayLabels;
         private bool interactionEnabled = true;
         private bool isUpstreamVisible;
@@ -253,6 +255,16 @@ namespace Dynamo.Models
                     RequiresRecalc = true;
                     RaisePropertyChanged("ArgumentLacing");
                 }
+            }
+        }
+
+        public RenderMode RenderStyle
+        {
+            get { return this.renderStyle; }
+            set
+            {
+                this.renderStyle = value;
+                RaisePropertyChanged("RenderStyle");
             }
         }
 
