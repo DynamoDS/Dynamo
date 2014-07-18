@@ -148,7 +148,7 @@ namespace Dynamo.Utilities
             if (assembly == null) 
                 throw new ArgumentNullException("assembly");
 
-            var searchViewModel = dynamoModel.SearchViewModel;
+            var searchViewModel = dynamoModel.SearchModel;
 
             AssemblyPathToTypesLoaded.Add(assembly.Location, new List<Type>());
 
@@ -279,14 +279,14 @@ namespace Dynamo.Utilities
         public IEnumerable<CustomNodeInfo> LoadCustomNodes()
         {
             var customNodeLoader = dynamoModel.CustomNodeManager;
-            var searchViewModel = dynamoModel.SearchViewModel;
+            var searchModel = dynamoModel.SearchModel;
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            loadedNodes.ForEach(x => searchViewModel.Add(x) );
+            loadedNodes.ForEach(x => searchModel.Add(x) );
             
             // update search view
-            searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
+            searchModel.OnRequestSync();
 
             return loadedNodes;
         }
@@ -300,16 +300,16 @@ namespace Dynamo.Utilities
                 return new List<CustomNodeInfo>();
 
             var customNodeLoader = dynamoModel.CustomNodeManager;
-            var searchViewModel = dynamoModel.SearchViewModel;
+            var searchModel = dynamoModel.SearchModel;
 
             var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search
-            loadedNodes.ForEach( x => searchViewModel.Add(x) );
+            loadedNodes.ForEach( x => searchModel.Add(x) );
 
             // update search view
-            searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
+            searchModel.OnRequestSync();
 
             return loadedNodes;
         }

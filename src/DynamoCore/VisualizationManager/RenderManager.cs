@@ -39,11 +39,12 @@ namespace Dynamo
 
     internal class RenderManager
     {
-        private readonly DynamoController controller;
+        private readonly DynamoModel dynamoModel;
         private readonly Thread controllerThread;
-        public RenderManager(DynamoController controller)
+
+        public RenderManager(DynamoModel dynamoModel)
         {
-            this.controller = controller;
+            this.dynamoModel = dynamoModel;
             controllerThread = new Thread(RenderLoopController);
             controllerThread.Name = "RenderManager controller thread";
             controllerThread.IsBackground = true;
@@ -136,10 +137,10 @@ namespace Dynamo
         /// </summary>
         private void Render(long taskID, IEnumerable<NodeModel> toUpdate = null, bool incrementId = true)
         {
-            if (controller == null)
+            if (dynamoModel == null)
                 return;
 
-            if (DynamoController.IsTestMode)
+            if (dynamoModel.IsTestMode)
                 RenderExec(toUpdate, incrementId, taskID);
             else
             {
@@ -162,7 +163,7 @@ namespace Dynamo
                 //that are marked for updating.
 
                 var toUpdate = nodes ??
-                               controller.DynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
+                               dynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
 
                 var nodeModels = toUpdate as IList<NodeModel> ?? toUpdate.ToList();
                 if (!nodeModels.Any())
@@ -181,7 +182,7 @@ namespace Dynamo
             {
                 OnRenderFailed(this, new RenderFailedEventArgs(taskID));
 
-                dynSettings.DynamoLogger.Log(ex);
+                dynamoModel.Logger.Log(ex);
             }
         }
 

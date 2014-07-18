@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
+using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoUtilities;
 
@@ -14,12 +15,16 @@ namespace Dynamo.PackageManager
     {
         public string RootPackagesDirectory { get; private set; }
 
-        public PackageLoader() : this( Path.Combine (DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages) )
+        private readonly DynamoModel dynamoModel;
+
+        public PackageLoader(DynamoModel dynamoModel) : this( dynamoModel, Path.Combine (DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages) )
         {
         }
 
-        public PackageLoader(string overridePackageDirectory)
+        public PackageLoader(DynamoModel dynamoModel, string overridePackageDirectory)
         {
+            this.dynamoModel = dynamoModel;
+
             this.RootPackagesDirectory = overridePackageDirectory;
             if (!Directory.Exists(this.RootPackagesDirectory))
             {
@@ -81,8 +86,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
-                dynSettings.DynamoLogger.Log(e.GetType() + ": " + e.Message);
+                dynamoModel.Logger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
+                dynamoModel.Logger.Log(e.GetType() + ": " + e.Message);
             }
 
             return null;

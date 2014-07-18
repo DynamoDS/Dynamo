@@ -146,6 +146,13 @@ namespace Dynamo.Models
             }
         }
 
+        public event EventHandler RequestsRedraw;
+        public virtual void OnRequestsRedraw(object sender, EventArgs e)
+        {
+            if (RequestsRedraw != null)
+                RequestsRedraw(sender, e);
+        }
+
         /// <summary>
         /// An event which requests that a node be selected
         /// </summary>

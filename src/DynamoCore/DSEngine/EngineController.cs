@@ -48,7 +48,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
-            liveRunnerServices = new LiveRunnerServices(this);
+            liveRunnerServices = new LiveRunnerServices(dynamoModel, this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(this);
@@ -410,7 +410,7 @@ namespace Dynamo.DSEngine
             string newLibrary = e.LibraryPath;
 
             // Load all functions defined in that library.
-            dynamoModel.SearchViewModel.Add(libraryServices.GetFunctionGroups(newLibrary));
+            dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());

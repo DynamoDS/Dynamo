@@ -40,11 +40,11 @@ namespace Dynamo.Models
                 // It happens when we are modifying a bunch of connections in 
                 // a short time frame. E.g., when we delete some nodes with a 
                 // bunch of connections, each deletion of connection will call 
-                // Modified(). Or, when we are modifying the content in a code 
+                // RequestSync(). Or, when we are modifying the content in a code 
                 // block. 
                 // 
-                // Each time when Modified() is called, runExpressionTimer will
-                // be reset and until no Modified events flood in, the updating
+                // Each time when RequestSync() is called, runExpressionTimer will
+                // be reset and until no RequestSync events flood in, the updating
                 // of graph will get executed. 
                 //
                 // We use DispatcherTimer so that the update of graph happens on

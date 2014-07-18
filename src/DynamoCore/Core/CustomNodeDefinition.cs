@@ -124,7 +124,7 @@ namespace Dynamo
         {
             // If we are loading dyf file, dont compile it until all nodes are loaded
             // otherwise some intermediate function defintions will be created.
-            // TODO: This is a hack, in reality we should be preventing this from being called at the Workspace.Modified() level --SJE
+            // TODO: This is a hack, in reality we should be preventing this from being called at the Workspace.RequestSync() level --SJE
             if (IsBeingLoaded || IsProxy)
                 return;
 

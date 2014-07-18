@@ -328,8 +328,8 @@ namespace Dynamo.Applications
             var view = newView as View3D;
 
             if (view != null && view.IsPerspective
-                && dynSettings.Controller.Context != RevitContext.VASARI_2013
-                && dynSettings.Controller.Context != RevitContext.VASARI_2014)
+                && dynSettings.Controller.Context != Context.VASARI_2013
+                && dynSettings.Controller.Context != Context.VASARI_2014)
             {
                 dynSettings.DynamoLogger.LogWarning(
                     "Dynamo is not available in a perspective view. Please switch to another view to Run.",

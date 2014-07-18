@@ -544,7 +544,7 @@ namespace Dynamo.Models
             return SaveAs(FileName);
         }
 
-        //TODO: Replace all Modified calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
+        //TODO: Replace all RequestSync calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
         public void DisableReporting()
         {
             Nodes.ToList().ForEach(x => x.DisableReporting());
@@ -1205,7 +1205,7 @@ namespace Dynamo.Models
             }
             else // Other node types.
             {
-                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
+                NodeModel nodeModel = dynamoModel.NodeFactory.CreateNodeInstance(typeName);
                 nodeModel.WorkSpace = this;
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);

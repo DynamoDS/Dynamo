@@ -54,31 +54,23 @@ namespace Dynamo.Models
         #region public properties
 
         // core app
-        internal DynamoLoader Loader { get; private set; }
+        internal readonly DynamoLoader Loader;
+        internal readonly PackageManagerClient PackageManagerClient;
+        internal readonly CustomNodeManager CustomNodeManager;
+        internal readonly DynamoLogger Logger;
+        internal readonly DynamoRunner Runner;
+        internal readonly PreferenceSettings PreferenceSettings;
+        internal readonly DebugSettings DebugSettings;
+        internal readonly NodeFactory NodeFactory;
+        internal readonly SearchModel SearchModel;
 
-        internal PackageManagerClient PackageManagerClient { get; private set; }
-        internal CustomNodeManager CustomNodeManager { get; private set; }
-        internal DynamoLogger Logger { get; private set; }
-        internal EngineController EngineController { get; private set; }
-        internal DynamoRunner Runner { get; private set; }
-        internal PreferenceSettings PreferenceSettings { get; private set; }
-        internal DebugSettings DebugSettings { get; private set; }
-        internal NodeFactory NodeFactory { get; private set; }
+        // EngineController cannot be readonly 
+        internal EngineController EngineController;
 
-        public LibrarySearchModel SearchViewModel { get; private set; }
-
-
-        // requires refactoring
-
-        // KILLDYNSETTINGS: nasty
         public string Context { get; set; }
 
         // KILLDYNSETTINGS: should be static
         public IUpdateManager UpdateManager { get; private set; }
-
-
-        // KILLDYNSETTINGS: kill this
-        public DynamoController Controller { get; private set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -211,23 +203,28 @@ namespace Dynamo.Models
 
         #endregion
 
-        public DynamoModel(string context, IPreferences preferences, IUpdateManager updateManager, 
-            bool isTestMode = false)
+        public DynamoModel(string context, IPreferences preferences, bool isTestMode = false)
         {
-            NodeFactory = new NodeFactory(this);
-
-            IsTestMode = isTestMode;
-
-            Logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-
-            DebugSettings = new DebugSettings();
+            DynamoPathManager.Instance.InitializeCore(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             Context = context;
+            IsTestMode = isTestMode;
+            NodeFactory = new NodeFactory(this);
+            Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
+            UpdateManager = new UpdateManager.UpdateManager(Logger);
+            DebugSettings = new DebugSettings();
 
-            //Context = context;
+            // KILLDYNSETTINGS - this looks odd
+            if (preferences is PreferenceSettings)
+            {
+                this.PreferenceSettings = preferences as PreferenceSettings;
+                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            }   
+
             InitializePreferences(preferences);
 
-            UpdateManager = updateManager;
+            UpdateManager = new UpdateManager.UpdateManager(Logger);
             UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),
                 Logger, UpdateManager.UpdateDataAvailable));
 
@@ -236,18 +233,11 @@ namespace Dynamo.Models
             //so that the version number can be reported
             InstrumentationLogger.Start();
 
-            this.AddHomeWorkspace();
+            SearchModel = new SearchModel(this);
 
-            
-            SearchViewModel = new SearchViewModel(this);
+            InitializeCurrentWorkspace();
 
-            this.CurrentWorkspace = this.HomeSpace;
-            this.CurrentWorkspace.X = 0;
-            this.CurrentWorkspace.Y = 0;
-
-            // custom node loader
-            this.CustomNodeManager = new CustomNodeManager(DynamoPathManager.Instance.UserDefinitions);
-
+            this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
             this.Loader = new DynamoLoader(this);
 
             this.Loader.PackageLoader.DoCachedPackageUninstalls();
@@ -260,7 +250,7 @@ namespace Dynamo.Models
 
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
-            this.ResetEngine();
+            this.Reset();
 
             Logger.Log(String.Format(
                 "Dynamo -- Build {0}",
@@ -271,21 +261,24 @@ namespace Dynamo.Models
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            Runner = new DynamoRunner();
+            Runner = new DynamoRunner(this);
+        }
+
+        private void InitializeCurrentWorkspace()
+        {
+            this.AddHomeWorkspace();
+            this.CurrentWorkspace = this.HomeSpace;
+            this.CurrentWorkspace.X = 0;
+            this.CurrentWorkspace.Y = 0;
         }
 
         private void InitializePreferences(IPreferences preferences)
         {
-            if (preferences is PreferenceSettings)
-            {
-                PreferenceSettings = preferences as PreferenceSettings;
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-            }   
-
-            SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
-            SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
-            SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
-            SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
+            // KILLDYNSETTINGS - this is also quite odd
+            SIUnit.LengthUnit = preferences.LengthUnit;
+            SIUnit.AreaUnit = preferences.AreaUnit;
+            SIUnit.VolumeUnit = preferences.VolumeUnit;
+            SIUnit.NumberFormat = preferences.NumberFormat;
         }
 
         #region internal methods
@@ -440,8 +433,8 @@ namespace Dynamo.Models
         {
             Loader.LoadCustomNodes();
 
-            this.SearchViewModel.RemoveEmptyCategories();
-            this.SearchViewModel.SortCategoryChildren();
+            this.SearchModel.RemoveEmptyCategories();
+            this.SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");
 
@@ -638,7 +631,7 @@ namespace Dynamo.Models
         /// Add a workspace to the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
-        public void AddHomeWorkspace()
+        private void AddHomeWorkspace()
         {
             var workspace = new HomeWorkspaceModel(this)
             {

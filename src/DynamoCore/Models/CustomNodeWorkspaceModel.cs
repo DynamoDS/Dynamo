@@ -104,7 +104,7 @@ namespace Dynamo.Models
             if (originalPath == null)
             {
                 CustomNodeDefinition.AddToSearch();
-                dynamoModel.SearchViewModel.SearchAndUpdateResultsSync();
+                dynamoModel.SearchModel.OnRequestSync();
                 CustomNodeDefinition.UpdateCustomNodeManager();
             }
 

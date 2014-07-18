@@ -58,7 +58,7 @@ namespace Dynamo.Controls
 
         public static Application MakeSandboxAndRun(string commandFilePath)
         {
-            var controller = DynamoController.MakeSandbox(commandFilePath);
+            var controller = DynamoViewModel.MakeSandbox(commandFilePath);
             var app = new Application();
 
             //create the view
@@ -315,10 +315,10 @@ namespace Dynamo.Controls
             #region Search initialization
 
             var search = new SearchView(
-                this.dynamoViewModel.Model.SearchViewModel,
+                this.dynamoViewModel.SearchViewModel,
                 this.dynamoViewModel);
             sidebarGrid.Children.Add(search);
-            dynamoViewModel.Model.SearchViewModel.Visible = true;
+            this.dynamoViewModel.SearchViewModel.Visible = true;
 
             #endregion
 
@@ -391,7 +391,7 @@ namespace Dynamo.Controls
         {
             if (_pkgSearchVM == null)
             {
-                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.Model.PackageManager);
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.Model.PackageManagerClient);
             }
 
             if (_searchPkgsView == null)
@@ -582,7 +582,7 @@ namespace Dynamo.Controls
 
             do
             {
-                var dialog = new FunctionNamePrompt(dynamoViewModel.Model.SearchViewModel.Categories)
+                var dialog = new FunctionNamePrompt(dynamoViewModel.Model.SearchModel.Categories)
                 {
                     categoryBox = { Text = e.Category },
                     DescriptionInput = { Text = e.Description },

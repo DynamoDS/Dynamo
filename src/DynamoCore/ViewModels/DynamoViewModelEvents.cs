@@ -39,7 +39,7 @@ namespace Dynamo.ViewModels
         public void OnRequestAuthentication()
         {
             if (RequestAuthentication != null)
-                RequestAuthentication(model.PackageManager);
+                RequestAuthentication(model.PackageManagerClient);
         }
 
         public event ImageSaveEventHandler RequestSaveImage;
@@ -58,13 +58,6 @@ namespace Dynamo.ViewModels
             {
                 RequestClose(this, e);
             }
-        }
-
-        public event EventHandler RequestsRedraw;
-        public virtual void OnRequestsRedraw(object sender, EventArgs e)
-        {
-            if (RequestsRedraw != null)
-                RequestsRedraw(sender, e);
         }
 
         public event EventHandler SidebarClosed;

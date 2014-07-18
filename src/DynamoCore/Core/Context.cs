@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Dynamo.Core
 {
-    //KILLDYNSETTINGS: This needs to die
-    public static class RevitContext
+    //KILLDYNSETTINGS: This should live in DynamoRevit
+    public static class Context
     {
         public const string NONE = "None";
         public const string REVIT_2014 = "Revit 2014";

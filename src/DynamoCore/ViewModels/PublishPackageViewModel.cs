@@ -511,7 +511,7 @@ namespace Dynamo.PackageManager
                         .Where(p =>
                                 (this.DynamoModel.Loader.PackageLoader.IsUnderPackageControl(p) &&
                                 (this.DynamoModel.Loader.PackageLoader.GetOwnerPackage(p).Name == this.Name) || 
-                                !this.DynamoModel.Loader.PackageLoader.IsUnderPackageControl(p));
+                                !this.DynamoModel.Loader.PackageLoader.IsUnderPackageControl(p)));
 
             // union with additional files
             files = files.Union(this.AdditionalFiles);
@@ -661,7 +661,7 @@ namespace Dynamo.PackageManager
 
                 if (newpkg) this.DynamoModel.Loader.PackageLoader.LocalPackages.Add(Package);
 
-                var handle = this.DynamoModel.PackageManager.Publish(Package, files, IsNewVersion);
+                var handle = this.DynamoModel.PackageManagerClient.Publish(Package, files, IsNewVersion);
 
                 if (handle == null)
                     throw new Exception("Failed to authenticate.  Are you logged in?");

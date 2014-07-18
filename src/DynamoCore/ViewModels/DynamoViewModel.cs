@@ -8,8 +8,10 @@ using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Threading;
 
+using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -21,6 +23,9 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Services;
 using DynamoUnits;
+
+using DynamoUtilities;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 
@@ -30,7 +35,7 @@ namespace Dynamo.ViewModels
     {
         #region properties
 
-        private DynamoModel model;
+        public readonly DynamoModel model;
 
         private Point transformOrigin;
         private bool runEnabled = true;
@@ -52,6 +57,17 @@ namespace Dynamo.ViewModels
             {
                 workspaces = value;
                 RaisePropertyChanged("Workspaces");
+            }
+        }
+
+        private bool uiLocked = true;
+        public bool IsUILocked
+        {
+            get { return uiLocked; }
+            set
+            {
+                uiLocked = value;
+                RaisePropertyChanged("IsUILocked");
             }
         }
 
@@ -173,8 +189,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsUILocked { get; set; }
-
         public bool ShowStartPage
         {
             get { return this.showStartPage; }
@@ -239,7 +253,7 @@ namespace Dynamo.ViewModels
                     CanNavigateBackground = false;
 
                 if(value)
-                    this.OnRequestsRedraw(this, EventArgs.Empty);
+                    this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 
@@ -377,7 +391,7 @@ namespace Dynamo.ViewModels
             set
             {
                VisualizationManager.MaxTesselationDivisions = value;
-                this.OnRequestsRedraw(this, EventArgs.Empty);
+                this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 
@@ -401,11 +415,32 @@ namespace Dynamo.ViewModels
             }
         }
 
+        // KILLDYNSETTINGS: This should be a field that throws an exception when null
+        public Dispatcher UIDispatcher { get; set; }
+
+        public IWatchHandler WatchHandler { get; set; }
+        public IVisualizationManager VisualizationManager { get; set; }
+        public SearchViewModel SearchViewModel { get; set; }
+
         #endregion
 
-        public DynamoViewModel(DynamoModel dynamoModel, string commandFilePath)
+        public static DynamoViewModel MakeSandbox(string commandFilePath = null)
+        {
+            var model = new DynamoModel("None", PreferenceSettings.Load());
+            var viewModel = new DynamoViewModel(model, new DefaultWatchHandler(), 
+                new VisualizationManager(model), commandFilePath);
+
+            return viewModel;
+        }
+
+        public DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
+            IVisualizationManager vizManager, string commandFilePath)
         {
             this.model = dynamoModel;
+            this.WatchHandler = watchHandler;
+            this.VisualizationManager = vizManager;
+
+            this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
@@ -413,16 +448,14 @@ namespace Dynamo.ViewModels
             model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             //register for property change notifications 
-            //on the model and the controller
+            //on the model
             model.PropertyChanged += _model_PropertyChanged;
-            model.Controller.PropertyChanged += Controller_PropertyChanged;
             
             //Register for a notification when the update manager downloads an update
             model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
             model.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
 
-            // Instantiate an AutomationSettings to handle record/playback.
-            automationSettings = new AutomationSettings(this, commandFilePath);
+            InitializeAutomationSettings(commandFilePath);
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !model.IsTestMode;
@@ -444,15 +477,18 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
         }
 
-        // KILLDYNSETTINGS: This should be a field that throws an exception when null
-        public Dispatcher UIDispatcher { get; set; }
+        private void InitializeAutomationSettings(string commandFilePath)
+        {
+            if (String.IsNullOrEmpty(commandFilePath) || !File.Exists(commandFilePath))
+                commandFilePath = null;
 
-        public IWatchHandler WatchHandler { get; set; }
-        public IVisualizationManager VisualizationManager { get; set; }
+            // Instantiate an AutomationSettings to handle record/playback.
+            automationSettings = new AutomationSettings(this, commandFilePath);
+        }
 
         public void RequestRedraw()
         {
-            OnRequestsRedraw(this, EventArgs.Empty);
+            this.model.OnRequestsRedraw(this, EventArgs.Empty);
         }
 
         public void RequestClearDrawables()
@@ -473,7 +509,7 @@ namespace Dynamo.ViewModels
 
         public void ReturnFocusToSearch()
         {
-            model.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
+            this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
         }
 
         internal void RunExprCmd(object parameters)
@@ -539,80 +575,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void InitializeDelegateCommands()
-        {
-            OpenCommand = new DelegateCommand(Open, CanOpen);
-            OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
-            SaveCommand = new DelegateCommand(Save, CanSave);
-            SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
-            ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
-            ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
-            ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
-            SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
-            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
-
-            WriteToLogCmd = new DelegateCommand(model.WriteToLog, CanWriteToLog);
-            PostUiActivationCommand = new DelegateCommand(model.PostUIActivation, model.CanDoPostUIActivation);
-            AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
-            AddToSelectionCommand = new DelegateCommand(model.AddToSelection, CanAddToSelection);
-            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
-            SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
-            InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
-            GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
-            GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
-            SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
-            HomeCommand = new DelegateCommand(model.Home, model.CanGoHome);
-            NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
-            CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
-            GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
-            DeleteCommand = new DelegateCommand(Delete, CanDelete);
-            ExitCommand = new DelegateCommand(Exit, CanExit);
-            ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
-            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
-            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
-            UndoCommand = new DelegateCommand(Undo, CanUndo);
-            RedoCommand = new DelegateCommand(Redo, CanRedo);
-            CopyCommand = new DelegateCommand(model.Copy, CanCopy);
-            PasteCommand = new DelegateCommand(model.Paste, CanPaste);
-            ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
-            CancelRunCommand = new DelegateCommand(CancelRunCmd, CanCancelRunCmd);
-            RunExpressionCommand = new DelegateCommand(RunExprCmd, CanRunExprCmd);
-            ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd,CanRunExprCmd);
-            MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, CanRunExprCmd);
-            DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
-            SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
-            ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
-            GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
-            GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
-            DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
-            ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
-            ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
-            PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
-            PublishSelectedNodesCommand = new DelegateCommand(PublishSelectedNodes, CanPublishSelectedNodes);
-            ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
-            SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
-            ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
-            PanCommand = new DelegateCommand(Pan, CanPan);
-            ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
-            ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
-            FitViewCommand = new DelegateCommand(FitView, CanFitView);
-            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
-            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
-            EscapeCommand = new DelegateCommand(Escape, CanEscape);
-            ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
-            ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
-            SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
-            SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
-            SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
-            ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
-            CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
-            SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
-
-            SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
-            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
-        }
-
+        
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");
@@ -1062,11 +1025,6 @@ namespace Dynamo.ViewModels
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
-        public virtual Function CreateFunction(CustomNodeDefinition customNodeDefinition)
-        {
-            return new Function(this.Model, customNodeDefinition);
-        }
-
         /// <summary>
         ///     Sets the load path
         /// </summary>
@@ -1194,7 +1152,7 @@ namespace Dynamo.ViewModels
             if (!CanNavigateBackground)
             {
                 // Return focus back to Search View (Search Field)
-                model.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
+                this.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
             }
         }
 
@@ -1805,7 +1763,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                STLExport.ExportToSTL(_fileDialog.FileName, model.HomeSpace.Name);
+                STLExport.ExportToSTL(this.Model, _fileDialog.FileName, model.HomeSpace.Name);
             }
         }
 

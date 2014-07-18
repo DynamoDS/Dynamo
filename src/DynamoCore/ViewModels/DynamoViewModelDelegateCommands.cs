@@ -9,6 +9,80 @@ namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
+        private void InitializeDelegateCommands()
+        {
+            OpenCommand = new DelegateCommand(Open, CanOpen);
+            OpenRecentCommand = new DelegateCommand(OpenRecent, CanOpenRecent);
+            SaveCommand = new DelegateCommand(Save, CanSave);
+            SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
+            ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
+            ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
+            SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
+            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
+
+            WriteToLogCmd = new DelegateCommand(model.WriteToLog, CanWriteToLog);
+            PostUiActivationCommand = new DelegateCommand(model.PostUIActivation, model.CanDoPostUIActivation);
+            AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
+            AddToSelectionCommand = new DelegateCommand(model.AddToSelection, CanAddToSelection);
+            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
+            SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
+            InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
+            GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
+            GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
+            SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
+            HomeCommand = new DelegateCommand(model.Home, model.CanGoHome);
+            NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
+            CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
+            GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
+            DeleteCommand = new DelegateCommand(Delete, CanDelete);
+            ExitCommand = new DelegateCommand(Exit, CanExit);
+            ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
+            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
+            UndoCommand = new DelegateCommand(Undo, CanUndo);
+            RedoCommand = new DelegateCommand(Redo, CanRedo);
+            CopyCommand = new DelegateCommand(model.Copy, CanCopy);
+            PasteCommand = new DelegateCommand(model.Paste, CanPaste);
+            ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
+            CancelRunCommand = new DelegateCommand(CancelRunCmd, CanCancelRunCmd);
+            RunExpressionCommand = new DelegateCommand(RunExprCmd, CanRunExprCmd);
+            ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, CanRunExprCmd);
+            MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, CanRunExprCmd);
+            DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
+            SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
+            ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
+            GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
+            GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
+            DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
+            ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
+            ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
+            PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
+            PublishSelectedNodesCommand = new DelegateCommand(PublishSelectedNodes, CanPublishSelectedNodes);
+            ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
+            SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
+            ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
+            PanCommand = new DelegateCommand(Pan, CanPan);
+            ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
+            ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
+            FitViewCommand = new DelegateCommand(FitView, CanFitView);
+            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
+            EscapeCommand = new DelegateCommand(Escape, CanEscape);
+            ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
+            ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
+            SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
+            SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
+            SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
+            ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
+            CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
+            SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
+
+            SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
+            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
+            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
+        }
+
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
         public DelegateCommand WriteToLogCmd { get; set; }
