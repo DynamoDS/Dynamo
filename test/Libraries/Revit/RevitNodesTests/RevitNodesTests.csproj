@@ -108,6 +108,7 @@
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoFaceTests.cs" />
+    <Compile Include="GeometryConversion\RevitToProtoMeshTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoSolidTests.cs" />
     <Compile Include="GeometrySanityCheck.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
