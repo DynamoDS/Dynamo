@@ -22,6 +22,7 @@ using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using System.Windows.Media;
 
 namespace Dynamo.Models
 {
@@ -31,6 +32,7 @@ namespace Dynamo.Models
 
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
+        private Color nodeColor = Colors.White;
         private RenderMode renderStyle = RenderMode.Shaded;
         private bool displayLabels;
         private bool interactionEnabled = true;
@@ -265,6 +267,16 @@ namespace Dynamo.Models
             {
                 this.renderStyle = value;
                 RaisePropertyChanged("RenderStyle");
+            }
+        }
+
+        public Color NodeColor
+        {
+            get { return this.nodeColor; }
+            set
+            {
+                this.nodeColor = value;
+                RaisePropertyChanged("NodeColor");
             }
         }
 
@@ -1673,7 +1685,7 @@ namespace Dynamo.Models
         {
             var size = -1.0;
 
-            var entity = obj as Geometry;
+            var entity = obj as Autodesk.DesignScript.Geometry.Geometry;
             if (entity != null)
             {
                 size = entity.BoundingBox.MinPoint.DistanceTo(entity.BoundingBox.MaxPoint);

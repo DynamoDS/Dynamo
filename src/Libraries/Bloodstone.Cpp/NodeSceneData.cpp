@@ -10,8 +10,8 @@ NodeSceneData::NodeSceneData(const std::wstring& nodeId) :
     mNodeId(nodeId),
     mNodeSelected(false)
 {
-    mNodeRgbaColor[0] = mNodeRgbaColor[1] = 1.0f;
-    mNodeRgbaColor[2] = mNodeRgbaColor[3] = 1.0f;
+    mNodeRgbaColor[0] = mNodeRgbaColor[1] = 0.0f;
+    mNodeRgbaColor[2] = mNodeRgbaColor[3] = 0.0f;
 }
 
 NodeSceneData::~NodeSceneData(void)

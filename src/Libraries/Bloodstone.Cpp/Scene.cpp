@@ -216,6 +216,27 @@ void Scene::SelectNodes(Strings^ identifiers, SelectMode selectMode)
     mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
+void Scene::SetNodeColor(Strings^ identifiers, NodeColor^ nodeColor)
+{
+    float color[4] = { 0 };
+    nodeColor->Get(color);
+
+    for each (System::String^ identifier in identifiers)
+    {
+        System::String^ nodeId = identifier->ToLower();
+        std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
+
+        auto found = mpNodeSceneData->find(identifier);
+        if (found == mpNodeSceneData->end())
+            continue; // The node does not have any associated geometries.
+
+        NodeSceneData* pNodeSceneData = found->second;
+        pNodeSceneData->SetColor(color[0], color[1], color[2], color[3]);
+    }
+
+    mVisualizer->RequestFrameUpdate(); // Update window.
+}
+
 void Scene::SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode)
 {
     for each (System::String^ identifier in identifiers)
@@ -249,6 +270,10 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
         auto pNodeSceneData = *iterator;
         pNodeSceneData->GetColor(&rgbaColor[0]);
 
+        // Use the node color if one is specified.
+        if (rgbaColor[3] > 0.01f)
+            controlParams[1] = 1.0f; // Override color.
+
         if (pNodeSceneData->GetSelected()) {
             rgbaColor[0] = 154.0f / 255.0f;
             rgbaColor[1] = 206.0f / 255.0f;
@@ -263,10 +288,10 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
         mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::Low);
 
-        // Draw primitives of higher dimensionality later (e.g. triangles).
         if (pNodeSceneData->GetRenderMode() == RenderMode::Shaded)
             controlParams[0] = 3.0f;
 
+        // Draw primitives of higher dimensionality later (e.g. triangles).
         mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::High);
     }

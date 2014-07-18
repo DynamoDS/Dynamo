@@ -490,7 +490,8 @@ namespace Dynamo.ViewModels
                     UpdateErrorBubblePosition();
                     break;
                 case "RenderStyle":
-                    RaisePropertyChanged("RenderStyle");
+                case "NodeColor":
+                    RaisePropertyChanged(e.PropertyName);
                     break;
             }
         }

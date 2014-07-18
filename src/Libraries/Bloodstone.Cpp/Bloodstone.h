@@ -24,6 +24,35 @@ namespace Dynamo { namespace Bloodstone {
     public enum class SelectMode { AddToExisting, RemoveFromExisting, ClearExisting };
     public enum class RenderMode { Shaded, Primitive };
 
+    public ref class NodeColor
+    {
+        float fr, fg, fb, fa;
+        unsigned char r, g, b, a;
+
+    public:
+        NodeColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+        {
+            this->r = r;
+            this->g = g;
+            this->b = b;
+            this->a = a;
+
+            float inv255 = 1.0f / 255.0f;
+            this->fr = r * inv255;
+            this->fg = g * inv255;
+            this->fb = b * inv255;
+            this->fa = a * inv255;
+        }
+
+        void Get(float* pRgbaColor)
+        {
+            pRgbaColor[0] = fr;
+            pRgbaColor[1] = fg;
+            pRgbaColor[2] = fb;
+            pRgbaColor[3] = fa;
+        }
+    };
+
     public ref class VisualizerWnd
     {
     public:
@@ -71,6 +100,7 @@ namespace Dynamo { namespace Bloodstone {
         void UpdateNodeGeometries(RenderPackages^ geometries);
         void RemoveNodeGeometries(Strings^ identifiers);
         void SelectNodes(Strings^ identifiers, SelectMode selectMode);
+        void SetNodeColor(Strings^ identifiers, NodeColor^ nodeColor);
         void SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode);
 
     private:

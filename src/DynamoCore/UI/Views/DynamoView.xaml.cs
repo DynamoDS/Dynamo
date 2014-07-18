@@ -400,6 +400,10 @@ namespace Dynamo.Controls
             {
                 var nodes = new List<string>() { node.GUID.ToString() };
                 scene.SetNodeRenderMode(nodes, node.RenderStyle);
+
+                var c = node.NodeColor;
+                var color = new Dynamo.Bloodstone.NodeColor(c.R, c.G, c.B, c.A);
+                scene.SetNodeColor(nodes, color);
             }
         }
 
