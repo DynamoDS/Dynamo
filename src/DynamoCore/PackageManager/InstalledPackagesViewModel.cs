@@ -20,11 +20,11 @@ namespace Dynamo.ViewModels
         public ObservableCollection<PackageViewModel> LocalPackages { get { return _localPackages; } }
 
         private readonly DynamoViewModel dynamoViewModel;
-        private readonly PackageLoader model;
+        public PackageLoader Model { get; private set; }
 
         public InstalledPackagesViewModel(DynamoViewModel dynamoViewModel, PackageLoader model)
         {
-            this.model = model;
+            this.Model = model;
             this.dynamoViewModel = dynamoViewModel;
 
             InitializeLocalPackages();

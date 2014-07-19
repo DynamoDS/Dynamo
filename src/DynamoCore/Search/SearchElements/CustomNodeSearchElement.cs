@@ -45,7 +45,7 @@ namespace Dynamo.Search.SearchElements
 
         public void Edit(object _)
         {
-            dynSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);
+            dynamoModel.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);
         }
 
         public override void Execute()
@@ -54,11 +54,11 @@ namespace Dynamo.Search.SearchElements
 
             // create node
             var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+            dynamoModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = dynamoModel.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();

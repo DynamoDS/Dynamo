@@ -122,7 +122,7 @@ namespace Dynamo.Models
                     orderby result.From
                     select result).ToList();
 
-            var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+            var currentVersion = dynamoModel.DynamoModel.HomeSpace.WorkspaceVersion;
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
             {
@@ -201,7 +201,7 @@ namespace Dynamo.Models
                               orderby result.From
                               select result).ToList();
 
-            var homespace = dynSettings.Controller.DynamoModel.HomeSpace;
+            var homespace = dynamoModel.DynamoModel.HomeSpace;
             var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
 
             XmlElement nodeToMigrate = elNode as XmlElement;

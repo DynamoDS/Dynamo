@@ -55,7 +55,7 @@ namespace Dynamo.PackageManager
         public bool LoggedIn {
             get
             {
-                dynSettings.Controller.DynamoViewModel.OnRequestAuthentication(); 
+                dynamoModel.DynamoViewModel.OnRequestAuthentication(); 
 
                 try
                 {
@@ -75,7 +75,7 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+                dynamoModel.DynamoViewModel.OnRequestAuthentication();
 
                 try
                 {
@@ -143,7 +143,7 @@ namespace Dynamo.PackageManager
         public bool Upvote(string packageId)
         {
             // KILLDYNSETTINGS - This should live on the Model
-            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynamoModel.DynamoViewModel.OnRequestAuthentication();
 
             try
             {
@@ -159,7 +159,7 @@ namespace Dynamo.PackageManager
 
         public bool Downvote(string packageId)
         {
-            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynamoModel.DynamoViewModel.OnRequestAuthentication();
 
             try
             {
@@ -213,7 +213,7 @@ namespace Dynamo.PackageManager
         public void PublishCurrentWorkspace()
         {
             var currentFunDef =
-                dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
+                dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(dynamoModel.DynamoViewModel.CurrentSpace);
 
             if (currentFunDef != null)
             {
@@ -228,7 +228,7 @@ namespace Dynamo.PackageManager
 
         public bool CanPublishCurrentWorkspace()
         {
-            return dynSettings.Controller.DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel;
+            return dynamoModel.DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel;
         }
 
         public void PublishSelectedNode()
@@ -284,18 +284,18 @@ namespace Dynamo.PackageManager
 
                 var newPkgVm = new PublishPackageViewModel(dynSettings.PackageManagerClient);
                 newPkgVm.FunctionDefinitions = fs;
-                dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
+                dynamoModel.DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
             }
             else
             {
-                dynSettings.DynamoLogger.Log("Failed to obtain function definition from node.");
+                dynamoModel.Logger.Log("Failed to obtain function definition from node.");
                 return;
             }
         }
 
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
         {
-            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynamoModel.DynamoViewModel.OnRequestAuthentication();
 
             var nv = new ValidateAuth();
             var pkgResponse = Client.ExecuteAndDeserialize(nv);
@@ -396,7 +396,7 @@ namespace Dynamo.PackageManager
                     var response = Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
 
-                    dynSettings.Controller.UIDispatcher.BeginInvoke((Action) (() =>
+                    dynamoModel.UIDispatcher.BeginInvoke((Action) (() =>
                         {
                             try
                             {
@@ -496,7 +496,7 @@ namespace Dynamo.PackageManager
 
         internal PackageManagerResult Deprecate(string name)
         {
-            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynamoModel.DynamoViewModel.OnRequestAuthentication();
 
             try
             {
@@ -512,7 +512,7 @@ namespace Dynamo.PackageManager
 
         internal PackageManagerResult Undeprecate(string name)
         {
-            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynamoModel.DynamoViewModel.OnRequestAuthentication();
 
             try
             {

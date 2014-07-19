@@ -170,8 +170,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (dynSettings.Controller.ConnectorType == ConnectorType.BEZIER &&
-                    dynSettings.Controller.IsShowingConnectors)
+                if (dynamoModel.ConnectorType == ConnectorType.BEZIER &&
+                    dynamoModel.IsShowingConnectors)
                     return true;
                 return false;
             }
@@ -189,8 +189,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (dynSettings.Controller.ConnectorType == ConnectorType.POLYLINE && 
-                    dynSettings.Controller.IsShowingConnectors)
+                if (dynamoModel.ConnectorType == ConnectorType.POLYLINE && 
+                    dynamoModel.IsShowingConnectors)
                     return true;
                 return false;
             }
@@ -226,7 +226,7 @@ namespace Dynamo.ViewModels
             _model.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
             _model.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            dynamoModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             Redraw();
         }
@@ -282,7 +282,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "ConnectorType":
-                    if (dynSettings.Controller.ConnectorType == ConnectorType.BEZIER)
+                    if (dynamoModel.ConnectorType == ConnectorType.BEZIER)
                     {
                         BezVisibility = true;
                         PlineVisibility = false;

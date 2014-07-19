@@ -224,7 +224,7 @@ namespace Dynamo
             MaxTesselationDivisions = 128;
 
             this.dynamoModel = dynamoModel;
-            renderManager = new RenderManager(dynamoModel);
+            renderManager = new RenderManager(this, dynamoModel);
             //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
 
             dynamoModel.WorkspaceClearing += Pause;

@@ -28,6 +28,10 @@ namespace Dynamo.Models
     {
         #region private members
 
+        // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
+        public WorkspaceModel WorkSpace { get; set; }
+        internal DynamoModel DynamoModel { get; set; }
+
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
@@ -56,9 +60,6 @@ namespace Dynamo.Models
         #endregion
 
         #region public members
-
-        // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
-        public WorkspaceModel WorkSpace;
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -314,7 +315,7 @@ namespace Dynamo.Models
 
                 cachedMirrorData = null;
 
-                var engine = dynSettings.Controller.EngineController;
+                var engine = DynamoModel.EngineController;
                 var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
                 if (runtimeMirror != null)
@@ -560,7 +561,7 @@ namespace Dynamo.Models
 
         public MirrorData GetValue(int outPortIndex)
         {
-            return dynSettings.Controller.EngineController.GetMirror(
+            return DynamoModel.EngineController.GetMirror(
                 GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
         }
 
@@ -973,27 +974,22 @@ namespace Dynamo.Models
                     }
                 });
 
-            if (dynSettings.Controller != null &&
-                dynSettings.Controller.UIDispatcher != null &&
-                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
-            {
-                // This is put in place to solve the crashing issue outlined in 
-                // the following defect. ValidateConnections can be called from 
-                // a background evaluation thread at any point in time, we do 
-                // not want such calls to update UI in anyway while we're here 
-                // (the UI update is caused by setting State property which leads
-                // to tool-tip update that triggers InfoBubble to update its UI,
-                // a problem that is currently being resolved and tested on a 
-                // separate branch). When the InfoBubble restructuring gets over,
-                // please ensure the following scenario is tested and continue to 
-                // work:
-                // 
-                //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-                // 
-                dynSettings.Controller.UIDispatcher.BeginInvoke(setState);
-            }
-            else
-                setState();
+            // This is put in place to solve the crashing issue outlined in 
+            //    // the following defect. ValidateConnections can be called from 
+            //    // a background evaluation thread at any point in time, we do 
+            //    // not want such calls to update UI in anyway while we're here 
+            //    // (the UI update is caused by setting State property which leads
+            //    // to tool-tip update that triggers InfoBubble to update its UI,
+            //    // a problem that is currently being resolved and tested on a 
+            //    // separate branch). When the InfoBubble restructuring gets over,
+            //    // please ensure the following scenario is tested and continue to 
+            //    // work:
+            //    // 
+            //    //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+            //    // 
+
+            // KILLDYNSETTINGS
+            this.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
         }
 
         public void Error(string p)
@@ -1451,9 +1447,9 @@ namespace Dynamo.Models
         /// each of the node's ports and processing the underlying
         /// CLR data as IGraphicItems.
         /// </summary>
-        public virtual void UpdateRenderPackage()
+        public virtual void UpdateRenderPackage(int maxTesselationDivisions)
         {
-            if (dynSettings.Controller == null)
+            if (DynamoModel == null)
             {
                 return;
             }
@@ -1475,7 +1471,7 @@ namespace Dynamo.Models
             var ident = AstIdentifierForPreview.Name;
 
             var data = from varName in drawableIds
-                        select dynSettings.Controller.EngineController.GetMirror(varName)
+                        select DynamoModel.EngineController.GetMirror(varName)
                         into mirror
                         where mirror != null
                         select mirror.GetData();
@@ -1490,7 +1486,7 @@ namespace Dynamo.Models
             List<IRenderPackage> newRenderPackages = new List<IRenderPackage>();
             foreach (var varName in drawableIds)
             {
-                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                var graphItems = DynamoModel.EngineController.GetGraphicItems(varName);
                 if (graphItems == null)
                     continue;
 
@@ -1501,7 +1497,8 @@ namespace Dynamo.Models
                     PushGraphicItemIntoPackage(gItem, 
                         package, 
                         labelMap.Count > count ? labelMap[count] : "?",
-                        sizeMap.Count > count ? sizeMap[count] : -1.0);
+                        sizeMap.Count > count ? sizeMap[count] : -1.0,
+                        maxTesselationDivisions );
 
                     package.ItemsCount++;
                     newRenderPackages.Add(package);
@@ -1529,12 +1526,12 @@ namespace Dynamo.Models
             }
         }
 
-        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
+        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, 
+            double size, int maxTesselationDivisions )
         {
             try
             {
-
-                graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
+                graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
                 package.Tag = tag;
             }
             catch (Exception e)

@@ -245,7 +245,7 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
+            dynamoModel.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
@@ -302,7 +302,7 @@ namespace Dynamo.Views
             //sw.Start();
             //DrawGrid();
             //sw.Stop();
-            //dynSettings.DynamoLogger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
+            //dynamoModel.Logger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)

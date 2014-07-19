@@ -86,7 +86,7 @@ namespace Dynamo.Services
                     InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
 
                     string workspace =
-                        dynSettings.Controller.DynamoModel.CurrentWorkspace
+                        dynamoModel.DynamoModel.CurrentWorkspace
                                    .GetStringRepOfWorkspaceSync();
 
                     InstrumentationLogger.LogPiiInfo("Workspace", workspace);
@@ -154,11 +154,11 @@ namespace Dynamo.Services
 
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
-                dynSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynamoModel == null || dynamoModel.DynamoModel == null ||
+                dynamoModel.DynamoModel.AllNodes == null)
                 return ret;
 
-            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynamoModel.DynamoModel.AllNodes)
             {
                 string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
@@ -175,11 +175,11 @@ namespace Dynamo.Services
         {
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
-                dynSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynamoModel == null || dynamoModel.DynamoModel == null ||
+                dynamoModel.DynamoModel.AllNodes == null)
                 return ret;
 
-            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynamoModel.DynamoModel.AllNodes)
             {
                 if (node.State != ElementState.Error)
                     continue;

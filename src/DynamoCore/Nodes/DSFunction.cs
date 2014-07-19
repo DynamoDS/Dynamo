@@ -180,7 +180,7 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
-            var engine = dynSettings.Controller.EngineController;
+            var engine = this.DynamoModel.EngineController;
 
             if (!string.IsNullOrEmpty(assembly))
             {
@@ -585,7 +585,7 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
-            var engine = dynSettings.Controller.EngineController;
+            var engine = dynamoModel.EngineController;
 
             if (!string.IsNullOrEmpty(assembly))
             {

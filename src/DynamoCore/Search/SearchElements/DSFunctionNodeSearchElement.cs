@@ -36,11 +36,11 @@ namespace Dynamo.Search.SearchElements
         {
             // create node
             var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+            dynamoModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.CreateNodeCommand(guid, this._functionItem.MangledName, 0, 0, true, true));
 
             // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = dynamoModel.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();

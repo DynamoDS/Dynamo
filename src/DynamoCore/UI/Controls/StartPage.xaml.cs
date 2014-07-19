@@ -186,7 +186,7 @@ namespace Dynamo.UI.Controls
 
             #endregion
 
-            var dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = dynamoModel.DynamoViewModel;
             RefreshRecentFileList(dvm.RecentFiles);
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
@@ -298,7 +298,7 @@ namespace Dynamo.UI.Controls
 
         private void HandleRegularCommand(StartPageListItem item)
         {
-            var dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = dynamoModel.DynamoViewModel;
 
             switch (item.ContextData)
             {
@@ -325,7 +325,7 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            var dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = dynamoModel.DynamoViewModel;
             if (dvm.OpenCommand.CanExecute(path))
                 dvm.OpenCommand.Execute(path);
         }
@@ -383,7 +383,7 @@ namespace Dynamo.UI.Controls
 
         private void OnCloseStartPageClicked(object sender, MouseButtonEventArgs e)
         {
-            dynSettings.Controller.DynamoViewModel.ShowStartPage = false;
+            dynamoModel.DynamoViewModel.ShowStartPage = false;
         }
 
         #endregion

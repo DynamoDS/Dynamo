@@ -268,7 +268,7 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
+            ((PreferenceSettings)dynamoModel.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
         }
 
         void Preferences_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -332,9 +332,9 @@ namespace Dynamo.Nodes
             publishCustomNodeItem.Click += (sender, args) =>
             {
                 GoToWorkspace(nodeUI.ViewModel);
-                if (dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
+                if (dynamoModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
                 {
-                    dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
+                    dynamoModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
                 } 
             };
 
@@ -358,7 +358,7 @@ namespace Dynamo.Nodes
                 CanEditName = false
             };
 
-            dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
+            dynamoModel.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
@@ -608,7 +608,7 @@ namespace Dynamo.Nodes
 
             nodeUI.MainContextMenu.Items.Add(rawDataMenuItem);
 
-            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)dynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
         }
@@ -771,7 +771,7 @@ namespace Dynamo.Nodes
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
                 var command = new DynCmd.ModelEventCommand(model.GUID, eventName);
-                dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+                dynamoModel.DynamoViewModel.ExecuteCommand(command);
             }
         }
     }

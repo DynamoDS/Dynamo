@@ -146,7 +146,7 @@ namespace Dynamo.ViewModels
 
         private void Connect(object parameter)
         {
-            DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+            DynamoViewModel dynamoViewModel = dynamoModel.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
             workspaceViewModel.HandlePortClicked(this);
         }

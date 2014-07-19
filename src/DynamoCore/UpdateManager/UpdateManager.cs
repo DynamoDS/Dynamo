@@ -247,7 +247,7 @@ namespace Dynamo.UpdateManager
                 RaisePropertyChanged("UpdateFileLocation");
 
                 // Save the last downloaded location to the preferences.
-                dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath = updateFileLocation;
+                dynamoModel.PreferenceSettings.LastUpdateDownloadPath = updateFileLocation;
             }
         }
 
@@ -278,7 +278,7 @@ namespace Dynamo.UpdateManager
             {
                 if (!checkNewerDailyBuilds && value)
                 {
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateDataAvailable));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynamoModel.Logger, UpdateDataAvailable));
                 }
                 checkNewerDailyBuilds = value;
                 RaisePropertyChanged("CheckNewerDailyBuilds");
@@ -297,7 +297,7 @@ namespace Dynamo.UpdateManager
                 if (!forceUpdate && value)
                 {
                     // do a check
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateDataAvailable));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynamoModel.Logger, UpdateDataAvailable));
                 }
                 forceUpdate = value;
                 RaisePropertyChanged("ForceUpdate");
@@ -413,7 +413,7 @@ namespace Dynamo.UpdateManager
 
             //if (ExistingUpdateIsNewer())
             //{
-            //    logger.Log(string.Format("Using previously updated download {0}", dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath));
+            //    logger.Log(string.Format("Using previously updated download {0}", dynamoModel.PreferenceSettings.LastUpdateDownloadPath));
             //    UpdateDownloaded(this, new UpdateDownloadedEventArgs(null, UpdateFileLocation));
             //    versionCheckInProgress = false;
             //    return;
@@ -535,7 +535,7 @@ namespace Dynamo.UpdateManager
                 }
                 catch (Exception e)
                 {
-                    dynSettings.DynamoLogger.Log(e);
+                    dynamoModel.Logger.Log(e);
                     return null;
                 }
             }

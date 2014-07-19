@@ -207,10 +207,10 @@ namespace Dynamo.Controls
             Debug.WriteLine("Watch 3D view unloaded.");
 
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (dynamoModel != null)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+                dynamoModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+                dynamoModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
         }
 
@@ -227,10 +227,10 @@ namespace Dynamo.Controls
             MainContextMenu.Items.Add(mi);
 
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (dynamoModel != null)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+                dynamoModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+                dynamoModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
             DrawGrid();
@@ -257,7 +257,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-            if (dynSettings.Controller == null)
+            if (dynamoModel == null)
             {
                 return;
             }

@@ -200,7 +200,7 @@ namespace Dynamo.Utilities
             dynamoModel.SearchModel.OnRequestSync();
 
             // remove from fscheme environment
-            //dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
+            //dynamoModel.FSchemeEnvironment.RemoveSymbol(guid.ToString());
         }
 
         /// <summary>
@@ -524,7 +524,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <returns>The custom node info object - null if we failed</returns>
-        public static CustomNodeInfo GetHeaderFromPath(string path)
+        public CustomNodeInfo GetHeaderFromPath(string path)
         {
             string name, category, description;
             Guid id;
@@ -950,7 +950,7 @@ namespace Dynamo.Utilities
                     catch
                     {
                         //DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
-                        dynSettings.Controller.DynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
+                        dynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
                     }
                 }
 
@@ -970,9 +970,7 @@ namespace Dynamo.Utilities
                         double x = Convert.ToDouble(xAttrib.Value, CultureInfo.InvariantCulture);
                         double y = Convert.ToDouble(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                        Guid guid = Guid.NewGuid();
-                        var command = new DynamoViewModel.CreateNoteCommand(guid, text, x, y, false);
-                        dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
+                        ws.AddNote(false, x, y, text, Guid.NewGuid());
                     }
                 }
 
@@ -982,11 +980,8 @@ namespace Dynamo.Utilities
                     e.EnableReporting();
 
                 def.IsBeingLoaded = false;
-#if USE_DSENGINE
+
                 def.Compile(this.dynamoModel.EngineController);
-#else
-                //def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
-#endif
 
                 ws.WatchChanges = true;
 

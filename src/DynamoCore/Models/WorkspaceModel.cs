@@ -29,6 +29,7 @@ namespace Dynamo.Models
 
         #region internal members
 
+        internal readonly NodeFactory NodeFactory;
         protected DynamoModel dynamoModel;
         private string _fileName;
         private string _name;
@@ -359,6 +360,7 @@ namespace Dynamo.Models
             IEnumerable<ConnectorModel> c, double x, double y)
         {
             this.dynamoModel = dynamoModel;
+            this.NodeFactory = new NodeFactory(this, dynamoModel);
 
             Name = name;
 
@@ -445,7 +447,7 @@ namespace Dynamo.Models
             if (nodeId == Guid.Empty)
                 throw new ArgumentException("Node ID must be specified", "nodeId");
 
-            NodeModel node = dynamoModel.NodeFactory.CreateNodeInstance(nodeName);
+            NodeModel node = this.NodeFactory.CreateNodeInstance(nodeName);
             if (node == null)
             {
                 string format = "Failed to create node '{0}' (GUID: {1})";
@@ -460,7 +462,6 @@ namespace Dynamo.Models
             }
 
             this.Nodes.Add(node);
-            node.WorkSpace = this;
 
             if (null != xmlNode)
                 node.Load(xmlNode);
@@ -478,15 +479,15 @@ namespace Dynamo.Models
             }
 
             // KILLDYNSETTINGS
-            DynamoModelEvents vm = Controller.DynamoViewModel;
-            vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
+            dynamoModel.OnRequestNodeCentered(this, args);
 
             node.EnableInteraction();
 
             if (dynamoModel.CurrentWorkspace == dynamoModel.HomeSpace)
                 node.SaveResult = true;
 
-            OnNodeAdded(node);
+            // KILLDYNSETTINGS
+            dynamoModel.OnNodeAdded(node);
             return node;
         }
 
@@ -557,7 +558,7 @@ namespace Dynamo.Models
 
         public virtual void Modified()
         {
-            //dynSettings.DynamoLogger.Log("Workspace modified.");
+            //dynamoModel.Logger.Log("Workspace modified.");
             if (OnModified != null)
                 OnModified();
         }
@@ -726,9 +727,9 @@ namespace Dynamo.Models
             try
             {
                 ProtoCore.Core core = null;
-                if (dynSettings.Controller != null)
+                if (dynamoModel != null)
                 {
-                    var engine = dynSettings.Controller.EngineController;
+                    var engine = dynamoModel.EngineController;
                     if (engine != null && (engine.LiveRunnerCore != null))
                         core = engine.LiveRunnerCore;
                 }
@@ -755,8 +756,8 @@ namespace Dynamo.Models
             {
                 // We'd prefer file saving process to not crash Dynamo,
                 // otherwise user will lose the last hope in retaining data.
-                dynSettings.DynamoLogger.Log(exception.Message);
-                dynSettings.DynamoLogger.Log(exception.StackTrace);
+                dynamoModel.Logger.Log(exception.Message);
+                dynamoModel.Logger.Log(exception.StackTrace);
             }
         }
 
@@ -929,7 +930,7 @@ namespace Dynamo.Models
             model.HasUnsavedChanges = false;
 
             // KILLDYNSETTINGS - just expose this as an event on dynamoModel
-            this.dynamoModel.OnRecentFilesUpdated(model.FileName);
+            this.dynamoModel.OnWorkspaceSaved(model.FileName);
         }
 
         private void MarkUnsaved(
@@ -1205,7 +1206,7 @@ namespace Dynamo.Models
             }
             else // Other node types.
             {
-                NodeModel nodeModel = dynamoModel.NodeFactory.CreateNodeInstance(typeName);
+                NodeModel nodeModel = NodeFactory.CreateNodeInstance(typeName);
                 nodeModel.WorkSpace = this;
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
@@ -1364,16 +1365,19 @@ namespace Dynamo.Models
 
                 });
 
-            // KILLDYNSETTINGS: shouldn't know about the dispatcher
-            if (dynSettings.Controller != null &&
-                dynSettings.Controller.UIDispatcher != null &&
-                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(getString);
-                return outData;
-            }
-            else
-                return String.Empty;
+            // KILLDYNSETTINGS: shouldn't know about the dispatcher - whether it exists or not
+            dynamoModel.OnRequestDispatcherInvoke(getString);
+            return outData;
+
+            //if (dynamoModel != null &&
+            //    dynamoModel.UIDispatcher != null &&
+            //    dynamoModel.UIDispatcher.CheckAccess() == false)
+            //{
+            //    dynamoModel.UIDispatcher.Invoke(getString);
+            //    return outData;
+            //}
+            //else
+            //    return String.Empty;
 
         }
 

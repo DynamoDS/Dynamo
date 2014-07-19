@@ -182,7 +182,7 @@ namespace Dynamo.Models
             PortType portType = ((PortType)helper.ReadInteger("portType"));
 
             // Get to the start and end nodes that this connector connects to.
-            WorkspaceModel workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
+            WorkspaceModel workspace = dynamoModel.DynamoModel.CurrentWorkspace;
             NodeModel startNode = workspace.GetModelInternal(startNodeId) as NodeModel;
             NodeModel endNode = workspace.GetModelInternal(endNodeId) as NodeModel;
 

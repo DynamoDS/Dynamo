@@ -242,7 +242,7 @@ namespace Dynamo.Models
             OnPortDisconnected(EventArgs.Empty);
 
             //also trigger the model's connector deletion
-            dynSettings.Controller.DynamoModel.OnConnectorDeleted(connector);
+            dynamoModel.DynamoModel.OnConnectorDeleted(connector);
 
             connectors.Remove(connector);
             

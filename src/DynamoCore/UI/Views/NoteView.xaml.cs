@@ -92,7 +92,7 @@ namespace Dynamo.Nodes
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+            dynamoModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
@@ -113,7 +113,7 @@ namespace Dynamo.Nodes
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
-                dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
+                dynamoModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
         private void Note_MouseDown(object sender, MouseButtonEventArgs e)

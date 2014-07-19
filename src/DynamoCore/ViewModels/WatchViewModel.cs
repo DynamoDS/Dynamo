@@ -137,7 +137,7 @@ namespace Dynamo.ViewModels
 
         private void FindNodeForPath(object obj)
         {
-            dynSettings.Controller.VisualizationManager.TagRenderPackageForPath(obj.ToString());
+            dynamoModel.VisualizationManager.TagRenderPackageForPath(obj.ToString());
         }
     }
 }

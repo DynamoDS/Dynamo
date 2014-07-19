@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
                 throw new ArgumentNullException("fullyQualifiedName");
 
             TypeLoadData tData = null;
-            var builtInTypes = dynSettings.Controller.BuiltInTypesByName;
+            var builtInTypes = dynamoModel.BuiltInTypesByName;
             if (builtInTypes.TryGetValue(fullyQualifiedName, out tData))
                 return tData.Type; // Found among built-in types, return it.
 
@@ -218,7 +218,7 @@ namespace Dynamo.Nodes
                 return type;
 
             // If we still can't find the type, try the also known as attributes.
-            foreach (var builtInType in dynSettings.Controller.BuiltInTypesByName)
+            foreach (var builtInType in dynamoModel.BuiltInTypesByName)
             {
                 var attribs = builtInType.Value.Type.GetCustomAttributes(
                     typeof(AlsoKnownAsAttribute), false);
@@ -229,7 +229,7 @@ namespace Dynamo.Nodes
                 AlsoKnownAsAttribute akaAttrib = attribs[0] as AlsoKnownAsAttribute;
                 if (akaAttrib.Values.Contains(fullyQualifiedName))
                 {
-                    dynSettings.DynamoLogger.Log(string.Format(
+                    dynamoModel.Logger.Log(string.Format(
                         "Found matching node for {0} also known as {1}",
                         builtInType.Key, fullyQualifiedName));
 
@@ -237,10 +237,10 @@ namespace Dynamo.Nodes
                 }
             }
 
-            dynSettings.DynamoLogger.Log(string.Format(
+            dynamoModel.Logger.Log(string.Format(
                 "Could not load node of type: {0}", fullyQualifiedName));
 
-            dynSettings.DynamoLogger.Log("Loading will continue but nodes " +
+            dynamoModel.Logger.Log("Loading will continue but nodes " +
                 "might be missing from your workflow.");
 
             return null;
@@ -520,7 +520,7 @@ namespace Dynamo.Nodes
 
             args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "OK");
 
-            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            dynamoModel.OnRequestTaskDialog(null, args);
         }
 
         /// <summary>
@@ -563,9 +563,9 @@ namespace Dynamo.Nodes
             args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "Arrrrg, ok");
             args.Exception = exception;
 
-            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
-                dynSettings.Controller.ReportABug(null);
+                dynamoModel.ReportABug(null);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -608,10 +608,10 @@ namespace Dynamo.Nodes
             args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, "Download latest version");
             args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, "Proceed anyway");
             
-            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
-                dynSettings.Controller.DownloadDynamo();
+                dynamoModel.DownloadDynamo();
                 return false;
             }
 
@@ -1279,7 +1279,7 @@ namespace Dynamo.Nodes
                 if (_value == null || !_value.Equals(value))
                 {
                     _value = value;
-                    //dynSettings.DynamoLogger.Log("Value changed to: " + _value);
+                    //dynamoModel.Logger.Log("Value changed to: " + _value);
                     RequiresRecalc = value != null;
                     RaisePropertyChanged("Value");
                 }

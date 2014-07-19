@@ -52,7 +52,7 @@ namespace Dynamo.UI.Prompts
                 ModelBase model = GetBoundModel(expr.DataItem);
 
                 string propName = expr.ParentBinding.Path.Path;
-                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                dynamoModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
                         model.GUID, propName, editText.Text));
             }

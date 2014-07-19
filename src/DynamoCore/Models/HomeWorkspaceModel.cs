@@ -59,15 +59,15 @@ namespace Dynamo.Models
                 runExpressionTimer.Stop();
                 runExpressionTimer.Start(); // reset timer
 #else
-                //dynSettings.DynamoLogger.Log("Running Dynamically");
+                //dynamoModel.Logger.Log("Running Dynamically");
                 if (!controller.Running)
                 {
-                    //dynSettings.DynamoLogger.Log("Nothing currently running, now running.");
+                    //dynamoModel.Logger.Log("Nothing currently running, now running.");
                     controller.RunExpression(false);
                 }
                 else
                 {
-                    //dynSettings.DynamoLogger.Log("Run in progress, cancelling then running.");
+                    //dynamoModel.Logger.Log("Run in progress, cancelling then running.");
                     controller.QueueRun();
                 }
 #endif

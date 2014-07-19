@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
         //{
         //    get
         //    {
-        //        if(dynSettings.Controller.DynamoViewModel.CurrentWorkspace.Notes.Contains(Model))
+        //        if(dynamoModel.DynamoViewModel.CurrentWorkspace.Notes.Contains(Model))
         //            return true;
         //        return false;
         //    }
@@ -90,7 +90,7 @@ namespace Dynamo.ViewModels
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
 
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
+            dynamoModel.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
         }
 
         private void Select(object parameter)

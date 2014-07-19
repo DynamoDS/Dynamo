@@ -14,7 +14,7 @@ namespace Dynamo.ViewModels
     public class PackageViewModel
     {
         private DynamoViewModel dynamoViewModel;
-        public readonly Package Model;
+        public Package Model { get; private set; }
 
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
         public DelegateCommand GetLatestVersionCommand { get; set; }
@@ -24,7 +24,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand DeprecateCommand { get; set; }
         public DelegateCommand UndeprecateCommand { get; set; }
 
-        public PackageViewModel(ViewModels.DynamoViewModel dynamoViewModel, Package model)
+        public PackageViewModel(DynamoViewModel dynamoViewModel, Package model)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.Model = model;

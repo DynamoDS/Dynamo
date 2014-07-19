@@ -131,19 +131,17 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
-        private readonly SearchModel model;
+        public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
 
         #endregion
 
         #region Initialization
 
-        internal SearchViewModel(DynamoViewModel dynamoViewModel, SearchModel model)
+        internal SearchViewModel(DynamoViewModel dynamoViewModel, SearchModel Model)
         {
-            this.model = model;
+            this.Model = Model;
             this.dynamoViewModel = dynamoViewModel;
-
-            this.model.RequestSync += ModelOnRequestSync;
 
             InitializeCore();
         }
@@ -155,13 +153,15 @@ namespace Dynamo.ViewModels
             Visible = false;
             searchText = "";
 
-            topResult = this.model.AddRootCategory("Top Result");
-            this.model.AddRootCategory(BuiltinNodeCategories.CORE);
-            this.model.AddRootCategory(BuiltinNodeCategories.LOGIC);
-            this.model.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
-            this.model.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.model.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            this.model.AddRootCategory(BuiltinNodeCategories.IO);
+            topResult = this.Model.AddRootCategory("Top Result");
+            this.Model.AddRootCategory(BuiltinNodeCategories.CORE);
+            this.Model.AddRootCategory(BuiltinNodeCategories.LOGIC);
+            this.Model.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            this.Model.AddRootCategory(BuiltinNodeCategories.REVIT);
+            this.Model.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            this.Model.AddRootCategory(BuiltinNodeCategories.IO);
+
+            this.Model.RequestSync += ModelOnRequestSync;
         }
 
         #endregion
@@ -170,7 +170,7 @@ namespace Dynamo.ViewModels
 
         ~SearchViewModel()
         {
-            this.model.RequestSync -= this.ModelOnRequestSync;
+            this.Model.RequestSync -= this.ModelOnRequestSync;
         }
 
         #endregion
@@ -202,9 +202,9 @@ namespace Dynamo.ViewModels
 
             Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
             {
-                lock (model.SearchDictionary)
+                lock (Model.SearchDictionary)
                 {
-                    return model.Search(query);
+                    return Model.Search(query);
                 }
             }).ContinueWith((t) =>
             {
@@ -224,7 +224,7 @@ namespace Dynamo.ViewModels
                     if (string.IsNullOrEmpty(query))
                     {
 
-                        foreach (var ele in this.model.BrowserRootCategories)
+                        foreach (var ele in this.Model.BrowserRootCategories)
                         {
                             ele.CollapseToLeaves();
                             ele.SetVisibilityToLeaves(true);
@@ -237,7 +237,7 @@ namespace Dynamo.ViewModels
                     }
 
                     // otherwise, first collapse all
-                    foreach (var root in this.model.BrowserRootCategories)
+                    foreach (var root in this.Model.BrowserRootCategories)
                     {
                         root.CollapseToLeaves();
                         root.SetVisibilityToLeaves(false);
@@ -282,7 +282,7 @@ namespace Dynamo.ViewModels
                     }
 
                     // for all of the other results, show them in their category
-                    foreach (var ele in this.model.SearchElements)
+                    foreach (var ele in this.Model.SearchElements)
                     {
                         if (t.Result.Contains(ele))
                         {
@@ -293,7 +293,7 @@ namespace Dynamo.ViewModels
 
                     // create an ordered list of visible search results
                     var baseBrowserItem = new BrowserRootElement("root");
-                    foreach (var root in model.BrowserRootCategories)
+                    foreach (var root in Model.BrowserRootCategories)
                     {
                         baseBrowserItem.Items.Add(root);
                     }
@@ -330,7 +330,7 @@ namespace Dynamo.ViewModels
         /// <param name="query"> The search query </param>
         public void SearchAndUpdateResultsSync(string query)
         {
-            var result = model.Search(query);
+            var result = Model.Search(query);
 
             SearchResults.Clear();
             foreach (var node in result)

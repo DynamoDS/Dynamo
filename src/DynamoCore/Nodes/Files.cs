@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
             // KILLDYNSETTINGS - nodes shouldn't know about the runner
-            if (!dynSettings.Controller.Runner.Running)
+            if (!dynamoModel.Runner.Running)
                 RequiresRecalc = true;
             else
             {

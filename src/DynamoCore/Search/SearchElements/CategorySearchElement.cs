@@ -86,7 +86,7 @@ namespace Dynamo.Search.SearchElements
         /// Add the name as the current search text </summary>
         public override void Execute()
         {
-            dynSettings.Controller.SearchViewModel.SearchText = Name + ".";
+            dynamoModel.SearchViewModel.SearchText = Name + ".";
         }
 
     }

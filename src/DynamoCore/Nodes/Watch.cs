@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
                 p.PortDisconnected += p_PortDisconnected;
             }
 
-            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
+            dynamoModel.EvaluationCompleted += Controller_EvaluationCompleted;
         }
 
         void Controller_EvaluationCompleted(object sender, EventArgs e)
@@ -130,7 +130,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                node = dynSettings.Controller.WatchHandler.Process(data as dynamic, path, showRawData);
+                node = dynamoModel.WatchHandler.Process(data as dynamic, path, showRawData);
             }
 
             return node ?? (new WatchViewModel("null", path));
@@ -191,7 +191,7 @@ namespace Dynamo.Nodes
                 var inputVar = this.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
                 //Get RuntimeMirror for input ast identifier.
-                var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
+                var mirror = dynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
                 if (null == mirror)
                     return new WatchViewModel(nullString, inputVar);
 
@@ -202,7 +202,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void UpdateRenderPackage()
+        public override void UpdateRenderPackage(int maxTessDivs)
         {
             //do nothing
             //a watch should not draw its outputs

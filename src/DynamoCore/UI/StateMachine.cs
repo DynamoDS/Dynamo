@@ -286,7 +286,7 @@ namespace Dynamo.ViewModels
                 Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
             this.Model.RecordModelsForModification(models);
-            DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+            DynamoController controller = Dynamo.Utilities.dynamoModel;
             controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
@@ -652,7 +652,7 @@ namespace Dynamo.ViewModels
                     Point mouseCursor = e.GetPosition(sender as IInputElement);
                     var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
                     var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
-                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    var dynamoViewModel = dynamoModel.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
                     SetCurrentState(State.None); // Dragging operation ended.
@@ -707,7 +707,7 @@ namespace Dynamo.ViewModels
                     var rect = new Rect(x, y, width, height);
 
                     var command = new DynCmd.SelectInRegionCommand(rect, isCrossSelection);
-                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    DynamoViewModel dynamoViewModel = dynamoModel.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
                 }
@@ -723,7 +723,7 @@ namespace Dynamo.ViewModels
                     // Record and begin the drag operation for selected nodes.
                     var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
                     var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
-                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    DynamoViewModel dynamoViewModel = dynamoModel.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
                     SetCurrentState(State.NodeReposition);
@@ -759,7 +759,7 @@ namespace Dynamo.ViewModels
                     return false;
 
                 PortModel portModel = portViewModel.PortModel;
-                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                DynamoViewModel dynamoViewModel = dynamoModel.DynamoViewModel;
                 WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
@@ -808,7 +808,7 @@ namespace Dynamo.ViewModels
                 var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
                         PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
 
-                var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                var dynamoViewModel = dynamoModel.DynamoViewModel;
                 dynamoViewModel.ExecuteCommand(command);
             }
 
@@ -860,7 +860,7 @@ namespace Dynamo.ViewModels
 
                 // Clear existing selection set.
                 var selectNothing = new DynCmd.SelectModelCommand(Guid.Empty, ModifierKeys.None);
-                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                DynamoViewModel dynamoViewModel = dynamoModel.DynamoViewModel;
                 dynamoViewModel.ExecuteCommand(selectNothing);
 
                 // Update the selection box and make it visible 
@@ -878,7 +878,7 @@ namespace Dynamo.ViewModels
             {
                 // create node
                 var guid = Guid.NewGuid();
-                var vm = dynSettings.Controller.DynamoViewModel;
+                var vm = dynamoModel.DynamoViewModel;
                 vm.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
                     "Code Block", cursor.X, cursor.Y, false, true));
 

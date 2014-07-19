@@ -13,6 +13,7 @@ namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
+
         private int inputAmtLastBuild;
         private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>(); 
 

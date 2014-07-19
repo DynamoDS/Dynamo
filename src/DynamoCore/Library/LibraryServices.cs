@@ -252,10 +252,10 @@ namespace Dynamo.DSEngine
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
-                    dynSettings.DynamoLogger.LogWarning(errorMessage, WarningLevel.Moderate);
+                    dynamoModel.Logger.LogWarning(errorMessage, WarningLevel.Moderate);
                     foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
                     {
-                        dynSettings.DynamoLogger.LogWarning(error.Message, WarningLevel.Moderate);
+                        dynamoModel.Logger.LogWarning(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
                     }
 

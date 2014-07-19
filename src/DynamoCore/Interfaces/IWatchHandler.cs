@@ -49,14 +49,14 @@ namespace Dynamo.Interfaces
         internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchViewModel(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+                return new WatchViewModel(unit.Value.ToString(dynamoModel.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
 
             return new WatchViewModel(unit.ToString(), tag);
         }
 
         internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(value.ToString(dynamoModel.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)

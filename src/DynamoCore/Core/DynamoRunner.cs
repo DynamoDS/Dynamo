@@ -251,7 +251,7 @@ namespace Dynamo.Core
 
         protected virtual void OnRunCancelled(bool error)
         {
-            //dynSettings.Controller.DynamoLogger.Log("Run cancelled. Error: " + error);
+            //dynamoModel.DynamoLogger.Log("Run cancelled. Error: " + error);
         }
     }
 }

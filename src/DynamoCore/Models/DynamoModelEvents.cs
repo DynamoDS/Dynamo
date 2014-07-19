@@ -13,6 +13,36 @@ namespace Dynamo.Models
     {
         #region events
 
+        public event ActionHandler RequestDispatcherInvoke;
+        public virtual void OnRequestDispatcherInvoke(Action action)
+        {
+            // if a dispatcher is attached, invoke it
+            if (RequestDispatcherInvoke != null)
+            {
+                RequestDispatcherInvoke(action);
+            }
+            else
+            {
+                // otherwise invoke the action
+                action();
+            }
+        }
+
+        public event ActionHandler RequestDispatcherBeginInvoke;
+        public virtual void OnRequestDispatcherBeginInvoke(Action action)
+        {
+            // if a dispatcher is attached, invoke it
+            if (RequestDispatcherBeginInvoke != null)
+            {
+                RequestDispatcherBeginInvoke(action);
+            }
+            else
+            {
+                // otherwise invoke the action directly
+                action();
+            }  
+        }
+
         public event EventHandler RequestLayoutUpdate;
         public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
         {

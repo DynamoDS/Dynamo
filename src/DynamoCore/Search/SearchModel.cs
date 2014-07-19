@@ -20,7 +20,7 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Search
 {
-    internal class SearchModel
+    public class SearchModel
     {
         #region Events 
 
@@ -70,7 +70,7 @@ namespace Dynamo.Search
         /// The root elements for the browser
         /// </summary>
         private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
-        internal ObservableCollection<BrowserRootElement> BrowserRootCategories { get { return _browserRootCategories; } set { _browserRootCategories = value; } }
+        public ObservableCollection<BrowserRootElement> BrowserRootCategories { get { return _browserRootCategories; } set { _browserRootCategories = value; } }
 
         /// <summary>
         ///     SearchDictionary property

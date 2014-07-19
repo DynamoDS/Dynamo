@@ -182,7 +182,7 @@ namespace Dynamo.Nodes
                     else
                     {
                         string propName = expr.ParentBinding.Path.Path;
-                        dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                        dynamoModel.DynamoViewModel.ExecuteCommand(
                             new DynCmd.UpdateModelValueCommand(
                                 nodeModel.GUID, propName, this.Text));
                     }

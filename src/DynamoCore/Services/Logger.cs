@@ -44,7 +44,7 @@ namespace Dynamo.Services
         public static void Start()
         {
             string appVersion = Process.GetCurrentProcess().ProcessName + "-"
-                                + dynSettings.Controller.UpdateManager.ProductVersion.ToString();
+                                + dynamoModel.UpdateManager.ProductVersion.ToString();
 
 
             CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,

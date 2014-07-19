@@ -281,7 +281,7 @@ namespace Dynamo.Search
             //    this.Visibility = Visibility.Visible;
             //else
             //{
-            //    dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            //    dynamoModel.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
             //   this.Visibility = Visibility.Collapsed;
             //}
             this.dynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);

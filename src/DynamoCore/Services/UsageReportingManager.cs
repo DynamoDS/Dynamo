@@ -48,26 +48,26 @@ namespace Dynamo.Services
                     return false;
 
                 // KILLDYNSETTINGS - Static reference to non-static object
-                if (dynSettings.Controller != null)
-                    return dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
+                if (dynamoModel != null)
+                    return dynamoModel.PreferenceSettings.IsUsageReportingApproved;
                 
                 return false;
             }
             private set
             {
-                dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved = value;
+                dynamoModel.PreferenceSettings.IsUsageReportingApproved = value;
                 RaisePropertyChanged("IsUsageReportingApproved");
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynSettings.Controller.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.Save();
                 }
                 catch (Exception args)
                 {
-                    dynSettings.Controller.IsCrashing = true;
+                    dynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
             }
         }
@@ -83,27 +83,27 @@ namespace Dynamo.Services
                 if (DynamoController.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                if (dynSettings.Controller != null)
-                    return dynSettings.Controller.PreferenceSettings.IsAnalyticsReportingApproved;
+                if (dynamoModel != null)
+                    return dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
 
                 return true;
             }
 
             private set
             {
-                dynSettings.Controller.PreferenceSettings.IsAnalyticsReportingApproved = value;
+                dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynSettings.Controller.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.Save();
                 }
                 catch (Exception args)
                 {
-                    dynSettings.Controller.IsCrashing = true;
+                    dynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
             }
 
@@ -114,11 +114,11 @@ namespace Dynamo.Services
         {
             get
             {
-                return dynSettings.Controller.PreferenceSettings.IsFirstRun;
+                return dynamoModel.PreferenceSettings.IsFirstRun;
             }
             private set
             {
-                dynSettings.Controller.PreferenceSettings.IsFirstRun = value;
+                dynamoModel.PreferenceSettings.IsFirstRun = value;
                 RaisePropertyChanged("FirstRun");
             }
         }
@@ -136,7 +136,7 @@ namespace Dynamo.Services
         public void CheckIsFirstRun(Window ownerWindow)
         {
             // First run of Dynamo
-            if (dynSettings.Controller.PreferenceSettings.IsFirstRun)
+            if (dynamoModel.PreferenceSettings.IsFirstRun)
             {
                 FirstRun = false;
 

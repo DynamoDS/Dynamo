@@ -1315,9 +1315,9 @@ namespace Dynamo.Controls
             double dbl;
             if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return(dbl.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture));
+                return(dbl.ToString(dynamoModel.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture));
             }
-            return value ?? 0.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat);
+            return value ?? 0.ToString(dynamoModel.PreferenceSettings.NumberFormat);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1547,7 +1547,7 @@ namespace Dynamo.Controls
         {
             if ((bool) value != true) return "(Up-to-date)";
 
-            var latest = dynSettings.Controller.UpdateManager.AvailableVersion;
+            var latest = dynamoModel.UpdateManager.AvailableVersion;
             return latest;
         }
 
@@ -1581,7 +1581,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(parameter.ToString() == dynSettings.Controller.PreferenceSettings.NumberFormat)
+            if(parameter.ToString() == dynamoModel.PreferenceSettings.NumberFormat)
                 return true;
             return false;
         }

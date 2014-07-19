@@ -27,6 +27,7 @@ namespace Dynamo.Nodes
         protected internal Function(DynamoModel dynamoModel, CustomNodeDefinition def)
         {
             this.dynamoModel = dynamoModel;
+
             Definition = def;
             ResyncWithDefinition();
             ArgumentLacing = LacingStrategy.Disabled;
@@ -66,8 +67,8 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
-                    ? dynSettings.Controller.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
+                return dynamoModel.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
+                    ? dynamoModel.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
                     : "Custom Nodes";
             }
         }
@@ -241,7 +242,7 @@ namespace Dynamo.Nodes
                 {
                     LoadProxyCustomNode(funcId);
                 }
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+                Definition = dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
 
                 if (Definition.IsProxy)
                 {
@@ -331,10 +332,10 @@ namespace Dynamo.Nodes
                 return false;
 
             // if the dyf does not exist on the search path...
-            if (dynSettings.Controller.CustomNodeManager.Contains(funcId))
+            if (dynamoModel.CustomNodeManager.Contains(funcId))
                 return true;
 
-            CustomNodeManager manager = dynSettings.Controller.CustomNodeManager;
+            CustomNodeManager manager = dynamoModel.CustomNodeManager;
 
             // if there is a node with this name, use it instead
             if (manager.Contains(NickName))
@@ -350,16 +351,16 @@ namespace Dynamo.Nodes
         {
             var proxyDef = new CustomNodeDefinition(funcId)
             {
-                WorkspaceModel = new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null }
+                WorkspaceModel = new CustomNodeWorkspaceModel(this.dynamoModel, NickName, "Custom Nodes") { FileName = null }
             };
             proxyDef.IsProxy = true;
 
             string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
 
-            dynSettings.DynamoLogger.Log(userMsg);
+            dynamoModel.Logger.Log(userMsg);
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+            dynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
         }
 
         //public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
@@ -499,7 +500,7 @@ namespace Dynamo.Nodes
                     return;
                 }
 
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+                Definition = dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
 
                 XmlNodeList inNodes = element.SelectNodes("functionInput");
                 XmlNodeList outNodes = element.SelectNodes("functionOutput");

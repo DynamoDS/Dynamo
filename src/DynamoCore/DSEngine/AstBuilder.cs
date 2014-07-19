@@ -128,7 +128,7 @@ namespace Dynamo.DSEngine
 
             //TODO: This should do something more than just log a generic message. --SJE
             if (node.State == ElementState.Error)
-                dynSettings.DynamoLogger.Log("Error in Node. Not sent for building and compiling");
+                dynamoModel.Logger.Log("Error in Node. Not sent for building and compiling");
 
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
@@ -140,11 +140,11 @@ namespace Dynamo.DSEngine
 
             IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
             
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
+            if (dynamoModel.DebugSettings.VerboseLogging)
             {
                 foreach (var n in astNodes)
                 {
-                    dynSettings.DynamoLogger.Log(n.ToString());
+                    dynamoModel.Logger.Log(n.ToString());
                 }
             }
 

@@ -11,11 +11,13 @@ namespace Dynamo.Models
 {
     internal class NodeFactory
     {
-        private DynamoModel dynamoModel;
+        private readonly DynamoModel dynamoModel;
+        private readonly WorkspaceModel workspaceModel;
 
-        internal NodeFactory(DynamoModel model)
+        internal NodeFactory(WorkspaceModel workspaceModel, DynamoModel dynamoModel)
         {
-            this.dynamoModel = model;
+            this.dynamoModel = dynamoModel;
+            this.workspaceModel = workspaceModel;
         }
 
         /// <summary>
@@ -28,7 +30,7 @@ namespace Dynamo.Models
         /// <returns> The newly instantiated dynNode</returns>
         internal NodeModel CreateNodeInstance(string name)
         {
-            NodeModel result;
+            NodeModel node;
 
 #if USE_DSENGINE
             FunctionDescriptor functionItem = (dynamoModel.EngineController.GetFunctionDescriptor(name));
@@ -36,7 +38,14 @@ namespace Dynamo.Models
             {
                 if (functionItem.IsVarArg)
                     return new DSVarArgFunction(functionItem);
-                return new DSFunction(functionItem);
+                node = new DSFunction(functionItem)
+                {
+                    // KILLDYNSETTINGS
+                    DynamoModel = dynamoModel,
+                    WorkSpace = workspaceModel
+                };
+
+                return node;
             }
 #endif
             if (dynamoModel.BuiltInTypesByName.ContainsKey(name))
@@ -46,7 +55,7 @@ namespace Dynamo.Models
                 ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                 var newEl = (NodeModel)obj.Unwrap();
                 newEl.DisableInteraction();
-                result = newEl;
+                node = newEl;
             }
             else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(name))
             {
@@ -56,13 +65,13 @@ namespace Dynamo.Models
                     ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                     var newEl = (NodeModel)obj.Unwrap();
                     newEl.DisableInteraction();
-                    result = newEl;
+                    node = newEl;
                 }
                 catch (Exception ex)
                 {
                     dynamoModel.Logger.Log("Failed to load built-in type");
                     dynamoModel.Logger.Log(ex);
-                    result = null;
+                    node = null;
                 }
             }
             else
@@ -71,7 +80,7 @@ namespace Dynamo.Models
 
                 if (dynamoModel.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
                 {
-                    result = func;
+                    node = func;
                 }
                 else
                 {
@@ -80,7 +89,13 @@ namespace Dynamo.Models
                 }
             }
 
-            return result;
+            if (node == null) return node;
+
+            // KILLDYNSETTINGS
+            node.DynamoModel = dynamoModel;
+            node.WorkSpace = workspaceModel;
+
+            return node;
         }
 
         public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
@@ -135,6 +150,10 @@ namespace Dynamo.Models
             }
 
             node.GUID = guid;
+
+            // KILLDYNSETTINGS
+            node.DynamoModel = dynamoModel;
+            node.WorkSpace = workspaceModel;
 
             //string name = nodeUI.NickName;
             return node;

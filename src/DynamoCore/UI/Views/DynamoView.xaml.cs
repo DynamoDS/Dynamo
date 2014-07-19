@@ -500,7 +500,7 @@ namespace Dynamo.Controls
 
                 //if (bench == null)
                 //{
-                //    dynSettings.DynamoLogger.Log("Cannot export bench as image without UI.  No image wil be exported.");
+                //    dynamoModel.Logger.Log("Cannot export bench as image without UI.  No image wil be exported.");
                 //    return;
                 //}
 

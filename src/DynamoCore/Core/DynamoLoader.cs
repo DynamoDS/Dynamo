@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Dynamo.Core;
 using Dynamo.Models;
 using System.Reflection;
 using System.IO;
@@ -39,7 +41,7 @@ namespace Dynamo.Utilities
         public DynamoLoader(DynamoModel model)
         {
             this.dynamoModel = model;
-            this.PackageLoader = new PackageLoader();
+            this.PackageLoader = new PackageLoader(dynamoModel);
         }
 
         #region Methods
@@ -120,7 +122,7 @@ namespace Dynamo.Utilities
                 }
             }
 
-            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
+            dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 
@@ -183,7 +185,7 @@ namespace Dynamo.Utilities
 
                         //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
                         //if available, to discern whether we should load this type
-                        if (!dynamoModel.Context.Equals(RevitContext.NONE))
+                        if (!dynamoModel.Context.Equals(Context.NONE))
                         {
 
                             object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
@@ -232,13 +234,13 @@ namespace Dynamo.Utilities
 
                         var data = new TypeLoadData(assembly, t);
 
-                        if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
-                            controller.BuiltInTypesByNickname.Add(typeName, data);
+                        if (!dynamoModel.BuiltInTypesByNickname.ContainsKey(typeName))
+                            dynamoModel.BuiltInTypesByNickname.Add(typeName, data);
                         else
                             dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
 
-                        if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
-                            controller.BuiltInTypesByName.Add(t.FullName, data);
+                        if (!dynamoModel.BuiltInTypesByName.ContainsKey(t.FullName))
+                            dynamoModel.BuiltInTypesByName.Add(t.FullName, data);
                         else
                             dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
                     }

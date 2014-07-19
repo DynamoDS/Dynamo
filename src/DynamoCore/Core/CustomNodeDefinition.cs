@@ -215,7 +215,7 @@ namespace Dynamo
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            var customNodeInstances = dynSettings.Controller.DynamoModel.AllNodes
+            var customNodeInstances = dynamoModel.DynamoModel.AllNodes
                         .OfType<Function>()
                         .Where(el => el.Definition != null && el.Definition == this);
             
@@ -246,7 +246,7 @@ namespace Dynamo
         public bool AddToSearch()
         {
             return
-                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
+                dynamoModel.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
                                                                                 WorkspaceModel.Name,
                                                                                 WorkspaceModel.Category,
                                                                                 WorkspaceModel.Description,
@@ -271,7 +271,7 @@ namespace Dynamo
             try
             {
                 // Add function defininition
-                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
+                dynamoModel.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
 
                 // search
                 if (addToSearch)
@@ -282,18 +282,18 @@ namespace Dynamo
                 var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
                                               functionWorkspace.Description, WorkspaceModel.FileName);
 
-                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+                dynamoModel.CustomNodeManager.SetNodeInfo(info);
 
 #if USE_DSENGINE
-                Compile(dynSettings.Controller.EngineController);
+                Compile(dynamoModel.EngineController);
 #else
-                CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
+                CompileAndAddToEnvironment(dynamoModel.FSchemeEnvironment);
 #endif
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log("Error saving:" + e.GetType());
-                dynSettings.DynamoLogger.Log(e);
+                dynamoModel.Logger.Log("Error saving:" + e.GetType());
+                dynamoModel.Logger.Log(e);
                 return false;
             }
 

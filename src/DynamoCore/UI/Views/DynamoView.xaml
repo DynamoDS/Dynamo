@@ -393,9 +393,9 @@
                                     Command="{Binding MutateTestDelegateCommand}"
                                     CommandParameter="{Binding Path=RunInDebug}"
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
+                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static utilities:dynamoModel}}"
                                   IsCheckable="True" IsChecked="{Binding Path=UpdateManager.CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
+                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static utilities:dynamoModel}}"
                                       IsCheckable="True" IsChecked="{Binding Path=UpdateManager.ForceUpdate, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
@@ -1166,9 +1166,9 @@
                       Content="Debug" VerticalContentAlignment="Center"/-->
 
                 </WrapPanel>
-                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
+                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static utilities:dynamoModel.Logger}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
                        VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="10"
-                       Foreground="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
+                       Foreground="{Binding Source={x:Static utilities:dynamoModel.Logger}, Path=WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
                     <TextBlock.Triggers>
                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                 <BeginStoryboard>

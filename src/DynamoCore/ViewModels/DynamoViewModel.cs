@@ -358,7 +358,7 @@ namespace Dynamo.ViewModels
 
         public string Version
         {
-            get { return model.UpdateManager.ProductVersion.ToString(); }
+            get { return model.Version; }
         }
 
         public bool IsUpdateAvailable
@@ -1899,7 +1899,7 @@ namespace Dynamo.ViewModels
         private void CheckForUpdate(object obj)
         {
             //Disable the update check for 0.6.3. Just send he user to the downloads page.
-            //dynSettings.Controller.UpdateManager.CheckForProductUpdate();
+            //dynamoModel.UpdateManager.CheckForProductUpdate();
 
             Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
         }
@@ -1925,7 +1925,7 @@ namespace Dynamo.ViewModels
             //double y = arr[1];
             //double z = arr[2];
 
-            //dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+            //dynamoModel.VisualizationManager.LookupSelectedElement(x, y, z);
         }
 
         internal bool CanSelectVisualizationInView(object parameters)

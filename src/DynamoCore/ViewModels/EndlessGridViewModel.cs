@@ -103,12 +103,12 @@ namespace Dynamo.ViewModels
 
         public double WorkspaceWidth
         {
-            get { return dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth; }
+            get { return dynamoModel.DynamoViewModel.WorkspaceActualWidth; }
         }
 
         public double WorkspaceHeight
         {
-            get { return dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight; }
+            get { return dynamoModel.DynamoViewModel.WorkspaceActualHeight; }
         }
 
         public double WorkspaceZoom
@@ -123,7 +123,7 @@ namespace Dynamo.ViewModels
 
         public bool FullscreenWatchShowing
         {
-            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
+            get { return dynamoModel.DynamoViewModel.FullscreenWatchShowing; }
         }
 
 
@@ -154,7 +154,7 @@ namespace Dynamo.ViewModels
         {
             // Subscribing to properties changes, keeping up to date
             this.workspaceVM.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            dynamoModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             // Render EndlessGrid for the first time
             RecalculateSize();

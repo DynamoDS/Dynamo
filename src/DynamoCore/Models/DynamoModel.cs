@@ -61,7 +61,6 @@ namespace Dynamo.Models
         internal readonly DynamoRunner Runner;
         internal readonly PreferenceSettings PreferenceSettings;
         internal readonly DebugSettings DebugSettings;
-        internal readonly NodeFactory NodeFactory;
         internal readonly SearchModel SearchModel;
 
         // EngineController cannot be readonly 
@@ -210,7 +209,6 @@ namespace Dynamo.Models
 
             Context = context;
             IsTestMode = isTestMode;
-            NodeFactory = new NodeFactory(this);
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             UpdateManager = new UpdateManager.UpdateManager(Logger);
             DebugSettings = new DebugSettings();
@@ -282,6 +280,11 @@ namespace Dynamo.Models
         }
 
         #region internal methods
+
+        public string Version
+        {
+            get { return UpdateManager.ProductVersion.ToString();  }
+        }
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
@@ -1235,7 +1238,8 @@ namespace Dynamo.Models
         {
             OnWorkspaceClearing(this, EventArgs.Empty);
 
-            Controller.IsUILocked = true;
+            // KILLDYNSETTINGS
+            //Controller.IsUILocked = true;
 
             CleanWorkbench();
 
@@ -1244,9 +1248,8 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
-            //OnModelCleared();
-
-            Controller.IsUILocked = false;
+            // KILLDYNSETTINGS
+            //Controller.IsUILocked = false;
 
             OnWorkspaceCleared(this, EventArgs.Empty);
         }
@@ -1283,5 +1286,6 @@ namespace Dynamo.Models
         #endregion
 
         public bool IsCrashing { get; set; }
+
     }
 }
