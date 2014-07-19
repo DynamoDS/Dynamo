@@ -389,8 +389,25 @@ namespace Dynamo.Controls
                     item => item.Key.ToString(), item => item.Value);
 
             var scene = visualizer.CurrentVisualizer.GetScene();
-            if (scene != null)
-                scene.UpdateNodeGeometries(geometries);
+            if (scene == null)
+                return;
+
+            scene.UpdateNodeGeometries(geometries);
+
+            var renderModes = new Dictionary<string, RenderMode>();
+            var nodeColors = new Dictionary<string, Dynamo.Bloodstone.NodeColor>();
+
+            foreach (var node in this._vm.Model.Nodes)
+            {
+                var nodeId = node.GUID.ToString();
+                renderModes.Add(nodeId, node.RenderStyle);
+
+                var c = node.NodeColor;
+                nodeColors.Add(nodeId, new NodeColor(c.R, c.G, c.B, c.A));
+            }
+
+            scene.SetNodeRenderMode(renderModes);
+            scene.SetNodeColor(nodeColors);
         }
 
         internal void OnNodePropertyUpdated(NodeModel node)
@@ -403,8 +420,8 @@ namespace Dynamo.Controls
                 scene.SetNodeRenderMode(renderModes);
 
                 var c = node.NodeColor;
-                var nodeColors = new Dictionary<string, Dynamo.Bloodstone.NodeColor>();
-                var color = new Dynamo.Bloodstone.NodeColor(c.R, c.G, c.B, c.A);
+                var nodeColors = new Dictionary<string, NodeColor>();
+                var color = new NodeColor(c.R, c.G, c.B, c.A);
                 nodeColors.Add(node.GUID.ToString(), color);
                 scene.SetNodeColor(nodeColors);
             }
