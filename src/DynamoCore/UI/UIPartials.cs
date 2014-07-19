@@ -608,7 +608,7 @@ namespace Dynamo.Nodes
 
             nodeUI.MainContextMenu.Items.Add(rawDataMenuItem);
 
-            ((PreferenceSettings)dynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)DynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
         }

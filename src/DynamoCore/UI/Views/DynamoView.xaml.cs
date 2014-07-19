@@ -208,7 +208,7 @@ namespace Dynamo.Controls
 
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
-            //updateButton.ShortcutCommand = dynamoViewModel.CheckForUpdateCommand;
+            //updateButton.ShortcutCommand = DynamoViewModel.CheckForUpdateCommand;
             //updateButton.ShortcutCommandParameter = null;
             //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
             //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";

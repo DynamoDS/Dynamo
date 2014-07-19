@@ -411,6 +411,12 @@ namespace Dynamo.Models
             return true;
         }
 
+        internal NodeModel AddNode(double x, double y, string nodeName)
+        {
+            System.Guid id = Guid.NewGuid();
+            return AddNode(id, nodeName, x, y, false, false, null);
+        }
+
         /// <summary>
         /// Create a node with the given parameters. Since this method is called
         /// on an instance of DynamoModel, it also raises node added event to any
@@ -442,7 +448,7 @@ namespace Dynamo.Models
         /// 
         internal NodeModel AddNode(
             Guid nodeId, string nodeName, double x, double y,
-            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode)
+            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
         {
             if (nodeId == Guid.Empty)
                 throw new ArgumentException("Node ID must be specified", "nodeId");

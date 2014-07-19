@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Windows.Data;
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -177,7 +173,8 @@ namespace Dynamo.Views
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
-            ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
+            // KILLDYNSETTINGS
+            //ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -245,14 +242,14 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            dynamoModel.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
+            this.ViewModel.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    this.ViewModel.DynamoViewModel.Model.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
 
                 if (args.CanEditName) workspace.Name = args.Name;

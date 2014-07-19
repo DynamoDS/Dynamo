@@ -120,7 +120,7 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
-            NodeModel nodeModel = Model.CreateNode(
+            NodeModel nodeModel = CurrentSpace.AddNode(
                 command.NodeId,
                 command.NodeName,
                 command.X,

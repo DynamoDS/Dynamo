@@ -53,7 +53,7 @@ namespace Dynamo.Utilities
             UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
             undoRecorder.BeginActionGroup();
 
-            var newNodeWorkspace = new CustomNodeWorkspaceModel(args.Name, args.Category, args.Description, 0, 0)
+            var newNodeWorkspace = new CustomNodeWorkspaceModel(dynamoViewModel.Model, args.Name, args.Category, args.Description, 0, 0)
             {
                 WatchChanges = false,
                 HasUnsavedChanges = true

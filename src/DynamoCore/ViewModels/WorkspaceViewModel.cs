@@ -32,8 +32,8 @@ namespace Dynamo.ViewModels
     public partial class WorkspaceViewModel : ViewModelBase
     {
         #region Properties and Fields
-        
-        protected readonly DynamoViewModel dynamoViewModel;
+
+        internal readonly DynamoViewModel DynamoViewModel;
         public readonly WorkspaceModel Model;
 
         private bool _canFindNodesFromElements = false;
@@ -215,7 +215,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (Model == dynamoViewModel.Model.HomeSpace)
+                if (Model == DynamoViewModel.Model.HomeSpace)
                     return "Home";
                 return Model.Name;
             }
@@ -228,7 +228,7 @@ namespace Dynamo.ViewModels
 
         public bool CanEditName
         {
-            get { return Model != dynamoViewModel.Model.HomeSpace; }
+            get { return Model != DynamoViewModel.Model.HomeSpace; }
         }
 
         public bool IsCurrentSpace
@@ -238,7 +238,7 @@ namespace Dynamo.ViewModels
 
         public bool IsHomeSpace
         {
-            get { return Model == dynamoViewModel.Model.HomeSpace; }
+            get { return Model == DynamoViewModel.Model.HomeSpace; }
         }
 
         public bool HasUnsavedChanges
@@ -306,7 +306,7 @@ namespace Dynamo.ViewModels
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
         {
-            this.dynamoViewModel = dynamoViewModel;
+            this.DynamoViewModel = dynamoViewModel;
 
             Model = model;
             stateMachine = new StateMachine(this);
@@ -492,7 +492,7 @@ namespace Dynamo.ViewModels
 
             Guid nodeID = Guid.NewGuid();
             var command = new DynamoViewModel.ConvertNodesToCodeCommand(nodeID);
-            this.dynamoViewModel.ExecuteCommand(command);
+            this.DynamoViewModel.ExecuteCommand(command);
         }
 
         internal bool CanNodeToCode(object parameters)
@@ -718,13 +718,13 @@ namespace Dynamo.ViewModels
 
             if (this.IsHomeSpace)
             {
-                if (dynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
-                    dynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
+                if (DynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
+                    DynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
             }
             else
             {
-                if (!Model.HasUnsavedChanges || dynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
-                    dynamoViewModel.Model.HideWorkspace(Model);
+                if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+                    DynamoViewModel.Model.HideWorkspace(Model);
             }
         }
 
@@ -853,7 +853,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                var node = dynamoViewModel.Model.Nodes.First(x => x.GUID.ToString() == id.ToString());
+                var node = DynamoViewModel.Model.Nodes.First(x => x.GUID.ToString() == id.ToString());
 
                 if (node != null)
                 {
@@ -862,20 +862,20 @@ namespace Dynamo.ViewModels
                     DynamoSelection.Instance.Selection.Add(node);
 
                     //focus on the element
-                    dynamoViewModel.ShowElement(node);
+                    DynamoViewModel.ShowElement(node);
 
                     return;
                 }
             }
             catch
             {
-                dynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
             }
 
             try
             {
                 var function =
-                    (Function)dynamoViewModel.Model.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
+                    (Function)DynamoViewModel.Model.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
 
                 if (function != null)
                 {
@@ -884,12 +884,12 @@ namespace Dynamo.ViewModels
                     DynamoSelection.Instance.Selection.Add(function);
 
                     //focus on the element
-                    dynamoViewModel.ShowElement(function);
+                    DynamoViewModel.ShowElement(function);
                 }
             }
             catch
             {
-                dynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
                 return;
             }
         }
@@ -970,7 +970,7 @@ namespace Dynamo.ViewModels
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
         {
-            NodeCollapser.Collapse(dynamoViewModel, selectedNodes, this.Model);
+            NodeCollapser.Collapse(DynamoViewModel, selectedNodes, this.Model);
         }
 
         internal void Loaded()
@@ -984,7 +984,7 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            dynamoViewModel.VisualizationManager.Pause();
+            DynamoViewModel.VisualizationManager.Pause();
         }
 
         private bool CanPauseVisualizationManagerUpdates(object parameter)
@@ -994,7 +994,7 @@ namespace Dynamo.ViewModels
 
         private void UnPauseVisualizationManagerUpdates(object parameter)
         {
-            dynamoViewModel.VisualizationManager.UnPause();
+            DynamoViewModel.VisualizationManager.UnPause();
         }
 
         private bool CanUnPauseVisualizationManagerUpdates(object parameter)

@@ -839,11 +839,10 @@ namespace Dynamo.Utilities
                         typeName = Nodes.Utilities.PreprocessTypeName(typeName);
                         System.Type type = Nodes.Utilities.ResolveType(typeName);
                         if (type != null)
-                            el = dynamoModel.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                            el = ws.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
 
                         if (el != null)
                         {
-                            el.WorkSpace = ws;
                             el.Load(elNode);
                         }
                         else
@@ -867,8 +866,7 @@ namespace Dynamo.Utilities
                         typeName = dummyElement.GetAttribute("type");
                         System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
-                        el = dynamoModel.NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
-                        el.WorkSpace = ws;
+                        el = ws.NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
                         el.Load(dummyElement);
                     }
 
@@ -949,7 +947,6 @@ namespace Dynamo.Utilities
                     }
                     catch
                     {
-                        //DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
                         dynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
                     }
                 }
