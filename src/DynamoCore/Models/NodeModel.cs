@@ -32,7 +32,7 @@ namespace Dynamo.Models
 
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
-        private Color nodeColor = Colors.White;
+        private Color nodeColor = Colors.Transparent;
         private RenderMode renderStyle = RenderMode.Shaded;
         private bool displayLabels;
         private bool interactionEnabled = true;
@@ -644,6 +644,10 @@ namespace Dynamo.Models
         /// <param name="context">The context of this save operation.</param>
         public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
+            XmlElementHelper helper = new XmlElementHelper(dynEl);
+            helper.SetAttribute("nodeColor", NodeColor);
+            helper.SetAttribute("renderStyle", RenderStyle.ToString());
+
             SaveNode(xmlDoc, dynEl, context);
             
             var portsWithDefaultValues = 
@@ -669,6 +673,10 @@ namespace Dynamo.Models
 
         public void Load(XmlNode elNode)
         {
+            var helper = new XmlElementHelper(elNode as XmlElement);
+            nodeColor = helper.ReadColor("nodeColor", Colors.Transparent);
+            renderStyle = helper.ReadEnum("renderStyle", Dynamo.Bloodstone.RenderMode.Shaded);
+
             LoadNode(elNode);
 
             var portInfoProcessed = new HashSet<int>();
@@ -1369,6 +1377,8 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
+            helper.SetAttribute("nodeColor", NodeColor);
+            helper.SetAttribute("renderStyle", RenderStyle.ToString());
 
             if (context == SaveContext.Undo)
             {
@@ -1401,6 +1411,8 @@ namespace Dynamo.Models
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+            nodeColor = helper.ReadColor("nodeColor", Colors.Transparent);
+            renderStyle = helper.ReadEnum("renderStyle", Dynamo.Bloodstone.RenderMode.Shaded);
 
             if (context == SaveContext.Undo)
             {
