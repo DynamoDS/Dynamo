@@ -43,6 +43,10 @@ Name: "DynamoForVasariBeta3"; Description: "Dynamo For Vasari Beta 3"; Types: fu
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 
 [Files]
+;RevitInstallDetective (must be extracted manually in InitializeSetup)
+Source: "Extra\RevitInstallDetective.exe"; Flags: dontcopy
+Source: "Extra\RevitAddinUtility.dll"; Flags: dontcopy
+
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly; Components: DynamoCore
@@ -60,7 +64,7 @@ Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skip
 
 ;AddinGenerator
 Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2014 DynamoForRevit2015
-Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2014 DynamoForRevit2015
+Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
 
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
@@ -123,19 +127,14 @@ begin
   Result := sUnInstallString;
 end;
 
-function Revit2015Installed(): Boolean;
+function RevitInstallationExists(Version: String): Boolean;
+var 
+  ResultCode: Integer;
 begin
-   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2015'));
-end;
-
-function Revit2014Installed(): Boolean;
-begin
-   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014'));
-end;
-
-function VasariInstalled(): Boolean;
-begin
-   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014'));
+  if Exec(ExpandConstant('{tmp}\RevitInstallDetective.exe'), Version, '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+    Result := (ResultCode = 0)
+  else
+    MsgBox('RevitInstallDetective failed!' + #13#10 + SysErrorMessage(ResultCode), mbError, MB_OK);
 end;
 
 function InitializeSetup(): Boolean;
@@ -150,7 +149,12 @@ begin
         silentFlag := '';   
     end;
 
-  if (Revit2015Installed() or Revit2014Installed() or VasariInstalled()) then
+  // we'll need these files to check for a revit installation
+  ExtractTemporaryFile('RevitInstallDetective.exe');
+  ExtractTemporaryFile('RevitAddinUtility.dll');
+
+  // check if there is a valid revit installation on this machine, if not - fail
+  if (RevitInstallationExists('Revit2015') or RevitInstallationExists('Revit2014') or RevitInstallationExists('VasariBeta3')) then
     begin
     result := true;
     end
