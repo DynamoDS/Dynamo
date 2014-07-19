@@ -398,12 +398,15 @@ namespace Dynamo.Controls
             var scene = visualizer.CurrentVisualizer.GetScene();
             if (scene != null)
             {
-                var nodes = new List<string>() { node.GUID.ToString() };
-                scene.SetNodeRenderMode(nodes, node.RenderStyle);
+                var renderModes = new Dictionary<string, RenderMode>();
+                renderModes.Add(node.GUID.ToString(), node.RenderStyle);
+                scene.SetNodeRenderMode(renderModes);
 
                 var c = node.NodeColor;
+                var nodeColors = new Dictionary<string, Dynamo.Bloodstone.NodeColor>();
                 var color = new Dynamo.Bloodstone.NodeColor(c.R, c.G, c.B, c.A);
-                scene.SetNodeColor(nodes, color);
+                nodeColors.Add(node.GUID.ToString(), color);
+                scene.SetNodeColor(nodeColors);
             }
         }
 

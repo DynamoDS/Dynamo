@@ -18,9 +18,6 @@ namespace Dynamo { namespace Bloodstone {
     class BoundingBox;
     ref class Scene;
 
-    typedef Gen::IEnumerable<System::String^> Strings;
-    typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, Ds::IRenderPackage^>> RenderPackages;
-
     public enum class SelectMode { AddToExisting, RemoveFromExisting, ClearExisting };
     public enum class RenderMode { Shaded, Primitive };
 
@@ -90,6 +87,11 @@ namespace Dynamo { namespace Bloodstone {
         IGraphicsContext* mpGraphicsContext;
     };
 
+    typedef Gen::IEnumerable<System::String^> Strings;
+    typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, NodeColor^>> NodeColors;
+    typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, RenderMode>> RenderModes;
+    typedef Gen::IEnumerable<Gen::KeyValuePair<System::String^, Ds::IRenderPackage^>> RenderPackages;
+
     public ref class Scene
     {
     public:
@@ -100,8 +102,8 @@ namespace Dynamo { namespace Bloodstone {
         void UpdateNodeGeometries(RenderPackages^ geometries);
         void RemoveNodeGeometries(Strings^ identifiers);
         void SelectNodes(Strings^ identifiers, SelectMode selectMode);
-        void SetNodeColor(Strings^ identifiers, NodeColor^ nodeColor);
-        void SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode);
+        void SetNodeColor(NodeColors^ nodeColors);
+        void SetNodeRenderMode(RenderModes^ renderModes);
 
     private:
         void RenderGeometries(const std::vector<NodeSceneData *>& geometries);

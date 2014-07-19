@@ -216,14 +216,14 @@ void Scene::SelectNodes(Strings^ identifiers, SelectMode selectMode)
     mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
-void Scene::SetNodeColor(Strings^ identifiers, NodeColor^ nodeColor)
+void Scene::SetNodeColor(NodeColors^ nodeColors)
 {
-    float color[4] = { 0 };
-    nodeColor->Get(color);
-
-    for each (System::String^ identifier in identifiers)
+    for each (KeyValuePair<System::String^, NodeColor^>^ nodeColor in nodeColors)
     {
-        System::String^ nodeId = identifier->ToLower();
+        float color[4] = { 0 };
+        nodeColor->Value->Get(color);
+
+        System::String^ nodeId = nodeColor->Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
         auto found = mpNodeSceneData->find(identifier);
@@ -237,11 +237,11 @@ void Scene::SetNodeColor(Strings^ identifiers, NodeColor^ nodeColor)
     mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
-void Scene::SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode)
+void Scene::SetNodeRenderMode(RenderModes^ renderModes)
 {
-    for each (System::String^ identifier in identifiers)
+    for each (KeyValuePair<System::String^, RenderMode>^ renderMode in renderModes)
     {
-        System::String^ nodeId = identifier->ToLower();
+        System::String^ nodeId = renderMode->Key->ToLower();
         std::wstring identifier = msclr::interop::marshal_as<std::wstring>(nodeId);
 
         auto found = mpNodeSceneData->find(identifier);
@@ -249,7 +249,7 @@ void Scene::SetNodeRenderMode(Strings^ identifiers, RenderMode renderMode)
             continue; // The node does not have any associated geometries.
 
         NodeSceneData* pNodeSceneData = found->second;
-        pNodeSceneData->SetRenderMode(renderMode);
+        pNodeSceneData->SetRenderMode(renderMode->Value);
     }
 
     mVisualizer->RequestFrameUpdate(); // Update window.
