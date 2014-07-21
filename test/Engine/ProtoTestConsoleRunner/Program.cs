@@ -1,5 +1,4 @@
-﻿//#define __RUN_TESTFILE
-
+﻿
 
 using System;
 using ProtoCore;
@@ -50,28 +49,9 @@ namespace ProtoTestConsoleRunner
             core.Options.DumpByteCode = false;
             core.Options.Verbose = false;
 #endif
-
-#if __RUN_TESTFILE
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
             ExecutionMirror mirror = runner.LoadAndExecute(@"c:\project\github\test.ds", core);
-#else
-            ProtoTest.Associative.MicroFeatureTests test = new ProtoTest.Associative.MicroFeatureTests();
-            test.Setup();
-            test.TestLocalKeywordFromImperative02();
-
-
-            //ProtoTest.LiveRunner.MicroFeatureTests test = new ProtoTest.LiveRunner.MicroFeatureTests();
-            //test.Setup();
-            //test.TestNestedLanguageBlockReExecution04();
-
-            //ProtoTest.Associative.MicroFeatureTests test = new ProtoTest.Associative.MicroFeatureTests();
-            //test.Setup();
-            //test.TestNoUpdate01();
-
-            //ProtoTest.DebugTests.RunWatchTests test = new ProtoTest.DebugTests.RunWatchTests();
-            //test.DebugWatch1684_T88_1461985_Update_In_Nested_Blocks_2();
-#endif
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
