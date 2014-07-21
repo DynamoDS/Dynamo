@@ -753,7 +753,7 @@ namespace ProtoTest.TD.MultiLangTests
                 @"class A{ a=1; }a;b;c;d1;e;f;                    [Imperative]{                                          def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                          d = foo( A.A()); // user define to var                          d1={d[0].a};                        e = foo( false);//bool to var                         f = foo( null);//null to var                         }";
 
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3975
-            string error = "Type conversion from var to var array promotion is not happening ";
+            string error = "MAGN-3975: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
@@ -770,7 +770,7 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"class A{ a=1; }a;b;c;d1;e;f;                        [Imperative]{                                           def foo :var[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         d = foo( A.A()); // user define to var                         d1 =  {d[0].a };                        e = foo( false);                         f = foo( null);                         }";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3975
-            string error = "Type conversion from var to var array promotion is not happening ";
+            string error = "MAGN-3975: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
@@ -789,7 +789,7 @@ namespace ProtoTest.TD.MultiLangTests
                 @" class A{ a=1; }a;a1;b;c;d1;e;f;                    [Imperative]{                                         def foo :int[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         z:var=1.5;                        a1=foo(z);                        b = foo( 1);                         d = foo( A.A()); // user define to var                         d1 =  {d[0].a} ;                        e = foo( false);                         f = foo( null);                         }";
 
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3975
-            string error = "Type conversion from var to var array promotion is not happening ";
+            string error = "MAGN-3975: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 2 });
             thisTest.Verify("a1", new object[] { 2 });
@@ -1151,7 +1151,7 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"      class A{ a=1; }                        class B{ b = 2.0; }a;a1;b;c;c1;d1;e;f;g;                    [Imperative]{                                                                    def foo ( x:B[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var=1.5;                        a1=foo(z);                        b = foo(1);                        c1 = foo( '1');                        d = foo( B.B() );                        d1 = d.b;                        e = foo( A.A() );                        f = foo(false);                        g = foo( null );}";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3971
-            string error = "Type conversion from var to var array promotion is not happening ";
+            string error = "MAGN-3971: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
             thisTest.Verify("a1", null);
@@ -1174,7 +1174,7 @@ namespace ProtoTest.TD.MultiLangTests
 
 ";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3971
-            string error = "Type conversion from var to var array promotion is not happening ";
+            string error = "MAGN-3971: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
             thisTest.Verify("a1", null);
