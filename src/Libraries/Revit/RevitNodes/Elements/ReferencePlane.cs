@@ -59,6 +59,8 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="bubbleEnd"></param>
         /// <param name="freeEnd"></param>
+        /// <param name="normal"></param>
+        /// <param name="view"></param>
         private ReferencePlane(XYZ bubbleEnd, XYZ freeEnd, XYZ normal, Autodesk.Revit.DB.View view )
         {
             //Phase 1 - Check to see if the object exists and should be rebound

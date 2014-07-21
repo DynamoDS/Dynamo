@@ -104,7 +104,7 @@ namespace Revit.Elements
 
             XYZ newOrigin = p.Origin;
             XYZ newNorm = p.Normal;
-            var oldP = sp.Plane;
+            var oldP = sp.GetPlane();
             XYZ oldOrigin = oldP.Origin;
             XYZ oldNorm = oldP.Normal;
 
