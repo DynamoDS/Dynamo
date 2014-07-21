@@ -22,7 +22,7 @@ namespace Dynamo.Utilities
         public static PackageLoader PackageLoader { get; internal set; }
         public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
         public static DynamoController Controller { get; set; }
-        public static WebServer WebSocketServer { get; private set; }
+        public static IServer WebSocketServer { get; private set; }
 
         private static PackageManagerClient _packageManagerClient;
         public static PackageManagerClient PackageManagerClient
@@ -55,9 +55,9 @@ namespace Dynamo.Utilities
             return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
         }
 
-        public static void EnableServer()
+        public static void EnableServer(IServer server)
         {
-            WebSocketServer = new WebServer();
+            WebSocketServer = server;
 
             WebSocketServer.ReceivedMessage += ExecuteMessageFromSocket;
             WebSocketServer.Info += LogInfo;
