@@ -5350,7 +5350,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQRegress_1462308()
         {
-            string code = @"import(TestData from ""ProtoTest.dll"");f = TestData.IncrementByte(101); F = TestData.ToUpper(f);";
+            string code = @"import(TestData from ""FFITarget.dll"");f = TestData.IncrementByte(101); F = TestData.ToUpper(f);";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -7101,7 +7101,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQT022_Array_Marshal()
         {
-            string code = @"import (Dummy from ""ProtoTest.dll"");dummy = Dummy.Dummy();arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};sum_1_10 = dummy.SumAll(arr);twice_arr = dummy.Twice(arr);	";
+            string code = @"import (Dummy from ""FFITarget.dll"");dummy = Dummy.Dummy();arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};sum_1_10 = dummy.SumAll(arr);twice_arr = dummy.Twice(arr);	";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 

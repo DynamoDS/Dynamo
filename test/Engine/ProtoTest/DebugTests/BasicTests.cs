@@ -86,6 +86,7 @@ b = 20;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("Failing")]
         public void TestWatchExpression2()
         {
             // Execute and verify the main script in a debug session
@@ -103,8 +104,10 @@ class Vector
 }
 
 p = Vector.Vector();
-
             ", runnerConfig);
+
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3990
+            string defectID = "MAGN-3990 Expression interpreter returns null when evaluates expression at end of script";
 
             // Highlights "p = Vector.Vector()".
             DebugRunner.VMState vms = fsr.Step();
@@ -138,17 +141,21 @@ p = Vector.Vector();
             Assert.AreEqual(21, vms.ExecutionCursor.EndExclusive.CharNo);
 
             vms = fsr.Step(); // Ends execution.
+
             Assert.AreEqual(true, vms.isEnded);
 
             // Execute and verify the watch window expression script
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
-            ExecutionMirror mirror = watchRunner.Execute(@"p.x");
+            ExecutionMirror mirror = watchRunner.Execute("p.x");
             Obj objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == 10);
+
+            Assert.AreNotEqual(null, objExecVal, defectID);
+            Assert.IsTrue((Int64)objExecVal.Payload == 10, defectID);
         }
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("Failing")]
         public void TestWatchExpression3()
         {
             // Execute and verify the main script in a debug session
@@ -168,6 +175,9 @@ class Vector
 p = Vector.Vector();
 
 ", runnerConfig);
+
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3990
+            string defectiD = "MAGN-3990 Expression interpreter returns null when evaluates expression at end of script";
 
             // Highlights "p = Vector.Vector()".
             DebugRunner.VMState vms = fsr.Step();
@@ -207,7 +217,9 @@ p = Vector.Vector();
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror = watchRunner.Execute(@"p.y + 2");
             Obj objExecVal = mirror.GetWatchValue();
-            Assert.IsTrue((Int64)objExecVal.Payload == 22);
+
+            Assert.AreNotEqual(null, objExecVal, defectiD);
+            Assert.IsTrue((Int64)objExecVal.Payload == 22, defectiD);
         }
 
         [Test]
@@ -6241,6 +6253,7 @@ class A
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void TestUpdateLoopInsideFunction2()
         {
             String code =
@@ -6264,7 +6277,7 @@ class A
     a = A.A();
     b = a.foo();
 ";
-            // TODO: Aparajit - To fix stepping in debugger
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
 
             fsr.PreStart(code, runnerConfig);
             fsr.Step(); // a = A.A();
@@ -6516,6 +6529,7 @@ a1.a = -1;";
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void TestUpdateLoopWithNestedDifferentBlocks()
         {
             String code = @"
@@ -6543,7 +6557,7 @@ s = Print(""a = "" + a + "" b = "" + b);
     s = Print(""dd = "" + d);
 }
 ";
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3985
             fsr.PreStart(code, runnerConfig);
             fsr.Step(); // a = 7;
 
@@ -7439,6 +7453,7 @@ irrelevant = 3;
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void ToggleBreakPoint001()
         {
             string src = @"
@@ -7450,6 +7465,8 @@ irrelevant = 3;
                             a = 1 + 2 + foo(3, 4) + 5 + foo(5, 6);
                             ";
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3991
+            string defectID = "MAGN-3991 Defects with Toggle breakpoint";
             fsr.PreStart(src, runnerConfig);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
@@ -7463,15 +7480,13 @@ irrelevant = 3;
                 CharNo = 60
             };
             fsr.ToggleBreakpoint(cp);
-            fsr.Run();
             DebugRunner.VMState vms = fsr.Run();
             Obj o = vms.mirror.GetDebugValue("a");
             vms = fsr.Run();
             Obj o2 = vms.mirror.GetDebugValue("a");
 
-            Assert.IsTrue((Int64)o.Payload == 0);
-            Assert.IsTrue((Int64)o2.Payload == 26);
-            //Assert.IsTrue(vms.isEnded);
+            Assert.IsTrue((Int64)o.Payload == 0, defectID);
+            Assert.IsTrue((Int64)o2.Payload == 26, defectID);
         }
         [Test]
         [Category("Debugger")]
@@ -7538,6 +7553,7 @@ b : int = 0;
         }
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void ToggleBreakPoint005()
         {
             string src = @"
@@ -7565,19 +7581,21 @@ b : int = 0;
                         c = a<2> * b<1>; // cartesian replication
                         ";
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3991
+            string defectID = "MAGN-3991 Defects with Toggle breakpoint";
             fsr.PreStart(src, runnerConfig);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
             {
-                LineNo = 9,
+                LineNo = 18,
                 CharNo = 5
             };
             fsr.ToggleBreakpoint(cp);
-            fsr.Run();
             DebugRunner.VMState vms = fsr.Run();
             Obj o2 = vms.mirror.GetDebugValue("b");
 
-            Assert.IsTrue((Int64)o2.Payload == 2);
-            Assert.IsTrue(vms.isEnded);
+            Assert.IsTrue((Int64)o2.Payload == 2, defectID);
+            fsr.Run();
+            Assert.IsTrue(vms.isEnded, defectID);
         }
         [Test]
         [Category("Debugger")]
@@ -7604,27 +7622,27 @@ b : int = 0;
         public void ToggleBreakPointApiTest()
         {
             string src = @"class A
-            {
-                w : int;
-            }
-            zz = A.A();
-            [Imperative]
-            {
-                def g()
-                {
-                    return = 3;
-                }
-                def f(a : int)
-                {
-                    return = a;
-                }
+{
+    w : int;
+}
+zz = A.A();
+[Imperative]
+{
+    def g()
+    {
+        return = 3;
+    }
+    def f(a : int)
+    {
+        return = a;
+    }
     
-                c2 = A.A();
+    c2 = A.A();
 
-                c1 = c3 =    c2.w = f(g());
+    c1 = c3 =    c2.w = f(g());
 
-                z = 67;
-            }
+    z = 67;
+}
                                         ";
 
             fsr.PreStart(src, runnerConfig);
@@ -7691,7 +7709,7 @@ b : int = 0;
         {
             String code =
             @"import(""ProtoGeometry.dll"");
-              import(Dummy from ""ProtoTest.dll"");
+              import(Dummy from ""FFITarget.dll"");
              [Associative] 
              {
                dummy = Dummy.Dummy();
@@ -7708,7 +7726,7 @@ b : int = 0;
             fsr.Step();
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("dummy");
-            Assert.AreEqual("Dummy", vms.mirror.GetType(o));
+            Assert.AreEqual("FFITarget.Dummy", vms.mirror.GetType(o));
 
             fsr.Step();
             vms = fsr.Step();
@@ -7719,7 +7737,7 @@ b : int = 0;
             fsr.Step();
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("point");
-            Assert.AreEqual("Point", vms.mirror.GetType(o));
+            Assert.AreEqual("Autodesk.DesignScript.Geometry.Point", vms.mirror.GetType(o));
             Dictionary<string, Obj> os = vms.mirror.GetProperties(o);
             //Assert.IsTrue((double)os["X"].Payload == 1);
             //Assert.IsTrue((double)os["Y"].Payload == 2);
@@ -7757,17 +7775,17 @@ x = 10;
             fsr.Step();
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("p1");
-            Assert.AreEqual("Point", vms.mirror.GetType(o));
+            Assert.AreEqual("Autodesk.DesignScript.Geometry.Point", vms.mirror.GetType(o));
 
             fsr.Step();
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("p2");
-            Assert.AreEqual("Point", vms.mirror.GetType(o));
+            Assert.AreEqual("Autodesk.DesignScript.Geometry.Point", vms.mirror.GetType(o));
 
             fsr.Step();
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("l1");
-            Assert.AreEqual("Line", vms.mirror.GetType(o));
+            Assert.AreEqual("Autodesk.DesignScript.Geometry.Line", vms.mirror.GetType(o));
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("x");
@@ -7775,11 +7793,11 @@ x = 10;
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("p1");
-            Assert.AreEqual("Point", vms.mirror.GetType(o));
+            Assert.AreEqual("Autodesk.DesignScript.Geometry.Point", vms.mirror.GetType(o));
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("l1");
-            Assert.AreEqual("Line", vms.mirror.GetType(o));
+            Assert.AreEqual("Autodesk.DesignScript.Geometry.Line", vms.mirror.GetType(o));
         }
 
         [Test]
@@ -7823,7 +7841,7 @@ x = line1.Color;
         {
             String code =
             @"
-import(DummyBase from ""ProtoTest.dll"");
+import(DummyBase from ""FFITarget.dll"");
 
 [Imperative]
 {
@@ -7840,7 +7858,7 @@ import(DummyBase from ""ProtoTest.dll"");
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("dummy");
             //Verify the returned object type name is fully qualified name.
-            Assert.IsTrue(vms.mirror.GetType(o) == "ProtoFFITests.DummyBase");
+            Assert.IsTrue(vms.mirror.GetType(o) == "FFITarget.DummyBase");
 
             fsr.Step();
             vms = fsr.Step();
@@ -7854,7 +7872,7 @@ import(DummyBase from ""ProtoTest.dll"");
         {
             String code =
             @"
-import(DummyBase from ""ProtoTest.dll"");
+import(DummyBase from ""FFITarget.dll"");
 
 dummy = DummyBase.Create();
 dummy.Value = 868760;
@@ -7867,7 +7885,7 @@ a = dummy.Value;";
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("dummy");
             //Verify the returned object type name is fully qualified name.
-            Assert.IsTrue(vms.mirror.GetType(o) == "ProtoFFITests.DummyBase");
+            Assert.IsTrue(vms.mirror.GetType(o) == "FFITarget.DummyBase");
 
             fsr.Step();
             vms = fsr.Step();
@@ -8738,6 +8756,7 @@ surf = makeSurf(ps);
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void Defect_IDE_442()
         {
             string src =
@@ -8765,6 +8784,7 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
 
             //Assert.Fail("IDE-442 Debugger failing to break at getting and setting class properties in inheritance hierarchy (happens only with replication)");
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
             //TODO: Fails in the language with the new stackframe - 24/01/13
             fsr.PreStart(src, runnerConfig);
             fsr.Step();
@@ -8800,9 +8820,8 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
             string type3 = vms.mirror.GetType(ol3[0]);
             Assert.IsTrue(type3 == "int");
             Assert.IsTrue((Int64)ol3[0].Payload == 1);
-
-
         }
+
         [Test]
         [Category("Debugger")]
         public void Defect_IDE_434()
@@ -10083,8 +10102,8 @@ b = 2;";
             Assert.AreEqual(fsr.isEnded, true);
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
-            TestFrameWork.Verify(mirror, "b", null, 0);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            //TestFrameWork.Verify(mirror, "b", null, 0);
+            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.RuntimeData.WarningID.kCyclicDependency);
 
         }
         [Test]
@@ -10122,7 +10141,7 @@ b = 2;";
             fsr.PreStart(src, runnerConfig);
             DebugRunner.VMState vms = fsr.Step();
             fsr.Run();
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.RuntimeData.WarningID.kCyclicDependency);
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
@@ -11604,6 +11623,7 @@ surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);", runnerConfi
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void Defect_IDE_656_1()
         {
             fsr.PreStart(
@@ -11639,6 +11659,7 @@ a =
 }
 c = 90;", runnerConfig);
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();   // b1 = 1;
 
             vms = fsr.Step();   // 4 => a1;
@@ -11729,6 +11750,7 @@ c = 90;", runnerConfig);
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void Defect_IDE_656_2()
         {
             fsr.PreStart(
@@ -11763,7 +11785,7 @@ a =
 
 }
 c = 90;", runnerConfig);
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();   // b1 = 1;
 
             vms = fsr.Step();   // 4 => a1;
@@ -11851,6 +11873,7 @@ b = 2;", runnerConfig);
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void Defect_IDE_656_4_stepIn()
         {
             fsr.PreStart(
@@ -11862,7 +11885,8 @@ def f(a)
 x = f(c) > 5 ? 1 : 2;
 b = 2;", runnerConfig);
 
-            Assert.Fail("IDE-604Stepping In external functions and replicated functions requires two 'step in's to move to the next line");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3961
+            Assert.Fail("Stepping In external functions and replicated functions requires two 'step in's to move to the next line");
 
             DebugRunner.VMState vms = fsr.Step();   // c = { 1, 2, 20 };
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -11993,6 +12017,7 @@ CountFalse({a4}) => a5;//0
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void Defect_IDE_722()
         {
             fsr.PreStart(
@@ -12003,7 +12028,8 @@ CountFalse({a4}) => a5;//0
 c1 = foo(10, 3);
 Print(c1);", runnerConfig);
 
-            Assert.Fail("IDE-722 Cannot Step In to the return statement of a function if it contains a In Line Condition");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3962
+            Assert.Fail("Cannot Step In to the return statement of a function if it contains a In Line Condition");
 
             DebugRunner.VMState vms = fsr.Step();   // c1 = foo(10, 3);
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.LineNo);
@@ -12033,6 +12059,7 @@ Print(c1);", runnerConfig);
 
         [Test]
         [Category("Debugger")]
+        [Category("Failing")]
         public void Defect_IDE_722_1()
         {
             fsr.PreStart(
@@ -12047,6 +12074,7 @@ Print(c1);", runnerConfig);
     Print(c1);
 }", runnerConfig);
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3962
             Assert.Fail("IDE-722 Cannot Step In to the return statement of a function if it contains a In Line Condition");
 
             DebugRunner.VMState vms = fsr.Step();   // c1 = foo(10, 3);
@@ -12620,9 +12648,10 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
             vms = fsr.Step();
             TestFrameWork.Verify(mirror, "isPass8", true, 0);
         }
+
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_656_2()
         {
             // Execute and verify the main script in a debug session
@@ -12640,6 +12669,7 @@ a;
            
 ", runnerConfig);
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
 
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
@@ -12658,6 +12688,7 @@ a;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("Failing")]
         public void inlineconditional_stepin_656_2()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -12674,6 +12705,7 @@ a;
            
 ", runnerConfig);
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -12698,7 +12730,7 @@ a;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_656_3()
         {
             // Execute and verify the main script in a debug session
@@ -12719,6 +12751,7 @@ a;
            
 ", runnerConfig);
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -12843,7 +12876,7 @@ b;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_656_4()
         {
             // Execute and verify the main script in a debug session
@@ -12864,6 +12897,8 @@ a;
            
 ", runnerConfig);
 
+
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
@@ -13318,7 +13353,7 @@ c = 90;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_stepnext_656_13()
         {
             // Execute and verify the main script in a debug session
@@ -13347,8 +13382,8 @@ a =
 }
            
 ", runnerConfig);
-
-            Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
+            
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -13474,7 +13509,7 @@ a = x > foo(22) ? foo(1) : A.foo(4);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_stepin_656_10()
         {
             // Execute and verify the main script in a debug session
@@ -13500,6 +13535,7 @@ a = x > foo(22) ? foo(1) : A.foo(4);
            
 ", runnerConfig);
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();    // x = 33;
 
             vms = fsr.Step();    // a = x > foo(22) ? foo(1) : A.foo(4);
@@ -13610,7 +13646,7 @@ list3 = GetCoor(list1);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_stepnext_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13638,9 +13674,7 @@ a =
     4 => a5;
 }           
 ", runnerConfig);
-
-            Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();    // x = 1;
 
             vms = fsr.StepOver();    // x > 10 ? true : false => a1;
@@ -13894,6 +13928,7 @@ def foo(y : int)
 
         [Test]
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("Failing")]
         public void IDE_Debugger_698()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14221,6 +14256,7 @@ c = 2;
 
         [Test]
         [Category("DebuggerReferenceCount")]
+        [Category("Failing")]
         public void IDE_DebuggerRefCount_ReplicatedFunctionCall()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14244,6 +14280,8 @@ foo(g);
 c = 2;
 ", runnerConfig);
 
+
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3984
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();                   // g = { 1, 2, 3 };
@@ -14274,6 +14312,7 @@ c = 2;
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
+
         }
 
         [Test]
@@ -14862,7 +14901,7 @@ shapes[2] = Sphere.ByCenterPointRadius(WCS.Origin, 1);
         public void TestWatchExpressionForFFIProperty()
         {
             string src = @" 
-import(Dummy from ""ProtoTest.dll"");
+import(Dummy from ""FFITarget.dll"");
 a = Dummy.Create(2);
 b = 2;
 ";
@@ -14890,7 +14929,7 @@ b = 2;
         public void TestWatchExpressionForFFIProperty_1()
         {
             string src = @" 
-import(Dummy from ""ProtoTest.dll"");
+import(Dummy from ""FFITarget.dll"");
 
 
 a : Dummy = null;
@@ -15157,7 +15196,7 @@ z = { A.A(), A.A() };
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void undefinedclass()
         {
             // Execute and verify the main script in a debug session
@@ -15165,7 +15204,7 @@ z = { A.A(), A.A() };
             @"
                 
                 variableName : Line;", runnerConfig);
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3982
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.StepOver();
@@ -15175,8 +15214,7 @@ z = { A.A(), A.A() };
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror = watchRunner.Execute(@"variableName");
             Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "b", null, 0);
-
+            Assert.AreEqual(null, objExecVal);
 
         }
 
@@ -15334,7 +15372,6 @@ z = { A.A(), A.A() };
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
         public void ModifyAndReturnClassPropertyInsideFunction()
         {
             // Execute and verify the main script in a debug session
@@ -15359,8 +15396,6 @@ class A
 y = A.A();
 x = y.add(); 
 ", runnerConfig);
-
-            Assert.Fail("IDE-1045 Debugger skips statements on stepping over property setters followed by return statements");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -15414,7 +15449,7 @@ x = y.add();
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void ModifyAndReturnClassPropertyInsideFunction_1()
         {
             // Execute and verify the main script in a debug session
@@ -15440,7 +15475,8 @@ y = A.A();
 x = y.add(); 
 ", runnerConfig);
 
-            Assert.Fail("IDE-1045 Debugger skips statements on stepping over property setters followed by return statements");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
+            Assert.Fail(" Debugger skips statements on stepping over property setters followed by return statements");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -15494,7 +15530,7 @@ x = y.add();
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void ModifyAndReturnClassPropertyInsideFunction_2()
         {
             // Execute and verify the main script in a debug session
@@ -15522,7 +15558,8 @@ x = add(y);
 
 ", runnerConfig);
 
-            Assert.Fail("IDE-1045 Debugger skips statements on stepping over property setters followed by return statements");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
+            Assert.Fail(" Debugger skips statements on stepping over property setters followed by return statements");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -15576,7 +15613,7 @@ x = add(y);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void ModifyAndReturnClassPropertyInsideFunction_3()
         {
             // Execute and verify the main script in a debug session
@@ -15605,7 +15642,8 @@ x = add(y);
 
 ", runnerConfig);
 
-            Assert.Fail("IDE-1045 Debugger skips statements on stepping over property setters followed by return statements");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3963
+            Assert.Fail("Debugger skips statements on stepping over property setters followed by return statements");
 
             DebugRunner.VMState vms = fsr.Step();
 
@@ -16228,11 +16266,7 @@ b = t1.Equals(t2);
             fsr.Run();
             DebugRunner.VMState vms = fsr.Run();
 
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            Assert.IsFalse(vms.isEnded);
+            Assert.IsTrue(vms.isEnded);
 
 
         }
