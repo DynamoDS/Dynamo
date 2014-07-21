@@ -179,7 +179,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value is string && !string.IsNullOrWhiteSpace(value as string))
+            if (value is string && !string.IsNullOrEmpty(value as string))
             {
                 return Visibility.Collapsed;
             }
@@ -1601,6 +1601,23 @@ namespace Dynamo.Controls
                 return new GridLength(100);
             }
             Keyboard.ClearFocus();
+            return GridLength.Auto;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class BoolToWidth : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new GridLength(100);
+            }
             return GridLength.Auto;
         }
 
