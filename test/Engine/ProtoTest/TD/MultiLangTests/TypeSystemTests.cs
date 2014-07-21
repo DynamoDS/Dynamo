@@ -914,6 +914,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:double[]= 1;                                         b:int[] =  1.1;                     c:string[]=""a"";                     d:char []= 'c';                    x1= test.test();                    e:test []= x1;                    e1=e.x;                    f:bool []= true;                    g []=null;";
+            
             string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.0 });
@@ -927,12 +928,15 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_To_array_1467294_3()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:double[][]= {1};                                         b:int[][] =  {1.1};                     c:string[][]={""a""};                     d:char [][]= {'c'};                    x1= test.test();                    e:test [][]= {x1};                    e1=e.x;                    f:bool [][]= {true};                    g [][]={null};";
-            // string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
-            string error = "1467332 Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3973
+            string error = "MAGN-3973: {null} to array upgrdation must null out ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1.0 } });
             thisTest.Verify("b", new object[] { new object[] { 1 } });
@@ -945,11 +949,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_To_Vararray_1467294_4()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:var[][]= 1;                                         b:var[][] =  1.1;                     c:var[][]=""a"";                     d:var[][]= 'c';                    x1= test.test();                    e:var[][]= x1;                    e1=e.x;                    f:var[][]= true;                    g :var[][]=null;";
-            string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3974
+            string error = "MAGN-3974: In typed assignment, array promotion does not occur in some cases";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1 } });
             thisTest.Verify("b", new object[] { new object[] { 1.1 } });
@@ -1186,11 +1192,14 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS048_Param_eachType_To_varArray()
         {
             string code =
-                @"                  class A{ a=1; }                        def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         c = foo( ""1.5""); //char to var                         //a = foo( '1.5');// char to var                          d = foo( A.A()); // user define to var                          d1=d.a;                        e = foo( false);//bool to var                         f = foo( null);//null to var                         ";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+                @"                  class A{ a=1; }                        def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a  = foo( 1.5);                         b  = foo( 1);                         c  = foo( ""1.5""); // char to var                         d  = foo( A.A());   // user define to var                        d1 = d.a;                        e  = foo( false);   //bool to var                         f  = foo( null);    //null to var                         ";
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3964
+            string error = "MAGN-3964: Type conversion from var to var array promotion is not happening";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
@@ -1214,11 +1223,15 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS049_Return_eachType_To_varArray()
         {
             string code =
                 @"                   class A{ a=1; }                        def foo :var[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         c = foo( ""1.5"");                         //a = foo( '1.5');                         d = foo( A.A()); // user define to var                        d1=d.a;                        e = foo( false);                         f = foo( null);                         ";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3964
+            string error = "MAGN-3964: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
@@ -1355,7 +1368,8 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"                   class A{ a=1; }                        def foo :bool[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var []={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        d = foo( {'1','0'});                        e = d = foo({ A.A(),A.A() });                        f = foo({ false,true });                        g = foo({ null, null });                                                  ";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3968
+            string error = "MAGN-3968: Type conversion from var to bool array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
             thisTest.Verify("a1", new object[] { true, true });
@@ -1369,6 +1383,7 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS056_Return_BoolArray_1467258()
         {
             string code =
@@ -2355,7 +2370,7 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"                    def foo : var[][](x )                        {                            return = x;                            }                        z = foo({  3  });                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            string error = "MAGN-1668: when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 3 } });
         }
@@ -2422,7 +2437,7 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"                    class A{a=0; }                        def foo : int[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3.0;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { new object[] { new object[] { 3 } } });
             TestFrameWork.Verify(mirror, "b", new object[] { new object[] { new object[] { 3 } } });
@@ -2460,7 +2475,7 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"                    class A{a=0; }                        def foo : double[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { new object[] { new object[] { 3.0 } } });
             TestFrameWork.Verify(mirror, "b", new object[] { new object[] { new object[] { 3.0 } } });
@@ -2534,7 +2549,7 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"                    class A{a=0; }                        def foo : string[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { null });
             TestFrameWork.Verify(mirror, "b", new object[] { null });
@@ -2572,7 +2587,7 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"                    class A{a=0; }                        def foo : char[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            string error = "MAGN-1668:  Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { null });
             TestFrameWork.Verify(mirror, "b", new object[] { null });

@@ -8727,5 +8727,30 @@ r = f.foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("r", 42);
         }
+
+        [Test]
+        [Category("Failing")]
+        public void TestFunctionOverloadFromNestedLanguageBlock01()
+        {
+            string code = @"
+def f()
+{
+    return = 1;
+}
+
+[Imperative]
+{
+    def f()
+	{
+		return = 2;
+	}
+}
+
+a = f();
+";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3987
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("a", 1);
+        }
     }
 }
