@@ -1081,7 +1081,6 @@ class A
 { 
 	public x : var ;	
 	private y : var ;
-	//protected z : var = 0 ;
 	constructor A (i)
 	{
 		x = i;
@@ -1104,7 +1103,6 @@ class B
 { 
 	public x : var ;	
 	public y : A ;
-	//protected z : var = 0 ;
 	constructor B (i)
 	{
 		x = i;
@@ -1122,12 +1120,13 @@ class B
 def foo (a1 : A, b1 :B )
 {
     x = a1.x + b1.x;
-	//y = a1.foo3(1) + b1.foo3(1);
-	return = x ;//+ y;
+	return = x;
 }
+
+f1 = null;
 v1 = [Imperative]
 {
-    def foo (a1 : A, b1 :B )
+    def foo2 (a1 : A, b1 :B )
 	{
 		x = a1.x + b1.x;
 		y = a1.foo3(1) + b1.foo3(1);
@@ -1136,18 +1135,18 @@ v1 = [Imperative]
     a1 = A.A(1);
 	b1 = B.B(1);
 	
-	f1 = foo(a1,b1);
+	f1 = foo2(a1,b1);
 	x = { 1, 2 };
 	add = 0;
 	for ( i in x )
 	{
 	    ax = A.A(i); 
         bx = B.B(i);
-		add = add + foo(ax, bx);				
+		add = add + foo2(ax, bx);				
 	}
 	if(add > 0 )
 	{
-	    add = add + foo(a1,b1);		
+	    add = add + foo2(a1,b1);		
 	}
 	return = add;
 }
@@ -2921,6 +2920,9 @@ oldPoint1.B = oldPoint1.B +1;
 oldPoint1.C = oldPoint1.C +1;
 return=true;
 }
+
+x1;
+x2;
 [Imperative]
 {
  def modify:void()
@@ -4194,20 +4196,7 @@ x = 5;";
             thisTest.Verify("a1", 5.0);
         }
 
-        [Test]
-        [Category("SmokeTest")]
-        public void T77_Defect_1460274_Class_Update()
-        {
-            string code = @"
-b = 1;
-a = b + 1;
-b = a;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
-            Object n1 = null;
-            thisTest.Verify("a", n1);
-            thisTest.Verify("b", n1);
-        }
+    
 
         [Test]
         public void T77_Defect_1460274_Class_Update_2()
@@ -4278,33 +4267,6 @@ pointGroup[0] = {
 test = pointGroup.X;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { 4, 2 });
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T77_Defect_1460274_Class_Update_4()
-        {
-
-            string code = @"
-[Imperative]
-{
-	a = {};
-	b = a;
-	a[0] = b;
-	c = Count(a);
-}
-[Associative]
-{
-	a1 = {0};
-	b1 = a1;
-	a1[0] = b1;
-	c1 = Count(a1);
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
-            Object n1 = null;
-            thisTest.Verify("c", 0);
-            thisTest.Verify("c1", n1);
         }
 
         [Test]
