@@ -1163,6 +1163,7 @@ c = [Imperative]
 }
 ";
             thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
             thisTest.Verify("b", 1);
             thisTest.Verify("c", 1);
         }
@@ -1181,6 +1182,7 @@ c = [Imperative]
 }
 ";
             thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
             thisTest.Verify("b", 1);
             thisTest.Verify("c", 2);
         }

@@ -2851,6 +2851,7 @@ i = [Associative]
 }
 ";
             thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 10);
             thisTest.Verify("b", 10);
             thisTest.Verify("i", 2);
         }
@@ -2895,6 +2896,7 @@ c = [Associative]
 }
 ";
             thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
             thisTest.Verify("b", 1);
             thisTest.Verify("c", 2);
         }
@@ -2914,6 +2916,7 @@ c = [Associative]
 }
 ";
             thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
             thisTest.Verify("b", 1);
             thisTest.Verify("c", 2);
         }
@@ -2934,6 +2937,7 @@ c = [Associative]
 }
 ";
             thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
             thisTest.Verify("b", 1);
             thisTest.Verify("c", 1);
         }
