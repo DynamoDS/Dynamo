@@ -77,7 +77,7 @@ namespace Revit.Elements
                 }
 
                 // delete the old element, we couldn't update it for some reason
-                DocumentManager.Instance.DeleteElement(oldEle.Id);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(oldEle.UniqueId));
             }
 
             //Phase 2- There was no existing element, create new

@@ -62,6 +62,7 @@ namespace Revit.Elements
             }
 
             ElementId oldId = (mc != null) ? mc.Id : ElementId.InvalidElementId;
+            string oldUniqueId = (mc != null) ? mc.UniqueId : string.Empty;
 
             TransactionManager.Instance.EnsureInTransaction(Document);
 
@@ -88,12 +89,12 @@ namespace Revit.Elements
             if (mc.SketchPlane.Id != sp.Id)
             {
                 //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
-                DocumentManager.Instance.DeleteElement(sp.Id);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(sp.UniqueId));
             }
 
             InternalSetCurveElement(mc);
             if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
-                DocumentManager.Instance.DeleteElement(oldId);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(oldUniqueId));
             if (makeReferenceCurve)
                 mc.ChangeToReferenceLine();
 
@@ -121,12 +122,12 @@ namespace Revit.Elements
 
             // attempt to change the sketch plane
             bool needsRemake = false;
-            ElementId idSpUnused = resetSketchPlaneMethod(this.InternalCurveElement, c, plane, out needsRemake);
+            string idSpUnused = resetSketchPlaneMethod(this.InternalCurveElement, c, plane, out needsRemake);
 
             // if we got a valid id, delete the old sketch plane
-            if (idSpUnused != ElementId.InvalidElementId)
+            if (idSpUnused != String.Empty)
             {
-                DocumentManager.Instance.DeleteElement(idSpUnused);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(idSpUnused));
             }
 
             TransactionManager.Instance.TransactionTaskDone();
@@ -212,7 +213,7 @@ namespace Revit.Elements
 
         private static bool hasMethodResetSketchPlane = true;
 
-        private static ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.CurveElement mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
+        private static string resetSketchPlaneMethod(Autodesk.Revit.DB.CurveElement mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
         {
             //do we need to reset?
             needsSketchPlaneReset = false;
@@ -242,7 +243,7 @@ namespace Revit.Elements
                     sp = GetSketchPlaneFromCurve(c);
                     mc.SketchPlane = GetSketchPlaneFromCurve(c);
                 }
-                return (sp == null || mc.SketchPlane.Id == sp.Id) ? ElementId.InvalidElementId : sp.Id;
+                return (sp == null || mc.SketchPlane.Id == sp.Id) ? "" : sp.UniqueId;
             }
 
             //do reset if method is available
@@ -278,13 +279,13 @@ namespace Revit.Elements
                 needsSketchPlaneReset = true;
                 //expect exception, so try to keep old plane?
                 //mc.SketchPlane = sp;
-                return ElementId.InvalidElementId;
+                return "";
             }
 
             if (sp != null && mc.SketchPlane.Id != sp.Id)
-                return sp.Id;
+                return sp.UniqueId;
 
-            return ElementId.InvalidElementId;
+            return "";
         }
 
         private static Plane GetPlaneFromCurve(Curve c, bool planarOnly)

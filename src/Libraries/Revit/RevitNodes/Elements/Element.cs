@@ -156,7 +156,7 @@ namespace Revit.Elements
             // Do not delete Revit owned elements
             if (!IsRevitOwned && remainingBindings == 0 && !didRevitDelete)
             {
-                DocumentManager.Instance.DeleteElement(this.InternalElementId);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(this.InternalUniqueId));
             }
             else
             {
