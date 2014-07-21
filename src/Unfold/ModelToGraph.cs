@@ -240,15 +240,21 @@ namespace Unfold
         [SupressImportIntoVM]
         public static class ModelTopology
         {
+             //TODO(Mike) need to actually get this to expose in dynamo, bug in importer prevents generics from importing
+            // along with non generic code, unfold clas in corenodes project currently replicates below code
+            // also need to discuss design with Zach,Peter to see if this should be exposed, it may be useful for
+            // other things besides unfolding
 
             /// <summary>
-            /// overloads exposed into dynamo that wrap up the appropriate input types and call generate topology
+            /// These might be exposed into dynamo to wrap up the appropriate input types and call generate topology
             /// </summary>
             /// <param name="faces"></param>
             /// <returns></returns>
 
             // These user facing methods will need to be wrapped to return different types 
             // since we do not want to expose generic types to dynamo
+            
+            // this could be made generic 
 
             public static List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromFaces(List<Face> faces)
             {
@@ -469,12 +475,11 @@ namespace Unfold
 
         public static class PlanarUnfolder
         {
-
-            public static List<Surface> DSPLanarUnfoldFullFromFace(List<Face> faces)
-            {
-
+            // these overloads are called from exposed dynamo nodes depending on input type
+           
+            public static List<Surface> DSPLanarUnfold(List<Face> faces)
+            {  
                 var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces(faces);
-
 
                 //perform BFS on the graph and get back the tree
                 var nodereturn = UnfoldPlanar.ModelGraph.BFS<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(graph);
@@ -485,10 +490,33 @@ namespace Unfold
 
                 return PlanarUnfold(casttree);
 
-
             }
 
+            public static List<Surface> DSPLanarUnfold(List<Surface> surfaces)
+            {
+                var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
 
+                //perform BFS on the graph and get back the tree
+                var nodereturn = UnfoldPlanar.ModelGraph.BFS<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(graph);
+                object tree = nodereturn["BFS finished"];
+
+                var casttree = tree as List<UnfoldPlanar.GraphVertex<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>>;
+
+
+                return PlanarUnfold(casttree);
+
+            }
+           
+
+
+
+
+
+            /// <summary>
+            /// method that performs the main planar unfolding
+            /// </summary>
+            /// <param name="tree"></param>
+            /// <returns></returns>
             public static List<Surface> PlanarUnfold(List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> tree)
             {
                 // this algorithm is a first test of recursive unfolding - overlapping is expected
@@ -543,7 +571,8 @@ namespace Unfold
                             // branch to start the unfold from
                             var movedUnfoldBranch = child.UnfoldPolySurface.SurfaceEntity.Translate((r.NextDouble()*10)+5, 0, 0);
                             disconnectedSet.Add(movedUnfoldBranch as Surface);
-                            
+
+                        
                         }
 
                         else
