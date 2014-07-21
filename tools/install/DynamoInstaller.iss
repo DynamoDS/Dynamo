@@ -43,9 +43,10 @@ Name: "DynamoForVasariBeta3"; Description: "Dynamo For Vasari Beta 3"; Types: fu
 Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 
 [Files]
-;RevitInstallDetective (must be extracted manually in InitializeSetup)
+;Needed before installation guaranteed to be complete
 Source: "Extra\RevitInstallDetective.exe"; Flags: dontcopy
 Source: "Extra\RevitAddinUtility.dll"; Flags: dontcopy
+Source: "Extra\DynamoAddinGenerator.exe"; Flags: dontcopy
 
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
@@ -54,9 +55,9 @@ Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwriterea
 Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 
-;Revit 2014
-Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014
-Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014
+;Revit 2014 / Vasari Beta 3
+Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
+Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
 
 ;Revit 2015
 Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015
@@ -64,7 +65,7 @@ Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skip
 
 ;AddinGenerator
 Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
-Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
+Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2015 DynamoForRevit2014 DynamoForVasariBeta3
 
 ;LibG
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
@@ -152,6 +153,7 @@ begin
   // we'll need these files to check for a revit installation
   ExtractTemporaryFile('RevitInstallDetective.exe');
   ExtractTemporaryFile('RevitAddinUtility.dll');
+  ExtractTemporaryFile('DynamoAddinGenerator.exe');
 
   // check if there is a valid revit installation on this machine, if not - fail
   if (RevitInstallationExists('Revit2015') or RevitInstallationExists('Revit2014') or RevitInstallationExists('VasariBeta3')) then
@@ -224,7 +226,7 @@ var
     iResultCode: Integer;
 begin
   Result := 0;
-  if Exec(ExpandConstant('{app}\DynamoAddinGenerator.exe'), '', '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+  if Exec(ExpandConstant('{tmp}\DynamoAddinGenerator.exe'), '', '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
     Result := 0
   else
     Result := 1
