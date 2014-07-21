@@ -2995,7 +2995,7 @@ WCS = CoordinateSystem.Identity();";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch66_file_1467252_master()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4848,7 +4848,7 @@ c = foo1(a, 3);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch114_T19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11375,7 +11375,7 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch327_Defect_Geo_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17335,7 +17335,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch460_T020_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17351,7 +17351,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch461_T021_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25675,7 +25675,7 @@ p1 = normalizeDepth(p1,1);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch753_language_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25723,7 +25723,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch754_set_operation_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25993,7 +25993,7 @@ b4 = Math.Ceiling(a4); //null
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch758_T80585_Count()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27683,7 +27683,7 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch826_T058_Average_DataType_02()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -52721,7 +52721,7 @@ a=5;";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch1703_Comments_Negative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -52738,7 +52738,7 @@ p2 = Point.ByCoordinates(0,0,0);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch1704_Comments_Nested()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();

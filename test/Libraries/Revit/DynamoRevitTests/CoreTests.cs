@@ -48,23 +48,13 @@ namespace Dynamo.Tests
 
             var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x.NickName == "Point.ByCoordinates");
             Assert.IsNotNull(xyzNode);
-
-            //test the first lacing
+            
+            //test the shortest lacing
             xyzNode.ArgumentLacing = LacingStrategy.Shortest;
             dynSettings.Controller.RunExpression(true);
-
             var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(4, fec.ToElements().Count());
-
-            //REMOVED IN 0.7.0. First has been temporarily removed.
-            //test the shortest lacing
-            //xyzNode.ArgumentLacing = LacingStrategy.First;
-            //dynSettings.Controller.RunExpression(true);
-            //fec = null;
-            //fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
-            //fec.OfClass(typeof(ReferencePoint));
-            //Assert.AreEqual(1, fec.ToElements().Count());
 
             //test the longest lacing
             xyzNode.ArgumentLacing = LacingStrategy.Longest;
@@ -81,8 +71,6 @@ namespace Dynamo.Tests
             fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(20, fec.ToElements().Count());
-
-            //Assert.Inconclusive("Porting : XYZ");
         }
 
         /*

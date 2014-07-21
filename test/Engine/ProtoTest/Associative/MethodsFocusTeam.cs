@@ -1438,11 +1438,13 @@ namespace ProtoTest.Associative
 [Test]                public void T050_Inheritance_Multi_Construc()                {                    String code =        @"        class A        {            fx : int;            constructor A()            {                fx = 0;            }                    constructor A(x:var)            {                fx = x+1;            }            constructor A(x:int)            {                fx = x+2;            }                 constructor A2(x:var)            {                fx = x+3;            }            }        class B extends A        {            constructor B() : base.A() { }            constructor B(x : var) : base.A(x) { }            constructor B(x : int) : base.A(x) { }            constructor B2(x : var) : base.A2(x) { }            constructor B2(x : int) : base.A2(x) { }        }        b1 = B.B();        r1 = b1.fx;        b2 = B.B(0);        r2 = b2.fx;        b3 = B.B2(0.0);        r3 = b3.fx;        b4 = B.B2(A.A()); //null        r4 = b4.fx;        b5 = B.B2(0);        r5 = b5.fx;            ";                    thisTest.RunScriptSource(code);                    Assert.Fail("1467179 - Sprint25 : rev 3152 : multiple inheritance base constructor causes method resolution");                    Object v1 = null;                    thisTest.Verify("r1", 0);                    thisTest.Verify("r2", 1);                    thisTest.Verify("r3", 1);                    thisTest.Verify("r4", v1);                }                */
 
         [Test]
+        [Category("Failing")]
         public void T053_ReplicationWithDiffTypesInArr()
         {
             String code =
 @"class A{    def foo()    {        return = 1;    }}class B{    def foo()    {        return = 2;    }}m = { A.A(), B.B(), A.A() };n = { B.B(), A.A(), B.B() };r1 = m.foo();r2 = n.foo();";
-            string str = "DNL-1467475 Regression : Replication on heterogenous array of instances is yielding wrong output";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
+            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
             thisTest.VerifyRunScriptSource(code, str);
 
             Object[] v1 = new Object[] { 1, 2, 1 };

@@ -96,6 +96,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestImportPointClass()
         {
             String code =
@@ -395,6 +396,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestInheritanceAcrossLangauges_CS_DS()
         {
             string code = @"                import (Vector from ""ProtoGeometry.dll"");                class Vector2 extends Vector                {                    public constructor Vector2(x : double, y : double, z : double) : base ByCoordinates(x, y, z)                    {}                }                                vec2 = Vector2.Vector2(1,1,1);                x = vec2.GetLength();                ";
@@ -548,6 +550,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestPropertyAccessor()
         {
             String code =
@@ -558,6 +561,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestAssignmentSingleton()
         {
             String code =
@@ -568,6 +572,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestAssignmentAsArray()
         {
             String code =
@@ -578,6 +583,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestReturnFromFunctionSingle()
         {
             String code =
@@ -588,6 +594,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void Defect_1462300()
         {
             String code =
@@ -598,6 +605,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void geometryinClass()
         {
             String code =
@@ -608,6 +616,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void geometryArrayAssignment()
         {
             String code =
@@ -621,6 +630,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void geometryForLoop()
         {
             String code =
@@ -652,6 +662,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void geometryInlineConditional()
         {
             String code =
@@ -663,6 +674,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void geometryRangeExpression()
         {
             String code =
@@ -696,6 +708,7 @@ namespace ProtoFFITests
 [Test]          public void geometryUpdateAcrossMultipleLanguageBlocks()          {              String code =              @"                 import(""ProtoGeometry.dll"");                                     pt=Point.ByCoordinates(0,0,0);                    pt11={pt.X,pt.Y,pt.Z};                                     [Associative]                    {                          pt=Point.ByCoordinates(1,1,1);                          pt12={pt.X,pt.Y,pt.Z};                                                 [Imperative]                          {                              pt=Point.ByCoordinates(2,2,2);                              pt13={pt.X,pt.Y,pt.Z};                          }                          pt=Point.ByCoordinates(3,3,3);                          pt14={pt.X,pt.Y,pt.Z};                     }                      ";              object[] a = new object[] { 0.0, 0.0, 0.0 };              object[] b = new object[] { 1.0, 1.0, 1.0 };              object[] c = new object[] { 2.0, 2.0, 2.0 };              object[] d = new object[] { 3.0, 3.0, 3.0 };              ValidationData[] data = {   new ValidationData() { ValueName   = "p11", ExpectedValue = a, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p12", ExpectedValue = b, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p13", ExpectedValue = c, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p14", ExpectedValue = d, BlockIndex = 0 }                                        };              ExecuteAndVerify(code, data);          }*/
 
         [Test]
+        [Category("ProtoGeometry")]
         public void geometryWhileLoop()
         {
             String code =
@@ -706,6 +719,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void properties()
         {
             String code =
@@ -717,6 +731,7 @@ namespace ProtoFFITests
 
         [Test]
         [Category("Replication")]
+        [Category("ProtoGeometry")]
         public void coercion_notimplmented()
         {
             String code =
@@ -728,6 +743,7 @@ namespace ProtoFFITests
 
         [Test]
         [Category("Replication")]
+        [Category("ProtoGeometry")]
         public void coercion_notimplmented2()
         {
             String code =
@@ -876,6 +892,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestNonBrowsableClass()
         {
             string code = @"                import(""ProtoGeometry.dll"");                ";
@@ -888,6 +905,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestImportNonBrowsableClass()
         {
             string code = @"                import(DesignScriptEntity from ""ProtoGeometry.dll"");                ";
@@ -900,6 +918,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestImportBrowsableClass()
         {
             string code = @"                import(NurbsCurve from ""ProtoGeometry.dll"");                ";
@@ -924,6 +943,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestNonBrowsableInterfaces()
         {
             string code = @"                import(""ProtoGeometry.dll"");                ";
@@ -968,6 +988,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestDefaultConstructorNotAvailableOnAbstractClass()
         {
             string code = @"                import(""ProtoGeometry.dll"");                ";
@@ -978,6 +999,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestNestedClass()
         {
             string code =

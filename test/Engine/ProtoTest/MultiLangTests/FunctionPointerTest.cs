@@ -435,6 +435,7 @@ c = foo1(a, 3);";
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void T19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
         {
             string code = @"

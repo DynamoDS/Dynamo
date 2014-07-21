@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using System.Runtime.Serialization;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
@@ -16,6 +18,7 @@ using DSIronPython;
 using DSNodeServices;
 using Dynamo.Applications;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
@@ -23,6 +26,7 @@ using Dynamo.Utilities;
 using Dynamo.UpdateManager;
 using DynamoUtilities;
 using Greg;
+using ProtoCore;
 using Revit.Elements;
 using RevitServices.Elements;
 using RevitServices.Persistence;
@@ -38,10 +42,105 @@ namespace Dynamo
 {
     public class DynamoController_Revit : DynamoController
     {
+        public class Reactor
+        {
+            private static Reactor reactor = null;
+
+            public static Reactor GetInstance()
+            {
+                lock (typeof(Reactor))
+                {
+                    if (reactor == null)
+                    {
+                        reactor = new Reactor();
+                    }
+                }
+
+                return reactor;
+            }
+
+            internal Reactor()
+            {
+                var u = dynRevitSettings.Controller.Updater;
+
+                u.ElementsDeleted += OnElementsDeleted;
+            }
+
+
+            private void OnElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+            {
+                if (!deleted.Any())
+                    return;
+
+                var workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
+
+                ProtoCore.Core core = null;
+                if (dynSettings.Controller != null)
+                {
+                    var engine = dynSettings.Controller.EngineController;
+                    if (engine != null && (engine.LiveRunnerCore != null))
+                        core = engine.LiveRunnerCore;
+                }
+
+
+                if (core == null) // No execution yet as of this point.
+                    return;
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids = workspace.Nodes.Where((n) =>
+                {
+                    return (n is DSFunction
+                            || (n is DSVarArgFunction)
+                            || (n is CodeBlockNodeModel));
+                }).Select((n) => n.GUID);
+
+                var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);// core.GetTraceDataForNodes(nodeGuids);
+
+                foreach (Guid guid in nodeTraceDataList.Keys)
+                {
+                    foreach (CallSite cs in nodeTraceDataList[guid])
+                    {
+                        foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
+                        {
+                            List<ISerializable> traceData = srtd.RecursiveGetNestedData();
+
+                            foreach (ISerializable thingy in traceData)
+                            {
+                                SerializableId sid = thingy as SerializableId;
+
+                                foreach (ElementId eid in deleted)
+                                {
+
+                                    if (sid != null)
+                                    {
+                                        if (sid.IntID == eid.IntegerValue)
+                                        {
+                                            NodeModel inm =
+                                                workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+
+                                            Validity.Assert(inm != null, "The bound node has disappeared");
+
+                                            inm.RequiresRecalc = true;
+                                            inm.ForceReExecuteOfNode = true;
+
+                                            //FOUND IT!
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         ///     A reference to the the SSONET assembly to prevent reloading.
         /// </summary>
         private Assembly singleSignOnAssembly;
+
+        private Reactor reactor;
 
         public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager, string corePath)
             : base(
@@ -77,6 +176,15 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
+            SetupPython();
+
+            Runner = new DynamoRunner_Revit(this);
+
+            reactor = Reactor.GetInstance();
+        }
+
+        private void SetupPython()
+        {
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
             //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((IList<Element> elements) => elements.Select(e=>e.ToDSType(true)));
@@ -91,12 +199,9 @@ namespace Dynamo
                 var marshaler = new DataMarshaler();
                 marshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
 
-                Func<WrappedElement, object> unwrap = marshaler.Marshal;
+                Func<object, object> unwrap = marshaler.Marshal;
                 scope.SetVariable("UnwrapElement", unwrap);
             };
-
-            Runner = new DynamoRunner_Revit(this);
-
         }
 
         public RevitServicesUpdater Updater { get; private set; }
