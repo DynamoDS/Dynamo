@@ -673,13 +673,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS46_typedassignment_To_array_1467294_2()
         {
             string code =
-                @"               class test                    {                        x=1;                    }a;b;c;d;e1;f;g;                [Imperative]                {                    a:double[]= 1;                                         b:int[] =  1.1;                     c:string[]=""a"";                     d:char []= 'c';                    x1= test.test();                    e:test []= x1;                    e1=e.x;                    f:bool []= true;                    g []=null;                }";
+                @"               class test                    {                        x=1;                    }a;b;c;d;e1;f;g;                [Imperative]                {                    a:double[]= 1;                                         b:int[] =  1.1;                                         d:char []= 'c';                    x1= test.test();                    e:test []= x1;                    e1=e.x;                    f:bool []= true;                    g []=null;                }";
 
             string error = "1467294 =Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.0 });
             thisTest.Verify("b", new object[] { 1 });
-            thisTest.Verify("c", new object[] { "a" });
+            
             thisTest.Verify("d", new object[] { 'c' });
             thisTest.Verify("e1", new object[] { 1 });
             thisTest.Verify("f", new object[] { true });
@@ -691,13 +691,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS46_typedassignment_To_array_1467294_3()
         {
             string code =
-                @"               class test                    {                        x=1;                    }a;b;c;d;e1;f;g;                    [Imperative]                    {                    a:double[][]= {1};                                         b:int[][] =  {1.1};                     c:string[][]={""a""};                     d:char [][]= {'c'};                    x1= test.test();                    e:test [][]= {x1};                    e1=e.x;                    f:bool [][]= {true};                    g [][]={null};                    }                    ";
+                @"               class test                    {                        x=1;                    }a;b;c;d;e1;f;g;                    [Imperative]                    {                    a:double[][]= {1};                                         b:int[][] =  {1.1};                     //c:string[][]={""a""};                     d:char [][]= {'c'};                    x1= test.test();                    e:test [][]= {x1};                    e1=e.x;                    f:bool [][]= {true};                    g [][]={null};                    }                    ";
 
             string error = "1467294 =Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1.0 } });
             thisTest.Verify("b", new object[] { new object[] { 1 } });
-            thisTest.Verify("c", new object[] { new object[] { "a" } });
+            //thisTest.Verify("c", new object[] { new object[] { "a" } });
             thisTest.Verify("d", new object[] { new object[] { 'c' } });
             thisTest.Verify("e1", new object[] { new object[] { 1 } });
             thisTest.Verify("f", new object[] { new object[] { true } });
@@ -709,12 +709,12 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS46_typedassignment_To_Vararray_1467294_4()
         {
             string code =
-                @"               class test                    {                        x=1;                    }a;b;c;d;e1;f;g;                    [Imperative]                    {                    a:var[][]= 1;                                         b:var[][] =  1.1;                     c:var[][]=""a"";                     d:var[][]= 'c';                    x1= test.test();                    e:var[][]= x1;                    e1=e.x;                    f:var[][]= true;                    g :var[][]=null;                    }";
+                @"               class test                    {                        x=1;                    }a;b;c;d;e1;f;g;                    [Imperative]                    {                    a:var[][]= 1;                                         b:var[][] =  1.1;                     //c:var[][]=""a"";                     d:var[][]= 'c';                    x1= test.test();                    e:var[][]= x1;                    e1=e.x;                    f:var[][]= true;                    g :var[][]=null;                    }";
             string error = "1467294 =Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1.0 } });
             thisTest.Verify("b", new object[] { new object[] { 1 } });
-            thisTest.Verify("c", new object[] { new object[] { "a" } });
+            //thisTest.Verify("c", new object[] { new object[] { "a" } });
             thisTest.Verify("d", new object[] { new object[] { 'c' } });
             thisTest.Verify("e1", new object[] { new object[] { 1 } });
             thisTest.Verify("f", new object[] { new object[] { true } });
@@ -750,12 +750,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS048_Param_eachType_To_varArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }a;b;c;d1;e;f;                    [Imperative]{                                          def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         c = foo( ""1.5""); //char to var                         //a = foo( '1.5');// char to var                          d = foo( A.A()); // user define to var                          d1={d[0].a};                        e = foo( false);//bool to var                         f = foo( null);//null to var                         }";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+                @"class A{ a=1; }a;b;c;d1;e;f;                    [Imperative]{                                          def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                          d = foo( A.A()); // user define to var                          d1={d[0].a};                        e = foo( false);//bool to var                         f = foo( null);//null to var                         }";
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3975
+            string error = "Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
-            thisTest.Verify("c", new object[] { "1.5" });
             thisTest.Verify("d1", new object[] { 1 });
             thisTest.Verify("e", new object[] { false });
             thisTest.Verify("f", new object[] { null });
@@ -763,15 +764,16 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS049_Return_eachType_To_varArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }a;b;c;d1;e;f;                        [Imperative]{                                           def foo :var[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         c = foo( ""1.5"");                         //a = foo( '1.5');                         d = foo( A.A()); // user define to var                         d1 =  {d[0].a };                        e = foo( false);                         f = foo( null);                         }";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+                @"class A{ a=1; }a;b;c;d1;e;f;                        [Imperative]{                                           def foo :var[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         d = foo( A.A()); // user define to var                         d1 =  {d[0].a };                        e = foo( false);                         f = foo( null);                         }";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3975
+            string error = "Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
-            thisTest.Verify("c", new object[] { "1.5" });
             thisTest.Verify("d1", new object[] { 1 });
             thisTest.Verify("e", new object[] { false });
             thisTest.Verify("f", new object[] { null });
@@ -779,17 +781,19 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS050_Return_eachType_To_intArray_Imperative()
         {
             //  
             string code =
-                @" class A{ a=1; }a;a1;b;c;d1;e;f;                    [Imperative]{                                         def foo :int[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         z:var=1.5;                        a1=foo(z);                        b = foo( 1);                         c = foo( ""1.5"");                         //a = foo( '1.5');                        d = foo( A.A()); // user define to var                         d1 =  {d[0].a} ;                        e = foo( false);                         f = foo( null);                         }";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+                @" class A{ a=1; }a;a1;b;c;d1;e;f;                    [Imperative]{                                         def foo :int[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         z:var=1.5;                        a1=foo(z);                        b = foo( 1);                         d = foo( A.A()); // user define to var                         d1 =  {d[0].a} ;                        e = foo( false);                         f = foo( null);                         }";
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3975
+            string error = "Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 2 });
             thisTest.Verify("a1", new object[] { 2 });
             thisTest.Verify("b", new object[] { 1 });
-            thisTest.Verify("c", null);
             thisTest.Verify("d1", null);
             thisTest.Verify("e", null);
             thisTest.Verify("f", null);
@@ -889,14 +893,13 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS056_Return_BoolArray_1467258_Imperative()
         {
             string code =
-                @"class A{ a=1; }a;a1;b;c;d;e;                [Imperative]{                                       def foo:bool[](x)                            {		 	                    b1= x ;	                             return =b1;                            }                    a = foo({ 1.5, 2.5 });                    a1 : var = foo({ 1.5,2.5 });                    b = foo({ 1, 0 });                    c = foo({ ""1.5"" ,""""});                    d = foo({ '1', '0' });                     e = d = foo({ A.A(),A.A() });                                                  }";
+                @"class A{ a=1; }a;a1;b;c;d;e;                [Imperative]{                                       def foo:bool[](x)                            {		 	                    b1= x ;	                             return =b1;                            }                    a = foo({ 1.5, 2.5 });                    a1 : var = foo({ 1.5,2.5 });                    b = foo({ 1, 0 });                    d = foo({ '1', '0' });                     e = d = foo({ A.A(),A.A() });                                                  }";
             string error = "1467258 - sprint 26 - Rev 3541 if the return type is bool array , type conversion does not happen for some cases  ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { true }, new object[] { true } });
             thisTest.Verify("a1", null);
             thisTest.Verify("b", new object[] { new object[] { true }, new object[] { false } });
-            thisTest.Verify("c", new object[] { new object[] { true }, new object[] { false } });
-            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { true } });
             thisTest.Verify("e", new object[] { new object[] { true }, new object[] { true } });
         }
 
@@ -1142,16 +1145,17 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS074_Param_singleton_AlltypeTo_UserDefinedArray_Imperative()
         {
             string code =
-                @"      class A{ a=1; }                        class B{ b = 2.0; }a;a1;b;c;c1;d1;e;f;g;                    [Imperative]{                                                                    def foo ( x:B[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var=1.5;                        a1=foo(z);                        b = foo(1);                        c = foo( ""1.5"" );                        c1 = foo( '1');                        d = foo( B.B() );                        d1 = d.b;                        e = foo( A.A() );                        f = foo(false);                        g = foo( null );}";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+                @"      class A{ a=1; }                        class B{ b = 2.0; }a;a1;b;c;c1;d1;e;f;g;                    [Imperative]{                                                                    def foo ( x:B[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var=1.5;                        a1=foo(z);                        b = foo(1);                        c1 = foo( '1');                        d = foo( B.B() );                        d1 = d.b;                        e = foo( A.A() );                        f = foo(false);                        g = foo( null );}";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3971
+            string error = "Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
             thisTest.Verify("a1", null);
             thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
             thisTest.Verify("c1", null);
             thisTest.Verify("d1", new object[] { 2 });
             thisTest.Verify("e", null);
@@ -1161,16 +1165,20 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS075_return_singleton_AlltypeTo_UserDefinedArray_Imperative()
         {
             string code =
-                @"class B{ b = 2.0; }                        class A{ a=1; }a;a1;b;c;c1;d1;e;f;g;                    [Imperative]{                                                def foo :B[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var=1.5;                        a1=foo(z);                        b = foo(1);                        c = foo( ""1.5"" );                        c1 = foo( '1');                        d = foo( B.B() );                        d1 = d.b;                        e = foo( A.A() );                        f = foo(false);                        g = foo( null );}";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+                @"class B{ b = 2.0; }                        class A{ a=1; }a;a1;b;c;c1;d1;e;f;g;                    [Imperative]{                                                def foo :B[]( x)                        {	                        b1 = x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var = 1.5;                        a1 = foo(z);                        b  = foo(1);                        c1 = foo('1');                        d  = foo(B.B());                        d1 = d.b;                        e  = foo(A.A());                        f  = foo(false);                        g  = foo(null);
+                    }
+
+";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3971
+            string error = "Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
             thisTest.Verify("a1", null);
             thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
             thisTest.Verify("c1", null);
             thisTest.Verify("d1", new object[] { 2 });
             thisTest.Verify("e", null);
@@ -1238,29 +1246,14 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-        public void indexintoarray_left_1467462_6_imperative()
-        {
-            string code =
-                @"                [Imperative]                {                    class A{a=1;};                    class B{a=2};                    x : var[] = { A.A(),A.A(),A.A(),A.A()};//jagged                    x[2..3] = { B.B(),B.B()};                    y=x.a                }                ";
-            var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "x", new object[] { 1, 1, 2, 2 });
-        }
-
-        [Test]
-        public void indexintoarray_left_1467462_7_imperative()
-        {
-            string code =
-                @"                [Imperative]                {                    class A{ a = 1; }                    class B{ a = 2; }                    x : A[] = { A.A(),A.A(),A.A(),A.A()};//jagged                    x[2..3] = { B.B(), B.B() };                    y = x.a;                }                ";
-            var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "y", new object[] { 1, 1, null, null });
-        }
-
-        [Test]
         [Category("Type System")]
         public void TS0189_TypeConversion_conditionals_1465293_1_imperative()
         {
             string code =
-                @"                 [Imperative]                 {                  a=2==null;                    b=2!=null;                  c=null==null;                  d=null!=null;                 }                 ";
+                @"a;
+b;
+c;
+d;                 [Imperative]                 {                  a=2==null;                    b=2!=null;                  c=null==null;                  d=null!=null;                 }                 ";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", false);
