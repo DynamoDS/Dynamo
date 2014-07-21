@@ -43,7 +43,7 @@ namespace Dynamo.TestInfrastructure
                     {
                         CodeBlockNodeTest(writer);
                         ConnectorTest(writer);
-
+                        IntegerSliderTest(writer);
                     }
                     finally
                     {
@@ -67,7 +67,7 @@ namespace Dynamo.TestInfrastructure
             {
                 Random rand = new Random(1);
 
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 1000; i++)
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
 
@@ -278,23 +278,27 @@ namespace Dynamo.TestInfrastructure
             {
                 writer.WriteLine("##### - Beginning run");
 
-                List<NodeModel> nodes1 = dynamoController.DynamoModel.Nodes.Where(x => x.GetType() == typeof(DoubleInput)).ToList();
-                List<NodeModel> nodes2 = dynamoController.DynamoModel.Nodes.Where(x => x.GetType() == typeof(DSFunction)).ToList();
                 Random rand = new Random(1);
-                int randVal = rand.Next(nodes1.Count);
-                NodeModel node = nodes1.Count > 0 ? nodes1[randVal] : null;
-                randVal = rand.Next(nodes2.Count);
-                NodeModel node2 = nodes2.Count > 0 ? nodes2[randVal] : null;
 
-                if ((node != null) && (node2 != null))
+                for (int i = 0; i < 1000; i++)
                 {
-                    List<ConnectorModel> firstNodeConnectors = node.AllConnectors.ToList();
+                    writer.WriteLine("##### - Beginning run: " + i);
 
-                    foreach (ConnectorModel connector in firstNodeConnectors)
+                    List<NodeModel> nodes = dynamoController.DynamoModel.Nodes;
+                    int randVal = rand.Next(nodes.Count);
+
+                    writer.WriteLine("### - Beginning eval");
+
+                    NodeModel node = nodes.Count > 0 ? nodes[randVal] : null;
+
+                    if (node != null)
                     {
-                        //let's remember the indexes
-                        int startIndex = connector.Start.Index;
-                        int endIndex = connector.End.Index;
+                        List<ConnectorModel> firstNodeConnectors = node.AllConnectors.ToList();
+
+                        foreach (ConnectorModel connector in firstNodeConnectors)
+                        {
+                            //let's remember the indexes
+                            int startIndex = connector.Start.Index;
 
                         dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
                         {
@@ -305,10 +309,10 @@ namespace Dynamo.TestInfrastructure
 
                         }));
 
-                        if (node2.InPorts[endIndex].IsConnected)
-                            writer.WriteLine("### - Connector wasn't deleted");
-                        else
-                            writer.WriteLine("### - Connector was deleted");
+                            if (node.OutPorts[startIndex].IsConnected)
+                                writer.WriteLine("### - Connector wasn't deleted");
+                            else
+                                writer.WriteLine("### - Connector was deleted");
 
                         dynamoController.UIDispatcher.Invoke(new Action(() =>
                         {
@@ -321,18 +325,132 @@ namespace Dynamo.TestInfrastructure
 
                         Thread.Sleep(100);
 
-                        if (node2.InPorts[endIndex].IsConnected)
-                            writer.WriteLine("### - Connector was recreated");
-                        else
-                            writer.WriteLine("### - ### - Connector wasn't recreated");
-                    }
+                            if (node.OutPorts[startIndex].IsConnected)
+                                writer.WriteLine("### - Connector was recreated");
+                            else
+                                writer.WriteLine("### - ### - Connector wasn't recreated");
+                        }
 
-                    passed = true;
+                        passed = true;
+                    }
                 }
             }
             finally
             {
                 dynSettings.DynamoLogger.Log("ConnectorTest : " + (passed ? "pass" : "FAIL"));
+            }
+        }
+
+        private void IntegerSliderTest(StreamWriter writer)
+        {
+            bool passed = false;
+            try
+            {
+                Random rand = new Random(1);
+
+                for (int i = 0; i < 1000; i++)
+                {
+                    writer.WriteLine("##### - Beginning run: " + i);
+                    var nodes = dynamoController.DynamoModel.Nodes.Where(t => t.Name == "Integer Slider").ToList();
+                    writer.WriteLine("### - Beginning eval");
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                    }));
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+                    writer.WriteLine("### - Eval complete");
+                    writer.Flush();
+
+                    Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            Guid guid = n.GUID;
+                            Object data = n.GetValue(0).Data;
+                            String val = data != null ? data.ToString() : "null";
+                            valueMap.Add(guid, val);
+                            writer.WriteLine(guid + " :: " + val);
+                            writer.Flush();
+                        }
+                    }
+
+                    List<AbstractMutator> mutators = new List<AbstractMutator>()
+                    {
+                        new IntegerSliderMutator(rand)
+                    };
+                    AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
+                    int numberOfUndosNeeded = mutator.Mutate();
+                    Thread.Sleep(100);
+
+                    writer.WriteLine("### - Beginning test of IntegerSlider");
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            try
+                            {
+                                String valmap = valueMap[n.GUID].ToString();
+                                Object data = n.GetValue(0).Data;
+                                String nodeVal = data != null ? data.ToString() : "null";
+
+                                if (valmap != nodeVal)
+                                {
+                                    writer.WriteLine("!!!!!!!!!!! - test of IntegerSlider is failed");
+                                    writer.WriteLine(n.GUID);
+
+                                    writer.WriteLine("Was: " + nodeVal);
+                                    writer.WriteLine("Should have been: " + valmap);
+                                    writer.Flush();
+                                    return;
+
+                                    Debug.WriteLine("==========> Failure on run: " + i);
+                                    Debug.WriteLine("Lookup map failed to agree");
+                                    Validity.Assert(false);
+                                }
+                                else
+                                {
+                                    writer.WriteLine("### - test of IntegerSlider is passed");
+                                    writer.Flush();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                writer.WriteLine("!!!!!!!!!!! - test of IntegerSlider is failed");
+                                writer.Flush();
+                                return;
+                            }
+                        }
+                    }
+                    writer.WriteLine("### - test of IntegerSlider complete");
+                    writer.Flush();
+
+                    writer.WriteLine("### - Beginning undo");
+                    for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                    {
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.UndoRedoCommand undoCommand =
+                                new DynamoViewModel.UndoRedoCommand(
+                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                        }));
+                        Thread.Sleep(100);
+                    }
+                    writer.WriteLine("### - undo complete");
+                    writer.Flush();
+                }
+
+                passed = true;
+            }
+            finally
+            {
+                dynSettings.DynamoLogger.Log("IntegerSliderTest : " + (passed ? "pass" : "FAIL"));
             }
         }
     }
