@@ -98,11 +98,11 @@ namespace Dynamo.Messages
                 return;
             }
 
-            if (message is ModelsListMessage)
+            if (message is LibraryItemsListMessage)
             {
-                OnResultReady(this, new ResultReadyEventArgs(new ModelsListResponse
+                OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
                 {
-                    Models = dynSettings.Controller.SearchViewModel.GetAllNodeModelsWithCategories()
+                    LibraryItems = dynSettings.Controller.SearchViewModel.GetAllLibraryItemsByCategory()
                 }));
             }
         }

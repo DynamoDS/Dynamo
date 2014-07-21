@@ -162,7 +162,7 @@ limitations under the License.
     <Compile Include="Messages\ExecutedNode.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Messages\Message.cs" />
-    <Compile Include="Messages\ModelsListMessage.cs" />
+    <Compile Include="Messages\LibraryItemsListMessage.cs" />
     <Compile Include="Messages\RecordableCommandsMessage.cs" />
     <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />

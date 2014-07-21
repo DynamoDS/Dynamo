@@ -165,8 +165,8 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
-        private string serializedNodesList;
-        List<NodeModelItem> allNodeModels;
+        private string serializedLibraryItemsList;
+        List<LibraryItem> allLibraryItems;
 
         #endregion
 
@@ -1135,41 +1135,41 @@ namespace Dynamo.ViewModels
 
         public string GetAllNodesWithCategoriesInJson()
         {
-            if (serializedNodesList == null)
+            if (serializedLibraryItemsList == null)
             {
-                GetAllNodeModelsWithCategories();
+                GetAllLibraryItemsByCategory();
             }
-            return serializedNodesList;
+            return serializedLibraryItemsList;
         }
 
-        public List<NodeModelItem> GetAllNodeModelsWithCategories()
+        public List<LibraryItem> GetAllLibraryItemsByCategory()
         {
-            if (allNodeModels == null)
+            if (allLibraryItems == null)
             {
-                allNodeModels = new List<NodeModelItem>();
+                allLibraryItems = new List<LibraryItem>();
                 foreach (var elem in BrowserRootCategories)
                 {
-                    allNodeModels.AddRange(GetNodesFromCategory(elem));
+                    allLibraryItems.AddRange(GetLibraryItemsByCategory(elem));
                 }
 
-                serializedNodesList = JsonConvert.SerializeObject(allNodeModels);
+                serializedLibraryItemsList = JsonConvert.SerializeObject(allLibraryItems);
             }
-            return allNodeModels;
+            return allLibraryItems;
         }
 
 
-        private List<NodeModelItem> GetNodesFromCategory(BrowserItem elem)
+        private List<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
         {
-            var result = new List<NodeModelItem>();
+            var result = new List<LibraryItem>();
             foreach (BrowserItem item in elem.Items)
             {
                 if (item is SearchElementBase) 
                 {
-                    result.Add(new NodeModelItem(item as SearchElementBase));
+                    result.Add(new LibraryItem(item as SearchElementBase));
                 }
                 else
                 {
-                    result.AddRange(GetNodesFromCategory(item));
+                    result.AddRange(GetLibraryItemsByCategory(item));
                 }
             }
             return result;

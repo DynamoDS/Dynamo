@@ -63,7 +63,7 @@ namespace Dynamo.Search.SearchElements
     /// <summary>
     /// A simple version of the SearchElementBase class needed for sending data to a web client
     /// </summary>
-    public class NodeModelItem
+    public class LibraryItem
     {
         [DataMember]
         public string Category { get; private set; }
@@ -95,7 +95,7 @@ namespace Dynamo.Search.SearchElements
         [DataMember]
         public IEnumerable<string> ReturnKeys { get; private set; }
         
-        public NodeModelItem(SearchElementBase node)
+        public LibraryItem(SearchElementBase node)
         {
             Category = node.FullCategoryName;
             Type = node.Type;
