@@ -7,6 +7,8 @@ using Dynamo.Core;
 using Dynamo.SelfHostAPI;
 using Dynamo.Utilities;
 
+using DynamoWebServer;
+
 namespace DynamoServiceSandbox
 {
     static class Program
@@ -42,7 +44,7 @@ namespace DynamoServiceSandbox
                 var ui = DynamoView.MakeSandbox(commandFilePath);
 
                 WebApiServer.Run();
-                dynSettings.EnableServer();
+                dynSettings.EnableServer(new WebServer());
 
                 Application app = new Application();
                 app.Run(ui);

@@ -1,0 +1,1 @@
+{"$type":"Dynamo.Messages.Message, DynamoCore","commands":[{"$type":"Dynamo.ViewModels.DynamoViewModel+CreateNodeCommand, DynamoCore","nodeId":"514e751f-106a-bed2-9025-163962ca7abc","nodeName":"Number","x":720,"y":499.5,"defaultPosition":false,"transformCoordinates":false}]}

@@ -92,6 +92,10 @@
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoWebServer\DynamoWebServer.csproj">
+      <Project>{55636e8f-53b1-4e27-a0d7-68a00da13c92}</Project>
+      <Name>DynamoWebServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
