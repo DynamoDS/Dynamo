@@ -149,7 +149,7 @@ namespace Revit.Elements
         /// <summary>
         /// The name of the level
         /// </summary>
-        public string Name
+        public new string Name
         {
             get
             {

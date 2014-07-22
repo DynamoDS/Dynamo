@@ -119,9 +119,7 @@ namespace Revit.Elements
         /// <summary>
         /// Internal constructor for the ReferencePoint
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
+        /// <param name="xyz"></param>
         private ReferencePoint(XYZ xyz)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -259,12 +257,6 @@ namespace Revit.Elements
                 return xz.ToPlane();
             }
         }
-
-        public String Id
-        {
-            get { return InternalElementId.ToString(); }
-        }
-
 
         #endregion
 

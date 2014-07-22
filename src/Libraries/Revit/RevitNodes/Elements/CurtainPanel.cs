@@ -198,10 +198,8 @@ namespace Revit.Elements
          {
             double lengthVal = 0.0;
             var enumCurveLoops = PanelBoundaries.GetEnumerator();
-            Autodesk.Revit.DB.Plane plane = null;
             for (; enumCurveLoops.MoveNext();)
             {
-               var cLoop = new CurveLoop();
                var crvArr = (CurveArray) enumCurveLoops.Current;
                var enumCurves = crvArr.GetEnumerator();
                for (; enumCurves.MoveNext();)
