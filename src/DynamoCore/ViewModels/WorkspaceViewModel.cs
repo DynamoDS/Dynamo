@@ -664,7 +664,7 @@ namespace Dynamo.ViewModels
                 }
 
                 var cursor = yMin;
-                foreach (var node in toAlign.OrderBy(y => y.Y).ToList())
+                foreach (var node in toAlign.OrderBy(y => y.Y))
                 {
                     node.Y = cursor;
                     cursor += node.Height + spacing;
@@ -693,7 +693,7 @@ namespace Dynamo.ViewModels
                 }
 
                 var cursor = xMin;
-                foreach (var node in toAlign.OrderBy(x => x.X).ToList())
+                foreach (var node in toAlign.OrderBy(x => x.X))
                 {
                     node.X = cursor;
                     cursor += node.Width + spacing;
