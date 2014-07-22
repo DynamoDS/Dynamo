@@ -108,7 +108,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Create a View from a user selected Element.
         /// </summary>
-        /// <param name="pt"></param>
+        /// <param name="view"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static DraftingView FromExisting(Autodesk.Revit.DB.ViewDrafting view, bool isRevitOwned)

@@ -32,7 +32,7 @@ namespace Revit.Elements.Views
         /// Export the view as an image to the given path - defaults to png, but you can override 
         /// the file type but supplying a path with the appropriate extension
         /// </summary>
-        /// <param name="path">A valid path for the image</param>
+        /// <param name="fullPath">A valid path for the image</param>
         /// <returns>The image</returns>
         public System.Drawing.Image ExportAsImage(string fullPath)
         {
