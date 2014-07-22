@@ -318,7 +318,7 @@ namespace ProtoTestFx
             }
         }
 
-        public void CompareRunAndWatchResults(string includePath, string code, Dictionary<int, List<string>> map, bool watchNestedMode = false)
+        public void CompareRunAndWatchResults(string includePath, string code, Dictionary<int, List<string>> map, bool watchNestedMode = false, string defectID = "")
         {
             try
             {
@@ -332,7 +332,7 @@ namespace ProtoTestFx
                 Assert.Ignore("Ignored due to Exception from run: " + e.ToString());
             }
 
-            DebugRunnerStepIn(includePath, code, map, watchNestedMode);            
+            DebugRunnerStepIn(includePath, code, map, watchNestedMode, defectID);            
         }
 
         
@@ -390,7 +390,8 @@ namespace ProtoTestFx
             core.Cleanup();
         }
 
-        internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, bool watchNestedMode = false)
+        internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, 
+            bool watchNestedMode = false, string defectID = "")
         {
             //Internal setup
             ProtoCore.Core core;
@@ -472,7 +473,7 @@ namespace ProtoTestFx
                     {
                         if (opCode == ProtoCore.DSASM.OpCode.POP)
                         {
-                            VerifyWatch_Run(lineAtPrevBreak, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode);
+                            VerifyWatch_Run(lineAtPrevBreak, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode, defectID: defectID);
                         }
                         // if previous breakpoint was at a CALLR
                         else if (opCode == ProtoCore.DSASM.OpCode.CALLR)
@@ -480,7 +481,7 @@ namespace ProtoTestFx
                             if (core.DebugProps.IsPopmCall)
                             {
                                 int ci = (int)currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                                VerifyWatch_Run(InjectionExecutive.callrLineNo, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode, ci);
+                                VerifyWatch_Run(InjectionExecutive.callrLineNo, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode, ci, defectID);
                             }
                         }
                     }
@@ -563,7 +564,7 @@ namespace ProtoTestFx
         }*/
 
         internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core,
-            Dictionary<int, List<string>> map, bool watchNestedMode = false, int ci = Constants.kInvalidIndex)
+            Dictionary<int, List<string>> map, bool watchNestedMode = false, int ci = Constants.kInvalidIndex, string defectID = "")
         {
             //bool check = true;
 
@@ -615,7 +616,7 @@ namespace ProtoTestFx
                         
                         if (!values.Contains(result))
                         {
-                            Assert.Fail(string.Format("\tThe value of expression \"{0}\" doesn't match in run mode and in watch.\n", exp));
+                            Assert.Fail(string.Format("\tThe value of expression \"{0}\" doesn't match in run mode and in watch.\nTracked by Defect: {1}", exp, defectID));
                             return;
                         }                        
                     }

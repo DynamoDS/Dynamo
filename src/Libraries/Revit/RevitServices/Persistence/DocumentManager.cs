@@ -52,45 +52,10 @@ namespace RevitServices.Persistence
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Obsolete]
-        public bool ElementExistsInDocument(ElementId id)
-        {
-            Element e;
-            return CurrentDBDocument.TryGetElement(id, out e);
-        }
-
-
-        /// <summary>
-        /// Determine if Element exists in the current document
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public bool ElementExistsInDocument(ElementUUID id)
         {
             Element e;
             return CurrentDBDocument.TryGetElement(id.UUID, out e);
-        }
-
-
-        /// <summary>
-        /// Delete an element from the current document given the ElementId
-        /// </summary>
-        /// <param name="element">The id of the element to delete</param>
-        [Obsolete]
-        public void DeleteElement(ElementId element)
-        {
-            TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
-
-            try
-            {
-                CurrentDBDocument.Delete(element);
-            }
-            catch (Exception e)
-            {
-                LogError(e);
-            }
-
-            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -110,7 +75,6 @@ namespace RevitServices.Persistence
                 TransactionManager.Instance.TransactionTaskDone();
             }
         }
-
 
         /// <summary>
         /// Obtain all elements of a given type from the current document

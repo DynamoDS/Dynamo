@@ -216,13 +216,24 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets if this data points to a collection.
+            /// Determines if this data points to a collection.
             /// </summary>
             public bool IsCollection
             {
                 get
                 {
                     return svData.IsArray;
+                }
+            }
+
+            /// <summary>
+            /// Determines if this data is a pointer
+            /// </summary>
+            public bool IsPointer
+            {
+                get
+                {
+                    return svData.IsPointer;
                 }
             }
 

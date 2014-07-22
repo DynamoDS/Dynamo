@@ -42,7 +42,6 @@ namespace Revit.Elements
         {
             get
             {
-                DocumentManager.Regenerate();
                 var pts = InternalTopographySurface.GetPoints();
                 return pts.Select(x => x.ToPoint()).ToList();
             }
@@ -84,6 +83,9 @@ namespace Revit.Elements
             {
                 ElementBinder.SetElementForTrace(this.InternalElement);  
             }
+
+            // necessary so the points in the topography are valid
+            DocumentManager.Regenerate();
         }
 
         [SupressImportIntoVM]

@@ -1,4 +1,6 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System;
+
+using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using Revit.GeometryConversion;
 using NUnit.Framework;
@@ -7,8 +9,14 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Conversion
 {
     [TestFixture]
-    class BoundingBoxTests : GeometricRevitNodeTest
+    public class BoundingBoxTests : GeometricRevitNodeTest
     {
+
+        public static double BoundingBoxVolume(BoundingBox bb)
+        {
+            var val = bb.MaxPoint.Subtract(bb.MinPoint.AsVector());
+            return Math.Abs(val.X * val.Y * val.Z);
+        }
 
         [Test]
         [TestModel(@".\MassWithBoxAndCone.rfa")]
