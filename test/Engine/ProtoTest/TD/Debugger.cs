@@ -258,21 +258,20 @@ firstFixitySymbol = firstFixitySymbol.Move(0, -4, 0); // modified by the instanc
         }
 
         [Test]
-        [Category("ProtoGeometry")]
         [Category("Failing")]
         public void T004_Defect_IDE_963_Crash_On_Debugging()
         {
-            string defectID = "";
+            string defectID = "MAGN-4005 GC issue with globally declared objects used in update loop inside Associative language block";
 
-            string src = @" import(""ProtoGeometry.dll"");a : Point = null;b : Line = null;[Associative]{    a = Point.ByCoordinates(10, 0, 0);    b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));    a = Point.ByCoordinates(15, 0, 0);}c = b;";
+            string src = @" import(""FFITarget.dll"");
+a : DummyPoint = null;b : DummyLine = null;[Associative]{    a = DummyPoint.ByCoordinates(10, 0, 0);    b = DummyLine.ByStartPointEndPoint(a, DummyPoint.ByCoordinates(10, 5, 0));    a = DummyPoint.ByCoordinates(15, 0, 0);}c = b;";
             DebugTestFx.CompareDebugAndRunResults(src, defectID);
         }
 
         [Test]
-        [Category("ProtoGeometry")]
         public void T005_Defect_IDE_963_Crash_On_Debugging()
         {
-            string src = @" import(""ProtoGeometry.dll"");a : Point = null;b : Line = null;[Imperative]{    a = Point.ByCoordinates(10, 0, 0);    b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));    a = Point.ByCoordinates(15, 0, 0);}c = b;";
+            string src = @" import(""FFITarget.dll"");a : DummyPoint = null;b : DummyLine = null;[Imperative]{    a = DummyPoint.ByCoordinates(10, 0, 0);    b = DummyLine.ByStartPointEndPoint(a, DummyPoint.ByCoordinates(10, 5, 0));    a = DummyPoint.ByCoordinates(15, 0, 0);}c = b;";
             DebugTestFx.CompareDebugAndRunResults(src);
         }
     }
