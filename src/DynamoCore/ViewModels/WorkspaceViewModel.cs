@@ -647,28 +647,57 @@ namespace Dynamo.ViewModels
             else if (alignType == "VerticalDistribute")
             {
                 if (DynamoSelection.Instance.Selection.Count <= 2) return;
-
+                
                 var yMin = GetSelectionMinY();
-                var yMax = GetSelectionMaxTopY();
-                var spacing = (yMax - yMin) / (DynamoSelection.Instance.Selection.Count - 1);
-                int count = 0;
+                var yMax = GetSelectionMaxY();
 
-                toAlign.OrderBy((x) => x.Y)
-                           .ToList()
-                           .ForEach((x) => x.Y = yMin + spacing * count++);
+                var spacing = 0.0;
+                var span = yMax - yMin;
+
+                var nodeHeightSum = DynamoSelection.Instance.Selection.Where(y => y is ILocatable)
+                        .Cast<ILocatable>()
+                        .Sum((y) => y.Height);
+
+                if (span > nodeHeightSum)
+                {
+                    spacing = (span - nodeHeightSum) / (DynamoSelection.Instance.Selection.Count - 1);
+                }
+
+                var cursor = yMin;
+                foreach (var node in toAlign.OrderBy(y => y.Y))
+                {
+                    node.Y = cursor;
+                    cursor += node.Height + spacing;
+                }
             }
             else if (alignType == "HorizontalDistribute")
             {
                 if (DynamoSelection.Instance.Selection.Count <= 2) return;
 
                 var xMin = GetSelectionMinX();
-                var xMax = GetSelectionMaxLeftX();
-                var spacing = (xMax - xMin) / (DynamoSelection.Instance.Selection.Count - 1);
-                int count = 0;
+                var xMax = GetSelectionMaxX();
 
-                toAlign.OrderBy((x) => x.X)
-                           .ToList()
-                           .ForEach((x) => x.X = xMin + spacing * count++);
+                var spacing = 0.0;
+                var span =  xMax - xMin;
+                var nodeWidthSum = DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                        .Cast<ILocatable>()
+                        .Sum((x) => x.Width);
+                
+                // If there is more span than total node width,
+                // distribute the nodes with a gap. If not, leave
+                // the spacing at 0 and the nodes will distribute
+                // up against each other.
+                if (span > nodeWidthSum)
+                {
+                    spacing = (span - nodeWidthSum) / (DynamoSelection.Instance.Selection.Count - 1);
+                }
+
+                var cursor = xMin;
+                foreach (var node in toAlign.OrderBy(x => x.X))
+                {
+                    node.X = cursor;
+                    cursor += node.Width + spacing;
+                }
             }
 
             toAlign.ForEach(x => x.ReportPosition());
