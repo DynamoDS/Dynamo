@@ -5,10 +5,10 @@ Feature Comparison
 
 Screenshots
 -----
-Stadium designed by @elayabarath
+Stadium designed by @elayabharath
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Bloodstone/doc/img/eb-stadium-v0.png)
 
-Another stadium designed by @elayabarath
+Another stadium designed by @elayabharath
 ![Image](https://raw.githubusercontent.com/Benglin/Dynamo/Bloodstone/doc/img/eb-stadium-v1.png)
 
 Color setting is now available on per-node basis
