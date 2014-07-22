@@ -34,14 +34,13 @@ namespace DSCoreNodesUI.Logic
         }
 
         private List<ProtoCore.AST.ImperativeAST.ImperativeNode> GetAstsForBranch(
-                                                                    int branch, 
-                                                                    List<AssociativeNode> inputAstNodes)
+            int branch, List<AssociativeNode> inputAstNodes)
         {
             AstBuilder astBuilder = new AstBuilder(null);
 
             // Get all upstream nodes and then remove nodes that are not 
-            var nodes = GetInScopeNodesForInport(branch).Where(n => !(n is Symbol));
-            nodes = ScopedNodeModel.RemoveInScopedNodeFrom(nodes);
+            var nodes = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
+            nodes = ScopedNodeModel.GetNodesInTopScope(nodes);
             var astNodes = astBuilder.CompileToAstNodes(nodes, false);
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes.Select(n => n.ToImperativeAST()).ToList();
@@ -110,6 +109,10 @@ namespace DSCoreNodesUI.Logic
                 }
             };
 
+            // thisVariable = [Associative]
+            // {
+            //     return = [Imperative] {...}
+            // }
             var outerAssociativeBlock = new LanguageBlockNode
             {
                 codeblock = new LanguageCodeBlock(Language.kAssociative),

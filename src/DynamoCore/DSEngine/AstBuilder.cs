@@ -140,10 +140,9 @@ namespace Dynamo.DSEngine
 
             IEnumerable<AssociativeNode> astNodes = null;
             var scopedNode = node as ScopedNodeModel;
-            bool buildAstInScope = scopedNode != null && !scopedNode.HasUnconnectedInput();
-            if (buildAstInScope)
+            if (scopedNode != null)
             {
-                astNodes = (node as ScopedNodeModel).BuildAstInScope(inputAstNodes);
+                astNodes = scopedNode.BuildAstInScope(inputAstNodes);
             }
             else
             {
@@ -197,9 +196,9 @@ namespace Dynamo.DSEngine
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
-            nodes = ScopedNodeModel.RemoveInScopedNodeFrom(nodes);
+            nodes = ScopedNodeModel.GetNodesInTopScope(nodes);
+            var sortedNodes = TopologicalSort(nodes);
 
-            IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
             if (isDeltaExecution)
             {
                 sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);

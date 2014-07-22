@@ -14,7 +14,7 @@ namespace Dynamo.Models
     public class ScopedNodeModel: NodeModel
     {
         /// <summary>
-        /// If all nodes that the node outputs to are in scopes list.
+        /// If all nodes that the node outputs to are in scopes list. I.e.,
         /// </summary>
         /// <param name="node"></param>
         /// <param name="scopes"></param>
@@ -55,19 +55,20 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Get all nodes that in its input ports's scope. A node is in its 
-        /// scope if it is one of this nodes' upstream nodes. 
+        /// scope if that node is one of its upstream nodes. 
         /// </summary>
         /// <param name="portIndex">Inport index</param>
         /// <param name="checkEscape">
-        /// Specifies if need to exclude nodes that one of their downstream
-        /// nodes are not in the scope
+        /// If need to exclude nodes that one of their downstream nodes are not 
+        /// in the scope
         /// </param>
         /// <param name="isInclusive">
-        /// If one of its upstream node is ScopedNodeModel, if need to include 
-        /// all upstream nodes of that node.
+        /// If a upstream node is ScopedNodeModel, need to include all upstream 
+        /// nodes of that node.
         /// </param>
         /// <returns></returns>
-        public IEnumerable<NodeModel> GetInScopeNodesForInport(int portIndex, bool checkEscape = true, bool isInclusive = true)
+        public IEnumerable<NodeModel> GetInScopeNodesForInport(
+            int portIndex, bool checkEscape = true, bool isInclusive = true)
         {
             // The related test cases are in DynmoTest.ScopedNodeTest.
             var scopedNodes = new HashSet<NodeModel>();
@@ -151,18 +152,18 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static IEnumerable<NodeModel> RemoveInScopedNodeFrom(IEnumerable<NodeModel> nodes)
+        public static IEnumerable<NodeModel> GetNodesInTopScope(IEnumerable<NodeModel> nodes)
         {
             HashSet<NodeModel> topScopedNodes = new HashSet<NodeModel>(nodes);
             foreach (var node in nodes)
             {
                 var scopedNode = node as ScopedNodeModel;
-                if (scopedNode == null || scopedNode.HasUnconnectedInput())
+                if (scopedNode == null)
                 {
                     continue;
                 }
 
-                var nodesInItsScope = scopedNode.GetInScopeNodes();
+                var nodesInItsScope = scopedNode.GetInScopeNodes(false);
                 topScopedNodes.ExceptWith(nodesInItsScope);
             }
 
