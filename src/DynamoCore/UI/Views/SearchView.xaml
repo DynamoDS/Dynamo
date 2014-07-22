@@ -9,19 +9,21 @@
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
              xmlns:dynamo="clr-namespace:Dynamo"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:uiview="clr-namespace:Dynamo.UI.Views"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
              d:DesignHeight="300"  
              x:Name="SearchControl" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}"
-             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}">
+             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}"
+             >
 
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-            <controls:StringToWidth x:Key="StringToWidth"/>
+            <controls:BoolToWidth x:Key="BoolToWidth"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
@@ -97,8 +99,8 @@
                   MouseEnter="SearchTextBoxGrid_MouseEnter"
                   MouseLeave="SearchTextBoxGrid_MouseLeave">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{Binding Path=SearchText, Converter={StaticResource StringToWidth}}"/>
-                <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{Binding CanAlingmentToLeft, Converter={StaticResource BoolToWidth}}"/>
+                    <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
@@ -118,7 +120,8 @@
                          Foreground="#DDD"
                          Background="Transparent" BorderThickness="0" FontSize ="14" 
                          IsEnabled="True" TextChanged="SearchTextBox_TextChanged" 
-                         PreviewMouseDown="SearchTextBox_MouseDown"
+                         GotKeyboardFocus="TextBoxGotKeyboardFocus"
+                         LostKeyboardFocus="TextBoxLostKeyboardFocus"
                          
                          VerticalAlignment="Center" 
                          Text="{Binding Path=SearchText,Mode=TwoWay}" 
@@ -443,7 +446,7 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
-
+                
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneWay}"></Setter>
@@ -559,14 +562,12 @@
                                      Value="True">
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <dynui:DynamoToolTip AttachmentSide="Right"
-                                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                    
+                                    <dynui:DynamoToolTip AttachmentSide="Right">
                                         <Grid>
-                                            <TextBlock TextWrapping="Wrap"
-                                                       MaxWidth="320"
-                                                       Text="{Binding Path=Description}"></TextBlock>
+                                            
                                         </Grid>
-                                    </dynui:DynamoToolTip>
+                                    </dynui:DynamoToolTip> 
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>
@@ -615,6 +616,7 @@
                         <StackPanel Orientation="Horizontal">
 
                             <Border Height="30">
+                                <!--название ноды-->
                                 <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
                             </Border>
 
