@@ -14,7 +14,7 @@ namespace Dynamo.DSEngine
         public static string ConvertNodesToCode(IEnumerable<NodeModel> nodeList)
         {
             var astBuilder = new AstBuilder(null);
-            var astNodes = astBuilder.CompileToAstNodes(nodeList, false, false);
+            var astNodes = astBuilder.CompileToAstNodes(nodeList, false);
 
             string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
             return code;

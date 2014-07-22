@@ -139,13 +139,8 @@ namespace Dynamo.DSEngine
 #endif
 
             IEnumerable<AssociativeNode> astNodes = null;
-            bool buildAstInScope = false;
-            if (!isDeltaExecution)
-            {
-                var scopedNode = node as ScopedNodeModel;
-                buildAstInScope = scopedNode != null && !scopedNode.HasUnconnectedInput();
-            }
-
+            var scopedNode = node as ScopedNodeModel;
+            bool buildAstInScope = scopedNode != null && !scopedNode.HasUnconnectedInput();
             if (buildAstInScope)
             {
                 astNodes = (node as ScopedNodeModel).BuildAstInScope(inputAstNodes);
@@ -197,21 +192,12 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="isDeltaExecution"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool isForCustomNode)
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
-            // If it is built for custom node, it is not in delta execution 
-            // mode, so nodes includes all nodes in the custom node workspace. 
-            // 
-            // Now iterate all candiates and excludes nodes those are in the 
-            // scope of some ScopedNodeModel, these excluded nodes will be 
-            // compiled in ScopedNodeModel.
-            if (isForCustomNode)
-            {
-                nodes = ScopedNodeModel.RemoveInScopedNodeFrom(nodes);
-            }
+            nodes = ScopedNodeModel.RemoveInScopedNodeFrom(nodes);
 
             IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
             if (isDeltaExecution)
@@ -247,7 +233,7 @@ namespace Dynamo.DSEngine
             OnAstNodeBuilding(def.FunctionId);
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false, true));
+            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
 
             if (outputs.Count > 1)
             {
