@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
+
+using Revit.GeometryConversion;
 
 using RTF.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelCurveTests : RevitNodeTestBase
+    public class ModelCurveTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -26,6 +29,21 @@ namespace DSRevitNodesTests.Elements
 
             var curve = modelCurve.Curve;
             curve.Length.ShouldBeApproximately(Math.Sqrt(3) * (1 / 0.3042));
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void ByCurve_Curve_AcceptsStraightReplicatedDegree3NurbsCurve()
+        {
+            var points =
+                Enumerable.Range(0, 10)
+                    .Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, 0, 0));
+
+            var nurbsCurve = NurbsCurve.ByPoints(points, 3);
+
+            var modelCurve = ModelCurve.ByCurve(nurbsCurve);
+            Assert.NotNull(nurbsCurve);
+
         }
 
         [Test]
