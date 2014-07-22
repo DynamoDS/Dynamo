@@ -2,6 +2,8 @@
 using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
+using Autodesk.Revit.DB.PointClouds;
+
 using Revit.Elements;
 using NUnit.Framework;
 
@@ -28,21 +30,25 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(curveRef);
 
             var curve = modelCurve.Curve;
-            curve.Length.ShouldBeApproximately(Math.Sqrt(3) * (1 / 0.3042));
+            curve.Length.ShouldBeApproximately(Math.Sqrt(3));
         }
 
         [Test]
         [TestModel(@".\empty.rfa")]
-        public void ByCurve_Curve_AcceptsStraightReplicatedDegree3NurbsCurve()
+        public void ByCurve_Curve_AcceptsStraightDegree3NurbsCurve()
         {
             var points =
                 Enumerable.Range(0, 10)
-                    .Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, 0, 0));
+                    .Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, 0));
 
             var nurbsCurve = NurbsCurve.ByPoints(points, 3);
 
             var modelCurve = ModelCurve.ByCurve(nurbsCurve);
             Assert.NotNull(nurbsCurve);
+
+            modelCurve.Curve.Length.ShouldBeApproximately(10);
+            modelCurve.Curve.StartPoint.ShouldBeApproximately(Point.Origin());
+            modelCurve.Curve.StartPoint.ShouldBeApproximately(Point.ByCoordinates(10,0,0));
 
         }
 
@@ -60,7 +66,7 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(curveRef);
 
             var curve = modelCurve.Curve;
-            curve.Length.ShouldBeApproximately(Math.Sqrt(3) * (1 / 0.3042));
+            curve.Length.ShouldBeApproximately(Math.Sqrt(3));
         }
     }
 }

@@ -116,8 +116,8 @@ namespace DSRevitNodesTests.GeometryConversion
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
 
-            revitCurve.get_EndPoint(0).ShouldBeApproximately(nurbsCurve.StartPoint);
-            revitCurve.get_EndPoint(1).ShouldBeApproximately(nurbsCurve.EndPoint);
+            revitCurve.GetEndPoint(0).ShouldBeApproximately(nurbsCurve.StartPoint);
+            revitCurve.GetEndPoint(1).ShouldBeApproximately(nurbsCurve.EndPoint);
 
         }
 
@@ -145,8 +145,8 @@ namespace DSRevitNodesTests.GeometryConversion
                 Assert.Less(closestPt.DistanceTo(pt), 1e-6);
             }
 
-            revitCurve.get_EndPoint(0).ShouldBeApproximately(nurbsCurve.StartPoint);
-            revitCurve.get_EndPoint(1).ShouldBeApproximately(nurbsCurve.EndPoint);
+            revitCurve.GetEndPoint(0).ShouldBeApproximately(nurbsCurve.StartPoint);
+            revitCurve.GetEndPoint(1).ShouldBeApproximately(nurbsCurve.EndPoint);
 
         }
 
@@ -177,8 +177,8 @@ namespace DSRevitNodesTests.GeometryConversion
                 Assert.Less( closestPt.DistanceTo(pt), 1e-6 );
             }
 
-            revitCurve.get_EndPoint(0).ShouldBeApproximately(bspline.StartPoint);
-            revitCurve.get_EndPoint(1).ShouldBeApproximately(bspline.EndPoint);
+            revitCurve.GetEndPoint(0).ShouldBeApproximately(bspline.StartPoint);
+            revitCurve.GetEndPoint(1).ShouldBeApproximately(bspline.EndPoint);
 
         }
 
