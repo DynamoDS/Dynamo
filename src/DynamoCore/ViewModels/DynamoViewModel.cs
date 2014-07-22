@@ -17,6 +17,7 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Services;
 using DynamoUnits;
+using Autodesk.DesignScript.Interfaces;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 
@@ -31,6 +32,22 @@ namespace Dynamo.ViewModels
     public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
 
     public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
+
+#if BLOODSTONE
+
+    public class UpdateBloodstoneVisualEventArgs : EventArgs
+    {
+        public UpdateBloodstoneVisualEventArgs(Dictionary<Guid, IRenderPackage> geometries)
+        {
+            this.Geometries = geometries;
+        }
+
+        public Dictionary<Guid, IRenderPackage> Geometries { get; private set; }
+    }
+
+    public delegate void UpdateBloodstoneVisualHandler(object sender, UpdateBloodstoneVisualEventArgs e);
+
+#endif
 
     public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
@@ -130,6 +147,15 @@ namespace Dynamo.ViewModels
                 RequestViewOperation(e);
             }
         }
+
+#if BLOODSTONE
+        public event UpdateBloodstoneVisualHandler RequestUpdateBloodstoneVisual;
+        public void OnUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
+        {
+            if (RequestUpdateBloodstoneVisual != null)
+                RequestUpdateBloodstoneVisual(sender, e);
+        }
+#endif
 
         #endregion
 
@@ -2000,8 +2026,30 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
+#if BLOODSTONE
+            var packages = new Dictionary<Guid, IRenderPackage>();
+            foreach (var node in this.Model.Nodes)
+            {
+                if (node.HasRenderPackages == false)
+                    continue;
+
+                lock (node.RenderPackagesMutex)
+                {
+                    var p = node.RenderPackages[0] as Dynamo.DSEngine.RenderPackage;
+                    if (p.IsNotEmpty())
+                        packages.Add(node.GUID, p);
+                }
+            }
+
+            if (packages.Any())
+            {
+                var args = new UpdateBloodstoneVisualEventArgs(packages);
+                OnUpdateBloodstoneVisual(this, args);
+            }
+#else
             var taskId = (long) parameters;
             dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId,null));
+#endif
         }
 
         public bool CanGetBranchVisualization(object parameter)
