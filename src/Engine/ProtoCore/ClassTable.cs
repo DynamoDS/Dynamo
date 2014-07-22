@@ -639,7 +639,8 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="status">BuildStatus to log the warnings if
         /// multiple symbol found.</param>
-        public void AuditMultipleDefinition(BuildStatus status)
+        /// /// <param name="guid">Guid of node to which warning corresponds</param>
+        public void AuditMultipleDefinition(BuildStatus status, System.Guid guid = default(System.Guid))
         {
             var names = symbolTable.GetAllSymbolNames();
             if (names.Count == symbolTable.GetSymbolCount())
@@ -656,7 +657,7 @@ namespace ProtoCore.DSASM
                         message += ", " + symbol.FullName;
                     }
 
-                    status.LogWarning(BuildData.WarningID.kMultipleSymbolFound, message);
+                    status.LogWarning(BuildData.WarningID.kMultipleSymbolFound, message, guid: guid);
                 }
             }
         }

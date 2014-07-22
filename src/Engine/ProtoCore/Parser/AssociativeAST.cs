@@ -378,6 +378,7 @@ namespace ProtoCore.AST.AssociativeAST
             };
 
             Value = rhs.Value;
+            IsLocal = false;
         }
 
         public Type datatype
@@ -392,13 +393,20 @@ namespace ProtoCore.AST.AssociativeAST
             set;
         }
 
+        public bool IsLocal
+        {
+            get;
+            set;
+        }
+
         public override bool Equals(object other)
         {
             var otherNode = other as IdentifierNode;
             if (null == otherNode)
                 return false;
 
-            return EqualityComparer<string>.Default.Equals(Value, otherNode.Value) && 
+            return IsLocal == otherNode.IsLocal &&
+                   EqualityComparer<string>.Default.Equals(Value, otherNode.Value) && 
                    datatype.Equals(otherNode.datatype) && 
                    base.Equals(otherNode);
         }

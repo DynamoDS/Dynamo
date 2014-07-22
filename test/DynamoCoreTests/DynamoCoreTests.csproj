@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
-    <Compile Include="CBNEngineTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CustomNodeManagerTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
@@ -79,9 +78,6 @@
     <Compile Include="DynamoDefects.cs" />
     <Compile Include="ExecutionIntervalTests.cs" />
     <Compile Include="LibraryCustomizationTests.cs" />
-    <Compile Include="MicroFeature.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MigrationManagerTests.cs" />
     <Compile Include="MigrationTestFramework.cs" />
     <Compile Include="NodeMigrationTests.cs" />
@@ -89,10 +85,12 @@
     <Compile Include="Nodes\HigherOrder.cs" />
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="ScopedNodeTest.cs" />
+    <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="TimeStampOrderingTests.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
+    <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
@@ -151,17 +149,6 @@
       <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
       <Name>FFITarget</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\ProtoTestFx\ProtoTestFx.csproj">
-      <Project>{2235f7ca-ab25-4177-92bc-4b574d2d5df6}</Project>
-      <Name>ProtoTestFx</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\ProtoTest\ProtoTest.csproj">
-      <Project>{6e1177db-5e4f-4e2e-82e7-902437e56aed}</Project>
-      <Name>ProtoTest</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

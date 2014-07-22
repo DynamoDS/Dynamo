@@ -4273,7 +4273,7 @@ x = foo( 0 );
             string code = @"
 def recursion : int(a : int)
 {
-    local = [Imperative]
+    loc = [Imperative]
     {
         if (a <= 0)
         {
@@ -4281,7 +4281,7 @@ def recursion : int(a : int)
         }
         return = a + recursion(a - 1);
     }
-    return = local;
+    return = loc;
 }
 a = 10;
 [Imperative]
@@ -7486,12 +7486,15 @@ b1 = foo ( a1 );";
         }
 
         [Test]
+        [Category("Failing")]
         public void TV89_typeConversion_FunctionArguments_1467060_6()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+
             //This failure is no longer related to this defect. Back to TD.
             //New defect - no converting type arguments correctly
             //Assert.Fail("DNL-1467060 - Sprint 23 : rev 2570 : Method resolution fails when passed a heterogenous array of double and int to a function which expects double ");
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             string code = @"def foo ( x : int[])
 {
     return = x;
@@ -8723,6 +8726,31 @@ r = f.foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("r", 42);
+        }
+
+        [Test]
+        [Category("Failing")]
+        public void TestFunctionOverloadFromNestedLanguageBlock01()
+        {
+            string code = @"
+def f()
+{
+    return = 1;
+}
+
+[Imperative]
+{
+    def f()
+	{
+		return = 2;
+	}
+}
+
+a = f();
+";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3987
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("a", 1);
         }
     }
 }

@@ -308,6 +308,7 @@ namespace Dynamo.DSEngine
 
                 if (updated)
                 {
+                    ShowBuildWarnings();
                     ShowRuntimeWarnings();
                 }
 
@@ -329,6 +330,22 @@ namespace Dynamo.DSEngine
         {
             // Clear all previous warnings
             var warnings = liveRunnerServices.GetRuntimeWarnings();
+            foreach (var item in warnings)
+            {
+                Guid guid = item.Key;
+                var node = controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                if (node != null)
+                {
+                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
+                    node.Warning(warningMessage);
+                }
+            }
+        }
+
+        private void ShowBuildWarnings()
+        {
+            // Clear all previous warnings
+            var warnings = liveRunnerServices.GetBuildWarnings();
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
