@@ -42,7 +42,7 @@ namespace DSCoreNodesUI.Logic
             // Get all upstream nodes and then remove nodes that are not 
             var nodes = GetInScopeNodesForInport(branch).Where(n => !(n is Symbol));
             nodes = ScopedNodeModel.RemoveInScopedNodeFrom(nodes);
-            var astNodes = astBuilder.CompileToAstNodes(nodes, false, false);
+            var astNodes = astBuilder.CompileToAstNodes(nodes, false);
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes.Select(n => n.ToImperativeAST()).ToList();
         }
