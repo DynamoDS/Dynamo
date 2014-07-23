@@ -24,13 +24,14 @@ namespace Revit.GeometryConversion
 
             return NurbsCurve.ByControlPointsWeightsKnots(points, weights, knots, 3);
         }
-
+        
         /// <summary>
         /// Clamp a collection of curve parameters by introducing knot multiplicities at each end such
         /// that each end of the knot vector has degree + 1 copies of the knot
         /// </summary>
-        /// <param name="curve"></param>
-        /// <returns></returns>,
+        /// <param name="curveParameters"></param>
+        /// <param name="degree"></param>
+        /// <returns></returns>
         internal static double[] Clamp(IEnumerable<double> curveParameters, int degree = 3)
         {
             var parms = curveParameters.ToList();
