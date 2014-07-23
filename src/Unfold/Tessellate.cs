@@ -14,7 +14,7 @@ namespace Unfold
     public class Tessellate
     {
 
-        class MeshHelpers
+       public class MeshHelpers
         {
             public static List<List<T>> Split<T>(List<T> source, int subListLength)
             {
@@ -24,6 +24,22 @@ namespace Unfold
                     .Select(x => x.Select(v => v.Value).ToList())
                     .ToList();
             }
+
+            public static Point SurfaceAsPolygonCenter(Surface surface){
+
+                List<Point> ptlist = new List<Point>();
+                foreach (var curve in surface.PerimeterCurves())
+                {
+                    ptlist.Add(curve.StartPoint);
+                    ptlist.Add(curve.EndPoint);
+                }
+
+                var polygon = Polygon.ByPoints(ptlist);
+
+                return (polygon.Center().GetClosestPoint(surface));
+
+            }
+
         }
         public static List<List<Point>> Tesselate(List<Face> faces)
         {

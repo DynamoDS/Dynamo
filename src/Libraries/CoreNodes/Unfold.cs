@@ -32,9 +32,11 @@ namespace DSCore
         {
 
             //handle tesselation here
-            
+            var pointtuples = Tessellate.Tesselate(surfaces);
             //convert triangles to surfaces
-            var unfoldsurfaces = UnfoldPlanar.PlanarUnfolder.DSPLanarUnfold(surfaces);
+            List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>(){x[0], x[1], x[2]})).ToList();
+
+            var unfoldsurfaces = UnfoldPlanar.PlanarUnfolder.DSPLanarUnfold(trisurfaces);
             return unfoldsurfaces;
         }
        

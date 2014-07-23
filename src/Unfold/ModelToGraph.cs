@@ -97,11 +97,17 @@ namespace Unfold
 
             public FaceLikeEntity(Surface surface)
             {
-                //Removing this construction for testing will remove asap ** This is broken because MAGN 3322
-                // wrap up the curves or edges
-                // var pericurves = surface.PerimeterCurves();
-                //   List<EdgeLikeEntity> ees =  pericurves.Select(x => new EdgeLikeEntity(x)).ToList();
-                //    EdgeLikeEntities = ees;
+                List<Curve> pericurves = null;
+                if (surface is PolySurface)
+                {
+                     pericurves = (surface as PolySurface).Surfaces().SelectMany(x => x.PerimeterCurves()).ToList();
+                }
+                else
+                {
+                     pericurves = surface.PerimeterCurves().ToList();
+                }
+                List<EdgeLikeEntity> ees = pericurves.Select(x => new EdgeLikeEntity(x)).ToList();
+                EdgeLikeEntities = ees;
 
                 //store the surface
                 SurfaceEntity = surface;
@@ -240,7 +246,7 @@ namespace Unfold
         [SupressImportIntoVM]
         public static class ModelTopology
         {
-             //TODO(Mike) need to actually get this to expose in dynamo, bug in importer prevents generics from importing
+            //TODO(Mike) need to actually get this to expose in dynamo, bug in importer prevents generics from importing
             // along with non generic code, unfold clas in corenodes project currently replicates below code
             // also need to discuss design with Zach,Peter to see if this should be exposed, it may be useful for
             // other things besides unfolding
@@ -253,7 +259,7 @@ namespace Unfold
 
             // These user facing methods will need to be wrapped to return different types 
             // since we do not want to expose generic types to dynamo
-            
+
             // this could be made generic 
 
             public static List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> GenerateTopologyFromFaces(List<Face> faces)
@@ -394,7 +400,7 @@ namespace Unfold
             // be careful here, modifying the verts may causing issues,
             // might be better to create new verts, or implement Icloneable
 
-            [MultiReturn(new[] { "tree geo", "BFS tree" })]
+            [MultiReturn(new[] { "tree geo", "BFS tree", "BFS finished" })]
             public static Dictionary<string, object> BFS<K, T>(List<GraphVertex<K, T>> graph)
                 where T : IUnfoldPlanarFace<K>
                 where K : IUnfoldEdge
@@ -423,7 +429,10 @@ namespace Unfold
                     GraphVertex<K, T> current_vertex = Q.Dequeue();
 
                     //generate some geometry to visualize the BFS tree
-                    Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
+
+                    //create a polygon from verts, grab center, project center towards 
+                    Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(current_vertex.Face.SurfaceEntity);
+                    //  Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
                     Sphere nodecenter = Sphere.ByCenterPointRadius(center, 1);
                     tree.Add(nodecenter);
 
@@ -440,7 +449,8 @@ namespace Unfold
                             current_vertex.TreeEdges.Add(vedge);
 
 
-                            Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
+                            //Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
+                            Point child_center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(V.Face.SurfaceEntity);
                             Line line = Line.ByStartPointEndPoint(center, child_center);
                             tree.Add(line);
                             Q.Enqueue(V);
@@ -476,9 +486,9 @@ namespace Unfold
         public static class PlanarUnfolder
         {
             // these overloads are called from exposed dynamo nodes depending on input type
-           
+
             public static List<Surface> DSPLanarUnfold(List<Face> faces)
-            {  
+            {
                 var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces(faces);
 
                 //perform BFS on the graph and get back the tree
@@ -506,7 +516,7 @@ namespace Unfold
                 return PlanarUnfold(casttree);
 
             }
-           
+
 
 
 
@@ -542,7 +552,7 @@ namespace Unfold
                     //weak code, shoould have a method for this - find edge that leads to
                     var edge = parent.Graph_Edges.Where(x => x.Head.Equals(child)).First();
 
-                    int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                    int nc = AlignPlanarFaces.CheckNormalConsistency(child.UnfoldPolySurface, parent.UnfoldPolySurface, edge.Real_Edge);
                     Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.UnfoldPolySurface, parent.Face, edge.Real_Edge) as Surface;
 
                     //at this point need to check if the rotated face has intersected with any other face that has been been
@@ -563,27 +573,62 @@ namespace Unfold
                         srfList = new List<Surface>() { parent.UnfoldPolySurface.SurfaceEntity };
                     }
 
+                    // same logic rotation face
+                     List<Surface> rotFaceSubSurfaces = null;
+                    if (rotatedFace is PolySurface)
+                    {
+                        rotFaceSubSurfaces = (rotatedFace as PolySurface).Surfaces().ToList();
+                    }
+                    else
+                    {
+                        rotFaceSubSurfaces = new List<Surface>() { rotatedFace };
+                    }
+
                     // perfrom the intersection test
-                  
-                    if (srfList.SelectMany(x=>x.Intersect(rotatedFace)).ToList().Any(y=> y is Surface))
-                        {   var r = new Random();
-                            // if any result was a surface then we overlapped we need to move the folded branch far away and pick a new
-                            // branch to start the unfold from
-                            var movedUnfoldBranch = child.UnfoldPolySurface.SurfaceEntity.Translate((r.NextDouble()*10)+5, 0, 0);
-                            disconnectedSet.Add(movedUnfoldBranch as Surface);
 
-                        
+                    bool overlapflag = false;
+                    foreach (var surfaceToIntersect in srfList)
+                    {
+                        foreach (var rotsubface in rotFaceSubSurfaces)
+                        {
+                            if (surfaceToIntersect.Intersect(rotsubface).Any(x => x is Surface))
+                            {
+                                overlapflag = true;
+                            }
                         }
+                    }
 
+                    if (overlapflag)
+                    {
+                        var r = new Random();
+                        // if any result was a surface then we overlapped we need to move the folded branch far away and pick a new
+                        // branch to start the unfold from
+                        var movedUnfoldBranch = child.UnfoldPolySurface.SurfaceEntity.Translate((r.NextDouble() * 10) + 5, 0, 0);
+                        disconnectedSet.Add(movedUnfoldBranch as Surface);
+
+
+                    }
+
+                    else
+                    {
+                        List<Surface> subsurblist = null;
+                        if (rotatedFace is PolySurface)
+                        {
+                            subsurblist = (rotatedFace as PolySurface).Surfaces().ToList();
+                        }
                         else
                         {
-                            var newParentSurface = PolySurface.ByJoinedSurfaces(new List<Surface>() { rotatedFace, parent.UnfoldPolySurface.SurfaceEntity });
-
-
-
-                            parent.UnfoldPolySurface = new FaceLikeEntity(newParentSurface);
+                            subsurblist = new List<Surface>() { rotatedFace };
                         }
-                    
+                        subsurblist.Add(parent.UnfoldPolySurface.SurfaceEntity);
+
+                        var newParentSurface = PolySurface.ByJoinedSurfaces(subsurblist);
+
+
+
+                        parent.UnfoldPolySurface = new FaceLikeEntity(newParentSurface);
+                    }
+
                     child.RemoveFromGraph(sortedtree);
 
 
