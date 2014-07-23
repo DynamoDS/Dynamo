@@ -167,7 +167,7 @@ namespace ProtoCore
             {
                 if (HasData)
                 {
-                    if (Data == data)
+                    if (Data.Equals(data))
                     {
                         return true;
                     }
