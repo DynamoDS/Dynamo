@@ -6903,7 +6903,7 @@ class A
 	}
 	def foo2  ( a : int[] )
 	{
-	    a1 = a;para
+	    a1 = a;
 		return  = a1 ;
 	}
     
