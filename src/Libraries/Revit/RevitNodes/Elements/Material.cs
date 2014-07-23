@@ -97,6 +97,7 @@ namespace Revit.Elements
         /// Wrap an element in the associated DS type
         /// </summary>
         /// <param name="material">The material</param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static Material FromExisting(Autodesk.Revit.DB.Material material, bool isRevitOwned)
         {
