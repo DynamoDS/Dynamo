@@ -40,6 +40,10 @@ namespace DSCoreNodesUI.Logic
             // Get all upstream nodes and then remove nodes that are not 
             var nodes = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
             nodes = ScopedNodeModel.GetNodesInTopScope(nodes);
+
+            // The second parameter, isDeltaExecution, is set to false so that
+            // all AST nodes will be added to this IF graph node instead of 
+            // adding to the corresponding graph node. 
             var astNodes = astBuilder.CompileToAstNodes(nodes, false);
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes;
