@@ -23687,8 +23687,12 @@ a2 = foo2(3);
 
         [Test, Ignore]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch686_T018_Inline_Using_Recursion()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
+            string err = "MAGN-4006 Recursion in Associative Inline condition does not work properly";
+
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def factorial : int (num : int)
 {
@@ -23696,7 +23700,7 @@ a2 = foo2(3);
 }
 fac = factorial(10);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: err);
         }
 
         [Test]
@@ -27432,20 +27436,20 @@ result = Count(a);";
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""Math.dll"");
+            string src = @"import(""FFITarget.dll"");
 result = 
 [Imperative]
 {
 	a = {0,0.0};
 	b = {{}};
-	c = {m,Sum(a),b,10.0};
+	c = {m, DummyMath.Sum(a), b, 10.0};
 	
 	d = {a,b,c};
 	j = 0;
 	
 	for(i in d)
 	{
-		d[j] = Sum(i);
+		d[j] = DummyMath.Sum(i);
 		j = j+1;
 	}
 	
@@ -27462,12 +27466,13 @@ result =
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result = 
+            string src = @"import(""FFITarget.dll"");
+result = 
 [Imperative]
 {
 	a = {-2,0.0};
 	b = {{}};
-	c = {m,Sum(a),b,10.0};
+	c = {m, DummyMath.Sum(a), b, 10.0};
 	
 	d = {a,b,c};
 	j = 0;
@@ -27476,9 +27481,9 @@ result =
 	
 	while(j<Count(d))
 	{
-		if(Sum(d[j])!=0)
+		if(DummyMath.Sum(d[j])!=0)
 		{
-			e[k] = Sum(d[j]);
+			e[k] = DummyMath.Sum(d[j]);
 			k = k+1;
 		}
 		j = j+1;
