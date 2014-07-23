@@ -55,14 +55,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool canAlingmentToLeft;
-        public bool CanAlingmentToLeft
+        private System.Windows.HorizontalAlignment searchIconAlignment;
+        public System.Windows.HorizontalAlignment SearchIconAlignment
         {
-            get { return canAlingmentToLeft; }
+            get { return searchIconAlignment; }
             set
             {
-                canAlingmentToLeft = value;
-                RaisePropertyChanged("CanAlingmentToLeft");
+                searchIconAlignment = value;
+                RaisePropertyChanged("SearchIconAlignment");
             }
         }
 
@@ -217,6 +217,7 @@ namespace Dynamo.ViewModels
             MaxNumSearchResults = 35;
             Visible = false;
             searchText = "";
+            searchIconAlignment = System.Windows.HorizontalAlignment.Center;
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);

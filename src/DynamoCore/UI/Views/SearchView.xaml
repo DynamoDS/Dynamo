@@ -23,7 +23,6 @@
         <ResourceDictionary>
             <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-            <controls:BoolToWidth x:Key="BoolToWidth"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
@@ -99,36 +98,56 @@
                   MouseEnter="SearchTextBoxGrid_MouseEnter"
                   MouseLeave="SearchTextBoxGrid_MouseLeave">
             <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding CanAlingmentToLeft, Converter={StaticResource BoolToWidth}}"/>
                     <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-                <StackPanel Name="SearchIconAndTextBlockGrid" HorizontalAlignment="Center" MinWidth="280" >                
-                        <Image x:Name="SearchIcon"
-                            Source="/DynamoCore;component/UI/Images/search_normal.png"
-                            Width="25"
-                            Height="26"
-                            Margin="-70,2,0,2"
-                            VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"/>
-                        
-                        <TextBlock FontSize ="14" IsHitTestVisible="False" Foreground="#666" VerticalAlignment="Center" 
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" HorizontalAlignment="Center" Grid.Column="2" Height="18" Width="48" Margin="0,-30,0,0">Search</TextBlock>
+                <StackPanel Name="SearchIconAndTextBlockGrid"
+                            Grid.ColumnSpan="2"
+                            Width="Auto"
+                            Orientation="Horizontal">
+                    <StackPanel.HorizontalAlignment>
+                        <Binding Path="SearchIconAlignment"></Binding>
+                    </StackPanel.HorizontalAlignment>
+
+                    <Image x:Name="SearchIcon"
+                           Source="/DynamoCore;component/UI/Images/search_normal.png"
+                           Width="25"
+                           Height="26"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Grid.Column="1" />
+
+                    <TextBlock FontSize="14"
+                               IsHitTestVisible="False"
+                               Foreground="#666"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                               HorizontalAlignment="Center"
+                               Grid.Column="2"
+                               Height="18"
+                               Width="48">Search</TextBlock>
                 </StackPanel>
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
                          Foreground="#DDD"
-                         Background="Transparent" BorderThickness="0" FontSize ="14" 
-                         IsEnabled="True" TextChanged="SearchTextBox_TextChanged" 
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontSize="14"
+                         IsEnabled="True"
+                         TextChanged="SearchTextBox_TextChanged"
                          GotKeyboardFocus="TextBoxGotKeyboardFocus"
                          LostKeyboardFocus="TextBoxLostKeyboardFocus"
-                         
-                         VerticalAlignment="Center" 
-                         Text="{Binding Path=SearchText,Mode=TwoWay}" 
-                         MinWidth="280" 
-                         CaretBrush="#DDD" Margin="26,7,-6,5" Grid.ColumnSpan="3"/>
+                         VerticalAlignment="Center"
+                         Text="{Binding Path=SearchText,Mode=TwoWay}"
+                         MinWidth="280"
+                         CaretBrush="#DDD"
+                         Margin="26,7,-6,5"
+                         Grid.ColumnSpan="3" 
+                         />
 
-                <Button Name="SearchCancelButton" Grid.Column="2"
+                <Button Name="SearchCancelButton"
+                        Grid.Column="1"
                         Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                         Click="SearchCancelButton_Click"
                         VerticalAlignment="Center">
@@ -137,10 +156,10 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
-                                                    <Image Name="SearchCancelImage"
-                                           Source="/DynamoCore;component/UI/Images/searchcancel_normal.png"
-                                           Width="20"
-                                           Height="20"/>
+                                        <Image Name="SearchCancelImage"
+                                               Source="/DynamoCore;component/UI/Images/searchcancel_normal.png"
+                                               Width="20"
+                                               Height="20" />
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
@@ -562,12 +581,14 @@
                                      Value="True">
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    
-                                    <dynui:DynamoToolTip AttachmentSide="Right">
+                                    <dynui:DynamoToolTip AttachmentSide="Right"
+                                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
                                         <Grid>
-                                            
+                                            <TextBlock TextWrapping="Wrap"
+                                                       MaxWidth="320"
+                                                       Text="{Binding Path=Description}"></TextBlock>
                                         </Grid>
-                                    </dynui:DynamoToolTip> 
+                                    </dynui:DynamoToolTip>
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>
@@ -616,8 +637,9 @@
                         <StackPanel Orientation="Horizontal">
 
                             <Border Height="30">
-                                <!--название ноды-->
-                                <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                                <!--name of node-->
+                                <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" >                     
+                                </TextBlock>
                             </Border>
 
                         </StackPanel>

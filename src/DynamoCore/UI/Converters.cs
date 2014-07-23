@@ -1591,39 +1591,4 @@ namespace Dynamo.Controls
             return null;
         }
     }
-
-    public class StringToWidth : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is string && (value as string)!=string.Empty)
-            {
-                return new GridLength(100);
-            }
-            Keyboard.ClearFocus();
-            return GridLength.Auto;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class BoolToWidth : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if ((bool)value)
-            {
-                return new GridLength(100);
-            }
-            return GridLength.Auto;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
 }
