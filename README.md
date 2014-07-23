@@ -40,6 +40,9 @@ Another stadium designed by @elayabharath
 Color setting is now available on per-node basis
 ![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/node-and-primitive-colors.png)
 
+Colored spheres in a grid
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/colored-spheres.png)
+
 Render style settings on a per-node basis, with default set to "Phong Shading"
 ![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/render-style-phong-shading.png)
 
