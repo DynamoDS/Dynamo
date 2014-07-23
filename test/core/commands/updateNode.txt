@@ -1,0 +1,1 @@
+{"$type":"Dynamo.Messages.Message, DynamoCore","commands":[{"$type":"Dynamo.ViewModels.DynamoViewModel+UpdateModelValueCommand, DynamoCore","modelGuid":"514e751f-106a-bed2-9025-163962ca7abc","name":"Value","value":17.6}]}

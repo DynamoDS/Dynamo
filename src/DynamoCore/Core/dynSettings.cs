@@ -22,7 +22,7 @@ namespace Dynamo.Utilities
         public static PackageLoader PackageLoader { get; internal set; }
         public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
         public static DynamoController Controller { get; set; }
-        public static WebServer WebSocketServer { get; private set; }
+        public static IServer WebSocketServer { get; private set; }
 
         private static PackageManagerClient _packageManagerClient;
         public static PackageManagerClient PackageManagerClient
@@ -55,11 +55,11 @@ namespace Dynamo.Utilities
             return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
         }
 
-        public static void EnableServer()
+        public static void EnableServer(IServer server)
         {
-            WebSocketServer = new WebServer();
+            WebSocketServer = server;
 
-            WebSocketServer.ReceivedMessage += ExecuteMessageFromSocket;
+            WebSocketServer.MessageReceived += ExecuteFromSocket;
             WebSocketServer.Info += LogInfo;
             WebSocketServer.Error += LogError;
 
@@ -71,21 +71,21 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="message">Serialized message from client</param>
         /// <param name="sessionId">Current session Id</param>
-        public static void ExecuteMessageFromSocket(string message, string sessionId)
+        public static void ExecuteFromSocket(string message, string sessionId)
         {
             Message msg = MessageHandler.DeserializeMessage(message);
-            MessageHandler handler = new MessageHandler(msg, sessionId);
-            handler.ResultReady += SendAnswerToWebSocket;
+            var handler = new MessageHandler(msg, sessionId);
+            handler.ResultReady += SendResponseToClient;
 
             (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
                 .Invoke(new Action(() => handler.Execute(Controller.DynamoViewModel)));
         }
 
-        private static void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
+        public static void SendResponseToClient(object sender, ResultReadyEventArgs e)
         {
             WebSocketServer.SendResponse(new ComputationResponse()
             {
-                Status = ResponceStatuses.Success,
+                Status = ResponseStatus.Success,
                 Nodes = e.Message
             }, e.SessionID);
         }

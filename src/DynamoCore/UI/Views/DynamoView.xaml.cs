@@ -29,8 +29,8 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
 using DynamoUtilities;
+using DynamoWebServer;
 
 using String = System.String;
 
@@ -63,7 +63,7 @@ namespace Dynamo.Controls
 
             if (turnOnServer)
             {
-                dynSettings.EnableServer();
+                dynSettings.EnableServer(new WebServer());
             }
 
             var app = new Application();

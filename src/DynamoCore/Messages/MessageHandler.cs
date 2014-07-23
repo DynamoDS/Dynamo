@@ -12,10 +12,10 @@ namespace Dynamo.Messages
 {
     class MessageHandler
     {
-        static readonly JsonSerializerSettings JsonSettings;
+        static readonly JsonSerializerSettings jsonSettings;
         static MessageHandler()
         {
-            JsonSettings = new JsonSerializerSettings
+            jsonSettings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Objects,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -26,8 +26,8 @@ namespace Dynamo.Messages
 
         public MessageHandler(Message msg, string sessionId)
         {
-            this.message = msg;
-            this.SessionId = sessionId;
+            message = msg;
+            SessionId = sessionId;
         }
 
         #region Class Data Members
@@ -58,7 +58,7 @@ namespace Dynamo.Messages
         /// <returns>The string can be used for reconstructing Message using Deserialize method</returns>
         internal string Serialize()
         {
-            return message == null ? null : JsonConvert.SerializeObject(message, JsonSettings);
+            return message == null ? null : JsonConvert.SerializeObject(message, jsonSettings);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Dynamo.Messages
         {
             try
             {
-                return JsonConvert.DeserializeObject(jsonString, JsonSettings) as Message;
+                return JsonConvert.DeserializeObject(jsonString, jsonSettings) as Message;
             }
             catch
             {
@@ -142,7 +142,7 @@ namespace Dynamo.Messages
                 nodes.Add(execNode);
             }
 
-            string nodesInfoMessage = JsonConvert.SerializeObject(nodes, JsonSettings);
+            string nodesInfoMessage = JsonConvert.SerializeObject(nodes, jsonSettings);
             OnResultReady(this, new ResultReadyEventArgs(nodesInfoMessage));
             dynSettings.Controller.VisualizationManager.RenderComplete -= ModifiedNodesData;
         }

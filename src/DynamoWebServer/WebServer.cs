@@ -7,14 +7,19 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 using SuperSocket.SocketBase;
+using SuperSocket.SocketBase.Config;
+
 using SuperWebSocket;
 
 namespace DynamoWebServer
 {
     public delegate void MessageEventHandler(string message, string sessionId);
 
-    public class WebServer
+    public class WebServer : IServer
     {
+
+        #region Init
+
         static readonly JsonSerializerSettings JsonSettings;
         static WebServer()
         {
@@ -25,10 +30,15 @@ namespace DynamoWebServer
             };
         }
 
-        public event MessageEventHandler ReceivedMessage;
+        private WebSocketServer socketServer;
+
+        #endregion
+
+        #region IServer
+
+        public event MessageEventHandler MessageReceived;
         public event MessageEventHandler Info;
         public event MessageEventHandler Error;
-        private WebSocketServer socketServer;
 
         public void Start()
         {
@@ -38,7 +48,13 @@ namespace DynamoWebServer
             socketServer = new WebSocketServer();
             try
             {
-                if (!socketServer.Setup(httpBindingAddress, httpBindingport))
+                if (!socketServer.Setup(new RootConfig(), new ServerConfig
+                {
+                    Port = httpBindingport,
+                    Ip = httpBindingAddress,
+                    MaxConnectionNumber = 5,
+                    ReceiveBufferSize = 256 * 1024
+                }))
                 {
                     LogError("Failed to setup!", "");
                     LogError("DynamoWebServer: failed to setup its socketserver", "");
@@ -77,6 +93,8 @@ namespace DynamoWebServer
             }
         }
 
+        #endregion
+
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
             // Close connection if not from localhost
@@ -97,11 +115,11 @@ namespace DynamoWebServer
                 Message = DateTime.Now.ToShortDateString() + " Message received"
             }, session.SessionID);
 
-            if (ReceivedMessage != null)
+            if (MessageReceived != null)
             {
                 try
                 {
-                    ReceivedMessage(message, session.SessionID);
+                    MessageReceived(message, session.SessionID);
                 }
                 catch (Exception ex)
                 {

@@ -1,6 +1,6 @@
 ﻿namespace DynamoWebServer.Responses
 {
-    public enum ResponceStatuses
+    public enum ResponseStatus
     {
         Success,
         Error
@@ -8,6 +8,6 @@
 
     public abstract class Response
     {
-        public ResponceStatuses Status { get; set; }
+        public ResponseStatus Status { get; set; }
     }
 }
