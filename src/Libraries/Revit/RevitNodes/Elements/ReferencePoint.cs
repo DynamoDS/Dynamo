@@ -80,6 +80,9 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(InternalElement);
+
+            // otherwise the point value is invalid for downstream requests
+            DocumentManager.Regenerate();
         }
 
         /// <summary>
@@ -223,7 +226,6 @@ namespace Revit.Elements
         {
             get
             {
-                DocumentManager.Regenerate();
                 return InternalReferencePoint.Position.ToPoint();
             }
         }
