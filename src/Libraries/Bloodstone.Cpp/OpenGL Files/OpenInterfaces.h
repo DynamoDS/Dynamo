@@ -193,6 +193,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 
     private:
         glm::vec3 GetVector(int x, int y) const;
+        void ComputeRotationMatrix(void);
+        void ComputePanningMatrix(void);
 
     private:
         Camera* mpCamera;
@@ -208,7 +210,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         void GetConfiguration(CameraConfiguration& configuration) const;
         void GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const;
         GraphicsContext* GetGraphicsContext(void) const;
-        void SetModelTransformation(glm::mat4& model);
+        void SetModelTransformation(const glm::mat4& model);
+        void OffsetCenterPoint(const glm::vec3& offset);
 
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration);

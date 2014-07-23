@@ -99,7 +99,7 @@ void Scene::RenderScene(void)
 
     // Fit the camera to the bounding box, and apply transformation.
     auto pCamera = pGraphicsContext->GetDefaultCamera();
-    pCamera->FitToBoundingBox(&boundingBox);
+    // pCamera->FitToBoundingBox(&boundingBox);
     mpShaderProgram->ApplyTransformation(pCamera);
 
     RenderGeometries(geometries);

@@ -34,22 +34,10 @@ void TrackBall::MouseMovedCore(int screenX, int screenY)
     if (mCurrX == mPrevX && (mCurrY == mPrevY))
         return; // No movement.
 
-    // Get the current transformation matrices from camera.
-    glm::mat4 model, view, projection;
-    mpCamera->GetMatrices(model, view, projection);
+    ComputeRotationMatrix();
 
-    glm::vec3 va = GetVector(mPrevX, mPrevY);
-    glm::vec3 vb = GetVector(mCurrX, mCurrY);
     mPrevX = mCurrX;
     mPrevY = mCurrY;
-
-    float angle = acos(std::min(1.0f, glm::dot(va, vb)));
-    glm::vec3 axisInCameraCoords = glm::cross(va, vb);
-
-    glm::mat3 cameraToObject = glm::inverse(glm::mat3(view) * glm::mat3(model));
-    glm::vec3 axisInObjectCoords = cameraToObject * axisInCameraCoords;
-    auto finalModel = glm::rotate(model, glm::degrees(angle), axisInObjectCoords);
-    mpCamera->SetModelTransformation(finalModel);
 }
 
 void TrackBall::MouseReleasedCore(int screenX, int screenY)
@@ -74,6 +62,36 @@ glm::vec3 TrackBall::GetVector(int x, int y) const
         vector = glm::normalize(vector);  // nearest point
 
     return vector;
+}
+
+void TrackBall::ComputeRotationMatrix(void)
+{
+    // Get the current transformation matrices from camera.
+    glm::mat4 model, view, projection;
+    mpCamera->GetMatrices(model, view, projection);
+
+    glm::vec3 va = GetVector(mPrevX, mPrevY);
+    glm::vec3 vb = GetVector(mCurrX, mCurrY);
+
+    float angle = acos(std::min(1.0f, glm::dot(va, vb)));
+    glm::vec3 axisInCameraCoords = glm::cross(va, vb);
+
+    glm::mat3 cameraToObject = glm::inverse(glm::mat3(view) * glm::mat3(model));
+    glm::vec3 axisInObjectCoords = cameraToObject * axisInCameraCoords;
+    auto finalModel = glm::rotate(model, glm::degrees(angle), axisInObjectCoords);
+    mpCamera->SetModelTransformation(finalModel);
+}
+
+void TrackBall::ComputePanningMatrix(void)
+{
+    // Get the current transformation matrices from camera.
+    glm::mat4 model, view, projection;
+    mpCamera->GetMatrices(model, view, projection);
+
+    glm::vec3 offsetInCameraCoords(mPrevX - mCurrX, mCurrY - mPrevY, 0.0f);
+    glm::mat3 cameraToObject = glm::inverse(glm::mat3(view) * glm::mat3(model));
+    glm::vec3 offsetInObjectCoords = cameraToObject * offsetInCameraCoords;
+    mpCamera->OffsetCenterPoint(offsetInObjectCoords);
 }
 
 // ================================================================================
@@ -106,9 +124,16 @@ GraphicsContext* Camera::GetGraphicsContext(void) const
     return this->mpGraphicsContext;
 }
 
-void Camera::SetModelTransformation(glm::mat4& model)
+void Camera::SetModelTransformation(const glm::mat4& model)
 {
     this->mModelMatrix = model;
+}
+
+void Camera::OffsetCenterPoint(const glm::vec3& offset)
+{
+    this->mConfiguration.center[0] += offset.x;
+    this->mConfiguration.center[1] += offset.y;
+    this->mConfiguration.center[2] += offset.z;
 }
 
 void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
