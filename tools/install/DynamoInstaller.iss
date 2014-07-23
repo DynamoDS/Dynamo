@@ -97,16 +97,25 @@ Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
 
 [UninstallRun]
-Filename: "{app}\DynamoAddinGenerator.exe"
+Filename: "{app}\DynamoAddinGenerator.exe"; Flags: runhidden;
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
 
 [Code]
+var
+silentFlag : String;
+
 { HANDLE INSTALL PROCESS STEPS }
 
 // added custom uninstall trigger based on http://stackoverflow.com/questions/2000296/innosetup-how-to-automatically-uninstall-previous-installed-version
 /////////////////////////////////////////////////////////////////////
+
+function GetSilentParam(Param: String): String;
+begin
+  Result := silentFlag;
+end;
+
 function GetUninstallString(): String;
 var
   sUnInstPath: String;
@@ -130,6 +139,8 @@ begin
 end;
 
 function InitializeSetup(): Boolean;
+var
+j: Cardinal;
 begin
   for j := 1 to ParamCount do
     begin
@@ -239,4 +250,3 @@ begin
         UpdateAddins();
     end;
 end;
-
