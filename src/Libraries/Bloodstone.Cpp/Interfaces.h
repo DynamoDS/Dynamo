@@ -113,13 +113,16 @@ namespace Dynamo { namespace Bloodstone {
     class ITrackBall
     {
     public:
+        enum class Mode { None, Rotate, Pan };
+
+    public:
         virtual ~ITrackBall()
         {
         }
 
-        void MousePressed(int screenX, int screenY)
+        void MousePressed(int screenX, int screenY, Mode mode)
         {
-            this->MousePressedCore(screenX, screenY);
+            this->MousePressedCore(screenX, screenY, mode);
         }
 
         void MouseMoved(int screenX, int screenY)
@@ -133,7 +136,7 @@ namespace Dynamo { namespace Bloodstone {
         }
 
     protected:
-        virtual void MousePressedCore(int screenX, int screenY) = 0;
+        virtual void MousePressedCore(int screenX, int screenY, Mode mode) = 0;
         virtual void MouseMovedCore(int screenX, int screenY) = 0;
         virtual void MouseReleasedCore(int screenX, int screenY) = 0;
     };

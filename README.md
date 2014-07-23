@@ -24,7 +24,7 @@ Prioritized Task List
 -----
 The following list represents what are to be implemented in Bloodstone for it to reach feature parity with that of "Helix 3D" viewer. These tasks are not exhaustive and will grow as demanded:
 
-- [ ] Implement pan operation
+- [x] Implement pan operation
 - [ ] Implement zoom operation
 - [ ] Implement geometry clearing when document is closed
 - [ ] Implement geometry clearing when nodes are deleted

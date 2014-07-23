@@ -187,7 +187,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         TrackBall(Camera* pCamera);
 
     protected:
-        virtual void MousePressedCore(int screenX, int screenY);
+        virtual void MousePressedCore(int screenX, int screenY, Mode mode);
         virtual void MouseMovedCore(int screenX, int screenY);
         virtual void MouseReleasedCore(int screenX, int screenY);
 
@@ -199,7 +199,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
     private:
         Camera* mpCamera;
         CameraConfiguration mConfiguration;
-        bool mTrackBallActivated;
+        ITrackBall::Mode mTrackBallMode;
         int mPrevX, mPrevY, mCurrX, mCurrY;
     };
 

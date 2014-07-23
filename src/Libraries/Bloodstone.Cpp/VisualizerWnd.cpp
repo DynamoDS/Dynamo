@@ -157,7 +157,7 @@ LRESULT VisualizerWnd::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lPara
     {
     case WM_LBUTTONDOWN:
         SetCapture(this->mhWndVisualizer);
-        pTrackBall->MousePressed(x, y);
+        pTrackBall->MousePressed(x, y, ITrackBall::Mode::Rotate);
         break;
 
     case WM_LBUTTONUP:
@@ -165,8 +165,18 @@ LRESULT VisualizerWnd::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lPara
         ::ReleaseCapture();
         break;
 
+    case WM_MBUTTONDOWN:
+        SetCapture(this->mhWndVisualizer);
+        pTrackBall->MousePressed(x, y, ITrackBall::Mode::Pan);
+        break;
+
+    case WM_MBUTTONUP:
+        pTrackBall->MouseReleased(x, y);
+        ::ReleaseCapture();
+        break;
+
     case WM_MOUSEMOVE:
-        if ((wParam & MK_LBUTTON) == 0)
+        if ((wParam & (MK_LBUTTON | MK_MBUTTON)) == 0)
             return 0L; // Mouse button isn't pressed.
 
         pTrackBall->MouseMoved(x, y);
@@ -200,6 +210,8 @@ LRESULT VisualizerWnd::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
     case WM_LBUTTONDOWN:
     case WM_LBUTTONUP:
     case WM_MOUSEMOVE:
+    case WM_MBUTTONDOWN:
+    case WM_MBUTTONUP:
         return ProcessMouseMessage(msg, wParam, lParam);
 
     case WM_ERASEBKGND:

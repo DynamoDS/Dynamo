@@ -11,22 +11,22 @@ using namespace Dynamo::Bloodstone::OpenGL;
 // ================================================================================
 
 TrackBall::TrackBall(Camera* pCamera) : mpCamera(pCamera),
-    mTrackBallActivated(false),
+    mTrackBallMode(Mode::None),
     mPrevX(0), mPrevY(0), mCurrX(0), mCurrY(0)
 {
 }
 
-void TrackBall::MousePressedCore(int screenX, int screenY)
+void TrackBall::MousePressedCore(int screenX, int screenY, Mode mode)
 {
     mCurrX = mPrevX = screenX;
     mCurrY = mPrevY = screenY;
-    mTrackBallActivated = true;
+    mTrackBallMode = mode;
     mpCamera->GetConfiguration(mConfiguration); // Get the updated configuration.
 }
 
 void TrackBall::MouseMovedCore(int screenX, int screenY)
 {
-    if (this->mTrackBallActivated == false)
+    if (this->mTrackBallMode == ITrackBall::Mode::None)
         return;
 
     mCurrX = screenX;
@@ -34,7 +34,16 @@ void TrackBall::MouseMovedCore(int screenX, int screenY)
     if (mCurrX == mPrevX && (mCurrY == mPrevY))
         return; // No movement.
 
-    ComputeRotationMatrix();
+    switch(mTrackBallMode)
+    {
+    case ITrackBall::Mode::Rotate:
+        ComputeRotationMatrix();
+        break;
+
+    case ITrackBall::Mode::Pan:
+        ComputePanningMatrix();
+        break;
+    }
 
     mPrevX = mCurrX;
     mPrevY = mCurrY;
@@ -42,7 +51,7 @@ void TrackBall::MouseMovedCore(int screenX, int screenY)
 
 void TrackBall::MouseReleasedCore(int screenX, int screenY)
 {
-    this->mTrackBallActivated = false;
+    this->mTrackBallMode = ITrackBall::Mode::None;
 }
 
 glm::vec3 TrackBall::GetVector(int x, int y) const
