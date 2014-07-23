@@ -23687,8 +23687,12 @@ a2 = foo2(3);
 
         [Test, Ignore]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch686_T018_Inline_Using_Recursion()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
+            string err = "MAGN-4006 Recursion in Associative Inline condition does not work properly";
+
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def factorial : int (num : int)
 {
@@ -23696,7 +23700,7 @@ a2 = foo2(3);
 }
 fac = factorial(10);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: err);
         }
 
         [Test]
