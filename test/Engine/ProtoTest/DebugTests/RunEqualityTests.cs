@@ -5350,7 +5350,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQRegress_1462308()
         {
-            string code = @"import(TestData from ""ProtoTest.dll"");f = TestData.IncrementByte(101); F = TestData.ToUpper(f);";
+            string code = @"import(TestData from ""FFITarget.dll"");f = TestData.IncrementByte(101); F = TestData.ToUpper(f);";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -7091,17 +7091,9 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
-        public void DebugEQT021_Vector_ByCoordinates()
-        {
-            string code = @"import (Vector from ""ProtoGeometry.dll"");	vec =  Vector.ByCoordinates(3.0,4.0,0.0,true); 	vec_X = vec.get_X();	vec_Y = vec.get_Y();	vec_Z = vec.get_Z();	vec_Normalised=vec.Normalize();	vec2 =  Vector.ByCoordinates(3.0,4.0,0.0,false);		vec2 =  Vector.ByCoordinates(3.0,4.0,0.0,false);	vec2_X = vec2.get_X();	vec2_Y = vec2.get_Y();	vec2_Z = vec2.get_Z();	vec_len = vec2.GetLength();	vec1 =  Vector.ByCoordinates(3.0,4.0,0.0,null); 	vec4 =  Vector.ByCoordinateArrayN({3.0,4.0,0.0});	vec4_coord={vec4.get_X(),vec4.get_Y(),vec4.get_Z()};	vec5 =  Vector.ByCoordinateArrayN({3.0,4.0,0.0},true); 	vec5_coord={vec5.get_X(),vec5.get_Y(),vec5.get_Z()};		is_same = vec.Equals(vec);// same vec	vec2=  Vector.ByCoordinates(1.0,2.0,0.0);	is_same2 = vec.Equals(vec2);// different vec			vec3 =  Vector.ByCoordinates(1.0,0.0,0.0,true); 	is_parallel1 = vec.IsParallel(vec); //same vec	vec4=  Vector.ByCoordinates(3.0,0.0,0.0);		is_parallel2 = vec3.IsParallel(vec4);//parallel	vec5 =  Vector.ByCoordinates(3.0,4.0,5.0); //non parallel	is_parallel3 = vec.IsParallel(vec5);	vec6 =  Vector.ByCoordinates(0.0,1.0,0.0);	vec7 =  Vector.ByCoordinates(1.0,0.0,0.0);	is_perp1 = vec6.IsPerpendicular(vec7);//same vec	is_perp2 = vec6.IsPerpendicular(vec5);//diff vec	dotProduct=vec2.Dot(vec2);	vec8 =  Vector.ByCoordinates(1.0,0.0,0.0,false);	vec9 =  Vector.ByCoordinates(0.0,1.0,0.0,false);	crossProduct=vec8.Cross(vec9);	cross_X=crossProduct.get_X();	cross_Y=crossProduct.get_Y();	cross_Z=crossProduct.get_Z();	newVec=vec5.Scale(2.0);//single	newVec_X=newVec.get_X();	newVec_Y=newVec.get_Y();	newVec_Z=newVec.get_Z();	coord_Vec=    vec.ComputeGlobalCoords(1,2,3);		";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT022_Array_Marshal()
         {
-            string code = @"import (Dummy from ""ProtoTest.dll"");dummy = Dummy.Dummy();arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};sum_1_10 = dummy.SumAll(arr);twice_arr = dummy.Twice(arr);	";
+            string code = @"import (Dummy from ""FFITarget.dll"");dummy = Dummy.Dummy();arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};sum_1_10 = dummy.SumAll(arr);twice_arr = dummy.Twice(arr);	";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
