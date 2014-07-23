@@ -279,6 +279,7 @@ t2 = lines[1][2].StartPoint.X;";
         [Category("Failing")]
         public void T00010_Geometry_007_specialPoint_2()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
             Assert.Fail("1460783 - Sprint 18 : Rev 1661 : Forward referencing is not being allowed in class property ( related to Update issue ) ");
 
             string code = @"
@@ -355,6 +356,7 @@ a 		= a.incrementRadius(0.2); 				// [POINT does not updates]
         [Category("Failing")]
         public void T00011_Geometry_008_trim_then_tube_4()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
             //Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException "); 
 
             string code = @"
@@ -391,6 +393,7 @@ t5 = tubes[4].EndPoint.X;";
         [Category("Failing")]
         public void T00012_Geometry_008a_alternative_method_invocations_1()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
 startRadius = 0.1;
