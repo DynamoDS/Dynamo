@@ -7,7 +7,7 @@ The following table gives comparisons among more prominent features between ```H
 | ------------ |:--------:|:----------:|
 | Zoom to fit | Yes | **No** |
 | Zoom with mouse | Yes | **No** |
-| Pan | Yes | **No** |
+| Pan | Yes | Yes |
 | Rotate | Yes | Yes |
 | Off-centered rotation | No | Yes |
 | Grid lines | Yes | No |
