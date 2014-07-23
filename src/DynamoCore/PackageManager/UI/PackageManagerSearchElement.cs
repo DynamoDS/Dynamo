@@ -244,6 +244,10 @@ namespace Dynamo.PackageManager
             /// A string describing what the node does</value>
             public override string Description { get { return Header.description ?? ""; } }
 
+            public override string InputParametrs { get { return Header.description ?? ""; } }
+
+            public override string OutputParametrs { get { return Header.description ?? ""; } }
+
             /// <summary>
             /// Weight property </summary>
             /// <value>

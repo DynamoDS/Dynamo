@@ -73,9 +73,10 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                return !String.IsNullOrEmpty(Summary)
+                /*return !String.IsNullOrEmpty(Summary)
                     ? Summary + " (" + (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName) + ")"
-                    : (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName);
+                    : (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName); */
+                return Summary;
             }
         }
 
@@ -209,7 +210,27 @@ namespace Dynamo.DSEngine
         /// </summary>
         public string Description
         {
-            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
+            get 
+            { /*return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature;*/
+                return !String.IsNullOrEmpty(Summary) ? Summary:"";
+            }
+        }
+
+        public string InputParametrs
+        {
+            get 
+            { 
+                string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
+                return signature;
+            }
+        }
+
+        public string OutputParametrs
+        {
+            get
+            {
+                return ReturnType;
+            }
         }
 
         /// <summary>
