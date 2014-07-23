@@ -1,7 +1,30 @@
 
 Feature Comparison
 -----
-<TBA>
+
+| Feature Name | Helix 3D | Bloodstone |
+| ------------ |:--------:|:----------:|
+| Zoom to fit | Yes | **No** |
+| Zoom with mouse | Yes | **No** |
+| Pan | Yes | **No** |
+| Rotate | Yes | Yes |
+| Off-centered rotation | No | Yes |
+| Grid lines | Yes | No |
+| UCS icon | Yes | No |
+| Text support | Yes | No |
+| Selection highlight | Deferred | Real-time |
+| Phong shading | Yes | Yes |
+| Phong shading light sources | 3 | 1 |
+| Flat shading | No | Yes |
+| Per-vertex color | No | Yes |
+| Per-node color | No | Yes |
+
+Prioritized Task List
+-----
+- [ ] Implement pan operation
+- [ ] Implement zoom operation
+- [ ] Implement geometry clearing when document is closed
+- [ ] Implement geometry clearing when nodes are deleted
 
 Screenshots
 -----
