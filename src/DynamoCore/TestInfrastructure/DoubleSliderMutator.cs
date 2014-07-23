@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using System.Reflection;
+
 namespace Dynamo.TestInfrastructure
 {
-    class IntegerSliderMutator : AbstractMutator
+    class DoubleSliderMutator : AbstractMutator
     {
-        public IntegerSliderMutator(Random rand)
+        public DoubleSliderMutator(Random rand)
             : base(rand)
         {
 
@@ -21,8 +22,10 @@ namespace Dynamo.TestInfrastructure
         {
             string assemblyPath = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(assemblyPath);
-            Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
+
             List<NodeModel> nodes = new List<NodeModel>();
+
+            Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
             if (type != null)
             {
                 nodes = DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
@@ -34,7 +37,7 @@ namespace Dynamo.TestInfrastructure
 
             NodeModel node = nodes[Rand.Next(nodes.Count)];
 
-            string value = Rand.Next(100).ToString();
+            string value = (Rand.NextDouble() * 100).ToString();
 
             dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
             {
@@ -47,4 +50,3 @@ namespace Dynamo.TestInfrastructure
         }
     }
 }
-
