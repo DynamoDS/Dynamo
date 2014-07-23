@@ -23687,6 +23687,7 @@ a2 = foo2(3);
 
         [Test, Ignore]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch686_T018_Inline_Using_Recursion()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
