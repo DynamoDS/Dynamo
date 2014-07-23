@@ -68,13 +68,16 @@ namespace Dynamo.Models
         /// </param>
         /// <returns></returns>
         public IEnumerable<NodeModel> GetInScopeNodesForInport(
-            int portIndex, bool checkEscape = true, bool isInclusive = true)
+            int portIndex, 
+            bool checkEscape = true, 
+            bool isInclusive = true, 
+            bool forceToGetNodeForInport = false)
         {
             // The related test cases are in DynmoTest.ScopedNodeTest.
             var scopedNodes = new HashSet<NodeModel>();
 
             Tuple<int, NodeModel> inputTuple = null;
-            if (!IsScopedInport(portIndex) || 
+            if ((!forceToGetNodeForInport && !IsScopedInport(portIndex)) || 
                 !this.TryGetInput(portIndex, out inputTuple))
             {
                 return scopedNodes;
