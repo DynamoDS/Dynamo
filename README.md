@@ -5,8 +5,8 @@ The following table gives comparisons among more prominent features between ```H
 
 | Feature Name | Helix 3D | Bloodstone |
 | ------------ |:--------:|:----------:|
-| Zoom to fit | Yes | **No** |
-| Zoom with mouse | Yes | **No** |
+| Zoom to fit | Yes | Yes |
+| Zoom with mouse | Yes | Yes |
 | Pan | Yes | Yes |
 | Rotate | Yes | Yes |
 | Off-centered rotation | No | Yes |
@@ -25,7 +25,8 @@ Prioritized Task List
 The following list represents what are to be implemented in Bloodstone for it to reach feature parity with that of ```Helix 3D``` viewer. These tasks are not exhaustive and will grow as demanded:
 
 - [x] Implement pan operation
-- [ ] Implement zoom operation
+- [x] Implement zoom operation
+- [ ] Integrate zoom operation with mouse wheel
 - [ ] Implement geometry clearing when document is closed
 - [ ] Implement geometry clearing when nodes are deleted
 
