@@ -12,6 +12,7 @@ using namespace Dynamo::Bloodstone::OpenGL;
 
 const float TrackBall::ZoomSpeed = 1.2f;
 const float TrackBall::PanSpeed = 0.3f;
+const float TrackBall::DynamicDampingFactor = 0.2f;
 
 TrackBall::TrackBall(Camera* pCamera) :
     mpCamera(pCamera),
@@ -58,10 +59,10 @@ void TrackBall::MouseMovedCore(int screenX, int screenY)
     switch (mTrackBallMode)
     {
     case Dynamo::Bloodstone::ITrackBall::Mode::Rotate:
-        RotateCamera(screenX, screenY);
+        RotateCameraInternal(screenX, screenY);
         break;
     case Dynamo::Bloodstone::ITrackBall::Mode::Zoom:
-        mZoomEnd = GetMouseOnScreen(screenX, screenY);
+        ZoomCameraInternal(screenX, screenY);
         break;
     case Dynamo::Bloodstone::ITrackBall::Mode::Pan:
         mPanEnd = GetMouseOnScreen(screenX, screenY);
@@ -106,7 +107,7 @@ glm::vec3 TrackBall::GetProjectionOnTrackball(int screenX, int screenY) const
     return vector;
 }
 
-void TrackBall::RotateCamera(int screenX, int screenY)
+void TrackBall::RotateCameraInternal(int screenX, int screenY)
 {
     mRotateEnd = GetProjectionOnTrackball(screenX, screenY);
     glm::fquat quaternion(glm::normalize(mRotateStart), glm::normalize(mRotateEnd));
@@ -128,6 +129,24 @@ void TrackBall::RotateCamera(int screenX, int screenY)
     mConfiguration.eyePoint[1] = mCameraPosition.y;
     mConfiguration.eyePoint[2] = mCameraPosition.z;
 
+    mpCamera->Configure(&mConfiguration); // Update camera.
+}
+
+void TrackBall::ZoomCameraInternal(int screenX, int screenY)
+{
+    mZoomEnd = GetMouseOnScreen(screenX, screenY);
+    auto factor = 1.0f + ((mZoomEnd.y - mZoomStart.y) * TrackBall::ZoomSpeed);
+    if (factor == 1.0f || factor <= 0.0f)
+        return;
+
+    glm::vec3 eyeDirection(mCameraPosition - mTargetPosition);
+    eyeDirection = eyeDirection * factor;
+    mZoomStart.y += (mZoomEnd.y - mZoomStart.y) * TrackBall::DynamicDampingFactor;
+
+    mCameraPosition = mTargetPosition + eyeDirection;
+    mConfiguration.eyePoint[0] = mCameraPosition.x;
+    mConfiguration.eyePoint[1] = mCameraPosition.y;
+    mConfiguration.eyePoint[2] = mCameraPosition.z;
     mpCamera->Configure(&mConfiguration); // Update camera.
 }
 

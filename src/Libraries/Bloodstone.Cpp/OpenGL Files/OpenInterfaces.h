@@ -195,7 +195,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 
         glm::vec2 GetMouseOnScreen(int screenX, int screenY) const;
         glm::vec3 GetProjectionOnTrackball(int screenX, int screenY) const;
-        void RotateCamera(int screenX, int screenY);
+        void RotateCameraInternal(int screenX, int screenY);
+        void ZoomCameraInternal(int screenX, int screenY);
 
     private:
         Camera* mpCamera;
@@ -204,6 +205,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 
         static const float ZoomSpeed;
         static const float PanSpeed;
+        static const float DynamicDampingFactor;
 
         // Camera manipulation related data members.
         glm::vec3 mCameraUpVector;
