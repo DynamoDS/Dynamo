@@ -171,7 +171,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual void BeginRenderFrameCore(HDC deviceContext) const;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const;
-        virtual void EndRenderFrameCore(HDC deviceContext) const;
+        virtual bool EndRenderFrameCore(HDC deviceContext) const;
         virtual void EnableAlphaBlendCore(void) const;
         virtual void ClearDepthBufferCore(void) const;
 
@@ -231,10 +231,13 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual void BeginConfigureCore(const CameraConfiguration* pConfiguration);
         virtual void ResizeViewportCore(int width, int height);
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox);
+        virtual bool IsInTransitionCore(void) const;
         virtual Dynamo::Bloodstone::ITrackBall* GetTrackBallCore() const;
 
     private:
         void ConfigureInternal(const CameraConfiguration* pConfiguration, bool smooth);
+
+        bool mIsInTransition;
 
         glm::mat4 mModelMatrix;
         glm::mat4 mViewMatrix;

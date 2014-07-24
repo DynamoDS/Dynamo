@@ -338,6 +338,11 @@ namespace Dynamo { namespace Bloodstone {
             this->FitToBoundingBoxCore(pBoundingBox);
         }
 
+        bool IsInTransition(void) const
+        {
+            return this->IsInTransitionCore();
+        }
+
         ITrackBall* GetTrackBall() const
         {
             return this->GetTrackBallCore();
@@ -348,6 +353,7 @@ namespace Dynamo { namespace Bloodstone {
         virtual void BeginConfigureCore(const CameraConfiguration* pConfiguration) = 0;
         virtual void ResizeViewportCore(int width, int height) = 0;
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox) = 0;
+        virtual bool IsInTransitionCore(void) const = 0;
         virtual ITrackBall* GetTrackBallCore() const = 0;
     };
 
@@ -508,9 +514,9 @@ namespace Dynamo { namespace Bloodstone {
             this->RenderVertexBufferCore(pVertexBuffer);
         }
 
-        void EndRenderFrame(HDC deviceContext) const
+        bool EndRenderFrame(HDC deviceContext) const
         {
-            this->EndRenderFrameCore(deviceContext);
+            return this->EndRenderFrameCore(deviceContext);
         }
 
         void EnableAlphaBlend(void) const
@@ -539,7 +545,7 @@ namespace Dynamo { namespace Bloodstone {
         virtual void BeginRenderFrameCore(HDC deviceContext) const = 0;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const = 0;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const = 0;
-        virtual void EndRenderFrameCore(HDC deviceContext) const = 0;
+        virtual bool EndRenderFrameCore(HDC deviceContext) const = 0;
         virtual void EnableAlphaBlendCore(void) const = 0;
         virtual void ClearDepthBufferCore(void) const = 0;
     };

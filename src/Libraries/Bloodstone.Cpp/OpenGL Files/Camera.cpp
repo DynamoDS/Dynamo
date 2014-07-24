@@ -186,6 +186,7 @@ void TrackBall::UpdateCameraInternal(void)
 // ================================================================================
 
 Camera::Camera(GraphicsContext* pGraphicsContext) :
+    mIsInTransition(false),
     mpTrackBall(nullptr),
     mpGraphicsContext(pGraphicsContext)
 {
@@ -263,6 +264,11 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     configuration.SetEyePoint(eye.x, eye.y, eye.z);
     configuration.SetCenterPoint(boxCenter[0], boxCenter[1], boxCenter[2]);
     this->BeginConfigure(&configuration);
+}
+
+bool Camera::IsInTransitionCore(void) const
+{
+    return mIsInTransition;
 }
 
 ITrackBall* Camera::GetTrackBallCore() const

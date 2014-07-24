@@ -199,13 +199,20 @@ LRESULT VisualizerWnd::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
+            bool requestFrameUpdate = false;
             HDC deviceContext = BeginPaint(hWnd, &ps);
             {
                 mpGraphicsContext->BeginRenderFrame(deviceContext);
                 mpScene->RenderScene();
-                mpGraphicsContext->EndRenderFrame(deviceContext);
+                if (mpGraphicsContext->EndRenderFrame(deviceContext))
+                    requestFrameUpdate = true;
             }
             EndPaint(hWnd, &ps);
+
+            // If further frame is required.
+            if (requestFrameUpdate != false)
+                this->RequestFrameUpdate();
+
             return 0L;
         }
 

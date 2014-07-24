@@ -208,9 +208,10 @@ void GraphicsContext::RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const
         pBuffer->Render();
 }
 
-void GraphicsContext::EndRenderFrameCore(HDC deviceContext) const
+bool GraphicsContext::EndRenderFrameCore(HDC deviceContext) const
 {
     ::SwapBuffers(deviceContext);
+    return false; // No further frame updates are required.
 }
 
 void GraphicsContext::EnableAlphaBlendCore(void) const
