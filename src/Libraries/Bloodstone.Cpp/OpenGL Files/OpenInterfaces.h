@@ -3,6 +3,7 @@
 #define _OPEN_INTERFACE_H_
 
 #include "../Interfaces.h"
+#include "Utilities.h"
 #include "../../../../extern/OpenGL/glcorearb.h"
 #include "../../../../extern/OpenGL/glext.h"
 #include "../../../../extern/OpenGL/wglext.h"
@@ -232,17 +233,21 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual void ResizeViewportCore(int width, int height);
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox);
         virtual bool IsInTransitionCore(void) const;
+        virtual void UpdateFrameCore(void);
         virtual Dynamo::Bloodstone::ITrackBall* GetTrackBallCore() const;
 
     private:
-        void ConfigureInternal(const CameraConfiguration* pConfiguration, bool smooth);
-
-        bool mIsInTransition;
+        void InitializeTransition(const CameraConfiguration* pConfiguration);
+        void FinalizeCurrentTransition(void);
+        void ConfigureInternal(const CameraConfiguration* pConfiguration);
 
         glm::mat4 mModelMatrix;
         glm::mat4 mViewMatrix;
         glm::mat4 mProjMatrix;
         TrackBall* mpTrackBall;
+        Interpolator* mpInterpolator;
+        CameraConfiguration mBeginConfigValue;
+        CameraConfiguration mFinalConfigValue;
         CameraConfiguration mConfiguration;
         GraphicsContext* mpGraphicsContext;
     };

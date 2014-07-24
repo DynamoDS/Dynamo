@@ -185,6 +185,10 @@ namespace Dynamo { namespace Bloodstone {
             z = targetPosition[2] - cameraPosition[2];
         }
 
+        void Interpolate(const CameraConfiguration& other, float factor)
+        {
+        }
+
         // View matrix.
         float cameraPosition[3];
         float targetPosition[3];
@@ -343,6 +347,11 @@ namespace Dynamo { namespace Bloodstone {
             return this->IsInTransitionCore();
         }
 
+        void UpdateFrame(void)
+        {
+            return this->UpdateFrameCore();
+        }
+
         ITrackBall* GetTrackBall() const
         {
             return this->GetTrackBallCore();
@@ -354,6 +363,7 @@ namespace Dynamo { namespace Bloodstone {
         virtual void ResizeViewportCore(int width, int height) = 0;
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox) = 0;
         virtual bool IsInTransitionCore(void) const = 0;
+        virtual void UpdateFrameCore(void) = 0;
         virtual ITrackBall* GetTrackBallCore() const = 0;
     };
 

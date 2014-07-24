@@ -190,6 +190,10 @@ void GraphicsContext::BeginRenderFrameCore(HDC deviceContext) const
     GL::glViewport(0, 0, rcClient.right, rcClient.bottom);
     GL::glClearColor(0.941176f, 0.941176f, 0.941176f, 1.0f); // #F0F0F0
     GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    // If the camera is animating, this is the right time to update it.
+    if (mpDefaultCamera->IsInTransition())
+        mpDefaultCamera->UpdateFrame();
 }
 
 void GraphicsContext::ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const
@@ -211,7 +215,7 @@ void GraphicsContext::RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const
 bool GraphicsContext::EndRenderFrameCore(HDC deviceContext) const
 {
     ::SwapBuffers(deviceContext);
-    return false; // No further frame updates are required.
+    return mpDefaultCamera->IsInTransition(); // Request frame update if needed.
 }
 
 void GraphicsContext::EnableAlphaBlendCore(void) const

@@ -186,8 +186,8 @@ void TrackBall::UpdateCameraInternal(void)
 // ================================================================================
 
 Camera::Camera(GraphicsContext* pGraphicsContext) :
-    mIsInTransition(false),
     mpTrackBall(nullptr),
+    mpInterpolator(nullptr),
     mpGraphicsContext(pGraphicsContext)
 {
     CameraConfiguration camConfig;
@@ -214,12 +214,14 @@ GraphicsContext* Camera::GetGraphicsContext(void) const
 
 void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
 {
-    ConfigureInternal(pConfiguration, false);
+    FinalizeCurrentTransition();
+    ConfigureInternal(pConfiguration);
 }
 
 void Camera::BeginConfigureCore(const CameraConfiguration* pConfiguration)
 {
-    ConfigureInternal(pConfiguration, true);
+    FinalizeCurrentTransition();
+    InitializeTransition(pConfiguration);
 }
 
 void Camera::ResizeViewportCore(int width, int height)
@@ -229,7 +231,8 @@ void Camera::ResizeViewportCore(int width, int height)
 
     configuration.viewportWidth = width;
     configuration.viewportHeight = height;
-    this->ConfigureInternal(&configuration, false);
+    FinalizeCurrentTransition();
+    this->ConfigureInternal(&configuration);
 }
 
 void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
@@ -268,7 +271,27 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
 
 bool Camera::IsInTransitionCore(void) const
 {
-    return mIsInTransition;
+    return (nullptr != mpInterpolator);
+}
+
+void Camera::UpdateFrameCore(void)
+{
+    if (nullptr == mpInterpolator)
+        return;
+
+    float fraction = 0.0f;
+    if (mpInterpolator->Update(fraction))
+    {
+        CameraConfiguration configuration = mBeginConfigValue;
+        configuration.Interpolate(mFinalConfigValue, fraction);
+        ConfigureInternal(&configuration);
+    }
+    else
+    {
+        delete mpInterpolator;
+        mpInterpolator = nullptr;
+        ConfigureInternal(&mFinalConfigValue);
+    }
 }
 
 ITrackBall* Camera::GetTrackBallCore() const
@@ -276,7 +299,38 @@ ITrackBall* Camera::GetTrackBallCore() const
     return (const_cast<Camera *>(this))->mpTrackBall;
 }
 
-void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration, bool smooth)
+void Camera::InitializeTransition(const CameraConfiguration* pConfiguration)
+{
+    FinalizeCurrentTransition(); // Cancel transition if there's any.
+
+    mpInterpolator = new Interpolator(0.5f);
+    mBeginConfigValue = mConfiguration;
+    mFinalConfigValue = *pConfiguration;
+}
+
+void Camera::FinalizeCurrentTransition(void)
+{
+    if (nullptr == mpInterpolator)
+        return; // Not in transition.
+
+    float fraction = 0.0f;
+    if (mpInterpolator->Update(fraction))
+    {
+        CameraConfiguration config = mBeginConfigValue;
+        config.Interpolate(mFinalConfigValue, fraction);
+        ConfigureInternal(&config);
+    }
+    else
+    {
+        // The transition is over by now.
+        ConfigureInternal(&mFinalConfigValue);
+    }
+
+    delete mpInterpolator;
+    mpInterpolator = nullptr;
+}
+
+void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration)
 {
     glm::vec3 cameraPosition(
         pConfiguration->cameraPosition[0],
