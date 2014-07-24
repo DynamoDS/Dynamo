@@ -146,9 +146,9 @@ namespace Dynamo { namespace Bloodstone {
         CameraConfiguration()
         {
             memset(this, 0, sizeof(CameraConfiguration));
-            eyePoint[0] = eyePoint[1] = eyePoint[2] = 1.0f;
-            center[0] = center[1] = center[2] = 0.0f;
-            upVector[1] = 1.0f; // Default up-vector is Y-axis
+            cameraPosition[0] = cameraPosition[1] = cameraPosition[2] = 1.0f;
+            targetPosition[0] = targetPosition[1] = targetPosition[2] = 0.0f;
+            cameraUpVector[1] = 1.0f; // Default up-vector is Y-axis
 
             viewportWidth = 1280;
             viewportHeight = 720;
@@ -159,37 +159,36 @@ namespace Dynamo { namespace Bloodstone {
 
         void SetEyePoint(float x, float y, float z)
         {
-            eyePoint[0] = x;
-            eyePoint[1] = y;
-            eyePoint[2] = z;
+            cameraPosition[0] = x;
+            cameraPosition[1] = y;
+            cameraPosition[2] = z;
         }
 
         void SetCenterPoint(float x, float y, float z)
         {
-            center[0] = x;
-            center[1] = y;
-            center[2] = z;
+            targetPosition[0] = x;
+            targetPosition[1] = y;
+            targetPosition[2] = z;
         }
 
         void SetUpVector(float x, float y, float z)
         {
-            upVector[0] = x;
-            upVector[1] = y;
-            upVector[2] = z;
+            cameraUpVector[0] = x;
+            cameraUpVector[1] = y;
+            cameraUpVector[2] = z;
         }
 
         void GetViewDirection(float& x, float& y, float& z)
         {
-            // Always viewing origin.
-            x = 0.0f - eyePoint[0];
-            y = 0.0f - eyePoint[1];
-            z = 0.0f - eyePoint[2];
+            x = targetPosition[0] - cameraPosition[0];
+            y = targetPosition[1] - cameraPosition[1];
+            z = targetPosition[2] - cameraPosition[2];
         }
 
         // View matrix.
-        float eyePoint[3];
-        float center[3];
-        float upVector[3];
+        float cameraPosition[3];
+        float targetPosition[3];
+        float cameraUpVector[3];
 
         // Projection matrix.
         int viewportWidth;

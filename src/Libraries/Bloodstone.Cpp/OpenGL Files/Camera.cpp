@@ -26,15 +26,15 @@ void TrackBall::MousePressedCore(int screenX, int screenY, Mode mode)
         return;
 
     mpCamera->GetConfiguration(mConfiguration); // Get the updated configuration.
-    mCameraUpVector.x = mConfiguration.upVector[0];
-    mCameraUpVector.y = mConfiguration.upVector[1];
-    mCameraUpVector.z = mConfiguration.upVector[2];
-    mCameraPosition.x = mConfiguration.eyePoint[0];
-    mCameraPosition.y = mConfiguration.eyePoint[1];
-    mCameraPosition.z = mConfiguration.eyePoint[2];
-    mTargetPosition.x = mConfiguration.center[0];
-    mTargetPosition.y = mConfiguration.center[1];
-    mTargetPosition.z = mConfiguration.center[2];
+    mCameraUpVector.x = mConfiguration.cameraUpVector[0];
+    mCameraUpVector.y = mConfiguration.cameraUpVector[1];
+    mCameraUpVector.z = mConfiguration.cameraUpVector[2];
+    mCameraPosition.x = mConfiguration.cameraPosition[0];
+    mCameraPosition.y = mConfiguration.cameraPosition[1];
+    mCameraPosition.z = mConfiguration.cameraPosition[2];
+    mTargetPosition.x = mConfiguration.targetPosition[0];
+    mTargetPosition.y = mConfiguration.targetPosition[1];
+    mTargetPosition.z = mConfiguration.targetPosition[2];
 
     mTrackBallMode = mode;
     switch (mTrackBallMode)
@@ -168,15 +168,15 @@ void TrackBall::PanCameraInternal(int screenX, int screenY)
 void TrackBall::UpdateCameraInternal(void)
 {
     // Update configuration before reconfiguring the camera.
-    mConfiguration.upVector[0] = mCameraUpVector.x;
-    mConfiguration.upVector[1] = mCameraUpVector.y;
-    mConfiguration.upVector[2] = mCameraUpVector.z;
-    mConfiguration.eyePoint[0] = mCameraPosition.x;
-    mConfiguration.eyePoint[1] = mCameraPosition.y;
-    mConfiguration.eyePoint[2] = mCameraPosition.z;
-    mConfiguration.center[0]   = mTargetPosition.x;
-    mConfiguration.center[1]   = mTargetPosition.y;
-    mConfiguration.center[2]   = mTargetPosition.z;
+    mConfiguration.cameraUpVector[0] = mCameraUpVector.x;
+    mConfiguration.cameraUpVector[1] = mCameraUpVector.y;
+    mConfiguration.cameraUpVector[2] = mCameraUpVector.z;
+    mConfiguration.cameraPosition[0] = mCameraPosition.x;
+    mConfiguration.cameraPosition[1] = mCameraPosition.y;
+    mConfiguration.cameraPosition[2] = mCameraPosition.z;
+    mConfiguration.targetPosition[0]   = mTargetPosition.x;
+    mConfiguration.targetPosition[1]   = mTargetPosition.y;
+    mConfiguration.targetPosition[2]   = mTargetPosition.z;
 
     mpCamera->Configure(&mConfiguration); // Update camera.
 }
@@ -231,7 +231,7 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     if (pBoundingBox->IsInitialized() == false)
         return;
 
-    // Get the bound box center and its radius.
+    // Get the bound box targetPosition and its radius.
     auto configuration = mConfiguration;
     float boxCenter[3], radius = 0.0f;
     pBoundingBox->Get(&boxCenter[0], radius);
@@ -239,7 +239,7 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     if (radius <= 0.0f) // Bounding box is empty.
         return;
 
-    // Calculate the distance from eye to the center.
+    // Calculate the distance from eye to the targetPosition.
     auto halfFov = configuration.fieldOfView * 0.5f;
     auto halfFovRadian = halfFov * glm::pi<float>() / 180.0f;
     auto distance = std::fabsf(radius / std::sinf(halfFovRadian));
@@ -267,23 +267,22 @@ ITrackBall* Camera::GetTrackBallCore() const
 
 void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration)
 {
-    glm::vec3 eyePoint(
-        pConfiguration->eyePoint[0],
-        pConfiguration->eyePoint[1],
-        pConfiguration->eyePoint[2]);
+    glm::vec3 cameraPosition(
+        pConfiguration->cameraPosition[0],
+        pConfiguration->cameraPosition[1],
+        pConfiguration->cameraPosition[2]);
 
-    glm::vec3 center(
-        pConfiguration->center[0],
-        pConfiguration->center[1],
-        pConfiguration->center[2]);
+    glm::vec3 targetPosition(
+        pConfiguration->targetPosition[0],
+        pConfiguration->targetPosition[1],
+        pConfiguration->targetPosition[2]);
 
-    glm::vec3 upVector(
-        pConfiguration->upVector[0],
-        pConfiguration->upVector[1],
-        pConfiguration->upVector[2]);
+    glm::vec3 cameraUpVector(
+        pConfiguration->cameraUpVector[0],
+        pConfiguration->cameraUpVector[1],
+        pConfiguration->cameraUpVector[2]);
 
-    // The view is always looking at the origin from "eyePoint".
-    this->mViewMatrix = glm::lookAt(eyePoint, center, upVector);
+    mViewMatrix = glm::lookAt(cameraPosition, targetPosition, cameraUpVector);
 
     const float w = ((float) pConfiguration->viewportWidth);
     const float h = ((float) pConfiguration->viewportHeight);
