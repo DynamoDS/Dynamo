@@ -467,8 +467,6 @@ a2 = y.foo(1);
 
         public void T14_Defect_1461209_4()
         {
-            Assert.Fail("1460783 - Sprint 18 : Rev 1661 : Forward referencing is not being allowed in class property ( related to Update issue ) ");
-
             string code = @"
 class A
 {

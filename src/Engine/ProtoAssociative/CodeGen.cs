@@ -120,7 +120,7 @@ namespace ProtoAssociative
             // Comment Jun: Get the codeblock to use for this codegenerator
             if (core.Options.IsDeltaExecution)
             {
-                codeBlock = GetDeltaCompileCodeBlock();
+                codeBlock = GetDeltaCompileCodeBlock(parentBlock);
                 if (core.Options.IsDeltaCompile)
                 {
                     pc = codeBlock.instrStream.instrList.Count;
@@ -183,7 +183,7 @@ namespace ProtoAssociative
             expressionSSATempSymbolList = new Stack<SymbolNode>();
         }
 
-        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
+        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock(ProtoCore.DSASM.CodeBlock parentBlock)
         {
             ProtoCore.DSASM.CodeBlock cb = null;
 
@@ -191,7 +191,10 @@ namespace ProtoAssociative
             if (core.CodeBlockList.Count <= 0  || core.CodeBlockIndex > 1)
             {
                 cb = BuildNewCodeBlock();
-                core.CodeBlockList.Add(cb);
+                if (null == parentBlock)
+                {
+                    core.CodeBlockList.Add(cb);
+                }
             }
             else
             {
