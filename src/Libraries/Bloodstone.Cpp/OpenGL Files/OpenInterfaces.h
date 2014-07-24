@@ -197,6 +197,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         glm::vec3 GetProjectionOnTrackball(int screenX, int screenY) const;
         void RotateCameraInternal(int screenX, int screenY);
         void ZoomCameraInternal(int screenX, int screenY);
+        void PanCameraInternal(int screenX, int screenY);
+        void UpdateCameraInternal(void);
 
     private:
         Camera* mpCamera;

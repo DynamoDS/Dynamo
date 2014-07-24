@@ -65,7 +65,7 @@ void TrackBall::MouseMovedCore(int screenX, int screenY)
         ZoomCameraInternal(screenX, screenY);
         break;
     case Dynamo::Bloodstone::ITrackBall::Mode::Pan:
-        mPanEnd = GetMouseOnScreen(screenX, screenY);
+        PanCameraInternal(screenX, screenY);
         break;
     }
 }
@@ -120,16 +120,7 @@ void TrackBall::RotateCameraInternal(int screenX, int screenY)
     // Move the camera based on the current eye direction.
     mCameraUpVector = mCameraUpVector * quaternion;
     mCameraPosition = mTargetPosition + eyeDirection;
-
-    // Update configuration before reconfiguring the camera.
-    mConfiguration.upVector[0] = mCameraUpVector.x;
-    mConfiguration.upVector[1] = mCameraUpVector.y;
-    mConfiguration.upVector[2] = mCameraUpVector.z;
-    mConfiguration.eyePoint[0] = mCameraPosition.x;
-    mConfiguration.eyePoint[1] = mCameraPosition.y;
-    mConfiguration.eyePoint[2] = mCameraPosition.z;
-
-    mpCamera->Configure(&mConfiguration); // Update camera.
+    UpdateCameraInternal();
 }
 
 void TrackBall::ZoomCameraInternal(int screenX, int screenY)
@@ -144,9 +135,49 @@ void TrackBall::ZoomCameraInternal(int screenX, int screenY)
     mZoomStart.y += (mZoomEnd.y - mZoomStart.y) * TrackBall::DynamicDampingFactor;
 
     mCameraPosition = mTargetPosition + eyeDirection;
+    UpdateCameraInternal();
+}
+
+void TrackBall::PanCameraInternal(int screenX, int screenY)
+{
+    mPanEnd = GetMouseOnScreen(screenX, screenY);
+
+    glm::vec2 mouseChange(mPanEnd - mPanStart);
+    auto length = glm::length(mouseChange);
+    if (length * length <= 0.0f)
+        return;
+
+    glm::vec3 eyeDirection(mCameraPosition - mTargetPosition);
+    auto factor = glm::length(eyeDirection) * TrackBall::PanSpeed;
+    mouseChange = mouseChange * factor;
+
+    glm::vec3 pan(glm::cross(eyeDirection, mCameraUpVector));
+    pan = glm::normalize(pan) * mouseChange.x;
+
+    glm::vec3 objectUp(glm::normalize(mCameraUpVector) * mouseChange.y);
+    pan = pan + objectUp;
+
+    mCameraPosition = mCameraPosition + pan;
+    mTargetPosition = mTargetPosition + pan;
+    UpdateCameraInternal();
+
+    mouseChange = ((mPanEnd - mPanStart) * DynamicDampingFactor);
+    mPanStart = mPanStart + mouseChange;
+}
+
+void TrackBall::UpdateCameraInternal(void)
+{
+    // Update configuration before reconfiguring the camera.
+    mConfiguration.upVector[0] = mCameraUpVector.x;
+    mConfiguration.upVector[1] = mCameraUpVector.y;
+    mConfiguration.upVector[2] = mCameraUpVector.z;
     mConfiguration.eyePoint[0] = mCameraPosition.x;
     mConfiguration.eyePoint[1] = mCameraPosition.y;
     mConfiguration.eyePoint[2] = mCameraPosition.z;
+    mConfiguration.center[0]   = mTargetPosition.x;
+    mConfiguration.center[1]   = mTargetPosition.y;
+    mConfiguration.center[2]   = mTargetPosition.z;
+
     mpCamera->Configure(&mConfiguration); // Update camera.
 }
 
