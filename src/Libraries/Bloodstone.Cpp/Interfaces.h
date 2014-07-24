@@ -113,7 +113,7 @@ namespace Dynamo { namespace Bloodstone {
     class ITrackBall
     {
     public:
-        enum class Mode { None, Rotate, Pan };
+        enum class Mode { None, Rotate, Zoom, Pan };
 
     public:
         virtual ~ITrackBall()

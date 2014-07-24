@@ -192,15 +192,26 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual void MouseReleasedCore(int screenX, int screenY);
 
     private:
-        glm::vec3 GetVector(int x, int y) const;
-        void ComputeRotationMatrix(void);
-        void ComputePanningMatrix(void);
+
+        glm::vec2 GetMouseOnScreen(int screenX, int screenY) const;
+        glm::vec3 GetProjectionOnTrackball(int screenX, int screenY) const;
+        void RotateCamera(int screenX, int screenY);
 
     private:
         Camera* mpCamera;
         CameraConfiguration mConfiguration;
         ITrackBall::Mode mTrackBallMode;
-        int mPrevX, mPrevY, mCurrX, mCurrY;
+
+        static const float ZoomSpeed;
+        static const float PanSpeed;
+
+        // Camera manipulation related data members.
+        glm::vec3 mCameraUpVector;
+        glm::vec3 mCameraPosition;
+        glm::vec3 mTargetPosition;
+        glm::vec2 mPanStart, mPanEnd;
+        glm::vec2 mZoomStart, mZoomEnd;
+        glm::vec3 mRotateStart, mRotateEnd;
     };
 
     class Camera : public Dynamo::Bloodstone::ICamera
@@ -210,8 +221,6 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         void GetConfiguration(CameraConfiguration& configuration) const;
         void GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const;
         GraphicsContext* GetGraphicsContext(void) const;
-        void SetModelTransformation(const glm::mat4& model);
-        void OffsetCenterPoint(const glm::vec3& offset);
 
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration);

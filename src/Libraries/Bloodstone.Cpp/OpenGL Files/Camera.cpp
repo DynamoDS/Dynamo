@@ -10,18 +10,44 @@ using namespace Dynamo::Bloodstone::OpenGL;
 // TrackBall
 // ================================================================================
 
-TrackBall::TrackBall(Camera* pCamera) : mpCamera(pCamera),
-    mTrackBallMode(Mode::None),
-    mPrevX(0), mPrevY(0), mCurrX(0), mCurrY(0)
+const float TrackBall::ZoomSpeed = 1.2f;
+const float TrackBall::PanSpeed = 0.3f;
+
+TrackBall::TrackBall(Camera* pCamera) :
+    mpCamera(pCamera),
+    mTrackBallMode(Mode::None)
 {
 }
 
 void TrackBall::MousePressedCore(int screenX, int screenY, Mode mode)
 {
-    mCurrX = mPrevX = screenX;
-    mCurrY = mPrevY = screenY;
-    mTrackBallMode = mode;
+    if (mTrackBallMode != Mode::None)
+        return;
+
     mpCamera->GetConfiguration(mConfiguration); // Get the updated configuration.
+    mCameraUpVector.x = mConfiguration.upVector[0];
+    mCameraUpVector.y = mConfiguration.upVector[1];
+    mCameraUpVector.z = mConfiguration.upVector[2];
+    mCameraPosition.x = mConfiguration.eyePoint[0];
+    mCameraPosition.y = mConfiguration.eyePoint[1];
+    mCameraPosition.z = mConfiguration.eyePoint[2];
+    mTargetPosition.x = mConfiguration.center[0];
+    mTargetPosition.y = mConfiguration.center[1];
+    mTargetPosition.z = mConfiguration.center[2];
+
+    mTrackBallMode = mode;
+    switch (mTrackBallMode)
+    {
+    case Dynamo::Bloodstone::ITrackBall::Mode::Rotate:
+        mRotateStart = mRotateEnd = GetProjectionOnTrackball(screenX, screenY);
+        break;
+    case Dynamo::Bloodstone::ITrackBall::Mode::Zoom:
+        mZoomStart = mZoomEnd = GetMouseOnScreen(screenX, screenY);
+        break;
+    case Dynamo::Bloodstone::ITrackBall::Mode::Pan:
+        mPanStart = mPanEnd = GetMouseOnScreen(screenX, screenY);
+        break;
+    }
 }
 
 void TrackBall::MouseMovedCore(int screenX, int screenY)
@@ -29,24 +55,18 @@ void TrackBall::MouseMovedCore(int screenX, int screenY)
     if (this->mTrackBallMode == ITrackBall::Mode::None)
         return;
 
-    mCurrX = screenX;
-    mCurrY = screenY;
-    if (mCurrX == mPrevX && (mCurrY == mPrevY))
-        return; // No movement.
-
-    switch(mTrackBallMode)
+    switch (mTrackBallMode)
     {
-    case ITrackBall::Mode::Rotate:
-        ComputeRotationMatrix();
+    case Dynamo::Bloodstone::ITrackBall::Mode::Rotate:
+        RotateCamera(screenX, screenY);
         break;
-
-    case ITrackBall::Mode::Pan:
-        ComputePanningMatrix();
+    case Dynamo::Bloodstone::ITrackBall::Mode::Zoom:
+        mZoomEnd = GetMouseOnScreen(screenX, screenY);
+        break;
+    case Dynamo::Bloodstone::ITrackBall::Mode::Pan:
+        mPanEnd = GetMouseOnScreen(screenX, screenY);
         break;
     }
-
-    mPrevX = mCurrX;
-    mPrevY = mCurrY;
 }
 
 void TrackBall::MouseReleasedCore(int screenX, int screenY)
@@ -54,53 +74,61 @@ void TrackBall::MouseReleasedCore(int screenX, int screenY)
     this->mTrackBallMode = ITrackBall::Mode::None;
 }
 
-glm::vec3 TrackBall::GetVector(int x, int y) const
+glm::vec2 TrackBall::GetMouseOnScreen(int screenX, int screenY) const
 {
     float sw = ((float) mConfiguration.viewportWidth);
     float sh = ((float) mConfiguration.viewportHeight);
+    return glm::vec2(screenX / sw, screenY / sh);
+}
 
-    glm::vec3 vector = glm::vec3(
-        ((2.0f * x) / sw) - 1.0,
-        ((2.0f * y) / sh) - 1.0, 0);
+glm::vec3 TrackBall::GetProjectionOnTrackball(int screenX, int screenY) const
+{
+    float sw = mConfiguration.viewportWidth * 0.5f;
+    float sh = mConfiguration.viewportHeight * 0.5f;
 
-    vector.y = -vector.y;
-    float squared = vector.x * vector.x + vector.y * vector.y;
-    if (squared <= 1.0f)
-        vector.z = sqrt(1.0f - squared);  // Pythagore
+    glm::vec3 mouseOnBall((screenX - sw) / sw, (sh - screenY) / sh, 0.0f);
+
+    const auto length = glm::length(mouseOnBall);
+    if (length > 1.0f)
+        mouseOnBall = glm::normalize(mouseOnBall);
     else
-        vector = glm::normalize(vector);  // nearest point
+        mouseOnBall.z = std::sqrtf(1.0f - length * length);
 
+    glm::vec3 eyeDirection(mCameraPosition - mTargetPosition);
+        
+    glm::vec3 vector = glm::normalize(mCameraUpVector) * mouseOnBall.y;
+    glm::vec3 objectUp = glm::cross(mCameraUpVector, eyeDirection);
+    objectUp = glm::normalize(objectUp) * mouseOnBall.x;
+    eyeDirection = glm::normalize(eyeDirection) * mouseOnBall.z;
+
+    vector = vector + objectUp;
+    vector = vector + eyeDirection;
     return vector;
 }
 
-void TrackBall::ComputeRotationMatrix(void)
+void TrackBall::RotateCamera(int screenX, int screenY)
 {
-    // Get the current transformation matrices from camera.
-    glm::mat4 model, view, projection;
-    mpCamera->GetMatrices(model, view, projection);
+    mRotateEnd = GetProjectionOnTrackball(screenX, screenY);
+    glm::fquat quaternion(glm::normalize(mRotateStart), glm::normalize(mRotateEnd));
 
-    glm::vec3 va = GetVector(mPrevX, mPrevY);
-    glm::vec3 vb = GetVector(mCurrX, mCurrY);
+    glm::vec3 eyeDirection(mCameraPosition - mTargetPosition);
+    eyeDirection = eyeDirection * quaternion;
+    mRotateEnd = mRotateEnd * quaternion;
+    mRotateStart = mRotateEnd;
 
-    float angle = acos(std::min(1.0f, glm::dot(va, vb)));
-    glm::vec3 axisInCameraCoords = glm::cross(va, vb);
+    // Move the camera based on the current eye direction.
+    mCameraUpVector = mCameraUpVector * quaternion;
+    mCameraPosition = mTargetPosition + eyeDirection;
 
-    glm::mat3 cameraToObject = glm::inverse(glm::mat3(view) * glm::mat3(model));
-    glm::vec3 axisInObjectCoords = cameraToObject * axisInCameraCoords;
-    auto finalModel = glm::rotate(model, glm::degrees(angle), axisInObjectCoords);
-    mpCamera->SetModelTransformation(finalModel);
-}
+    // Update configuration before reconfiguring the camera.
+    mConfiguration.upVector[0] = mCameraUpVector.x;
+    mConfiguration.upVector[1] = mCameraUpVector.y;
+    mConfiguration.upVector[2] = mCameraUpVector.z;
+    mConfiguration.eyePoint[0] = mCameraPosition.x;
+    mConfiguration.eyePoint[1] = mCameraPosition.y;
+    mConfiguration.eyePoint[2] = mCameraPosition.z;
 
-void TrackBall::ComputePanningMatrix(void)
-{
-    // Get the current transformation matrices from camera.
-    glm::mat4 model, view, projection;
-    mpCamera->GetMatrices(model, view, projection);
-
-    glm::vec3 offsetInCameraCoords(mPrevX - mCurrX, mCurrY - mPrevY, 0.0f);
-    glm::mat3 cameraToObject = glm::inverse(glm::mat3(view) * glm::mat3(model));
-    glm::vec3 offsetInObjectCoords = cameraToObject * offsetInCameraCoords;
-    mpCamera->OffsetCenterPoint(offsetInObjectCoords);
+    mpCamera->Configure(&mConfiguration); // Update camera.
 }
 
 // ================================================================================
@@ -131,18 +159,6 @@ void Camera::GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) con
 GraphicsContext* Camera::GetGraphicsContext(void) const
 {
     return this->mpGraphicsContext;
-}
-
-void Camera::SetModelTransformation(const glm::mat4& model)
-{
-    this->mModelMatrix = model;
-}
-
-void Camera::OffsetCenterPoint(const glm::vec3& offset)
-{
-    this->mConfiguration.center[0] += offset.x;
-    this->mConfiguration.center[1] += offset.y;
-    this->mConfiguration.center[2] += offset.z;
 }
 
 void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
@@ -217,7 +233,7 @@ void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration)
         pConfiguration->upVector[2]);
 
     // The view is always looking at the origin from "eyePoint".
-    this->mViewMatrix = glm::lookAt(eyePoint, glm::vec3(0.0f), upVector);
+    this->mViewMatrix = glm::lookAt(eyePoint, center, upVector);
 
     const float w = ((float) pConfiguration->viewportWidth);
     const float h = ((float) pConfiguration->viewportHeight);
