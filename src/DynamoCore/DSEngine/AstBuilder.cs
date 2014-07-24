@@ -196,24 +196,25 @@ namespace Dynamo.DSEngine
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
-            nodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = TopologicalSort(nodes);
-            foreach (var node in sortedNodes)
-            {
-                var scopedNode = node as ScopedNodeModel;
-                if (scopedNode != null)
-                {
-                    var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
-                    scopedNode.RequiresRecalc = dirtyInScopeNodes.Any();
-                    foreach (var dirtyNode in dirtyInScopeNodes)
-                    {
-                        dirtyNode.RequiresRecalc = false; 
-                    }
-                }
-            }
+            var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
+            var sortedNodes = TopologicalSort(topScopedNodes);
 
             if (isDeltaExecution)
             {
+                foreach (var node in sortedNodes)
+                {
+                    var scopedNode = node as ScopedNodeModel;
+                    if (scopedNode != null)
+                    {
+                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
+                        scopedNode.RequiresRecalc = dirtyInScopeNodes.Any();
+                        foreach (var dirtyNode in dirtyInScopeNodes)
+                        {
+                            dirtyNode.RequiresRecalc = false;
+                        }
+                    }
+                }
+
                 sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
             }
 
