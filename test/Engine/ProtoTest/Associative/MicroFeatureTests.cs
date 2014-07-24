@@ -2617,37 +2617,6 @@ i = [Associative]
             thisTest.Verify("i", 3);
         }
 
-                [Test]
-        public void TestLocalKeywordDeclaration09()
-        {
-            string code =
-@"
-i = [Imperative]
-{
-    a : local int = 1;      
-    return = a;
-}
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("i", 1);
-        }
-
-        [Test]
-        public void TestLocalKeywordDeclaration10()
-        {
-            string code =
-@"
-i = [Imperative]
-{
-    a : local int = 1;      
-    b : local int = 2;       
-    return = a + b;
-}
-";          
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("i", 3);
-        }
-
         [Test]
         public void TestLocalKeywordDeclarationNegativ01()
         {
@@ -2658,6 +2627,319 @@ a : int local = 1;   // 'local' should come before any type specifier";
             {
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
+        }
+
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ02()
+        {
+            String code =
+@"  
+local = 1;   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ03()
+        {
+            String code =
+@"  
+local : int = 1;   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+        [Test]
+        public void TestLocalKeywordDeclarationNegativ04()
+        {
+            String code =
+@"  
+local = [Imperative] { return = 1; };   // 'local' is a reserved keyword";
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock01()
+        {
+            string code =
+@"
+a = 1;
+b = [Associative]
+{
+    a : local = 2;
+    return = a;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromLanguageBlock02()
+        {
+            string code =
+@"
+a = 1;
+b = [Associative]
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+c = a;
+d = b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("d", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromFunction01()
+        {
+            string code =
+@"
+a = 1;
+def f()
+{
+    a : local = 2;
+    return = a;
+}
+
+p = f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p", 2);
+        }
+
+        [Test]
+        public void TestLocalKeywordFromFunction02()
+        {
+            string code =
+@"
+a = 1;
+def f()
+{
+    a : local = 2;
+    x : local = a;
+    return = x;
+}
+
+p = f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p", 2);
+        }
+
+        [Test]
+        public void TestLocalFromMemberFunction01()
+        {
+            string code =
+@"
+class C
+{
+    a : int = 1;
+    def f()
+    {
+        a : local = 2;
+        return = a;
+    }
+}
+p = C.C();
+x = p.a;
+y = p.f();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
+        }
+
+        [Test]
+        public void TestLocalFromMemberFunction02()
+        {
+            string code =
+@"
+class C
+{
+    a : int = 1;
+    def f()
+    {
+        a : local = 2;
+        return = a;
+    }
+
+
+    def g()
+    {
+        a : local = 3;
+        return = a;
+    }
+}
+p = C.C();
+x = p.a;
+y = p.f();
+z = p.g();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
+            thisTest.Verify("z", 3);
+        }
+
+
+        [Test]
+        public void TestLocalVariableUpdate01()
+        {
+            string code =
+@"
+i = [Associative]
+{
+    a : local = 1; 
+    b : local = a;
+    a = 2;
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableUpdate02()
+        {
+            string code =
+@"
+i = [Associative]
+{
+    a : local = 1; 
+    b : local = a + 10;
+    a = 2;
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 12);
+        }
+
+        [Test]
+        public void TestLocalVariableUpdate03()
+        {
+            string code =
+@"
+a = 10;
+b = a;
+i = [Associative]
+{
+    a : local = 1; 
+    b : local = a;
+    a = 2;          // Update local 'a'
+    return = b;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 10);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableUpdate04()
+        {
+            string code =
+@"
+a = 10;
+b = a;
+i = [Associative]
+{
+    return = [Imperative]
+    {
+        return = [Associative]
+        {
+            a : local = 1; 
+            b : local = a;
+            a = 2;          // Update local 'a'
+            return = b;
+        }
+    }
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableNoUpdate01()
+        {
+            string code =
+@"
+a = 1;
+b = a;
+c = [Associative]
+{
+    a : local = 2; // Updating local 'a' should not update global 'a'
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 2);
+        }
+
+        [Test]
+        public void TestLocalVariableNoUpdate02()
+        {
+            string code =
+@"
+a = 1;
+b = a;
+c = [Associative]
+{
+    a : local; 
+    a = 2;      // Updating local 'a' should not update global 'a'
+    return = a;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 2);
+        }
+
+
+        [Test]
+        public void TestLocalVariableNoUpdate03()
+        {
+            string code =
+@"
+a : local = 1;      // Tagging a variable local at the global scope has no semantic effect
+b : local = a;
+c = [Associative]
+{
+    a : local; 
+    a = 2;      // Updating local 'a' should not update global 'a'
+    return = 1;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 1);
+            thisTest.Verify("c", 1);
         }
 
     }

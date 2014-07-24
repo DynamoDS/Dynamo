@@ -568,16 +568,20 @@ a2 = foo2(3);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T018_Inline_Using_Recursion()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
+            string err = "MAGN-4006 Recursion in Associative Inline condition does not work properly";
             Assert.Fail("Cauing NUnit failures. Disabled");
+
             string code = @"
 def factorial : int (num : int)
 {
     return = num < 2 ? 1 : num * factorial(num-1);
 }
 fac = factorial(10);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("fac", 3628800, 0);
 
         }
