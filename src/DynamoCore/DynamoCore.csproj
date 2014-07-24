@@ -793,6 +793,12 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"

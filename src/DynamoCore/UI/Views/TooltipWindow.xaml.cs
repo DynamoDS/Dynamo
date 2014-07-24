@@ -130,7 +130,7 @@ namespace Dynamo.UI.Views
 
         public void CopyIconMouseClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("Copy button");
+            Clipboard.SetText(NodeName);
         }
 
         public void MouseClick(object sender, MouseButtonEventArgs e)

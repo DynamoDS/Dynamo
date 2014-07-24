@@ -116,7 +116,7 @@ namespace Dynamo.Utilities
                     }
                 }
             }
-
+            //HERE CALLS DSFunctionNodeSearchElement
             dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
@@ -220,6 +220,7 @@ namespace Dynamo.Utilities
 
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
                         {
+                            //HERE DESCR DIRECTLY В DLL
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;
                         }

@@ -365,6 +365,10 @@ namespace Dynamo.UI.Controls
         public DynamoToolTip()
         {
             this.Placement = PlacementMode.Custom;
+            this.Background = Brushes.Transparent;
+            this.BorderBrush = Brushes.Transparent;
+            this.Focusable = true;
+            this.Focus();
             this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
         }
 
