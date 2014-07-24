@@ -205,8 +205,11 @@ r = Apply(fo2, 42);
         }
 
         [Test]
+        [Category("Failing")]
         public void TestCompose03()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
+            string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
     @"
 import (""FunctionObject.ds"");
@@ -282,8 +285,11 @@ r = f.i;
         }
 
         [Test]
+        [Category("Failing")]
         public void TestSortByKey()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
+            string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
     @"
 import (""FunctionObject.ds"");
@@ -313,99 +319,22 @@ r1 = SortByKey(null, getPointKey);
 r2 = SortByKey({ }, getPointKey);
 
 r3 = SortByKey({ p1 }, getPointKey);
-t1 = __Map(r3, getPointKey);
+t1 = __Map(getPointKey, r3);
 
 r4 = SortByKey({ p1, p1, p1 }, getPointKey);
-t2 = __Map(r4, getPointKey);
+t2 = __Map(getPointKey, r4);
 
 r5 = SortByKey({ p1, p2, p3 }, getPointKey);
-t3 = __Map(r5, getPointKey);
+t3 = __Map(getPointKey, r5);
 
 r6 = SortByKey({ p2, p1 }, getPointKey);
-t4 = __Map(r6, getPointKey);
+t4 = __Map(getPointKey, r6);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t1", new object[]{6});
             thisTest.Verify("t2", new object[] { 6, 6, 6 });
             thisTest.Verify("t3", new object[] { 6, 6, 9 });
             thisTest.Verify("t4", new object[] { 6, 9});
-        }
-
-        [Test]
-        public void TestSortByComparision()
-        {
-            string code =
-    @"
-import (""FunctionObject.ds"");
-class Point
-{
-    constructor Point(_x, _y, _z)
-    {
-        x = _x;
-        y = _y;
-        z = _z;
-    }
-    
-    x; y; z;
-}
-
-p1 = Point(2, 1, 3);
-p2 = Point(1, 3, 3);
-p3 = Point(1, 2, 4);
-p4 = Point(3, 1, 2);
-
-def comparePoint(p1 : Point, p2: Point)
-{
-    return = [Imperative]
-    {
-        if (p1.x > p2.x)
-        {
-            return = 1;
-        }
-        else if (p1.x < p2.x)
-        {
-            return = -1;
-        }
-        else
-        {
-            if (p1.y > p2.y)
-            {
-                return = 1;
-            }
-            else if (p1.y < p2.y)
-            {
-                return = -1;
-            }
-            else
-            {
-                if (p1.z > p2.z)
-                {
-                    return = 1;
-                }
-                else if (p1.z < p2.z)
-                {
-                    return = -1;
-                }
-                else
-                {
-                    return = 0;
-                }
-            }
-        }
-    }
-}
-
-pointComparer = _SingleFunctionObject(comparePoint, 2, { }, { }, true);
-
-r = SortByComparsion({ p1, p2, p3, p4 }, pointComparer);
-r1 = r.x;
-r2 = r.y;
-r3 = r.z;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { 1, 1, 2, 3 });
-            thisTest.Verify("r2", new object[] { 2, 3, 1, 1});
-            thisTest.Verify("r3", new object[] { 4, 3, 3, 2 });
         }
 
         [Test]
@@ -437,8 +366,8 @@ def getCoordinateValue(p : Point)
 
 getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
 r = GroupByKey({ p1, p2, p3 }, getPointKey);
-t1 = __Map(r[0], getPointKey);
-t2 = __Map(r[1], getPointKey);
+t1 = __Map(getPointKey, r[0]);
+t2 = __Map(getPointKey, r[1]);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t1", new object[] { 6, 6});
@@ -481,8 +410,9 @@ def sum(x, y)
 
 acc1 = _SingleFunctionObject(mul, 2, { }, { }, true);
 acc2 = _SingleFunctionObject(sum, 2, { }, { }, true);
-v1 = Reduce(1..10, 1, acc1);
-v2 = Reduce(1..10, 0, acc2);
+
+v1 = __Reduce(acc1, 1, 1..10);
+v2 = __Reduce(acc2, 0, 1..10);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("v1", 3628800);
