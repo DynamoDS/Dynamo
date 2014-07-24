@@ -395,8 +395,13 @@ namespace Dynamo.Nodes
                         Enumerable.Range(0, count).Where(HasInput),
                         inputAstNodes);
                     resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
-                    resultAst.Add(
-                        AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+
+                    var firstOutput = GetAstIdentifierForOutputIndex(0);
+                    if (!firstOutput.Equals(AstIdentifierForPreview))
+                    {
+                        resultAst.Add(
+                            AstFactory.BuildAssignment(firstOutput, AstIdentifierForPreview));
+                    }
                 }
                 else
                 {
