@@ -2129,9 +2129,11 @@ q = a;
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T036_Defect_1467491()
         {
-            string errmsg = "DNL-1467336 Rev 3971 :global and local scope identifiers of same name causing cyclic dependency issue";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4033
+            string errmsg = "MAGN-4033 Update issue with object redefinition";
             string code = @"import(""T031_Defect_1467491_ImportUpdate_Sub.ds"");
 t = 5;
 z = a.x;    // This is a redefinition test where 'a' was redefined in the imported file
