@@ -552,7 +552,7 @@ namespace Unfold
                     //weak code, shoould have a method for this - find edge that leads to
                     var edge = parent.Graph_Edges.Where(x => x.Head.Equals(child)).First();
 
-                    int nc = AlignPlanarFaces.CheckNormalConsistency(child.UnfoldPolySurface, parent.UnfoldPolySurface, edge.Real_Edge);
+                    int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
                     Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.UnfoldPolySurface, parent.Face, edge.Real_Edge) as Surface;
 
                     //at this point need to check if the rotated face has intersected with any other face that has been been
@@ -591,9 +591,13 @@ namespace Unfold
                     {
                         foreach (var rotsubface in rotFaceSubSurfaces)
                         {
-                            if (surfaceToIntersect.Intersect(rotsubface).Any(x => x is Surface))
+                            var resultantGeo = surfaceToIntersect.Intersect(rotatedFace);
+                            foreach (var geo in resultantGeo)
                             {
-                                overlapflag = true;
+                                if (geo is Surface)
+                                {
+                                    overlapflag = true;
+                                }
                             }
                         }
                     }
@@ -611,6 +615,8 @@ namespace Unfold
 
                     else
                     {
+                        // if there is no overlap we need to 
+
                         List<Surface> subsurblist = null;
                         if (rotatedFace is PolySurface)
                         {
