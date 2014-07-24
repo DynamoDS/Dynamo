@@ -60,10 +60,10 @@ namespace Dynamo
         {
             var directory = new FileInfo(ExecutingDirectory);
             string assemblyDir = directory.DirectoryName;
-            string samplesLoc = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
-            string samplesPath = Path.GetFullPath(samplesLoc);
+            string sampleLocation = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
+            string samplePath = Path.GetFullPath(sampleLocation);
 
-            return samplesPath;
+            return samplePath;
 
         }
 
