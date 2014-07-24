@@ -133,6 +133,7 @@ limitations under the License.
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\DynamoRunner.cs" />
+    <Compile Include="Core\RevitContext.cs" />
     <Compile Include="Core\TimeStampOrdering.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
@@ -140,11 +141,21 @@ limitations under the License.
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
+    <Compile Include="Library\FunctionDescriptor.cs" />
+    <Compile Include="Library\FunctionGroup.cs" />
     <Compile Include="Library\LibraryCustomization.cs" />
+    <Compile Include="Library\LibraryServices.cs" />
+    <Compile Include="Library\TypedParameter.cs" />
     <Compile Include="Library\XmlDocumentationExtensions.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
+    <Compile Include="Models\DynamoModelEventArgs.cs" />
+    <Compile Include="Models\DynamoModelDelegates.cs" />
+    <Compile Include="Models\DynamoModelEvents.cs" />
+    <Compile Include="Models\NodeFactory.cs" />
+    <Compile Include="Models\TypeLoadData.cs" />
+    <Compile Include="Models\WorkspaceHeader.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
@@ -173,7 +184,7 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
-    <Compile Include="Library\Library.cs" />
+    <Compile Include="Library\FunctionType.cs" />
     <Compile Include="DSEngine\EngineController.cs" />
     <Compile Include="DSEngine\LiveRunnerServices.cs" />
     <Compile Include="DSEngine\NodeToCode.cs" />
@@ -234,8 +245,13 @@ limitations under the License.
     <Compile Include="Utilities\MigrationReport.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
+    <Compile Include="ViewModels\DynamoViewModelDelegateCommands.cs" />
+    <Compile Include="ViewModels\DynamoViewModelEventArgs.cs" />
+    <Compile Include="ViewModels\DynamoViewModelDelegates.cs" />
+    <Compile Include="ViewModels\DynamoViewModelEvents.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
+    <Compile Include="ViewModels\IWatchViewModel.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\WatchViewModel.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />

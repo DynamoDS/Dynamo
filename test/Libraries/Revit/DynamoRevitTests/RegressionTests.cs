@@ -160,7 +160,7 @@ namespace Dynamo.Tests
                 dynSettings.DynamoLogger = logger;
                 var updateManager = new UpdateManager.UpdateManager(logger);
 
-                Controller = DynamoRevit.CreateDynamoRevitControllerAndViewModel(updater, logger, Context.NONE);
+                Controller = DynamoRevit.CreateDynamoRevitControllerAndViewModel(updater, logger, RevitContext.NONE);
                 DynamoController.IsTestMode = true;
 
                 // create the transaction manager object

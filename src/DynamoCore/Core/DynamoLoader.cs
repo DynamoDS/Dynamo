@@ -7,6 +7,9 @@ using Dynamo.Models;
 using System.Reflection;
 using System.IO;
 using Autodesk.DesignScript.Runtime;
+
+using Dynamo.PackageManager;
+
 using DynamoUtilities;
 using String = System.String;
 
@@ -20,13 +23,28 @@ namespace Dynamo.Utilities
     /// </summary>
     public class DynamoLoader
     {
+        #region Properties/Fields
+
+        private DynamoModel dynamoModel;
+        public PackageLoader PackageLoader { get; private set; }
+
         private static string _dynamoDirectory = "";
         public static HashSet<string> SearchPaths = new HashSet<string>();
         public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded =
             new Dictionary<string, List<Type>>();
 
-        public static string GetDynamoDirectory()
+        #endregion
+
+        public DynamoLoader(DynamoModel model)
+        {
+            this.dynamoModel = model;
+            this.PackageLoader = new PackageLoader();
+        }
+
+        #region Methods
+
+        public string GetDynamoDirectory()
         {
             if (String.IsNullOrEmpty(_dynamoDirectory))
             {
@@ -36,17 +54,12 @@ namespace Dynamo.Utilities
             return _dynamoDirectory;
         }
 
-        internal static void LoadPackages()
-        {
-            dynSettings.PackageLoader.LoadPackages();
-        }
-
         /// <summary>
         /// Load all types which inherit from NodeModel whose assemblies are located in
         /// the bin/nodes directory. Add the types to the searchviewmodel and
         /// the controller's dictionaries.
         /// </summary>
-        internal static void LoadNodeModels()
+        internal void LoadNodeModels()
         {
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
@@ -112,7 +125,7 @@ namespace Dynamo.Utilities
                     }
                     catch (Exception e)
                     {
-                        dynSettings.DynamoLogger.Log(e);
+                        dynamoModel.Logger.Log(e);
                     }
                 }
             }
@@ -127,7 +140,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <parameter>The type</parameter>
         /// <returns>True if the type is node.</returns>
-        public static bool IsNodeSubType(Type t)
+        public bool IsNodeSubType(Type t)
         {
             return //t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
@@ -140,13 +153,12 @@ namespace Dynamo.Utilities
         ///     to the console.
         /// </summary>
         /// <Returns>The list of node types loaded from this assembly</Returns>
-        public static List<Type> LoadNodesFromAssembly(Assembly assembly)
+        public List<Type> LoadNodesFromAssembly(Assembly assembly)
         {
             if (assembly == null) 
                 throw new ArgumentNullException("assembly");
-            
-            var controller = dynSettings.Controller;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
+
+            var searchViewModel = dynamoModel.SearchViewModel;
 
             AssemblyPathToTypesLoaded.Add(assembly.Location, new List<Type>());
 
@@ -181,7 +193,7 @@ namespace Dynamo.Utilities
 
                         //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
                         //if available, to discern whether we should load this type
-                        if (!controller.Context.Equals(Context.NONE))
+                        if (!dynamoModel.Context.Equals(RevitContext.NONE))
                         {
 
                             object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
@@ -192,7 +204,7 @@ namespace Dynamo.Utilities
                                 //if the attribute's values contain the context stored on the controller
                                 //then skip loading this type.
 
-                                if (exclusions.Reverse().Any(e => e.Contains(controller.Context)))
+                                if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
                                     continue;
 
                                 //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
@@ -233,36 +245,36 @@ namespace Dynamo.Utilities
                         if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
                             controller.BuiltInTypesByNickname.Add(typeName, data);
                         else
-                            dynSettings.DynamoLogger.Log("Duplicate type encountered: " + typeName);
+                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
 
                         if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
                             controller.BuiltInTypesByName.Add(t.FullName, data);
                         else
-                            dynSettings.DynamoLogger.Log("Duplicate type encountered: " + typeName);
+                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
                     }
                     catch (Exception e)
                     {
-                        dynSettings.DynamoLogger.Log("Failed to load type from " + assembly.FullName);
-                        dynSettings.DynamoLogger.Log("The type was " + t.FullName);
-                        dynSettings.DynamoLogger.Log(e);
+                        dynamoModel.Logger.Log("Failed to load type from " + assembly.FullName);
+                        dynamoModel.Logger.Log("The type was " + t.FullName);
+                        dynamoModel.Logger.Log(e);
                     }
 
                 }
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log("Could not load types.");
-                dynSettings.DynamoLogger.Log(e);
+                dynamoModel.Logger.Log("Could not load types.");
+                dynamoModel.Logger.Log(e);
                 if (e is ReflectionTypeLoadException)
                 {
                     var typeLoadException = e as ReflectionTypeLoadException;
                     Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
-                    dynSettings.DynamoLogger.Log("Dll Load Exception: " + loaderExceptions[0]);
-                    dynSettings.DynamoLogger.Log(loaderExceptions[0].ToString());
+                    dynamoModel.Logger.Log("Dll Load Exception: " + loaderExceptions[0]);
+                    dynamoModel.Logger.Log(loaderExceptions[0].ToString());
                     if (loaderExceptions.Count() > 1)
                     {
-                        dynSettings.DynamoLogger.Log("Dll Load Exception: " + loaderExceptions[1]);
-                        dynSettings.DynamoLogger.Log(loaderExceptions[1].ToString());
+                        dynamoModel.Logger.Log("Dll Load Exception: " + loaderExceptions[1]);
+                        dynamoModel.Logger.Log(loaderExceptions[1].ToString());
                     }
                 }
             }
@@ -274,10 +286,10 @@ namespace Dynamo.Utilities
         ///     Load Custom Nodes from the default directory - the "definitions"
         ///     directory where the executing assembly is located..
         /// </summary>
-        public static IEnumerable<CustomNodeInfo> LoadCustomNodes()
+        public IEnumerable<CustomNodeInfo> LoadCustomNodes()
         {
-            var customNodeLoader = dynSettings.CustomNodeManager;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
+            var customNodeLoader = dynamoModel.CustomNodeManager;
+            var searchViewModel = dynamoModel.SearchViewModel;
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
@@ -292,13 +304,13 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Load Custom Nodes from the CustomNodeLoader search path and update search
         /// </summary>
-        public static List<CustomNodeInfo> LoadCustomNodes(string path)
+        public List<CustomNodeInfo> LoadCustomNodes(string path)
         {
             if (!Directory.Exists(path))
                 return new List<CustomNodeInfo>();
 
-            var customNodeLoader = dynSettings.CustomNodeManager;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
+            var customNodeLoader = dynamoModel.CustomNodeManager;
+            var searchViewModel = dynamoModel.SearchViewModel;
 
             var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
             customNodeLoader.AddDirectoryToSearchPath(path);
@@ -312,10 +324,12 @@ namespace Dynamo.Utilities
             return loadedNodes;
         }
 
-        internal static void ClearCachedAssemblies()
+        internal void ClearCachedAssemblies()
         {
             LoadedAssemblyNames = new HashSet<string>();
             AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
         }
+
+        #endregion
     }
 }

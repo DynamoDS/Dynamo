@@ -71,7 +71,7 @@ namespace Dynamo.Controls
             return app;
         }
 
-        public DynamoView()
+        public DynamoView(DynamoViewModel dynamoViewModel)
         {
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 

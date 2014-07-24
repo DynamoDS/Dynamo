@@ -69,7 +69,7 @@ namespace Dynamo.Tests
             var updateManager = new UpdateManager.UpdateManager(logger);
 
             ////create a new instance of the ViewModel
-            Controller = new DynamoController(Context.NONE, updateManager,
+            Controller = new DynamoController(RevitContext.NONE, updateManager,
                 new DefaultWatchHandler(), new PreferenceSettings(), corePath);
             DynamoController.IsTestMode = true;
             Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
@@ -90,7 +90,7 @@ namespace Dynamo.Tests
             DynamoPathManager.Instance.InitializeCore(corePath);
 
             //create a new instance of the ViewModel
-            Controller = new DynamoController(Context.NONE, updateManager, watchHandler, preferences, corePath);
+            Controller = new DynamoController(RevitContext.NONE, updateManager, watchHandler, preferences, corePath);
             Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
             DynamoController.IsTestMode = true;
             Controller.VisualizationManager = new VisualizationManager();

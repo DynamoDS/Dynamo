@@ -29,6 +29,7 @@ namespace Dynamo.Models
 
         #region internal members
 
+        private DynamoModel dynamoModel;
         private string _fileName;
         private string _name;
         private double _height = 100;
@@ -354,9 +355,11 @@ namespace Dynamo.Models
 
         #region constructors
 
-        protected WorkspaceModel(
-            String name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
+        protected WorkspaceModel( DynamoModel dynamoModel, String name, IEnumerable<NodeModel> e,
+            IEnumerable<ConnectorModel> c, double x, double y)
         {
+            this.dynamoModel = dynamoModel;
+
             Name = name;
 
             Nodes = new TrulyObservableCollection<NodeModel>(e);
@@ -388,7 +391,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            dynSettings.DynamoLogger.Log("Saving " + newPath + "...");
+            dynamoModel.Logger.Log("Saving " + newPath + "...");
             try
             {
                 if (SaveInternal(newPath))
@@ -397,13 +400,144 @@ namespace Dynamo.Models
             catch (Exception ex)
             {
                 //Log(ex);
-                dynSettings.DynamoLogger.Log(ex.Message);
-                dynSettings.DynamoLogger.Log(ex.StackTrace);
+                dynamoModel.Logger.Log(ex.Message);
+                dynamoModel.Logger.Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Create a node with the given parameters. Since this method is called
+        /// on an instance of DynamoModel, it also raises node added event to any
+        /// event handlers, typically useful for real user scenario (listeners 
+        /// may include package manager and other UI components).
+        /// </summary>
+        /// <param name="nodeId">The Guid to be used for the new node, it cannot
+        /// be Guid.Empty since this method does not attempt to internally generate 
+        /// a new Guid. An ArgumentException will be thrown if this argument is 
+        /// Guid.Empty.</param>
+        /// <param name="nodeName">The name of the node type to be created.</param>
+        /// <param name="x">The x coordinates where the newly created node should 
+        /// be placed. This value is ignored if useDefaultPos is true.</param>
+        /// <param name="y">The y coordinates where the newly created node should 
+        /// be placed. This value is ignored if useDefaultPos is true.</param>
+        /// <param name="useDefaultPos">This parameter indicates if the node 
+        /// should be created at the default position. If this parameter is true,
+        /// the node is created at the center of view, and both x and y parameters
+        /// are ignored. If this is false, the values for both x and y parameters 
+        /// will be used as the initial position of the new node.</param>
+        /// <param name="transformCoordinates">If this parameter is true, then the
+        /// position of new node will be transformed from outerCanvas space into 
+        /// zoomCanvas space.</param>
+        /// <param name="xmlNode">This argument carries information that a node 
+        /// may require for its creation. The new node loads itself from this 
+        /// parameter if one is specified. This parameter is optional.</param>
+        /// <returns>Returns the created NodeModel, or null if the operation has 
+        /// failed.</returns>
+        /// 
+        internal NodeModel AddNode(
+            Guid nodeId, string nodeName, double x, double y,
+            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode)
+        {
+            if (nodeId == Guid.Empty)
+                throw new ArgumentException("Node ID must be specified", "nodeId");
+
+            NodeModel node = dynamoModel.NodeFactory.CreateNodeInstance(nodeName);
+            if (node == null)
+            {
+                string format = "Failed to create node '{0}' (GUID: {1})";
+                dynamoModel.Logger.Log(string.Format(format, nodeName, nodeId));
+                return null;
+            }
+
+            if (useDefaultPos == false) // Position was specified.
+            {
+                node.X = x;
+                node.Y = y;
+            }
+
+            this.Nodes.Add(node);
+            node.WorkSpace = this;
+
+            if (null != xmlNode)
+                node.Load(xmlNode);
+
+            // Override the guid so we can store for connection lookup
+            node.GUID = nodeId;
+
+            ModelEventArgs args = null;
+            if (!useDefaultPos)
+                args = new ModelEventArgs(node, x, y, transformCoordinates);
+            else
+            {
+                // The position of the new node has not been specified.
+                args = new ModelEventArgs(node, transformCoordinates);
+            }
+
+            // KILLDYNSETTINGS
+            DynamoModelEvents vm = Controller.DynamoViewModel;
+            vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
+
+            node.EnableInteraction();
+
+            if (dynamoModel.CurrentWorkspace == dynamoModel.HomeSpace)
+                node.SaveResult = true;
+
+            OnNodeAdded(node);
+            return node;
+        }
+
+        internal ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex )
+        {
+            try
+            {
+                var c = ConnectorModel.Make(start, end, startIndex, endIndex, PortType.INPUT);
+
+                if (c != null)
+                    this.Connectors.Add(c);
+
+                OnConnectorAdded(c);
+
+                return c;
+            }
+            catch (Exception e)
+            {
+                dynamoModel.Logger.Log(e.Message);
+                dynamoModel.Logger.Log(e);
+            }
+
+            return null;
+        }
+
+        internal NoteModel AddNote(bool centerNote, double x, double y, string text, Guid id )
+        {
+            NoteModel noteModel = new NoteModel(x, y);
+            noteModel.GUID = id;
+
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+
+            if (centerNote)
+            {
+                var args = new ModelEventArgs(noteModel, true);
+
+                // KILLDYNSETTINGS
+                DynamoModelEvents vm = Controller.DynamoViewModel;
+                vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
+            }
+
+            noteModel.Text = "New Note";
+            if (!string.IsNullOrEmpty(command.NoteText))
+                noteModel.Text = command.NoteText;
+
+            if (null == workspace)
+                workspace = CurrentWorkspace;
+
+            workspace.Notes.Add(noteModel);
+            return noteModel;
         }
 
         /// <summary>
@@ -1260,6 +1394,7 @@ namespace Dynamo.Models
 
                 });
 
+            // KILLDYNSETTINGS: shouldn't know about the dispatcher
             if (dynSettings.Controller != null &&
                 dynSettings.Controller.UIDispatcher != null &&
                 dynSettings.Controller.UIDispatcher.CheckAccess() == false)

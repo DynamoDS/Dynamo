@@ -26,8 +26,8 @@ namespace Dynamo
         public VisualizationManagerRevit() : base()
         {
             var context = dynSettings.Controller.Context;
-            if (context == Context.VASARI_2014 || 
-                context == Context.REVIT_2015)
+            if (context == RevitContext.VASARI_2014 || 
+                context == RevitContext.REVIT_2015)
             {
                 AlternateDrawingContextAvailable = true;
                 DrawToAlternateContext = false;
