@@ -174,9 +174,9 @@ void TrackBall::UpdateCameraInternal(void)
     mConfiguration.cameraPosition[0] = mCameraPosition.x;
     mConfiguration.cameraPosition[1] = mCameraPosition.y;
     mConfiguration.cameraPosition[2] = mCameraPosition.z;
-    mConfiguration.targetPosition[0]   = mTargetPosition.x;
-    mConfiguration.targetPosition[1]   = mTargetPosition.y;
-    mConfiguration.targetPosition[2]   = mTargetPosition.z;
+    mConfiguration.targetPosition[0] = mTargetPosition.x;
+    mConfiguration.targetPosition[1] = mTargetPosition.y;
+    mConfiguration.targetPosition[2] = mTargetPosition.z;
 
     mpCamera->Configure(&mConfiguration); // Update camera.
 }
@@ -213,7 +213,12 @@ GraphicsContext* Camera::GetGraphicsContext(void) const
 
 void Camera::ConfigureCore(const CameraConfiguration* pConfiguration)
 {
-    ConfigureInternal(pConfiguration);
+    ConfigureInternal(pConfiguration, false);
+}
+
+void Camera::BeginConfigureCore(const CameraConfiguration* pConfiguration)
+{
+    ConfigureInternal(pConfiguration, true);
 }
 
 void Camera::ResizeViewportCore(int width, int height)
@@ -223,7 +228,7 @@ void Camera::ResizeViewportCore(int width, int height)
 
     configuration.viewportWidth = width;
     configuration.viewportHeight = height;
-    this->ConfigureInternal(&configuration);
+    this->ConfigureInternal(&configuration, false);
 }
 
 void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
@@ -257,7 +262,7 @@ void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
     // Update the configuration and reconfigure the camera.
     configuration.SetEyePoint(eye.x, eye.y, eye.z);
     configuration.SetCenterPoint(boxCenter[0], boxCenter[1], boxCenter[2]);
-    this->Configure(&configuration);
+    this->BeginConfigure(&configuration);
 }
 
 ITrackBall* Camera::GetTrackBallCore() const
@@ -265,7 +270,7 @@ ITrackBall* Camera::GetTrackBallCore() const
     return (const_cast<Camera *>(this))->mpTrackBall;
 }
 
-void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration)
+void Camera::ConfigureInternal(const CameraConfiguration* pConfiguration, bool smooth)
 {
     glm::vec3 cameraPosition(
         pConfiguration->cameraPosition[0],

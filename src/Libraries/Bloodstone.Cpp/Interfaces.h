@@ -323,6 +323,11 @@ namespace Dynamo { namespace Bloodstone {
             this->ConfigureCore(pConfiguration);
         }
 
+        void BeginConfigure(const CameraConfiguration* pConfiguration)
+        {
+            this->BeginConfigureCore(pConfiguration);
+        }
+
         void ResizeViewport(int width, int height)
         {
             this->ResizeViewportCore(width, height);
@@ -340,6 +345,7 @@ namespace Dynamo { namespace Bloodstone {
 
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration) = 0;
+        virtual void BeginConfigureCore(const CameraConfiguration* pConfiguration) = 0;
         virtual void ResizeViewportCore(int width, int height) = 0;
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox) = 0;
         virtual ITrackBall* GetTrackBallCore() const = 0;

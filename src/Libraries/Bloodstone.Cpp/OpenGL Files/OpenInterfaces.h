@@ -228,12 +228,13 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration);
+        virtual void BeginConfigureCore(const CameraConfiguration* pConfiguration);
         virtual void ResizeViewportCore(int width, int height);
         virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox);
         virtual Dynamo::Bloodstone::ITrackBall* GetTrackBallCore() const;
 
     private:
-        void ConfigureInternal(const CameraConfiguration* pConfiguration);
+        void ConfigureInternal(const CameraConfiguration* pConfiguration, bool smooth);
 
         glm::mat4 mModelMatrix;
         glm::mat4 mViewMatrix;
