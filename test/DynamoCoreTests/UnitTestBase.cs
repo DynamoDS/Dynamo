@@ -11,7 +11,6 @@ namespace Dynamo
 
         protected string ExecutingDirectory { get; set; }
         protected string TempFolder { get; private set; }
-        protected string _samplesPath;
 
         [SetUp]
         public virtual void Init()
@@ -62,9 +61,9 @@ namespace Dynamo
             var directory = new FileInfo(ExecutingDirectory);
             string assemblyDir = directory.DirectoryName;
             string samplesLoc = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
-            _samplesPath = Path.GetFullPath(samplesLoc);
+            string samplesPath = Path.GetFullPath(samplesLoc);
 
-            return _samplesPath;
+            return samplesPath;
 
         }
 
