@@ -259,10 +259,9 @@ namespace ProtoTestFx.TD
 
                 string path ="..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
                 if (!System.IO.Directory.Exists(path))
-                    System.IO.Directory.CreateDirectory(path);    
-                
-                //Remove the comment to dump the tests
-                createDSFile(fileName,path,sourceCode);
+                    System.IO.Directory.CreateDirectory(path);
+
+                createDSFile(fileName, path, sourceCode);// Uncomment to dump the tests - while running in Nunit test 
                 SetErrorMessage(errorstring);
                 return testMirror;
             }
