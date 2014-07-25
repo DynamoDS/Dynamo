@@ -10,6 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.UI;
 using System.Xml.Linq;
@@ -194,6 +195,8 @@ namespace Dynamo.UpdateManager
 
         #region Public Event Handlers
 
+        private readonly DynamoModel dynamoModel;
+
         /// <summary>
         /// Occurs when RequestUpdateDownload operation completes.
         /// </summary>
@@ -306,9 +309,9 @@ namespace Dynamo.UpdateManager
 
         #endregion
 
-        public UpdateManager(ILogger logger)
+        public UpdateManager(DynamoModel dynamoModel)
         {
-            this.logger = logger;
+            this.dynamoModel = dynamoModel;
             PropertyChanged += UpdateManager_PropertyChanged;
         }
 
@@ -522,7 +525,7 @@ namespace Dynamo.UpdateManager
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private static string GetLatestBuildFromS3(IAsynchronousRequest request, bool checkDailyBuilds)
+        private string GetLatestBuildFromS3(IAsynchronousRequest request, bool checkDailyBuilds)
         {
             XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
 

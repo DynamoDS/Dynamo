@@ -697,7 +697,7 @@ namespace Dynamo.Utilities
 
                 if (fileVersion > currentVersion)
                 {
-                    bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
+                    bool resume = Utils.DisplayFutureFileMessage(this.dynamoModel, xmlPath, fileVersion, currentVersion);
                     if (!resume)
                     {
                         def = null;
@@ -708,7 +708,7 @@ namespace Dynamo.Utilities
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
+                    Utils.DisplayObsoleteFileMessage(this.dynamoModel, xmlPath, fileVersion, currentVersion);
                     
                     def = null;
                     return false;
@@ -726,8 +726,8 @@ namespace Dynamo.Utilities
                         dynamoModel.Logger.Log(message);
                     }
 
-                    MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
-                    MigrationManager.Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessWorkspaceMigrations(this.dynamoModel, xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessNodesInWorkspace(this.dynamoModel, xmlDoc, fileVersion);
                 }
 
                 // we have a dyf and it lacks an ID field, we need to assign it

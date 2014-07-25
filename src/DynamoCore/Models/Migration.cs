@@ -107,7 +107,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="xmlDoc"></param>
         /// <param name="version"></param>
-        public void ProcessWorkspaceMigrations(XmlDocument xmlDoc, Version workspaceVersion)
+        public void ProcessWorkspaceMigrations(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
         {
             var methods = MigrationTargets.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.Static));
 
@@ -122,7 +122,7 @@ namespace Dynamo.Models
                     orderby result.From
                     select result).ToList();
 
-            var currentVersion = dynamoModel.DynamoModel.HomeSpace.WorkspaceVersion;
+            var currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
             {
@@ -136,7 +136,7 @@ namespace Dynamo.Models
             }
         }
 
-        public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion)
+        public void ProcessNodesInWorkspace(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
         {
             if(DynamoModel.EnableMigrationLogging)
             {
@@ -169,7 +169,7 @@ namespace Dynamo.Models
                 }
 
                 // Migrate the given node into one or more new nodes.
-                var migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
+                var migrationData = this.MigrateXmlNode(dynamoModel.HomeSpace, elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
             }
 
@@ -191,7 +191,7 @@ namespace Dynamo.Models
                 elNodesList.AppendChild(migratedNode);
         }
 
-        public NodeMigrationData MigrateXmlNode(XmlNode elNode, System.Type type, Version workspaceVersion)
+        public NodeMigrationData MigrateXmlNode(WorkspaceModel homespace, XmlNode elNode, System.Type type, Version workspaceVersion)
         {
             var migrations = (from method in type.GetMethods()
                               let attribute =
@@ -201,7 +201,6 @@ namespace Dynamo.Models
                               orderby result.From
                               select result).ToList();
 
-            var homespace = dynamoModel.HomeSpace;
             var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
 
             XmlElement nodeToMigrate = elNode as XmlElement;

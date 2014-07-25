@@ -45,6 +45,7 @@ namespace Dynamo.ViewModels
         #region public members
 
         public readonly DynamoViewModel DynamoViewModel;
+        public readonly WorkspaceViewModel WorkspaceViewModel;
 
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
@@ -319,8 +320,11 @@ namespace Dynamo.ViewModels
 
         #region constructors
 
-        public NodeViewModel(DynamoViewModel dynamoViewModel, NodeModel logic)
+        public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic)
         {
+            this.WorkspaceViewModel = workspaceViewModel;
+            this.DynamoViewModel = workspaceViewModel.DynamoViewModel;
+
             nodeLogic = logic;
 
             //respond to collection changed events to sadd
@@ -330,8 +334,8 @@ namespace Dynamo.ViewModels
 
             logic.PropertyChanged += logic_PropertyChanged;
 
-            dynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
-            dynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
+            this.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
+            this.DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
             ErrorBubble = new InfoBubbleViewModel();
 
@@ -343,7 +347,7 @@ namespace Dynamo.ViewModels
 
             if (IsDebugBuild)
             {
-                dynamoViewModel.Model.EngineController.AstBuilt += EngineController_AstBuilt;
+                DynamoViewModel.Model.EngineController.AstBuilt += EngineController_AstBuilt;
             }
         }
 
@@ -400,12 +404,12 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                InPorts.Add(new PortViewModel(item, nodeLogic));
+                InPorts.Add(new PortViewModel(this, item));
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                OutPorts.Add(new PortViewModel(item, nodeLogic));
+                OutPorts.Add(new PortViewModel(this, item));
             }
         }
 
@@ -629,7 +633,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
+                    InPorts.Add(new PortViewModel(this, item as PortModel));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -653,7 +657,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
+                    OutPorts.Add(new PortViewModel(this, item as PortModel));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)

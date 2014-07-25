@@ -74,6 +74,7 @@ namespace Dynamo.Controls
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
+            this.dynamoViewModel.UIDispatcher = this.Dispatcher;
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 

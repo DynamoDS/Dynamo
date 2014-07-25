@@ -499,7 +499,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="fileVersion">Version of the input file.</param>
         /// <param name="currVersion">Current version of the Dynamo.</param>
-        internal static void DisplayObsoleteFileMessage(
+        internal static void DisplayObsoleteFileMessage( DynamoModel dynamoModel,
             string fullFilePath, Version fileVersion, Version currVersion)
         {
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
@@ -507,7 +507,6 @@ namespace Dynamo.Nodes
 
             InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
-
 
             var summary = "Your file cannot be opened";
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
@@ -529,7 +528,7 @@ namespace Dynamo.Nodes
         /// message instructs user to save their work and restart Dynamo.
         /// </summary>
         /// <param name="exception">The exception to display.</param>
-        internal static void DisplayEngineFailureMessage(Exception exception)
+        internal static void DisplayEngineFailureMessage(DynamoModel dynamoModel, Exception exception)
         {
             StabilityTracking.GetInstance().NotifyCrash();
             InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
@@ -586,7 +585,7 @@ namespace Dynamo.Nodes
         /// <param name="fileVersion"></param>
         /// <param name="currVersion"></param>
         /// <returns> true if the file must be opened and false otherwise </returns>
-        internal static bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
+        internal static bool DisplayFutureFileMessage(DynamoModel dynamoModel, string fullFilePath, Version fileVersion, Version currVersion)
         {
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
             var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
@@ -611,6 +610,7 @@ namespace Dynamo.Nodes
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
+                // this should be an event on DynamoModel
                 dynamoModel.DownloadDynamo();
                 return false;
             }

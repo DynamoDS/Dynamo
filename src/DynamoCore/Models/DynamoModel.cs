@@ -223,10 +223,8 @@ namespace Dynamo.Models
             Context = context;
             IsTestMode = isTestMode;
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
-            UpdateManager = new UpdateManager.UpdateManager(Logger);
             DebugSettings = new DebugSettings();
 
-            // KILLDYNSETTINGS - this looks odd
             if (preferences is PreferenceSettings)
             {
                 this.PreferenceSettings = preferences as PreferenceSettings;
@@ -235,7 +233,7 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
 
-            UpdateManager = new UpdateManager.UpdateManager(Logger);
+            UpdateManager = new UpdateManager.UpdateManager(this);
             UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),
                 Logger, UpdateManager.UpdateDataAvailable));
 
@@ -724,7 +722,7 @@ namespace Dynamo.Models
 
                 if (fileVersion > currentVersion)
                 {
-                    bool resume = Utils.DisplayFutureFileMessage(xmlPath, fileVersion, currentVersion);
+                    bool resume = Utils.DisplayFutureFileMessage(this, xmlPath, fileVersion, currentVersion);
                     if (!resume)
                         return false;                    
                 }
@@ -732,7 +730,7 @@ namespace Dynamo.Models
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
+                    Utils.DisplayObsoleteFileMessage(this, xmlPath, fileVersion, currentVersion);
                     return false;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
@@ -753,8 +751,8 @@ namespace Dynamo.Models
                     if (fileVersion == new Version(0, 7, 0, 0))
                         fileVersion = new Version(0, 6, 0, 0);
 
-                    MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
-                    MigrationManager.Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessWorkspaceMigrations(this, xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessNodesInWorkspace(this, xmlDoc, fileVersion);
                 }
 
                 //set the zoom and offsets and trigger events

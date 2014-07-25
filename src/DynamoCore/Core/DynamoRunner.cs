@@ -209,7 +209,7 @@ namespace Dynamo.Core
                 if (DynamoModel.IsTestMode == false && (fatalException != null))
                 {
                     Action showFailureMessage =
-                        () => Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
+                        () => Nodes.Utilities.DisplayEngineFailureMessage(this.dynamoModel, fatalException);
 
                     // The "Run" method is guaranteed to be called on a background 
                     // thread (for Revit's case, it is the idle thread). Here we 

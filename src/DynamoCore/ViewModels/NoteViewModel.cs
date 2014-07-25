@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
         #region Properties
 
         private NoteModel _model;
+        public readonly WorkspaceViewModel WorkspaceViewModel;
 
         public NoteModel Model
         {
@@ -77,8 +78,9 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public NoteViewModel(NoteModel model)
+        public NoteViewModel(WorkspaceViewModel workspaceViewModel, NoteModel model)
         {
+            this.WorkspaceViewModel = workspaceViewModel;
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
         }

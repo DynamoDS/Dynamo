@@ -1547,6 +1547,7 @@ namespace Dynamo.Controls
         {
             if ((bool) value != true) return "(Up-to-date)";
 
+            // KILLDYNSETTINGS - Unless UpdateManager is static, we should not be doing this here
             var latest = dynamoModel.UpdateManager.AvailableVersion;
             return latest;
         }

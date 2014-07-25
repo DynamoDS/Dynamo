@@ -137,7 +137,6 @@ namespace Dynamo.ViewModels
         }
 
         public double WorkspaceActualHeight { get; set; }
-
         public double WorkspaceActualWidth { get; set; }
 
         public void WorkspaceActualSize(double width, double height)
@@ -415,8 +414,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        // KILLDYNSETTINGS: This should be a field that throws an exception when null
-        public Dispatcher UIDispatcher { get; set; }
+        internal Dispatcher UIDispatcher { get; set; }
 
         public IWatchHandler WatchHandler { get; private set; }
         public IVisualizationManager VisualizationManager { get; private set; }
@@ -478,6 +476,24 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
 
             WatchIsResizable = false;
+
+            InitializeDispatcherCallbacks();
+        }
+
+        #region Destruction
+
+        ~DynamoViewModel()
+        {
+            this.Model.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
+            this.Model.RequestDispatcherInvoke -= TryDispatcherInvoke;
+        }
+
+        #endregion
+
+        private void InitializeDispatcherCallbacks()
+        {
+            this.Model.RequestDispatcherBeginInvoke += TryDispatcherBeginInvoke;
+            this.Model.RequestDispatcherInvoke += TryDispatcherInvoke;
         }
 
         private void InitializeAutomationSettings(string commandFilePath)
@@ -488,6 +504,31 @@ namespace Dynamo.ViewModels
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
         }
+
+        private void TryDispatcherBeginInvoke(Action action)
+        {
+            if (this.UIDispatcher != null)
+            {
+                UIDispatcher.BeginInvoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+
+        private void TryDispatcherInvoke(Action action)
+        {
+            if (this.UIDispatcher != null)
+            {
+                UIDispatcher.Invoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+
 
         public void RequestRedraw()
         {
@@ -550,11 +591,13 @@ namespace Dynamo.ViewModels
             return Model.CustomNodes.Any(x => x.Value == (Guid)parameters);
         }
 
+        // KILLDYNSETTINGS - These should live on the view
         public void ReportABug(object parameter)
         {
             Process.Start(Configurations.GitHubBugReportingLink);
         }
 
+        // KILLDYNSETTINGS - These should live on the view
         internal void DownloadDynamo()
         {
             Process.Start(Configurations.DynamoDownloadLink);
@@ -578,7 +621,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");

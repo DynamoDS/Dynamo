@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Dynamo.Interfaces;
 using Dynamo.Library;
 
 using DynamoUtilities;
@@ -213,7 +214,7 @@ namespace Dynamo.DSEngine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public void ImportLibrary(string library)
+        public void ImportLibrary(string library, ILogger logger)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -252,10 +253,10 @@ namespace Dynamo.DSEngine
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
-                    dynamoModel.Logger.LogWarning(errorMessage, WarningLevel.Moderate);
+                    logger.LogWarning(errorMessage, WarningLevel.Moderate);
                     foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
                     {
-                        dynamoModel.Logger.LogWarning(error.Message, WarningLevel.Moderate);
+                        logger.LogWarning(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
                     }
 

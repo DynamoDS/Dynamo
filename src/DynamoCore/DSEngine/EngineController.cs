@@ -84,7 +84,7 @@ namespace Dynamo.DSEngine
         /// <param name="library"></param>
         public void ImportLibrary(string library)
         {
-            libraryServices.ImportLibrary(library);
+            libraryServices.ImportLibrary(library, this.dynamoModel.Logger);
         }
 
         #endregion

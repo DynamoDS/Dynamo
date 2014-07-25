@@ -383,7 +383,7 @@ namespace Dynamo.ViewModels
                     foreach (var item in e.NewItems)
                     {
                         //add a corresponding note
-                        var viewModel = new NoteViewModel(item as NoteModel);
+                        var viewModel = new NoteViewModel(this, item as NoteModel);
                         _notes.Add(viewModel);
                     }
                     break;
@@ -410,7 +410,7 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
 
-                            var nodeViewModel = new NodeViewModel(DynamoViewModel, node);
+                            var nodeViewModel = new NodeViewModel(this, node);
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
                         }
