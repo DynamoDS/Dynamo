@@ -138,7 +138,7 @@ namespace DSCore
         /// <search>least,smallest,find min</search>
         public static object MinimumItem(IList list)
         {
-            return list.Cast<object>().Min();
+            return list.Cast<object>().Min<object, object>(DoubleConverter);
         }
 
         /// <summary>
@@ -149,7 +149,17 @@ namespace DSCore
         /// <search>greatest,largest,biggest,find max</search>
         public static object MaximumItem(IList list)
         {
-            return list.Cast<object>().Max();
+            return list.Cast<object>().Max<object, object>(DoubleConverter);
+        }
+
+        /// <summary>
+        /// Converts integer to double, else returns the input object.
+        /// </summary>
+        private static object DoubleConverter(object obj)
+        {
+            if (obj is int)
+                return Convert.ToDouble(obj);
+            return obj;
         }
 
         /// <summary>

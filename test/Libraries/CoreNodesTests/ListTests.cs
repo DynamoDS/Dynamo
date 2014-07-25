@@ -91,6 +91,12 @@ namespace DSCoreNodesTests
             Assert.AreEqual(0, List.MinimumItem(new ArrayList { 8, 4, 0, 66, 10 }));
         }
 
+        [Test]
+        public static void ListMinimumValueMixed()
+        {
+            Assert.AreEqual(0, List.MinimumItem(new ArrayList { 8.5, 4, 0, 6.6, 10.2 }));
+        }
+
         //[Test]
         //public static void ListMinimumByKey()
         //{
@@ -100,7 +106,13 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListMaximumValue()
         {
-            Assert.AreEqual(66, List.MaximumItem(new List<int> { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(66, List.MaximumItem(new ArrayList { 8, 4, 0, 66, 10 }));
+        }
+
+        [Test]
+        public static void ListMaximumValueMixed()
+        {
+            Assert.AreEqual(66, List.MaximumItem(new ArrayList { 8.223, 4, 0.64, 66, 10.2 }));
         }
 
         [Test]
