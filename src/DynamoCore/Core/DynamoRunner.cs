@@ -86,7 +86,7 @@ namespace Dynamo.Core
                 Running = true;
             }
 
-            if (!dynamoModel.IsTestMode)
+            if (!DynamoModel.IsTestMode)
             {
                 //Setup background worker
                 dynamoModel.RunEnabled = false;
@@ -173,7 +173,7 @@ namespace Dynamo.Core
 
                 OnRunCancelled(true);
 
-                if (dynamoModel.IsTestMode) // Throw exception for NUnit.
+                if (DynamoModel.IsTestMode) // Throw exception for NUnit.
                     throw new Exception(ex.Message + ":" + ex.StackTrace);
             }
             finally
@@ -206,7 +206,7 @@ namespace Dynamo.Core
                 // if we're running in a unit-test, in which case there's no user. I'd 
                 // like not to display the dialog and hold up the continuous integration.
                 // 
-                if (dynamoModel.IsTestMode == false && (fatalException != null))
+                if (DynamoModel.IsTestMode == false && (fatalException != null))
                 {
                     Action showFailureMessage =
                         () => Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
@@ -243,7 +243,7 @@ namespace Dynamo.Core
                 //If we are testing, we need to throw an exception here
                 //which will, in turn, throw an Assert.Fail in the 
                 //Evaluation thread.
-                if (dynamoModel.IsTestMode)
+                if (DynamoModel.IsTestMode)
                     throw new Exception(ex.Message);
             }
         }

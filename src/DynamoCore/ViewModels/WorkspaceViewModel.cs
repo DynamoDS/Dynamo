@@ -410,7 +410,7 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
 
-                            var nodeViewModel = new NodeViewModel(node);
+                            var nodeViewModel = new NodeViewModel(DynamoViewModel, node);
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
                         }

@@ -32,6 +32,8 @@ using DynamoUtilities;
 
 using Microsoft.Practices.Prism;
 
+using ProtoCore.DSASM;
+
 using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
@@ -51,6 +53,23 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region Static properties
+
+        /// <summary>
+        /// Testing flag is used to defer calls to run in the idle thread
+        /// with the assumption that the entire test will be wrapped in an
+        /// idle thread call.
+        /// </summary>
+        public static bool IsTestMode { get; set; }
+
+        /// <summary>
+        /// Setting this flag enables creation of an XML in following format that records 
+        /// node mapping information - which old node has been converted to which to new node(s) 
+        /// </summary>
+        public static bool EnableMigrationLogging { get; set; }
+
+        #endregion
+
         #region public properties
 
         // core app
@@ -60,8 +79,8 @@ namespace Dynamo.Models
         internal readonly DynamoLogger Logger;
         internal readonly DynamoRunner Runner;
         internal readonly PreferenceSettings PreferenceSettings;
-        internal readonly DebugSettings DebugSettings;
         internal readonly SearchModel SearchModel;
+        internal readonly DebugSettings DebugSettings;
 
         // EngineController cannot be readonly 
         internal EngineController EngineController;
@@ -97,13 +116,6 @@ namespace Dynamo.Models
         }
 
         public WorkspaceModel HomeSpace { get; protected set; }
-
-        /// <summary>
-        /// Testing flag is used to defer calls to run in the idle thread
-        /// with the assumption that the entire test will be wrapped in an
-        /// idle thread call.
-        /// </summary>
-        public bool IsTestMode { get; set; }
 
         // move to DynamoModel
         private ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
@@ -230,7 +242,7 @@ namespace Dynamo.Models
             //Start heartbeat reporting
             //This needs to be done after the update manager has been initialised
             //so that the version number can be reported
-            InstrumentationLogger.Start();
+            InstrumentationLogger.Start(this);
 
             SearchModel = new SearchModel(this);
 
@@ -482,7 +494,7 @@ namespace Dynamo.Models
                 }
             }
 
-            funcDef.AddToSearch();
+            funcDef.AddToSearch(this.SearchModel);
 
             var ws = funcDef.WorkspaceModel;
             ws.Zoom = workspaceHeader.Zoom;
@@ -715,9 +727,7 @@ namespace Dynamo.Models
                 }
 
                 Version fileVersion = MigrationManager.VersionFromString(version);
-
-                var dynamoModel = Controller.DynamoModel;
-                var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
+                var currentVersion = MigrationManager.VersionFromWorkspace(this.HomeSpace);
 
                 if (fileVersion > currentVersion)
                 {
@@ -735,8 +745,7 @@ namespace Dynamo.Models
                 else if (decision == MigrationManager.Decision.Migrate)
                 {
                     string backupPath = string.Empty;
-                    bool isTesting = this.IsTestMode; // No backup during test.
-                    if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
+                    if (!IsTestMode && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format(
                             "Original file '{0}' gets backed up at '{1}'",
@@ -1050,7 +1059,7 @@ namespace Dynamo.Models
                 WorkspaceModel = workSpace
             };
 
-            functionDefinition.SyncWithWorkspace(true, true);
+            functionDefinition.SyncWithWorkspace(this, true, true);
 
             if (makeCurrentWorkspace)
             {

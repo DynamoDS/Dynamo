@@ -459,7 +459,7 @@ namespace Dynamo.ViewModels
             InitializeAutomationSettings(commandFilePath);
 
             // Start page should not show up during test mode.
-            this.ShowStartPage = !model.IsTestMode;
+            this.ShowStartPage = !DynamoModel.IsTestMode;
 
             InitializeDelegateCommands();
 

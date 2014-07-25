@@ -75,7 +75,7 @@ namespace Dynamo.Models
                 dynamoModel.Logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
-                if (dynamoModel.IsTestMode)
+                if (DynamoModel.IsTestMode)
                     throw ex; // Rethrow for NUnit.
 
                 return null;

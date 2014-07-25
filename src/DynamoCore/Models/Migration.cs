@@ -138,7 +138,7 @@ namespace Dynamo.Models
 
         public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion)
         {
-            if(dynSettings.EnableMigrationLogging)
+            if(DynamoModel.EnableMigrationLogging)
             {
                 // For each new file opened, create a new migration report
                 migrationReport = new MigrationReport();
@@ -171,9 +171,9 @@ namespace Dynamo.Models
                 // Migrate the given node into one or more new nodes.
                 var migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
-            }            
+            }
 
-            if (dynSettings.EnableMigrationLogging)
+            if (DynamoModel.EnableMigrationLogging)
             {
                 string dynFilePath = xmlDoc.BaseURI;
                 migrationReport.WriteToXmlFile(dynFilePath);
@@ -218,7 +218,7 @@ namespace Dynamo.Models
                 object ret = nextMigration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
 
-                if(dynSettings.EnableMigrationLogging)
+                if(DynamoModel.EnableMigrationLogging)
                 {
                     // record migration data for successful migrations
                     migrationReport.AddMigrationDataToNodeMap(nodeToMigrate.Name, migrationData.MigratedNodes);
@@ -445,7 +445,7 @@ namespace Dynamo.Models
             // avoid large number of test failures with this change, and also 
             // ensure that our tests continue to exercise migration code changes.
             // 
-            if (DynamoController.IsTestMode)
+            if (DynamoModel.IsTestMode)
             {
                 if (fileVersion < currVersion)
                     return Decision.Migrate;

@@ -45,7 +45,7 @@ namespace Dynamo.Services
         {
             get
             {
-                if (dynamoModel.IsTestMode) // Do not want logging in unit tests.
+                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
                 // KILLDYNSETTINGS - Static reference to non-static object
@@ -93,7 +93,7 @@ namespace Dynamo.Services
         {
             get
             {
-                if (dynamoModel.IsTestMode) // Do not want logging in unit tests.
+                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
                 if (dynamoModel != null)
@@ -156,7 +156,7 @@ namespace Dynamo.Services
                 IsAnalyticsReportingApproved = true;
 
                 //Prompt user for detailed reporting
-                if (!dynamoModel.IsTestMode)
+                if (!DynamoModel.IsTestMode)
                     ShowUsageReportingPrompt(ownerWindow);
             }
         }

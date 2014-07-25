@@ -65,7 +65,7 @@ namespace Dynamo.Models
                 return;
 
             CustomNodeDefinition.RequiresRecalc = true;
-            CustomNodeDefinition.SyncWithWorkspace(false, true);
+            CustomNodeDefinition.SyncWithWorkspace(dynamoModel, false, true);
         }
 
         public List<Function> GetExistingNodes()
@@ -103,9 +103,9 @@ namespace Dynamo.Models
 
             if (originalPath == null)
             {
-                CustomNodeDefinition.AddToSearch();
+                CustomNodeDefinition.AddToSearch(this.dynamoModel.SearchModel);
                 dynamoModel.SearchModel.OnRequestSync();
-                CustomNodeDefinition.UpdateCustomNodeManager();
+                CustomNodeDefinition.UpdateCustomNodeManager(dynamoModel.CustomNodeManager);
             }
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -116,7 +116,7 @@ namespace Dynamo.Models
                 if ( !File.Exists(originalPath) )
                 {
                     CustomNodeDefinition.FunctionId = newGuid;
-                    CustomNodeDefinition.SyncWithWorkspace(true, true);
+                    CustomNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
                     return false;
                 }
 
@@ -143,7 +143,7 @@ namespace Dynamo.Models
 
                 // update this workspace with its new id
                 newDef.FunctionId = newGuid;
-                newDef.SyncWithWorkspace(true, true);
+                newDef.SyncWithWorkspace(dynamoModel, true, true);
             }
 
             return true;

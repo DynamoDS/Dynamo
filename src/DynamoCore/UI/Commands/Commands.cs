@@ -56,25 +56,26 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        private void OnExecute(object parameter)
-        {
-            //http://joshsmithonwpf.wordpress.com/2007/10/25/logging-routed-commands/
+        // KILLDYNSETTINGS - this isn't used
+        //private void OnExecute(object parameter)
+        //{
+        //    //http://joshsmithonwpf.wordpress.com/2007/10/25/logging-routed-commands/
 
-            var msg = new StringBuilder();
+        //    var msg = new StringBuilder();
 
-            string paramStr = "";
+        //    string paramStr = "";
 
-            if (parameter == null)
-                paramStr = "null";
-            else if (parameter.GetType() == typeof(Dictionary<object, object>))
-                paramStr = JsonConvert.SerializeObject(parameter).ToString();
-            else
-                paramStr = parameter.ToString();
+        //    if (parameter == null)
+        //        paramStr = "null";
+        //    else if (parameter.GetType() == typeof(Dictionary<object, object>))
+        //        paramStr = JsonConvert.SerializeObject(parameter).ToString();
+        //    else
+        //        paramStr = parameter.ToString();
             
-            msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
+        //    msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
 
-            dynamoModel.Logger.Log(msg.ToString(), LogLevel.File);
-        }
+        //    dynamoModel.Logger.Log(msg.ToString(), LogLevel.File);
+        //}
     }
 
 }

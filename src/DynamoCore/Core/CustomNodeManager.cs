@@ -386,7 +386,7 @@ namespace Dynamo.Utilities
             {
                 if (!compiledNodes.Contains(idDefPair.Key))
                 {
-                    idDefPair.Value.Compile(engine);
+                    idDefPair.Value.Compile(this.dynamoModel, engine);
                     compiledNodes.Add(idDefPair.Key);
                 }
             }
@@ -716,7 +716,7 @@ namespace Dynamo.Utilities
                 else if (decision == MigrationManager.Decision.Migrate)
                 {
                     string backupPath = string.Empty;
-                    bool isTesting = dynamoModel.IsTestMode; // No backup during test.
+                    bool isTesting = DynamoModel.IsTestMode; // No backup during test.
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format(
@@ -978,7 +978,7 @@ namespace Dynamo.Utilities
 
                 def.IsBeingLoaded = false;
 
-                def.Compile(this.dynamoModel.EngineController);
+                def.Compile(this.dynamoModel, this.dynamoModel.EngineController);
 
                 ws.WatchChanges = true;
 
@@ -990,7 +990,7 @@ namespace Dynamo.Utilities
                 dynamoModel.WriteToLog("There was an error opening the workbench.");
                 dynamoModel.WriteToLog(ex);
 
-                if (dynamoModel.IsTestMode)
+                if (DynamoModel.IsTestMode)
                     throw ex; // Rethrow for NUnit.
 
                 def = null;

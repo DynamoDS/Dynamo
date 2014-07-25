@@ -248,7 +248,7 @@ namespace Dynamo.Controls
         /// 
         private void InitializeStartPage()
         {
-            if (dynamoViewModel.Model.IsTestMode) // No start screen in unit testing.
+            if (DynamoModel.IsTestMode) // No start screen in unit testing.
                 return;
 
             if (this.startPage == null)
@@ -259,7 +259,7 @@ namespace Dynamo.Controls
                     throw new InvalidOperationException(message);
                 }
 
-                this.startPage = new StartPageViewModel();
+                this.startPage = new StartPageViewModel(this.dynamoViewModel);
                 startPageItemsControl.Items.Add(this.startPage);
             }
         }
@@ -391,7 +391,7 @@ namespace Dynamo.Controls
         {
             if (_pkgSearchVM == null)
             {
-                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.Model.PackageManagerClient);
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
             }
 
             if (_searchPkgsView == null)
@@ -412,7 +412,8 @@ namespace Dynamo.Controls
         {
             if (_installedPkgsView == null)
             {
-                _installedPkgsView = new InstalledPackagesView(this.dynamoViewModel.Model);
+                _installedPkgsView = new InstalledPackagesView(new InstalledPackagesViewModel(dynamoViewModel, 
+                    dynamoViewModel.Model.Loader.PackageLoader));
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
 
@@ -654,7 +655,7 @@ namespace Dynamo.Controls
             SizeChanged -= DynamoView_SizeChanged;
             LocationChanged -= DynamoView_LocationChanged;
 
-            if (!dynamoViewModel.Model.IsTestMode)
+            if (!DynamoModel.IsTestMode)
             {
                 dynamoViewModel.Model.ShutDown(false);
             }

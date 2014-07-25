@@ -133,7 +133,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousTimedEvent(string category, string variable, TimeSpan time, string label = null)
         {
-            if (dynamoModel.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -144,7 +144,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousEvent(string action, string category, string label = null)
         {
-            if (dynamoModel.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -155,7 +155,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousScreen(string screenName)
         {
-            if (dynamoModel.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -168,7 +168,7 @@ namespace Dynamo.Services
 
         public static void LogException(Exception e)
         {
-            if (dynamoModel.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -187,7 +187,7 @@ namespace Dynamo.Services
 
         public static void FORCE_LogInfo(string tag, string data)
         {
-            if (dynamoModel.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -198,7 +198,7 @@ namespace Dynamo.Services
 
         public static void LogPiiInfo(string tag, string data)
         {
-            if (dynamoModel.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 return;
 
             if (!started)

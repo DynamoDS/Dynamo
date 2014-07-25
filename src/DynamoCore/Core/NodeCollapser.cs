@@ -508,7 +508,7 @@ namespace Dynamo.Utilities
             #endregion
 
             // save and load the definition from file
-            newNodeDefinition.SyncWithWorkspace(true, true);
+            newNodeDefinition.SyncWithWorkspace(dynamoViewModel.Model, true, true);
             dynamoViewModel.Model.Workspaces.Add(newNodeWorkspace);
 
             string name = newNodeDefinition.FunctionId.ToString();

@@ -198,17 +198,14 @@ namespace Dynamo.ViewModels
                                     MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name +
                                         "  The package may need to be reinstalled manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
-
                             }
 
                             if (packageDownloadHandle.Extract(out dynPkg))
                             {
-
                                 var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model);
                                 downloadPkg.Load();
                                 dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-
                             }
                         }
                         catch (Exception e)

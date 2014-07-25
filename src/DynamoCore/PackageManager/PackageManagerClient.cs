@@ -112,45 +112,45 @@ namespace Dynamo.PackageManager
             Client = new Client(null, "http://www.dynamopackages.com"); 
         }
 
-        public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
-        {
-            var searchEle = CachedPackageList.FirstOrDefault(x => x.Id == packageId);
+        //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
+        //{
+        //    var searchEle = CachedPackageList.FirstOrDefault(x => x.Id == packageId);
             
-            PackageHeader header = null;
-            if (searchEle != null)
-            {
-                header = searchEle.Header;
-            }
+        //    PackageHeader header = null;
+        //    if (searchEle != null)
+        //    {
+        //        header = searchEle.Header;
+        //    }
 
-            if (header == null)
-            {
-                DownloadPackageHeader(packageId, out header);
-            }
+        //    if (header == null)
+        //    {
+        //        DownloadPackageHeader(packageId, out header);
+        //    }
 
-            if (header == null)
-            {
-                return false;
-            }
+        //    if (header == null)
+        //    {
+        //        return false;
+        //    }
 
-            return !Greg.Utility.PackageUtilities.IsNewerVersion(currentVersion, header._id);
-        }
+        //    return !Greg.Utility.PackageUtilities.IsNewerVersion(currentVersion, header._id);
+        //}
 
-        public bool IsUserPackageOwner(string packageId)
-        {
-            if (!LoggedIn) return false;
-            var un = this.Username;
+        //public bool IsUserPackageOwner(string packageId)
+        //{
+        //    if (!LoggedIn) return false;
+        //    var un = this.Username;
 
-            if (un == null) return false;
+        //    if (un == null) return false;
 
-            if (CachedPackageList.Any(x => x.Id == packageId && x.Maintainers.Contains(un)))
-            {
-                return true;
-            }
+        //    if (CachedPackageList.Any(x => x.Id == packageId && x.Maintainers.Contains(un)))
+        //    {
+        //        return true;
+        //    }
 
-            var l = ListAll();
-            return l.Any(x => x.Id == packageId && x.Maintainers.Contains(un));
+        //    var l = ListAll();
+        //    return l.Any(x => x.Id == packageId && x.Maintainers.Contains(un));
 
-        }
+        //}
 
         public bool Upvote(string packageId)
         {

@@ -143,7 +143,7 @@ namespace Dynamo
             if (dynamoModel == null)
                 return;
 
-            if (dynamoModel.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 RenderExec(toUpdate, incrementId, taskID);
             else
             {

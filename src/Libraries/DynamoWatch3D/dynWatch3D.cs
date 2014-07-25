@@ -171,7 +171,7 @@ namespace Dynamo.Nodes
             
         }
 
-        public override void UpdateRenderPackage()
+        public override void UpdateRenderPackage(int maxTessDivisions)
         {
             //do nothing
             //a watch should not draw its outputs

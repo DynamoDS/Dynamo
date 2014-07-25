@@ -9,6 +9,7 @@
              Height="Auto"
              Width="Auto"
              Name="MenuUserControl">
+    
     <Border Height="32"
             Panel.ZIndex="2000"
             BorderBrush="#FF3F4040"
