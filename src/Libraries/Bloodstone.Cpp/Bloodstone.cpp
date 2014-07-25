@@ -110,3 +110,39 @@ IGraphicsContext* IGraphicsContext::Create(IGraphicsContext::ContextType context
     auto message = L"Invalid value for 'IGraphicsContext::ContextType'";
     throw gcnew System::InvalidOperationException(gcnew String(message));
 }
+
+// ================================================================================
+// IGraphicsContext
+// ================================================================================
+
+void CameraConfiguration::FitToBoundingBox(const BoundingBox& boundingBox)
+{
+    if (boundingBox.IsInitialized() == false)
+        return;
+
+    // Get the bound box targetPosition and its radius.
+    float boxCenter[3], radius = 0.0f;
+    boundingBox.Get(&boxCenter[0], radius);
+
+    if (radius <= 0.0f) // Bounding box is empty.
+        return;
+
+    // Calculate the distance from eye to the targetPosition.
+    auto halfFov = this->fieldOfView * 0.5f;
+    auto halfFovRadian = halfFov * glm::pi<float>() / 180.0f;
+    auto distance = std::fabsf(radius / std::sinf(halfFovRadian));
+    this->farClippingPlane = distance + radius;
+
+    // Obtain the inversed view vector.
+    float vx, vy, vz;
+    this->GetViewDirection(vx, vy, vz);
+    glm::vec3 inversedViewDir(-vx, -vy, -vz);
+    inversedViewDir = glm::normalize(inversedViewDir);
+
+    // Compute the new eye point based on direction and origin.
+    glm::vec3 eye = inversedViewDir * distance;
+
+    // Update the camera and target positions.
+    this->SetEyePoint(eye.x, eye.y, eye.z);
+    this->SetCenterPoint(boxCenter[0], boxCenter[1], boxCenter[2]);
+}

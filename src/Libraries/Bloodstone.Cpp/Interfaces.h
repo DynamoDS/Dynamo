@@ -141,67 +141,6 @@ namespace Dynamo { namespace Bloodstone {
         virtual void MouseReleasedCore(int screenX, int screenY) = 0;
     };
 
-    struct CameraConfiguration
-    {
-        CameraConfiguration()
-        {
-            memset(this, 0, sizeof(CameraConfiguration));
-            cameraPosition[0] = cameraPosition[1] = cameraPosition[2] = 1.0f;
-            targetPosition[0] = targetPosition[1] = targetPosition[2] = 0.0f;
-            cameraUpVector[1] = 1.0f; // Default up-vector is Y-axis
-
-            viewportWidth = 1280;
-            viewportHeight = 720;
-            fieldOfView = 45.0f;
-            nearClippingPlane = 0.1f;
-            farClippingPlane = 1000.0f;
-        }
-
-        void SetEyePoint(float x, float y, float z)
-        {
-            cameraPosition[0] = x;
-            cameraPosition[1] = y;
-            cameraPosition[2] = z;
-        }
-
-        void SetCenterPoint(float x, float y, float z)
-        {
-            targetPosition[0] = x;
-            targetPosition[1] = y;
-            targetPosition[2] = z;
-        }
-
-        void SetUpVector(float x, float y, float z)
-        {
-            cameraUpVector[0] = x;
-            cameraUpVector[1] = y;
-            cameraUpVector[2] = z;
-        }
-
-        void GetViewDirection(float& x, float& y, float& z)
-        {
-            x = targetPosition[0] - cameraPosition[0];
-            y = targetPosition[1] - cameraPosition[1];
-            z = targetPosition[2] - cameraPosition[2];
-        }
-
-        void Interpolate(const CameraConfiguration& other, float factor)
-        {
-        }
-
-        // View matrix.
-        float cameraPosition[3];
-        float targetPosition[3];
-        float cameraUpVector[3];
-
-        // Projection matrix.
-        int viewportWidth;
-        int viewportHeight;
-        float fieldOfView;
-        float nearClippingPlane;
-        float farClippingPlane;
-    };
-
     class BoundingBox
     {
     public:
@@ -313,6 +252,91 @@ namespace Dynamo { namespace Bloodstone {
     private:
         float mBox[6];
         bool mInitialized;
+    };
+
+    struct CameraConfiguration
+    {
+        CameraConfiguration()
+        {
+            memset(this, 0, sizeof(CameraConfiguration));
+            cameraPosition[0] = cameraPosition[1] = cameraPosition[2] = 1.0f;
+            targetPosition[0] = targetPosition[1] = targetPosition[2] = 0.0f;
+            cameraUpVector[1] = 1.0f; // Default up-vector is Y-axis
+
+            viewportWidth = 1280;
+            viewportHeight = 720;
+            fieldOfView = 45.0f;
+            nearClippingPlane = 0.1f;
+            farClippingPlane = 1000.0f;
+        }
+
+        void SetEyePoint(float x, float y, float z)
+        {
+            cameraPosition[0] = x;
+            cameraPosition[1] = y;
+            cameraPosition[2] = z;
+        }
+
+        void SetCenterPoint(float x, float y, float z)
+        {
+            targetPosition[0] = x;
+            targetPosition[1] = y;
+            targetPosition[2] = z;
+        }
+
+        void SetUpVector(float x, float y, float z)
+        {
+            cameraUpVector[0] = x;
+            cameraUpVector[1] = y;
+            cameraUpVector[2] = z;
+        }
+
+        void GetViewDirection(float& x, float& y, float& z)
+        {
+            x = targetPosition[0] - cameraPosition[0];
+            y = targetPosition[1] - cameraPosition[1];
+            z = targetPosition[2] - cameraPosition[2];
+        }
+
+        void Interpolate(const CameraConfiguration& other, float factor)
+        {
+            float diff[3] = { 0 };
+
+            diff[0] = other.cameraPosition[0] - this->cameraPosition[0];
+            diff[1] = other.cameraPosition[1] - this->cameraPosition[1];
+            diff[2] = other.cameraPosition[2] - this->cameraPosition[2];
+            this->cameraPosition[0] += diff[0] * factor;
+            this->cameraPosition[1] += diff[1] * factor;
+            this->cameraPosition[2] += diff[2] * factor;
+
+            diff[0] = other.targetPosition[0] - this->targetPosition[0];
+            diff[1] = other.targetPosition[1] - this->targetPosition[1];
+            diff[2] = other.targetPosition[2] - this->targetPosition[2];
+            this->targetPosition[0] += diff[0] * factor;
+            this->targetPosition[1] += diff[1] * factor;
+            this->targetPosition[2] += diff[2] * factor;
+
+            diff[0] = other.cameraUpVector[0] - this->cameraUpVector[0];
+            diff[1] = other.cameraUpVector[1] - this->cameraUpVector[1];
+            diff[2] = other.cameraUpVector[2] - this->cameraUpVector[2];
+            this->cameraUpVector[0] += diff[0] * factor;
+            this->cameraUpVector[1] += diff[1] * factor;
+            this->cameraUpVector[2] += diff[2] * factor;
+        }
+
+        void FitToBoundingBox(const BoundingBox& boundingBox);
+
+        // View matrix.
+        float cameraPosition[3];
+        float targetPosition[3];
+        float cameraUpVector[3];
+
+        // Projection matrix.
+        int viewportWidth;
+        int viewportHeight;
+        float fieldOfView;
+        float nearClippingPlane;
+        float farClippingPlane;
     };
 
     class ICamera
