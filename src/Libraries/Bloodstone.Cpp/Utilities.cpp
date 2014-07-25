@@ -61,6 +61,6 @@ float Interpolator::GetSecondsSinceStarted(void) const
     LARGE_INTEGER currentTime;
     QueryPerformanceCounter(&currentTime);
 
-    double difference = currentTime.QuadPart - mStartTime.QuadPart;
+    LONGLONG difference = currentTime.QuadPart - mStartTime.QuadPart;
     return ((float)(difference * mInversedFrequency));
 }
