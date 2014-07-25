@@ -26,6 +26,7 @@ The following list represents what are to be implemented in Bloodstone for it to
 
 - [x] Implement pan operation
 - [x] Implement zoom operation
+- [x] Implement zoom extent with double-click
 - [ ] Integrate zoom operation with mouse wheel
 - [ ] Implement geometry clearing when document is closed
 - [ ] Implement geometry clearing when nodes are deleted
