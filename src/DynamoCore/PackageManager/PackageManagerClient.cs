@@ -55,11 +55,6 @@ namespace Dynamo.PackageManager
         private readonly DynamoModel dynamoModel;
 
         /// <summary>
-        /// A cached version of the package list.  Updated by ListAll()
-        /// </summary>
-        public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
-
-        /// <summary>
         ///     Client property
         /// </summary>
         /// <value>
@@ -115,7 +110,6 @@ namespace Dynamo.PackageManager
         {
             this.dynamoModel = dynamoModel;
             Client = new Client(null, "http://www.dynamopackages.com"); 
-            this.CachedPackageList = new List<PackageManagerSearchElement>();
         }
 
         public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
@@ -190,41 +184,33 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public List<PackageManagerSearchElement> ListAll()
+        public IEnumerable<PackageHeader> ListAll()
         {
             try
             {
                 var nv = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
                 var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
-                this.CachedPackageList = 
-                    pkgResponse.content
-                               .Select((header) => new PackageManagerSearchElement(header))
-                               .ToList();
-
-                return CachedPackageList;
+                return pkgResponse.content;
             }
             catch
             {
-                return CachedPackageList;
+                return new List<PackageHeader>();
             }
         }
 
-        public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
+        public IEnumerable<PackageHeader> Search(string search, int maxNumSearchResults)
         {
             try
             {
                 var nv = new Greg.Requests.Search(search);
                 var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
                 return
-                    pkgResponse.content.GetRange(0, Math.Min(maxNumSearchResults, pkgResponse.content.Count()))
-                               .Select((header) => new PackageManagerSearchElement(header))
-                               .ToList();
+                    pkgResponse.content.GetRange(0, Math.Min(maxNumSearchResults, pkgResponse.content.Count()));
             }
             catch
             {
-                return new List<PackageManagerSearchElement>();
+                return new List<PackageHeader>();
             }
-            
         }
 
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )

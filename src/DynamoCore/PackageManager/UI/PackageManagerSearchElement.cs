@@ -21,7 +21,7 @@ namespace Dynamo.PackageManager
     /// A search element representing an element from the package manager </summary>
     public class PackageManagerSearchElement : SearchElementBase
     {
-        private readonly DynamoModel dynamoModel;
+        private readonly DynamoViewModel dynamoViewModel;
 
         public DelegateCommand DownloadLatest { get; set; }
         public DelegateCommand UpvoteCommand { get; set; }
@@ -30,9 +30,9 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(DynamoModel dynamoModel, Greg.Responses.PackageHeader header)
+        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header)
         {
-            this.dynamoModel = dynamoModel;
+            this.dynamoViewModel = dynamoViewModel;
 
             this.Header = header;
             this.Weight = header.deprecated ? 0.1 : 1;
@@ -54,7 +54,7 @@ namespace Dynamo.PackageManager
 
         public void Upvote()
         {
-            Task<bool>.Factory.StartNew(() => dynamoModel.PackageManagerClient.Upvote(this.Id))
+            Task<bool>.Factory.StartNew(() => dynamoViewModel.Model.PackageManagerClient.Upvote(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
@@ -68,7 +68,7 @@ namespace Dynamo.PackageManager
 
         public void Downvote()
         {
-            Task<bool>.Factory.StartNew(() => dynamoModel.PackageManagerClient.Downvote(this.Id))
+            Task<bool>.Factory.StartNew(() => dynamoViewModel.Model.PackageManagerClient.Downvote(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
@@ -107,7 +107,7 @@ namespace Dynamo.PackageManager
                 var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
                     {
                         PackageHeader pkgHeader;
-                        var res = dynamoModel.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                        var res = dynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
                         
                         if (!res.Success)
                             MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
@@ -126,7 +126,7 @@ namespace Dynamo.PackageManager
 
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
-                var dynamoVersion = dynamoModel.Version;
+                var dynamoVersion = dynamoViewModel.Model.Version;
                 var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
                 var futureDeps = allPackageVersions.FilterFuturePackages(dynamoVersionParsed);
 
@@ -158,8 +158,8 @@ namespace Dynamo.PackageManager
                         return;
                     }
                 }
-                
-                var localPkgs = dynamoModel.Loader.PackageLoader.LocalPackages;
+
+                var localPkgs = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
@@ -185,7 +185,7 @@ namespace Dynamo.PackageManager
 
                 // form header version pairs and download and install all packages
                 allPackageVersions
-                        .Select( x => new PackageDownloadHandle(x.Item1, x.Item2))
+                        .Select( x => new PackageDownloadHandle(this.dynamoViewModel, x.Item1, x.Item2))
                         .ToList()
                         .ForEach(x=>x.Start());
 

@@ -9,7 +9,10 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
+
+using Greg;
 using Greg.Requests;
+using Greg.Responses;
 
 namespace Dynamo.ViewModels
 {
@@ -36,6 +39,7 @@ namespace Dynamo.ViewModels
             set { _downloads = value; }
         }
 
+        public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
         private readonly DynamoViewModel dynamoViewModel;
         private readonly PackageManagerClient packageManagerClient;
@@ -46,7 +50,7 @@ namespace Dynamo.ViewModels
         {
             this.dynamoViewModel = dynamoViewModel;
             this.packageManagerClient = packageManagerClient;
-
+            this.CachedPackageList = new List<PackageManagerSearchElement>();
             this.packageManagerClient.RequestAuthentication +=
                 dynamoViewModel.OnRequestAuthentication;
         }
@@ -139,6 +143,23 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.Model.Logger.Log("Failed to obtain function definition from node.");
             }
+        }
+
+        public List<PackageManagerSearchElement> ListAll()
+        {
+            this.CachedPackageList =
+                    this.packageManagerClient.ListAll()
+                               .Select((header) => new PackageManagerSearchElement(this.dynamoViewModel, header))
+                               .ToList();
+
+            return CachedPackageList;
+        }
+
+        public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
+        {
+            return packageManagerClient.Search(search, maxNumSearchResults)
+                               .Select((header) => new PackageManagerSearchElement(this.dynamoViewModel, header))
+                               .ToList();
         }
 
         /// <summary>
