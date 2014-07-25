@@ -17,6 +17,7 @@ namespace Dynamo.Search.SearchElements
             this._description = description;
             this.Weight = 0.8;
             this.Keywords = "";
+            this._inputParametrs = "";
         }
 
         /// <summary>
@@ -66,6 +67,12 @@ namespace Dynamo.Search.SearchElements
             ///         
             private string _description;
             public override string Description { get { return _description; } }
+
+            private string _inputParametrs;
+            public override string InputParametrs { get { return _inputParametrs; } }
+
+            private string _outputParametrs;
+            public override string OutputParametrs { get { return _outputParametrs; } }
 
             /// <summary>
             /// Weight property </summary>

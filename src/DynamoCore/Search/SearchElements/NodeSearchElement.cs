@@ -16,7 +16,7 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
-        private string _fullName ;
+        
 
         #region Properties
 
@@ -40,12 +40,20 @@ namespace Dynamo.Search.SearchElements
         private string _name;
         public override string Name { get { return _name; } }
 
+        private string _fullName;
+        public string FullName { get { return "</> "+_fullName; } }
         /// <summary>
         /// Description property </summary>
         /// <value>
         /// A string describing what the node does</value>
         private string _description;
         public override string Description { get { return _description; } }
+
+        private string _inputParametrs;
+        public override string InputParametrs { get { return _inputParametrs; } }
+
+        private string _outputParametrs;
+        public override string OutputParametrs { get { return _outputParametrs; } }
 
         private bool _searchable = true;
         public override bool Searchable { get { return _searchable; } }
@@ -91,7 +99,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", string inputParametrs = "", string outputParametrs = "")
         {
             this.Node = null;
             this._name = name;
@@ -100,11 +108,13 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
+            this._inputParametrs = inputParametrs;
+            this._outputParametrs = outputParametrs;
         }
 
         public virtual NodeSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._fullName);
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._fullName, this._inputParametrs, this._outputParametrs);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }

@@ -9,6 +9,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
              xmlns:dynamo="clr-namespace:Dynamo"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:uiview="clr-namespace:Dynamo.UI.Views"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
@@ -446,7 +447,8 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Button Command="{Binding ToggleIsExpanded}">
+                                <Button Command="{Binding ToggleIsExpanded}"
+                                        Name="nodeButton">
                                     <Button.Focusable>False</Button.Focusable>
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
@@ -549,22 +551,7 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Converter={StaticResource BrowserItemToBooleanConverter}}"
-                                     Value="True">
-                            <Setter Property="ToolTip">
-                                <Setter.Value>
-                                    <dynui:DynamoToolTip AttachmentSide="Right"
-                                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
-                                        <Grid>
-                                            <TextBlock TextWrapping="Wrap"
-                                                       MaxWidth="320"
-                                                       Text="{Binding Path=Description}"></TextBlock>
-                                        </Grid>
-                                    </dynui:DynamoToolTip>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
+                   </Style.Triggers>
                 </Style>
 
                 <DataTemplate x:Key="ContextMenuStyle">
@@ -604,14 +591,25 @@
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
-
-                        <StackPanel Orientation="Horizontal">
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}" >
+                        <StackPanel Orientation="Horizontal" Name="nodePanel">
 
                             <Border Height="30">
-                                <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                                <!--name of node-->
+                                <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" >                     
+                                </TextBlock>
                             </Border>
-
+                            <dynui:DynamoPopup Name="Popup"
+                                               IsOpen="{Binding ElementName=nodeButton, Path=IsMouseOver, Mode=OneWay}"
+                                               AttachmentSide="Right"
+                                               StaysOpen="True">
+                                <uiview:TooltipWindow Background="Transparent"
+                                                      Width="350"
+                                                      NodeName="{Binding Path=FullName}"
+                                                      Description="{Binding Path=Description}"
+                                                      InputParametrs="{Binding Path=InputParametrs}"
+                                                      OutputParametrs="{Binding Path=OutputParametrs}"></uiview:TooltipWindow>
+                            </dynui:DynamoPopup>
                         </StackPanel>
 
                     </HierarchicalDataTemplate>
