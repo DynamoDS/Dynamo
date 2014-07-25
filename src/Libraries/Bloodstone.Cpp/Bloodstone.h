@@ -99,6 +99,7 @@ namespace Dynamo { namespace Bloodstone {
         void Initialize(int width, int height);
         void Destroy(void);
         void RenderScene(void);
+        void GetBoundingBox(BoundingBox& boundingBox);
         void UpdateNodeGeometries(RenderPackages^ geometries);
         void RemoveNodeGeometries(Strings^ identifiers);
         void SelectNodes(Strings^ identifiers, SelectMode selectMode);

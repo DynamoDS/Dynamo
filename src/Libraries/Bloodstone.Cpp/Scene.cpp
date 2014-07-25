@@ -105,6 +105,21 @@ void Scene::RenderScene(void)
     RenderGeometries(geometries);
 }
 
+void Scene::GetBoundingBox(BoundingBox& boundingBox)
+{
+    if (mpNodeSceneData == nullptr) {
+        boundingBox.Reset(0.0f, 0.0f, 0.0f);
+        return;
+    }
+
+    auto iterator = mpNodeSceneData->begin();
+    for (; iterator != mpNodeSceneData->end(); ++iterator) {
+        BoundingBox innerBox;
+        iterator->second->GetBoundingBox(&innerBox);
+        boundingBox.EvaluateBox(innerBox);
+    }
+}
+
 void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
 {
     BoundingBox outerBoundingBox;
