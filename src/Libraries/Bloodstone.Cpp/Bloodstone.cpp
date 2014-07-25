@@ -131,7 +131,10 @@ void CameraConfiguration::FitToBoundingBox(const BoundingBox& boundingBox)
     auto halfFov = this->fieldOfView * 0.5f;
     auto halfFovRadian = halfFov * glm::pi<float>() / 180.0f;
     auto distance = std::fabsf(radius / std::sinf(halfFovRadian));
-    this->farClippingPlane = distance + radius;
+
+    // Far clipping plane only gets bigger over time.
+    if (this->farClippingPlane < (distance + radius))
+        this->farClippingPlane = distance + radius;
 
     // Obtain the inversed view vector.
     float vx, vy, vz;
@@ -140,7 +143,8 @@ void CameraConfiguration::FitToBoundingBox(const BoundingBox& boundingBox)
     inversedViewDir = glm::normalize(inversedViewDir);
 
     // Compute the new eye point based on direction and origin.
-    glm::vec3 eye = inversedViewDir * distance;
+    glm::vec3 target(boxCenter[0], boxCenter[1], boxCenter[2]);
+    glm::vec3 eye = (target + (inversedViewDir * distance));
 
     // Update the camera and target positions.
     this->SetEyePoint(eye.x, eye.y, eye.z);
