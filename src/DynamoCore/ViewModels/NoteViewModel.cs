@@ -1,15 +1,26 @@
 ﻿using System;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
     public partial class NoteViewModel: ViewModelBase
     {
+        #region Events
+
+        public event EventHandler RequestsSelection;
+        public virtual void OnRequestsSelection(Object sender, EventArgs e)
+        {
+            if (RequestsSelection != null)
+            {
+                RequestsSelection(this, e);
+            }
+        }
+
+        #endregion
 
         #region Properties
-        
+
         private NoteModel _model;
 
         public NoteModel Model
@@ -64,58 +75,16 @@ namespace Dynamo.ViewModels
             get { return _model.IsSelected; }
         }
 
-        //public bool NoteVisibility
-        //{
-        //    get
-        //    {
-        //        if(dynamoModel.DynamoViewModel.CurrentWorkspace.Notes.Contains(Model))
-        //            return true;
-        //        return false;
-        //    }
-        //}
-        
         #endregion
-
-        public event EventHandler RequestsSelection;
-        public virtual void OnRequestsSelection(Object sender, EventArgs e)
-        {
-            if (RequestsSelection != null)
-            {
-                RequestsSelection(this, e);
-            }
-        }
 
         public NoteViewModel(NoteModel model)
         {
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
-
-            dynamoModel.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
         }
 
         private void Select(object parameter)
         {
-            //if (!Model.IsSelected)
-            //{
-            //    if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
-            //    {
-            //        DynamoSelection.Instance.ClearSelection();
-            //    }
-
-            //    if (!DynamoSelection.Instance.Selection.Contains(Model))
-            //    {
-            //        DynamoSelection.Instance.Selection.Add(Model);
-            //    }
-
-            //}
-            //else
-            //{
-            //    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-            //    {
-            //        DynamoSelection.Instance.Selection.Remove(Model);
-            //    }
-            //}
-
             OnRequestsSelection(this, EventArgs.Empty);
         }
 
@@ -125,7 +94,6 @@ namespace Dynamo.ViewModels
             this._model.Height = h;
         }
 
-
         private bool CanSelect(object parameter)
         {
             if (!DynamoSelection.Instance.Selection.Contains(_model))
@@ -133,21 +101,6 @@ namespace Dynamo.ViewModels
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Repond to changes on the model
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            //switch (e.PropertyName)
-            //{
-                //case "CurrentWorkspace":
-                //    RaisePropertyChanged("NoteVisibility");
-                //    break;
-            //}
         }
 
         //respond to changes on the model's properties

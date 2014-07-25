@@ -202,7 +202,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="fullyQualifiedName"></param>
         /// <returns></returns>
-        public static System.Type ResolveType(string fullyQualifiedName)
+        public static System.Type ResolveType(DynamoModel dynamoModel, string fullyQualifiedName)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
                 throw new ArgumentNullException("fullyQualifiedName");
@@ -1446,8 +1446,6 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public partial class StringInput : AbstractString
     {
-        //dynTextBox tb;
-
         public override string Value
         {
             get

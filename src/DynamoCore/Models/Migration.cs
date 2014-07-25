@@ -156,7 +156,7 @@ namespace Dynamo.Models
             {
                 string typeName = elNode.Attributes["type"].Value;
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                System.Type type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
 
                 if (type == null)
                 {
@@ -201,7 +201,7 @@ namespace Dynamo.Models
                               orderby result.From
                               select result).ToList();
 
-            var homespace = dynamoModel.DynamoModel.HomeSpace;
+            var homespace = dynamoModel.HomeSpace;
             var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
 
             XmlElement nodeToMigrate = elNode as XmlElement;

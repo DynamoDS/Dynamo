@@ -427,8 +427,10 @@ namespace Dynamo.ViewModels
 
         public static DynamoViewModel MakeSandbox(string commandFilePath = null)
         {
-            var model = new DynamoModel("None", PreferenceSettings.Load());
-            var viewModel = new DynamoViewModel(model, new DefaultWatchHandler(), 
+            var prefs = PreferenceSettings.Load();
+
+            var model = new DynamoModel("None", prefs);
+            var viewModel = new DynamoViewModel(model, new DefaultWatchHandler(prefs), 
                 new VisualizationManager(model), commandFilePath);
 
             return viewModel;

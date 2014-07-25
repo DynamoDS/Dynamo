@@ -309,36 +309,31 @@ namespace Dynamo.Utilities
 
                 if (curriedNode == null)
                 {
-                    var conn1 = ConnectorModel.Make(node,
+                    var conn1 = newNodeWorkspace.AddConnection(
+                                                  node,
                                                   inputReceiverNode,
                                                   0,
                                                   inputReceiverData,
                                                   PortType.INPUT);
-
-                    if (conn1 != null)
-                        newNodeWorkspace.Connectors.Add(conn1);
                 }
                 else
                 {
                     //Connect it to the applier
-                    var conn = ConnectorModel.Make(node,
+                    var conn = newNodeWorkspace.AddConnection( 
+                                                    node,
                                                      curriedNode.InnerNode,
                                                      0,
                                                      0,
                                                      PortType.INPUT);
-                    if (conn != null)
-                        newNodeWorkspace.Connectors.Add(conn);
 
                     //Connect applier to the inner input receive
-                    var conn2 = ConnectorModel.Make(
+                    var conn2 = newNodeWorkspace.AddConnection(
                         curriedNode.InnerNode,
                         inputReceiverNode,
                         0,
                         inputReceiverData,
                         PortType.INPUT);
 
-                    if (conn2 != null)
-                        newNodeWorkspace.Connectors.Add(conn2);
                 }
             }
 
@@ -394,15 +389,12 @@ namespace Dynamo.Utilities
                         node.X = rightMost + 75 - leftShift;
                         node.Y = i*(50 + node.Height);
 
-                        var conn = ConnectorModel.Make(
+                        var conn = newNodeWorkspace.AddConnection(
                             outputSenderNode,
                             node,
                             outputSenderData,
                             0,
                             PortType.INPUT);
-
-                        if (conn != null)
-                            newNodeWorkspace.Connectors.Add(conn);
 
                         i++;
                     }
@@ -443,15 +435,12 @@ namespace Dynamo.Utilities
 
                         //Connect it (new dynConnector)
 
-                        var conn = ConnectorModel.Make(
+                        var conn = newNodeWorkspace.AddConnection(
                             outputSenderNode,
                             curriedNode.InnerNode,
                             outputSenderData,
                             targetPortIndex + 1,
                             PortType.INPUT);
-
-                        if (conn != null)
-                            newNodeWorkspace.Connectors.Add(conn);
                     }
                 }
             }
@@ -491,15 +480,12 @@ namespace Dynamo.Utilities
                     node.X = rightMost + 75 - leftShift;
                     node.Y = i * (50 + node.Height);
 
-                    var conn = ConnectorModel.Make(
+                    var conn = newNodeWorkspace.AddConnection(
                         hanging.node,
                         node,
                         hanging.port,
                         0,
                         PortType.INPUT);
-
-                    if (conn != null)
-                        newNodeWorkspace.Connectors.Add(conn);
 
                     i++;
                 }
@@ -525,7 +511,7 @@ namespace Dynamo.Utilities
 
             foreach (var nodeTuple in inConnectors.Select((x, idx) => new { node=x.Item1, from=x.Item2, to=idx }))
             {
-                var conn = ConnectorModel.Make(
+                var conn = currentWorkspace.AddConnection(
                                     nodeTuple.node,
                                     collapsedNode,
                                     nodeTuple.from,
@@ -534,7 +520,6 @@ namespace Dynamo.Utilities
 
                 if (conn != null)
                 {
-                    currentWorkspace.Connectors.Add(conn);
                     undoRecorder.RecordCreationForUndo(conn);
                 }
             }
@@ -542,7 +527,7 @@ namespace Dynamo.Utilities
             foreach (var nodeTuple in outConnectors)
             {
 
-                var conn = ConnectorModel.Make(
+                var conn = currentWorkspace.AddConnection(
                                     collapsedNode,
                                     nodeTuple.Item1,
                                     nodeTuple.Item2,
@@ -551,7 +536,6 @@ namespace Dynamo.Utilities
 
                 if (conn != null)
                 {
-                    currentWorkspace.Connectors.Add(conn);
                     undoRecorder.RecordCreationForUndo(conn);
                 }
             }

@@ -51,7 +51,7 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(dynamoModel, this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
-            astBuilder = new AstBuilder(this);
+            astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
 
             dynamoModel.NodeDeleted += NodeDeleted;
@@ -468,7 +468,7 @@ namespace Dynamo.DSEngine
             if (!nodes.Any())
                 return string.Empty;
 
-            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
+            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(this.dynamoModel, nodes);
             if (string.IsNullOrEmpty(code))
                 return code;
 

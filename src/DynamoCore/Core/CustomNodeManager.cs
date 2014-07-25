@@ -837,7 +837,7 @@ namespace Dynamo.Utilities
                         // "MigrationNode" object type that is not derived from "NodeModel".
                         // 
                         typeName = Nodes.Utilities.PreprocessTypeName(typeName);
-                        System.Type type = Nodes.Utilities.ResolveType(typeName);
+                        System.Type type = Nodes.Utilities.ResolveType(this.dynamoModel, typeName);
                         if (type != null)
                             el = ws.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
 
@@ -864,7 +864,7 @@ namespace Dynamo.Utilities
                     {
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
-                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(this.dynamoModel, typeName);
 
                         el = ws.NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
                         el.Load(dummyElement);
@@ -938,12 +938,10 @@ namespace Dynamo.Utilities
 
                     try
                     {
-                        var newConnector = ConnectorModel.Make(
+                        var newConnector = ws.AddConnection(
                             start, end,
                             startIndex, endIndex,
                             portType);
-                        if (newConnector != null)
-                            ws.Connectors.Add(newConnector);
                     }
                     catch
                     {

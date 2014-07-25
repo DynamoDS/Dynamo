@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Globalization;
+
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
@@ -24,6 +26,13 @@ namespace Dynamo.Interfaces
     /// </summary>
     public class DefaultWatchHandler : IWatchHandler
     {
+        private readonly PreferenceSettings preferences;
+
+        public DefaultWatchHandler(PreferenceSettings preferences)
+        {
+            this.preferences = preferences;
+        }
+
         internal WatchViewModel ProcessThing(object value, string tag, bool showRawData = true)
         {
             WatchViewModel node;
@@ -49,14 +58,14 @@ namespace Dynamo.Interfaces
         internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchViewModel(unit.Value.ToString(dynamoModel.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+                return new WatchViewModel(unit.Value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
 
             return new WatchViewModel(unit.ToString(), tag);
         }
 
         internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(value.ToString(dynamoModel.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)

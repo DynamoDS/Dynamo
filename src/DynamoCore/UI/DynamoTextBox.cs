@@ -62,6 +62,14 @@ namespace Dynamo.Nodes
 
     public class DynamoTextBox : ClickSelectTextBox
     {
+        public event RequestReturnFocusToSearchHandler ReturnFocusToSearch;
+        public delegate void RequestReturnFocusToSearchHandler();
+        protected void OnRequestReturnFocusToSearch()
+        {
+            if (ReturnFocusToSearch != null)
+                ReturnFocusToSearch();
+        }
+
         public event Action OnChangeCommitted;
 
         private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
@@ -145,7 +153,7 @@ namespace Dynamo.Nodes
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
             {
-                dynSettings.ReturnFocusToSearch();
+                OnRequestReturnFocusToSearch();
             }
         }
 
@@ -257,8 +265,12 @@ namespace Dynamo.Nodes
         #endregion
     }
 
+    
+
     public class CodeNodeTextBox : DynamoTextBox
     {
+
+
         bool shift, enter;
         public CodeNodeTextBox(string s)
             : base(s)
@@ -276,6 +288,7 @@ namespace Dynamo.Nodes
             this.SetResourceReference(TextBox.StyleProperty, "CodeBlockNodeTextBox");
             this.Tag = "Your code goes here";
         }
+
 
         /// <summary>
         /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
@@ -298,7 +311,7 @@ namespace Dynamo.Nodes
             }
             if (shift == true && enter == true)
             {
-                dynSettings.ReturnFocusToSearch();
+                OnRequestReturnFocusToSearch();
                 shift = enter = false;
             }
         }
@@ -332,7 +345,7 @@ namespace Dynamo.Nodes
         private void HandleEscape()
         {
             if (this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
-                dynSettings.ReturnFocusToSearch();
+                OnRequestReturnFocusToSearch();
             else
                 (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;
         }

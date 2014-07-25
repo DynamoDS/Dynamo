@@ -411,7 +411,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        internal NodeModel AddNode(double x, double y, string nodeName)
+        public NodeModel AddNode(double x, double y, string nodeName)
         {
             System.Guid id = Guid.NewGuid();
             return AddNode(id, nodeName, x, y, false, false, null);
@@ -446,7 +446,7 @@ namespace Dynamo.Models
         /// <returns>Returns the created NodeModel, or null if the operation has 
         /// failed.</returns>
         /// 
-        internal NodeModel AddNode(
+        public NodeModel AddNode(
             Guid nodeId, string nodeName, double x, double y,
             bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
         {
@@ -497,11 +497,11 @@ namespace Dynamo.Models
             return node;
         }
 
-        internal ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex )
+        public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.INPUT )
         {
             try
             {
-                var c = ConnectorModel.Make(start, end, startIndex, endIndex, PortType.INPUT);
+                var c = ConnectorModel.Make(this, start, end, startIndex, endIndex, portType );
 
                 if (c != null)
                     this.Connectors.Add(c);
@@ -519,7 +519,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        internal NoteModel AddNote(bool centerNote, double x, double y, string text, Guid id )
+        public NoteModel AddNote(bool centerNote, double x, double y, string text, Guid id)
         {
             NoteModel noteModel = new NoteModel(x, y);
             noteModel.GUID = id;
@@ -1297,7 +1297,7 @@ namespace Dynamo.Models
                 startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
 
                 //Make the new connection and then record and add it
-                var newConnector = ConnectorModel.Make(codeBlockNode, connector.End.Owner,
+                this.AddConnection(codeBlockNode, connector.End.Owner,
                     startIndex, endIndex, PortType.INPUT);
 
                 this.Connectors.Add(newConnector);
@@ -1327,14 +1327,12 @@ namespace Dynamo.Models
                 //After conversion, all these connecetions should become only 1 connection and not many
                 //Hence for inputs, it is required to make sure that a certain type of connection has not
                 //been created already.
-                if (Connectors.Where(x => (x.Start == connector.Start &&
-                    x.End == codeBlockNode.InPorts[endIndex])).FirstOrDefault() == null)
+                if (Connectors.FirstOrDefault(x => (x.Start == connector.Start &&
+                    x.End == codeBlockNode.InPorts[endIndex])) == null)
                 {
                     //Make the new connection and then record and add it
-                    var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
-                        startIndex, endIndex, PortType.INPUT);
-
-                    this.Connectors.Add(newConnector);
+                    var newConnector = this.AddConnection(connector.Start.Owner, codeBlockNode,
+                        startIndex, endIndex);
                     UndoRecorder.RecordCreationForUndo(newConnector);
                 }
             }

@@ -32,10 +32,12 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class AstBuilder
     {
+        private readonly DynamoModel dynamoModel;
         private readonly IAstNodeContainer nodeContainer;
 
-        public AstBuilder(IAstNodeContainer nodeContainer)
+        public AstBuilder(DynamoModel dynamoModel, IAstNodeContainer nodeContainer)
         {
+            this.dynamoModel = dynamoModel;
             this.nodeContainer = nodeContainer;
         }
 

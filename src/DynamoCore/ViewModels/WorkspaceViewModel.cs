@@ -359,7 +359,7 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        var viewModel = new ConnectorViewModel(item as ConnectorModel);
+                        var viewModel = new ConnectorViewModel(this, item as ConnectorModel);
                         _connectors.Add(viewModel);
                     }
                     break;
@@ -406,7 +406,7 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
                     {
-                        if (item != null && item is NodeModel)
+                        if (item is NodeModel)
                         {
                             var node = item as NodeModel;
 
@@ -423,7 +423,6 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        var node = item as NodeModel;
                         NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
                         Errors.Remove(nodeViewModel.ErrorBubble);
                         _nodes.Remove(nodeViewModel);

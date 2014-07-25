@@ -681,9 +681,8 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel startNode = startPortModel.Owner;
-                            ConnectorModel connector = ConnectorModel.Make(startNode, this,
-                                startNode.GetPortIndexAndType(startPortModel, out p), i, PortType.INPUT);
-                            this.WorkSpace.Connectors.Add(connector);
+                            ConnectorModel connector = this.WorkSpace.AddConnection(startNode, this,
+                                startNode.GetPortIndexAndType(startPortModel, out p), i);
                             this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
@@ -712,9 +711,8 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel endNode = endPortModel.Owner;
-                            ConnectorModel connector = ConnectorModel.Make(this, endNode, i,
+                            var connector = this.WorkSpace.AddConnection(this, endNode, i,
                                 endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
-                            this.WorkSpace.Connectors.Add(connector);
                             this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
@@ -742,9 +740,8 @@ namespace Dynamo.Nodes
                     {
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
-                        ConnectorModel connector = ConnectorModel.Make(this, endNode, index,
+                        var connector = this.WorkSpace.AddConnection(this, endNode, index,
                             endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
-                        WorkSpace.Connectors.Add(connector);
                         WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                     }
                     outportConnections[index] = null;
@@ -772,13 +769,12 @@ namespace Dynamo.Nodes
                 {
                     PortType p;
                     NodeModel endNode = endPortModel.Owner;
-                    ConnectorModel connector = ConnectorModel.Make(
+                    ConnectorModel connector = this.WorkSpace.AddConnection(
                         this,
                         endNode,
                         undefinedIndices[0],
                         endNode.GetPortIndexAndType(endPortModel, out p),
                         PortType.INPUT);
-                    WorkSpace.Connectors.Add(connector);
                     WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                 }
                 undefinedIndices.RemoveAt(0);

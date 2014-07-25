@@ -550,13 +550,6 @@ namespace Dynamo.Models
             foreach (NodeModel el in elements)
             {
                 el.DisableReporting();
-                //try
-                //{
-                //    el.Destroy();
-                //}
-                //catch
-                //{
-                //}
             }
 
             foreach (NodeModel el in elements)
@@ -579,7 +572,7 @@ namespace Dynamo.Models
             CurrentWorkspace.Nodes.Clear();
             CurrentWorkspace.Notes.Clear();
 
-            // KILLDYNSETTINGS - so bad 
+            // KILLDYNSETTINGS - all this, so bad
             // OnCleanWorkbench();
 
             // Clear undo/redo stacks.
@@ -840,9 +833,9 @@ namespace Dynamo.Models
                         // "MigrationNode" object type that is not derived from "NodeModel".
                         // 
                         typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(this, typeName);
                         if (type != null)
-                            el = this.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
 
                         if (el != null)
                         {
@@ -877,10 +870,9 @@ namespace Dynamo.Models
                     {
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
-                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                        var type = Dynamo.Nodes.Utilities.ResolveType(this, typeName);
 
-                        el = this.NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
-                        el.WorkSpace = CurrentWorkspace;
+                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
                         el.Load(dummyElement);
                     }
 
@@ -962,11 +954,8 @@ namespace Dynamo.Models
                         }
                     }
 
-                    var newConnector = ConnectorModel.Make(start, end,
+                    var newConnector = currentWorkspace.AddConnection( start, end,
                         startIndex, endIndex, portType);
-
-                    if (newConnector != null)
-                        CurrentWorkspace.Connectors.Add(newConnector);
 
                     OnConnectorAdded(newConnector);
                 }
