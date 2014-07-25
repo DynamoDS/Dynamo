@@ -157,6 +157,8 @@ limitations under the License.
     <Compile Include="TestInfrastructure\FilePathMutator.cs" />
     <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
+    <Compile Include="TestInfrastructure\StringInputMutator.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>

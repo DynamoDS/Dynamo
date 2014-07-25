@@ -48,6 +48,8 @@ namespace Dynamo.TestInfrastructure
                         DoubleSliderTest(writer);
                         DirectoryPathTest(writer);
                         FilePathTest(writer);
+                        NumberInputTest(writer);
+                        StringInputTest(writer);                        
                     }
                     finally
                     {
@@ -407,6 +409,41 @@ namespace Dynamo.TestInfrastructure
                         int numberOfUndosNeeded = mutator.Mutate();
                         Thread.Sleep(100);
 
+                        writer.WriteLine("### - Beginning undo");
+                        for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                        {
+                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            {
+                                DynamoViewModel.UndoRedoCommand undoCommand =
+                                    new DynamoViewModel.UndoRedoCommand(
+                                        DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            }));
+                            Thread.Sleep(100);
+                        }
+                        writer.WriteLine("### - undo complete");
+                        writer.Flush();
+                        writer.WriteLine("### - Beginning re-exec");
+
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel =
+                                new DynamoViewModel.RunCancelCommand(false, false);
+
+                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                        }));
+                        Thread.Sleep(10);
+
+                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+
+                        writer.WriteLine("### - re-exec complete");
+                        writer.Flush();
+                        writer.WriteLine("### - Beginning readback");
+
                         writer.WriteLine("### - Beginning test of IntegerSlider");
                         foreach (NodeModel n in nodes)
                         {
@@ -447,22 +484,7 @@ namespace Dynamo.TestInfrastructure
                             }
                         }
                         writer.WriteLine("### - test of IntegerSlider complete");
-                        writer.Flush();
-
-                        writer.WriteLine("### - Beginning undo");
-                        for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
-                        {
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
-                            {
-                                DynamoViewModel.UndoRedoCommand undoCommand =
-                                    new DynamoViewModel.UndoRedoCommand(
-                                        DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
-                            }));
-                            Thread.Sleep(100);
-                        }
-                        writer.WriteLine("### - undo complete");
-                        writer.Flush();
+                        writer.Flush();                        
                     }
                     passed = true;
                 }
@@ -527,6 +549,43 @@ namespace Dynamo.TestInfrastructure
                         int numberOfUndosNeeded = mutator.Mutate();
                         Thread.Sleep(100);
 
+                        writer.WriteLine("### - Beginning undo");
+                        for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                        {
+                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            {
+                                DynamoViewModel.UndoRedoCommand undoCommand =
+                                    new DynamoViewModel.UndoRedoCommand(
+                                        DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            }));
+                            Thread.Sleep(100);
+                        }
+                        writer.WriteLine("### - undo complete");
+                        writer.Flush();
+
+                        writer.WriteLine("### - undo complete");
+                        writer.Flush();
+                        writer.WriteLine("### - Beginning re-exec");
+
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel =
+                                new DynamoViewModel.RunCancelCommand(false, false);
+
+                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                        }));
+                        Thread.Sleep(10);
+
+                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+                        writer.WriteLine("### - re-exec complete");
+                        writer.Flush();
+                        writer.WriteLine("### - Beginning readback");
+
                         writer.WriteLine("### - Beginning test of DoubleSlider");
                         foreach (NodeModel n in nodes)
                         {
@@ -567,22 +626,7 @@ namespace Dynamo.TestInfrastructure
                             }
                         }
                         writer.WriteLine("### - test of DoubleSlider complete");
-                        writer.Flush();
-
-                        writer.WriteLine("### - Beginning undo");
-                        for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
-                        {
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
-                            {
-                                DynamoViewModel.UndoRedoCommand undoCommand =
-                                    new DynamoViewModel.UndoRedoCommand(
-                                        DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
-                            }));
-                            Thread.Sleep(100);
-                        }
-                        writer.WriteLine("### - undo complete");
-                        writer.Flush();
+                        writer.Flush();                        
                     }
                     passed = true;
                 }
@@ -653,6 +697,40 @@ namespace Dynamo.TestInfrastructure
                     int numberOfUndosNeeded = mutator.Mutate();
                     Thread.Sleep(100);
 
+                    writer.WriteLine("### - Beginning undo");
+                    for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                    {
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.UndoRedoCommand undoCommand =
+                                new DynamoViewModel.UndoRedoCommand(
+                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                        }));
+                        Thread.Sleep(100);
+                    }
+                    writer.WriteLine("### - undo complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning re-exec");
+
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                    }));
+                    Thread.Sleep(10);
+
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+                    writer.WriteLine("### - re-exec complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning readback");
+
                     writer.WriteLine("### - Beginning test of DirectoryPath");
                     foreach (NodeModel n in nodes)
                     {
@@ -693,22 +771,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of DirectoryPath complete");
-                    writer.Flush();
-
-                    writer.WriteLine("### - Beginning undo");
-                    for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
-                    {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
-                        {
-                            DynamoViewModel.UndoRedoCommand undoCommand =
-                                new DynamoViewModel.UndoRedoCommand(
-                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
-                        }));
-                        Thread.Sleep(100);
-                    }
-                    writer.WriteLine("### - undo complete");
-                    writer.Flush();
+                    writer.Flush();                    
                 }
                 passed = true;
             }
@@ -774,6 +837,40 @@ namespace Dynamo.TestInfrastructure
                     int numberOfUndosNeeded = mutator.Mutate();
                     Thread.Sleep(100);
 
+                    writer.WriteLine("### - Beginning undo");
+                    for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                    {
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.UndoRedoCommand undoCommand =
+                                new DynamoViewModel.UndoRedoCommand(
+                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                        }));
+                        Thread.Sleep(100);
+                    }                    
+                    writer.WriteLine("### - undo complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning re-exec");
+
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                    }));
+                    Thread.Sleep(10);
+
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+                    writer.WriteLine("### - re-exec complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning readback");
+
                     writer.WriteLine("### - Beginning test of FilePath");
                     foreach (NodeModel n in nodes)
                     {
@@ -814,7 +911,70 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of FilePath complete");
+                    writer.Flush();                    
+                }
+                passed = true;
+            }
+            finally
+            {
+                dynSettings.DynamoLogger.Log("FilePathTest : " + (passed ? "pass" : "FAIL"));
+            }
+        }
+
+        #endregion
+
+        # region Number/String Input Tests
+
+        private void NumberInputTest(StreamWriter writer)
+        {
+            bool passed = false;
+            try
+            {
+                Random rand = new Random(1);
+
+                for (int i = 0; i < 1000; i++)
+                {
+                    writer.WriteLine("##### - Beginning run: " + i);
+                    List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == typeof(DoubleInput)).ToList();
+
+                    if (nodes.Count == 0)
+                        return;
+
+                    writer.WriteLine("### - Beginning eval");
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                    }));
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+                    writer.WriteLine("### - Eval complete");
                     writer.Flush();
+
+                    Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            Guid guid = n.GUID;
+                            Object data = n.GetValue(0).Data;
+                            String val = data != null ? data.ToString() : "null";
+                            valueMap.Add(guid, val);
+                            writer.WriteLine(guid + " :: " + val);
+                            writer.Flush();
+                        }
+                    }
+
+                    List<AbstractMutator> mutators = new List<AbstractMutator>()
+                    {
+                        new NumberInputMutator(rand)
+                    };
+                    AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
+                    int numberOfUndosNeeded = mutator.Mutate();
+                    Thread.Sleep(100);
 
                     writer.WriteLine("### - Beginning undo");
                     for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
@@ -830,12 +990,211 @@ namespace Dynamo.TestInfrastructure
                     }
                     writer.WriteLine("### - undo complete");
                     writer.Flush();
+                    writer.WriteLine("### - Beginning re-exec");
+
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                    }));
+                    Thread.Sleep(10);
+
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+                    writer.WriteLine("### - re-exec complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning readback");
+
+                    writer.WriteLine("### - Beginning test of Number");
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            try
+                            {
+                                String valmap = valueMap[n.GUID].ToString();
+                                Object data = n.GetValue(0).Data;
+                                String nodeVal = data != null ? data.ToString() : "null";
+
+                                if (valmap != nodeVal)
+                                {
+                                    writer.WriteLine("!!!!!!!!!!! - test of Number is failed");
+                                    writer.WriteLine(n.GUID);
+
+                                    writer.WriteLine("Was: " + nodeVal);
+                                    writer.WriteLine("Should have been: " + valmap);
+                                    writer.Flush();
+                                    return;
+
+                                    Debug.WriteLine("==========> Failure on run: " + i);
+                                    Debug.WriteLine("Lookup map failed to agree");
+                                    Validity.Assert(false);
+                                }
+                                else
+                                {
+                                    writer.WriteLine("### - test of Number is passed");
+                                    writer.Flush();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                writer.WriteLine("!!!!!!!!!!! - test of Number is failed");
+                                writer.Flush();
+                                return;
+                            }
+                        }
+                    }
+                    writer.WriteLine("### - test of Number complete");
+                    writer.Flush();
                 }
                 passed = true;
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("FilePathTest : " + (passed ? "pass" : "FAIL"));
+                dynSettings.DynamoLogger.Log("NumberTest : " + (passed ? "pass" : "FAIL"));
+            }
+        }
+
+        private void StringInputTest(StreamWriter writer)
+        {
+            bool passed = false;
+            try
+            {
+                Random rand = new Random(1);
+
+                for (int i = 0; i < 1000; i++)
+                {
+                    writer.WriteLine("##### - Beginning run: " + i);
+                    List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == typeof(StringInput)).ToList();
+
+                    if (nodes.Count == 0)
+                        return;
+
+                    writer.WriteLine("### - Beginning eval");
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                    }));
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+                    writer.WriteLine("### - Eval complete");
+                    writer.Flush();
+
+                    Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            Guid guid = n.GUID;
+                            Object data = n.GetValue(0).Data;
+                            String val = data != null ? data.ToString() : "null";
+                            valueMap.Add(guid, val);
+                            writer.WriteLine(guid + " :: " + val);
+                            writer.Flush();
+                        }
+                    }
+
+                    List<AbstractMutator> mutators = new List<AbstractMutator>()
+                    {
+                        new StringInputMutator(rand)
+                    };
+                    AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
+                    int numberOfUndosNeeded = mutator.Mutate();
+                    Thread.Sleep(100);
+
+                    writer.WriteLine("### - Beginning undo");
+                    for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                    {
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.UndoRedoCommand undoCommand =
+                                new DynamoViewModel.UndoRedoCommand(
+                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                        }));
+                        Thread.Sleep(100);
+                    }
+                    writer.WriteLine("### - undo complete");
+                    writer.Flush();
+
+                    writer.WriteLine("### - undo complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning re-exec");
+
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+
+                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+
+                    }));
+                    Thread.Sleep(10);
+
+                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+                    writer.WriteLine("### - re-exec complete");
+                    writer.Flush();
+                    writer.WriteLine("### - Beginning readback");
+
+                    writer.WriteLine("### - Beginning test of String");
+                    foreach (NodeModel n in nodes)
+                    {
+                        if (n.OutPorts.Count > 0)
+                        {
+                            try
+                            {
+                                String valmap = valueMap[n.GUID].ToString();
+                                Object data = n.GetValue(0).Data;
+                                String nodeVal = data != null ? data.ToString() : "null";
+
+                                if (valmap != nodeVal)
+                                {
+                                    writer.WriteLine("!!!!!!!!!!! - test of String is failed");
+                                    writer.WriteLine(n.GUID);
+
+                                    writer.WriteLine("Was: " + nodeVal);
+                                    writer.WriteLine("Should have been: " + valmap);
+                                    writer.Flush();
+                                    return;
+
+                                    Debug.WriteLine("==========> Failure on run: " + i);
+                                    Debug.WriteLine("Lookup map failed to agree");
+                                    Validity.Assert(false);
+                                }
+                                else
+                                {
+                                    writer.WriteLine("### - test of String is passed");
+                                    writer.Flush();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                writer.WriteLine("!!!!!!!!!!! - test of String is failed");
+                                writer.Flush();
+                                return;
+                            }
+                        }
+                    }
+                    writer.WriteLine("### - test of Number complete");
+                    writer.Flush();                    
+                }
+                passed = true;
+            }
+            finally
+            {
+                dynSettings.DynamoLogger.Log("StringTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
