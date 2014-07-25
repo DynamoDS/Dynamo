@@ -16,8 +16,8 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 
 namespace DSCoreNodesUI.Logic
 {
-    [NodeName("ImperativeIf"), NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL),
-     NodeDescription("Imperative If statement"), IsDesignScriptCompatible]
+    [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL),
+     NodeDescription("Scoped If statement"), IsDesignScriptCompatible]
     public class ScopedIf : ScopedNodeModel
     {
         public ScopedIf()
@@ -61,7 +61,7 @@ namespace DSCoreNodesUI.Logic
             {
                 foreach (var node in trueNodes)
                 {
-                    node.Warning("A node cann't be both in condition and true/false branches of IF node");
+                    node.Error("A node cann't be both in condition and true/false branches of IF node");
                 }
             }
         }
@@ -96,8 +96,6 @@ namespace DSCoreNodesUI.Logic
             //         }
             //     }
             //
-
-            SanityCheck();
 
             var astsInTrueBranch = GetAstsForBranch(1, inputAstNodes);
             var astsInFalseBranch = GetAstsForBranch(2, inputAstNodes);
