@@ -261,7 +261,7 @@ namespace ProtoTestFx.TD
                 if (!System.IO.Directory.Exists(path))
                     System.IO.Directory.CreateDirectory(path);
 
-                createDSFile(fileName, path, sourceCode);
+                // createDSFile(fileName, path, sourceCode); // Uncomment this line inorder  to dump the language scripts in seperate ds files. Require for CBNLanguageComparison Tests
                 SetErrorMessage(errorstring);
                 return testMirror;
             }
