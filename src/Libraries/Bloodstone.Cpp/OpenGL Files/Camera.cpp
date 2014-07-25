@@ -25,7 +25,7 @@ void TrackBall::MousePressedCore(int screenX, int screenY, Mode mode)
     if (mTrackBallMode != Mode::None)
         return;
 
-    mpCamera->GetConfiguration(mConfiguration); // Get the updated configuration.
+    mpCamera->GetConfiguration(&mConfiguration); // Get the updated configuration.
     mCameraUpVector.x = mConfiguration.cameraUpVector[0];
     mCameraUpVector.y = mConfiguration.cameraUpVector[1];
     mCameraUpVector.z = mConfiguration.cameraUpVector[2];
@@ -195,11 +195,6 @@ Camera::Camera(GraphicsContext* pGraphicsContext) :
     mpTrackBall = new TrackBall(this);
 }
 
-void Camera::GetConfiguration(CameraConfiguration& configuration) const
-{
-    configuration = this->mConfiguration;
-}
-
 void Camera::GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const
 {
     model = this->mModelMatrix;
@@ -224,49 +219,20 @@ void Camera::BeginConfigureCore(const CameraConfiguration* pConfiguration)
     InitializeTransition(pConfiguration);
 }
 
+void Camera::GetConfigurationCore(CameraConfiguration* pConfiguration) const
+{
+    (*pConfiguration) = this->mConfiguration;
+}
+
 void Camera::ResizeViewportCore(int width, int height)
 {
     CameraConfiguration configuration;
-    this->GetConfiguration(configuration);
+    this->GetConfiguration(&configuration);
 
     configuration.viewportWidth = width;
     configuration.viewportHeight = height;
     FinalizeCurrentTransition();
     this->ConfigureInternal(&configuration);
-}
-
-void Camera::FitToBoundingBoxCore(const BoundingBox* pBoundingBox)
-{
-    if (pBoundingBox->IsInitialized() == false)
-        return;
-
-    // Get the bound box targetPosition and its radius.
-    auto configuration = mConfiguration;
-    float boxCenter[3], radius = 0.0f;
-    pBoundingBox->Get(&boxCenter[0], radius);
-
-    if (radius <= 0.0f) // Bounding box is empty.
-        return;
-
-    // Calculate the distance from eye to the targetPosition.
-    auto halfFov = configuration.fieldOfView * 0.5f;
-    auto halfFovRadian = halfFov * glm::pi<float>() / 180.0f;
-    auto distance = std::fabsf(radius / std::sinf(halfFovRadian));
-    configuration.farClippingPlane = distance + radius;
-
-    // Obtain the inversed view vector.
-    float vx, vy, vz;
-    configuration.GetViewDirection(vx, vy, vz);
-    glm::vec3 inversedViewDir(-vx, -vy, -vz);
-    inversedViewDir = glm::normalize(inversedViewDir);
-
-    // Compute the new eye point based on direction and origin.
-    glm::vec3 eye = inversedViewDir * distance;
-
-    // Update the configuration and reconfigure the camera.
-    configuration.SetEyePoint(eye.x, eye.y, eye.z);
-    configuration.SetCenterPoint(boxCenter[0], boxCenter[1], boxCenter[2]);
-    this->BeginConfigure(&configuration);
 }
 
 bool Camera::IsInTransitionCore(void) const

@@ -99,7 +99,6 @@ void Scene::RenderScene(void)
 
     // Fit the camera to the bounding box, and apply transformation.
     auto pCamera = pGraphicsContext->GetDefaultCamera();
-    // pCamera->FitToBoundingBox(&boundingBox);
     mpShaderProgram->ApplyTransformation(pCamera);
 
     RenderGeometries(geometries);
@@ -178,8 +177,11 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         outerBoundingBox.EvaluateBox(boundingBox);
     }
 
+    CameraConfiguration configuration;
     auto pCamera = pGraphicsContext->GetDefaultCamera();
-    pCamera->FitToBoundingBox(&outerBoundingBox);
+    pCamera->GetConfiguration(&configuration);
+    configuration.FitToBoundingBox(outerBoundingBox);
+    pCamera->BeginConfigure(&configuration);
 
     mVisualizer->RequestFrameUpdate(); // Update window.
 }

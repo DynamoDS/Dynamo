@@ -267,7 +267,7 @@ namespace Dynamo { namespace Bloodstone {
             viewportHeight = 720;
             fieldOfView = 45.0f;
             nearClippingPlane = 0.1f;
-            farClippingPlane = 1000.0f;
+            farClippingPlane = 100000.0f;
         }
 
         void SetEyePoint(float x, float y, float z)
@@ -322,6 +322,13 @@ namespace Dynamo { namespace Bloodstone {
             this->cameraUpVector[0] += diff[0] * factor;
             this->cameraUpVector[1] += diff[1] * factor;
             this->cameraUpVector[2] += diff[2] * factor;
+
+            diff[0] = other.fieldOfView         - this->fieldOfView;
+            diff[1] = other.nearClippingPlane   - this->nearClippingPlane;
+            diff[2] = other.farClippingPlane    - this->farClippingPlane;
+            this->fieldOfView       += diff[0] * factor;
+            this->nearClippingPlane += diff[1] * factor;
+            this->farClippingPlane  += diff[2] * factor;
         }
 
         void FitToBoundingBox(const BoundingBox& boundingBox);
@@ -356,14 +363,14 @@ namespace Dynamo { namespace Bloodstone {
             this->BeginConfigureCore(pConfiguration);
         }
 
+        void GetConfiguration(CameraConfiguration* pConfiguration) const
+        {
+            this->GetConfigurationCore(pConfiguration);
+        }
+
         void ResizeViewport(int width, int height)
         {
             this->ResizeViewportCore(width, height);
-        }
-
-        void FitToBoundingBox(const BoundingBox* pBoundingBox)
-        {
-            this->FitToBoundingBoxCore(pBoundingBox);
         }
 
         bool IsInTransition(void) const
@@ -384,8 +391,8 @@ namespace Dynamo { namespace Bloodstone {
     protected:
         virtual void ConfigureCore(const CameraConfiguration* pConfiguration) = 0;
         virtual void BeginConfigureCore(const CameraConfiguration* pConfiguration) = 0;
+        virtual void GetConfigurationCore(CameraConfiguration* pConfiguration) const = 0;
         virtual void ResizeViewportCore(int width, int height) = 0;
-        virtual void FitToBoundingBoxCore(const BoundingBox* pBoundingBox) = 0;
         virtual bool IsInTransitionCore(void) const = 0;
         virtual void UpdateFrameCore(void) = 0;
         virtual ITrackBall* GetTrackBallCore() const = 0;
