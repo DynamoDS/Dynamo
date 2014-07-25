@@ -335,8 +335,10 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T010_Defect_1456751_execution_on_both_true_and_false_path_issue()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4026
             string src = @"
 a = 0;
 def foo ( )
@@ -347,7 +349,8 @@ def foo ( )
 x = 1 > 2 ? foo() + 1 : foo() + 2;
 	
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            string err = "MAGN-4026 Execution of both true and false statements in Associative inline condition";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src, err);
             thisTest.Verify("x", 3);
             thisTest.Verify("a", 1);
         }
@@ -578,10 +581,12 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failing")]
         public void T018_conditionequalto_1467503_5()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
             string code = @"                d;                c = false;                d = c!= null;                    ";
-            string errmsg = "1467503- null comparison returns null, it should return true or false";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -589,10 +594,12 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failing")]
         public void T018_conditionequalto_1467503_6()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
             string code = @"                d;                c = false;                d = c== null;                    ";
-            string errmsg = "1467503- null comparison returns null, it should return true or false";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -600,10 +607,12 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failing")]
         public void T018_conditionequalto_1467503_7()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
             string code = @"            d;            [Imperative]            {                c = false;                d = c== null;            }        ";
-            string errmsg = "1465048- null comparison returns null, it should return true or false";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -611,10 +620,12 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failing")]
         public void T018_conditionequalto_1467503_8()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1699
             string code = @"            d;            [Imperative]            {                c = false;                d = c!= null;            }        ";
-            string errmsg = "1467503-null comparison returns null, it should return true or false";
+            string errmsg = "MAGN-1699 null comparison returns null, it should return true or false";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", true);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -688,10 +699,12 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
 
         [Test]
+        [Category("Failing")]
         public void T019_conditionequalto_1467469()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1692
             string code = @"            e;            class A{ a1 = 1; }            class B{ b2 = 2; }            a = A.A();            b = B.B();            c = 1 == 2;            d = a == b;        ";
-            string errmsg = "1467469 equal to with user defined always returns true ";
+            string errmsg = "MAGN-1692 equal to with user defined always returns true";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", false);
             thisTest.VerifyRuntimeWarningCount(0);
