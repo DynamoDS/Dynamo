@@ -105,7 +105,7 @@ bool VisualizerWnd::Initialize(HWND hWndParent, int width, int height)
     // to be specified for the window we are creating (OpenGL creation needs it).
     // 
     windowClass.cbSize = sizeof(windowClass);
-    windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+    windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
     windowClass.lpfnWndProc = LocalWndProc;
     windowClass.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
     windowClass.hbrBackground = ::CreateSolidBrush(RGB(100, 149, 237));
@@ -155,6 +155,18 @@ LRESULT VisualizerWnd::ProcessMouseMessage(UINT msg, WPARAM wParam, LPARAM lPara
 
     switch (msg)
     {
+    case WM_LBUTTONDBLCLK:
+        {
+            BoundingBox boundingBox;
+            mpScene->GetBoundingBox(boundingBox);
+
+            CameraConfiguration configuration;
+            pCamera->GetConfiguration(&configuration);
+            configuration.FitToBoundingBox(boundingBox);
+            pCamera->BeginConfigure(&configuration);
+            break;
+        }
+
     case WM_LBUTTONDOWN:
         SetCapture(this->mhWndVisualizer);
         pTrackBall->MousePressed(x, y, ITrackBall::Mode::Rotate);
@@ -223,6 +235,7 @@ LRESULT VisualizerWnd::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
     case WM_RBUTTONUP:
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
+    case WM_LBUTTONDBLCLK:
         return ProcessMouseMessage(msg, wParam, lParam);
 
     case WM_ERASEBKGND:
