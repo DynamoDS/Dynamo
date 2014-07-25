@@ -787,34 +787,8 @@ namespace ProtoCore.DSASM
             int currentScopeFunction = Constants.kInvalidIndex;
             GetCallerInformation(out currentScopeClass, out currentScopeFunction);
 
-            //List<bool> execStates = new List<bool>();
-            //
-            //
-            // Comment Jun:
-            // Storing execution states is relevant only if the current scope is a function,
-            // as this mechanism is used to keep track of maintining execution states of recursive calls
-            // This mechanism should also be ignored if the function call is non-recursive as it does not need to maintains state in that case
-            //
-            //if (currentScopeFunction != Constants.kGlobalScope)
-            //{
-            ////    // Get the instruction stream where the current function resides in
-            ////    StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexFunctionBlock));
-            ////    Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex);
-            ////    AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
 
-            ////    // Get the graphnodes of the function from the instruction stream and retrive the execution states
-            ////    execStates = depgraph.GetExecutionStatesAtScope(currentScopeClass, currentScopeFunction);
-
-            //    Console.WriteLine("Calling: {0}, class: {1}", fNode.name, fNode.classScope);
-
-            //    foreach (AssociativeGraph.GraphNode gnode in fNode.GraphNodeList)
-            //    {
-            //        execStates.Add(gnode.isDirty);
-            //    }
-            //}
-
-            //Console.WriteLine("Calling: {0}, class: {1}", fNode.name, fNode.classScope);
-            // Build the stackfram for the functioncall
+            // Handle execution states at the FEP
             var stackFrame = new StackFrame(svThisPtr, 
                                             ci, 
                                             fi, 
