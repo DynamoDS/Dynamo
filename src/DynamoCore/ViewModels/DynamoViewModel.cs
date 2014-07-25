@@ -418,9 +418,10 @@ namespace Dynamo.ViewModels
         // KILLDYNSETTINGS: This should be a field that throws an exception when null
         public Dispatcher UIDispatcher { get; set; }
 
-        public IWatchHandler WatchHandler { get; set; }
-        public IVisualizationManager VisualizationManager { get; set; }
-        public SearchViewModel SearchViewModel { get; set; }
+        public IWatchHandler WatchHandler { get; private set; }
+        public IVisualizationManager VisualizationManager { get; private set; }
+        public SearchViewModel SearchViewModel { get; private set; }
+        public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
         #endregion
 
@@ -439,7 +440,7 @@ namespace Dynamo.ViewModels
             this.model = dynamoModel;
             this.WatchHandler = watchHandler;
             this.VisualizationManager = vizManager;
-
+            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
 
             //add the initial workspace and register for future 
@@ -950,22 +951,22 @@ namespace Dynamo.ViewModels
 
         private void PublishCurrentWorkspace(object parameters)
         {
-            model.PackageManagerClient.PublishCurrentWorkspace();
+            PackageManagerClientViewModel.PublishCurrentWorkspace();
         }
 
         private bool CanPublishCurrentWorkspace(object parameters)
         {
-            return model.PackageManagerClient.CanPublishCurrentWorkspace();
+            return PackageManagerClientViewModel.CanPublishCurrentWorkspace();
         }
 
         private void PublishSelectedNodes(object parameters)
         {
-            model.PackageManagerClient.PublishSelectedNode();
+            PackageManagerClientViewModel.PublishSelectedNode();
         }
 
         private bool CanPublishSelectedNodes(object parameters)
         {
-            return model.PackageManagerClient.CanPublishSelectedNode(parameters);
+            return PackageManagerClientViewModel.CanPublishSelectedNode(parameters);
         }
 
         private void ShowPackageManagerSearch(object parameters)

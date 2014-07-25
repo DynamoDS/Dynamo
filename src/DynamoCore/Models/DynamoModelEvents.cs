@@ -130,7 +130,7 @@ namespace Dynamo.Models
         {
             RemoveNodeFromMap(node);
 
-            // KILLDYNSETTINGS: this indicates that this should be an event on DynamoViewModel
+            // KILLDYNSETTINGS: this should be an event on dynamoModel
             WorkspaceViewModel wvm = Controller.DynamoViewModel.CurrentSpaceViewModel;
 
             if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))

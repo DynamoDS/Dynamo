@@ -3,23 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using System.Windows;
-
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-
-using Greg;
 using Greg.Requests;
-using Greg.Responses;
-using Greg.Utility;
 
-namespace Dynamo.PackageManager
+namespace Dynamo.ViewModels
 {
     /// <summary>
     ///     A thin wrapper on the Greg rest client for performing IO with
@@ -29,6 +21,21 @@ namespace Dynamo.PackageManager
     {
 
         #region Properties/Fields
+
+        ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
+        public ObservableCollection<PackageUploadHandle> Uploads
+        {
+            get { return _uploads; }
+            set { _uploads = value; }
+        }
+
+        ObservableCollection<PackageDownloadHandle> _downloads = new ObservableCollection<PackageDownloadHandle>();
+        public ObservableCollection<PackageDownloadHandle> Downloads
+        {
+            get { return _downloads; }
+            set { _downloads = value; }
+        }
+
 
         private readonly DynamoViewModel dynamoViewModel;
         private readonly PackageManagerClient packageManagerClient;
@@ -144,7 +151,7 @@ namespace Dynamo.PackageManager
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
-            packageManagerClient.Downloads.Add(packageDownloadHandle);
+            this.Downloads.Add(packageDownloadHandle);
 
             Task.Factory.StartNew(() =>
             {
@@ -196,6 +203,12 @@ namespace Dynamo.PackageManager
                 }
             });
 
+        }
+
+        public void ClearCompletedDownloads()
+        {
+            Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed ||
+                x.DownloadState == PackageDownloadHandle.State.Error).ToList().ForEach(x => Downloads.Remove(x));
         }
 
         internal void GoToWebsite()

@@ -8,6 +8,7 @@ using System.Threading;
 using CSharpAnalytics;
 using CSharpAnalytics.Protocols.Measurement;
 
+using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.Win32;
@@ -20,6 +21,9 @@ namespace Dynamo.Services
     /// </summary>
     public class InstrumentationLogger
     {
+
+        private static readonly DynamoModel dynamoModel;
+
         private const bool IS_VERBOSE_DIAGNOSTICS = false;
 
         private static string userID = GetUserID();
@@ -41,8 +45,9 @@ namespace Dynamo.Services
         }
 
         //Service start
-        public static void Start()
+        public static void Start(DynamoModel dynamoModel)
         {
+
             string appVersion = Process.GetCurrentProcess().ProcessName + "-"
                                 + dynamoModel.UpdateManager.ProductVersion.ToString();
 
@@ -55,7 +60,7 @@ namespace Dynamo.Services
 
             // The following starts the heartbeat, do not remove this 
             // because of the unreferenced "heartbeat" variable.
-            var heartbeat = Heartbeat.GetInstance();
+            var heartbeat = Heartbeat.GetInstance(dynamoModel);
 
             CSharpAnalytics.AutoMeasurement.Start(mc);
             client = AutoMeasurement.Client;
@@ -128,7 +133,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousTimedEvent(string category, string variable, TimeSpan time, string label = null)
         {
-            if (DynamoController.IsTestMode)
+            if (dynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -139,7 +144,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousEvent(string action, string category, string label = null)
         {
-            if (DynamoController.IsTestMode)
+            if (dynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -150,7 +155,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousScreen(string screenName)
         {
-            if (DynamoController.IsTestMode)
+            if (dynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -163,7 +168,7 @@ namespace Dynamo.Services
 
         public static void LogException(Exception e)
         {
-            if (DynamoController.IsTestMode)
+            if (dynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -182,7 +187,7 @@ namespace Dynamo.Services
 
         public static void FORCE_LogInfo(string tag, string data)
         {
-            if (DynamoController.IsTestMode)
+            if (dynamoModel.IsTestMode)
                 return;
 
             if (!started)
@@ -193,7 +198,7 @@ namespace Dynamo.Services
 
         public static void LogPiiInfo(string tag, string data)
         {
-            if (DynamoController.IsTestMode)
+            if (dynamoModel.IsTestMode)
                 return;
 
             if (!started)

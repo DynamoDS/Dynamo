@@ -206,6 +206,7 @@ namespace Dynamo.Models
         {
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            UsageReportingManager.Instance.InitializeCore(this);
 
             Context = context;
             IsTestMode = isTestMode;
@@ -453,7 +454,7 @@ namespace Dynamo.Models
             }
 
             UnlockLoadPath = null;
-            Controller.IsUILocked = false;
+            //Controller.IsUILocked = false;
             HomeSpace.OnDisplayed();
 
         }

@@ -23,7 +23,7 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class InstalledPackagesView : Window
     {
-        private readonly DynamoModel viewModel;
+        private readonly InstalledPackagesViewModel viewModel;
 
         public InstalledPackagesView(InstalledPackagesViewModel viewModel)
         {
@@ -33,7 +33,7 @@ namespace Dynamo.PackageManager.UI
 
         private void BrowseOnline_OnClick(object sender, RoutedEventArgs e)
         {
-            dynamoModel.PackageManagerClient.GoToWebsite();
+            viewModel.GoToWebsite();
         }
 
         private void MoreButton_OnClick(object sender, RoutedEventArgs e)

@@ -217,8 +217,7 @@ namespace Dynamo.Core
                     // handle it.
                     // 
                     // KILLDYNSETTINGS: should not be using the UIDispatcher here
-                    if (dynamoModel.UIDispatcher != null)
-                        dynamoModel.UIDispatcher.BeginInvoke(showFailureMessage);
+                    dynamoModel.OnRequestDispatcherBeginInvoke(showFailureMessage);
                 }
 
                 // Currently just use inefficient way to refresh preview values. 

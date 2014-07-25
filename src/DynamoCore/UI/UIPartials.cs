@@ -332,9 +332,11 @@ namespace Dynamo.Nodes
             publishCustomNodeItem.Click += (sender, args) =>
             {
                 GoToWorkspace(nodeUI.ViewModel);
-                if (dynamoModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
+
+                //KILLDYNSETTINGS - Create event for this
+                if (dynamoModel.PublishCurrentWorkspaceCommand.CanExecute(null))
                 {
-                    dynamoModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
+                    dynamoModel.PublishCurrentWorkspaceCommand.Execute(null);
                 } 
             };
 
@@ -358,14 +360,14 @@ namespace Dynamo.Nodes
                 CanEditName = false
             };
 
-            dynamoModel.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
+            dynamoModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    this.DynamoModel.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
 
                 if (args.CanEditName) workspace.Name = args.Name;

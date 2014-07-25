@@ -1,7 +1,7 @@
 ﻿using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using System;
 using System.Windows;
@@ -14,9 +14,10 @@ namespace Dynamo.Services
         public DelegateCommand ToggleIsUsageReportingApprovedCommand { get; set; }
         public DelegateCommand ToggleIsAnalyticsReportingApprovedCommand { get; set; }
 
-
         #region Private
 
+        // KILLDYNSETTINGS
+        private static DynamoModel dynamoModel;
         private static UsageReportingManager instance;
 
         #endregion
@@ -44,7 +45,7 @@ namespace Dynamo.Services
         {
             get
             {
-                if (DynamoController.IsTestMode) // Do not want logging in unit tests.
+                if (dynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
                 // KILLDYNSETTINGS - Static reference to non-static object
@@ -73,6 +74,18 @@ namespace Dynamo.Services
         }
 
         /// <summary>
+        /// Provide access to the instance of DynamoModel to watch. 
+        /// This operation should be called only once at
+        /// the beginning of a Dynamo session.  It will not be mutated 
+        /// in subsequent calls.
+        /// </summary>
+        public void InitializeCore(DynamoModel dynamoModel)
+        {
+            if (UsageReportingManager.dynamoModel != null)
+                UsageReportingManager.dynamoModel = dynamoModel;
+        }
+
+        /// <summary>
         /// Analytics is the opt-out tracking system
         /// PII is prohibited from Analytics.
         /// </summary>
@@ -80,7 +93,7 @@ namespace Dynamo.Services
         {
             get
             {
-                if (DynamoController.IsTestMode) // Do not want logging in unit tests.
+                if (dynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
                 if (dynamoModel != null)
@@ -129,7 +142,6 @@ namespace Dynamo.Services
         {
             ToggleIsUsageReportingApprovedCommand = new DelegateCommand(ToggleIsUsageReportingApproved, CanToggleIsUsageReportingApproved);
             ToggleIsAnalyticsReportingApprovedCommand = new DelegateCommand(ToggleIsAnalyticsReportingApproved, CanToggleIsAnalyticsReportingApproved);
-        
         }
 
         // KILLDYNSETTINGS - This is abominable - passing a window?
@@ -144,7 +156,7 @@ namespace Dynamo.Services
                 IsAnalyticsReportingApproved = true;
 
                 //Prompt user for detailed reporting
-                if (!DynamoController.IsTestMode)
+                if (!dynamoModel.IsTestMode)
                     ShowUsageReportingPrompt(ownerWindow);
             }
         }

@@ -46,11 +46,6 @@ namespace Dynamo.PackageManager
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        private PackageDownloadHandle()
-        {
-            
-        }
-
         public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
         {
             this.Header = header;

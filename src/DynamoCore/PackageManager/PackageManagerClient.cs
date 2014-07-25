@@ -52,20 +52,6 @@ namespace Dynamo.PackageManager
 
         #region Properties/Fields
 
-        ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
-        public ObservableCollection<PackageUploadHandle> Uploads
-        {
-            get { return _uploads; }
-            set { _uploads = value; }
-        }
-
-        ObservableCollection<PackageDownloadHandle> _downloads = new ObservableCollection<PackageDownloadHandle>();
-        public ObservableCollection<PackageDownloadHandle> Downloads
-        {
-            get { return _downloads; }
-            set { _downloads = value; }
-        }
-
         private readonly DynamoModel dynamoModel;
 
         /// <summary>
@@ -305,13 +291,6 @@ namespace Dynamo.PackageManager
 
         }
 
-        public void ClearCompletedDownloads()
-        {
-            Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed ||
-                x.DownloadState == PackageDownloadHandle.State.Error).ToList().ForEach(x=>Downloads.Remove(x));
-        }
-
-        
         public class PackageManagerResult
         {
             public PackageManagerResult(string error, bool success)

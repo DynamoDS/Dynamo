@@ -26,19 +26,24 @@ namespace Dynamo.ViewModels
         {
             this.Model = model;
             this.dynamoViewModel = dynamoViewModel;
-
+            
             InitializeLocalPackages();
+        }
+
+        internal void GoToWebsite()
+        {
+            dynamoViewModel.PackageManagerClientViewModel.GoToWebsite();
         }
 
         private void InitializeLocalPackages()
         {
-            foreach (var pkg in model.LocalPackages)
+            foreach (var pkg in Model.LocalPackages)
             {
                 LocalPackages.Add(new PackageViewModel(this.dynamoViewModel, pkg));
             }
 
 
-            this.model.LocalPackages.CollectionChanged += LocalPackagesOnCollectionChanged;
+            this.Model.LocalPackages.CollectionChanged += LocalPackagesOnCollectionChanged;
         }
 
         private void LocalPackagesOnCollectionChanged(object sender, 

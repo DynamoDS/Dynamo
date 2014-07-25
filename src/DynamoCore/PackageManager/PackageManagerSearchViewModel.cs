@@ -133,7 +133,7 @@ namespace Dynamo.PackageManager
 
         public bool HasDownloads
         {
-            get { return dynSettings.PackageManagerClient.Downloads.Count > 0; }
+            get { return PackageManagerClient.Downloads.Count > 0; }
         }
 
         public bool HasNoResults
@@ -537,7 +537,6 @@ namespace Dynamo.PackageManager
         /// <param name="results"></param>
         private static void Sort(List<PackageManagerSearchElement> results, PackageSortingKey key)
         {
-
             switch (key)
             {
                 case PackageSortingKey.NAME:
@@ -556,7 +555,6 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Maintainers.ToLower().CompareTo(e2.Maintainers.ToLower()));
                     break;
             }
-            
         }
 
         /// <summary>
@@ -586,7 +584,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void ExecuteSelected()
         {
-
             // none of the elems are selected, return 
             if (SelectedIndex == -1)
                 return;
@@ -595,9 +592,7 @@ namespace Dynamo.PackageManager
                 return;
 
             SearchResults[SelectedIndex].Execute();
-
         }
-
         
     }
 }

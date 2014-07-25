@@ -33,7 +33,6 @@ namespace Dynamo.Search.SearchElements
             this.FullCategoryName = info.Category;
             this.Guid = info.Guid;
             this._path = info.Path;
-            this.EditCommand = new DelegateCommand(Edit);
         }
 
         public override NodeSearchElement Copy()
@@ -41,11 +40,6 @@ namespace Dynamo.Search.SearchElements
             return
                 new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
                                                                this.Description, this.Path));
-        }
-
-        public void Edit(object _)
-        {
-            dynamoModel.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);
         }
 
         public override void Execute()

@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
                 p.PortDisconnected += p_PortDisconnected;
             }
 
-            dynamoModel.EvaluationCompleted += Controller_EvaluationCompleted;
+            this.DynamoModel.EvaluationCompleted += Controller_EvaluationCompleted;
         }
 
         void Controller_EvaluationCompleted(object sender, EventArgs e)
@@ -191,7 +191,7 @@ namespace Dynamo.Nodes
                 var inputVar = this.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
                 //Get RuntimeMirror for input ast identifier.
-                var mirror = dynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
+                var mirror = this.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
                 if (null == mirror)
                     return new WatchViewModel(nullString, inputVar);
 
