@@ -4,12 +4,17 @@ using System.Linq;
 using System.Text;
 
 using Autodesk.DesignScript.Geometry;
+using Autodesk.Revit.DB;
 
 using NUnit.Framework;
 
 using Revit.GeometryConversion;
 
 using RTF.Framework;
+
+using Arc = Autodesk.DesignScript.Geometry.Arc;
+using Line = Autodesk.DesignScript.Geometry.Line;
+using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests.GeometryConversion
 {
@@ -58,6 +63,46 @@ namespace DSRevitNodesTests.GeometryConversion
             var nurbsCurve = NurbsCurve.ByPoints(points, 3);
 
             Assert.False(CurveUtils.IsLineLike(nurbsCurve.ToRevitType(false)));
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void IsLineLike_Curve_CorrectlyIdentifiesStraightHermiteSpline()
+        {
+            var points =
+                Enumerable.Range(0, 10)
+                    .Select(x => new XYZ(x, 0, 0));
+
+            var hs = HermiteSpline.Create(
+                points.ToList(),
+                false,
+                new HermiteSplineTangents()
+                {
+                    StartTangent = new XYZ(1, 0, 0),
+                    EndTangent = new XYZ(1, 0, 0)
+                });
+
+            Assert.True(CurveUtils.IsLineLike(hs));
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void IsLineLike_Curve_CorrectlyIdentifiesNonStraightHermiteWithStraightControlPoints()
+        {
+            var points =
+                Enumerable.Range(0, 10)
+                    .Select(x => new XYZ(x, 0, 0));
+
+            var hs = HermiteSpline.Create(
+                points.ToList(),
+                false,
+                new HermiteSplineTangents()
+                {
+                    StartTangent = new XYZ(0, 0, 1),
+                    EndTangent = new XYZ(1, 0, 0)
+                });
+
+            Assert.False(CurveUtils.IsLineLike(hs));
         }
 
         [Test]

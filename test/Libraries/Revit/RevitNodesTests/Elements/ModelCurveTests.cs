@@ -2,12 +2,9 @@
 using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.DB.PointClouds;
 
 using Revit.Elements;
 using NUnit.Framework;
-
-using Revit.GeometryConversion;
 
 using RTF.Framework;
 

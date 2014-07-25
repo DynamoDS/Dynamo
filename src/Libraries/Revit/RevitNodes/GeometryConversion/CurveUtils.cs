@@ -20,7 +20,7 @@ namespace Revit.GeometryConversion
             var p1 = c.IsBound ? c.Evaluate(0.5, true) : c.Evaluate(0.25 * period, false);
             var p2 = c.IsBound ? c.Evaluate(1.0, true) : c.Evaluate(0.5 * period, false);
 
-            if (c is Line || IsLineLike(c))
+            if (IsLineLike(c))
             {
                 var v1 = p1 - p0;
                 var v2 = p2 - p0;
@@ -67,16 +67,58 @@ namespace Revit.GeometryConversion
 
         public static bool IsLineLike(Autodesk.Revit.DB.Curve crv)
         {
-            var points = crv.Tessellate();
+            if (crv is Line) return true;
+            if (crv is HermiteSpline) return IsLineLikeInternal(crv as HermiteSpline);
+            if (crv is NurbSpline) return IsLineLikeInternal(crv as NurbSpline);
+            
+            // This assumes no infinite radius arcs/ellipses
+            return false;
+        }
+
+        #region IsLineLike Helpers
+
+        private static bool IsLineLikeInternal(Autodesk.Revit.DB.NurbSpline crv)
+        {
+            return IsLineLikeInternal(crv.CtrlPoints);
+        }
+
+        private static bool IsLineLikeInternal(Autodesk.Revit.DB.HermiteSpline crv)
+        {
+            var controlPoints = crv.ControlPoints;
+            var controlPointsAligned = IsLineLikeInternal(controlPoints);
+
+            if (!controlPointsAligned) return false;
+
+            // It's possible for the control points to be straight, but the tangents
+            // might not be aligned with the curve.  Let's check the tangents are aligned.
+            var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
+                controlPoints.First().ToPoint(false),
+                controlPoints.Last().ToPoint(false));
+
+            var lineDir = line.Direction.Normalized().ToXyz(false);
+
+            var tangents = crv.Tangents;
+            var startTan = tangents.First().Normalize();
+            var endTan = tangents.Last().Normalize();
+
+            return Math.Abs(startTan.DotProduct(endTan) - 1) < 1e-6 &&
+                Math.Abs(lineDir.DotProduct(endTan) - 1) < 1e-6;
+        }
+
+        private static bool IsLineLikeInternal(IList<XYZ> points)
+        {
+            if (points.Count == 2) return true;
 
             var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
                 points.First().ToPoint(false),
                 points.Last().ToPoint(false));
 
-            // are any of the points distant from the line created by connecting the two
+            // Are any of the points distant from the line created by connecting the two
             // end points?
             return !points.Any(x => x.ToPoint(false).DistanceTo(line) > 1e-6);
         }
+
+        #endregion
 
     }
 }

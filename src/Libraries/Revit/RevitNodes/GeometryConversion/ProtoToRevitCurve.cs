@@ -94,11 +94,8 @@ namespace Revit.GeometryConversion
                 var pts = Enumerable.Range(0, numSamples+1).Select(x => x/(double)numSamples)
                     .Select(crv.PointAtParameter);
 
-                var delta = 1e-4;
-                Vector tstart = crv.PointAtParameter(delta).AsVector()
-                        .Subtract(crv.PointAtParameter(0).AsVector());
-                Vector tend = crv.PointAtParameter(1.0).AsVector()
-                        .Subtract(crv.PointAtParameter(1 - delta).AsVector());
+                var tstart = crv.TangentAtParameter(0);
+                var tend = crv.TangentAtParameter(1);
 
                 var resampledCrv = NurbsCurve.ByPointsTangents( pts, tstart.Normalized(), tend.Normalized());
 
