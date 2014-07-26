@@ -107,6 +107,7 @@ void Scene::ClearAllGeometries(void)
         delete pNodeSceneData;
     }
 
+    mpNodeSceneData->clear();
     mVisualizer->RequestFrameUpdate(); // Update window.
 }
 

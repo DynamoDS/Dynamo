@@ -1488,10 +1488,12 @@ namespace Dynamo.Models
                 dynSettings.DynamoLogger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
+                OnWorkspaceCleared(this, EventArgs.Empty);
                 return false;
             }
 
             CurrentWorkspace.HasUnsavedChanges = false;
+            OnWorkspaceCleared(this, EventArgs.Empty);
 
             return true;
         }
