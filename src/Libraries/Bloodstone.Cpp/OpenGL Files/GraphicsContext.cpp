@@ -72,33 +72,8 @@ bool GraphicsContext::InitializeCore(HWND hWndOwner)
     if (InitializeWithDummyContext(hWndOwner) == false)
         return false; // Context creation failed.
 
-    const int deviceAttributes[] =
-    {
-        WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-        WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-        WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
-        WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
-        WGL_COLOR_BITS_ARB,     32,
-        WGL_DEPTH_BITS_ARB,     24,
-        WGL_STENCIL_BITS_ARB,   8,
-        WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,
-        WGL_SAMPLES_ARB,        8,
-        0, // End
-    };
-
     HDC hDeviceContext = ::GetDC(hWndOwner);
-
-    int pixelFormat = 0;
-    unsigned int formatCount = 0;
-    GL::wglChoosePixelFormatARB(hDeviceContext, deviceAttributes,
-        nullptr, 1, &pixelFormat, &formatCount);
-
-    // Get the best available match of pixel format for the device context
-    PIXELFORMATDESCRIPTOR descriptor = { 0 };
-    ::DescribePixelFormat(hDeviceContext, pixelFormat,
-        sizeof(PIXELFORMATDESCRIPTOR), &descriptor);
-
-    if (::SetPixelFormat(hDeviceContext, pixelFormat, &descriptor) == false) {
+    if (SelectBestPixelFormat(hDeviceContext) == false) {
         ::ReleaseDC(hWndOwner, hDeviceContext);
         return false;
     }
@@ -277,4 +252,72 @@ bool GraphicsContext::InitializeWithDummyContext(HWND hWndOwner)
     ::ReleaseDC(hWndTemporary, hDeviceContext); // Done with device context.
     ::DestroyWindow(hWndTemporary);
     return contextCreated;
+}
+
+bool GraphicsContext::SelectBestPixelFormat(HDC hDeviceContext) const
+{
+    int hardwareLevel = 0; // Start from the best hardware specs.
+
+    while (true)
+    {
+        int deviceAttributes[100] = { 0 };
+        if (!GetDeviceAttributes(hardwareLevel++, &deviceAttributes[0]))
+            break; // No more device attributes to try out.
+
+        int pixelFormat = 0;
+        unsigned int formatCount = 0;
+        int formatFound = GL::wglChoosePixelFormatARB(hDeviceContext,
+            deviceAttributes, nullptr, 1, &pixelFormat, &formatCount);
+
+        if (formatFound == 0)
+            continue;
+
+        PIXELFORMATDESCRIPTOR descriptor = { 0 };
+        ::DescribePixelFormat(hDeviceContext, pixelFormat,
+            sizeof(PIXELFORMATDESCRIPTOR), &descriptor);
+
+        if (::SetPixelFormat(hDeviceContext, pixelFormat, &descriptor))
+            return true; // Pixel format successfully set!
+    }
+
+    return false;
+}
+
+bool GraphicsContext::GetDeviceAttributes(int hardwareLevel, int* pAttributes) const
+{
+    // Standard device feature set.
+    pAttributes[0] = WGL_DRAW_TO_WINDOW_ARB;
+    pAttributes[1] = GL_TRUE;
+    pAttributes[2] = WGL_SUPPORT_OPENGL_ARB;
+    pAttributes[3] = GL_TRUE;
+    pAttributes[4] = WGL_DOUBLE_BUFFER_ARB;
+    pAttributes[5] = GL_TRUE;
+    pAttributes[6] = WGL_PIXEL_TYPE_ARB;
+    pAttributes[7] = WGL_TYPE_RGBA_ARB;
+    pAttributes[8] = WGL_COLOR_BITS_ARB;
+    pAttributes[9] = 32;
+    pAttributes[10] = WGL_DEPTH_BITS_ARB;
+    pAttributes[11] = 24;
+    pAttributes[12] = WGL_STENCIL_BITS_ARB;
+    pAttributes[13] = 8;
+
+    switch(hardwareLevel)
+    {
+    case 0: // Best in class hardware, 8x MSAA.
+        pAttributes[14] = WGL_SAMPLE_BUFFERS_ARB;
+        pAttributes[15] = GL_TRUE;
+        pAttributes[16] = WGL_SAMPLES_ARB;
+        pAttributes[17] = 8;
+        return true;
+    case 1: // Second grade hardware, try 4x MSAA.
+        pAttributes[14] = WGL_SAMPLE_BUFFERS_ARB;
+        pAttributes[15] = GL_TRUE;
+        pAttributes[16] = WGL_SAMPLES_ARB;
+        pAttributes[17] = 4;
+        return true;
+    case 2: // Third grade hardware...
+        return true; // ... try standard feature set.
+    }
+
+    return false;
 }

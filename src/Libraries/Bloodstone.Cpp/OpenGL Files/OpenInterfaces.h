@@ -184,6 +184,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
 
     private:
         bool InitializeWithDummyContext(HWND hWndOwner);
+        bool SelectBestPixelFormat(HDC hDeviceContext) const;
+        bool GetDeviceAttributes(int hardwareLevel, int* pAttributes) const;
 
         int mMajorVersion;
         int mMinorVersion;
