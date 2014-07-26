@@ -19,6 +19,7 @@ The following table gives comparisons among more prominent features between ```H
 | Flat shading | No | Yes |
 | Per-vertex color | No | Yes |
 | Per-node color | No | Yes |
+| Anti-aliasing | Yes | Yes |
 
 Prioritized Task List
 -----
@@ -29,6 +30,7 @@ The following list represents what are to be implemented in Bloodstone for it to
 - [x] Implement zoom extent with double-click
 - [ ] Integrate zoom operation with mouse wheel
 - [x] Perform [proper OpenGL context creation](http://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#Proper_Context_Creation)
+- [x] Implement anti-aliasing for better visual quality
 - [x] Implement geometry clearing when document is opened/closed/created
 - [x] Implement geometry clearing when nodes are deleted
 
@@ -39,6 +41,9 @@ Stadium designed by @elayabharath
 
 Another stadium designed by @elayabharath
 ![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/eb-stadium-v1.png)
+
+The graphics system always chooses the best anti-aliasing mode if the hardware allows it. If the default of 8x MSAA fails, the graphics context will fall back to 4x MSAA (or no anti-aliasing if even that fails). The following image makes the comparison among these settings (click on the image to display the original size for better comparisons):
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/multisample-anti-aliasing.png)
 
 Color setting is now available on per-node basis
 ![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/node-and-primitive-colors.png)
