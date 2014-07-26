@@ -183,6 +183,10 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual void ClearDepthBufferCore(void) const;
 
     private:
+        bool InitializeWithDummyContext(HWND hWndOwner);
+
+        int mMajorVersion;
+        int mMinorVersion;
         HWND mRenderWindow;
         HGLRC mhRenderContext;
         Camera* mpDefaultCamera;

@@ -54,6 +54,8 @@ INITGLPROC(PFNGLBLENDFUNCSEPARATEPROC,          glBlendFuncSeparate);
 INITGLPROC(PFNGLPOINTSIZEPROC,                  glPointSize);
 
 GraphicsContext::GraphicsContext() : 
+    mMajorVersion(0),
+    mMinorVersion(0),
     mRenderWindow(nullptr),
     mhRenderContext(nullptr),
     mpDefaultCamera(nullptr)
@@ -67,40 +69,44 @@ bool GraphicsContext::InitializeCore(HWND hWndOwner)
         throw gcnew InvalidOperationException(gcnew String(message));
     }
 
+    if (InitializeWithDummyContext(hWndOwner) == false)
+        return false; // Context creation failed.
+
+    const int deviceAttributes[] =
+    {
+        WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+        WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+        WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
+        WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
+        WGL_COLOR_BITS_ARB,     32,
+        WGL_DEPTH_BITS_ARB,     24,
+        WGL_STENCIL_BITS_ARB,   8,
+        WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,
+        WGL_SAMPLES_ARB,        8,
+        0, // End
+    };
+
+    HDC hDeviceContext = ::GetDC(hWndOwner);
+
+    int pixelFormat = 0;
+    unsigned int formatCount = 0;
+    GL::wglChoosePixelFormatARB(hDeviceContext, deviceAttributes,
+        nullptr, 1, &pixelFormat, &formatCount);
+
+    // Get the best available match of pixel format for the device context
     PIXELFORMATDESCRIPTOR descriptor = { 0 };
-    descriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-    descriptor.nVersion = 1;
-    descriptor.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-    descriptor.iPixelType = PFD_TYPE_RGBA;
-    descriptor.cColorBits = 32;
-    descriptor.cDepthBits = 24;
-    descriptor.cStencilBits = 8;
-    descriptor.iLayerType = PFD_MAIN_PLANE;
+    ::DescribePixelFormat(hDeviceContext, pixelFormat,
+        sizeof(PIXELFORMATDESCRIPTOR), &descriptor);
 
-    mRenderWindow = hWndOwner;
-    HDC hDeviceContext = ::GetDC(mRenderWindow);
-
-    // Get the best available match of pixel format for the device context   
-    int format = ::ChoosePixelFormat(hDeviceContext, &descriptor);
-    if (::SetPixelFormat(hDeviceContext, format, &descriptor) == false) {
-        auto message = L"'SetPixelFormat' method call failed";
-        throw gcnew InvalidOperationException(gcnew String(message));
-    }
-
-    HGLRC tempContext = ::wglCreateContext(hDeviceContext);
-    ::wglMakeCurrent(hDeviceContext, tempContext);
-
-    if (GL::Initialize() == false) // Initialize OpenGL extension.
+    if (::SetPixelFormat(hDeviceContext, pixelFormat, &descriptor) == false) {
+        ::ReleaseDC(hWndOwner, hDeviceContext);
         return false;
-
-    int major = -1, minor = -1;
-    GL::glGetIntegerv(GL_MAJOR_VERSION, &major);
-    GL::glGetIntegerv(GL_MINOR_VERSION, &minor);
+    }
 
     int attributes[] =
     {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, major,
-        WGL_CONTEXT_MINOR_VERSION_ARB, minor, 
+        WGL_CONTEXT_MAJOR_VERSION_ARB, mMajorVersion,
+        WGL_CONTEXT_MINOR_VERSION_ARB, mMinorVersion, 
         WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
         WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         0
@@ -108,9 +114,9 @@ bool GraphicsContext::InitializeCore(HWND hWndOwner)
 
     mhRenderContext = GL::wglCreateContextAttribsARB(hDeviceContext, 0, attributes);
     wglMakeCurrent(hDeviceContext, mhRenderContext);
-    wglDeleteContext(tempContext); // Discard temporary context.
 
-    ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
+    ::ReleaseDC(hWndOwner, hDeviceContext); // Done with device context.
+    mRenderWindow = hWndOwner;
 
     // Create the default camera.
     mpDefaultCamera = new Camera(this);
@@ -219,4 +225,56 @@ void GraphicsContext::EnableAlphaBlendCore(void) const
 void GraphicsContext::ClearDepthBufferCore(void) const
 {
     GL::glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+bool GraphicsContext::InitializeWithDummyContext(HWND hWndOwner)
+{
+    wchar_t wndClassName[128] = { 0 };
+    ::GetClassName(hWndOwner, wndClassName, _countof(wndClassName));
+    HWND hWndParent = ::GetParent(hWndOwner);
+
+    HWND hWndTemporary = CreateWindowEx(0, wndClassName, nullptr,
+        WS_CHILD, 0, 0, 100, 100, hWndParent, nullptr, nullptr, 0);
+
+    if (nullptr == hWndTemporary)
+        return false;
+
+    PIXELFORMATDESCRIPTOR descriptor = { 0 };
+    descriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+    descriptor.nVersion = 1;
+    descriptor.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+    descriptor.iPixelType = PFD_TYPE_RGBA;
+    descriptor.cColorBits = 32;
+    descriptor.cDepthBits = 24;
+    descriptor.cStencilBits = 8;
+    descriptor.iLayerType = PFD_MAIN_PLANE;
+
+    bool contextCreated = false;
+
+    // Get the best available match of pixel format for the device context
+    HDC hDeviceContext = ::GetDC(hWndTemporary);
+    int format = ::ChoosePixelFormat(hDeviceContext, &descriptor);
+    if (::SetPixelFormat(hDeviceContext, format, &descriptor))
+    {
+        HGLRC tempContext = ::wglCreateContext(hDeviceContext);
+        if (tempContext != nullptr)
+        {
+            ::wglMakeCurrent(hDeviceContext, tempContext);
+
+            if (GL::Initialize()) // Initialize OpenGL extension.
+            {
+                // Determine the current OpenGL version numbers.
+                GL::glGetIntegerv(GL_MAJOR_VERSION, &mMajorVersion);
+                GL::glGetIntegerv(GL_MINOR_VERSION, &mMinorVersion);
+                contextCreated = true;
+            }
+
+            wglMakeCurrent(hDeviceContext, nullptr);
+            wglDeleteContext(tempContext); // Discard temporary context.
+        }
+    }
+
+    ::ReleaseDC(hWndTemporary, hDeviceContext); // Done with device context.
+    ::DestroyWindow(hWndTemporary);
+    return contextCreated;
 }

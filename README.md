@@ -28,7 +28,7 @@ The following list represents what are to be implemented in Bloodstone for it to
 - [x] Implement zoom operation
 - [x] Implement zoom extent with double-click
 - [ ] Integrate zoom operation with mouse wheel
-- [ ] Perform [proper OpenGL context creation](http://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#Proper_Context_Creation)
+- [x] Perform [proper OpenGL context creation](http://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#Proper_Context_Creation)
 - [x] Implement geometry clearing when document is opened/closed/created
 - [x] Implement geometry clearing when nodes are deleted
 
