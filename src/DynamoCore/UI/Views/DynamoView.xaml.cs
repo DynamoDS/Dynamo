@@ -336,6 +336,7 @@ namespace Dynamo.Controls
 
 #if BLOODSTONE
             _vm.RequestUpdateBloodstoneVisual += OnRequestUpdateBloodstoneVisual;
+            _vm.Model.NodeDeleted += OnModelNodeDeleted;
 
             if (this.visualizer == null)
             {
@@ -380,7 +381,7 @@ namespace Dynamo.Controls
 
 #if BLOODSTONE
 
-        void OnRequestUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
+        private void OnRequestUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
         {
             if (this.visualizer == null)
                 return;
@@ -408,6 +409,17 @@ namespace Dynamo.Controls
 
             scene.SetNodeRenderMode(renderModes);
             scene.SetNodeColor(nodeColors);
+        }
+
+        private void OnModelNodeDeleted(NodeModel node)
+        {
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            if (scene != null)
+            {
+                var identifiers = new List<string>();
+                identifiers.Add(node.GUID.ToString());
+                scene.RemoveNodeGeometries(identifiers);
+            }
         }
 
         internal void OnNodePropertyUpdated(NodeModel node)
@@ -787,6 +799,7 @@ namespace Dynamo.Controls
 
 #if BLOODSTONE
             _vm.RequestUpdateBloodstoneVisual -= OnRequestUpdateBloodstoneVisual;
+            _vm.Model.NodeDeleted -= OnModelNodeDeleted;
 #endif
 
             _vm.RequestClose -= _vm_RequestClose;
