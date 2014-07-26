@@ -6,6 +6,8 @@ using namespace System;
 using namespace Dynamo::Bloodstone;
 using namespace Dynamo::Bloodstone::OpenGL;
 
+INITGLPROC(PFNWGLCREATECONTEXTATTRIBSARBPROC,   wglCreateContextAttribsARB);
+INITGLPROC(PFNWGLCHOOSEPIXELFORMATARBPROC,      wglChoosePixelFormatARB);
 INITGLPROC(PFNGLGETSTRINGPROC,                  glGetString);
 INITGLPROC(PFNGLGETINTEGERVPROC,                glGetIntegerv);
 INITGLPROC(PFNGLENABLEPROC,                     glEnable);
@@ -104,20 +106,9 @@ bool GraphicsContext::InitializeCore(HWND hWndOwner)
         0
     };
 
-    auto proc = wglGetProcAddress("wglCreateContextAttribsARB");
-    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
-    wglCreateContextAttribsARB = ((PFNWGLCREATECONTEXTATTRIBSARBPROC) proc);
-
-    if (wglCreateContextAttribsARB == nullptr)
-    {
-        mhRenderContext = tempContext;
-    }
-    else
-    {
-        mhRenderContext = wglCreateContextAttribsARB(hDeviceContext, 0, attributes);
-        wglMakeCurrent(hDeviceContext, mhRenderContext);
-        wglDeleteContext(tempContext); // Discard temporary context.
-    }
+    mhRenderContext = GL::wglCreateContextAttribsARB(hDeviceContext, 0, attributes);
+    wglMakeCurrent(hDeviceContext, mhRenderContext);
+    wglDeleteContext(tempContext); // Discard temporary context.
 
     ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
 

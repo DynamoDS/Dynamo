@@ -43,6 +43,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
             std::string message;
             OutputDebugString(L"\nBegin OpenGL Initialization...\n");
 
+            GETGLPROC(PFNWGLCHOOSEPIXELFORMATARBPROC,       wglChoosePixelFormatARB);
+            GETGLPROC(PFNWGLCREATECONTEXTATTRIBSARBPROC,    wglCreateContextAttribsARB);
             GETGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
             GETGLPROC(PFNGLGETINTEGERVPROC,                 glGetIntegerv);
             GETGLPROC(PFNGLENABLEPROC,                      glEnable);
@@ -102,9 +104,13 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
             OutputDebugStringA(pMessageData);
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
 
-            return true;
+            // These two creation methods have to exist.
+            return ((nullptr != wglChoosePixelFormatARB) && 
+                    (nullptr != wglCreateContextAttribsARB));
         }
 
+        DEFGLPROC(PFNWGLCHOOSEPIXELFORMATARBPROC,       wglChoosePixelFormatARB);
+        DEFGLPROC(PFNWGLCREATECONTEXTATTRIBSARBPROC,    wglCreateContextAttribsARB);
         DEFGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
         DEFGLPROC(PFNGLGETINTEGERVPROC,                 glGetIntegerv);
         DEFGLPROC(PFNGLENABLEPROC,                      glEnable);

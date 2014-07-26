@@ -113,7 +113,7 @@ bool VisualizerWnd::Initialize(HWND hWndParent, int width, int height)
     RegisterClassEx(&windowClass);
 
     mhWndVisualizer = CreateWindowEx(0, windowClass.lpszClassName, nullptr,
-        WS_CHILD | WS_VISIBLE, 0, 0, width, height, hWndParent, nullptr, nullptr, 0);
+        WS_CHILD, 0, 0, width, height, hWndParent, nullptr, nullptr, 0);
 
     // Initialize graphics context for rendering.
     auto contextType = IGraphicsContext::ContextType::OpenGL;
