@@ -61,12 +61,7 @@ void Scene::Destroy(void)
 {
     if (this->mpNodeSceneData != nullptr)
     {
-        auto iterator = mpNodeSceneData->begin();
-        for (; iterator != mpNodeSceneData->end(); ++iterator) {
-            auto pNodeSceneData = iterator->second;
-            delete pNodeSceneData;
-        }
-
+        ClearAllGeometries();
         delete this->mpNodeSceneData;
         this->mpNodeSceneData = nullptr;
     }
@@ -102,6 +97,17 @@ void Scene::RenderScene(void)
     mpShaderProgram->ApplyTransformation(pCamera);
 
     RenderGeometries(geometries);
+}
+
+void Scene::ClearAllGeometries(void)
+{
+    auto iterator = mpNodeSceneData->begin();
+    for (; iterator != mpNodeSceneData->end(); ++iterator) {
+        auto pNodeSceneData = iterator->second;
+        delete pNodeSceneData;
+    }
+
+    mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
 void Scene::GetBoundingBox(BoundingBox& boundingBox)
@@ -202,6 +208,8 @@ void Scene::RemoveNodeGeometries(Strings^ identifiers)
         mpNodeSceneData->erase(found);
         delete pNodeSceneData; // Release node geometries and its resources.
     }
+
+    mVisualizer->RequestFrameUpdate(); // Update window.
 }
 
 void Scene::SelectNodes(Strings^ identifiers, SelectMode selectMode)
