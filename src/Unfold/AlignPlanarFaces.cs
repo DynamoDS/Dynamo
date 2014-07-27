@@ -104,7 +104,7 @@ namespace Unfold
            double abxad_dot_normal_rot_face =  firstCross.Dot(rotFaceNormal);
 
             // replace this with almost equal
-           if (abxad_dot_normal_rot_face == -1.0)
+           if (Math.Abs(abxad_dot_normal_rot_face -1.0) < .0001)
            {
                rotFaceNormalOK = 1;
            }
@@ -122,7 +122,7 @@ namespace Unfold
 
            double acxab_dot_normal_ref_face = secondCross.Dot(refFaceNormal);
 
-           if (acxab_dot_normal_ref_face == -1)
+           if (Math.Abs(acxab_dot_normal_ref_face -1)<.0001)
            {
                refFaceNormalOK = 1;
            }

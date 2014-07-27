@@ -81,6 +81,31 @@ namespace UnfoldTests
 
         }
 
+        public static void AssertEdgeCoincidentWithBothFaces<K,T>(T face1, T face2, K edge )
+            where T: IUnfoldPlanarFace<K>
+            where K:IUnfoldEdge
+        {
+            var intersected = face1.SurfaceEntity.Intersect(face2.SurfaceEntity).ToList();
+
+            bool foundflag = false;
+            foreach (var geo in intersected)
+            {
+                if (geo is Curve)
+                {
+                    Curve geoAsCurve = geo as Curve;
+                   var edgeLikeRepresentation = new UnfoldPlanar.EdgeLikeEntity(geoAsCurve);
+
+                   if (edgeLikeRepresentation.SpatialEquals(edge))
+                   {
+                       foundflag = true;
+                   }
+
+                }
+            }
+
+            Assert.IsTrue(foundflag);
+            Console.WriteLine("the edge input was a shared edge between the 2 surfaces");
+        }
 
         public static void AssertSurfacesAreCoplanar(Surface surf1, Surface surf2)
         {
@@ -375,6 +400,65 @@ namespace UnfoldTests
                 }
 
             }
+
+
+
+            [Test]
+            public void UnfoldEachPairOfSurfacesInACube_ParentAsRefFace()
+            {
+
+
+                Solid testcube = SetupCube();
+                List<Face> faces = testcube.Faces.ToList();
+                List<Surface> surfaces = faces.Select(x => x.SurfaceGeometry()).ToList();
+                //generate a graph of the cube
+                var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
+
+               
+                //perform BFS on the graph and get back the tree
+                var nodereturn = UnfoldPlanar.ModelGraph.BFS<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(graph);
+                object tree = nodereturn["BFS finished"];
+
+                var casttree = tree as List<UnfoldPlanar.GraphVertex<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>>;
+                //perform tarjans algo and make sure that the tree is acylic before unfold
+                var sccs = GraphUtilities.tarjansAlgo<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>.CycleDetect(casttree);
+
+                IsAcylic<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(sccs, casttree);
+
+                // iterate through each vertex in the tree
+                // make sure that the parent/child is not null (depends which direction we're traversing)
+                // if not null, grab the next node and the tree edge
+                // pass these to check normal consistencey and align.
+                // be careful about the order of passed faces
+
+                foreach (var parent in casttree)
+                {
+                    if (parent.Graph_Edges.Count > 0)
+                    {
+                        foreach (var edge in parent.Graph_Edges)
+                        {
+
+                            var child = edge.Head;
+
+                            AssertEdgeCoincidentWithBothFaces<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(parent.Face, child.Face, edge.Real_Edge);
+
+
+                            int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                            Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
+
+                            AssertSurfacesAreCoplanar(rotatedFace, parent.Face.SurfaceEntity);
+
+                            AssertRotatedSurfacesDoNotShareSameCenter(rotatedFace, parent.Face.SurfaceEntity);
+
+                        }
+
+                    }
+
+
+                }
+
+            }
+
 
 
 

@@ -100,7 +100,7 @@ namespace Unfold
                 List<Curve> pericurves = null;
                 if (surface is PolySurface)
                 {
-                     pericurves = (surface as PolySurface).Surfaces().SelectMany(x => x.PerimeterCurves()).ToList();
+                    pericurves = (surface as PolySurface).PerimeterCurves().ToList();
                 }
                 else
                 {
