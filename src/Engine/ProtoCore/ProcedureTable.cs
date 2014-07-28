@@ -50,6 +50,7 @@ namespace ProtoCore.DSASM
         public int procId { get; set; }             // Index of the procedure in its procedure table
         public int classScope { get; set; }         // Index of the class that the procedure belongs to
         public int HashID { get; set; }             // The hash of the function given the name and argument type string
+        public System.Windows.Media.Imaging.BitmapImage Image { get; set; } //Image of procedure
         public AccessSpecifier access {get; set;}
 		public List<AttributeEntry> Attributes { get; set; }		
         public bool isExternal { get; set; }

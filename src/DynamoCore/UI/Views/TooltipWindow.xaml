@@ -35,7 +35,7 @@
             <TextBlock Name="outputLabel" Text="OUTPUT" Grid.Row="3" Foreground="Gray" Margin="20,20,0,0"></TextBlock>
             <TextBlock Name="output" Text="output parametrs" Grid.Row="4" Grid.ColumnSpan="3" FontSize="12" Foreground="White" Margin="20,0,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
             
-            <Image Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2"></Image>
+            <Image Name="bigImage" Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2" Margin="0,0,20,0"></Image>
             <Grid Grid.Row="5" Grid.ColumnSpan="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>

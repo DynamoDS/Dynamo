@@ -51,6 +51,14 @@ namespace Dynamo.UI.Views
                 new UIPropertyMetadata(String.Empty, OnPropertyOutputParametrsChanged)
            );
 
+        public static DependencyProperty ImageProperty = DependencyProperty.Register
+           (
+                "Image",
+                typeof(BitmapImage),
+                typeof(TooltipWindow),
+                new UIPropertyMetadata(null, OnPropertyImageChanged)
+           );
+
         public static readonly DependencyProperty AttachmentSideProperty =
             DependencyProperty.Register("AttachmentSide",
             typeof(TooltipWindow.Side), typeof(TooltipWindow),
@@ -77,6 +85,11 @@ namespace Dynamo.UI.Views
         {
             get { return (string)GetValue(OutputParametrsProperty); }
             set { SetValue(OutputParametrsProperty, value); }
+        }
+        public BitmapImage Image
+        {
+            get { return (BitmapImage)GetValue(ImageProperty); }
+            set { SetValue(ImageProperty, value); }
         }
         public enum Side
         {
@@ -119,6 +132,15 @@ namespace Dynamo.UI.Views
             if (node != null)
             {
                 node.output.Text = (string)e.NewValue;
+            }
+        }
+        private static void OnPropertyImageChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var node = sender as TooltipWindow;
+
+            if (node != null)
+            {
+                node.bigImage.Source = (BitmapImage)e.NewValue;
             }
         }
         #endregion

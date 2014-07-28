@@ -89,6 +89,17 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        private System.Windows.Media.Imaging.BitmapImage _image = null;
+        public System.Windows.Media.Imaging.BitmapImage Image
+        {
+            get { return _image; }
+            set
+            {
+                _image = value;
+                RaisePropertyChanged("Image");
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -99,7 +110,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", string inputParametrs = "", string outputParametrs = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", string inputParametrs = "", string outputParametrs = "", System.Windows.Media.Imaging.BitmapImage image = null)
         {
             this.Node = null;
             this._name = name;
@@ -110,6 +121,8 @@ namespace Dynamo.Search.SearchElements
             this._fullName = fullName;
             this._inputParametrs = inputParametrs;
             this._outputParametrs = outputParametrs;
+            if (image!=null)
+            this._image = image;
         }
 
         public virtual NodeSearchElement Copy()

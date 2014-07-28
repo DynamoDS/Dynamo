@@ -618,7 +618,8 @@
                                                       NodeName="{Binding Path=FullName}"
                                                       Description="{Binding Path=Description}"
                                                       InputParametrs="{Binding Path=InputParametrs}"
-                                                      OutputParametrs="{Binding Path=OutputParametrs}"></uiview:TooltipWindow>
+                                                      OutputParametrs="{Binding Path=OutputParametrs}"
+                                                      Image="{Binding Path=Image}"></uiview:TooltipWindow>
                             </dynui:DynamoPopup>
                         </StackPanel>
 

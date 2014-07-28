@@ -16,6 +16,7 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsModifier;
 
         public bool IsLiteral = false;
+        public System.Windows.Media.Imaging.BitmapImage Image { get; set; }
 
         protected AssociativeNode() { }
 
