@@ -451,6 +451,8 @@ namespace Dynamo.ViewModels
             //register for property change notifications 
             //on the model
             model.PropertyChanged += _model_PropertyChanged;
+
+            model.RequestCancelActiveStateForNode += this.CancelActiveState;
             
             //Register for a notification when the update manager downloads an update
             model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
@@ -484,6 +486,7 @@ namespace Dynamo.ViewModels
 
         ~DynamoViewModel()
         {
+            this.Model.RequestCancelActiveStateForNode -= this.CancelActiveState;
             this.Model.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
             this.Model.RequestDispatcherInvoke -= TryDispatcherInvoke;
         }
@@ -1105,6 +1108,14 @@ namespace Dynamo.ViewModels
             }
 
             this.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
+        }
+
+        private void CancelActiveState(NodeModel node)
+        {
+            WorkspaceViewModel wvm = this.CurrentSpaceViewModel;
+
+            if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
+                wvm.CancelActiveState();
         }
 
         /// <summary>

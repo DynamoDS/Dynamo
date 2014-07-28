@@ -105,9 +105,6 @@ namespace Dynamo.Models
                 CleaningUp(this, e);
         }
 
-
-        // KILLDYNSETTINGS - All of these events should likely live on WorkspaceModel
-
         /// <summary>
         /// Event triggered when a node is added to a workspace
         /// </summary>
@@ -122,6 +119,15 @@ namespace Dynamo.Models
             }
         }
 
+        public event NodeHandler RequestCancelActiveStateForNode;
+        private void OnRequestCancelActiveStateForNode(NodeModel node)
+        {
+            if (RequestCancelActiveStateForNode != null)
+            {
+                RequestCancelActiveStateForNode(node);
+            }
+        }
+
         /// <summary>
         /// Event triggered when a node is deleted
         /// </summary>
@@ -130,11 +136,7 @@ namespace Dynamo.Models
         {
             RemoveNodeFromMap(node);
 
-            // KILLDYNSETTINGS: this should be an event on dynamoModel
-            WorkspaceViewModel wvm = Controller.DynamoViewModel.CurrentSpaceViewModel;
-
-            if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
-                wvm.CancelActiveState();
+            this.OnRequestCancelActiveStateForNode(node);
 
             if (NodeDeleted != null)
                 NodeDeleted(node);
