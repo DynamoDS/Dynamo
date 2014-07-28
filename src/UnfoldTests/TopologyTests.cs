@@ -150,15 +150,22 @@ namespace UnfoldTests
         {
 
 
-            var center1 = surf1.PointAtParameter(.5, .5);
-            var center2 = surf2.PointAtParameter(.5, .5);
+            //var center1 = surf1.PointAtParameter(.5, .5);
+            //var center2 = surf2.PointAtParameter(.5, .5);
 
+            //solution to fnding centers of of trimmed surfaces like triangles as polygon projections
+           var center1 =  Tessellate.MeshHelpers.SurfaceAsPolygonCenter(surf1);
+           var center2 = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(surf2);
+          
+            Console.WriteLine(center1);
+            Console.WriteLine(center2);
 
             Assert.IsFalse(center1.IsAlmostEqualTo(center2));
 
+           
+
             Console.WriteLine("centers were not the same");
-            Console.WriteLine(center1);
-            Console.WriteLine(center2);
+            
         }
 
         #endregion
@@ -458,8 +465,67 @@ namespace UnfoldTests
                 }
 
             }
+            [Test]
+            public void UnfoldEachPairOfTriangularSurfacesInACube_ParentAsRefFace()
+            {
 
 
+                Solid testcube = SetupCube();
+                List<Face> faces = testcube.Faces.ToList();
+                List<Surface> surfaces = faces.Select(x => x.SurfaceGeometry()).ToList();
+
+                //handle tesselation here
+                var pointtuples = Tessellate.Tesselate(surfaces);
+                //convert triangles to surfaces
+                List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>() { x[0], x[1], x[2] })).ToList();
+
+                //generate a graph of the cube
+                var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromSurfaces(trisurfaces);
+
+
+                //perform BFS on the graph and get back the tree
+                var nodereturn = UnfoldPlanar.ModelGraph.BFS<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(graph);
+                object tree = nodereturn["BFS finished"];
+
+                var casttree = tree as List<UnfoldPlanar.GraphVertex<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>>;
+                //perform tarjans algo and make sure that the tree is acylic before unfold
+                var sccs = GraphUtilities.tarjansAlgo<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>.CycleDetect(casttree);
+
+                IsAcylic<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(sccs, casttree);
+
+                // iterate through each vertex in the tree
+                // make sure that the parent/child is not null (depends which direction we're traversing)
+                // if not null, grab the next node and the tree edge
+                // pass these to check normal consistencey and align.
+                // be careful about the order of passed faces
+
+                foreach (var parent in casttree)
+                {
+                    if (parent.Graph_Edges.Count > 0)
+                    {
+                        foreach (var edge in parent.Graph_Edges)
+                        {
+
+                            var child = edge.Head;
+
+                            AssertEdgeCoincidentWithBothFaces<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(parent.Face, child.Face, edge.Real_Edge);
+
+
+                            int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                            Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
+
+                            AssertSurfacesAreCoplanar(rotatedFace, parent.Face.SurfaceEntity);
+
+                            AssertRotatedSurfacesDoNotShareSameCenter(rotatedFace, parent.Face.SurfaceEntity);
+
+                        }
+
+                    }
+
+
+                }
+
+            }
 
 
 

@@ -33,7 +33,7 @@ namespace Unfold
             {
                 if ((edge.End.IsAlmostEqualTo(StartPointOnSharedEdge)) || (edge.Start.IsAlmostEqualTo(StartPointOnSharedEdge)))
                 {
-                    if (!(edge.Start.IsAlmostEqualTo(StartPointOnSharedEdge) && (edge.End.IsAlmostEqualTo(sharedEdge.End))))
+                    if (!((edge.Start.IsAlmostEqualTo(StartPointOnSharedEdge) && (edge.End.IsAlmostEqualTo(sharedEdge.End))) || (edge.Start.IsAlmostEqualTo(sharedEdge.End) && (edge.End.IsAlmostEqualTo(StartPointOnSharedEdge)))))
                     {
                         found_edge = edge;
                     }
@@ -96,13 +96,16 @@ namespace Unfold
            Vector ADVector =  Vector.ByTwoPoints(ADstart,ADend);
            Vector ADnorm = ADVector.Normalized();
 
-           Vector firstCross = ABnorm.Cross(ADnorm);
+           Vector firstCross = ABnorm.Cross(ADnorm).Normalized();
 
           Vector  rotFaceNormal = rotsurface.NormalAtParameter(.5, .5);
-
+          Console.WriteLine("rotFaceNormal" + rotFaceNormal);
 
            double abxad_dot_normal_rot_face =  firstCross.Dot(rotFaceNormal);
-
+           
+           Console.WriteLine("first dot product");
+           Console.WriteLine(abxad_dot_normal_rot_face);
+           
             // replace this with almost equal
            if (Math.Abs(abxad_dot_normal_rot_face -1.0) < .0001)
            {
@@ -116,16 +119,34 @@ namespace Unfold
            Vector ACVector = Vector.ByTwoPoints(ACstart, ACend);
            Vector ACnorm = ACVector.Normalized();
 
-           Vector secondCross = ACnorm.Cross(ABnorm);
+           Vector secondCross = ACnorm.Cross(ABnorm).Normalized();
 
            Vector refFaceNormal = refsurface.NormalAtParameter(.5, .5);
-
-           double acxab_dot_normal_ref_face = secondCross.Dot(refFaceNormal);
-
-           if (Math.Abs(acxab_dot_normal_ref_face -1)<.0001)
+           
+            Console.WriteLine("refFaceNormal" + refFaceNormal);
+           
+            double acxab_dot_normal_ref_face = secondCross.Dot(refFaceNormal);
+           
+           Console.WriteLine("second dot product");
+           Console.WriteLine(acxab_dot_normal_ref_face);
+           
+            if (Math.Abs(acxab_dot_normal_ref_face -1)<.0001)
            {
                refFaceNormalOK = 1;
            }
+
+            //debug section
+
+            Console.WriteLine(ABnorm);
+            Console.WriteLine(ADnorm);
+            Console.WriteLine(ACnorm);
+
+            Console.WriteLine(sharedcurve);
+            Console.WriteLine(sharedEdge);
+            Console.WriteLine(ADstart);
+            Console.Write(ADend);
+            Console.WriteLine(ACstart);
+            Console.WriteLine(ACend);
 
            int result = refFaceNormalOK * rotFaceNormalOK;
 
@@ -155,7 +176,8 @@ namespace Unfold
             var radians = -1.0 * Math.Asin(BXACrossedNormals.Length) * normalconsistency;
 
             var degrees = radians * (180 / Math.PI);
-
+            Console.WriteLine(" about to to rotate");
+            Console.WriteLine(degrees);
             Geometry rotatedFace = facetoRotate.SurfaceEntity.Rotate(PlaneRotOrigin, degrees);
 
             return rotatedFace;
