@@ -433,7 +433,7 @@ namespace Unfold
                     //create a polygon from verts, grab center, project center towards 
                     Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(current_vertex.Face.SurfaceEntity);
                     //  Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
-                    Sphere nodecenter = Sphere.ByCenterPointRadius(center, 1);
+                    Sphere nodecenter = Sphere.ByCenterPointRadius(center, .1);
                     tree.Add(nodecenter);
 
                     foreach (GraphEdge<K, T> vedge in current_vertex.Graph_Edges)
