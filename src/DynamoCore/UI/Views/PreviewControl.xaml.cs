@@ -41,6 +41,8 @@ namespace Dynamo.UI.Controls
             public const string GridHeightAnimator = "gridHeightAnimator";
         }
 
+        private readonly NodeViewModel nodeViewModel;
+
         private State currentState = State.Hidden;
         private Queue<State> queuedRequest = new Queue<State>();
         private Canvas hostingCanvas = null;
@@ -64,8 +66,9 @@ namespace Dynamo.UI.Controls
 
         #region Public Class Operational Methods
 
-        public PreviewControl()
+        public PreviewControl(NodeViewModel nodeViewModel)
         {
+            this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += OnPreviewControlLoaded;
         }
@@ -277,7 +280,7 @@ namespace Dynamo.UI.Controls
             if (largeContentGrid.Children.Count <= 0)
             {
                 var newWatchTree = new WatchTree();
-                newWatchTree.DataContext = new WatchViewModel();
+                newWatchTree.DataContext = new WatchViewModel(this.nodeViewModel.DynamoViewModel.VisualizationManager);
                 largeContentGrid.Children.Add(newWatchTree);
             }
 
@@ -285,7 +288,7 @@ namespace Dynamo.UI.Controls
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
             // Associate the data context to the view before binding.
-            cachedLargeContent = Watch.Process(mirrorData, string.Empty, false);
+            cachedLargeContent = Watch.Process(this.nodeViewModel.DynamoViewModel, mirrorData, string.Empty, false);
             rootDataContext.Children.Add(cachedLargeContent);
 
             // Establish data binding between data context and the view.

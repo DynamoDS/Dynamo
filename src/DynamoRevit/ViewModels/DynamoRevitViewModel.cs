@@ -50,23 +50,5 @@ namespace Dynamo.Controls
             }
         }
 
-        //public override Function CreateFunction(CustomNodeDefinition customNodeDefinition)
-        //{
-        //    if (customNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
-        //        || customNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
-        //    {
-        //        return new FunctionWithRevit(customNodeDefinition);
-        //    }
-        //    return base.CreateFunction(customNodeDefinition);
-        //}
-
-        //bool ExecutionRequiresManualTransaction()
-        //{
-        //    //if there are no topmost nodes, just return false
-        //    //this will avoid a binding error during bench initialization
-        //    return Model.HomeSpace.GetTopMostNodes().Any()
-        //           && Model.HomeSpace.GetTopMostNodes().Any(
-        //           ((DynamoController_Revit)Controller).CheckManualTransaction.TraverseUntilAny);
-        //}
     }
 }

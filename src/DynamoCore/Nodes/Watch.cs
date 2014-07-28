@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -25,8 +26,8 @@ namespace Dynamo.Nodes
     {
         #region private members
 
+        private DynamoViewModel dynamoViewModel;
         private WatchTree _watchTree;
-
         private WatchViewModel _root;
 
         #endregion
@@ -101,11 +102,6 @@ namespace Dynamo.Nodes
             );
         }
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-
-        }
-
         /// <summary>
         /// Update the watch content from the given MirrorData and returns WatchNode.
         /// </summary>
@@ -114,31 +110,42 @@ namespace Dynamo.Nodes
         /// <param name="index">Index of input data if it is a part of a collection.</param>
         /// <param name="isListMember">Specifies if this data belongs to a collection.</param>
         /// <returns>WatchNode</returns>
-        public static WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
+        public WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
         {
+            // KILLDYNSETTINGS - ViewModel refs should not exist on nodes at all
+            if (this.dynamoViewModel == null) return null;
+
+            return Process(this.dynamoViewModel, data, path, showRawData);
+        }
+
+        public static WatchViewModel Process(DynamoViewModel dynamoViewModel, MirrorData data, string path, bool showRawData = true)
+        {
+
+            if (dynamoViewModel == null) return null;
+
             WatchViewModel node = null;
 
             if (data == null || data.IsNull)
             {
-                node = new WatchViewModel(nullString, path);
+                node = new WatchViewModel(dynamoViewModel.VisualizationManager, nullString, path);
             }
             else if (data.IsCollection)
             {
                 var list = data.GetElements();
 
-                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", path, true);
+                node = new WatchViewModel(dynamoViewModel.VisualizationManager, list.Count == 0 ? "Empty List" : "List", path, true);
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add(Process(e.Element, path + ":" + e.Index, showRawData));
+                    node.Children.Add(Process(dynamoViewModel, e.Element, path + ":" + e.Index, showRawData));
                 }
             }
             else
             {
-                node = dynamoModel.WatchHandler.Process(data as dynamic, path, showRawData);
+                node = dynamoViewModel.WatchHandler.Process(data as dynamic, path, showRawData);
             }
 
-            return node ?? (new WatchViewModel("null", path));
+            return node ?? (new WatchViewModel(dynamoViewModel.VisualizationManager, "null", path));
         }
 
         /// <summary>
@@ -189,7 +196,7 @@ namespace Dynamo.Nodes
         {
             if (this.InPorts[0].Connectors.Count == 0)
             {
-                return new WatchViewModel(nullString, AstIdentifierForPreview.Name);
+                return new WatchViewModel(this.dynamoViewModel.VisualizationManager, nullString, AstIdentifierForPreview.Name);
             }
             else
             {
@@ -198,7 +205,7 @@ namespace Dynamo.Nodes
                 //Get RuntimeMirror for input ast identifier.
                 var mirror = this.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
                 if (null == mirror)
-                    return new WatchViewModel(nullString, inputVar);
+                    return new WatchViewModel(this.dynamoViewModel.VisualizationManager, nullString, inputVar);
 
                 //Get MirrorData from the RuntimeMirror
                 var mirrorData = mirror.GetData();

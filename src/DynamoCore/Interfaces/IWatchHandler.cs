@@ -26,10 +26,12 @@ namespace Dynamo.Interfaces
     /// </summary>
     public class DefaultWatchHandler : IWatchHandler
     {
-        private readonly PreferenceSettings preferences;
+        private readonly IPreferences preferences;
+        private readonly IVisualizationManager vizManager;
 
-        public DefaultWatchHandler(PreferenceSettings preferences)
+        public DefaultWatchHandler(IVisualizationManager manager, PreferenceSettings preferences)
         {
+            this.vizManager = manager;
             this.preferences = preferences;
         }
 
@@ -39,7 +41,7 @@ namespace Dynamo.Interfaces
 
             if (value is IEnumerable)
             {
-                node = new WatchViewModel("List", tag);
+                node = new WatchViewModel(vizManager, "List", tag);
 
                 var enumerable = value as IEnumerable;
                 foreach (var obj in enumerable)
@@ -49,7 +51,7 @@ namespace Dynamo.Interfaces
             }
             else
             {
-                node = new WatchViewModel(ToString(value), tag);
+                node = new WatchViewModel(vizManager, ToString(value), tag);
             }
 
             return node;
@@ -58,19 +60,19 @@ namespace Dynamo.Interfaces
         internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchViewModel(unit.Value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
+                return new WatchViewModel(vizManager, unit.Value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
 
-            return new WatchViewModel(unit.ToString(), tag);
+            return new WatchViewModel(vizManager, unit.ToString(), tag);
         }
 
         internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(vizManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(value, tag);
+            return new WatchViewModel(vizManager, value, tag);
         }
 
         internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData = true)
@@ -89,7 +91,7 @@ namespace Dynamo.Interfaces
             // representation instead of casting it as dynamic (that leads to 
             // a crash).
             if (data.Data == null)
-                return new WatchViewModel("null", tag);
+                return new WatchViewModel(vizManager, "null", tag);
 
             //Finally for all else get the string representation of data as watch content.
             return ProcessThing(data.Data as dynamic, tag, showRawData);
@@ -103,7 +105,7 @@ namespace Dynamo.Interfaces
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
             if(value == null)
-                return new WatchViewModel("null", tag);
+                return new WatchViewModel(vizManager, "null", tag);
 
             return ProcessThing(value, tag, showRawData);
         }

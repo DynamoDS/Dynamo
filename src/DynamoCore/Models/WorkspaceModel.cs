@@ -972,7 +972,7 @@ namespace Dynamo.Models
             model.HasUnsavedChanges = false;
 
             // KILLDYNSETTINGS - just expose this as an event on dynamoModel
-            this.dynamoModel.OnWorkspaceSaved(model.FileName);
+            this.dynamoModel.OnWorkspaceSaved(model);
         }
 
         private void MarkUnsaved(
@@ -1333,10 +1333,9 @@ namespace Dynamo.Models
                 startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
 
                 //Make the new connection and then record and add it
-                this.AddConnection(codeBlockNode, connector.End.Owner,
+                var newConnector = this.AddConnection(codeBlockNode, connector.End.Owner,
                     startIndex, endIndex, PortType.INPUT);
 
-                this.Connectors.Add(newConnector);
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
         }

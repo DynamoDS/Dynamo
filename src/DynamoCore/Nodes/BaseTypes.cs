@@ -9,6 +9,8 @@ using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Globalization;
 
+using Dynamo.ViewModels;
+
 using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -564,7 +566,7 @@ namespace Dynamo.Nodes
 
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
-                dynamoModel.ReportABug(null);
+                DynamoViewModel.ReportABug(null);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -611,7 +613,7 @@ namespace Dynamo.Nodes
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
                 // this should be an event on DynamoModel
-                dynamoModel.DownloadDynamo();
+                DynamoViewModel.DownloadDynamo();
                 return false;
             }
 

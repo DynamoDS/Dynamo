@@ -51,7 +51,7 @@ namespace Dynamo.Controls
             {
                 if (this.previewControl == null)
                 {
-                    this.previewControl = new PreviewControl();
+                    this.previewControl = new PreviewControl(this.ViewModel);
                     this.previewControl.StateChanged += OnPreviewControlStateChanged;
                     this.expansionBay.Children.Add(this.previewControl);
                 }

@@ -47,7 +47,6 @@ namespace Dynamo.Services
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                // KILLDYNSETTINGS - Static reference to non-static object
                 if (dynamoModel != null)
                     return dynamoModel.PreferenceSettings.IsUsageReportingApproved;
                 

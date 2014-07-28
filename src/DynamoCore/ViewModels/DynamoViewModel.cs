@@ -41,7 +41,6 @@ namespace Dynamo.ViewModels
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
-        protected bool dynamicRun = false;
         private bool canNavigateBackground = false;
         private bool showStartPage = false;
         private bool watchEscapeIsDown = false;
@@ -115,11 +114,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamicRun; //selecting debug now toggles this on/off
+                return model.DynamicRunEnabled; //selecting debug now toggles this on/off
             }
             set
             {
-                dynamicRun = value;
+                model.DynamicRunEnabled = value;
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
@@ -428,8 +427,12 @@ namespace Dynamo.ViewModels
             var prefs = PreferenceSettings.Load();
 
             var model = new DynamoModel("None", prefs);
-            var viewModel = new DynamoViewModel(model, new DefaultWatchHandler(prefs), 
-                new VisualizationManager(model), commandFilePath);
+
+            var vizManager = new VisualizationManager(model);
+            var watchHandler = new DefaultWatchHandler(vizManager, prefs);
+
+            var viewModel = new DynamoViewModel(model, watchHandler, 
+                vizManager, commandFilePath);
 
             return viewModel;
         }
@@ -463,11 +466,7 @@ namespace Dynamo.ViewModels
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
-            this.RecentFiles = new ObservableCollection<string>( model.PreferenceSettings.RecentFiles );
-            this.RecentFiles.CollectionChanged += (sender, args) =>
-            {
-                model.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
-            };
+            InitializeRecentFiles();
 
             UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
 
@@ -484,6 +483,15 @@ namespace Dynamo.ViewModels
             DestroyModelChangedHandlers();
             DestroyUpdateManagerHandlers();
             DestroyLoggerHandlers();
+        }
+
+        private void InitializeRecentFiles()
+        {
+            this.RecentFiles = new ObservableCollection<string>(model.PreferenceSettings.RecentFiles);
+            this.RecentFiles.CollectionChanged += (sender, args) =>
+            {
+                model.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
+            };
         }
 
         private void SubscribeLoggerHandlers()
@@ -510,6 +518,7 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelChangedHandlers()
         {
+            model.WorkspaceSaved += ModelWorkspaceSaved;
             model.PropertyChanged += _model_PropertyChanged;
             model.WorkspaceCleared += ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode += this.CancelActiveState;
@@ -567,6 +576,11 @@ namespace Dynamo.ViewModels
             {
                 action();
             }
+        }
+
+        private void ModelWorkspaceSaved(WorkspaceModel model)
+        {
+            this.RecentFiles.Add(model.FileName);
         }
 
         private void ModelWorkspaceCleared(object sender, EventArgs e)
@@ -1126,7 +1140,7 @@ namespace Dynamo.ViewModels
 
         internal void ShowElement(NodeModel e)
         {
-            if (dynamicRun)
+            if (DynamicRunEnabled)
                 return;
 
             if (!model.Nodes.Contains(e))

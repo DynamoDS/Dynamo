@@ -563,8 +563,11 @@ namespace Dynamo.Nodes
 
     public partial class Watch
     {
+
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+
             _watchTree = new WatchTree();
 
             // MAGN-2446: Fixes the maximum width/height of watch node so it won't 
@@ -577,7 +580,7 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
             if (Root == null)
-                Root = new WatchViewModel();
+                Root = new WatchViewModel(this.dynamoViewModel.VisualizationManager);
             _watchTree.DataContext = Root;
 
             RequestBindingUnhook += delegate

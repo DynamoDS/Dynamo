@@ -337,7 +337,7 @@ namespace Dynamo.ViewModels
             this.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             this.DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
-            ErrorBubble = new InfoBubbleViewModel();
+            ErrorBubble = new InfoBubbleViewModel(this.DynamoViewModel);
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor

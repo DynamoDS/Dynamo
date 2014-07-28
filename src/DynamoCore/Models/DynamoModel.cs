@@ -56,6 +56,15 @@ namespace Dynamo.Models
             }
         }
 
+        public event WorkspaceHandler WorkspaceSaved;
+        internal void OnWorkspaceSaved(WorkspaceModel model)
+        {
+            if (WorkspaceSaved != null)
+            {
+                WorkspaceSaved(model);
+            }
+        }
+
         #endregion
 
         #region internal members
@@ -170,6 +179,9 @@ namespace Dynamo.Models
                 this.PreferenceSettings.ConnectorType = value;
             }
         }
+
+        public bool IsCrashing { get; set; }
+        public bool DynamicRunEnabled { get; set; }
 
         /// <summary>
         ///     The collection of visible workspaces in Dynamo
@@ -296,7 +308,6 @@ namespace Dynamo.Models
 
         private void InitializePreferences(IPreferences preferences)
         {
-            // KILLDYNSETTINGS - this is also quite odd
             SIUnit.LengthUnit = preferences.LengthUnit;
             SIUnit.AreaUnit = preferences.AreaUnit;
             SIUnit.VolumeUnit = preferences.VolumeUnit;
@@ -1281,8 +1292,6 @@ namespace Dynamo.Models
         }
 
         #endregion
-
-        public bool IsCrashing { get; set; }
 
     }
 }

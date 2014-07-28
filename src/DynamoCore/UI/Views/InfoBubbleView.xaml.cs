@@ -236,13 +236,13 @@ namespace Dynamo.Controls
                 }
             });
 
-            if (dynamoModel != null &&
-                dynamoModel.UIDispatcher != null)
+            if (this.ViewModel.DynamoViewModel.UIDispatcher != null &&
+                this.ViewModel.DynamoViewModel.UIDispatcher != null)
             {
-                if (dynamoModel.UIDispatcher.CheckAccess())
+                if (this.ViewModel.DynamoViewModel.UIDispatcher.CheckAccess())
                     propertyChanged();
                 else
-                    dynamoModel.UIDispatcher.BeginInvoke(propertyChanged);
+                    this.ViewModel.DynamoViewModel.UIDispatcher.BeginInvoke(propertyChanged);
             }
         }
 
@@ -526,7 +526,7 @@ namespace Dynamo.Controls
                 pointCollection.Add(new Point((estimatedWidth / 2) + (arrowWidth / 2), estimatedHeight - arrowHeight));
                 pointCollection.Add(new Point(estimatedWidth, estimatedHeight - arrowHeight));
             }
-            else if (ViewModel.TargetBotRight.X + estimatedWidth <= dynamoModel.DynamoViewModel.WorkspaceActualWidth)
+            else if (ViewModel.TargetBotRight.X + estimatedWidth <= this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Top;
                 contentMargin = Configurations.NodeTooltipContentMarginLeft;
@@ -556,7 +556,7 @@ namespace Dynamo.Controls
 
         private PointCollection GetFramePoints_NodeTooltipConnectLeft(double estimatedHeight, double estimatedWidth)
         {
-            if (ViewModel.TargetBotRight.X + estimatedWidth > dynamoModel.DynamoViewModel.WorkspaceActualWidth)
+            if (ViewModel.TargetBotRight.X + estimatedWidth > this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Right;
                 contentMargin = Configurations.NodeTooltipContentMarginRight;
@@ -778,8 +778,8 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            if (dynamoModel.DynamoViewModel.IsMouseDown ||
-                !dynamoModel.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
+            if (this.ViewModel.DynamoViewModel.IsMouseDown ||
+                !this.ViewModel.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
                 return;
 
             fadeOutStoryBoard.Stop(this);

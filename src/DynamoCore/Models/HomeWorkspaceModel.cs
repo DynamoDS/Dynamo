@@ -35,7 +35,6 @@ namespace Dynamo.Models
             if (this.dynamoModel.DynamicRunEnabled)
             {
 
-#if USE_DSENGINE
                 // This dispatch timer is to avoid updating graph too frequently.
                 // It happens when we are modifying a bunch of connections in 
                 // a short time frame. E.g., when we delete some nodes with a 
@@ -58,19 +57,7 @@ namespace Dynamo.Models
 
                 runExpressionTimer.Stop();
                 runExpressionTimer.Start(); // reset timer
-#else
-                //dynamoModel.Logger.Log("Running Dynamically");
-                if (!controller.Running)
-                {
-                    //dynamoModel.Logger.Log("Nothing currently running, now running.");
-                    controller.RunExpression(false);
-                }
-                else
-                {
-                    //dynamoModel.Logger.Log("Run in progress, cancelling then running.");
-                    controller.QueueRun();
-                }
-#endif
+
             }
         }
 

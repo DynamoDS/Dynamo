@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-
 using Dynamo.Interfaces;
 using Dynamo.UI.Commands;
-using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels

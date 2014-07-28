@@ -207,10 +207,11 @@ namespace Dynamo.Controls
             Debug.WriteLine("Watch 3D view unloaded.");
 
             //check this for null so the designer can load the preview
-            if (dynamoModel != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynamoModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                dynamoModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
         }
 
@@ -227,10 +228,11 @@ namespace Dynamo.Controls
             MainContextMenu.Items.Add(mi);
 
             //check this for null so the designer can load the preview
-            if (dynamoModel != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynamoModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                dynamoModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
             DrawGrid();
@@ -243,8 +245,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
-            //Dispatcher.Invoke(new Action<VisualizationEventArgs>(RenderDrawables), DispatcherPriority.Render,
-            //                    new object[] {e});
             RenderDrawables(e);
         }
 

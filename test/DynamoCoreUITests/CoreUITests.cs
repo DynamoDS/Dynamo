@@ -588,7 +588,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI"), Category("Failing")]
         public void UpdateInfoBubble_ErrorBubble()
         {
-            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel(this.Vm);
             string content = "This is the test infoBubble";
             InfoBubbleDataPacket inputData_ErrorBubble = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error,
                 new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Bottom);
@@ -608,7 +608,7 @@ namespace DynamoCoreUITests
         [Category("DynamoUI")]
         public void Collapse()
         {
-            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel(this.Vm);
             infoBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
             //Assert.AreEqual(0, infoBubble.Opacity);
         }

@@ -585,7 +585,7 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
-            var engine = dynamoModel.EngineController;
+            var engine = this.DynamoModel.EngineController;
 
             if (!string.IsNullOrEmpty(assembly))
             {
