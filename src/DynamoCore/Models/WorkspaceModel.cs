@@ -399,7 +399,7 @@ namespace Dynamo.Models
             IEnumerable<ConnectorModel> c, double x, double y)
         {
             this.dynamoModel = dynamoModel;
-            this.NodeFactory = new NodeFactory(this, dynamoModel);
+            NodeFactory = new NodeFactory(this, dynamoModel);
 
             Name = name;
 
@@ -530,7 +530,6 @@ namespace Dynamo.Models
             if (dynamoModel.CurrentWorkspace == dynamoModel.HomeSpace)
                 node.SaveResult = true;
 
-            // KILLDYNSETTINGS
             dynamoModel.OnNodeAdded(node);
             return node;
         }

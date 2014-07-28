@@ -985,8 +985,7 @@ namespace Dynamo.Models
             //    //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
             //    // 
 
-            // KILLDYNSETTINGS
-            this.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
+            if (this.DynamoModel != null) this.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
         }
 
         public void Error(string p)
