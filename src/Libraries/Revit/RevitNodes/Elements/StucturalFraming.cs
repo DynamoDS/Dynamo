@@ -142,21 +142,23 @@ namespace Revit.Elements
 
         #region Public properties
 
-        public Point Location
+        new public Autodesk.DesignScript.Geometry.Curve Location
         {
             get
             {
-                var pos = this.InternalFamilyInstance.Location as LocationPoint;
-                return pos.Point.ToPoint();
+                var location = this.InternalFamilyInstance.Location;
+                var crv = location as LocationCurve;
+                if (null != crv && null != crv.Curve)
+                    return crv.Curve.ToProtoType();
+                throw new Exception("The location of the structural element is not a valid curve!");
             }
         }
 
-        public FamilySymbol Symbol
-        {
-            get
-            {
-                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
-            }
+        public new FamilySymbol Symbol
+        {    
+            // NOTE: Because AbstractFamilyInstance is not visible in the library
+            //       we redefine this method on FamilyInstance
+            get { return base.Symbol; }
         }
 
         #endregion

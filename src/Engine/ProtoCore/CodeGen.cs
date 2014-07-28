@@ -155,6 +155,28 @@ namespace ProtoCore
         }
 
 
+        private ProcedureNode GetProcedureNode(int classIndex, int functionIndex)
+        {
+            if (Constants.kGlobalScope != classIndex)
+            {
+                return core.ClassTable.ClassNodes[classIndex].vtable.procList[functionIndex];
+            }
+            return codeBlock.procedureTable.procList[functionIndex];
+        }
+
+        /// <summary>
+        /// Append the graphnode to the instruction stream and procedure nodes
+        /// </summary>
+        /// <param name="graphnode"></param>
+        protected void PushGraphNode(AssociativeGraph.GraphNode graphnode)
+        {
+            codeBlock.instrStream.dependencyGraph.Push(graphnode);
+            if (globalProcIndex != Constants.kGlobalScope)
+            {
+                localProcedure.GraphNodeList.Add(graphnode);
+            }
+        }
+
         /// <summary>
         /// Generates unique identifier for the callsite associated with the graphnode
         /// </summary>
@@ -791,6 +813,8 @@ namespace ProtoCore
             ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone,
             ProtoCore.AST.Node binaryExpNode = null)
         {
+            Guid guid = graphNode == null ? default(Guid) : graphNode.guid;
+
             bool isRefFromIdentifier = false;
 
             dynamic node = pNode;
@@ -902,7 +926,7 @@ namespace ProtoCore
                         if (isAllocated && !isAccessible)
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, identnode.Value);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col);
+                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
                             return false;
@@ -910,7 +934,7 @@ namespace ProtoCore
                         else
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kUnboundIdentifierMsg, identnode.Value);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col);
+                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
                         }
 
                         if (depth == 0)
@@ -953,17 +977,17 @@ namespace ProtoCore
                             if (null != staticProcCallNode)
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
                             }
                             else if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, property);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
                             }
                             else
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, guid);
                             }
 
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
@@ -1150,6 +1174,51 @@ namespace ProtoCore
             return false;
         }
 #else
+
+        /// <summary>
+        /// Verifies the allocation of a variable in the given symbol table
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="classScope"></param>
+        /// <param name="functionScope"></param>
+        /// <param name="symbolTable"></param>
+        /// <param name="symbol"></param>
+        /// <param name="isAccessible"></param>
+        /// <returns></returns>
+        protected bool VerifyAllocationInScope(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
+        {
+            SymbolTable symbolTable = null;
+            if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
+            {
+                symbolTable = codeBlock.symbolTable;
+            }
+            else
+            {
+                symbolTable = core.ClassTable.ClassNodes[classScope].symbols;
+            }
+
+            symbol = null;
+            isAccessible = false;
+            //int symbolIndex = symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+            int symbolIndex = symbolTable.IndexOf(name, classScope, functionScope);
+            if (symbolIndex != Constants.kInvalidIndex)
+            {
+                symbol = symbolTable.symbolList[symbolIndex];
+                isAccessible = true;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Verify the allocation of a variable in the current scope and parent scopes
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="classScope"></param>
+        /// <param name="functionScope"></param>
+        /// <param name="symbol"></param>
+        /// <param name="isAccessible"></param>
+        /// <returns></returns>
         protected bool VerifyAllocation(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
         {
             int symbolIndex = Constants.kInvalidIndex;

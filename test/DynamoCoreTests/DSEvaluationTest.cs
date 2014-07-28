@@ -71,6 +71,13 @@ namespace Dynamo.Tests
             AssertValue(svValue, value);
         }
 
+        public void AssertInfinity(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = GetRuntimeMirror(dsVariable);
+            MirrorData data = mirror.GetData();
+            Assert.IsTrue(System.Double.IsInfinity(Convert.ToDouble(data.Data)));
+        }
+
         public void AssertPreviewValue(string guid, object value)
         {
             string previewVariable = GetVarName(guid);

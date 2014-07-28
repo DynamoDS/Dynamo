@@ -2407,6 +2407,7 @@ y = Count(xHighFrequency);";
         [Test]
         [Category("Replication")]
         [Category("SmokeTest")]
+        [Category("ProtoGeometry")]
         public void T65_Defect_1467125_Geo_Replication()
         {
             string code = @"
@@ -3459,12 +3460,14 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T82_Defect_1467244()
         {
             String code =
 @"class A{static def execute(b : A) {   return = 100;  }}arr = {A.A(), null, 3};v1 = A.execute(null);v2 = A.execute(3);v3 = A.execute(arr);";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467224 Sprint25: rev 3352: method dispatch over heterogeneous array is not correct";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
+            String errmsg = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct";
 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;

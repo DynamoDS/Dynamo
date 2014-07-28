@@ -2943,7 +2943,7 @@ namespace ProtoTest.DebugTests
         public void DebugEQTestDynamicArray001()
         {
             String code =
-                @"[Imperative]{    range = 1..10;    local = {};    c = 0;    for(i in range)    {        local[c] = i + 1;        c = c + 1;    }}";
+                @"[Imperative]{    range = 1..10;    loc = {};    c = 0;    for(i in range)    {        loc[c] = i + 1;        c = c + 1;    }}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
         [Test, Ignore]
@@ -3005,7 +3005,7 @@ namespace ProtoTest.DebugTests
         public void DebugEQLanguageBlockReturn02()
         {
             String code =
-@"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            local = 20;            return = local;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }    ";
+@"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            loc = 20;            return = loc;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }    ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -4534,6 +4534,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void DebugEQComments_Negative()
         {
             string code = @"/*WCS=CoordinateSystem.Identity();p2 = Point.ByCoordinates(0,0,0);*//*import(""ProtoGeometry.dll"");WCS=CoordinateSystem.Identity();p2 = Point.ByCoordinates(0,0,0);";
@@ -4541,6 +4542,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void DebugEQComments_Nested()
         {
             string code = @"/*WCS=CoordinateSystem.Identity();/*p2 = Point.ByCoordinates(0,0,0);*/*/import(""ProtoGeometry.dll"");WCS=CoordinateSystem.Identity();p2 = Point.ByCoordinates(0,0,0);";
@@ -4562,6 +4564,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void DebugEQDefect_Geo_Replication()
         {
             string code = @"import(""ProtoGeometry.dll"");WCS = CoordinateSystem.Identity();// create initialPointsdiafac1 = 1;h1 = 15;hL1=10;pt0 = Point.ByCartesianCoordinates(WCS,-5*diafac1,-5*diafac1,0);pt1 = Point.ByCartesianCoordinates(WCS,5*diafac1,-5*diafac1,0);pt2 = Point.ByCartesianCoordinates(WCS,5*diafac1,5*diafac1,0);pt3 = Point.ByCartesianCoordinates(WCS,-5*diafac1,5*diafac1,0);pt4 = Point.ByCartesianCoordinates(WCS,-5*diafac1,-5*diafac1,hL1);pt5 = Point.ByCartesianCoordinates(WCS,5*diafac1,-5*diafac1,hL1);pt6 = Point.ByCartesianCoordinates(WCS,5*diafac1,5*diafac1,hL1);pt7 = Point.ByCartesianCoordinates(WCS,-5*diafac1,5*diafac1,hL1);pt8 = Point.ByCartesianCoordinates(WCS,-15,-15,h1);pt9 = Point.ByCartesianCoordinates(WCS,15,-15,h1);pt10= Point.ByCartesianCoordinates(WCS,15,15,h1);pt11 = Point.ByCartesianCoordinates(WCS,-15,15,h1);pointGroup = {pt0,pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11};facesIndices = {{0,1,5,4},{1,2,6,5},{2,3,7,6},{3,0,4,7},{4,5,9,8},{5,6,10,9},{6,7,11,10},{7,4,8,11}};groupOfPointGroups =  { { pt0, pt1, pt2 }, { pt3, pt4, pt5 }, { pt6, pt7, pt8 }, { pt9, pt10, pt11 } };simplePointGroup = {pt5, pt6, pt10, pt9};// note: Polygon.ByVertices expects a 1D array of points.. so let`s test this controlPolyA = Polygon.ByVertices({pt0, pt1, pt5, pt4}); // OK with 1D collectioncontrolPolyB = Polygon.ByVertices(simplePointGroup); // OK with 1D collection	controlPolyC = Polygon.ByVertices({{pt1, pt2, pt6, pt5},{pt2, pt3, pt7, pt6}}); // not OK with literal 2D collection														// get compiler error `unable to locate mamaged object for given dsObject`	controlPolyD = Polygon.ByVertices(pointGroup[3]);    // not OK with a 1D subcollection a a member indexed from a 2D collection														// controlPolyD = null	controlPolyE = Polygon.ByVertices(pointGroup[facesIndices]); // not OK with an array of indices																// controlPolyE = nullcontrolPolyF = Polygon.ByVertices(groupOfPointGroups);// result = foo({ controlPolyA, controlPolyB, controlPolyC, controlPolyD, controlPolyE });/*def foo(x:Polygon){	if (x!= null)	{	    return = true;	}	else return = false;}*///a simple casec=2 * {{1},{2}};";
@@ -5347,7 +5350,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQRegress_1462308()
         {
-            string code = @"import(TestData from ""ProtoTest.dll"");f = TestData.IncrementByte(101); F = TestData.ToUpper(f);";
+            string code = @"import(TestData from ""FFITarget.dll"");f = TestData.IncrementByte(101); F = TestData.ToUpper(f);";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -7024,6 +7027,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void DebugEQT020_Vector_ByCoordinates()
         {
             string code = @"import (Vector from ""ProtoGeometry.dll"");	vec =  Vector.ByCoordinates(3.0,4.0,0.0); 	vec_X = vec.get_X(); 	vec_Y = vec.get_Y();	vec_Z = vec.get_Z();	";
@@ -7087,16 +7091,9 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        public void DebugEQT021_Vector_ByCoordinates()
-        {
-            string code = @"import (Vector from ""ProtoGeometry.dll"");	vec =  Vector.ByCoordinates(3.0,4.0,0.0,true); 	vec_X = vec.get_X();	vec_Y = vec.get_Y();	vec_Z = vec.get_Z();	vec_Normalised=vec.Normalize();	vec2 =  Vector.ByCoordinates(3.0,4.0,0.0,false);		vec2 =  Vector.ByCoordinates(3.0,4.0,0.0,false);	vec2_X = vec2.get_X();	vec2_Y = vec2.get_Y();	vec2_Z = vec2.get_Z();	vec_len = vec2.GetLength();	vec1 =  Vector.ByCoordinates(3.0,4.0,0.0,null); 	vec4 =  Vector.ByCoordinateArrayN({3.0,4.0,0.0});	vec4_coord={vec4.get_X(),vec4.get_Y(),vec4.get_Z()};	vec5 =  Vector.ByCoordinateArrayN({3.0,4.0,0.0},true); 	vec5_coord={vec5.get_X(),vec5.get_Y(),vec5.get_Z()};		is_same = vec.Equals(vec);// same vec	vec2=  Vector.ByCoordinates(1.0,2.0,0.0);	is_same2 = vec.Equals(vec2);// different vec			vec3 =  Vector.ByCoordinates(1.0,0.0,0.0,true); 	is_parallel1 = vec.IsParallel(vec); //same vec	vec4=  Vector.ByCoordinates(3.0,0.0,0.0);		is_parallel2 = vec3.IsParallel(vec4);//parallel	vec5 =  Vector.ByCoordinates(3.0,4.0,5.0); //non parallel	is_parallel3 = vec.IsParallel(vec5);	vec6 =  Vector.ByCoordinates(0.0,1.0,0.0);	vec7 =  Vector.ByCoordinates(1.0,0.0,0.0);	is_perp1 = vec6.IsPerpendicular(vec7);//same vec	is_perp2 = vec6.IsPerpendicular(vec5);//diff vec	dotProduct=vec2.Dot(vec2);	vec8 =  Vector.ByCoordinates(1.0,0.0,0.0,false);	vec9 =  Vector.ByCoordinates(0.0,1.0,0.0,false);	crossProduct=vec8.Cross(vec9);	cross_X=crossProduct.get_X();	cross_Y=crossProduct.get_Y();	cross_Z=crossProduct.get_Z();	newVec=vec5.Scale(2.0);//single	newVec_X=newVec.get_X();	newVec_Y=newVec.get_Y();	newVec_Z=newVec.get_Z();	coord_Vec=    vec.ComputeGlobalCoords(1,2,3);		";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT022_Array_Marshal()
         {
-            string code = @"import (Dummy from ""ProtoTest.dll"");dummy = Dummy.Dummy();arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};sum_1_10 = dummy.SumAll(arr);twice_arr = dummy.Twice(arr);	";
+            string code = @"import (Dummy from ""FFITarget.dll"");dummy = Dummy.Dummy();arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};sum_1_10 = dummy.SumAll(arr);twice_arr = dummy.Twice(arr);	";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -8151,6 +8148,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void DebugEQT058_Average_DataType_02()
         {
             string code = @"import(""ProtoGeometry.dll"");//WCS = CoordinateSystem.Identity();pt1=Point.ByCoordinates(1,1,1);a = {true};b = {{1},2,3};c = {""a"",0.2,0.3,1};d = {pt1, {}, 1};a1 = Average(a);b1 = Average(b);c1 = Average(c);d1 = Average(d);";
@@ -9932,6 +9930,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void DebugEQT19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
         {
             string code = @"import (""ProtoGeometry.dll"");def foo : CoordinateSystem(){	return = CoordinateSystem.Identity();}a = Point.ByCartesianCoordinates(foo, 1.0, 2.0, 3.0);";
@@ -11305,7 +11304,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQT28_defect_1465706__DynamicArray_Imperative_2()
         {
-            string code = @"[Imperative]{    def test (i:int)    {        local = {};        for(j in i)        {            local[j] = j;        }        return = local;    }    a={3,4,5};    t = test(a);    r = {t[0][3], t[1][4], t[2][5]};    return = r;}";
+            string code = @"[Imperative]{    def test (i:int)    {        loc = {};        for(j in i)        {            loc[j] = j;        }        return = loc;    }    a={3,4,5};    t = test(a);    r = {t[0][3], t[1][4], t[2][5]};    return = r;}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -14838,13 +14837,13 @@ namespace ProtoTest.DebugTests
         [Test, Ignore]
         public void DebugEQTV49_Defect_1456110()
         {
-            string code = @"def recursion : int(a : int){    local = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = local;}a = 10;[Imperative]{	x = recursion(a); }";
+            string code = @"def recursion : int(a : int){    loc = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = loc;}a = 10;[Imperative]{	x = recursion(a); }";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
         [Test, Ignore]
         public void DebugEQTV49_Defect_1456110_2()
         {
-            string code = @"def recursion : int(a : int){    local = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = local;}a = 10;[Imperative]{	x = recursion(a); }";
+            string code = @"def recursion : int(a : int){    loc = [Imperative]    {        if (a <= 0)        {            return = 0;         }        return = a + recursion(a - 1);    }    return = loc;}a = 10;[Imperative]{	x = recursion(a); }";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -16255,7 +16254,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQblockassign_associative()
         {
-            string code = @"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            local = 20;            return = local;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }";
+            string code = @"[Associative]{    def DoSomthing : int(p : int)    {        ret = p;               d = [Imperative]        {            loc = 20;            return = loc;        }        return = ret * 100 + d;    }    a = DoSomthing(10);   }";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -16407,6 +16406,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void DebugEQfile_1467252_master()
         {
             string code = @" import(""ProtoGeometry.dll""); import(""file_1467252.ds""); WCS = CoordinateSystem.Identity(); newCS = WCS.Translate(Vector.ByCoordinates(0, 1, 0));";
@@ -16472,7 +16472,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQimperative_Replication_1467070()
         {
-            string code = @"[Imperative]{        def test (i:int)        {                local = {};                for(j in i)                {                        local[j] = j;                                        }                return = local;        }a={3,4,5};        t = test(a);return = t;}";
+            string code = @"[Imperative]{        def test (i:int)        {                loc = {};                for(j in i)                {                        loc[j] = j;                                        }                return = loc;        }a={3,4,5};        t = test(a);return = t;}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -16535,7 +16535,7 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQnesting()
         {
-            string code = @"[Imperative]{	a = 10;	if(a >= 10)	{		x = a * 2;		[Associative]		{			local = x * a;		}	}}";
+            string code = @"[Imperative]{	a = 10;	if(a >= 10)	{		x = a * 2;		[Associative]		{			loc = x * a;		}	}}";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
@@ -16670,6 +16670,7 @@ namespace ProtoTest.DebugTests
     {
 
         [Test]
+        [Category("ProtoGeometry")]
         [Category("Debugger")]
         public void DebugEQtest_Assocaitive_2D_array_with_range_expression_as_array_indices_1()
         {
@@ -16680,7 +16681,7 @@ namespace ProtoTest.DebugTests
 
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Condtional_symbology_inline_conditional_singleton_1()
         {
             String src =
@@ -16698,7 +16699,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Simple_cross_language_update_Assoc_in_Imp_in_Assoc_2()
         {
             String src =
@@ -16707,7 +16708,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Simple_geometric_associative_2()
         {
             String src =
@@ -16716,7 +16717,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Simple_geometric_imperative_2()
         {
             String src =
@@ -16725,7 +16726,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Simple_numeric_associative_2()
         {
             String src =
@@ -16734,7 +16735,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Simple_numeric_imperative_2()
         {
             String src =
@@ -16743,7 +16744,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_2D_array_from_imperative_associative_code_1()
         {
             String src =
@@ -16752,7 +16753,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_2D_array_from_imperative_imperative_code_1()
         {
             String src =
@@ -16761,7 +16762,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Accessing_properties_before_and_after_modification_1()
         {
             String src =
@@ -16770,7 +16771,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_CondtionalSymbology_inline_conditional_1()
         {
             String src =
@@ -16779,7 +16780,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Language_functions_test_1()
         {
             String src =
@@ -16788,7 +16789,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Modifiying_replicated_inline_conditional_1()
         {
             String src =
@@ -16797,7 +16798,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Replication_with_instance_array_with_Function()
         {
             String src =
@@ -16806,7 +16807,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
-        [Category("Debugger")]
+        [Category("Debugger"), Category("ProtoGeometry")]
         public void DebugEQtest_Set_operation_functions_test_1()
         {
             String src =

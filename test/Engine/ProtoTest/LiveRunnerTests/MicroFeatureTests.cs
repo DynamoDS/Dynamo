@@ -1,3 +1,4 @@
+﻿
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1618,6 +1619,7 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void TestAdd01()
         {
             List<string> codes = new List<string>() 
@@ -5339,6 +5341,309 @@ a = [Associative]
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("a", 14);
         }
+        [Test]
+        public void TestNestedLanguageBlockReExecution04()
+        {
+            string code = @"
+def func_1: var[]..[](x1 : var[]..[])
+{
+    x2 = x1;
+    var_1 = [Associative]
+    {
+        return = [Imperative]
+        {
+            if (false)
+            {
+                var_2 = [Associative]
+                {
+                    return = [Imperative]
+                    {
+                        if(true)
+                        {
+                            return = x2;
+                        }
+                        else
+                        {
+                            x3 = 42;
+                            return = x3;
+                        }
+                    }
+                }
+
+                return = var_2;
+            }
+            else
+            {
+                x4 = 1024;
+                return = x4;
+            }
+        }
+    }
+    return = var_1;
+}
+
+x = 5;
+r = func_1(x);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 1024);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution05()
+        {
+            string code = @"
+def foo()
+{
+    x2 = 5;
+    v1 = [Associative]
+    {
+        return = [Imperative]
+        {
+            if (false)
+            { 
+                v2 = [Associative]
+                {
+                    return = [Imperative]
+                    {
+                        if(true)
+                        {
+                            return = 10;
+                        }
+                        else
+                        {
+                            return = 15;
+                        }
+                    }
+                }
+                return = v2;
+            }
+            else
+            {
+                return = 20;
+            }
+        }
+    }
+    return = v1;
+}
+
+x = foo();
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 20);
+        }
+
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution06()
+        {
+            string code = @"
+
+def foo()
+{
+    aa = 8;
+    bb = aa;
+
+    cc = [Associative]
+    {
+        return = [Imperative]
+        {
+            if(false)
+            {
+                return = [Associative]
+                {
+                    return = [Imperative]
+                    {
+                        return = bb;
+                    }
+                }
+            }
+        }
+    }
+    return = 16;
+}
+
+r = foo();
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 16);
+        }
+
+        public void TestNestedLanguageBlockReExecution07()
+        {
+            string code = @"
+def func_11546f565974453bae527393c546bbff: var[]..[](x1 : var[]..[])
+{
+    tssa1 = x1;
+    x1f = tssa1;
+    tssa2 = x1f;
+    x3 = tssa2;
+    tssa3 = x3;
+    x24 = tssa3;
+    tssa3 = x24;
+    x34 = tssa3;
+
+    var_42 = [Associative]
+    {
+        return = [Imperative]
+        {
+            t1 = false;
+            if(t1)
+            {
+                v1 = [Associative]
+                {
+                    return = [Imperative]
+                    {
+                        t2 = true;
+                        if(t2)
+                        {
+                            x2 = x3;
+                            x4 = x2;
+                            return = x4;
+
+                        }
+                        else
+                        {
+                            x5 = 42;
+                            return = x5;
+
+                        }
+
+                    }
+                    ;
+
+                }
+                r1 = v1;
+                x7 = r1;
+                return = x7;
+
+            }
+            else
+            {
+                x8 = 1024;
+                x9 = x8;
+                x10 = x9;
+                return = x10;
+            }
+        }
+    }
+    tssa4 = var_42;
+    var_d = tssa4;
+    tssa5 = var_d;
+    return = tssa5;
+}
+
+x = 5;
+r = func_11546f565974453bae527393c546bbff(x);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 1024);
+        }
+        public void TestNestedLanguageBlockReExecution08()
+        {
+            string code = @"
+def f(x)
+{
+    aa = [Imperative]
+    {
+        if(x <= 1)
+        {
+            return = [Associative]
+            {
+                bb = 1;
+                return = bb;
+            }
+        }
+        else
+        {
+            return = [Associative]
+            {
+                cc = f(x - 1) + x;   
+                return = cc;
+            }
+        }
+    }
+    return = aa;
+}
+
+t = f(3);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("t", 6);
+        }
+        
+        public void TestNestedLanguageBlockReExecution09()
+        {
+            string code = @"
+def func_f417d5607cc14ef8bde1b821bada91da: var[]..[](x : var[]..[])
+{
+    t1 = 1;
+    v1 = (x) <= (t1);
+    v2 = [Imperative]
+    {
+        if(v1)
+        {
+            return = [Associative]
+            {
+                t2 = 1;
+                return = t2;
+
+            }
+        }
+        else
+        {
+            return = [Associative]
+            {
+                t3 = 1;
+                v3 = (x) - (t3);
+                v4 = func_f417d5607cc14ef8bde1b821bada91da(v3);
+                v5 = (x) * (v4);
+                return = v5;
+
+            }
+        }
+    }
+    v6 = v2;
+    return = v6;
+}
+
+r = 4;
+t = func_f417d5607cc14ef8bde1b821bada91da(r);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("t", 24);
+        }
     }
 
 }
+

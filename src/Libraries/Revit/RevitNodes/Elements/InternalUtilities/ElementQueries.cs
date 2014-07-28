@@ -12,6 +12,8 @@ namespace Revit.Elements.InternalUtilities
     {
         public static IList<Element> OfFamilyType(FamilySymbol familyType)
         {
+            if (familyType == null) return null;
+
             var instanceFilter = new ElementClassFilter(typeof(Autodesk.Revit.DB.FamilyInstance));
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 
@@ -29,6 +31,8 @@ namespace Revit.Elements.InternalUtilities
 
         public static IList<Element> OfElementType(Type elementType)
         {
+            if (elementType == null) return null;
+
             var elFilter = new ElementClassFilter(elementType);
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fec.WherePasses(elFilter);
@@ -40,6 +44,8 @@ namespace Revit.Elements.InternalUtilities
 
         public static IList<Element> OfCategory(Category category)
         {
+            if (category == null) return null;
+
             var catFilter = new ElementCategoryFilter(category.InternalCategory.Id);
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             var instances = 
@@ -53,6 +59,8 @@ namespace Revit.Elements.InternalUtilities
 
         public static IList<Element> AtLevel(Level arg)
         {
+            if (arg == null) return null;
+
             var levFilter = new ElementLevelFilter(arg.InternalLevel.Id);
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             var instances =

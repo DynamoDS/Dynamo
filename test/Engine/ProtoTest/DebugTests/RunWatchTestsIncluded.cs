@@ -107,8 +107,8 @@ namespace ProtoTest.DebugTests
         ret = p;       
         d = [Imperative]
         {
-            local = 20;
-            return = local;
+            loc = 20;
+            return = loc;
         }
         return = ret * 100 + d;
     }
@@ -877,7 +877,7 @@ b = 2;
 		x = a * 2;
 		[Associative]
 		{
-			local = x * a;
+			loc = x * a;
 		}
 	}
 }";
@@ -2995,7 +2995,7 @@ WCS = CoordinateSystem.Identity();";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch66_file_1467252_master()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4225,8 +4225,10 @@ class VisibilityAttribute
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch87_TestStringOperations()
         {
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"[Imperative]
 {
@@ -4250,7 +4252,7 @@ class VisibilityAttribute
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
@@ -4848,7 +4850,7 @@ c = foo1(a, 3);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch114_T19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11375,7 +11377,7 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch327_Defect_Geo_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17335,7 +17337,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch460_T020_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17351,7 +17353,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch461_T021_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17412,7 +17414,7 @@ result3 = resultData[3];
         public void DebugWatch462_T022_Array_Marshal()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (Dummy from ""ProtoTest.dll"");
+            string src = @"import (Dummy from ""FFITarget.dll"");
 dummy = Dummy.Dummy();
 arr = {0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0};
 sum_1_10 = dummy.SumAll(arr);
@@ -23685,8 +23687,12 @@ a2 = foo2(3);
 
         [Test, Ignore]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch686_T018_Inline_Using_Recursion()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
+            string err = "MAGN-4006 Recursion in Associative Inline condition does not work properly";
+
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def factorial : int (num : int)
 {
@@ -23694,7 +23700,7 @@ a2 = foo2(3);
 }
 fac = factorial(10);";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: err);
         }
 
         [Test]
@@ -25675,7 +25681,7 @@ p1 = normalizeDepth(p1,1);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch753_language_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25723,7 +25729,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch754_set_operation_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25993,7 +25999,7 @@ b4 = Math.Ceiling(a4); //null
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch758_T80585_Count()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27425,42 +27431,48 @@ result = Count(a);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch815_T047_Sum_ForLoop()
         {
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result = 
+            string src = @"import(""FFITarget.dll"");
+result = 
 [Imperative]
 {
 	a = {0,0.0};
 	b = {{}};
-	c = {m,Sum(a),b,10.0};
+	c = {m, DummyMath.Sum(a), b, 10.0};
 	
 	d = {a,b,c};
 	j = 0;
 	
 	for(i in d)
 	{
-		d[j] = Sum(i);
+		d[j] = DummyMath.Sum(i);
 		j = j+1;
 	}
 	
 	return = d; 
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch816_T048_Sum_WhileLoop()
         {
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result = 
+            string src = @"import(""FFITarget.dll"");
+result = 
 [Imperative]
 {
 	a = {-2,0.0};
 	b = {{}};
-	c = {m,Sum(a),b,10.0};
+	c = {m, DummyMath.Sum(a), b, 10.0};
 	
 	d = {a,b,c};
 	j = 0;
@@ -27469,9 +27481,9 @@ result = Count(a);";
 	
 	while(j<Count(d))
 	{
-		if(Sum(d[j])!=0)
+		if(DummyMath.Sum(d[j])!=0)
 		{
-			e[k] = Sum(d[j]);
+			e[k] = DummyMath.Sum(d[j]);
 			k = k+1;
 		}
 		j = j+1;
@@ -27480,7 +27492,7 @@ result = Count(a);";
 	return = e; 
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
@@ -27683,7 +27695,7 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch826_T058_Average_DataType_02()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -33543,8 +33555,12 @@ b = CreateArray ( b, count );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1006_T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
+            string defect = "MAGN-3988 Defects with Expression Interpreter Test Framework";
+
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"class A
 {
@@ -33597,7 +33613,7 @@ collection = { };
 }   
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defect);
         }
 
         [Test]
@@ -34916,12 +34932,12 @@ r;
 {
     def test (i:int)
     {
-        local = {};
+        loc = {};
         for(j in i)
         {
-            local[j] = j;
+            loc[j] = j;
         }
-        return = local;
+        return = loc;
     }
     a={3,4,5};
     t = test(a);
@@ -35642,14 +35658,18 @@ z=5;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1085_T64_Modify_itemInAnArray_1467093()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a = {1, 2, 3};
 a[1] = a; 
 ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
+
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
@@ -35784,24 +35804,12 @@ b[0]=false;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1093_T66_Array_CannotBeUsedToIndex1467069()
         {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-[Imperative]
-{
-    a = {3,1,2}; 
-    x = {10,11,12,13,14,15}; 
-    x[a] = 2;
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
 
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1094_T66_Array_CannotBeUsedToIndex1467069_2()
-        {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"x;
 [Imperative]
@@ -35811,7 +35819,7 @@ b[0]=false;
     x[a] = 2;
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
@@ -38998,8 +39006,12 @@ t = a.foo()[0];";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1212_TV101_Indexing_Into_classCall_1463234_7()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
+
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"class test{
 	constructor test()
@@ -39017,7 +39029,7 @@ a=test.test();
 t = a.foo()[0];
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
@@ -40269,7 +40281,7 @@ x = foo( 0 );
             string src = @"
 def recursion : int(a : int)
 {
-    local = [Imperative]
+    loc = [Imperative]
     {
         if (a <= 0)
         {
@@ -40277,7 +40289,7 @@ def recursion : int(a : int)
         }
         return = a + recursion(a - 1);
     }
-    return = local;
+    return = loc;
 }
 a = 10;
 [Imperative]
@@ -40297,7 +40309,7 @@ a = 10;
             string src = @"
 def recursion : int(a : int)
 {
-    local = [Imperative]
+    loc = [Imperative]
     {
         if (a <= 0)
         {
@@ -40305,7 +40317,7 @@ def recursion : int(a : int)
         }
         return = a + recursion(a - 1);
     }
-    return = local;
+    return = loc;
 }
 a = 10;
 [Imperative]
@@ -48776,8 +48788,12 @@ b = [ Imperative ]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1561_T08_Update_Array_Variable()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
+
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a = 1..3;
 c = a;
@@ -48810,13 +48826,15 @@ d = [ Imperative ]
 e = b;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1562_T09_Update_Across_Multiple_Imperative_Blocks()
         {
+            string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a = 1;
 b = a;
@@ -48834,7 +48852,7 @@ e = c;
 f = d;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map, defectID: defectID);
         }
 
         [Test]
@@ -52721,7 +52739,7 @@ a=5;";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch1703_Comments_Negative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -52738,7 +52756,7 @@ p2 = Point.ByCoordinates(0,0,0);";
         }
 
         [Test]
-        [Category("WatchFx Tests")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")]
         public void DebugWatch1704_Comments_Nested()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -53373,13 +53391,13 @@ n = Count(arr);
 {
         def test (i:int)
         {
-                local = {};
+                loc = {};
                 for(j in i)
                 {
-                        local[j] = j;
+                        loc[j] = j;
                         
                 }
-                return = local;
+                return = loc;
         }
 a={3,4,5};
         t = test(a);
@@ -56745,7 +56763,7 @@ a1 = A.A();";
         public void DebugWatch1815_Regress_1462308()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(TestData from ""ProtoTest.dll"");
+            string src = @"import(TestData from ""FFITarget.dll"");
 f = TestData.IncrementByte(101); 
 F = TestData.ToUpper(f);
 ";

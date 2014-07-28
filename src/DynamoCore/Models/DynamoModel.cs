@@ -170,6 +170,16 @@ namespace Dynamo.Models
         }
     }
 
+    public class WorkspaceEventArgs
+    {
+        public WorkspaceModel Workspace { get; set; }
+
+        public WorkspaceEventArgs(WorkspaceModel workspace)
+        {
+            this.Workspace = workspace;
+        }
+    }
+
     public class ModelEventArgs : EventArgs
     {
         public ModelBase Model { get; private set; }
@@ -219,6 +229,7 @@ namespace Dynamo.Models
     /// </summary>
     public class DynamoModel : ModelBase
     {
+
         #region events
 
         public event EventHandler RequestLayoutUpdate;
@@ -234,6 +245,15 @@ namespace Dynamo.Models
             if (WorkspaceClearing != null)
             {
                 WorkspaceClearing(this, e);
+            }
+        }
+
+        public event WorkspaceHandler CurrentWorkspaceChanged;
+        public virtual void OnCurrentWorkspaceChanged(WorkspaceModel workspace)
+        {
+            if (CurrentWorkspaceChanged != null)
+            {
+                CurrentWorkspaceChanged(workspace);
             }
         }
 
@@ -329,6 +349,7 @@ namespace Dynamo.Models
                     if (_cspace != null)
                         _cspace.IsCurrentSpace = true;
 
+                    OnCurrentWorkspaceChanged(_cspace);
                     RaisePropertyChanged("CurrentWorkspace");
                 }
             }
@@ -696,17 +717,18 @@ namespace Dynamo.Models
                 return null;
             }
 
+            // Fix for: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4024
+            // Various derived classes of NodeModel like CodeBlockNode, build 
+            // their internal variables based on the node's GUID. In cases like 
+            // this, a node's GUID must be finalized before variable generation 
+            // logic kicks in.
+            // 
+            node.GUID = nodeId; // Set the node's GUID before anything else.
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
                 node.Y = y;
-            }
-
-            if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspaceModel)
-            {
-                string format = "Cannot place '{0}' in HomeWorkspace (GUID: {1})";
-                WriteToLog(string.Format(format, nodeName, nodeId));
-                return null;
             }
 
             CurrentWorkspace.Nodes.Add(node);
@@ -714,9 +736,6 @@ namespace Dynamo.Models
 
             if (null != xmlNode)
                 node.Load(xmlNode);
-
-            // Override the guid so we can store for connection lookup
-            node.GUID = nodeId;
 
             DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = viewModel.CurrentSpaceViewModel;

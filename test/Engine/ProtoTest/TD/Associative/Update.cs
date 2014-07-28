@@ -322,10 +322,10 @@ class MyPoint
 	
 	// add 'incremental' modifiers
 	
-	def incrementX(this : MyPoint, xValue : double) = ByXYcoordinates(this.x + xValue, this.y);
-	def incrementY(this : MyPoint, yValue : double) = ByXYcoordinates(this.x,this.y + yValue);
-	def incrementTheta(this : MyPoint, thetaValue : double)  = ByAngleRadius(this.theta + thetaValue, this.radius );
-	def incrementRadius(this : MyPoint, radiusValue : double)= ByAngleRadius(this.theta, this.radius + radiusValue );
+	def incrementX(mp : MyPoint, xValue : double) = ByXYcoordinates(mp.x + xValue, mp.y);
+	def incrementY(mp : MyPoint, yValue : double) = ByXYcoordinates(mp.x,mp.y + yValue);
+	def incrementTheta(mp : MyPoint, thetaValue : double)  = ByAngleRadius(mp.theta + thetaValue, mp.radius );
+	def incrementRadius(mp : MyPoint, radiusValue : double)= ByAngleRadius(mp.theta, mp.radius + radiusValue );
 }
 a 		= MyPoint.ByXYcoordinates(1.0, 1.0);			// create an instance 'a' using one constructor
 origin  = Point.ByCartesianCoordinates(WCS, 0,0,0);  				// create a reference point
@@ -406,17 +406,15 @@ s1 = { 3, 4 } ;";
         [Category("Update")]
         public void T011_Update_Of_Variable_To_Null()
         {
-            string error = "1458695 - Sprint 17: Rev 1316: Handle divide by 0 (infinity and beyond back to origin";
             string src = @"x = 1;
 y = 2/x;
 x = 0;
 v1 = 2;
 v2 = v1 * 3;
 v1 = null;";
-            thisTest.VerifyRunScriptSource(src, error);
-            thisTest.Verify("y", null);
+            thisTest.VerifyRunScriptSource(src);
+            TestFrameWork.AssertInfinity("y");
             thisTest.Verify("v2", null);
-
         }
 
         [Test]
@@ -1432,9 +1430,11 @@ c1 = x.c;
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T024_Defect_1459470_3()
         {
-            string errmsg = "DNL-1467337 Rev 3971 : Update of global variables from inside function call is not happening as expectedr";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4020
+            string errmsg = "MAGN-4020 Update of global variables from inside function call is not happening as expected";
             string src = @"def foo ()
 {
 	a = 0..4..1;
@@ -1453,7 +1453,7 @@ test = foo();
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(src, errmsg);
             //Verification   
-            thisTest.Verify("y", 2);
+            thisTest.Verify("c", 14);
         }
 
         [Test]
@@ -2040,8 +2040,10 @@ b1.a2[0] = b1.a2[1];
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T033_Defect_1467187_Update_In_class_collection_property_3()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4021
             String code =
 @"
 class Point
@@ -2075,13 +2077,14 @@ dummy = p1.foo({1,1,1,1});
 p1.X[0..1] = -1;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467401 Rev 4347 : Update issue with collection property in nested imperative scope";
+            String errmsg = "MAGN-4021 Update issue with collection property in nested imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { -1, -1, 2, 2 });
         }
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T034_UpdaetStaticProperty()
         {
             string code = @"
@@ -2093,7 +2096,8 @@ b = Base.Base();
 t = b.x;               // x is a static property
 Base.x = { 5.2, 3.9 }; // expect t = {5, 4}, but t = {null}
 ";
-            string errmsg = "DNL-1467431 Modify static property doesn't trigger update";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1271
+            string errmsg = "MAGN-1271 Modify static property doesn't trigger update";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t", new object[] { 5, 4 });
         }
@@ -2125,9 +2129,11 @@ q = a;
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T036_Defect_1467491()
         {
-            string errmsg = "DNL-1467336 Rev 3971 :global and local scope identifiers of same name causing cyclic dependency issue";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4033
+            string errmsg = "MAGN-4033 Update issue with object redefinition";
             string code = @"import(""T031_Defect_1467491_ImportUpdate_Sub.ds"");
 t = 5;
 z = a.x;    // This is a redefinition test where 'a' was redefined in the imported file
@@ -2135,6 +2141,47 @@ z = a.x;    // This is a redefinition test where 'a' was redefined in the import
             thisTest.RunScriptSource(code, errmsg, importPath);
             thisTest.Verify("z", 3);
 
+        }
+
+        [Test]
+        public void TestCyclicDependency01()
+        {
+            string code = @"
+b = 1;
+a = b + 1;
+b = a;";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            Object n1 = null;
+            thisTest.Verify("a", n1);
+            thisTest.Verify("b", n1);
+        }
+
+        [Test]
+        public void TestCyclicDependency02()
+        {
+
+            string code = @"
+
+
+a1;
+[Imperative]
+{
+	a = {};
+	b = a;
+	a[0] = b;
+	c = Count(a);
+}
+[Associative]
+{
+	a1 = {0};
+	b1 = a1;
+	a1[0] = b1;
+}";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            Object n1 = null;
+            thisTest.Verify("a1", n1);
         }
     }
 }

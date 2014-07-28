@@ -9,6 +9,7 @@ using DSCoreNodesUI;
 using DSCore.File;
 using Revit.Elements;
 using RTF.Framework;
+using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.Tests
 {
@@ -1197,7 +1198,7 @@ namespace Dynamo.Tests
 
         #region New Samples Tests
 
-        [Test]
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Adaptive_Component_Placement()
         {
@@ -1245,7 +1246,80 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("Samples")]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_Color()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Color.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(16, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(21, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var refPtNodeId = "ecb2936d-6ee9-4b99-9ab1-24269ffedfc5";
+            AssertPreviewCount(refPtNodeId, 10);
+
+            // get all Walls.
+            for (int i = 0; i <= 9; i++)
+            {
+                var refPt = GetPreviewValueAtIndex(refPtNodeId, i) as Wall;
+                Assert.IsNotNull(refPt);
+            }
+        }
+
+        [Ignore, Category("Samples")]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_Floors_and_Framing()
+        {
+            // this test marked as Ignore because on running it is throwing error from Revit side.
+            // if I run it manually there is no error. Will discuss this with Ian
+
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Floors and Framing.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(31, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(35, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var floorByTypeAndLevel = "4074e4e4-c6ee-4413-8cbb-cc9af5b6127f";
+            AssertPreviewCount(floorByTypeAndLevel, 5);
+
+            // get all Floors.
+            for (int i = 0; i <= 4; i++)
+            {
+                var floors = GetPreviewValueAtIndex(floorByTypeAndLevel, i) as Floor;
+                Assert.IsNotNull(floors);
+            }
+
+            var structuralFraming = "205a479f-3b9e-4f4f-866e-6901fde3d9ca";
+            AssertPreviewCount(structuralFraming, 20);
+
+            // get all Structural Framing elements
+            for (int i = 0; i <= 19; i++)
+            {
+                var framing = GetPreviewValueAtIndex(structuralFraming, i) as StructuralFraming;
+                Assert.IsNotNull(framing);
+            }
+        }
+
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_ImportSolid()
         {
@@ -1272,6 +1346,200 @@ namespace Dynamo.Tests
 
         }
 
+        [Test, Category("Samples")]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_PlaceFamiliesByLevel_Set_Parameters()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine
+                (_testPath, @".\Samples\Revit_PlaceFamiliesByLevel_Set Parameters.dyn");
+
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var familyInstance = "026aadc9-644e-4e6c-b35c-bf1aec67045c";
+            AssertPreviewCount(familyInstance, 27);
+
+            // get all Family instances.
+            for (int i = 0; i <= 26; i++)
+            {
+                var family = GetPreviewValueAtIndex(familyInstance, i) as FamilyInstance;
+                Assert.IsNotNull(family);
+            }
+        }
+
+        [Test, Category("Samples")]
+        [TestModel(@".\Samples\DynamoSample.rvt")]
+        public void Revit_StructuralFraming()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine
+                (_testPath, @".\Samples\Revit_StructuralFraming.dyn");
+
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            var familyInstance = "e98dab6a-e6bc-4da8-84b6-d756caee48fe";
+            AssertPreviewCount(familyInstance, 9);
+
+            // get all Families.
+            for (int i = 0; i <= 8; i++)
+            {
+                var family = GetPreviewValueAtIndex(familyInstance, i) as StructuralFraming;
+                Assert.IsNotNull(family);
+            }
+        }
+
+        [Test, Category("Samples")]
+        [TestModel(@".\empty.rfa")]
+        public void Geometry_Curves()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Samples\Geometry_Curves.dyn");
+
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(20, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(22, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            // Validation for Model Curves.
+            var modelCurve = "e8fc9b8f-03ce-4351-8333-6ae47a62ac07";
+            AssertPreviewCount(modelCurve, 4);
+
+            for (int i = 0; i <= 3; i++)
+            {
+                var curve = GetPreviewValueAtIndex(modelCurve, i) as ModelCurve;
+                Assert.IsNotNull(curve);
+            }
+        }
+
+        [Test, Category("Samples")]
+        [TestModel(@".\empty.rfa")]
+        public void Geometry_Points()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Samples\Geometry_Points.dyn");
+
+            string testPath = Path.GetFullPath(samplePath);
+
+            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            // Validation for Reference Points.
+            var refPoints = "6e4226cf-674b-4c94-9c78-7818af53464e";
+            AssertPreviewCount(refPoints, 11);
+
+            for (int i = 0; i <= 10; i++)
+            {
+                var points = GetPreviewValueAtIndex(refPoints, i) as ReferencePoint;
+                Assert.IsNotNull(points);
+            }
+        }
+
+        [Test, Category("Samples")]
+        [TestModel(@".\empty.rfa")]
+        public void Geometry_Solids()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\Geometry\Geometry_Solids.dyn");
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(43, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(51, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            // Validation of Form creation
+            var formByLoft = "d8b7c8f4-2f70-4e3b-a913-91316e009759";
+            var surface = GetPreviewValue(formByLoft) as Form;
+            Assert.IsNotNull(surface);
+
+            // Validation for Geometry Instance import.
+            var geometryInstance = "e0e441ca-08a4-48b7-8f64-96e65e320376";
+            var solid = GetPreviewValue(geometryInstance) as ImportInstance;
+            Assert.IsNotNull(solid);
+
+            // Validation for Solids.
+            var trimmedSolid = "66746ec0-c2bd-4a5c-a365-63fe4ca239ba";
+            var solid1 = GetPreviewValueAtIndex(trimmedSolid, 0) as Solid;
+            Assert.IsNotNull(solid1);
+
+        }
+
+        [Test, Category("Samples")]
+        [TestModel(@".\empty.rfa")]
+        public void Geometry_Surfaces()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\Geometry\Geometry_Surfaces.dyn");
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(42, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(49, model.CurrentWorkspace.Connectors.Count);
+
+            RunCurrentModel();
+
+            // Validation of Form creation
+            var formByLoft = "ae4bfdfe-524a-4a5c-bd64-75fd56be89af";
+            var surface = GetPreviewValue(formByLoft) as Form;
+            Assert.IsNotNull(surface);
+
+            // Validation for Geometry Instance import.
+            var geometryInstance = "c1e10fd1-974e-4374-b6ec-0766615d3df4";
+            var solid = GetPreviewValue(geometryInstance) as ImportInstance;
+            Assert.IsNotNull(solid);
+
+            // Validation for NurbsSurface
+            var nurbsSurface = "4859e415-f137-4590-b107-c528167769c0";
+            var surface1 = GetPreviewValue(nurbsSurface) as NurbsSurface;
+            Assert.IsNotNull(surface1);
+
+            // Validation for Surface
+            var extrudedSurface = "660a5c8e-c828-45ff-849e-2d65e04c7206";
+            var surface2 = GetPreviewValue(extrudedSurface) as Surface;
+            Assert.IsNotNull(surface2);
+
+        }
         #endregion
     }
 
