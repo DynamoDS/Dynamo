@@ -56,7 +56,7 @@ namespace DSRevitNodesUI
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            _sunPathButt = new DynamoNodeButton
+            _sunPathButt = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel)
             {
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
                 VerticalAlignment = System.Windows.VerticalAlignment.Center

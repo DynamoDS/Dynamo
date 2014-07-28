@@ -9,6 +9,7 @@ using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
@@ -162,6 +163,7 @@ namespace Dynamo.ViewModels
             this.Model.AddRootCategory(BuiltinNodeCategories.IO);
 
             this.Model.RequestSync += ModelOnRequestSync;
+            this.Model.Executed += ExecuteElement;
         }
 
         #endregion
@@ -435,9 +437,8 @@ namespace Dynamo.ViewModels
         ///     Runs the Execute() method of the current selected SearchElementBase object
         ///     amongst the SearchResults.
         /// </summary>
-        public void ExecuteSelected()
+        public void Execute()
         {
-
             // none of the elems are selected, return 
             if (SelectedIndex == -1)
                 return;
@@ -445,11 +446,70 @@ namespace Dynamo.ViewModels
             if (visibleSearchResults.Count <= SelectedIndex)
                 return;
 
-            if (visibleSearchResults[SelectedIndex] is SearchElementBase)
-            {
-                ( (SearchElementBase) visibleSearchResults[SelectedIndex]).Execute();
-            }
+            if (!(visibleSearchResults[SelectedIndex] is SearchElementBase)) return;
 
+            ExecuteElement(visibleSearchResults[SelectedIndex] as SearchElementBase);
+        }
+
+        private void ExecuteElement(SearchElementBase searchElement)
+        {
+            dynamic ele = visibleSearchResults[SelectedIndex];
+            ExecuteElement(ele);
+        }
+
+        private void ExecuteElement(CategorySearchElement searchElement)
+        {
+            this.SearchText = searchElement.Name + ".";
+        }
+
+        private void ExecuteElement(DSFunctionNodeSearchElement element)
+        {
+            // create node
+            var guid = Guid.NewGuid();
+            this.dynamoViewModel.ExecuteCommand(
+                new DynamoViewModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+
+            // select node
+            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+        }
+
+        private void ExecuteElement(CustomNodeSearchElement element)
+        {
+            string name = element.Guid.ToString();
+
+            // create node
+            var guid = Guid.NewGuid();
+            dynamoViewModel.ExecuteCommand(
+                new DynamoViewModel.CreateNodeCommand(guid, name, 0, 0, true, true));
+
+            // select node
+            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+        }
+
+        private void ExecuteElement(NodeSearchElement element)
+        {
+            // create node
+            var guid = Guid.NewGuid();
+            dynamoViewModel.ExecuteCommand(
+                new DynamoViewModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
+
+            // select node
+            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
         }
 
         #endregion

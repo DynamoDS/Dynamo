@@ -72,18 +72,21 @@ namespace Dynamo.Nodes
 
         public event Action OnChangeCommitted;
 
+        private readonly DynamoViewModel dynamoViewModel;
         private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
         private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
 
         #region Class Operational Methods
 
-        public DynamoTextBox()
-            : this(string.Empty)
+        public DynamoTextBox(DynamoViewModel dynamoViewModel)
+            : this(dynamoViewModel, string.Empty)
         {
         }
 
-        public DynamoTextBox(string initialText)
+        public DynamoTextBox(DynamoViewModel dynamoViewModel, string initialText)
         {
+            this.dynamoViewModel = dynamoViewModel;
+
             //turn off the border
             Background = clear;
             BorderThickness = new Thickness(1);
@@ -190,7 +193,7 @@ namespace Dynamo.Nodes
                     else
                     {
                         string propName = expr.ParentBinding.Path.Path;
-                        dynamoModel.DynamoViewModel.ExecuteCommand(
+                        dynamoViewModel.ExecuteCommand(
                             new DynCmd.UpdateModelValueCommand(
                                 nodeModel.GUID, propName, this.Text));
                     }
@@ -222,6 +225,9 @@ namespace Dynamo.Nodes
 
     public class StringTextBox : DynamoTextBox
     {
+        public StringTextBox(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
+        {}
+
         #region Class Event Handlers
 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
@@ -241,6 +247,7 @@ namespace Dynamo.Nodes
         {
             nodeModel = model;
         }
+
         #region Event Handlers
         protected override void OnThumbDragStarted(System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
@@ -272,8 +279,8 @@ namespace Dynamo.Nodes
 
 
         bool shift, enter;
-        public CodeNodeTextBox(string s)
-            : base(s)
+        public CodeNodeTextBox(DynamoViewModel dynamoViewModel, string s)
+            : base(dynamoViewModel, s)
         {
             shift = enter = false;
 

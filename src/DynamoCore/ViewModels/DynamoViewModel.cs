@@ -639,14 +639,12 @@ namespace Dynamo.ViewModels
             return Model.CustomNodes.Any(x => x.Value == (Guid)parameters);
         }
 
-        // KILLDYNSETTINGS - These should live on the view
-        public void ReportABug(object parameter)
+        public static void ReportABug(object parameter)
         {
             Process.Start(Configurations.GitHubBugReportingLink);
         }
 
-        // KILLDYNSETTINGS - These should live on the view
-        internal void DownloadDynamo()
+        internal static void DownloadDynamo()
         {
             Process.Start(Configurations.DynamoDownloadLink);
         }

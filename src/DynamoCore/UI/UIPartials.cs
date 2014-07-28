@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -25,12 +26,12 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var addButton = new DynamoNodeButton(this, "AddInPort");
+            var addButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             //addButton.Height = 20;
 
-            var subButton = new DynamoNodeButton(this, "RemoveInPort");
+            var subButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             //subButton.Height = 20;
@@ -101,13 +102,13 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var addButton = new DynamoNodeButton(this, "AddInPort");
+            var addButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            var subButton = new DynamoNodeButton(this, "RemoveInPort");
+            var subButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -181,7 +182,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox
+            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel)
             {
                 Background =
                     new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
@@ -245,7 +246,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(Value ?? "0.0")
+            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel, Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -333,10 +334,9 @@ namespace Dynamo.Nodes
             {
                 GoToWorkspace(nodeUI.ViewModel);
 
-                //KILLDYNSETTINGS - Create event for this
-                if (dynamoModel.PublishCurrentWorkspaceCommand.CanExecute(null))
+                if (nodeUI.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
                 {
-                    dynamoModel.PublishCurrentWorkspaceCommand.Execute(null);
+                    nodeUI.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
                 } 
             };
 
@@ -451,7 +451,7 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var tb = new CodeNodeTextBox(Code)
+            var tb = new CodeNodeTextBox(nodeUI.ViewModel.DynamoViewModel, Code)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -490,7 +490,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(Symbol)
+            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel, Symbol)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -528,7 +528,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(InputSymbol)
+            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel, InputSymbol)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -703,7 +703,7 @@ namespace Dynamo.Nodes
             base.SetupCustomUIElements(nodeUI);
 
             //add a text box to the input grid of the control
-            var tb = new StringTextBox
+            var tb = new StringTextBox(nodeUI.ViewModel.DynamoViewModel)
             {
                 AcceptsReturn = true,
                 AcceptsTab = true,
@@ -747,16 +747,18 @@ namespace Dynamo.Nodes
     {
         private string eventName = string.Empty;
         private ModelBase model = null;
+        private DynamoViewModel dynamoViewModel;
 
-        public DynamoNodeButton()
+        public DynamoNodeButton(DynamoViewModel dynamoViewModel)
             : base()
         {
+            this.dynamoViewModel = dynamoViewModel;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
             Margin = new Thickness(1, 0, 1, 0);
         }
 
-        public DynamoNodeButton(ModelBase model, string eventName)
-            : this()
+        public DynamoNodeButton(DynamoViewModel dynamoViewModel, ModelBase model, string eventName)
+            : this(dynamoViewModel)
         {
             this.model = model;
             this.eventName = eventName;
@@ -773,7 +775,7 @@ namespace Dynamo.Nodes
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
                 var command = new DynCmd.ModelEventCommand(model.GUID, eventName);
-                dynamoModel.DynamoViewModel.ExecuteCommand(command);
+                dynamoViewModel.ExecuteCommand(command);
             }
         }
     }

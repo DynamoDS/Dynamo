@@ -43,7 +43,7 @@ namespace Dynamo.Controls
         public const int CANVAS_OFFSET_Y = 0;
         public const int CANVAS_OFFSET_X = 0;
 
-        private DynamoViewModel dynamoViewModel = null;
+        internal DynamoViewModel dynamoViewModel = null;
         private Stopwatch _timer = null;
         private StartPageViewModel startPage = null;
 
@@ -209,7 +209,7 @@ namespace Dynamo.Controls
 
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
-            //updateButton.ShortcutCommand = DynamoViewModel.CheckForUpdateCommand;
+            //updateButton.ShortcutCommand = dynamoViewModel.CheckForUpdateCommand;
             //updateButton.ShortcutCommandParameter = null;
             //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
             //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";

@@ -356,7 +356,10 @@ namespace Dynamo.Search
 
             if (!NodeCategories.ContainsKey(categoryName))
             {
-                NodeCategories.Add(categoryName, new CategorySearchElement(categoryName));
+                var cat = new CategorySearchElement(categoryName);
+                cat.Executed += this.OnExecuted;
+
+                NodeCategories.Add(categoryName, cat);
             }
 
             // otherwise split the category name
@@ -527,6 +530,7 @@ namespace Dynamo.Search
                     var searchElement = new DSFunctionNodeSearchElement(displayString, function);
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
+                    searchElement.Executed += this.OnExecuted;
 
                     // Add this search eleemnt to the search view
                     TryAddCategoryAndItem(category, searchElement);
@@ -538,6 +542,7 @@ namespace Dynamo.Search
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
 
+                    
                 }
             }
 
@@ -579,6 +584,7 @@ namespace Dynamo.Search
             }
 
             var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
+            searchEle.Executed += this.OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;
@@ -631,6 +637,7 @@ namespace Dynamo.Search
         internal bool Add(CustomNodeInfo nodeInfo)
         {
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
+            nodeEle.Executed += this.OnExecuted;
 
             if (SearchDictionary.Contains(nodeEle))
             {
@@ -643,6 +650,19 @@ namespace Dynamo.Search
             TryAddCategoryAndItem(nodeInfo.Category, nodeEle);
 
             return true;
+        }
+
+        #endregion
+
+        #region Execution
+
+        internal event SearchElementBase.SearchElementHandler Executed;
+        protected void OnExecuted(SearchElementBase element)
+        {
+            if (Executed != null)
+            {
+                Executed(element);
+            }
         }
 
         #endregion

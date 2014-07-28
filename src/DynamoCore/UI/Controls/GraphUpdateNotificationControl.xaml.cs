@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace DynamoCore.UI.Controls
 {
@@ -14,15 +15,18 @@ namespace DynamoCore.UI.Controls
        public GraphUpdateNotificationControl()
         {
             InitializeComponent();
-            InstallButton.Click += new RoutedEventHandler(OnInstallButtonClicked);
+            InstallButton.Click += OnInstallButtonClicked;
         }
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
         {
-            dynamoModel.Logger.Log("UpdateNotificationControl-OnInstallButtonClicked",
-                "UpdateNotificationControl-OnInstallButtonClicked");
+            if (DataContext is DynamoViewModel)
+            {
+                var dvm = DataContext as DynamoViewModel;
 
-            dynamoModel.UpdateManager.QuitAndInstallUpdate(); // Quit application
+                dvm.Model.Logger.Log("UpdateNotificationControl-OnInstallButtonClicked","UpdateNotificationControl-OnInstallButtonClicked");
+                dvm.Model.UpdateManager.QuitAndInstallUpdate(); // Quit application
+            }
         }
     }
 }

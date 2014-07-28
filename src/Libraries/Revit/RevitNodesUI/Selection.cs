@@ -207,7 +207,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton()
+            var selectButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -440,7 +440,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton()
+            var selectButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -703,7 +703,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton()
+            var selectButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,

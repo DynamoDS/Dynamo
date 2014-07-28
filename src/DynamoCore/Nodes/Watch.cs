@@ -80,10 +80,10 @@ namespace Dynamo.Nodes
                 p.PortDisconnected += p_PortDisconnected;
             }
 
-            this.DynamoModel.EvaluationCompleted += Controller_EvaluationCompleted;
+            this.DynamoModel.EvaluationCompleted += DynamoModelEvaluationCompleted;
         }
 
-        void Controller_EvaluationCompleted(object sender, EventArgs e)
+        void DynamoModelEvaluationCompleted(object sender, EventArgs e)
         {
             DispatchOnUIThread(
                 delegate
@@ -99,6 +99,11 @@ namespace Dynamo.Nodes
                     OnRequestBindingRehook(EventArgs.Empty);
                 }
             );
+        }
+
+        public void SetupCustomUIElements(dynNodeView nodeUI)
+        {
+
         }
 
         /// <summary>

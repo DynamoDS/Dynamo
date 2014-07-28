@@ -42,24 +42,6 @@ namespace Dynamo.Search.SearchElements
                                                                this.Description, this.Path));
         }
 
-        public override void Execute()
-        {
-            string name = this.Guid.ToString();
-
-            // create node
-            var guid = Guid.NewGuid();
-            dynamoModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, name, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynamoModel.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
-        }
-
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())

@@ -16,7 +16,6 @@ namespace Dynamo.Services
 
         #region Private
 
-        // KILLDYNSETTINGS
         private static DynamoModel dynamoModel;
         private static UsageReportingManager instance;
 

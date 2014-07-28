@@ -131,7 +131,7 @@ namespace Dynamo.Search
             switch (e.Key)
             {
                 case Key.Return:
-                    viewModel.ExecuteSelected();
+                    viewModel.Execute();
                     break;
 
                 case Key.Delete:
@@ -245,7 +245,7 @@ namespace Dynamo.Search
 
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ((SearchViewModel) DataContext).ExecuteSelected();
+            ((SearchViewModel) DataContext).Execute();
         }
 
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)

@@ -580,10 +580,6 @@ namespace Dynamo.Models
             CurrentWorkspace.Nodes.Clear();
             CurrentWorkspace.Notes.Clear();
 
-            // KILLDYNSETTINGS - all this, so bad
-            // OnCleanWorkbench();
-
-            // Clear undo/redo stacks.
             CurrentWorkspace.ClearUndoRecorder();
 
             this.ResetEngine();
