@@ -57,6 +57,15 @@ namespace DSCore
             return treegeo;
         }
 
+       public static object TesselateSurfaces(List<Surface> surfaces){
+           var pointtuples = Tessellate.Tesselate(surfaces);
+           //convert triangles to surfaces
+           List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>() { x[0], x[1], x[2] })).ToList();
+
+           return trisurfaces;
+           
+       }
+
 
     }
 }
