@@ -25,7 +25,9 @@ namespace VMDataBridge
             new Dictionary<string, Action<object>>();
 
         /// <summary>
-        ///     Registers a callback for a given GUID.
+        ///     Registers a callback for a given GUID, to be invoked by the VM on
+        ///     an arbitrary thread. There are no guarantees as to what thread
+        ///     the callback will be invoked on.
         /// </summary>
         /// <param name="id">Guid used to identify the callback.</param>
         /// <param name="callback">Action to be invoked with data from the VM.</param>
