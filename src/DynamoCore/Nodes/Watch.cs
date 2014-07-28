@@ -30,11 +30,12 @@ namespace Dynamo.Nodes
 
         private WatchTree watchTree;
         private WatchViewModel root;
-        private object watchObject;
 
         #endregion
 
         #region public properties
+
+        public new object CachedValue { get; private set; }
 
         /// <summary>
         /// The root node of the watch's tree.
@@ -84,11 +85,10 @@ namespace Dynamo.Nodes
 
         private void EvaluationCompleted(object o)
         {
+            CachedValue = o;
             DispatchOnUIThread(
                 delegate
                 {
-                    watchObject = o;
-
                     //unhook the binding
                     OnRequestBindingUnhook(EventArgs.Empty);
 
@@ -109,7 +109,7 @@ namespace Dynamo.Nodes
         /// <param name="e"></param>
         private void p_PortDisconnected(object sender, EventArgs e)
         {
-            watchObject = null;
+            CachedValue = null;
             if (Root != null)
                 Root.Children.Clear();
         }
@@ -185,8 +185,8 @@ namespace Dynamo.Nodes
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
             
             return Root != null
-                ? dynSettings.Controller.WatchHandler.Process(watchObject, inputVar, Root.ShowRawData)
-                : dynSettings.Controller.WatchHandler.Process(watchObject, inputVar);
+                ? dynSettings.Controller.WatchHandler.Process(CachedValue, inputVar, Root.ShowRawData)
+                : dynSettings.Controller.WatchHandler.Process(CachedValue, inputVar);
         }
 
         public override void UpdateRenderPackage()

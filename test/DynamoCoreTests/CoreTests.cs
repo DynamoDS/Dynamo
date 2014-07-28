@@ -594,7 +594,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(Controller.DynamoViewModel.Model.Nodes[3] is Watch, true);
 
             var w = (Watch)Controller.DynamoViewModel.Model.Nodes[3];
-            Assert.AreEqual(4.0, w.CachedValue.Data);
+            Assert.AreEqual(4.0, w.CachedValue);
         }
 
         [Test]
