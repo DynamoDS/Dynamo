@@ -453,7 +453,7 @@ namespace Dynamo.ViewModels
 
         private void ExecuteElement(SearchElementBase searchElement)
         {
-            dynamic ele = visibleSearchResults[SelectedIndex];
+            dynamic ele = searchElement;
             ExecuteElement(ele);
         }
 

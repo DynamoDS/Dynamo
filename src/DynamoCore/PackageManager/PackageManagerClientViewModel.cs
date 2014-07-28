@@ -55,12 +55,6 @@ namespace Dynamo.ViewModels
                 dynamoViewModel.OnRequestAuthentication;
         }
 
-        ~PackageManagerClientViewModel()
-        {
-            this.packageManagerClient.RequestAuthentication -=
-                dynamoViewModel.OnRequestAuthentication;
-        }
-
         public void PublishCurrentWorkspace()
         {
             var currentFunDef =

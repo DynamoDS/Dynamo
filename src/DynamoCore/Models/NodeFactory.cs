@@ -32,71 +32,84 @@ namespace Dynamo.Models
         {
             NodeModel node;
 
-#if USE_DSENGINE
+            // Depending on node type, get a node instance
             FunctionDescriptor functionItem = (dynamoModel.EngineController.GetFunctionDescriptor(name));
             if (functionItem != null)
             {
-                if (functionItem.IsVarArg)
-                    return new DSVarArgFunction(functionItem);
-                node = new DSFunction(functionItem)
-                {
-                    // KILLDYNSETTINGS
-                    DynamoModel = dynamoModel,
-                    WorkSpace = workspaceModel
-                };
-
-                return node;
+                node = GetDSFunctionFromFunctionItem(functionItem);
             }
-#endif
-            if (dynamoModel.BuiltInTypesByName.ContainsKey(name))
+            else if (dynamoModel.BuiltInTypesByName.ContainsKey(name))
             {
-                TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
-
-                ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                var newEl = (NodeModel)obj.Unwrap();
-                newEl.DisableInteraction();
-                node = newEl;
+                node = GetBuiltinTypeByName(name);
             }
             else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(name))
             {
-                TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
-                try
-                {
-                    ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                    var newEl = (NodeModel)obj.Unwrap();
-                    newEl.DisableInteraction();
-                    node = newEl;
-                }
-                catch (Exception ex)
-                {
-                    dynamoModel.Logger.Log("Failed to load built-in type");
-                    dynamoModel.Logger.Log(ex);
-                    node = null;
-                }
+                node = GetBuiltinTypByNickName(name);
             }
             else
             {
-                Function func;
-
-                if (dynamoModel.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
-                {
-                    node = func;
-                }
-                else
-                {
-                    dynamoModel.Logger.Log("Failed to find CustomNodeDefinition.");
-                    return null;
-                }
+                node = GetCustomNodeByName(name);
             }
 
             if (node == null) return node;
 
-            // KILLDYNSETTINGS
             node.DynamoModel = dynamoModel;
             node.WorkSpace = workspaceModel;
 
             return node;
         }
+
+        #region Helper methods
+
+        private NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
+        {
+            if (functionItem.IsVarArg)
+                return new DSVarArgFunction(functionItem);
+            return new DSFunction(functionItem);
+        }
+
+        private NodeModel GetCustomNodeByName(string name)
+        {
+            Function func;
+
+            if (dynamoModel.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
+            {
+                return func;
+            }
+
+            dynamoModel.Logger.Log("Failed to find CustomNodeDefinition.");
+            return null;
+        }
+
+        private NodeModel GetBuiltinTypeByName(string name)
+        {
+            TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
+
+            ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+            var newEl = (NodeModel)obj.Unwrap();
+            newEl.DisableInteraction();
+            return newEl;
+        }
+
+        private NodeModel GetBuiltinTypByNickName(string name)
+        {
+            TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
+            try
+            {
+                ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                var newEl = (NodeModel)obj.Unwrap();
+                newEl.DisableInteraction();
+                return newEl;
+            }
+            catch (Exception ex)
+            {
+                dynamoModel.Logger.Log("Failed to load built-in type");
+                dynamoModel.Logger.Log(ex);
+                return null;
+            }
+        }
+
+        #endregion
 
         public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
@@ -150,12 +163,9 @@ namespace Dynamo.Models
             }
 
             node.GUID = guid;
-
-            // KILLDYNSETTINGS
             node.DynamoModel = dynamoModel;
             node.WorkSpace = workspaceModel;
 
-            //string name = nodeUI.NickName;
             return node;
         }
 

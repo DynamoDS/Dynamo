@@ -95,21 +95,16 @@ namespace Dynamo.Models
         #region public properties
 
         // core app
-        internal readonly DynamoLoader Loader;
-        internal readonly PackageManagerClient PackageManagerClient;
-        internal readonly CustomNodeManager CustomNodeManager;
-        internal readonly DynamoLogger Logger;
-        internal readonly DynamoRunner Runner;
-        internal readonly PreferenceSettings PreferenceSettings;
-        internal readonly SearchModel SearchModel;
-        internal readonly DebugSettings DebugSettings;
-
-        // EngineController cannot be readonly 
-        internal EngineController EngineController;
-
         public string Context { get; set; }
-
-        // KILLDYNSETTINGS: should be static
+        public DynamoLoader Loader { get; private set; }
+        public PackageManagerClient PackageManagerClient { get; private set; }
+        public CustomNodeManager CustomNodeManager { get; private set; }
+        public DynamoLogger Logger { get; private set; }
+        public DynamoRunner Runner { get; private set; }
+        public SearchModel SearchModel { get; private set; }
+        public DebugSettings DebugSettings { get; private set; }
+        public EngineController EngineController { get; private set; }
+        public PreferenceSettings PreferenceSettings { get; private set; }
         public IUpdateManager UpdateManager { get; private set; }
 
         // KILLDYNSETTINGS: wut am I!?!
@@ -180,7 +175,7 @@ namespace Dynamo.Models
             }
         }
 
-        public bool IsCrashing { get; set; }
+        public static bool IsCrashing { get; set; }
         public bool DynamicRunEnabled { get; set; }
 
         /// <summary>
@@ -257,10 +252,7 @@ namespace Dynamo.Models
             }   
 
             InitializePreferences(preferences);
-
-            UpdateManager = new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),
-                Logger, UpdateManager.UpdateDataAvailable));
+            InitializeUpdateManager();
 
             //Start heartbeat reporting
             //This needs to be done after the update manager has been initialised
@@ -296,6 +288,13 @@ namespace Dynamo.Models
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             Runner = new DynamoRunner(this);
+            PackageManagerClient = new PackageManagerClient(this);
+        }
+
+        private void InitializeUpdateManager()
+        {
+            UpdateManager = new UpdateManager.UpdateManager(this);
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this.Logger, UpdateManager.UpdateDataAvailable));
         }
 
         private void InitializeCurrentWorkspace()

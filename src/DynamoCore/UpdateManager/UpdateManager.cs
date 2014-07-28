@@ -183,7 +183,6 @@ namespace Dynamo.UpdateManager
         private bool versionCheckInProgress;
         private BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
-        private readonly ILogger logger;
         private const string InstallNameBase = "DynamoInstall";
         private const string OldDailyInstallNameBase = "DynamoDailyInstall";
         private bool checkNewerDailyBuilds;
@@ -191,11 +190,12 @@ namespace Dynamo.UpdateManager
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
 
+        private readonly ILogger logger;
+        private readonly DynamoModel dynamoModel;
+
         #endregion
 
         #region Public Event Handlers
-
-        private readonly DynamoModel dynamoModel;
 
         /// <summary>
         /// Occurs when RequestUpdateDownload operation completes.
@@ -312,6 +312,8 @@ namespace Dynamo.UpdateManager
         public UpdateManager(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
+            this.logger = dynamoModel.Logger;
+
             PropertyChanged += UpdateManager_PropertyChanged;
         }
 

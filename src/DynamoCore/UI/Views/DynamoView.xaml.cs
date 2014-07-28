@@ -56,19 +56,30 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public static Application MakeSandboxAndRun(string commandFilePath)
+        public class DynamoApp
         {
-            var controller = DynamoViewModel.MakeSandbox(commandFilePath);
+            public DynamoViewModel ViewModel;
+            public DynamoView View;
+            public Application App;
+        }
+
+        public static DynamoApp MakeStandaloneAndRun(string commandFilePath)
+        {
+            var viewModel = DynamoViewModel.MakeSandbox(commandFilePath);
+            
+            var view = new DynamoView(viewModel);
+            view.DataContext = viewModel;
+            viewModel.UIDispatcher = view.Dispatcher;
+
             var app = new Application();
+            app.Run(view);
 
-            //create the view
-            var ui = new DynamoView(controller);
-            ui.DataContext = controller;
-            controller.UIDispatcher = ui.Dispatcher;
-
-            app.Run(ui);
-
-            return app;
+            return new DynamoApp()
+            {
+                App = app,
+                ViewModel = viewModel,
+                View = view
+            };
         }
 
         public DynamoView(DynamoViewModel dynamoViewModel)
@@ -82,8 +93,6 @@ namespace Dynamo.Controls
             _timer.Start();
 
             InitializeComponent();
-
-            //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
 
             this.Loaded += DynamoView_Loaded;
             this.Unloaded += DynamoView_Unloaded;

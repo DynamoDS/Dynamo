@@ -64,7 +64,7 @@ namespace Dynamo.Services
                 }
                 catch (Exception args)
                 {
-                    dynamoModel.IsCrashing = true;
+                    DynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
                     dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
@@ -79,7 +79,7 @@ namespace Dynamo.Services
         /// </summary>
         public void InitializeCore(DynamoModel dynamoModel)
         {
-            if (UsageReportingManager.dynamoModel != null)
+            if (UsageReportingManager.dynamoModel == null)
                 UsageReportingManager.dynamoModel = dynamoModel;
         }
 
@@ -112,7 +112,7 @@ namespace Dynamo.Services
                 }
                 catch (Exception args)
                 {
-                    dynamoModel.IsCrashing = true;
+                    DynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
                     dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
@@ -150,7 +150,7 @@ namespace Dynamo.Services
             {
                 FirstRun = false;
 
-                //Analytics enable by default
+                //Analytics enable by defaultwa
                 IsAnalyticsReportingApproved = true;
 
                 //Prompt user for detailed reporting
