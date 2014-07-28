@@ -29,8 +29,7 @@ namespace Dynamo.Utilities
             {
                 args = new FunctionNamePromptEventArgs();
 
-                // KILLDYNSETTINGS - This should nothave access to the ViewModel
-                dynamoViewModel.OnRequestsFunctionNamePrompt(null, args);
+                dynamoViewModel.Model.OnRequestsFunctionNamePrompt(null, args);
 
                 if (!args.Success)
                 {

@@ -37,47 +37,16 @@ namespace Dynamo.ViewModels
         public readonly WorkspaceModel Model;
 
         private bool _canFindNodesFromElements = false;
-        public Dispatcher Dispatcher;
 
-        public event PointEventHandler CurrentOffsetChanged;
-        public event ZoomEventHandler ZoomChanged;
         public event ZoomEventHandler RequestZoomToViewportCenter;
         public event ZoomEventHandler RequestZoomToViewportPoint;
         public event ZoomEventHandler RequestZoomToFitView;
 
         public event NodeEventHandler RequestCenterViewOnElement;
-        public event NodeEventHandler RequestNodeCentered;
+
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
-
-        /// <summary>
-        /// Used during open and workspace changes to set the location of the workspace
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
-        {
-            if (CurrentOffsetChanged != null)
-            {
-                Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
-                CurrentOffsetChanged(this, e);
-            }
-        }
-
-        /// <summary>
-        /// Used during open and workspace changes to set the zoom of the workspace
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
-        {
-            if (ZoomChanged != null)
-            {
-                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
-                ZoomChanged(this, e);
-            }
-        }
 
         /// <summary>
         /// For requesting registered workspace to zoom in center
@@ -124,11 +93,6 @@ namespace Dynamo.ViewModels
                 RequestCenterViewOnElement(this, e);
         }
 
-        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
-        {
-            if (RequestNodeCentered != null)
-                RequestNodeCentered(this, e);
-        }
 
         public virtual void OnRequestAddViewToOuterCanvas(object sender, ViewEventArgs e)
         {
@@ -341,7 +305,6 @@ namespace Dynamo.ViewModels
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
-            Dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -444,7 +407,7 @@ namespace Dynamo.ViewModels
                 case "Y":
                     break;
                 case "Zoom":
-                    OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
+                    this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
                     RaisePropertyChanged("Zoom");
                     break;
                 case "IsCurrentSpace":
@@ -977,8 +940,8 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsHomeSpace");
 
             // New workspace or swapped workspace to follow it offset and zoom
-            OnCurrentOffsetChanged(this, new PointEventArgs(new Point(Model.X, Model.Y)));
-            OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
+            this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(Model.X, Model.Y)));
+            this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
         }
 
         private void PauseVisualizationManagerUpdates(object parameter)

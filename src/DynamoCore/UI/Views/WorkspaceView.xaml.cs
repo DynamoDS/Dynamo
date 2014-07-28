@@ -196,14 +196,14 @@ namespace Dynamo.Views
             {
                 WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
 
-                oldViewModel.CurrentOffsetChanged -= new PointEventHandler(vm_CurrentOffsetChanged);
-                oldViewModel.ZoomChanged -= new ZoomEventHandler(vm_ZoomChanged);
-                oldViewModel.RequestZoomToViewportCenter -= new ZoomEventHandler(vm_ZoomAtViewportCenter);
-                oldViewModel.RequestZoomToViewportPoint -= new ZoomEventHandler(vm_ZoomAtViewportPoint);
-                oldViewModel.RequestZoomToFitView -= new ZoomEventHandler(vm_ZoomToFitView);
-                oldViewModel.RequestCenterViewOnElement -= new NodeEventHandler(CenterViewOnElement);
-                oldViewModel.RequestNodeCentered -= new NodeEventHandler(vm_RequestNodeCentered);
-                oldViewModel.RequestAddViewToOuterCanvas -= new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+                oldViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+                oldViewModel.Model.ZoomChanged -= vm_ZoomChanged;
+                oldViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
+                oldViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
+                oldViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
+                oldViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
+                oldViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
+                oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
             }
@@ -211,14 +211,14 @@ namespace Dynamo.Views
             if (ViewModel != null)
             {
                 // Adding registration of event listener
-                ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
-                ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
-                ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
-                ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
-                ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
-                ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
-                ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-                ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+                ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
+                ViewModel.Model.ZoomChanged +=vm_ZoomChanged;
+                ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
+                ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
+                ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
+                ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
+                ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
+                ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
 
@@ -242,7 +242,7 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            this.ViewModel.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
+            this.ViewModel.DynamoViewModel.Model.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {

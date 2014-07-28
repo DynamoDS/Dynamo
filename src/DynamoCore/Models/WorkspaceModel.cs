@@ -12,6 +12,8 @@ using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -24,8 +26,6 @@ namespace Dynamo.Models
     {
         public static readonly double ZOOM_MAXIMUM = 4.0;
         public static readonly double ZOOM_MINIMUM = 0.01;
-
-        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
 
         #region internal members
 
@@ -50,6 +50,45 @@ namespace Dynamo.Models
         #endregion
 
         #region events
+
+        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
+
+        public event NodeEventHandler RequestNodeCentered;
+        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
+        {
+            if (RequestNodeCentered != null)
+                RequestNodeCentered(this, e);
+        }
+
+        public event ZoomEventHandler ZoomChanged;
+        /// <summary>
+        /// Used during open and workspace changes to set the zoom of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
+        {
+            if (ZoomChanged != null)
+            {
+                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
+                ZoomChanged(this, e);
+            }
+        }
+
+        public event PointEventHandler CurrentOffsetChanged;
+        /// <summary>
+        /// Used during open and workspace changes to set the location of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
+        {
+            if (CurrentOffsetChanged != null)
+            {
+                Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
+                CurrentOffsetChanged(this, e);
+            }
+        }
 
         public event Action OnModified;
         public event WorkspaceSavedEvent WorkspaceSaved;
@@ -484,8 +523,7 @@ namespace Dynamo.Models
                 args = new ModelEventArgs(node, transformCoordinates);
             }
 
-            // KILLDYNSETTINGS
-            dynamoModel.OnRequestNodeCentered(this, args);
+            this.OnRequestNodeCentered(this, args);
 
             node.EnableInteraction();
 
@@ -530,9 +568,7 @@ namespace Dynamo.Models
             if (centerNote)
             {
                 var args = new ModelEventArgs(noteModel, true);
-
-                // KILLDYNSETTINGS - where should this live?
-                this.dynamoModel.OnRequestNodeCentered(this, args);
+                this.OnRequestNodeCentered(this, args);
             }
 
             noteModel.Text = "New Note";

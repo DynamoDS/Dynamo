@@ -45,6 +45,19 @@ namespace Dynamo.Models
 {
     public partial class DynamoModel : ModelBase
     {
+        #region Events
+
+        public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
+        public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
+        {
+            if (RequestsFunctionNamePrompt != null)
+            {
+                RequestsFunctionNamePrompt(this, e);
+            }
+        }
+
+        #endregion
+
         #region internal members
 
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
@@ -503,13 +516,10 @@ namespace Dynamo.Models
                 this.Workspaces.Add(ws);
             }
 
-            // KILLDYNSETTINGS: kill this - should just call method on node
-            var vm = Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
+            var vm = this.Workspaces.First(x => x == ws);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
             this.CurrentWorkspace = ws;
-
-
         }
 
         internal bool OpenDefinition(string xmlPath)
@@ -761,8 +771,7 @@ namespace Dynamo.Models
                 CurrentWorkspace.Y = cy;
                 CurrentWorkspace.Zoom = zoom;
 
-                // KILLDYNSETTINGS: Get rid of this
-                var vm = Controller.DynamoViewModel.Workspaces.First(x => x.Model == CurrentWorkspace);
+                var vm = this.Workspaces.First(x => x == CurrentWorkspace);
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");

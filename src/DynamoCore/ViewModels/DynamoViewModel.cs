@@ -1065,7 +1065,7 @@ namespace Dynamo.ViewModels
             model.CurrentWorkspace.OnDisplayed();
 
             //set the zoom and offsets events
-            var vm = this.Workspaces.First(x => x.Model == newWs);
+            var vm = this.Model.Workspaces.First(x => x == newWs);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
@@ -1116,7 +1116,7 @@ namespace Dynamo.ViewModels
             //trigger the event to request the display
             //of the function name dialogue
             var args = new FunctionNamePromptEventArgs();
-            OnRequestsFunctionNamePrompt(this, args);
+            this.Model.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
@@ -1256,8 +1256,9 @@ namespace Dynamo.ViewModels
         public void GoHomeView(object parameter)
         {
             model.CurrentWorkspace.Zoom = 1.0;
-            var wsvm = this.Workspaces.First(x => x.Model == model.CurrentWorkspace);
-            wsvm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0, 0)));
+
+            var ws = this.Model.Workspaces.First(x => x == model.CurrentWorkspace);
+            ws.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0, 0)));
         }
 
         internal bool CanGoHomeView(object parameter)
@@ -1639,7 +1640,7 @@ namespace Dynamo.ViewModels
             model.CurrentWorkspace.X = pt.X;
             model.CurrentWorkspace.Y = pt.Y;
 
-            CurrentSpaceViewModel.OnCurrentOffsetChanged(this, new PointEventArgs(pt));
+            CurrentSpaceViewModel.Model.OnCurrentOffsetChanged(this, new PointEventArgs(pt));
             CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(parameter);
         }
 

@@ -329,7 +329,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
-            dynamoViewModel.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
+            dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
@@ -675,7 +675,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
-            dynamoViewModel.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
+            dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
@@ -725,8 +725,8 @@ namespace Dynamo.Controls
                 if (workspace_index == -1) return;
 
                 var workspace_vm = dynamoViewModel.Workspaces[workspace_index];
-                workspace_vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
-                workspace_vm.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
+                workspace_vm.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
+                workspace_vm.Model.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
 
                 ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
             }

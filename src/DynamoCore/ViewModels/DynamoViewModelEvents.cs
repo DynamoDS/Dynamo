@@ -87,15 +87,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
-        public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
-        {
-            if (RequestsFunctionNamePrompt != null)
-            {
-                RequestsFunctionNamePrompt(this, e);
-            }
-        }
-
         public event RequestViewOperationHandler RequestViewOperation;
         public void OnRequestViewOperation(ViewOperationEventArgs e)
         {
