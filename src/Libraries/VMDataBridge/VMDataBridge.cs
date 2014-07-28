@@ -10,9 +10,18 @@ namespace VMDataBridge
     /// <summary>
     ///     Provides callback registration by GUID, allows for hooking Actions into the VM.
     /// </summary>
-    public static class DataBridge
+    public class DataBridge
     {
-        private static readonly Dictionary<Guid, Action<object>> callbacks =
+        /// <summary>
+        ///     DataBridge Singleton
+        /// </summary>
+        public static DataBridge Instance
+        {
+            get { return instance ?? (instance = new DataBridge()); }
+        }
+        private static DataBridge instance;
+
+        private readonly Dictionary<Guid, Action<object>> callbacks =
             new Dictionary<Guid, Action<object>>();
 
         /// <summary>
@@ -21,7 +30,7 @@ namespace VMDataBridge
         /// <param name="id">Guid used to identify the callback.</param>
         /// <param name="callback">Action to be invoked with data from the VM.</param>
         [SupressImportIntoVM]
-        public static void RegisterCallback(Guid id, Action<object> callback)
+        public void RegisterCallback(Guid id, Action<object> callback)
         {
             callbacks[id] = callback;
         }
@@ -31,7 +40,7 @@ namespace VMDataBridge
         /// </summary>
         /// <param name="id">Guid identifying the callback to be removed.</param>
         [SupressImportIntoVM]
-        public static bool UnregisterCallback(Guid id)
+        public bool UnregisterCallback(Guid id)
         {
             return callbacks.Remove(id);
         }
@@ -53,7 +62,7 @@ namespace VMDataBridge
                 return;
 
             Action<object> callback;
-            if (callbacks.TryGetValue(id, out callback))
+            if (Instance.callbacks.TryGetValue(id, out callback))
                 callback(data);
         }
 

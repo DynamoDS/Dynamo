@@ -136,7 +136,7 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Children.Add(View);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
-            DataBridge.RegisterCallback(
+            DataBridge.Instance.RegisterCallback(
                 GUID,
                 obj =>
                     nodeUI.Dispatcher.Invoke(

@@ -128,7 +128,7 @@ namespace Dynamo.Nodes
 
         protected override void OnBuilt()
         {
-            DataBridge.RegisterCallback(GUID, EvaluationCompleted);
+            DataBridge.Instance.RegisterCallback(GUID, EvaluationCompleted);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
