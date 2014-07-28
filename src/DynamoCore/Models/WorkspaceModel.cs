@@ -1010,6 +1010,8 @@ namespace Dynamo.Models
         {
             if (null != undoRecorder)
                 undoRecorder.Clear();
+
+            this.OnClearUndoRedoRecorder();
         }
 
         // See RecordModelsForModification below for more details.

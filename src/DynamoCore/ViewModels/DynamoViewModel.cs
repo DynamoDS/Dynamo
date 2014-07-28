@@ -437,35 +437,29 @@ namespace Dynamo.ViewModels
         public DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
             IVisualizationManager vizManager, string commandFilePath)
         {
+            // initialize core data structures
             this.model = dynamoModel;
             this.WatchHandler = watchHandler;
             this.VisualizationManager = vizManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
 
+            // Start page should not show up during test mode.
+            this.ShowStartPage = !DynamoModel.IsTestMode;
+
             //add the initial workspace and register for future 
             //updates to the workspaces collection
             workspaces.Add(new WorkspaceViewModel(model.HomeSpace, this));
             model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
-            //register for property change notifications 
-            //on the model
-            model.PropertyChanged += _model_PropertyChanged;
-
-            model.RequestCancelActiveStateForNode += this.CancelActiveState;
-            
-            //Register for a notification when the update manager downloads an update
-            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-
+            SubscribeModelChangedHandlers();
+            SubscribeUpdateManagerHandlers();
+       
             InitializeAutomationSettings(commandFilePath);
-
-            // Start page should not show up during test mode.
-            this.ShowStartPage = !DynamoModel.IsTestMode;
 
             InitializeDelegateCommands();
 
-            model.Logger.PropertyChanged += Instance_PropertyChanged;
+            SubscribeLoggerHandlers();
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
@@ -479,25 +473,68 @@ namespace Dynamo.ViewModels
 
             WatchIsResizable = false;
 
-            InitializeDispatcherCallbacks();
+            SubscribeDispatcherHandlers();
         }
 
-        #region Destruction
+        #region Event handler destroy/create
 
-        ~DynamoViewModel()
+        internal void DestroyHandlers()
         {
-            this.Model.RequestCancelActiveStateForNode -= this.CancelActiveState;
+            DestroyDispatcherHandlers();
+            DestroyModelChangedHandlers();
+            DestroyUpdateManagerHandlers();
+            DestroyLoggerHandlers();
+        }
+
+        private void SubscribeLoggerHandlers()
+        {
+            model.Logger.PropertyChanged += Instance_PropertyChanged;
+        }
+
+        private void DestroyLoggerHandlers()
+        {
+            model.Logger.PropertyChanged -= Instance_PropertyChanged;
+        }
+
+        private void SubscribeUpdateManagerHandlers()
+        {
+            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
+        }
+
+        private void DestroyUpdateManagerHandlers()
+        {
+            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested -= updateManager_ShutdownRequested;
+        }
+
+        private void SubscribeModelChangedHandlers()
+        {
+            model.PropertyChanged += _model_PropertyChanged;
+            model.WorkspaceCleared += ModelWorkspaceCleared;
+            model.RequestCancelActiveStateForNode += this.CancelActiveState;
+        }
+
+        private void DestroyModelChangedHandlers()
+        {
+            model.PropertyChanged -= _model_PropertyChanged;
+            model.WorkspaceCleared -= ModelWorkspaceCleared;
+            model.RequestCancelActiveStateForNode -= this.CancelActiveState;
+        }
+
+        private void SubscribeDispatcherHandlers()
+        {
+            this.Model.RequestDispatcherBeginInvoke += TryDispatcherBeginInvoke;
+            this.Model.RequestDispatcherInvoke += TryDispatcherInvoke;
+        }
+
+        private void DestroyDispatcherHandlers()
+        {
             this.Model.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
             this.Model.RequestDispatcherInvoke -= TryDispatcherInvoke;
         }
 
         #endregion
-
-        private void InitializeDispatcherCallbacks()
-        {
-            this.Model.RequestDispatcherBeginInvoke += TryDispatcherBeginInvoke;
-            this.Model.RequestDispatcherInvoke += TryDispatcherInvoke;
-        }
 
         private void InitializeAutomationSettings(string commandFilePath)
         {
@@ -532,6 +569,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private void ModelWorkspaceCleared(object sender, EventArgs e)
+        {
+            this.UndoCommand.RaiseCanExecuteChanged();
+            this.RedoCommand.RaiseCanExecuteChanged();
+
+            // Reset workspace state
+            this.CurrentSpaceViewModel.CancelActiveState();
+        }
 
         public void RequestRedraw()
         {

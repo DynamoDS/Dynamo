@@ -585,11 +585,6 @@ namespace Dynamo.Models
 
             // Clear undo/redo stacks.
             CurrentWorkspace.ClearUndoRecorder();
-            Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-
-            // Reset workspace state
-            Controller.DynamoViewModel.CurrentSpaceViewModel.CancelActiveState();
 
             this.ResetEngine();
             CurrentWorkspace.PreloadedTraceData = null;
