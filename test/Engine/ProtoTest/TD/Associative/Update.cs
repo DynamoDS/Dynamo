@@ -2136,5 +2136,46 @@ z = a.x;    // This is a redefinition test where 'a' was redefined in the import
             thisTest.Verify("z", 3);
 
         }
+
+        [Test]
+        public void TestCyclicDependency01()
+        {
+            string code = @"
+b = 1;
+a = b + 1;
+b = a;";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            Object n1 = null;
+            thisTest.Verify("a", n1);
+            thisTest.Verify("b", n1);
+        }
+
+        [Test]
+        public void TestCyclicDependency02()
+        {
+
+            string code = @"
+
+
+a1;
+[Imperative]
+{
+	a = {};
+	b = a;
+	a[0] = b;
+	c = Count(a);
+}
+[Associative]
+{
+	a1 = {0};
+	b1 = a1;
+	a1[0] = b1;
+}";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            Object n1 = null;
+            thisTest.Verify("a1", n1);
+        }
     }
 }

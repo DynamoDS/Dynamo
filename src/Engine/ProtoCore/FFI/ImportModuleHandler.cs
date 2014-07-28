@@ -255,7 +255,7 @@ namespace ProtoFFI
             {
                 string origDSFile = _coreObj.CurrentDSFileName;
                 _coreObj.CurrentDSFileName = System.IO.Path.GetFullPath(importModuleName);
-                codeBlockNode = ImportDesignScriptFile(importModuleName, typeName, alias);
+                codeBlockNode = ImportDesignScriptFile(_coreObj.CurrentDSFileName, typeName, alias);
                 _coreObj.CurrentDSFileName = origDSFile;
             }
             
