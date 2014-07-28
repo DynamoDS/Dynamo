@@ -418,51 +418,57 @@ namespace Unfold
 
                 List<Autodesk.DesignScript.Geometry.DesignScriptEntity> tree = new List<Autodesk.DesignScript.Geometry.DesignScriptEntity>();
 
-                GraphVertex<K, T> root = graphToTraverse.First();
-                root.Finish_Time = 0;
-                root.Parent = null;
-                Q.Enqueue(root);
-
-                while (Q.Count > 0)
+                foreach (var node in graphToTraverse)
                 {
-
-                    GraphVertex<K, T> current_vertex = Q.Dequeue();
-
-                    //generate some geometry to visualize the BFS tree
-
-                    //create a polygon from verts, grab center, project center towards 
-                    Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(current_vertex.Face.SurfaceEntity);
-                    //  Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
-                    Sphere nodecenter = Sphere.ByCenterPointRadius(center, .1);
-                    tree.Add(nodecenter);
-
-                    foreach (GraphEdge<K, T> vedge in current_vertex.Graph_Edges)
+                    if (node.Explored == false)
+                    {
+                        GraphVertex<K, T> root = node;
+                        root.Finish_Time = 0;
+                        root.Parent = null;
+                        Q.Enqueue(root);
+                    }
+                    while (Q.Count > 0)
                     {
 
-                        GraphVertex<K, T> V = vedge.Head;
-                        if (V.Explored == false)
+                        GraphVertex<K, T> current_vertex = Q.Dequeue();
+
+                        //generate some geometry to visualize the BFS tree
+
+                        //create a polygon from verts, grab center, project center towards 
+                        Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(current_vertex.Face.SurfaceEntity);
+                        //  Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
+                        Sphere nodecenter = Sphere.ByCenterPointRadius(center, .1);
+                        tree.Add(nodecenter);
+
+                        foreach (GraphEdge<K, T> vedge in current_vertex.Graph_Edges)
                         {
-                            V.Explored = true;
-                            V.Finish_Time = current_vertex.Finish_Time + 1;
-                            V.Parent = current_vertex;
 
-                            current_vertex.TreeEdges.Add(vedge);
+                            GraphVertex<K, T> V = vedge.Head;
+                            if (V.Explored == false)
+                            {
+                                V.Explored = true;
+                                V.Finish_Time = current_vertex.Finish_Time + 1;
+                                V.Parent = current_vertex;
+
+                                current_vertex.TreeEdges.Add(vedge);
 
 
-                            //Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
-                            Point child_center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(V.Face.SurfaceEntity);
-                            Line line = Line.ByStartPointEndPoint(center, child_center);
-                            tree.Add(line);
-                            Q.Enqueue(V);
+                                //Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
+                                Point child_center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(V.Face.SurfaceEntity);
+                                Line line = Line.ByStartPointEndPoint(center, child_center);
+                                tree.Add(line);
+                                Q.Enqueue(V);
+                            }
+
                         }
+                        // look at BFS implementation again - CLRS ? colors? I am mutating verts too many times?
+                        // check how many times this loop is running with acounter
+                        current_vertex.Explored = true;
+
 
                     }
-                    // look at BFS implementation again - CLRS ? colors? I am mutating verts too many times?
-                    // check how many times this loop is running with acounter
-                    current_vertex.Explored = true;
 
                 }
-
 
                 TreeTransformedToGraph = GraphUtilities.CloneGraph<K, T>(graphToTraverse);
 
@@ -546,6 +552,13 @@ namespace Unfold
                 var disconnectedSet = new List<Surface>();
                 while (sortedtree.Count > 1)
                 {
+                    // if the tree only has nodes with no parents
+                    // then all branches have been folded into these
+                    //nodes and we should just return
+                    if (sortedtree.All(x=>x.Parent == null)){
+                        break;
+                    }
+
                     // child is the highest finish time remaining in the list.
                     var child = sortedtree.Last();
                     var parent = child.Parent;

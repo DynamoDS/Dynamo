@@ -97,8 +97,9 @@ namespace Unfold
            Vector ADnorm = ADVector.Normalized();
 
            Vector firstCross = ABnorm.Cross(ADnorm).Normalized();
-
-          Vector  rotFaceNormal = rotsurface.NormalAtParameter(.5, .5);
+           Console.WriteLine("first cross" + firstCross);
+         
+            Vector  rotFaceNormal = rotsurface.NormalAtParameter(.5, .5);
           Console.WriteLine("rotFaceNormal" + rotFaceNormal);
 
            double abxad_dot_normal_rot_face =  firstCross.Dot(rotFaceNormal);
@@ -107,6 +108,7 @@ namespace Unfold
            Console.WriteLine(abxad_dot_normal_rot_face);
            
             // replace this with almost equal
+          
            if (Math.Abs(abxad_dot_normal_rot_face -1.0) < .0001)
            {
                rotFaceNormalOK = 1;
@@ -120,6 +122,8 @@ namespace Unfold
            Vector ACnorm = ACVector.Normalized();
 
            Vector secondCross = ACnorm.Cross(ABnorm).Normalized();
+
+           Console.WriteLine("second cross" + secondCross);
 
            Vector refFaceNormal = refsurface.NormalAtParameter(.5, .5);
            
@@ -148,6 +152,18 @@ namespace Unfold
             Console.WriteLine(ACstart);
             Console.WriteLine(ACend);
 
+            Console.WriteLine("printing points of surfaces - two should match");
+
+            Console.WriteLine(facetoRotate.SurfaceEntity.PerimeterCurves()[0]);
+            Console.WriteLine(facetoRotate.SurfaceEntity.PerimeterCurves()[1]);
+            Console.WriteLine(facetoRotate.SurfaceEntity.PerimeterCurves()[2]);
+
+            Console.WriteLine(referenceFace.SurfaceEntity.PerimeterCurves()[0]);
+            Console.WriteLine(referenceFace.SurfaceEntity.PerimeterCurves()[1]);
+            Console.WriteLine(referenceFace.SurfaceEntity.PerimeterCurves()[2]);
+
+
+
            int result = refFaceNormalOK * rotFaceNormalOK;
 
            return result;
@@ -165,17 +181,21 @@ namespace Unfold
             UnfoldPlanar.FaceLikeEntity referenceFace, UnfoldPlanar.EdgeLikeEntity sharedEdge)
         {
 
-            Vector rotFaceNorm = facetoRotate.SurfaceEntity.NormalAtParameter(.5,.5);
-            Vector refFaceNorm = referenceFace.SurfaceEntity.NormalAtParameter(.5,.5);
+            Vector rotFaceNorm = facetoRotate.SurfaceEntity.NormalAtParameter(.5,.5).Normalized();
+            Vector refFaceNorm = referenceFace.SurfaceEntity.NormalAtParameter(.5,.5).Normalized();
 
             Vector BXACrossedNormals = refFaceNorm.Cross(rotFaceNorm);
 
 
             var PlaneRotOrigin = Plane.ByOriginNormal(sharedEdge.End,BXACrossedNormals);
 
-            var radians = -1.0 * Math.Asin(BXACrossedNormals.Length) * normalconsistency;
+            var s = Math.Asin(BXACrossedNormals.Length) * -1.0 * normalconsistency;
 
-            var degrees = radians * (180 / Math.PI);
+            var c = rotFaceNorm.Dot(refFaceNorm) * -1.0 * normalconsistency;
+
+            var radians = Math.Atan2(s, c);
+
+            var degrees = radians * (180 / Math.PI) ;
             Console.WriteLine(" about to to rotate");
             Console.WriteLine(degrees);
             Geometry rotatedFace = facetoRotate.SurfaceEntity.Rotate(PlaneRotOrigin, degrees);
