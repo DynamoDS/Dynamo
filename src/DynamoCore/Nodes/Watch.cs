@@ -128,7 +128,7 @@ namespace Dynamo.Nodes
 
         protected override void OnBuilt()
         {
-            DataBridge.Instance.RegisterCallback(GUID, EvaluationCompleted);
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
@@ -160,7 +160,7 @@ namespace Dynamo.Nodes
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    DataBridge.GenerateBridgeDataAst(GUID, inputAstNodes[0])),
+                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 
