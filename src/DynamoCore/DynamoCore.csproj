@@ -159,12 +159,6 @@ limitations under the License.
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Messages\ExecutedNode.cs" />
-    <Compile Include="Messages\MessageHandler.cs" />
-    <Compile Include="Messages\Message.cs" />
-    <Compile Include="Messages\LibraryItemsListMessage.cs" />
-    <Compile Include="Messages\RecordableCommandsMessage.cs" />
-    <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
@@ -447,10 +441,6 @@ limitations under the License.
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoWebServer\DynamoWebServer.csproj">
-      <Project>{55636e8f-53b1-4e27-a0d7-68a00da13c92}</Project>
-      <Name>DynamoWebServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
       <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
       <Name>DynamoCrypto</Name>

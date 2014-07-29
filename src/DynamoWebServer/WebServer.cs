@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Configuration;
 using System.Net;
+using System.Windows;
+using System.Windows.Threading;
+
+using Dynamo.Utilities;
+
+using DynamoWebServer.Messages;
 using DynamoWebServer.Responses;
 
 using Newtonsoft.Json;
@@ -13,16 +19,19 @@ using SuperWebSocket;
 
 namespace DynamoWebServer
 {
-    public delegate void MessageEventHandler(string message, string sessionId);
-
-    public class WebServer : IServer
+    public class WebServer : IWebServer
     {
 
         #region Init
 
-        static readonly JsonSerializerSettings JsonSettings;
-        static WebServer()
+        readonly JsonSerializerSettings JsonSettings;
+
+        private IWebSocket webSocket;
+
+        public WebServer(IWebSocket socket)
         {
+            webSocket = socket;
+
             JsonSettings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Objects,
@@ -30,48 +39,41 @@ namespace DynamoWebServer
             };
         }
 
-        private WebSocketServer socketServer;
-
         #endregion
 
         #region IServer
-
-        public event MessageEventHandler MessageReceived;
-        public event MessageEventHandler Info;
-        public event MessageEventHandler Error;
 
         public void Start()
         {
             string httpBindingAddress = ConfigurationManager.AppSettings["bindingAddress"];
             int httpBindingport = int.Parse(ConfigurationManager.AppSettings["bindingPort"]);
 
-            socketServer = new WebSocketServer();
             try
             {
-                if (!socketServer.Setup(new RootConfig(), new ServerConfig
+                if (!webSocket.Setup(new RootConfig(), new ServerConfig
                 {
                     Port = httpBindingport,
                     Ip = httpBindingAddress,
-                    MaxConnectionNumber = 5,
+                    MaxConnectionNumber = 100,
                     ReceiveBufferSize = 256 * 1024
                 }))
                 {
-                    LogError("Failed to setup!", "");
-                    LogError("DynamoWebServer: failed to setup its socketserver", "");
+                    LogInfo("Failed to setup!", "");
+                    LogInfo("DynamoWebServer: failed to setup its socketserver", "");
                     return;
                 }
             }
             catch
             {
-                LogError("DynamoWebServer: failed to setup its socketserver", "");
+                LogInfo("DynamoWebServer: failed to setup its socketserver", "");
                 return;
             }
 
             BindEvents();
 
-            if (!socketServer.Start())
+            if (!webSocket.Start())
             {
-                LogError("DynamoWebServer: failed to start its socketserver", "");
+                LogInfo("DynamoWebServer: failed to start its socketserver", "");
                 UnBindEvents();
                 return;
             }
@@ -81,7 +83,7 @@ namespace DynamoWebServer
 
         public void SendResponse(Response response, string sessionId)
         {
-            var session = socketServer.GetAppSessionByID(sessionId);
+            var session = webSocket.GetAppSessionByID(sessionId);
             if (session != null)
             {
                 session.Send(JsonConvert.SerializeObject(response, JsonSettings));
@@ -89,8 +91,23 @@ namespace DynamoWebServer
             }
             else
             {
-                LogError("Web socket: can`t send response, socket not initialized! No clients connected? \n  SessionId: [" + sessionId + "]", sessionId);
+                LogInfo("Web socket: can`t send response, socket not initialized! No clients connected? \n  SessionId: [" + sessionId + "]", sessionId);
             }
+        }
+
+        public void ExecuteMessageFromSocket(string message, string sessionId)
+        {
+            Message msg = MessageHandler.DeserializeMessage(message);
+            ExecuteMessageFromSocket(msg, sessionId);
+        }
+
+        void ExecuteMessageFromSocket(Message message, string sessionId)
+        {
+            MessageHandler handler = new MessageHandler(message, sessionId);
+            handler.ResultReady += SendAnswerToWebSocket;
+
+            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
+                .Invoke(new Action(() => handler.Execute(dynSettings.Controller.DynamoViewModel)));
         }
 
         #endregion
@@ -115,20 +132,19 @@ namespace DynamoWebServer
                 Message = DateTime.Now.ToShortDateString() + " Message received"
             }, session.SessionID);
 
-            if (MessageReceived != null)
+            try
             {
-                try
-                {
-                    MessageReceived(message, session.SessionID);
-                }
-                catch (Exception ex)
-                {
-                    SendResponse(new ContentResponse()
-                    {
-                        Message = "Received command was not executed, reason: " + ex.Message
-                    }, session.SessionID);
-                }
+                message = message.Replace("Message, DynamoCore", "Message, DynamoWebServer");
+                ExecuteMessageFromSocket(message, session.SessionID);
             }
+            catch (Exception ex)
+            {
+                SendResponse(new ContentResponse()
+                {
+                    Message = "Received command was not executed, reason: " + ex.Message
+                }, session.SessionID);
+            }
+
         }
 
         void socketServer_SessionClosed(WebSocketSession session, CloseReason reason)
@@ -139,30 +155,30 @@ namespace DynamoWebServer
             LogInfo("Web socket: disconnected", session.SessionID);
         }
 
-        private void LogInfo(string info, string sessionId)
+        void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
         {
-            if (Info != null)
-                Info(info, sessionId);
-        }
-
-        private void LogError(string error, string sessionId)
-        {
-            if (Error != null)
-                Error(error, sessionId);
+            SendResponse(e.Response, e.SessionID);
         }
 
         private void BindEvents()
         {
-            socketServer.NewSessionConnected += socketServer_NewSessionConnected;
-            socketServer.NewMessageReceived += socketServer_NewMessageReceived;
-            socketServer.SessionClosed += socketServer_SessionClosed;
+            webSocket.NewSessionConnected += socketServer_NewSessionConnected;
+            webSocket.NewMessageReceived += socketServer_NewMessageReceived;
+            webSocket.SessionClosed += socketServer_SessionClosed;
         }
 
         private void UnBindEvents()
         {
-            socketServer.NewSessionConnected -= socketServer_NewSessionConnected;
-            socketServer.NewMessageReceived -= socketServer_NewMessageReceived;
-            socketServer.SessionClosed -= socketServer_SessionClosed;
+            webSocket.NewSessionConnected -= socketServer_NewSessionConnected;
+            webSocket.NewMessageReceived -= socketServer_NewMessageReceived;
+            webSocket.SessionClosed -= socketServer_SessionClosed;
         }
+
+        private void LogInfo(string info, string sessionId)
+        {
+            if (dynSettings.DynamoLogger != null)
+                dynSettings.DynamoLogger.Log(info);
+        }
+
     }
 }

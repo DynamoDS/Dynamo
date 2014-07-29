@@ -86,10 +86,6 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoWebServer\DynamoWebServer.csproj">
-      <Project>{55636e8f-53b1-4e27-a0d7-68a00da13c92}</Project>
-      <Name>DynamoWebServer</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo_square_32x32.ico" />

@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using Dynamo.ViewModels;
 
-namespace Dynamo.Messages
+namespace DynamoWebServer.Messages
 {
     [DataContract]
-    class RecordableCommandsMessage : Message
+    public class RecordableCommandsMessage : Message
     {
         #region Class Data Members
 
@@ -15,6 +16,9 @@ namespace Dynamo.Messages
         /// </summary>
         [DataMember]
         public IEnumerable<DynamoViewModel.RecordableCommand> Commands { get; private set; }
+
+        [DataMember]
+        public Guid WorkspaceGuid { get; private set; }
 
         #endregion
     }

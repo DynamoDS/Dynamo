@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Messages;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;

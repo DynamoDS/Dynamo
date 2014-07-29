@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 
-namespace Dynamo.Messages
+namespace DynamoWebServer.Messages
 {
     /// <summary>
     /// The class that represents calculated result for a node

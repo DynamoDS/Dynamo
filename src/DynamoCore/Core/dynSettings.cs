@@ -2,13 +2,8 @@
 using System.Collections.Generic;
 using Dynamo.Interfaces;
 using System.Linq;
-using DynamoWebServer;
-using DynamoWebServer.Responses;
 
 using Dynamo.PackageManager;
-using Dynamo.Messages;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace Dynamo.Utilities
 {
@@ -22,8 +17,7 @@ namespace Dynamo.Utilities
         public static PackageLoader PackageLoader { get; internal set; }
         public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
         public static DynamoController Controller { get; set; }
-        public static IServer WebSocketServer { get; private set; }
-
+        
         private static PackageManagerClient _packageManagerClient;
         public static PackageManagerClient PackageManagerClient
         {
@@ -53,49 +47,6 @@ namespace Dynamo.Utilities
         public static string RemoveChars(string s, IEnumerable<string> chars)
         {
             return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
-        }
-
-        public static void EnableServer(IServer server)
-        {
-            WebSocketServer = server;
-
-            WebSocketServer.ReceivedMessage += ExecuteMessageFromSocket;
-            WebSocketServer.Info += LogInfo;
-            WebSocketServer.Error += LogError;
-
-            WebSocketServer.Start();
-        }
-
-        /// <summary>
-        /// WebSocketServer calls this method on message recive.
-        /// </summary>
-        /// <param name="message">Serialized message from client</param>
-        /// <param name="sessionId">Current session Id</param>
-        public static void ExecuteMessageFromSocket(string message, string sessionId)
-        {
-            Message msg = MessageHandler.DeserializeMessage(message);
-            MessageHandler handler = new MessageHandler(msg, sessionId);
-            handler.ResultReady += SendAnswerToWebSocket;
-
-            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
-                .Invoke(new Action(() => handler.Execute(Controller.DynamoViewModel)));
-        }
-
-        private static void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
-        {
-            WebSocketServer.SendResponse(e.Response, e.SessionID);
-        }
-
-        private static void LogInfo(string message, string sessionId)
-        {
-            if (DynamoLogger != null)
-                DynamoLogger.Log(message);
-        }
-
-        private static void LogError(string message, string sessionId)
-        {
-            if (DynamoLogger != null)
-                DynamoLogger.Log(message);
         }
     }
 }

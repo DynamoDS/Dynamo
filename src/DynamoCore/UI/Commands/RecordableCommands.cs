@@ -82,7 +82,7 @@ namespace Dynamo.ViewModels
             /// <param name="dynamoViewModel">The DynamoViewModel object this 
             /// RecordableCommand is targeting.</param>
             /// 
-            internal void Execute(DynamoViewModel dynamoViewModel)
+            public void Execute(DynamoViewModel dynamoViewModel)
             {
                 ExecuteCore(dynamoViewModel);
             }

@@ -1,40 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+
+using Dynamo;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
 using DynamoWebServer.Responses;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Dynamo.Messages
+namespace DynamoWebServer.Messages
 {
-    class MessageHandler
+    public class MessageHandler
     {
-        static readonly JsonSerializerSettings jsonSettings;
+        static readonly JsonSerializerSettings JsonSettings;
         static MessageHandler()
         {
-            jsonSettings = new JsonSerializerSettings
+            JsonSettings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Objects,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
         }
 
+        private Message message;
+        private DynamoViewModel dynamoViewModel;
+        public string SessionId { get; private set; }
+
         public MessageHandler(Message msg, string sessionId)
         {
-            message = msg;
-            SessionId = sessionId;
+            this.message = msg;
+            this.SessionId = sessionId;
         }
 
         #region Class Data Members
-
-        private Message message;
-        public string SessionId { get; private set; }
 
         /// <summary>
         /// Send the results of the execution
@@ -60,7 +63,7 @@ namespace Dynamo.Messages
         /// <returns>The string can be used for reconstructing Message using Deserialize method</returns>
         internal string Serialize()
         {
-            return message == null ? null : JsonConvert.SerializeObject(message, jsonSettings);
+            return message == null ? null : JsonConvert.SerializeObject(message, JsonSettings);
         }
 
         /// <summary>
@@ -68,11 +71,11 @@ namespace Dynamo.Messages
         /// </summary>
         /// <param name="jsonString">Json string that contains all its arguments.</param>
         /// <returns>Reconstructed Message</returns>
-        internal static Message DeserializeMessage(string jsonString)
+        public static Message DeserializeMessage(string jsonString)
         {
             try
             {
-                return JsonConvert.DeserializeObject(jsonString, jsonSettings) as Message;
+                return JsonConvert.DeserializeObject(jsonString, JsonSettings) as Message;
             }
             catch
             {
@@ -82,28 +85,63 @@ namespace Dynamo.Messages
 
         internal void Execute(DynamoViewModel dynamoViewModel)
         {
+            this.dynamoViewModel = dynamoViewModel;
             if (message is RecordableCommandsMessage)
             {
-                var recordableCommandMsg = (RecordableCommandsMessage) message;
-
-                var manager = dynSettings.Controller.VisualizationManager;
-                foreach (var command in recordableCommandMsg.Commands)
-                {
-                    if (command is DynamoViewModel.RunCancelCommand)
-                    {
-                        manager.RenderComplete += ModifiedNodesData;
-                    }
-                    command.Execute(dynamoViewModel);
-                }
-                return;
+                ExecuteCommands();
             }
-
-            if (message is LibraryItemsListMessage)
+            else if (message is LibraryItemsListMessage)
             {
                 OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
                 {
                     LibraryItems = dynSettings.Controller.SearchViewModel.GetAllLibraryItemsByCategory()
                 }));
+            }
+        }
+
+        #endregion
+
+        #region Private Class Operational Methods
+
+        private void ExecuteCommands()
+        {
+            var recordableCommandMsg = (RecordableCommandsMessage)message;
+
+            var manager = dynSettings.Controller.VisualizationManager;
+            SelectTabByGuid(dynamoViewModel, recordableCommandMsg.WorkspaceGuid);
+            foreach (var command in recordableCommandMsg.Commands)
+            {
+                if (command is DynamoViewModel.RunCancelCommand)
+                {
+                    manager.RenderComplete += ModifiedNodesData;
+                }
+                command.Execute(dynamoViewModel);
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void SelectTabByGuid(DynamoViewModel dynamoViewModel, Guid guid)
+        {
+            // If guid is Empty - switch to HomeWorkspace
+            if (guid.Equals(Guid.Empty) && !dynamoViewModel.ViewingHomespace)
+            {
+                dynamoViewModel.CurrentWorkspaceIndex = 0;
+            }
+
+            if (!guid.Equals(Guid.Empty))
+            {
+                if (dynSettings.Controller.CustomNodeManager.LoadedCustomNodes.ContainsKey(guid))
+                {
+                    var name = dynSettings.Controller.CustomNodeManager.LoadedCustomNodes[guid]
+                        .WorkspaceModel.Name;
+                    var workspace = dynamoViewModel.Workspaces.First(elem => elem.Name == name);
+                    var index = dynamoViewModel.Workspaces.IndexOf(workspace);
+
+                    dynamoViewModel.CurrentWorkspaceIndex = index;
+                }
             }
         }
 
@@ -113,7 +151,8 @@ namespace Dynamo.Messages
             foreach (var item in dynSettings.Controller.DynamoModel.NodeMap)
             {
                 string data;
-                var codeBlock = item.Value as CodeBlockNodeModel;
+                NodeModel node = item.Value;
+                var codeBlock = node as CodeBlockNodeModel;
                 if (codeBlock != null)
                 {
                     var inPorts = codeBlock.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
@@ -147,11 +186,10 @@ namespace Dynamo.Messages
                                 data = item.Value.CachedValue.Data.ToString();
                             }
                         }
-                    }
-                }
+                    }                
+			    }
 
-                var execNode = new ExecutedNode(item.Key.ToString(), item.Value.State.ToString(),
-                    item.Value.ToolTipText, data, item.Value.RenderPackages);
+                var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.RenderPackages);
                 nodes.Add(execNode);
             }
 
