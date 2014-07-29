@@ -341,5 +341,16 @@ namespace Dynamo.Search
             Keyboard.Focus(SearchTextBox);
         }
 
+        private void nodeButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Button from_sender = sender as Button;
+            Popup.DataContext = from_sender.DataContext;
+        }
+
+        private void Popup_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Popup.DataContext = null;
+        }
+
     }
 }

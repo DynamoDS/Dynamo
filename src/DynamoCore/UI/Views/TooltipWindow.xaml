@@ -7,7 +7,6 @@
              d:DesignHeight="300" d:DesignWidth="450" 
              MouseDown="MouseClick"
              Background="#01000000">
-    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50"></ColumnDefinition>
@@ -28,14 +27,13 @@
                 <ColumnDefinition Width="65*"></ColumnDefinition>
                 <ColumnDefinition Width="133*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            
             <TextBlock Name="description" Text="description" Grid.Row="0" Grid.ColumnSpan="3" FontSize="16" Foreground="White" Margin="20,30,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
             <TextBlock Name="inputLabel" Text="INPUT" Grid.Row="1" Foreground="Gray" Margin="20,20,0,0"></TextBlock>
             <TextBlock Name="input" Text="input parametrs" Grid.Row="2" Grid.ColumnSpan="3" FontSize="12" Foreground="White" Margin="20,0,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
             <TextBlock Name="outputLabel" Text="OUTPUT" Grid.Row="3" Foreground="Gray" Margin="20,20,0,0"></TextBlock>
             <TextBlock Name="output" Text="output parametrs" Grid.Row="4" Grid.ColumnSpan="3" FontSize="12" Foreground="White" Margin="20,0,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
             
-            <Image Name="bigImage" Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2" Margin="0,0,20,0"></Image>
+            <Image Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2"></Image>
             <Grid Grid.Row="5" Grid.ColumnSpan="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -47,29 +45,8 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Name="name" Text="name" Grid.Row="1" Grid.ColumnSpan="2" FontSize="14" Foreground="White" Margin="20,0,0,0" TextWrapping="Wrap"></TextBlock>
-                    <Image Grid.Row="1"
-                           Grid.Column="3"
-                           Height="32" Width="32" Margin="0,0,20,0"
-                           MouseDown="CopyIconMouseClick"
-                           >
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver"
-                                             Value="False">
-                                        <Setter Property="Source"
-                                                Value="/DynamoCore;component/UI/Images/Tooltip/copy.png"/>
-                                    </Trigger>
-                                    <Trigger Property="IsMouseOver"
-                                             Value="True">
-                                        <Setter Property="Source"
-                                                Value="/DynamoCore;component/UI/Images/Tooltip/copy_hover.png" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>
+                <TextBlock Name="name" Text="name" Grid.Row="1" Grid.ColumnSpan="3" FontSize="14" Foreground="White" Margin="20,0,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
+                <Image Grid.Row="1" Grid.Column="3" Source="D:\Projects\Dynamo\Dynamo\src\Resources\copy.png" Height="32" Width="32" Margin="0,0,20,0" MouseDown="CopyIconMouseClick"></Image>
                 <TextBlock Name="Packegs" Text="Packegs using this | Web Reference" Grid.Row="3" Foreground="Gray" Margin="20,0,0,10"></TextBlock>
             </Grid>
         </Grid>

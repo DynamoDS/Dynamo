@@ -206,7 +206,6 @@ namespace GraphToDSCompiler
     {
         // TODO Jun: is it better to have GraphUtils as a singleton rather than checking for core? 
         // We only need core to be instantiated once
-
         private static ProtoCore.Core core = null;
         private static string rootModulePath = string.Empty;
 

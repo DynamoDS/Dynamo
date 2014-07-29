@@ -461,7 +461,6 @@ namespace ProtoFFI
                 ConstructorDefinitionNode constr = node as ConstructorDefinitionNode;
                 RegisterFunctionPointer(constr.Name, m, argTypes, constr.ReturnType);
             }
-            node.Image = CLRDLLModule.GetImage(m);
             return node;
         }
 
@@ -639,9 +638,10 @@ namespace ProtoFFI
             ProtoCore.Type retype = CLRModuleType.GetProtoCoreType(method.ReturnType, Module);
             bool propaccessor = isPropertyAccessor(method);
             bool isOperator = isOverloadedOperator(method);
+
             FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
             if (method.IsStatic &&
-                method.DeclaringType == method.ReturnType &&
+                method.DeclaringType == method.ReturnType && 
                 !propaccessor &&
                 !isOperator)
             {
@@ -652,7 +652,6 @@ namespace ProtoFFI
                 retype = ProtoCoreType;
                 ConstructorDefinitionNode node = ParsedNamedConstructor(method, method.Name, retype);
                 node.MethodAttributes = mattrs;
-
                 return node;
             }
 
@@ -1104,29 +1103,6 @@ namespace ProtoFFI
         {
             return CLRObjectMarshler.GetInstance(core);
         }
-
-        public static System.Windows.Media.Imaging.BitmapImage GetImage(MethodInfo method)
-        {
-            Assembly theAssembly = method.DeclaringType.Assembly;
-            var imageSource = new System.Windows.Media.Imaging.BitmapImage();
-            string full_image_name = method.DeclaringType.FullName + "." + method.Name + ".png";
-            System.IO.Stream stream = theAssembly.GetManifestResourceStream("DSCore.Resources." + full_image_name);
-            if (stream!=null)
-                try
-                {
-                        System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                        stream.CopyTo(ms);
-
-                        imageSource.BeginInit();
-                        imageSource.StreamSource = ms;
-                        imageSource.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                        imageSource.EndInit();
-                        imageSource.Freeze();
-                }
-                catch { }
-
-                return imageSource;
-        }
     }
 
     /// <summary>
@@ -1154,7 +1130,6 @@ namespace ProtoFFI
                 try
                 {
                     Assembly theAssembly = FFIExecutionManager.Instance.LoadAssembly(name);
-                    
                     Module testDll = theAssembly.GetModule(filename);
                     if (testDll == null)
                         module = new CLRDLLModule(filename, theAssembly);

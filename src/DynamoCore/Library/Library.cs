@@ -17,7 +17,6 @@ using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
 using Dynamo.Utilities;
-using System.Windows.Media.Imaging;
 
 #endregion
 
@@ -111,7 +110,7 @@ namespace Dynamo.DSEngine
         private string summary;
 
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
-            : this(null, null, name, parameters, null, type,true,null,false,null) 
+            : this(null, null, name, parameters, null, type) 
         { }
 
         public FunctionDescriptor(
@@ -131,25 +130,9 @@ namespace Dynamo.DSEngine
                 isVarArg) { }
 
         public FunctionDescriptor(
-            string assembly, string className, string name, IEnumerable<TypedParameter> parameters,
-            string returnType, FunctionType type, bool isVisibleInLibrary = true,
-            IEnumerable<string> returnKeys = null, bool isVarArg = false, BitmapImage image=null)
-            : this(
-                assembly,
-                className,
-                name,
-                null,
-                parameters,
-                returnType,
-                type,
-                isVisibleInLibrary,
-                returnKeys,
-                isVarArg, image) { }
-
-        public FunctionDescriptor(
             string assembly, string className, string name, string summary,
             IEnumerable<TypedParameter> parameters, string returnType, FunctionType type,
-            bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, BitmapImage image = null)
+            bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false)
         {
             this.summary = summary;
             Assembly = assembly;
@@ -173,7 +156,6 @@ namespace Dynamo.DSEngine
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;
             IsVisibleInLibrary = isVisibleInLibrary;
-            Image = image;
         }
 
         /// <summary>
@@ -440,8 +422,6 @@ namespace Dynamo.DSEngine
 
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
         }
-
-        public BitmapImage Image { get; set; }
     }
 
     /// <summary>
@@ -842,10 +822,7 @@ namespace Dynamo.DSEngine
                                                                 arguments,
                                                                 method.returntype.ToString(),
                                                                 FunctionType.GenericFunction,
-                                                                visibleInLibrary,
-                                                                null,
-                                                                false,
-                                                                null);
+                                                                visibleInLibrary);
 
             AddBuiltinFunctions(functions);
         }
@@ -995,8 +972,7 @@ namespace Dynamo.DSEngine
                 type,
                 isVisibleInLibrary,
                 returnKeys,
-                proc.isVarArg,
-                proc.Image);
+                proc.isVarArg);
 
             AddImportedFunctions(library, new[] { function });
         }
