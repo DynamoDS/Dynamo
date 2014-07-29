@@ -120,7 +120,7 @@ namespace ProtoAssociative
             // Comment Jun: Get the codeblock to use for this codegenerator
             if (core.Options.IsDeltaExecution)
             {
-                codeBlock = GetDeltaCompileCodeBlock();
+                codeBlock = GetDeltaCompileCodeBlock(parentBlock);
                 if (core.Options.IsDeltaCompile)
                 {
                     pc = codeBlock.instrStream.instrList.Count;
@@ -183,7 +183,7 @@ namespace ProtoAssociative
             expressionSSATempSymbolList = new Stack<SymbolNode>();
         }
 
-        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
+        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock(ProtoCore.DSASM.CodeBlock parentBlock)
         {
             ProtoCore.DSASM.CodeBlock cb = null;
 
@@ -191,7 +191,10 @@ namespace ProtoAssociative
             if (core.CodeBlockList.Count <= 0  || core.CodeBlockIndex > 1)
             {
                 cb = BuildNewCodeBlock();
-                core.CodeBlockList.Add(cb);
+                if (null == parentBlock)
+                {
+                    core.CodeBlockList.Add(cb);
+                }
             }
             else
             {
@@ -5770,7 +5773,7 @@ namespace ProtoAssociative
                 retNode.updateBlock.startpc = startpc;
                 retNode.updateBlock.endpc = pc - 1;
 
-                codeBlock.instrStream.dependencyGraph.Push(retNode);
+                PushGraphNode(retNode);
                 EmitCompileLogFunctionEnd();
             }
 
@@ -7900,7 +7903,7 @@ namespace ProtoAssociative
                 // Assign the end pc to this graph node's update block
                 // Dependency graph construction is complete for this expression
                 graphNode.updateBlock.endpc = pc - 1;
-                codeBlock.instrStream.dependencyGraph.Push(graphNode);
+                PushGraphNode(graphNode);
                 functionCallStack.Clear();
             }
         }
@@ -8712,7 +8715,7 @@ namespace ProtoAssociative
                         graphNode.SSASubscript = Convert.ToInt32(subscript);
                     }
 
-                    codeBlock.instrStream.dependencyGraph.Push(graphNode);
+                    PushGraphNode(graphNode);
 
                     SymbolNode cyclicSymbol1 = null;
                     SymbolNode cyclicSymbol2 = null;
@@ -8738,7 +8741,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode1.classIndex = globalClassIndex;
                             nullAssignGraphNode1.updateBlock.endpc = pc - 1;
 
-                            codeBlock.instrStream.dependencyGraph.Push(nullAssignGraphNode1);
+                            PushGraphNode(nullAssignGraphNode1);
                             EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
 
 
@@ -8757,7 +8760,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode2.classIndex = globalClassIndex;
                             nullAssignGraphNode2.updateBlock.endpc = pc - 1;
 
-                            codeBlock.instrStream.dependencyGraph.Push(nullAssignGraphNode2);
+                            PushGraphNode(nullAssignGraphNode2);
                             EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
                         }
                     }
@@ -9252,7 +9255,7 @@ namespace ProtoAssociative
             retNode.updateBlock.endpc = pc - 1;
             retNode.isReturn = true;
 
-            codeBlock.instrStream.dependencyGraph.Push(retNode);
+            PushGraphNode(retNode);
         }
 
         private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, GraphNode graphNode = null)

@@ -2755,5 +2755,38 @@ namespace Dynamo.Tests
 	        #endregion
 	    }
         #endregion
+
+        #region Replication tests for MinimumItem, MaximumItem and Sort methods
+
+        [Test]
+        public void ReplicationForMinMaxSort()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\ReplicationForMinMaxSort.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+            AssertSamePreviewValues("77527c0b-b4f9-4bd1-809e-488f030fbd37", "dee87fc8-aa2a-4fb0-9924-ae04bf12fc8a");
+            AssertPreviewValue("77527c0b-b4f9-4bd1-809e-488f030fbd37", new double[] { 10, 10 }); //List.MaximumItem
+            AssertPreviewValue("dee87fc8-aa2a-4fb0-9924-ae04bf12fc8a", new double[] { 10, 10 }); //List.Map Max
+            AssertPreviewValue("e9a93b16-2211-4bbf-955e-30fe943df927", new double[] { 1, 5 });
+            AssertPreviewValue("3d8545d9-1e13-4609-bd42-0ac838282e9d", new double[] { 1, 5 });
+            //Assert for List.Sort and List.Map Sort nodes
+            AssertSamePreviewValues("683fb5ab-a753-4ad4-864f-f19c98243262", "fd0740af-543a-4876-9580-a4e5fc07f070");
+        }
+        #endregion
+
+        #region Test List.Map
+        [Test]
+        public void TestNestedListMap()
+        {
+            var openPath = Path.Combine(GetTestDirectory(), @"core\list\testNestedMap.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("497f98aa-688e-46f1-9394-6d0c768de58f", 2.0);
+        }
+        #endregion
     }
 }

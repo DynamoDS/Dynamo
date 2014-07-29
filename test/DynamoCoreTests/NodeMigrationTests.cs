@@ -576,7 +576,8 @@ namespace Dynamo.Tests
             AssertPreviewValue("802d27f8-9259-4050-bd7c-214ff83fa98a", -2);
             AssertPreviewValue("5c498c26-1536-4b51-8d0f-f613fc025896", 0.8);
             AssertPreviewValue("1737dfb3-f470-4a32-bac9-34aa4c18606b", 0);
-            //AssertPreviewValue("9b902150-dc32-4e00-8ba6-1819887528ae", Infinity);
+            //AssertInfinity("9b902150-dc32-4e00-8ba6-1819887528ae");
+            
         }
 
         [Test]
