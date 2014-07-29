@@ -717,6 +717,14 @@ namespace Dynamo.Models
                 return null;
             }
 
+            // Fix for: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4024
+            // Various derived classes of NodeModel like CodeBlockNode, build 
+            // their internal variables based on the node's GUID. In cases like 
+            // this, a node's GUID must be finalized before variable generation 
+            // logic kicks in.
+            // 
+            node.GUID = nodeId; // Set the node's GUID before anything else.
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
@@ -728,9 +736,6 @@ namespace Dynamo.Models
 
             if (null != xmlNode)
                 node.Load(xmlNode);
-
-            // Override the guid so we can store for connection lookup
-            node.GUID = nodeId;
 
             DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = viewModel.CurrentSpaceViewModel;

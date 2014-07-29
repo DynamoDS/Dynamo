@@ -71,10 +71,31 @@ namespace Dynamo.Tests
             AssertValue(svValue, value);
         }
 
+        public void AssertInfinity(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = GetRuntimeMirror(dsVariable);
+            MirrorData data = mirror.GetData();
+            Assert.IsTrue(System.Double.IsInfinity(Convert.ToDouble(data.Data)));
+        }
+
         public void AssertPreviewValue(string guid, object value)
         {
             string previewVariable = GetVarName(guid);
             AssertValue(previewVariable, value);
+        }
+
+        /// <summary>
+        /// Compares preview value of two nodes and asserts they are same.
+        /// </summary>
+        /// <param name="guid1">guid for first node</param>
+        /// <param name="guid2">guid for second node</param>
+        public void AssertSamePreviewValues(string guid1, string guid2)
+        {
+            string var1 = GetVarName(guid1);
+            var data1 = GetRuntimeMirror(var1).GetData();
+            string var2 = GetVarName(guid2);
+            var data2 = GetRuntimeMirror(var2).GetData();
+            AssertMirrorData(data1, data2);
         }
 
         public void SelectivelyAssertPreviewValues(string guid, Dictionary<int, object> selectedValue)
@@ -147,6 +168,26 @@ namespace Dynamo.Tests
                 Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
             else
                 Assert.AreEqual(value, data.Data);
+        }
+
+        private void AssertMirrorData(MirrorData data1, MirrorData data2)
+        {
+            if (data1.IsNull)
+                Assert.True(data2.IsNull);
+            else if (data1.IsCollection)
+            {
+                Assert.True(data2.IsCollection);
+                List<MirrorData> elems1 = data1.GetElements();
+                List<MirrorData> elems2 = data2.GetElements();
+                Assert.AreEqual(elems1.Count, elems2.Count);
+                int i = 0;
+                foreach (var item in elems1)
+                {
+                    AssertMirrorData(item, elems2[i++]);
+                }
+            }
+            else
+                Assert.AreEqual(data1.Data, data2.Data);
         }
 
         private void AssertCollection(MirrorData data, IEnumerable collection)

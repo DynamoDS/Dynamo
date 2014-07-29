@@ -5559,8 +5559,45 @@ r = func_11546f565974453bae527393c546bbff(x);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("r", 1024);
         }
+        public void TestNestedLanguageBlockReExecution08()
+        {
+            string code = @"
+def f(x)
+{
+    aa = [Imperative]
+    {
+        if(x <= 1)
+        {
+            return = [Associative]
+            {
+                bb = 1;
+                return = bb;
+            }
+        }
+        else
+        {
+            return = [Associative]
+            {
+                cc = f(x - 1) + x;   
+                return = cc;
+            }
+        }
+    }
+    return = aa;
+}
 
-         public void TestNestedLanguageBlockReExecution08()
+t = f(3);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("t", 6);
+        }
+        
+        public void TestNestedLanguageBlockReExecution09()
         {
             string code = @"
 def func_f417d5607cc14ef8bde1b821bada91da: var[]..[](x : var[]..[])
@@ -5604,7 +5641,7 @@ t = func_f417d5607cc14ef8bde1b821bada91da(r);
             added.Add(CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            AssertValue("t", 1);
+            AssertValue("t", 24);
         }
     }
 

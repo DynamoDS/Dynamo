@@ -674,6 +674,20 @@ namespace ProtoTestFx.TD
             AssertValue(data, value);
         }
 
+        public static void AssertInfinity(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            MirrorData data = mirror.GetData();
+            Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
+        }
+
+        public static void AssertNan(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            MirrorData data = mirror.GetData();
+            Assert.IsTrue(Double.IsNaN(Convert.ToDouble(data.Data)));
+        }
+
         public static void AssertValue(MirrorData data, object value)
         {
             if (data.IsCollection)
