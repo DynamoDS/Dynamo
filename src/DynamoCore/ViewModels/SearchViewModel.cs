@@ -184,6 +184,9 @@ namespace Dynamo.ViewModels
 
         private DynamoModel DynamoModel;
 
+        private List<string> nodeGroups;
+        private string defaultGroup;
+
         public SearchViewModel()
         {
             InitializeCore();
@@ -214,6 +217,12 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
             this.AddRootCategory(BuiltinNodeCategories.IO);
+
+            nodeGroups = new List<string>();            
+            nodeGroups.Add("Actions");
+            nodeGroups.Add("Create");
+            nodeGroups.Add("Query");
+            defaultGroup = "Actions";
         }
 
 
@@ -840,6 +849,27 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        ///     Adds to the end of category default group
+        ///     if category group is not defined
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        private string fixCategoryIfNoGroup(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+                return category;
+
+            int index = category.LastIndexOf(CATEGORY_DELIMITER);
+            
+            //in case of index -1 we will not get error - will be used whole 'category'
+            string lastCategory = category.Substring(index + 1);
+            if (!nodeGroups.Contains(lastCategory))
+                category = category + CATEGORY_DELIMITER + defaultGroup;
+
+            return category;
+        }
+
+        /// <summary>
         ///     Adds DesignScript function groups
         /// </summary>
         /// <param name="func"></param>
@@ -872,7 +902,7 @@ namespace Dynamo.ViewModels
                     //      | nValue: int    |
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
-                    var category = function.Category;
+                    var category = fixCategoryIfNoGroup(function.Category);
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -926,6 +956,7 @@ namespace Dynamo.ViewModels
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
+                cat = fixCategoryIfNoGroup(cat);
             }
 
             attribs = t.GetCustomAttributes(typeof (NodeSearchTagsAttribute), false);
