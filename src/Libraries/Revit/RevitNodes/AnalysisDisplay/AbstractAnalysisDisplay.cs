@@ -167,7 +167,6 @@ namespace Revit.AnalysisDisplay
 
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            Autodesk.Revit.DB.Analysis.SpatialFieldManager manager;
             var sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(view) ??
                       Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
 

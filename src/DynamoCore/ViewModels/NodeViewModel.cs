@@ -589,8 +589,11 @@ namespace Dynamo.ViewModels
         private void ViewCustomNodeWorkspace(object parameter)
         {
             var f = (nodeLogic as Function);
-            if(f!= null)
-                dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
+            if (f != null)
+            {
+                dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(
+                    f.Definition);
+            }
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)

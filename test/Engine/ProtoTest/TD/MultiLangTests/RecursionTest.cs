@@ -16,7 +16,59 @@ namespace ProtoTest.TD.MultiLangTests
         public void Setup()
         {
 
-        }/*        
+        }
+
+        public void RecursionImperative01()
+        {
+            String code =
+@"def f(x)
+{
+    return = [Imperative]
+    {
+        if(x <= 1)
+        {
+            return = 1;
+        }
+        else
+        {
+            return = f(x - 1) + x;   
+        }
+    }
+}
+
+a = f(3);";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 6);
+        }        
+
+        public void RecursionNestedLanguageBlockTest01()
+        {
+            String code =
+@"def f(x)
+{
+    return = [Imperative]
+    {
+        if(x <= 1)
+        {
+            return = [Associative]
+            {
+                return = 1;
+            }
+        }
+        else
+        {
+            return = [Associative]
+            {
+                return = f(x - 1) + x;   
+            }
+        }
+    }
+}
+
+a = f(3);";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 6);
+        }                        /*        
 [Test]        public void T01_Recursion_SimpleGlobalFunc()        {            String code =@"	def fx(){return = fy();}def fy(){return = fx();}m= fx();";            thisTest.RunScriptSource(code);            Object v1 = new Object();            v1 = null;            thisTest.Verify("m", v1);            thisTest.VerifyRuntimeWarning(RuntimeData.WarningId.kInvalidRecursion);        }        
 [Test]        public void T02_NoRecursion_Replication()        {            String code =@"class A	{	fx :var;	fb : B;	constructor A(x : var)	{		fx = x;		fb = B.B(x);		}}class B{	fy: var;	constructor B(y : var)	{		fy = y;	}}fa = A.A(1..3);r1 = fa.fx;//1..3r2 = fa.fb.fy;//1..3fb = B.B(1..5);r3 = fb.fy;//1..5";            thisTest.RunScriptSource(code);            Object[] v1 = new Object[] {1,2,3};            Object[] v2 = new Object[] { 1, 2, 3,4,5 };            thisTest.Verify("r1", v1);            thisTest.Verify("r2", v1);            thisTest.Verify("r3", v2);                    }       /* 
 [Test]        public void T03_Recursion_SimpleGlobalFunc_2()        {            String code =@"	def fx(){return = fy();}def fy(){return = fz();}def fz(){return = fx();}m= fx();";            thisTest.RunScriptSource(code);            Object v1 = new Object();            v1 = null;            thisTest.Verify("m", v1);            thisTest.VerifyRuntimeWarning(RuntimeData.WarningId.kInvalidRecursion);        }         

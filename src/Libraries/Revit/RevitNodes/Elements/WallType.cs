@@ -62,7 +62,7 @@ namespace Revit.Elements
 
         #region Public properties
 
-        public string Name 
+        public new string Name 
         {
             get
             {

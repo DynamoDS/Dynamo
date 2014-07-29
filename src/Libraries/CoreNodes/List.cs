@@ -125,9 +125,9 @@ namespace DSCore
         /// <param name="list">List to be sorted.</param>
         /// <returns name="list">Sorted list.</returns>
         /// <search>sort,order</search>
-        public static IList Sort(IList list)
+        public static IList Sort(IEnumerable<object> list)
         {
-            return list.Cast<object>().OrderBy(x => x, new ObjectComparer()).ToList();
+            return list.OrderBy(x => x, new ObjectComparer()).ToList();
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace DSCore
         /// <param name="list">List to take the minimum value from.</param>
         /// <returns name="min">Minimum value from the list.</returns>
         /// <search>least,smallest,find min</search>
-        public static object MinimumItem(IList list)
+        public static object MinimumItem(IEnumerable<object> list)
         {
-            return list.Cast<object>().Min();
+            return list.Min<object, object>(DoubleConverter);
         }
 
         /// <summary>
@@ -147,9 +147,19 @@ namespace DSCore
         /// <param name="list">List to take the maximum value from.</param>
         /// <returns name="max">Maximum value from the list.</returns>
         /// <search>greatest,largest,biggest,find max</search>
-        public static object MaximumItem(IList list)
+        public static object MaximumItem(IEnumerable<object> list)
         {
-            return list.Cast<object>().Max();
+            return list.Max<object, object>(DoubleConverter);
+        }
+
+        /// <summary>
+        /// Converts integer to double, else returns the input object.
+        /// </summary>
+        private static object DoubleConverter(object obj)
+        {
+            if (obj is int)
+                return Convert.ToDouble(obj);
+            return obj;
         }
 
         /// <summary>

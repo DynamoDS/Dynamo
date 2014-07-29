@@ -30,11 +30,12 @@ namespace Dynamo.Nodes
 
         private WatchTree watchTree;
         private WatchViewModel root;
-        private object watchObject;
 
         #endregion
 
         #region public properties
+
+        public new object CachedValue { get; private set; }
 
         /// <summary>
         /// The root node of the watch's tree.
@@ -50,8 +51,6 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
-        private const string NULL_STRING = "null";
 
         #region events
 
@@ -86,11 +85,10 @@ namespace Dynamo.Nodes
 
         private void EvaluationCompleted(object o)
         {
+            CachedValue = o;
             DispatchOnUIThread(
                 delegate
                 {
-                    watchObject = o;
-
                     //unhook the binding
                     OnRequestBindingUnhook(EventArgs.Empty);
 
@@ -103,39 +101,7 @@ namespace Dynamo.Nodes
             );
         }
 
-        /// <summary>
-        /// Update the watch content from the given MirrorData and returns WatchNode.
-        /// </summary>
-        /// <param name="data">The Mirror data for which watch content is needed.</param>
-        /// <param name="path"></param>
-        /// <param name="showRawData"></param>
-        public static WatchViewModel Process(object data, string path, bool showRawData = true)
-        {
-            WatchViewModel node;
-
-            if (data == null)
-            {
-                node = new WatchViewModel(NULL_STRING, path);
-            }
-            else if (data is ICollection)
-            {
-                var list = data as ICollection;
-
-                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", path, true);
-
-                foreach (var e in list.Cast<object>().Select((x, i) => new { Element = x, Index = i }))
-                {
-                    node.Children.Add(Process(e.Element, path + ":" + e.Index, showRawData));
-                }
-            }
-            else
-            {
-                node = dynSettings.Controller.WatchHandler.Process(data as dynamic, path, showRawData);
-            }
-
-            return node ?? (new WatchViewModel("null", path));
-        }
-
+        
         /// <summary>
         /// Callback for port disconnection. Handles clearing the watch.
         /// </summary>
@@ -143,7 +109,7 @@ namespace Dynamo.Nodes
         /// <param name="e"></param>
         private void p_PortDisconnected(object sender, EventArgs e)
         {
-            watchObject = null;
+            CachedValue = null;
             if (Root != null)
                 Root.Children.Clear();
         }
@@ -160,9 +126,16 @@ namespace Dynamo.Nodes
                 RequestBindingRehook(this, e);
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return outputIndex == 0
+                ? AstIdentifierForPreview
+                : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
         protected override void OnBuilt()
         {
-            DataBridge.RegisterCallback(GUID, EvaluationCompleted);
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
@@ -194,7 +167,7 @@ namespace Dynamo.Nodes
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    DataBridge.GenerateBridgeDataAst(GUID, inputAstNodes[0])),
+                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 
@@ -219,8 +192,8 @@ namespace Dynamo.Nodes
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
             
             return Root != null
-                ? Process(watchObject, inputVar, Root.ShowRawData)
-                : Process(watchObject, inputVar);
+                ? dynSettings.Controller.WatchHandler.Process(CachedValue, inputVar, Root.ShowRawData)
+                : dynSettings.Controller.WatchHandler.Process(CachedValue, inputVar);
         }
 
         public override void UpdateRenderPackage()

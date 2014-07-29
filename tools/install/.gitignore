@@ -4,6 +4,7 @@
 !Extra/IronPython*.msi
 !Extra/InstallASMForDynamo.exe
 !Extra/DynamoAddinGenerator.exe
+!Extra/RevitInstallDetective.exe
 !Extra/RevitAddinUtility.dll
 /bin
 /definitions

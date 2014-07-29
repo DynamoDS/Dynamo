@@ -69,7 +69,7 @@ namespace Revit.Elements
         /// <summary>
         /// Set the internal model curve along with its id's
         /// </summary>
-        /// <param name="modelCurve"></param>
+        /// <param name="curveElement"></param>
         protected void InternalSetCurveElement(Autodesk.Revit.DB.CurveElement curveElement)
         {
             this.InternalCurveElement = curveElement;
@@ -115,7 +115,7 @@ namespace Revit.Elements
 
         #endregion
 
-        public void Tessellate(IRenderPackage package, double tol, int gridLines)
+        public new void Tessellate(IRenderPackage package, double tol, int gridLines)
         {
             //Ensure that the object is still alive
             if (!IsAlive) return;

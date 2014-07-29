@@ -14,7 +14,7 @@ namespace ProtoTest.TD
         readonly TestFrameWork thisTest = new TestFrameWork();
         ProtoCore.Core core;
         ProtoScript.Config.RunConfiguration runnerConfig;
-        string testCasePath = @"..\..\..\Scripts\TD\Debugger\";
+        string testCasePath = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
         [SetUp]
         public void SetUp()
@@ -74,9 +74,13 @@ namespace ProtoTest.TD
         }
 
         [Test]
+        [Category("Failing")]
         public void Defect_1467570_Crash_In_Debug_Mode()
         {
             string src = @" class Test {       IntArray : int[];         constructor FirstApproach(intArray : int[])     {         IntArray = intArray;     }         def Transform(adjust : int)     {         return = Test.FirstApproach(this.IntArray + adjust);     }         } myTest = Test.FirstApproach({ 1, 2 }); myNeTwst = myTest.Transform(1); ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3989
+            string defectID = "MAGN-3989 Inspection of 'this' pointer has issues in expression interpreter";
+
             fsr.PreStart(src, runnerConfig);
             DebugRunner.VMState vms = fsr.Step();   // myTest = Test.FirstApproach({ 1, 2 }); 
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
@@ -92,7 +96,7 @@ namespace ProtoTest.TD
             ExecutionMirror mirror = watchRunner.Execute(@"this");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
-            Assert.AreNotEqual(null, objExecVal.Payload);
+            Assert.AreNotEqual(null, objExecVal.Payload, defectID);
             Assert.AreEqual(mirror.GetType(objExecVal), "Test");
             vms = fsr.StepOver();
 
@@ -100,7 +104,7 @@ namespace ProtoTest.TD
             mirror = watchRunner.Execute(@"this");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
-            Assert.AreEqual(-1, (Int64)objExecVal.Payload);
+            Assert.AreEqual(-1, (Int64)objExecVal.Payload, defectID);
             Assert.AreEqual(mirror.GetType(objExecVal), "null");
         }
 
@@ -120,6 +124,7 @@ namespace ProtoTest.TD
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void Defect_1467584_Crash_In_Debug_Mode_3()
         {
             string src = @"import(""DSCoreNodes.dll"");import(""ProtoGeometry.dll"");class Mesh{    Edges : _Edge[];    Vertices : _Vertex[];}class EdgeMesh extends Mesh{    public constructor ByVerticesEdgeIndices(pointGeometry : Point[], edgeIndices : int[][])    {        initialVertices = _Vertex.ByPointGeometry(pointGeometry);                Edges = _Edge.ByVertices(initialVertices[edgeIndices[0]], initialVertices[edgeIndices[1]]);                Vertices = initialVertices.AddEdges(Edges);    }        public constructor ByLabelledVerticesEdges(initialVertices : LabelledVertex[], initialEdges : LabelledEdge[])    {        Edges = initialEdges.AddVertices(initialVertices);                Vertices = initialVertices.AddEdges(Edges);    }}class FaceMesh extends Mesh{    Faces : _Face[];        public constructor ByVerticesFaceIndices(pointGeometry : Point[], faceIndices : int[][])    {    }}class _Vertex{    PointGeometry : Point;    Edges : _Edge[];    NextVertices : _Vertex[];        constructor ByCoordinates(x : double, y : double, z : double)    {        PointGeometry = Point.ByCoordinates(x, y, z).SetColor(Color.Red);    }        constructor ByPointGeometry(pointGeometry : Point)    {        PointGeometry = pointGeometry;    }            constructor ByPointGeometryEdges(pointGeometry : Point, edges : _Edge[], nextVertices : _Vertex[])    {        PointGeometry = pointGeometry;        Edges = edges;        NextVertices = nextVertices;    }        def AddEdges : _Vertex ( allEdges : _Edge[])    {        i = 0;                temp = this;                Print(""temp = "" + temp);                localEdges = { };        localNextVertices = { };                [Imperative]        {            for(m in allEdges)            {                if (m.StartVertex == temp)                 {                    localEdges[i] = m;                    localNextVertices[i] = m.EndVertex;                    i = i + 1;                }                else if (m.EndVertex == temp)                {                    localEdges[i] = m;                    localNextVertices[i] = m.StartVertex;                    i = i + 1;                }            }        }                Print(""i = "" + i);        Print(""localEdgesCount = "" + Count(localEdges));        return = _Vertex.ByPointGeometryEdges(this.PointGeometry, localEdges, localNextVertices);    }}class LabelledVertex extends _Vertex{    Label : int;        constructor ByLabelledCoordinates(label : int, x : double, y : double, z : double)    {        PointGeometry = Point.ByCoordinates(x, y, z).SetColor(Color.Red);        Label = label;    }}class _Edge{    StartVertex : _Vertex;    EndVertex : _Vertex;    CurveGeometry : Line;        constructor ByVertices(startVertex : _Vertex, endVertex : _Vertex)    {        StartVertex = startVertex;        EndVertex = endVertex;                CurveGeometry = Line.ByStartPointEndPoint(StartVertex.PointGeometry, EndVertex.PointGeometry);    }}class LabelledEdge extends _Edge{    Label : int;    StartVertexLabel : int;    EndVertexLabel : int;        constructor ByVertexLabels(label : int, startVertexLabel : int, endVertexLabel : int)    {        Label = label;        StartVertexLabel = startVertexLabel;        EndVertexLabel = endVertexLabel;    }            constructor ByVertexLabels(label : int, startVertexLabel : int, endVertexLabel : int, labelledVertices : LabelledVertex[])    {        Label = label;        StartVertex = labelledVertices[IndexOf(labelledVertices.Label, startVertexLabel)];        EndVertex = labelledVertices[IndexOf(labelledVertices.Label, endVertexLabel)];        CurveGeometry = Line.ByStartPointEndPoint(StartVertex.PointGeometry, EndVertex.PointGeometry);    }        def AddVertices(labelledVertices : LabelledVertex[])    {        return = LabelledEdge.ByVertexLabels(this.Label, this.StartVertexLabel, this.EndVertexLabel, labelledVertices);    }}class _Face{    Edges : _Edge[];    Vertices : _Vertex[];}vertices = LabelledVertex.ByLabelledCoordinates({ 100, 200, 300, 400 }, { 1, 10, 10, 1 }, { 1, 1, 10, 10 }, 0);edges = LabelledEdge.ByVertexLabels({ 1000, 2000, 3000, 4000, 5000 }, { 100, 200, 300, 400, 100 }, { 200, 300, 400, 100, 300 });mesh = EdgeMesh.ByLabelledVerticesEdges(vertices, edges);check;[Imperative]{    for(i in (0..3))    {        [Associative]        {            check = Cone.ByStartPointEndPointRadius(mesh.Vertices[i].PointGeometry, mesh.Vertices[i].NextVertices.PointGeometry, 0.1, 0.2);        }        //Geometry.UpdateDisplay();        // Utils.Sleep(2000);    }} ";
@@ -127,6 +132,7 @@ namespace ProtoTest.TD
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void Defect_1467584_Crash_In_Debug_Mode_4()
         {
             string src = @" import(""DSCoreNodes.dll"");import(""ProtoGeometry.dll"");class Mesh{    Edges : _Edge[];    Vertices : _Vertex[];}class EdgeMesh extends Mesh{    public constructor ByVerticesEdgeIndices(pointGeometry : Point[], edgeIndices : int[][])    {        initialVertices = _Vertex.ByPointGeometry(pointGeometry);                Edges = _Edge.ByVertices(initialVertices[edgeIndices[0]], initialVertices[edgeIndices[1]]);                Vertices = initialVertices.AddEdges(Edges);    }        public constructor ByLabelledVerticesEdges(initialVertices : LabelledVertex[], initialEdges : LabelledEdge[])    {        Edges = initialEdges.AddVertices(initialVertices);                Vertices = initialVertices.AddEdges(Edges);    }}class FaceMesh extends Mesh{    Faces : _Face[];        public constructor ByVerticesFaceIndices(pointGeometry : Point[], faceIndices : int[][])    {    }}class _Vertex{    PointGeometry : Point;    Edges : _Edge[];    NextVertices : _Vertex[];        constructor ByCoordinates(x : double, y : double, z : double)    {        PointGeometry = Point.ByCoordinates(x, y, z).SetColor(Color.Red);    }        constructor ByPointGeometry(pointGeometry : Point)    {        PointGeometry = pointGeometry;    }            constructor ByPointGeometryEdges(pointGeometry : Point, edges : _Edge[], nextVertices : _Vertex[])    {        PointGeometry = pointGeometry;        Edges = edges;        NextVertices = nextVertices;    }        def AddEdges : _Vertex ( allEdges : _Edge[])    {        i = 0;                temp = this;                Print(""temp = "" + temp);                localEdges = { };        localNextVertices = { };                [Imperative]        {            for(m in allEdges)            {                if (m.StartVertex == temp)                 {                    localEdges[i] = m;                    localNextVertices[i] = m.EndVertex;                    i = i + 1;                }                else if (m.EndVertex == temp)                {                    localEdges[i] = m;                    localNextVertices[i] = m.StartVertex;                    i = i + 1;                }            }        }                Print(""i = "" + i);        Print(""localEdgesCount = "" + Count(localEdges));        return = _Vertex.ByPointGeometryEdges(this.PointGeometry, localEdges, localNextVertices);    }}class LabelledVertex extends _Vertex{    Label : int;        constructor ByLabelledCoordinates(label : int, x : double, y : double, z : double)    {        PointGeometry = Point.ByCoordinates(x, y, z).SetColor(Color.Red);        Label = label;    }}class _Edge{    StartVertex : _Vertex;    EndVertex : _Vertex;    CurveGeometry : Line;        constructor ByVertices(startVertex : _Vertex, endVertex : _Vertex)    {        StartVertex = startVertex;        EndVertex = endVertex;                CurveGeometry = Line.ByStartPointEndPoint(StartVertex.PointGeometry, EndVertex.PointGeometry);    }}class LabelledEdge extends _Edge{    Label : int;    StartVertexLabel : int;    EndVertexLabel : int;        constructor ByVertexLabels(label : int, startVertexLabel : int, endVertexLabel : int)    {        Label = label;        StartVertexLabel = startVertexLabel;        EndVertexLabel = endVertexLabel;    }            constructor ByVertexLabels(label : int, startVertexLabel : int, endVertexLabel : int, labelledVertices : LabelledVertex[])    {        Label = label;        StartVertex = labelledVertices[IndexOf(labelledVertices.Label, startVertexLabel)];        EndVertex = labelledVertices[IndexOf(labelledVertices.Label, endVertexLabel)];        CurveGeometry = Line.ByStartPointEndPoint(StartVertex.PointGeometry, EndVertex.PointGeometry);    }        def AddVertices(labelledVertices : LabelledVertex[])    {        return = LabelledEdge.ByVertexLabels(this.Label, this.StartVertexLabel, this.EndVertexLabel, labelledVertices);    }}class _Face{    Edges : _Edge[];    Vertices : _Vertex[];}vertices = LabelledVertex.ByLabelledCoordinates({ 100, 200, 300, 400 }, { 1, 10, 10, 1 }, { 1, 1, 10, 10 }, 0);edges = LabelledEdge.ByVertexLabels({ 1000, 2000, 3000, 4000, 5000 }, { 100, 200, 300, 400, 100 }, { 200, 300, 400, 100, 300 });mesh = EdgeMesh.ByLabelledVerticesEdges(vertices, edges);check;[Imperative]{    for(i in 5..8)    {        [Associative]        {            check = Cone.ByStartPointEndPointRadius(mesh.Vertices[i].PointGeometry, mesh.Vertices[i].NextVertices.PointGeometry, 0.1, 0.2);        }        Geometry.UpdateDisplay();        Utils.Sleep(2000);    }}";
@@ -207,6 +213,7 @@ c = 1;";
         [Test]
         [Ignore]
         [Category("WatchFx Tests")]
+        [Category("ProtoGeometry")]
         public void T003_Defect_1467629_Debugging_InlineCondition_With_Multiple_Return_Types()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -251,16 +258,20 @@ firstFixitySymbol = firstFixitySymbol.Move(0, -4, 0); // modified by the instanc
         }
 
         [Test]
+        [Category("Failing")]
         public void T004_Defect_IDE_963_Crash_On_Debugging()
         {
-            string src = @" import(""ProtoGeometry.dll"");a : Point = null;b : Line = null;[Associative]{    a = Point.ByCoordinates(10, 0, 0);    b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));    a = Point.ByCoordinates(15, 0, 0);}c = b;";
-            DebugTestFx.CompareDebugAndRunResults(src);
+            string defectID = "MAGN-4005 GC issue with globally declared objects used in update loop inside Associative language block";
+
+            string src = @" import(""FFITarget.dll"");
+a : DummyPoint = null;b : DummyLine = null;[Associative]{    a = DummyPoint.ByCoordinates(10, 0, 0);    b = DummyLine.ByStartPointEndPoint(a, DummyPoint.ByCoordinates(10, 5, 0));    a = DummyPoint.ByCoordinates(15, 0, 0);}c = b;";
+            DebugTestFx.CompareDebugAndRunResults(src, defectID);
         }
 
         [Test]
         public void T005_Defect_IDE_963_Crash_On_Debugging()
         {
-            string src = @" import(""ProtoGeometry.dll"");a : Point = null;b : Line = null;[Imperative]{    a = Point.ByCoordinates(10, 0, 0);    b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));    a = Point.ByCoordinates(15, 0, 0);}c = b;";
+            string src = @" import(""FFITarget.dll"");a : DummyPoint = null;b : DummyLine = null;[Imperative]{    a = DummyPoint.ByCoordinates(10, 0, 0);    b = DummyLine.ByStartPointEndPoint(a, DummyPoint.ByCoordinates(10, 5, 0));    a = DummyPoint.ByCoordinates(15, 0, 0);}c = b;";
             DebugTestFx.CompareDebugAndRunResults(src);
         }
     }

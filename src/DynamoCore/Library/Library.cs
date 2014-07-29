@@ -66,7 +66,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetDescription()); }
         }
 
         public string Description
@@ -99,9 +99,25 @@ namespace Dynamo.DSEngine
     }
 
     /// <summary>
+    ///     Describes a function, whether imported or defined in a custom node.
+    /// </summary>
+    public interface IFunctionDescriptor
+    {
+        /// <summary>
+        ///     Name to be displayed for the function.
+        /// </summary>
+        string DisplayName { get; }
+
+        /// <summary>
+        ///     Return keys for multi-output functions.
+        /// </summary>
+        IEnumerable<string> ReturnKeys { get; } 
+    }
+
+    /// <summary>
     ///     Describe a DesignScript function in a imported library
     /// </summary>
-    public class FunctionDescriptor
+    public class FunctionDescriptor : IFunctionDescriptor
     {
         /// <summary>
         ///     A comment describing the Function
@@ -201,7 +217,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetSummary()); }
         }
 
         /// <summary>

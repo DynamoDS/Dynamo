@@ -59,6 +59,8 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="bubbleEnd"></param>
         /// <param name="freeEnd"></param>
+        /// <param name="normal"></param>
+        /// <param name="view"></param>
         private ReferencePlane(XYZ bubbleEnd, XYZ freeEnd, XYZ normal, Autodesk.Revit.DB.View view )
         {
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -75,7 +77,7 @@ namespace Revit.Elements
                 }
 
                 // delete the old element, we couldn't update it for some reason
-                DocumentManager.Instance.DeleteElement(oldEle.Id);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(oldEle.UniqueId));
             }
 
             //Phase 2- There was no existing element, create new

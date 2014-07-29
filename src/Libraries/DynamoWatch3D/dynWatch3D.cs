@@ -136,8 +136,8 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Children.Add(View);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
-            DataBridge.RegisterCallback(
-                GUID,
+            DataBridge.Instance.RegisterCallback(
+                GUID.ToString(),
                 obj =>
                     nodeUI.Dispatcher.Invoke(
                         new Action<object>(RenderData),
@@ -249,7 +249,7 @@ namespace Dynamo.Nodes
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    DataBridge.GenerateBridgeDataAst(GUID, inputAstNodes[0])),
+                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 

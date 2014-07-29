@@ -162,6 +162,46 @@ namespace ProtoCore
 
             public List<SingleRunTraceData> NestedData;
             public ISerializable Data;
+
+            public bool Contains(ISerializable data)
+            {
+                if (HasData)
+                {
+                    if (Data.Equals(data))
+                    {
+                        return true;
+                    }
+                }
+
+                if (HasNestedData)
+                {
+                    foreach (SingleRunTraceData srtd in NestedData)
+                    {
+                        if (srtd.Contains(data))
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+
+
+            public List<ISerializable> RecursiveGetNestedData()
+            {
+                List<ISerializable> ret = new List<ISerializable>();
+
+                if (HasData)
+                    ret.Add(Data);
+
+                if (HasNestedData)
+                {
+                    foreach (SingleRunTraceData srtd in NestedData)
+                        ret.AddRange(srtd.RecursiveGetNestedData());
+                }
+
+                return ret;
+            }
+
         }
 
         /// <summary>

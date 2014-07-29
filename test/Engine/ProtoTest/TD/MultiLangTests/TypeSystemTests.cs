@@ -819,9 +819,8 @@ namespace ProtoTest.TD.MultiLangTests
             thisTest.Verify("a1", 1);
             thisTest.Verify("b1", 2);
             thisTest.Verify("b2", 2);
-            thisTest.Verify("c", null);
-            thisTest.Verify("c1", null);
-            thisTest.Verify("c2", null);
+            //thisTest.Verify("c1", null);
+            thisTest.Verify("d1", null);
         }
 
         [Test]
@@ -915,6 +914,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:double[]= 1;                                         b:int[] =  1.1;                     c:string[]=""a"";                     d:char []= 'c';                    x1= test.test();                    e:test []= x1;                    e1=e.x;                    f:bool []= true;                    g []=null;";
+            
             string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.0 });
@@ -928,12 +928,15 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_To_array_1467294_3()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:double[][]= {1};                                         b:int[][] =  {1.1};                     c:string[][]={""a""};                     d:char [][]= {'c'};                    x1= test.test();                    e:test [][]= {x1};                    e1=e.x;                    f:bool [][]= {true};                    g [][]={null};";
-            // string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
-            string error = "1467332 Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3973
+            string error = "MAGN-3973: {null} to array upgrdation must null out ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1.0 } });
             thisTest.Verify("b", new object[] { new object[] { 1 } });
@@ -946,11 +949,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_To_Vararray_1467294_4()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:var[][]= 1;                                         b:var[][] =  1.1;                     c:var[][]=""a"";                     d:var[][]= 'c';                    x1= test.test();                    e:var[][]= x1;                    e1=e.x;                    f:var[][]= true;                    g :var[][]=null;";
-            string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3974
+            string error = "MAGN-3974: In typed assignment, array promotion does not occur in some cases";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1 } });
             thisTest.Verify("b", new object[] { new object[] { 1.1 } });
@@ -1018,12 +1023,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_Singleton_To_doublearray()
         {
             string code =
-                @"               class test                    {                        x=1;                    }                    a:double[][]= {1};                                         b:double[][] =  {1.1};                     c:double[][]={""a""};                     d:double[][]= {'c'};                    x1= test.test();                    e:double[][]= {x1};                    e1=e.x;                    f:double[][]= {true};                    g :double[][]={null;}";
-            //            string error = "Design issue - Validation required for failures- should it be null or {null}";
-            string error = "1467332  - Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+                @"               class test                    {                        x=1;                    }                    a:double[][]= {1};                                         b:double[][] =  {1.1};                     c:double[][]={""a""};                     d:double[][]= {'c'};                    x1= test.test();                    e:double[][]= {x1};                    e1=e.x;                    f:double[][]= {true};                    g :double[][]={null};";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1.0 } });
             thisTest.Verify("b", new object[] { new object[] { 1.1 } });
@@ -1186,18 +1192,21 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS048_Param_eachType_To_varArray()
         {
             string code =
-                @"                  class A{ a=1; }                        def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         c = foo( ""1.5""); //char to var                         //a = foo( '1.5');// char to var                          d = foo( A.A()); // user define to var                          d1=d.a;                        e = foo( false);//bool to var                         f = foo( null);//null to var                         ";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+                @"                  class A{ a=1; }                        def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a  = foo( 1.5);                         b  = foo( 1);                         c  = foo( ""1.5""); // char to var                         d  = foo( A.A());   // user define to var                        d1 = d.a;                        e  = foo( false);   //bool to var                         f  = foo( null);    //null to var                         ";
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3964
+            string error = "MAGN-3964: Type conversion from var to var array promotion is not happening";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
             thisTest.Verify("c", new object[] { "1.5" });
             thisTest.Verify("d1", new object[] { 1 });
             thisTest.Verify("e", new object[] { false });
-            thisTest.Verify("f", new object[] { null });
+            thisTest.Verify("f", null );
         }
 
         [Test]
@@ -1214,11 +1223,15 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS049_Return_eachType_To_varArray()
         {
             string code =
                 @"                   class A{ a=1; }                        def foo :var[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo( 1.5);                         b = foo( 1);                         c = foo( ""1.5"");                         //a = foo( '1.5');                         d = foo( A.A()); // user define to var                        d1=d.a;                        e = foo( false);                         f = foo( null);                         ";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+
+
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3964
+            string error = "MAGN-3964: Type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
@@ -1304,12 +1317,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS055_Param_AlltypeTo_BoolArray()
         {
             string code =
-                @"                    class A{ a=1; }                        def foo ( x:bool[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var[]={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        c1 = foo( '1','0');                        d = foo({ A.A(),A.A() });                        e = foo({ false,true });                        f = foo({ null, null });";
-            //string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
-            string error = "1467304 - Sprint 26 - Rev 3781 - null to bool array adds additional rank , it should not ";
+                @"                    class A{ a=1; }                        def foo ( x:bool[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var[]={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        c1 = foo( {'1','0'});                        d = foo({ A.A(),A.A() });                        e = foo({ false,true });                        f = foo({ null, null });";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1664
+            string error = "MAGN-1664 Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly in case of function arguments";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
             thisTest.Verify("a1", new object[] { true, true });
@@ -1323,33 +1337,39 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS055_null_To_BoolArray_1467304()
         {
             string code =
                 @"def func(a : bool[])                    {                        return = a;                    }                    a = func({null}); ";
-            string error = "1467304 - Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1664
+            string error = "MAGN-1664 Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly in case of function arguments";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
         }
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS055_null_To_BoolArray_1467304_2()
         {
             string code =
                 @"def func(a : bool[])                    {                        return = a;                    }                    a = func({null,null}); ";
-            string error = "1467304 - Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1664
+            string error = "MAGN-1664 Sprint 26 - Rev 3781 - array of nulls to bool array , not working correctly in case of function arguments";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
         }
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS056_Return_AlltypeTo_BoolArray()
         {
             string code =
                 @"                   class A{ a=1; }                        def foo :bool[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var []={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        d = foo( {'1','0'});                        e = d = foo({ A.A(),A.A() });                        f = foo({ false,true });                        g = foo({ null, null });                                                  ";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3968
+            string error = "MAGN-3968: Type conversion from var to bool array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
             thisTest.Verify("a1", new object[] { true, true });
@@ -1363,6 +1383,7 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS056_Return_BoolArray_1467258()
         {
             string code =
@@ -1379,11 +1400,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS057_Return_Array_1467305()
         {
             string code =
                 @"                   class A{ a=1; }                    def foo:bool[](x)                            {		 	                    b1= x ;	                             return =b1;                            }                    a = foo({ 1.5, 2.5 });                    z:var={ 1.5,2.5 };                    a1=foo(z);                    b = foo({ 1, 0 });                    c = foo({ ""1.5"" ,""""});                    d = foo({ '1', '0' });                                                  ";
-            string error = "1467305 - Sprint 26 - Rev 3782 adds an adiitonal rank while returning as array, when the rank matches ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1665
+            string error = "MAGN-1665 Sprint 26 - Rev 3782  adds an additonal rank while returning as array, when the rank matches";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
             thisTest.Verify("a1", new object[] { true, true });
@@ -1567,8 +1590,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"                    class A{ a=1; }                        def foo ( x:string[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var=1.5;                        a1=foo(z);                        b = foo(1);                        c = foo( ""1.5"" );                        c1 = foo( '1');                        d = foo( A.A() );                        e = foo(false);                        f = foo( null );";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
-            thisTest.RunScriptSource(code, error);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             thisTest.Verify("a1", null);
             thisTest.Verify("b", null);
@@ -1576,7 +1598,7 @@ namespace ProtoTest.TD.MultiLangTests
             thisTest.Verify("c1", new object[] { "1" });
             thisTest.Verify("d", null);
             thisTest.Verify("e", null);
-            thisTest.Verify("e1", null);
+            thisTest.Verify("f", null);
         }
 
         [Test]
@@ -1621,8 +1643,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"                    class A{ a=1; }                        def foo :char[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var=1.5;                        a1=foo(z);                        b = foo(1);                        c = foo( ""1.5"" );                        c1 = foo( '1');                        d = foo( A.A() );                        e = foo(false);                        f = foo( null );";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
-            thisTest.RunScriptSource(code, error);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             thisTest.Verify("a1", null);
             thisTest.Verify("b", null);
@@ -1630,7 +1651,7 @@ namespace ProtoTest.TD.MultiLangTests
             thisTest.Verify("c1", new object[] { '1' });
             thisTest.Verify("d", null);
             thisTest.Verify("e", null);
-            thisTest.Verify("e1", null);
+            thisTest.Verify("f", null);
         }
 
         [Test]
@@ -1658,8 +1679,7 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"                      class B extends A{ b=2; }                        class A{ a=1; }                        def foo :A[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo(1.5);                        z:var=1.5;                        a1=foo(z);                        b = foo(1);                        c = foo( ""1.5"" );                        c1 = foo( '1');                        d = foo( B.B() );                        d1 = d.b;                        e = foo(false);                        f = foo( null );";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
-            thisTest.RunScriptSource(code, error);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             thisTest.Verify("a1", null);
             thisTest.Verify("b", null);
@@ -1667,7 +1687,7 @@ namespace ProtoTest.TD.MultiLangTests
             thisTest.Verify("c1", null);
             thisTest.Verify("d1", new object[] { 2 });
             thisTest.Verify("e", null);
-            thisTest.Verify("e1", null);
+            thisTest.Verify("f", null);
         }
 
         [Test]
@@ -1991,9 +2011,8 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                     @"                    class A                    {                        a : int;                        constructor A(b : int[]..[])                        {                            a = b;                        }                    }e;                    [Imperative]                    {                        d = A.A(5);                        e = d.a;                    }                    ";
-            string error = "1467308 - Sprint 26 - Rev 3786 - userdefined type array to singleton conversion must return null since conversion not possible ";
-            thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("e", null);
+            thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("e", 5);
         }
 
 
@@ -2109,13 +2128,15 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS086_param_null_Array_replication_1467316()
         {
             string code =
                     @"                    def foo ( x : int[])                        {                            return = x;                        }                        a1 = { null, 5, 6.0};                        b1 = foo ( a1 );                    ";
-            string error = "1467316 - Sprint 26 - Rev 3831 function arguments - if the first argument in an array is null it replicates, when not expected";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1667
+            string error = "MAGN-1667 Sprint 26 - Rev 3831 function arguments - if the first argument in an array is null it replicates, when not expected";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("a1", new object[] { null, 2, 6 });
+            thisTest.Verify("a1", new object[] { null, 5, 6 });
         }
 
         [Test]
@@ -2213,13 +2234,15 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
-
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0120_typedassignment_To_Jagged_Vararray()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:var[]..[]= {1,{2,3},{{4},3}};                                         b:var[]..[] =  {1.1,{2.2,3.3}};                     c:var[]..[]={""a"",{""a""}};                     d:var[]..[]= {'c',{'c'}};                    x1= test.test();                    e:var[]..[]= {x1,{x1}};                    e1=e.x;                    f:var[]..[]= {true,{true}};                    g :var[]..[]={null,{null}};";
-            string error = "DNL-1467515 Regression : Dot operation on jagged arrays is giving unexpected null ";
+
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
+            string error = "MAGN-1701 Regression : Dot operation on jagged arrays is giving unexpected null";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1, new object[] { 2, 3 }, new object[] { new object[] { 4 }, 3 } });
             thisTest.Verify("b", new object[] { 1.1, new object[] { 2.2, 3.3 } });
@@ -2233,11 +2256,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0121_typedassignment_To_Jagged_Intarray()
         {
             string code =
                 @"                class test                    {                        x=1;                    }                    a:int[]..[]= {1,{2,{3}}};                                         b:int[]..[] =  {1.1,{1.1}};                     c:int[]..[]={""a"",{""a""}};                     d:int[]..[]= {'c',{'c'}};                    x1= test.test();                    e:int[]..[]= {x1,{x1}};                    e1=e.x;                    f:int[]..[]= {true,{true}};                    g :int[]..[]={null,{null}};";
-            string error = "DNL-1467515 Regression : Dot operation on jagged arrays is giving unexpected null ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1701
+            string error = "MAGN-1701 Regression : Dot operation on jagged arrays is giving unexpected null";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1, new object[] { 2, new object[] { 3 } } });
             thisTest.Verify("b", new object[] { 1, new object[] { 1 } });
@@ -2250,12 +2275,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0122_typedassignment_To_Jagged_doublearray()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:double[]= {1,{1}};                                         b:double[] =  {1.1,{-3}};                     c:double[]={""a"",{""ds""}};                     d:double[]= {'c',{'1'}};                    x1= test.test();                    e:double[]= {x1,{x1}};                    e1=e.x;                    f:double[]= {true,{true}};                    g :double[]={null,{null}};";
-            //string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
-            string error = "1467332 Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
 
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.RunScriptSource(code, error);
@@ -2270,12 +2296,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0123_typedassignment_To_Jagged_boolarray()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:bool[]..[]= {1,{1}};                                         b:bool[] ..[]=  {1.1,{1.1}};                     c:bool[]..[]={""a"",{""a""}};                     d:bool[]..[]= {'c',{'c'}};                    x1= test.test();                    e:bool[]..[]= {x1,{x1}};                    e1=e.x;                    f:bool[]..[]= {true,{true}};                    g :bool[]..[]={null,{null}};";
-            //string error = "1467295- Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
-            string error = "1467332 Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, new object[] { true } });
             thisTest.Verify("b", new object[] { true, new object[] { true } });
@@ -2289,12 +2316,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0124_typedassignment_To_Jagged_stringarray()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:string[]..[]= {1,{1}};                                         b:string[] ..[]=  {1.0,{1.0}};                     c:string[]..[]={""test"",{""test""}};                     d:string[]..[]= {'1',{'1'}};                    x1= test.test();                    e:string[]..[]= {x1,{x1}};                    e1=e.x;                    f:string[]..[]= {false,{true}};                    g :string[]..[]={null,{null}};";
-            //string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
-            string error = "1467332 Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
             thisTest.Verify("b", null);
@@ -2307,12 +2335,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0125_typedassignment_To_Jagged_chararray()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:char[]..[]= {1,{1}};                                         b:char[]..[] =  {1.0,{1.0}};                     c:char[]..[]={""test"",{""test""}};                     d:char[]..[]= {'1',{'1'}};                    x1= test.test();                    e:char[]..[]= {x1,{x1}};                    e1=e.x;                    f:char[]..[]= {false,{false}};                    g :char[]..[]={null,{null}};";
-            //string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
-            string error = "1467332 Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
             thisTest.Verify("b", null);
@@ -2329,18 +2358,19 @@ namespace ProtoTest.TD.MultiLangTests
         {
             string code =
                 @"                    def foo (x: var[][] )                        {                            return = x;                            }                        z = foo({  3  });                    ";
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            var mirror = thisTest.RunScriptSource(code, error);
+            var mirror = thisTest.RunScriptSource(code);
             TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 3 } });
         }
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void arrayRankmismtach_function_Return_1467326()
         {
             string code =
                 @"                    def foo : var[][](x )                        {                            return = x;                            }                        z = foo({  3  });                    ";
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668: when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 3 } });
         }
@@ -2401,11 +2431,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS128_Return_eachType_Array_To_IntArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo : int[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3.0;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { new object[] { new object[] { 3 } } });
             TestFrameWork.Verify(mirror, "b", new object[] { new object[] { new object[] { 3 } } });
@@ -2437,11 +2469,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS130_Return_eachType_Array_To_DoubleArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo : double[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { new object[] { new object[] { 3.0 } } });
             TestFrameWork.Verify(mirror, "b", new object[] { new object[] { new object[] { 3.0 } } });
@@ -2509,11 +2543,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS134_Return_eachType_Array_To_StringArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo : string[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668: Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { null });
             TestFrameWork.Verify(mirror, "b", new object[] { null });
@@ -2545,11 +2581,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS136_Return_eachType_Array_To_CharArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo : char[][](x)                        {                            return = x;                            }                        a = foo({ 3 });                        b = foo({ 3.0 });                        c = foo({ true });                        d = foo({ ""1.5""});                        e = foo({ '1' });                        f : var = 3;                        f1 = foo({ f });                        h = foo({A.A()});                        h1=h.a;                        i = foo({ null });                    ";
-            string error = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668:  Dot Operation on instances using replication returns single null where multiple nulls are expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { null });
             TestFrameWork.Verify(mirror, "b", new object[] { null });
@@ -2563,11 +2601,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0137_Param_eachType_Array_To_Jagged_VarArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo (x: var[]..[])                        {                            return = x;                            }                        a = foo({ 3,{3} });                        b = foo({ 3.0 ,{3.0}});                        c = foo({ true ,{false}});                        d = foo({ ""1"",{""1.5""}});                        e = foo({ '1',{'1'} });                        f : var = 3;                        f1 = foo({ f,{f} });                        h = foo({A.A(),{A.A()}});                        h1=h.a;                        i = foo({ null ,{null}});                    ";
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { 3, new object[] { 3 } });
             TestFrameWork.Verify(mirror, "b", new object[] { 3.0, new object[] { 3.0 } });
@@ -2581,12 +2621,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0138_Return_eachType_Array_To_Jagged_VarArray()
         {
             string code =
                  @"                  class A{a=0; }                      def foo : var[]..[](x)                      {                          return = x;                          }                      a = foo({ 3,{3} });                      b = foo({ 3.0 ,{3.0}});                      c = foo({ true ,{false}});                      d = foo({ ""1"",{""1.5""}});                      e = foo({ '1',{'1'} });                      f : var = 3;                      f1 = foo({ f,{f} });                      h = foo({A.A(),{A.A()}});                      h1=h.a;                      i = foo({ null ,{null}});                  ";
-            //string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            string error = "1467334 - Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
+            string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { 3, new object[] { 3 } });
             TestFrameWork.Verify(mirror, "b", new object[] { 3.0, new object[] { 3.0 } });
@@ -2600,12 +2641,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS139_Param_eachType_Array_To_jagged_IntArray()
         {
             string code =
                   @"          class A{a=0; }                     def foo (x: int[]..[])                     {                         return = x;                         }                     a = foo({ 3,{3} });                     b = foo({ 3.0 ,{3.0}});                     c = foo({ true ,{false}});                     d = foo({ ""1.5"",{""1""}});                     e = foo({ '1' ,{'1'}});                     f : var = 3.0;                     f1 = foo({ f ,{f}});                     h = foo({A.A(),{A.A()}});                     h1=h.a;                     i = foo({ null ,{null}});                 ";
-            //string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            string error = "1467334 - Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
+            string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { 3, new object[] { 3 } });
             TestFrameWork.Verify(mirror, "b", new object[] { 3, new object[] { 3 } });
@@ -2619,12 +2661,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS140_Return_eachType_Array_To_Jagged_IntArray()
         {
             string code =
                 @"                 class A{a=0; }                     def foo : int[]..[](x)                     {                         return = x;                         }                     a = foo({ 3,{3} });                     b = foo({ 3.0 ,{3.0}});                     c = foo({ true ,{false}});                     d = foo({ ""1.5"",{""1""}});                     e = foo({ '1' ,{'1'}});                     f : var = 3.0;                     f1 = foo({ f ,{f}});                     h = foo({A.A(),{A.A()}});                     h1=h.a;                     i = foo({ null ,{null}});                 ";
-            //string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            string error = "1467334 - Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
+            string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { 3, new object[] { 3 } });
             TestFrameWork.Verify(mirror, "b", new object[] { 3, new object[] { 3 } });
@@ -2675,11 +2718,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS143_Param_eachType_Array_To_Jagged_BoolArray()
         {
             string code =
                 @"                 class A{a=0; }                     def foo (x: bool[]..[])                     {                         return = x;                         }                     a = foo({ 3,{3} });                     b = foo({ 3.0 ,{3.0}});                     c = foo({ true ,{false}});                     d = foo({ ""1.5"",{""""}});                     e = foo({ '1',{'0'} });                     f : var = 3.0;                     f1 = foo({ f ,{f}});                     h = foo({A.A(),{A.A()}});                     h1=h.a;                     i = foo({ null ,{null}});                 ";
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { true, new object[] { true } });
             TestFrameWork.Verify(mirror, "b", new object[] { true, new object[] { true } });
@@ -2693,12 +2738,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS144_Return_eachType_Array_To_Jagged_BoolArray()
         {
             string code =
                  @"                 class A{a=0; }                     def foo : bool[]..[](x)                     {                         return = x;                         }                     a = foo({ 3,{3} });                     b = foo({ 3.0 ,{3.0}});                     c = foo({ true ,{false}});                     d = foo({ ""1.5"",{""""}});                     e = foo({ '1',{'0'} });                     f : var = 3.0;                     f1 = foo({ f ,{f}});                     h = foo({A.A(),{A.A()}});                     h1=h.a;                     i = foo({ null ,{null}});                 ";
-            //string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            string error = "1467334 - Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1671
+            string error = "MAGN-1671 Sprint 27 - Rev 3966 - when return type is arbitrary rank , type conversion reduces array rank , where it is not expected to";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { true, new object[] { true } });
             TestFrameWork.Verify(mirror, "b", new object[] { true, new object[] { true } });
@@ -2712,11 +2758,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS147_Param_eachType_Array_To_jagged_StringArray()
         {
             string code =
                  @"                   class A{a=0; }                       def foo (x: string[]..[])                       {                           return = x;                           }                       a1 = foo({ 3,0,{3} });                       b = foo({ 3.0,{0.0} });                       c = foo({ true ,{true},false});                       d = foo({ ""1.5"",{""1.5""}});                       e = foo({ '1',{'1'} });                       f : var = 3;                       f1 = foo({ f,{f} });                       h = foo({A.A(),{A.A()}});                       h1=h.a;                       i = foo({ null ,{null}});                   ";
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a1", null);
             TestFrameWork.Verify(mirror, "b", null);
@@ -2730,12 +2778,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS148_Return_eachType_Array_To_jagged_StringArray()
         {
             string code =
                 @"                   class A{a=0; }                       def foo : string[]..[](x)                       {                           return = x;                           }                       a1 = foo({ 3,{3} });                       b = foo({ 3.0,{0.0} });                       c = foo({ true ,{true},false});                       d = foo({ ""1.5"",{""1.5""}});                       e = foo({ '1',{'1'} });                       f : var = 3;                       f1 = foo({ f,{f} });                       h = foo({A.A(),{A.A()}});                       h1=h.a;                       i = foo({ null ,{null}});                   ";
-            //string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            string error = "1467332 - Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1670
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a1", null);
             TestFrameWork.Verify(mirror, "b", null);
@@ -2767,11 +2816,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS150_Return_eachType_Array_To_jagged_CharArray()
         {
             string code =
                 @"                  class A{a=0; }                      def foo : char[]..[](x)                      {                          return = x;                          }                      a1 = foo({ 3,{3}});                      b = foo({ 3.0 ,{3.0},1.0});                      c = foo({ true,{{true},false}});                      d = foo({ ""1.5"",{""1.5""}});                      e = foo({ '1',{'1'} });                      f : var = 3;                      f1 = foo({ f,{f}});                      h = foo({A.A(),{A.A()}});                      h1=h.a;                      i = foo({ null,{null}});                  ";
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+            string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a1", null);
             TestFrameWork.Verify(mirror, "b", null);
@@ -2926,11 +2977,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0164_Param_ArrayReduction_heterogenous_To_double()
         {
             string code =
                 @"                    class A{a=0; }                        def foo (x: double)                        {                            return = x;                            }                        f : var = 3;                        a = foo({ 3,3.0,true ,""1"",'1',f});                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});                        d = foo({ 3,3.0,true ,""1"",'1',f,null});                        e = foo({ null ,3,3.0,true ,""1"",'1',f});                        f =foo({ true,""1"",3,3.0,'1',f,null});                    ";
-            string error = "1467345 - Sprint 27 - Rev 4011 function does not replicate when hetrogenous array with type mismatch are passed as argument ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1672
+            string error = "MAGN-1672 Sprint 27 - Rev 4011 function does not replicate when hetrogenous array with type mismatch are passed as argument";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { 3.0, 3.0, null, null, null, 3.0 });
             TestFrameWork.Verify(mirror, "b", new object[] { 3.0, 3.0, null, null, null, 3.0, null });
@@ -2957,12 +3010,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0166_Param_ArrayReduction_heterogenous_To_UserDefined()
         {
             string code =
                 @"                    class A{a=0; }                        def foo (x: A)                        {                            return = x;                            }                        f : var = 3;                        a = foo({ 3,3.0,true ,""1"",'1',f});                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],A.A().a};                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],A.A().a,c[7]};                        d = foo({ 3,3.0,true ,""1"",'1',f,null});                        e = foo({ null ,3,3.0,true ,""1"",'1',f});                    ";
-            //string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            string error = "1467376 - Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1679
+            string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { null, null, null, null, null, null });
             TestFrameWork.Verify(mirror, "b", new object[] { null, null, null, null, null, null, 0 });
@@ -3092,11 +3146,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0177_typeconversion_replication()
         {
             string code =
                 @"                    def foo(x : int)                    {                        return = x;                    }                    a1 = {  1 , 2 ,  3 , { 4 } };                      b1 = foo(a1); // received {1,2,3,null}, expected : {  1 , 2 ,  3 , { 4 } }                    ";
-            string error = "1467356 -Sprint 27 - Rev4014 - function argument with jagged array - its expected to replicate for the attached code ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1673
+            string error = "MAGN-1673 Sprint 27 - Rev4014 - function argument with jagged array  - its expected to replicate for the attached code";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "b1", new object[] { 1, 2, 3, new object[] { 4 } });
         }
@@ -3228,22 +3284,26 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0187_TypeConversion_builtin_Sum()
         {
             string code =
                 @"                  sum2 = Sum({ { 2,1,true}, 1 });                                            ";
-            string error = "1467362 Sprint 27 - Rev 4048 function Sum fails if non convertible types are give nas input ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1675
+            string error = "MAGN-1675 Sprint 27 - Rev 4048 function Sum fails if non convertible types are given as input";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "sum2", 4);
         }
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0189_TypeConversion_conditionals()
         {
             string code =
                 @"                  x=2=={ };                    y={}==null;                  z={{1}}=={1};                  z2={{1}}== 1;                  z3=1=={{1}};                  z4={1}=={{1}};                                            ";
-            string error = "1467361 -Sprint 27 - Rev 4037 - [Design Issue]conditionals with empty arrays and ararys with different ranks ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3941
+            string error = "MAGN-3941 Errors with conditionals with empty arrays and ararys with different ranks";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "x", null);
             TestFrameWork.Verify(mirror, "z", false);
@@ -3299,11 +3359,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0191_Param_ArrayReduction_heterogenous_To_IntArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo (x: int[])                        {                            return = x;                            }                        f : var = 3;                        a = foo({ 3,3.0,true ,""1"",'1',f});                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});                        d = foo({ 3,3.0,true ,""1"",'1',f,null});                        e = foo({ null ,3,3.0,true ,""1"",'1',f});                    ";
-            string error = "1467224 - Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
+            string error = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { 3, 3, null, null, null, 3 });
             TestFrameWork.Verify(mirror, "b", new object[] { 3, 3, null, null, null, 3, null });
@@ -3314,11 +3376,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0192_Param_ArrayReduction_heterogenous_To_doubleArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo (x: double[])                        {                            return = x;                            }                        f : var = 3;                        a = foo({ 3,3.0,true ,""1"",'1',f});                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});                        d = foo({ 3,3.0,true ,""1"",'1',f,null});                        e = foo({ null ,3,3.0,true ,""1"",'1',f});                        f =foo({ true,""1"",3,3.0,'1',f,null});                    ";
-            string error = "1467224 - Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
+            string error = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct"; 
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { 3.0, 3.0, null, null, null, 3.0 });
             TestFrameWork.Verify(mirror, "b", new object[] { 3.0, 3.0, null, null, null, 3.0, null });
@@ -3330,11 +3394,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0193_Param_ArrayReduction_heterogenous_To_boolArray()
         {
             string code =
                 @"                    class A{a=0; }                        def foo (x: bool[])                        {                            return = x;                            }                        f : var = 3;                        a = foo({ 3,3.0,true ,""1"",'1',f});                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});                        d = foo({ 3,3.0,true ,""1"",'1',f,null});                        e = foo({ null ,3,3.0,true ,""1"",'1',f});                    ";
-            string error = "1467224 - Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
+            string error = "MAGN-1660 Sprint25: rev 3352: Type conversion - method dispatch over heterogeneous array is not correct"; 
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { true, true, true, true, true, true });
             TestFrameWork.Verify(mirror, "b", new object[] { true, true, true, true, true, true, true });
@@ -3345,11 +3411,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0194_Param_ArrayReduction_heterogenous_To_UserDefinedArray()
         {
             string code =
                 @"                   class A{a=0; }                        def foo (x: A[])                        {                            return = x;                            }                        f : var = 3;                        a = foo({ 3,3.0,true ,""1"",'1',f});                        b = foo({ 3,3.0,true ,""1"",'1',f,A.A()});                        b1 = {b[0] ,b[1],b[2] ,b[3],b[4],b[5],A.A().a};                        c = foo({ 3,3.0,true ,""1"",'1',f,A.A(),null});                        c1 = {c[0] ,c[1],c[2] ,c[3],c[4],c[5],A.A().a,c[7]};                        d = foo({ 3,3.0,true ,""1"",'1',f,null});                        e = foo({ null ,3,3.0,true ,""1"",'1',f});                    ";
-            string error = "1467376 - Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1679
+            string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "a", new object[] { null, null, null, null, null, null });
             TestFrameWork.Verify(mirror, "b", new object[] { null, null, null, null, null, null, 0 });
@@ -3372,22 +3440,26 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0196_heterogenousarray_To_UserDefinedArray()
         {
             string code =
                 @"                   class A{a=0; }                   def foo(x : A[])                        {                            return = x;                            }                   a = foo({ 1,A.A(), A.A() });                   b = {null,a[1].a,a[2].a};                    ";
-            string error = "1467376 - Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1679
+            string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "b", new object[] { null, 0, 0 });
         }
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS0197_getter_dotoperator_1467419()
         {
             string code =
                 @"                   class A                     {                    x : int[];                    constructor A( y)                    {                    x = y;                    }                    }                    class B extends A                     {                    t : int[];                    constructor B(y : var[])                    {                    x = y;                    t = x + 1;                    }                    }                    a1 = { B.B(1), { A.A(2), { B.B(0), B.B(1) } } };                    // received :{{1},null}                    //expected:{{1},{{0},{1}}}                    z = a1.x;                    ";
-            string error = "1467419 - Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1683
+            string error = "MAGN-1683 Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 1 }, new object[] { new object[] { 0 }, new object[] { 1 } } });
         }
@@ -3438,11 +3510,13 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
+        [Category("Failing")]
         public void replication_1467451()
         {
             string code =
                 @"c = 40;d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00}";
-            string error = "DNL-1467451 Sprint 29 - Rev 4596 , error thrown where not expected ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1690
+            string error = "MAGN-1690 Sprint 29 - Rev 4596 , error thrown where not expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "d", new object[] { 46.0, 47.0, 47.0 });
             thisTest.VerifyBuildWarningCount(0);
@@ -3494,11 +3568,13 @@ namespace ProtoTest.TD.MultiLangTests
         }
 
         [Test]
+        [Category("Failing")]
         public void indexintoarray_left_1467462_6()
         {
             string code =
                 @"                class A{a=1;}                class B{a=2;}                x : var[] = { A.A(),A.A(),A.A(),A.A()};//var                 x[2..3] = { B.B(),B.B()};                 y = x.a;                ";
-            string str = "DNL-1467475 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
+            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
             var mirror = thisTest.VerifyRunScriptSource(code, str);
             TestFrameWork.Verify(mirror, "y", new object[] { 1, 1, 2, 2 });
         }

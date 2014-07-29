@@ -120,7 +120,7 @@ namespace ProtoAssociative
             // Comment Jun: Get the codeblock to use for this codegenerator
             if (core.Options.IsDeltaExecution)
             {
-                codeBlock = GetDeltaCompileCodeBlock();
+                codeBlock = GetDeltaCompileCodeBlock(parentBlock);
                 if (core.Options.IsDeltaCompile)
                 {
                     pc = codeBlock.instrStream.instrList.Count;
@@ -183,7 +183,7 @@ namespace ProtoAssociative
             expressionSSATempSymbolList = new Stack<SymbolNode>();
         }
 
-        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
+        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock(ProtoCore.DSASM.CodeBlock parentBlock)
         {
             ProtoCore.DSASM.CodeBlock cb = null;
 
@@ -191,7 +191,10 @@ namespace ProtoAssociative
             if (core.CodeBlockList.Count <= 0  || core.CodeBlockIndex > 1)
             {
                 cb = BuildNewCodeBlock();
-                core.CodeBlockList.Add(cb);
+                if (null == parentBlock)
+                {
+                    core.CodeBlockList.Add(cb);
+                }
             }
             else
             {
@@ -5770,7 +5773,7 @@ namespace ProtoAssociative
                 retNode.updateBlock.startpc = startpc;
                 retNode.updateBlock.endpc = pc - 1;
 
-                codeBlock.instrStream.dependencyGraph.Push(retNode);
+                PushGraphNode(retNode);
                 EmitCompileLogFunctionEnd();
             }
 
@@ -7748,22 +7751,31 @@ namespace ProtoAssociative
             if (null != localProcedure && leftNodeRef.nodeList.Count > 0)
             {
                 firstSymbol = leftNodeRef.nodeList[0].symbol;
-                if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
+
+                // Check if this symbol being modified in this function is allocated in the current scope.
+                // If it is, then it means this symbol is not a member and is local to this function
+                ProtoCore.DSASM.SymbolNode symbolnode = null;
+                bool isAccessible = false;
+                bool isLocalVariable = isLocalVariable = VerifyAllocationInScope(firstSymbol.name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                if (!isLocalVariable)
                 {
-                    if (firstSymbol.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
+                    if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
                     {
-                        // Does the symbol belong on the same class or class heirarchy as the function calling it
-                        if (firstSymbol.classScope == localProcedure.classScope)
+                        if (firstSymbol.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
                         {
-                            localProcedure.updatedProperties.Push(leftNodeRef);
-                        }
-                        else
-                        {
-                            if (localProcedure.classScope > 0)
+                            // Does the symbol belong on the same class or class heirarchy as the function calling it
+                            if (firstSymbol.classScope == localProcedure.classScope)
                             {
-                                if (core.ClassTable.ClassNodes[localProcedure.classScope].IsMyBase(firstSymbol.classScope))
+                                localProcedure.updatedProperties.Push(leftNodeRef);
+                            }
+                            else
+                            {
+                                if (localProcedure.classScope > 0)
                                 {
-                                    localProcedure.updatedProperties.Push(leftNodeRef);
+                                    if (core.ClassTable.ClassNodes[localProcedure.classScope].IsMyBase(firstSymbol.classScope))
+                                    {
+                                        localProcedure.updatedProperties.Push(leftNodeRef);
+                                    }
                                 }
                             }
                         }
@@ -7891,7 +7903,7 @@ namespace ProtoAssociative
                 // Assign the end pc to this graph node's update block
                 // Dependency graph construction is complete for this expression
                 graphNode.updateBlock.endpc = pc - 1;
-                codeBlock.instrStream.dependencyGraph.Push(graphNode);
+                PushGraphNode(graphNode);
                 functionCallStack.Clear();
             }
         }
@@ -7909,28 +7921,34 @@ namespace ProtoAssociative
                 ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
                 ProcedureNode procNode = thisClass.vtable.procList[globalProcIndex];
 
-                string identName = (binaryExpr.LeftNode as IdentifierNode).Value;
-                if (!procNode.name.Equals(ProtoCore.DSASM.Constants.kSetterPrefix + identName))
+                IdentifierNode identNode = (binaryExpr.LeftNode as IdentifierNode);
+                string identName = identNode.Value;
+
+                // Local variables are not appended with 'this'
+                if (!identNode.IsLocal)
                 {
-                    SymbolNode symbolnode;
-                    bool isAccessible = false;
-                    bool isAllocated = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                    if (symbolnode != null &&
-                        symbolnode.classScope != Constants.kGlobalScope &&
-                        symbolnode.functionIndex == Constants.kGlobalScope)
+                    if (!procNode.name.Equals(ProtoCore.DSASM.Constants.kSetterPrefix + identName))
                     {
-                        var thisNode = nodeBuilder.BuildIdentfier(ProtoCore.DSDefinitions.Keyword.This);
-                        var thisIdentListNode = nodeBuilder.BuildIdentList(thisNode, binaryExpr.LeftNode);
-                        var newAssignment = nodeBuilder.BuildBinaryExpression(thisIdentListNode, binaryExpr.RightNode);
-                        NodeUtils.CopyNodeLocation(newAssignment, bnode);
+                        SymbolNode symbolnode;
+                        bool isAccessible = false;
+                        bool isAllocated = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
 
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != binaryExpr.exprUID)
+                        if (symbolnode != null &&
+                            symbolnode.classScope != Constants.kGlobalScope &&
+                            symbolnode.functionIndex == Constants.kGlobalScope)
                         {
-                            (newAssignment as BinaryExpressionNode).exprUID = binaryExpr.exprUID;
+                            var thisNode = nodeBuilder.BuildIdentfier(ProtoCore.DSDefinitions.Keyword.This);
+                            var thisIdentListNode = nodeBuilder.BuildIdentList(thisNode, binaryExpr.LeftNode);
+                            var newAssignment = nodeBuilder.BuildBinaryExpression(thisIdentListNode, binaryExpr.RightNode);
+                            NodeUtils.CopyNodeLocation(newAssignment, bnode);
+
+                            if (ProtoCore.DSASM.Constants.kInvalidIndex != binaryExpr.exprUID)
+                            {
+                                (newAssignment as BinaryExpressionNode).exprUID = binaryExpr.exprUID;
+                            }
+                            EmitBinaryExpressionNode(newAssignment, ref inferedType, isBooleanOp, graphNode, subPass, isTempExpression);
+                            return true;
                         }
-                        EmitBinaryExpressionNode(newAssignment, ref inferedType, isBooleanOp, graphNode, subPass, isTempExpression);
-                        return true;
                     }
                 }
             }
@@ -8415,10 +8433,20 @@ namespace ProtoAssociative
                     }
 
                     //int type = (int)ProtoCore.PrimitiveType.kTypeVoid;
+                    bool isLocalDeclaration = t.IsLocal;
                     bool isAccessible = false;
-                    bool isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                    int runtimeIndex = (!isAllocated || !isAccessible) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
+                    bool isAllocated = false;
 
+                    if (isLocalDeclaration)
+                    {
+                        isAllocated = VerifyAllocationInScope(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                    }
+                    else
+                    {
+                        isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                    }
+
+                    int runtimeIndex = (!isAllocated || !isAccessible) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
                     if (isAllocated && !isAccessible)
                     {
                         string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, t.Name);
@@ -8687,7 +8715,7 @@ namespace ProtoAssociative
                         graphNode.SSASubscript = Convert.ToInt32(subscript);
                     }
 
-                    codeBlock.instrStream.dependencyGraph.Push(graphNode);
+                    PushGraphNode(graphNode);
 
                     SymbolNode cyclicSymbol1 = null;
                     SymbolNode cyclicSymbol2 = null;
@@ -8713,7 +8741,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode1.classIndex = globalClassIndex;
                             nullAssignGraphNode1.updateBlock.endpc = pc - 1;
 
-                            codeBlock.instrStream.dependencyGraph.Push(nullAssignGraphNode1);
+                            PushGraphNode(nullAssignGraphNode1);
                             EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
 
 
@@ -8732,7 +8760,7 @@ namespace ProtoAssociative
                             nullAssignGraphNode2.classIndex = globalClassIndex;
                             nullAssignGraphNode2.updateBlock.endpc = pc - 1;
 
-                            codeBlock.instrStream.dependencyGraph.Push(nullAssignGraphNode2);
+                            PushGraphNode(nullAssignGraphNode2);
                             EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
                         }
                     }
@@ -9227,7 +9255,7 @@ namespace ProtoAssociative
             retNode.updateBlock.endpc = pc - 1;
             retNode.isReturn = true;
 
-            codeBlock.instrStream.dependencyGraph.Push(retNode);
+            PushGraphNode(retNode);
         }
 
         private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, GraphNode graphNode = null)
