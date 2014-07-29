@@ -12,17 +12,26 @@ namespace VMDataBridge
     /// </summary>
     public class DataBridge
     {
+        #region Singleton
         /// <summary>
         ///     DataBridge Singleton
         /// </summary>
         public static DataBridge Instance
         {
-            get { return instance ?? (instance = new DataBridge()); }
+            get
+            {
+                lock (mutex)
+                {
+                    return instance ?? (instance = new DataBridge());   
+                }
+            }
         }
         private static DataBridge instance;
+        private static readonly object mutex = new object();
 
         private readonly Dictionary<string, Action<object>> callbacks =
             new Dictionary<string, Action<object>>();
+        #endregion
 
         /// <summary>
         ///     Registers a callback for a given GUID, to be invoked by the VM on
