@@ -24,7 +24,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\createpoint_sequence.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\createpoint_sequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -113,7 +113,7 @@ namespace Dynamo.Tests
         public void RefGridSlidersSample()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string samplePath = Path.Combine(_testPath, @".\\Samples\refgridsliders.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\refgridsliders.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -196,7 +196,7 @@ namespace Dynamo.Tests
         public void DivideSelectedCurveSample()
         {
             var model = dynSettings.Controller.DynamoModel;
-            string samplePath = Path.Combine(_testPath, @".\\Samples\divideselectedcurve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\divideselectedcurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -296,7 +296,7 @@ namespace Dynamo.Tests
 
             //var model = dynSettings.Controller.DynamoModel;
 
-            //string samplePath = Path.Combine(_testPath, @".\\Samples\graph function and connect points.dyn");
+            //string samplePath = Path.Combine(_testPath, @".\Samples\graph function and connect points.dyn");
             //string testPath = Path.GetFullPath(samplePath);
             //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -330,7 +330,7 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
             //// Marking this as Ignore as this one causing error from Revit side.
-            //string samplePath = Path.Combine(_testPath, @".\\Samples\scalablegraphfunction.dyn");
+            //string samplePath = Path.Combine(_testPath, @".\Samples\scalablegraphfunction.dyn");
             //string testPath = Path.GetFullPath(samplePath);
             //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -368,7 +368,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\instparam.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\instparam.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -392,7 +392,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\instparam2masses.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\instparam2masses.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -443,7 +443,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\AttractorLogic_End.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\AttractorLogic_End.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -475,7 +475,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\IndexedFamilyInstances.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\IndexedFamilyInstances.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -505,7 +505,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\2dDomain.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\2dDomain.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -534,7 +534,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\tesselationwithcoincidentgrids.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\tesselationwithcoincidentgrids.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -574,7 +574,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\tesselation.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\tesselation.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -607,7 +607,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\tesselation_types.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\tesselation_types.dyn");
             string testPath = Path.GetFullPath(samplePath);
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
@@ -639,7 +639,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\TranslateandRotatesequence.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\TranslateandRotatesequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -662,7 +662,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\TranslateandRotate.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\TranslateandRotate.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -682,7 +682,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\FormulaCurve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\FormulaCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -708,7 +708,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\ScalableCircle.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\ScalableCircle.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -738,7 +738,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\ExceltoStuff.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\ExceltoStuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -770,7 +770,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\CSVtoStuff.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\CSVtoStuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -877,7 +877,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test model curve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\all curve test model curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -900,7 +900,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\all curve test.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -923,7 +923,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line from Ref Points.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\Arc and Line from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -943,7 +943,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\Arc and Line.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -963,7 +963,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc from Ref Points.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\Arc from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -986,7 +986,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\Arc.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -1009,7 +1009,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\circle.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\circle.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -1032,7 +1032,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\ellipse.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\ellipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -1053,7 +1053,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays without python.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\connect two point arrays without python.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -1080,7 +1080,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\connect two point arrays.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -1097,7 +1097,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected curve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\create sine wave from selected curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
@@ -1115,7 +1115,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected points.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Samples\create sine wave from selected points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             Controller.DynamoViewModel.OpenCommand.Execute(testPath);
