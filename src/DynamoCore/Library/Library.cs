@@ -66,7 +66,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetDescription()); }
         }
 
         public string Description
@@ -217,7 +217,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetSummary()); }
         }
 
         /// <summary>
@@ -692,7 +692,7 @@ namespace Dynamo.DSEngine
 
             if (importedFunctionGroups.ContainsKey(library))
             {
-                string errorMessage = string.Format("Library {0} has been loaded.", library);
+                string errorMessage = string.Format("Library {0} is already loaded.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }

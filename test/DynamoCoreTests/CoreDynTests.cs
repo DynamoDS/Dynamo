@@ -427,8 +427,8 @@ namespace Dynamo.Tests
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
             var expectedValue = new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
             var oldVal = watch.CachedValue;
-            Assert.IsTrue(oldVal.IsCollection);
-            AssertValue(oldVal, expectedValue);
+            Assert.IsTrue(oldVal is ICollection);
+            Assert.AreEqual(oldVal, expectedValue);
 
             // Pretend we never ran
             model.Nodes.ForEach(
@@ -441,8 +441,8 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(null);
 
             var newVal = watch.CachedValue;
-            Assert.IsTrue(newVal.IsCollection);
-            AssertValue(newVal, expectedValue);
+            Assert.IsTrue(newVal is ICollection);
+            Assert.AreEqual(newVal, expectedValue);
         }
 
         [Test]
@@ -464,7 +464,7 @@ namespace Dynamo.Tests
 
             foreach (var watch in watches)
             {
-                Assert.AreEqual(19, watch.CachedValue.Data);
+                Assert.AreEqual(19, watch.CachedValue);
             }
         }
 

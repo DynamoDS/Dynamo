@@ -1,5 +1,8 @@
-﻿using Dynamo.Controls;
+﻿using System.Linq;
+
+using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using System;
@@ -285,7 +288,7 @@ namespace Dynamo.UI.Controls
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
             // Associate the data context to the view before binding.
-            cachedLargeContent = Watch.Process(mirrorData, string.Empty, false);
+            cachedLargeContent = Process(mirrorData, string.Empty, false);
             rootDataContext.Children.Add(cachedLargeContent);
 
             // Establish data binding between data context and the view.
@@ -295,6 +298,52 @@ namespace Dynamo.UI.Controls
                     Mode = BindingMode.TwoWay,
                     Source = rootDataContext
                 });
+        }
+
+        private const string NULL_STRING = "null";
+
+        /// <summary>
+        /// Update the watch content from the given MirrorData and returns WatchNode.
+        /// </summary>
+        /// <param name="data">The Mirror data for which watch content is needed.</param>
+        /// <param name="path"></param>
+        /// <param name="showRawData"></param>
+        private static WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
+        {
+            WatchViewModel node;
+
+            if (data == null || data.IsNull)
+            {
+                node = new WatchViewModel(NULL_STRING, path);
+            }
+            else if (data.IsCollection)
+            {
+                var list = data.GetElements();
+
+                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", path, true);
+
+                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
+                {
+                    node.Children.Add(Process(e.Element, path + ":" + e.Index, showRawData));
+                }
+            }
+            else
+            {
+                node = dynSettings.Controller.WatchHandler.Process(data, path, showRawData);
+            }
+
+            return node ?? (new WatchViewModel("null", path));
+        }
+
+        private static object MarshalMirrorDataForWatch(MirrorData mirrorData)
+        {
+            if (mirrorData == null || mirrorData.IsNull)
+                return null;
+
+            if (mirrorData.IsCollection)
+                return mirrorData.GetElements().Select(MarshalMirrorDataForWatch).ToList();
+
+            return mirrorData.Data;
         }
 
         private Size ComputeSmallContentSize()

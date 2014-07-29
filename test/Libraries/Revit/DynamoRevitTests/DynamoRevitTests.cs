@@ -275,6 +275,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(classInfo.ClassName, className);
         }
 
+        protected static bool IsFuzzyEqual(double d0, double d1, double tol)
+        {
+            return System.Math.Abs(d0 - d1) < tol;
+        }
+
         private string GetVarName(string guid)
         {
             var model = Controller.DynamoModel;

@@ -463,6 +463,11 @@ limitations under the License.
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>NodeServices</Name>
