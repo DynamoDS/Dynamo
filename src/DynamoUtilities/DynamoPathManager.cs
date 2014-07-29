@@ -54,7 +54,7 @@ namespace DynamoUtilities
         /// The ASM folder which contains LibG and the 
         /// ASM binaries.
         /// </summary>
-        public string Asm { get; set; }
+        public string LibG { get; set; }
 
         /// <summary>
         /// All 'nodes' folders.
@@ -147,7 +147,7 @@ namespace DynamoUtilities
                 Directory.CreateDirectory(CommonSamples);
             }
 
-            Asm = Path.Combine(MainExecPath, "dll");
+            LibG = Path.Combine(MainExecPath, "libg_219");
             Ui = Path.Combine(MainExecPath , "UI");
 
             if (Nodes == null)
@@ -163,7 +163,7 @@ namespace DynamoUtilities
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            sb.AppendLine(String.Format("Ui: {0}", Asm));
+            sb.AppendLine(String.Format("Ui: {0}", LibG));
             sb.AppendLine(String.Format("Asm: {0}", Ui));
             Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
