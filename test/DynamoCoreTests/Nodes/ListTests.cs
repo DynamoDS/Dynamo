@@ -2778,5 +2778,15 @@ namespace Dynamo.Tests
             AssertSamePreviewValues("683fb5ab-a753-4ad4-864f-f19c98243262", "fd0740af-543a-4876-9580-a4e5fc07f070");
         }
         #endregion
+
+        #region Test List.Map
+        [Test]
+        public void TestNestedListMap()
+        {
+            var openPath = Path.Combine(GetTestDirectory(), @"core\list\testNestedMap.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("497f98aa-688e-46f1-9394-6d0c768de58f", 2.0);
+        }
+        #endregion
     }
 }
