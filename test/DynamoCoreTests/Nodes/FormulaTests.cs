@@ -10,10 +10,9 @@ using Dynamo.Tests;
 
 using NUnit.Framework;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Tests
 {
-    [TestFixture]
-    class FormulaTests : DSEvaluationUnitTest
+    public class FormulaTests : DSEvaluationUnitTest
     {
         [Test]
         public void FormulaWithIf()

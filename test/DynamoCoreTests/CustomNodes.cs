@@ -306,15 +306,15 @@ namespace Dynamo.Tests
                 "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
             };
 
-            foreach (var guid in nodesToCollapse)
+            foreach (
+                var node in
+                    nodesToCollapse.Select(guid => model.CurrentWorkspace.NodeFromWorkspace(guid)))
             {
-                var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
                 model.AddToSelection(node);
             }
 
             NodeCollapser.Collapse(
-                 DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                    .Select(x => (x as NodeModel)),
+                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                     model.CurrentWorkspace,
                     new FunctionNamePromptEventArgs
                     {
@@ -330,10 +330,10 @@ namespace Dynamo.Tests
             var workspace = model.CurrentWorkspace;
             Assert.AreEqual(6, workspace.Nodes.Count);
 
-            List<ModelBase> modelsToDelete = new List<ModelBase>();
+            var modelsToDelete = new List<ModelBase>();
             var addition = workspace.FirstNodeFromWorkspace<DSFunction>();
             Assert.IsNotNull(addition);
-            Assert.AreEqual("+", (addition as DSFunction).NickName);
+            Assert.AreEqual("+", addition.NickName);
 
             modelsToDelete.Add(addition);
             model.DeleteModelInternal(modelsToDelete);
@@ -459,7 +459,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, Controller.DynamoModel.HomeSpace.Nodes.Count);
             Assert.IsInstanceOf<Function>(Controller.DynamoModel.HomeSpace.Nodes.First());
-            Assert.AreEqual(customNodeDef, (Controller.DynamoModel.HomeSpace.Nodes.First() as Function).Definition);
+            Assert.AreSame(customNodeDef, (Controller.DynamoModel.HomeSpace.Nodes.First() as Function).Definition);
         }
 
 

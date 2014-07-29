@@ -231,7 +231,7 @@ namespace DynamoUtilities
 
             // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
             string assemblyName = Path.GetFileName(library); // Strip out possible directory.
-            var assemPath = Path.Combine(Instance.MainExecPath, assemblyName);
+            var assemPath = Path.Combine(Instance.MainExecPath ?? "", assemblyName);
 
             if (File.Exists(assemPath)) // Found under add-in folder...
             {

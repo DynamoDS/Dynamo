@@ -126,6 +126,13 @@ namespace Dynamo.Nodes
                 RequestBindingRehook(this, e);
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return outputIndex == 0
+                ? AstIdentifierForPreview
+                : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
         protected override void OnBuilt()
         {
             DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);

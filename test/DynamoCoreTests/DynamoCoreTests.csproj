@@ -87,6 +87,7 @@
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
+    <Compile Include="Setup.cs" />
     <Compile Include="TimeStampOrderingTests.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="CustomNodes.cs" />
-    <Compile Include="Setup.cs" />
     <Compile Include="FileReading.cs" />
     <Compile Include="Nodes\ListTests.cs" />
     <Compile Include="DynamoUnitTest.cs" />

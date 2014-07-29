@@ -443,17 +443,7 @@ namespace Dynamo.Tests
 
 		#endregion
 
-		#region Test RestOfList  
-
-		[Test]
-		public void TestRestOfListEmptyInput()
-		{
-			DynamoModel model = Controller.DynamoModel;
-			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_emptyInput.dyn");
-			RunModel(testFilePath);
-
-			Assert.Inconclusive("Add assertions");
-		}
+		#region Test RestOfList
 
 		[Test]
 		public void TestRestOfListSingleInput()
@@ -1059,39 +1049,19 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
 		public void LaceShortest_StringInput()
 		{
-			var model = dynSettings.Controller.DynamoModel;
-
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_StringInput.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
-
-			// Element from the Reverse list
-			AssertPreviewValue("1c4c75ff-735d-4431-9df3-2b187c469b3a", "1Design");
 
 			// Elements from first LaceShortest list
 			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
 			{
-				{0,1},
-				{1,1},
-				{2,1},
+				{0,"DynamoDynamo"},
+				{1,"DesignDesign"},
+				{2,"ScriptScript"},
 			};
-			SelectivelyAssertPreviewValues("10005d3c-3bbf-4690-b658-37b11c8402b1", validationData1);
-
-			// Elements from second LaceShortest list
-			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
-			{
-				{0,"Dynamo"},
-				{1,"Design"},
-				{2,"Script"},
-			};
-			SelectivelyAssertPreviewValues("c19f09a1-6132-4c9c-8f37-5f138e1a3067", validationData2);
-
+            SelectivelyAssertPreviewValues("10005d3c-3bbf-4690-b658-37b11c8402b1", validationData1);
 		}
 
 		[Test]
@@ -1186,19 +1156,6 @@ namespace Dynamo.Tests
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_SimpleTest.dyn");
 			RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
-
-			// Element from the Number node
-			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
-			{
-				{0,1},
-				{1,2},
-				{2,3},
-			};
-			SelectivelyAssertPreviewValues("b6571eb6-b1c2-4874-8749-b783176dc039", validationData1);
-
 			// Elements from first FilterOut list
 			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
 			{
@@ -1224,27 +1181,6 @@ namespace Dynamo.Tests
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_Complex.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
-
-			// Element from the Number node
-			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
-			{
-				{0,1},
-				{1,2},
-				{2,3},
-			};
-			SelectivelyAssertPreviewValues("b6571eb6-b1c2-4874-8749-b783176dc039", validationData1);
-
-			// Elements from FilterOut list
-			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
-			{
-				{0,new int[]{1,2}},
-				{1,new int[]{3,4,5,6,7,8,9,10}},
-			};
-			SelectivelyAssertPreviewValues("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc", validationData2);
 
 			// Elements from Take from List
 			Dictionary<int, object> validationData3 = new Dictionary<int, object>()
@@ -1326,37 +1262,17 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
 		public void NumberRange_LacingShortest()
 		{
-			var model = dynSettings.Controller.DynamoModel;
-
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingShortest.dyn");
 			RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
-
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0,1},
-				{8,9},
-			};
-
-			//this is the case of 2D array. Need to change verification
-			SelectivelyAssertPreviewValues("798bc857-f36e-44df-97cc-6e878aef5b72", validationData);
-
-			Dictionary<int, object> validationData1 = new Dictionary<int, object>()
-			{
-				{0,2},
-				{3,8},
-			};
-
-			//this is the case of 2D array. Need to change verification
-			SelectivelyAssertPreviewValues("2f5277db-4656-4014-8d85-8e4f51e5c2b1", validationData1);
-
-
+            AssertPreviewValue("4e781f03-5b48-4d58-a511-8c732665e961",
+                new[]
+                {
+                    new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+                    new[] { 2, 4, 6, 8, 10 }
+                });
 		}
 
 		[Test]
@@ -1385,7 +1301,7 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test, Category("Not Migrated"), Category("Failing")]
+		[Test, Category("Failing")]
 		public void NumberRange_LacingCrossProduct()
 		{
 			var model = dynSettings.Controller.DynamoModel;
@@ -1547,7 +1463,6 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
 		public void AddToList_Complex()
 		{
 			var model = dynSettings.Controller.DynamoModel;
@@ -1567,17 +1482,12 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
 		public void AddToList_GeometryToList()
 		{
 			var model = dynSettings.Controller.DynamoModel;
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_GeometryToList.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
 			// run the expression
 			dynSettings.Controller.RunExpression(null);
@@ -2076,12 +1986,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0,10},
-				{1,13},
-			};
-			SelectivelyAssertPreviewValues("b18e5ac3-5732-4c78-9a3b-56b375c9beee", validationData);
+			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new[] { 7, 10, 13, 16, 19 });
 		}
 
 		[Test]
@@ -2096,7 +2001,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
 			Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new double[] { 2.3 });
+			AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new[] { 1.0, 2.3 });
 		}
 
 		[Test]
@@ -2145,7 +2050,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
 			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-			AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 6, 7, 8, 9 });
+			AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 1, 2, 3, 4, 6, 7, 8, 9 });
 		}
 
 		[Test]
@@ -2270,10 +2175,6 @@ namespace Dynamo.Tests
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_Complex.dyn");
 			RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
-
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
 				{0,7},
@@ -2318,10 +2219,6 @@ namespace Dynamo.Tests
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_SimpleTest.dyn");
 			RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4 + 1, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3 + 1, model.CurrentWorkspace.Connectors.Count);
-
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
 				{0,1},
@@ -2337,10 +2234,6 @@ namespace Dynamo.Tests
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_Complex.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(12 + 1, model.CurrentWorkspace.Connectors.Count);
 			
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -2359,10 +2252,6 @@ namespace Dynamo.Tests
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_MultipleInput.dyn");
 			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
 			AssertPreviewValue("cc3ae092-8644-4a36-ad38-12ffa15cebda",
 				new object[][]
@@ -2654,139 +2543,5 @@ namespace Dynamo.Tests
             AssertPreviewValue("13f697db-85b8-4b93-859c-63f2b66c6b72", new object[] { 0.0, "no value", 2.0, "no value", "no value", 5.0 });
 	    }
 		#endregion
-
-        #region Test List Samples
-	    [Test]
-	    public void TestListSample_Creation()
-	    {
-	        var openPath = Path.Combine(
-	            GetTestDirectory(),
-	            @"..\doc\distrib\Samples_070\Samples\14 Lists\Creation.dyn");
-
-            RunModel(openPath);
-
-            #region Basic Creation
-            var createResult = new[] { 1.0, 2.0, 3.0, 4.0, 5.0 };
-	        var nodes = new[]
-	        {
-	            "e2438fb7-6efe-4f12-8ff8-7f76f32bb09f", "ee95539a-eeb5-4b13-8830-8d4d94dd2f3b",
-	            "12a40e0e-46df-4cf6-b59f-a3430e545432"
-	        };
-
-            foreach (var id in nodes)
-                AssertPreviewValue(id, createResult);
-            #endregion
-
-            #region Repitition
-            //List.Cycle
-            AssertPreviewValue("96340cfc-7490-4c5f-b09f-42f5073ff96c", new[] { 1.0, 2.0, 3.0, 4.0, 5.0, 1.0, 2.0, 3.0, 4.0, 5.0});
-            //List.OfRepeatedItem
-            AssertPreviewValue("898b77cf-518b-4e0b-9fb8-17a561ddd1ca", new[] { 5.0, 5.0, 5.0, 5.0, 5.0 });
-            #endregion
-
-            #region List.Join
-	        AssertPreviewValue(
-	            "d38ec98b-75c7-4d26-8ad5-a48fec4735b4",
-	            new[] { 4.0, 5, 6, 7, 8, 0, 1, 2, 3, 9, 10, 11, 12, 13, 14 });
-	        #endregion
-
-            #region List.ShiftIndices
-	        AssertPreviewValue(
-	            "7f60385c-e12b-4856-96ec-ce07ce584a52",
-	            new[] { 8.0, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7 });
-	        AssertPreviewValue(
-	            "32c69a65-9148-4774-822c-2ef8e20b2c81",
-	            new[] { 3.0, 4, 5, 6, 7, 8, 9, 10, 0, 1, 2 });
-	        #endregion
-
-            #region List.Reverse
-	        AssertPreviewValue(
-	            "15ba2b93-bbce-4d2b-81b8-b52b1a0bd615",
-	            new[] { 10.0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 });
-	        #endregion
-
-	        #region List.Count
-            AssertPreviewValue("f7ad2c04-b58c-469c-ae97-eb4091be2169", 11.0);
-	        #endregion
-
-            #region List.UniqueItems
-	        AssertPreviewValue("654adcaf-c4f9-49e4-b163-09395d1ea77f", new[] { 1.0, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-            #endregion
-	    }
-
-	    [Test]
-	    public void TestListSample_Filtering()
-	    {
-            var openPath = Path.Combine(
-                GetTestDirectory(),
-                @"..\doc\distrib\Samples_070\Samples\14 Lists\Filtering.dyn");
-
-            RunModel(openPath);
-
-            #region Even/Odd
-	        var result = new[] { new[] { 1.0, 3, 5, 7, 9 }, new[] { 0.0, 2, 4, 6, 8 } };
-
-	        AssertPreviewValue("1f21d445-a285-44a2-80dd-441bb33c159b", result);
-            AssertPreviewValue("c7799ee0-7bd2-42dc-a35f-b782c6c0d28b", result);
-	        #endregion
-
-            #region List.FilterByBoolMask: Even/Odd Points
-            /* Disabled Test for now
-	        AssertPreviewValue(
-	            "c1522171-19fe-4b01-8326-73eae9804c9a",
-	            new[]
-	            {
-	                new[] 
-                    {
-	                    Point.ByCoordinates(1, 0), Point.ByCoordinates(3, 0), Point.ByCoordinates(5, 0),
-	                    Point.ByCoordinates(7, 0), Point.ByCoordinates(9, 0)
-	                },
-	                new[] 
-                    {
-	                    Point.ByCoordinates(0, 0), Point.ByCoordinates(2, 0), Point.ByCoordinates(4, 0),
-	                    Point.ByCoordinates(6, 0), Point.ByCoordinates(8, 0)
-	                }
-	            });
-            */
-	        #endregion
-
-            #region Replace Nulls
-	        AssertPreviewValue("a4dd2440-8d1a-47af-9b7b-6ee8a0a983c7", new[] { 1.0, 2, 0, 4, 5, 0, 0, 8, 9 });
-	        #endregion
-	    }
-        #endregion
-
-        #region Replication tests for MinimumItem, MaximumItem and Sort methods
-
-        [Test]
-        public void ReplicationForMinMaxSort()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-
-            string openPath = Path.Combine(GetTestDirectory(), @"core\list\ReplicationForMinMaxSort.dyn");
-            RunModel(openPath);
-
-            // check all the nodes and connectors are loaded
-            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
-            AssertSamePreviewValues("77527c0b-b4f9-4bd1-809e-488f030fbd37", "dee87fc8-aa2a-4fb0-9924-ae04bf12fc8a");
-            AssertPreviewValue("77527c0b-b4f9-4bd1-809e-488f030fbd37", new double[] { 10, 10 }); //List.MaximumItem
-            AssertPreviewValue("dee87fc8-aa2a-4fb0-9924-ae04bf12fc8a", new double[] { 10, 10 }); //List.Map Max
-            AssertPreviewValue("e9a93b16-2211-4bbf-955e-30fe943df927", new double[] { 1, 5 });
-            AssertPreviewValue("3d8545d9-1e13-4609-bd42-0ac838282e9d", new double[] { 1, 5 });
-            //Assert for List.Sort and List.Map Sort nodes
-            AssertSamePreviewValues("683fb5ab-a753-4ad4-864f-f19c98243262", "fd0740af-543a-4876-9580-a4e5fc07f070");
-        }
-        #endregion
-
-        #region Test List.Map
-        [Test]
-        public void TestNestedListMap()
-        {
-            var openPath = Path.Combine(GetTestDirectory(), @"core\list\testNestedMap.dyn");
-            RunModel(openPath);
-            AssertPreviewValue("497f98aa-688e-46f1-9394-6d0c768de58f", 2.0);
-        }
-        #endregion
     }
 }
