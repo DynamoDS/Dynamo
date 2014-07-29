@@ -92,11 +92,12 @@ Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2015\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoVersionSelector.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSelector.addin"
-Type: filesandordirs; Name: {app}\dll
+Type: filesandordirs; Name: {app}\libg_219
+Type: filesandordirs; Name: {app}\libg_220
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
-Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
+;Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
 
 [UninstallRun]
