@@ -155,6 +155,28 @@ namespace ProtoCore
         }
 
 
+        private ProcedureNode GetProcedureNode(int classIndex, int functionIndex)
+        {
+            if (Constants.kGlobalScope != classIndex)
+            {
+                return core.ClassTable.ClassNodes[classIndex].vtable.procList[functionIndex];
+            }
+            return codeBlock.procedureTable.procList[functionIndex];
+        }
+
+        /// <summary>
+        /// Append the graphnode to the instruction stream and procedure nodes
+        /// </summary>
+        /// <param name="graphnode"></param>
+        protected void PushGraphNode(AssociativeGraph.GraphNode graphnode)
+        {
+            codeBlock.instrStream.dependencyGraph.Push(graphnode);
+            if (globalProcIndex != Constants.kGlobalScope)
+            {
+                localProcedure.GraphNodeList.Add(graphnode);
+            }
+        }
+
         /// <summary>
         /// Generates unique identifier for the callsite associated with the graphnode
         /// </summary>
