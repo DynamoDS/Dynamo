@@ -48,21 +48,17 @@ namespace ProtoCore.Lang
             // Assert for the block type
             activation.globs = core.DSExecutable.runtimeSymbols[core.RunningBlock].GetGlobalSize();
 
-            // Push Execution states
-            int execStateSize = 0;
-            if (null != stackFrame.ExecutionStates)
+            //
+            // Comment Jun:
+            // Storing execution states is relevant only if the current scope is a function,
+            // as this mechanism is used to keep track of maintining execution states of recursive calls
+            // This mechanism should also be ignored if the function call is non-recursive as it does not need to maintains state in that case
+            int execStateSize = procedureNode.GraphNodeList.Count;
+            stackFrame.SetAt(StackFrame.AbsoluteIndex.kExecutionStates, StackValue.BuildInt(execStateSize));
+            for (int n = execStateSize - 1; n >= 0; --n)
             {
-                execStateSize = stackFrame.ExecutionStates.Length;
-
-                // ExecutionStates are in lexical order
-                // Push them in reverse order (similar to args) so they can be retrieved in sequence
-                // Retrieveing the executing states occur on function return
-                for (int n = execStateSize - 1; n >= 0 ; --n)
-                {
-                    StackValue svState = stackFrame.ExecutionStates[n];
-                    Validity.Assert(svState.IsBoolean);
-                    interpreter.Push(svState);
-                }
+                AssociativeGraph.GraphNode gnode = procedureNode.GraphNodeList[n];
+                interpreter.Push(StackValue.BuildBoolean(gnode.isDirty));
             }
 
             // Push Params

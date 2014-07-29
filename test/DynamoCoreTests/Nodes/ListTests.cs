@@ -2755,5 +2755,15 @@ namespace Dynamo.Tests
 	        #endregion
 	    }
         #endregion
+
+        #region Test List.Map
+        [Test]
+        public void TestNestedListMap()
+        {
+            var openPath = Path.Combine(GetTestDirectory(), @"core\list\testNestedMap.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("497f98aa-688e-46f1-9394-6d0c768de58f", 2.0);
+        }
+        #endregion
     }
 }
