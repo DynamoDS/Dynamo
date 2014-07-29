@@ -787,6 +787,8 @@ namespace Dynamo.ViewModels
                 if (this.PublishCurrentWorkspaceCommand != null)
                     this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged("IsHomeSpace");
+                RaisePropertyChanged("IsPanning");
+                RaisePropertyChanged("IsOrbiting");
             }
         }
 
