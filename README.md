@@ -28,7 +28,15 @@ The following list represents what are to be implemented in Bloodstone for it to
 - [x] Implement pan operation
 - [x] Implement zoom operation
 - [x] Implement zoom extent with double-click
+- [ ] Set the background Cornflower blue to match the geometry contents
+- [ ] Output diagnostic information on Dynamo
+- [ ] Fix creation failure for Parallels
+- [ ] Only zoom-to-fit when geometries arrive for the first time
+- [ ] Make Z-axis as up vector instead of Y-axis
+- [ ] Align view operations with that of Revit (i.e. mouse actions etc.)
 - [ ] Integrate zoom operation with mouse wheel
+- [ ] Performance: Merge the two-pass conversion from IRenderPackage to VB
+- [ ] Update Phong shader to include 3 light sources, and increase the saturation
 - [x] Perform [proper OpenGL context creation](http://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#Proper_Context_Creation)
 - [x] Implement anti-aliasing for better visual quality
 - [x] Implement geometry clearing when document is opened/closed/created
