@@ -23,7 +23,7 @@ namespace Unfold
             public Point Start { get; set; }
             public Point End { get; set; }
             public Curve Curve { get; set; }
-            public Edge Real_Edge { get; set; }
+            public Edge RealEdge { get; set; }
 
             public EdgeLikeEntity(Edge edge)
             {
@@ -31,7 +31,7 @@ namespace Unfold
                 End = edge.EndVertex.PointGeometry;
                 Curve = edge.CurveGeometry;
                 // not sure I should be storing this here as well, but if so, then should eliminate edgewrapper class
-                Real_Edge = edge;
+                RealEdge = edge;
 
             }
 
@@ -41,7 +41,7 @@ namespace Unfold
                 End = curve.EndPoint;
                 Curve = curve;
                 // not sure I should be storing this here as well, but if so, then should eliminate edgewrapper class
-                Real_Edge = null;
+                RealEdge = null;
 
 
             }

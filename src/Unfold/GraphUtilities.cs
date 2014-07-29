@@ -96,39 +96,39 @@ namespace Unfold
 
 
             // build the rest of the graphcopy - set the other properties of the verts correctly
-            foreach (GeneratePlanarUnfold.GraphVertex<K,T> vert_to_copy in graph)
+            foreach (GeneratePlanarUnfold.GraphVertex<K,T> vertToCopy in graph)
             {
-                List<GeneratePlanarUnfold.GraphVertex<K,T>> vertlist = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { vert_to_copy.Face });
+                List<GeneratePlanarUnfold.GraphVertex<K,T>> vertlist = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { vertToCopy.Face });
                 GeneratePlanarUnfold.GraphVertex<K,T> vert = vertlist[0];
-                vert.Explored = vert_to_copy.Explored;
-                vert.FinishTime = vert_to_copy.FinishTime;
-                if (vert_to_copy.Parent != null)
+                vert.Explored = vertToCopy.Explored;
+                vert.FinishTime = vertToCopy.FinishTime;
+                if (vertToCopy.Parent != null)
                 {
-                    vert.Parent = graphToTraverse.Where(x => x.Equals(vert_to_copy.Parent)).First();
+                    vert.Parent = graphToTraverse.Where(x => x.Equals(vertToCopy.Parent)).First();
                 }
-                foreach (Unfold.GeneratePlanarUnfold.GraphEdge<K,T> edge_to_copy in vert_to_copy.GraphEdges)
+                foreach (Unfold.GeneratePlanarUnfold.GraphEdge<K,T> edgeToCopy in vertToCopy.GraphEdges)
                 {
 
                     // find the same faces in the new graph, the nodes that represent these faces...// but we must make sure that these nodes
                     // that are returned are the ones inside the new graph
                     // may make sense to add a property that either is a name , id, or graph owner ...
-                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newtail = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Tail.Face });
-                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newhead = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Head.Face });
-                    GeneratePlanarUnfold.GraphEdge<K,T> edge = new GeneratePlanarUnfold.GraphEdge<K,T>(edge_to_copy.GeometryEdge, newtail[0], newhead[0]);
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newtail = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edgeToCopy.Tail.Face });
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newhead = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edgeToCopy.Head.Face });
+                    GeneratePlanarUnfold.GraphEdge<K,T> edge = new GeneratePlanarUnfold.GraphEdge<K,T>(edgeToCopy.GeometryEdge, newtail[0], newhead[0]);
                     vert.GraphEdges.Add(edge);
                 }
 
                 // same logic for tree edges
 
-                foreach (Unfold.GeneratePlanarUnfold.GraphEdge<K, T> edge_to_copy in vert_to_copy.TreeEdges)
+                foreach (Unfold.GeneratePlanarUnfold.GraphEdge<K, T> edgeToCopy in vertToCopy.TreeEdges)
                 {
 
                     // find the same faces in the new graph, the nodes that represent these faces...// but we must make sure that these nodes
                     // that are returned are the ones inside the new graph
                     // may make sense to add a property that either is a name , id, or graph owner ...
-                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newtail = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Tail.Face });
-                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newhead = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Head.Face });
-                    GeneratePlanarUnfold.GraphEdge<K, T> edge = new GeneratePlanarUnfold.GraphEdge<K, T>(edge_to_copy.GeometryEdge, newtail[0], newhead[0]);
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newtail = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edgeToCopy.Tail.Face });
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newhead = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edgeToCopy.Head.Face });
+                    GeneratePlanarUnfold.GraphEdge<K, T> edge = new GeneratePlanarUnfold.GraphEdge<K, T>(edgeToCopy.GeometryEdge, newtail[0], newhead[0]);
                     vert.TreeEdges.Add(edge);
                 }
 

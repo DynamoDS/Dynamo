@@ -20,7 +20,7 @@ namespace UnfoldTests
         public class AlignPlanarTests
         {
             [Test]
-            public void UnfoldEachPairOfFacesInACube_ParentAsRefFace()
+            public void UnfoldEachPairOfFacesInACubeParentAsRefFace()
             {
 
 
@@ -30,7 +30,7 @@ namespace UnfoldTests
                 //generate a graph of the cube
                 var graph = GeneratePlanarUnfold.ModelTopology.GenerateTopologyFromFaces(faces);
 
-                List<Object> face_objs = faces.Select(x => x as Object).ToList();
+                List<Object> faceobjs = faces.Select(x => x as Object).ToList();
 
 
 
@@ -80,7 +80,7 @@ namespace UnfoldTests
 
 
             [Test]
-            public void UnfoldEachPairOfFacesInACube_ChildAsRefFace()
+            public void UnfoldEachPairOfFacesInACubeChildAsRefFace()
             {
 
 
@@ -90,7 +90,7 @@ namespace UnfoldTests
                 //generate a graph of the cube
                 var graph = GeneratePlanarUnfold.ModelTopology.GenerateTopologyFromFaces(faces);
 
-                List<Object> face_objs = faces.Select(x => x as Object).ToList();
+                List<Object> faceobjs = faces.Select(x => x as Object).ToList();
 
 
 
@@ -139,7 +139,7 @@ namespace UnfoldTests
 
 
             [Test]
-            public void UnfoldEachPairOfSurfacesInACube_ParentAsRefFace()
+            public void UnfoldEachPairOfSurfacesInACubeParentAsRefFace()
             {
 
 
@@ -194,7 +194,7 @@ namespace UnfoldTests
 
             }
             [Test]
-            public void UnfoldEachPairOfTriangularSurfacesInACube_ParentAsRefFace()
+            public void UnfoldEachPairOfTriangularSurfacesInACubeParentAsRefFace()
             {
 
 
@@ -256,7 +256,7 @@ namespace UnfoldTests
             }
 
             [Test]
-            public void UnfoldEachPairOfTriangularSurfacesInAConeWide_ParentAsRefFace()
+            public void UnfoldEachPairOfTriangularSurfacesInAConeWideParentAsRefFace()
             {
 
 
@@ -318,7 +318,7 @@ namespace UnfoldTests
             }
 
             [Test]
-            public void UnfoldEachPairOfTriangularSurfacesInAConeTall_ParentAsRefFace()
+            public void UnfoldEachPairOfTriangularSurfacesInAConeTallParentAsRefFace()
             {
 
 

@@ -20,10 +20,10 @@ namespace Unfold
         /// <param name="StartPointOnSharedEdge"></param>
         /// <param name="sharedEdge"></param>
         /// <returns></returns>
-        public static List<Point> FindPointsOfEdge_StartingAtPoint(List<GeneratePlanarUnfold.EdgeLikeEntity> edges, 
+        public static List<Point> FindPointsOfEdgeStartingAtPoint(List<GeneratePlanarUnfold.EdgeLikeEntity> edges, 
             Point StartPointOnSharedEdge, GeneratePlanarUnfold.EdgeLikeEntity sharedEdge)
         {
-            GeneratePlanarUnfold.EdgeLikeEntity found_edge = null;
+            GeneratePlanarUnfold.EdgeLikeEntity foundEdge = null;
 
             Point Start = null;
             Point End = null;
@@ -37,23 +37,23 @@ namespace Unfold
                 {
                     if (!((edge.Start.IsAlmostEqualTo(StartPointOnSharedEdge) && (edge.End.IsAlmostEqualTo(sharedEdge.End))) || (edge.Start.IsAlmostEqualTo(sharedEdge.End) && (edge.End.IsAlmostEqualTo(StartPointOnSharedEdge)))))
                     {
-                        found_edge = edge;
+                        foundEdge = edge;
                     }
                 }
             }
 
             //reverse if needed
             // we need these edges to point from the shared edge away.
-            if (!found_edge.Start.IsAlmostEqualTo(sharedEdge.Start))
+            if (!foundEdge.Start.IsAlmostEqualTo(sharedEdge.Start))
             {
 
-                Start = found_edge.End;
-                End = found_edge.Start;
+                Start = foundEdge.End;
+                End = foundEdge.Start;
             }
             else
             {
-                Start = found_edge.Start;
-                End = found_edge.End;
+                Start = foundEdge.Start;
+                End = foundEdge.End;
             }
             return new List<Point>() { Start, End };
 
@@ -91,7 +91,7 @@ namespace Unfold
             Vector AB = Vector.ByTwoPoints(sharedcurve.StartPoint, sharedcurve.EndPoint); //Edge from A TO B// this is the shared edge
             Vector ABnorm = AB.Normalized();
 
-            List<Point> ADedgePoints = AlignPlanarFaces.FindPointsOfEdge_StartingAtPoint(rotedges,sharedEdge.Start,sharedEdge);
+            List<Point> ADedgePoints = AlignPlanarFaces.FindPointsOfEdgeStartingAtPoint(rotedges,sharedEdge.Start,sharedEdge);
 
             Point ADstart = ADedgePoints[0];
             Point ADend = ADedgePoints[1];
@@ -105,18 +105,18 @@ namespace Unfold
             Vector  rotFaceNormal = rotsurface.NormalAtParameter(.5, .5);
         
 
-           double abxad_dot_normal_rot_face =  firstCross.Dot(rotFaceNormal);
+           double abxadDotNormalRotFace =  firstCross.Dot(rotFaceNormal);
            
            
            
             // replace this with almost equal
           
-           if (Math.Abs(abxad_dot_normal_rot_face -1.0) < .0001)
+           if (Math.Abs(abxadDotNormalRotFace -1.0) < .0001)
            {
                rotFaceNormalOK = 1.0;
            }
 
-           List<Point> ACedgePoints = AlignPlanarFaces.FindPointsOfEdge_StartingAtPoint(refedegs,sharedEdge.Start , sharedEdge);
+           List<Point> ACedgePoints = AlignPlanarFaces.FindPointsOfEdgeStartingAtPoint(refedegs,sharedEdge.Start , sharedEdge);
            Point ACstart = ACedgePoints[0];
            Point ACend = ACedgePoints[1];
 
@@ -130,12 +130,12 @@ namespace Unfold
            Vector refFaceNormal = refsurface.NormalAtParameter(.5, .5);
            
           
-            double acxab_dot_normal_ref_face = secondCross.Dot(refFaceNormal);
+            double acxabDotNormalRefFace = secondCross.Dot(refFaceNormal);
            
           
-           Console.WriteLine(acxab_dot_normal_ref_face);
+           Console.WriteLine(acxabDotNormalRefFace);
            
-            if (Math.Abs(acxab_dot_normal_ref_face -1)<.0001)
+            if (Math.Abs(acxabDotNormalRefFace -1)<.0001)
            {
                refFaceNormalOK = 1.0;
            }
