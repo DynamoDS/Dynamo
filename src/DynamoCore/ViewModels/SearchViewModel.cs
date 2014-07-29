@@ -436,6 +436,9 @@ namespace Dynamo.ViewModels
         #region Categories
 
         private const char CATEGORY_DELIMITER = '.';
+        private const string CATEGORY_GROUP_CREATE = "Create";
+        private const string CATEGORY_GROUP_ACTIONS = "Actions";
+        private const string CATEGORY_GROUP_QUERY = "Query";
 
         /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
@@ -840,6 +843,40 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Call this method to assign a default grouping information if a given category 
+        /// does not have any. A node category's group can either be "Create", "Query" or
+        /// "Actions". If none of the group names above is assigned to the category, it 
+        /// will be assigned a default one that is "Actions".
+        /// 
+        /// For examples:
+        /// 
+        ///     "Core.Evaluate" will be renamed as "Core.Evaluate.Actions"
+        ///     "Core.List.Create" will remain as "Core.List.Create"
+        /// 
+        /// </summary>
+        public string ProcessNodeCategory(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+                return category;
+
+            int index = category.LastIndexOf(CATEGORY_DELIMITER);
+
+            // If "index" is "-1", then the whole "category" will be used as-is.
+            switch (category.Substring(index + 1))
+            {
+                case CATEGORY_GROUP_ACTIONS:
+                case CATEGORY_GROUP_CREATE:
+                case CATEGORY_GROUP_QUERY:
+                    // Group name is already known.
+                    return category; 
+
+                default:
+                    // Defaulting to "CATEGORY_GROUP_ACTIONS" group if not defined.
+                    return category + CATEGORY_DELIMITER + CATEGORY_GROUP_ACTIONS;
+            }
+        }
+
+        /// <summary>
         ///     Adds DesignScript function groups
         /// </summary>
         /// <param name="func"></param>
@@ -872,7 +909,7 @@ namespace Dynamo.ViewModels
                     //      | nValue: int    |
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
-                    var category = function.Category;
+                    var category = ProcessNodeCategory(function.Category);
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -926,6 +963,7 @@ namespace Dynamo.ViewModels
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
+                cat = ProcessNodeCategory(cat);
             }
 
             attribs = t.GetCustomAttributes(typeof (NodeSearchTagsAttribute), false);
