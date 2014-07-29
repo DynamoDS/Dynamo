@@ -32,7 +32,8 @@ UninstallDisplayName=Dynamo 0.7.1
 UsePreviousAppDir=no
 
 [Dirs]
-Name: "{app}\dll"
+Name: "{app}\libg_219"
+Name: "{app}\libg_220"
 Name: "{app}\nodes"
 
 [Components]
@@ -69,8 +70,9 @@ Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion ove
 Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2015 DynamoForRevit2014 DynamoForRevit2016 DynamoForVasariBeta3
 
 ;LibG
-Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_219\*; DestDir: {app}\libg_219; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+;Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
 ;Icon
 Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
