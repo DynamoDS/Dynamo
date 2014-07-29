@@ -11,13 +11,13 @@ using Unfold.Interfaces;
 namespace Unfold
 {
 
-    public static class UnfoldPlanar
+    public static class GeneratePlanarUnfold
     {
         [SupressImportIntoVM]
         /// <summary>
         /// wrapper for edges and curves
         /// </summary>
-        public class EdgeLikeEntity : IUnfoldEdge
+        public class EdgeLikeEntity : IUnfoldableEdge
         {
 
             public Point Start { get; set; }
@@ -63,7 +63,7 @@ namespace Unfold
 
             public bool SpatialEquals(ISpatialEquatable obj)
             {
-                IUnfoldEdge objitem = obj as IUnfoldEdge;
+                IUnfoldableEdge objitem = obj as IUnfoldableEdge;
                 var otherval = objitem.Start.ToString() + objitem.End.ToString();
 
                 //equals will return true even if the start and end point are reversed since on one object this should be
@@ -87,7 +87,7 @@ namespace Unfold
         /// This is a wrapper type for face like entities so that unfolding methods can operate both on faces/edges or surfaces/adjacent-curves
         /// There are overloads for building this class from faces or surfaces
         /// </summary>
-        public class FaceLikeEntity : IUnfoldPlanarFace<EdgeLikeEntity>
+        public class FaceLikeEntity : IUnfoldablePlanarFace<EdgeLikeEntity>
         {
 
             public Object OriginalEntity { get; set; }
@@ -142,19 +142,19 @@ namespace Unfold
         /// a graph edge_ stores head and tail and the  wrapped geometry edgeLikeEntity that this graph edge represents
         /// </summary>
         public class GraphEdge<K, T>
-            where K : IUnfoldEdge
-            where T : IUnfoldPlanarFace<K>
+            where K : IUnfoldableEdge
+            where T : IUnfoldablePlanarFace<K>
         {
 
             public GraphVertex<K, T> Tail { get; set; }
             public GraphVertex<K, T> Head { get; set; }
-            public K Real_Edge { get; set; }
+            public K GeometryEdge { get; set; }
 
             public GraphEdge(K edge, GraphVertex<K, T> tail, GraphVertex<K, T> head)
             {
                 Tail = tail;
                 Head = head;
-                Real_Edge = edge;
+                GeometryEdge = edge;
             }
 
         }
@@ -165,15 +165,15 @@ namespace Unfold
         /// parent,explored,finishtime, and fold edge will be set during BFS or another traversal method
         /// </summary>
         public class GraphVertex<K, T>
-            where T : IUnfoldPlanarFace<K>
-            where K : IUnfoldEdge
+            where T : IUnfoldablePlanarFace<K>
+            where K : IUnfoldableEdge
         {
             public T UnfoldPolySurface { get; set; }
             public T Face { get; set; }
-            public HashSet<GraphEdge<K, T>> Graph_Edges { get; set; }
+            public HashSet<GraphEdge<K, T>> GraphEdges { get; set; }
             public GraphVertex<K, T> Parent { get; set; }
             public Boolean Explored { get; set; }
-            public int Finish_Time { get; set; }
+            public int FinishTime { get; set; }
             public HashSet<GraphEdge<K, T>> TreeEdges { get; set; }
 
 
@@ -185,13 +185,13 @@ namespace Unfold
             {
                 Face = face;
                 UnfoldPolySurface = face;
-                Graph_Edges = new HashSet<GraphEdge<K, T>>();
+                GraphEdges = new HashSet<GraphEdge<K, T>>();
                 TreeEdges = new HashSet<GraphEdge<K, T>>();
             }
 
             // Method to remove this graphvertex from graph and to remove all edges which point to it
             // from other nodes in the graph
-            public void RemoveFromGraph(List<UnfoldPlanar.GraphVertex<K, T>> graph)
+            public void RemoveFromGraph(List<GeneratePlanarUnfold.GraphVertex<K, T>> graph)
             {
 
                 //collect all edges
@@ -212,7 +212,7 @@ namespace Unfold
                 foreach (var vertex in graph)
                 {
 
-                    vertex.Graph_Edges.ExceptWith(edgesToRemove);
+                    vertex.GraphEdges.ExceptWith(edgesToRemove);
                 }
                 //finally remove the node
                 graph.Remove(this);
@@ -251,11 +251,7 @@ namespace Unfold
             // also need to discuss design with Zach,Peter to see if this should be exposed, it may be useful for
             // other things besides unfolding
 
-            /// <summary>
-            /// These might be exposed into dynamo to wrap up the appropriate input types and call generate topology
-            /// </summary>
-            /// <param name="faces"></param>
-            /// <returns></returns>
+            
 
             // These user facing methods will need to be wrapped to return different types 
             // since we do not want to expose generic types to dynamo
@@ -283,18 +279,15 @@ namespace Unfold
             }
 
 
-
-
-
-
             /// <summary>
-            /// main user facing method for generation of graph from list of faces
+            /// main method for generation of graph from list of faceslikes
+            /// builds initial dict of edges:faces using spatiallyequatablecomparer
             /// </summary>
             /// <param name="faces"></param>
             /// <returns></returns>
             private static List<GraphVertex<K, T>> GenerateTopology<K, T>(List<T> facelikes)
-                where T : IUnfoldPlanarFace<K>
-                where K : IUnfoldEdge
+                where T : IUnfoldablePlanarFace<K>
+                where K : IUnfoldableEdge
             {
                 Dictionary<K, List<T>> edgeDict = new Dictionary<K, List<T>>(new Unfold.Interfaces.SpatiallyEquatableComparer<K>());
                 foreach (T facelike in facelikes)
@@ -330,24 +323,23 @@ namespace Unfold
         {
 
 
-
-
             /// <summary>
             /// actually construct list of graph verts with stored faces and edges
+            /// iterates dictionary of edges to faces and building graph
             /// </summary>
             /// <param name="faces"></param>
-            /// <param name="edge_dict"></param>
+            /// <param name="edgeDict"></param>
             /// <returns></returns>
-            public static List<GraphVertex<K, T>> GenGraph<T, K>(List<T> facelikes, Dictionary<K, List<T>> edge_dict)
-                where K : IUnfoldEdge
-                where T : IUnfoldPlanarFace<K>
+            public static List<GraphVertex<K, T>> GenGraph<T, K>(List<T> facelikes, Dictionary<K, List<T>> edgeDict)
+                where K : IUnfoldableEdge
+                where T : IUnfoldablePlanarFace<K>
             {
                 List<GraphVertex<K, T>> graph = new List<GraphVertex<K, T>>();
                 // first build the graph nodes, just referencing faces
                 foreach (T face in facelikes)
                 {
-                    var current_vertex = new GraphVertex<K, T>(face);
-                    graph.Add(current_vertex);
+                    var CurrentVertex = new GraphVertex<K, T>(face);
+                    graph.Add(CurrentVertex);
                 }
 
                 // then build edges, need to use edge dict to do this
@@ -363,9 +355,9 @@ namespace Unfold
                         var edgekey = edgelike;
 
                         // find adjacent faces in the dict
-                        var subfaces = edge_dict[edgekey];
+                        var subfaces = edgeDict[edgekey];
                         // find the graph verts that represent these faces
-                        var verts = GraphUtilities.find_nodes_by_matching_faces(graph, subfaces);
+                        var verts = GraphUtilities.FindNodesByMatchingFaces(graph, subfaces);
                         //remove dupe faces, not sure if these should really be removed
                         verts = verts.Distinct().ToList();
                         //need to remove self loops
@@ -382,11 +374,11 @@ namespace Unfold
 
 
                         // these are the verts this edge connects
-                        foreach (var vert_to_connect_to in verts)
+                        foreach (var VertToConnectTo in verts)
                         {
-                            K wrapped_edge_on_this_graph_edge = GraphUtilities.find_real_edge_by_two_faces<T, K>(graph, subfaces, edge_dict);
-                            var current_graph_edge = new GraphEdge<K, T>(wrapped_edge_on_this_graph_edge, vertex, vert_to_connect_to);
-                            vertex.Graph_Edges.Add(current_graph_edge);
+                            K wrappedEdgeOnThisGraphEdge = GraphUtilities.FindRealEdgeByTwoFaces<T, K>(graph, subfaces, edgeDict);
+                            var CurrentGraphEdge = new GraphEdge<K, T>(wrappedEdgeOnThisGraphEdge, vertex, VertToConnectTo);
+                            vertex.GraphEdges.Add(CurrentGraphEdge);
                         }
 
                     }
@@ -402,8 +394,8 @@ namespace Unfold
 
             [MultiReturn(new[] { "tree geo", "BFS tree", "BFS finished" })]
             public static Dictionary<string, object> BFS<K, T>(List<GraphVertex<K, T>> graph)
-                where T : IUnfoldPlanarFace<K>
-                where K : IUnfoldEdge
+                where T : IUnfoldablePlanarFace<K>
+                where K : IUnfoldableEdge
             {
 
                 // this is a clone of the graph that we modify to store the tree edges on
@@ -423,39 +415,39 @@ namespace Unfold
                     if (node.Explored == false)
                     {
                         GraphVertex<K, T> root = node;
-                        root.Finish_Time = 0;
+                        root.FinishTime = 0;
                         root.Parent = null;
                         Q.Enqueue(root);
                     }
                     while (Q.Count > 0)
                     {
 
-                        GraphVertex<K, T> current_vertex = Q.Dequeue();
+                        GraphVertex<K, T> CurrentVertex = Q.Dequeue();
 
                         //generate some geometry to visualize the BFS tree
 
                         //create a polygon from verts, grab center, project center towards 
-                        Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(current_vertex.Face.SurfaceEntity);
+                        Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(CurrentVertex.Face.SurfaceEntity);
                         //  Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
                         Sphere nodecenter = Sphere.ByCenterPointRadius(center, .1);
                         tree.Add(nodecenter);
 
-                        foreach (GraphEdge<K, T> vedge in current_vertex.Graph_Edges)
+                        foreach (GraphEdge<K, T> vedge in CurrentVertex.GraphEdges)
                         {
 
                             GraphVertex<K, T> V = vedge.Head;
                             if (V.Explored == false)
                             {
                                 V.Explored = true;
-                                V.Finish_Time = current_vertex.Finish_Time + 1;
-                                V.Parent = current_vertex;
+                                V.FinishTime = CurrentVertex.FinishTime + 1;
+                                V.Parent = CurrentVertex;
 
-                                current_vertex.TreeEdges.Add(vedge);
+                                CurrentVertex.TreeEdges.Add(vedge);
 
 
                                 //Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
-                                Point child_center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(V.Face.SurfaceEntity);
-                                Line line = Line.ByStartPointEndPoint(center, child_center);
+                                Point childCenter = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(V.Face.SurfaceEntity);
+                                Line line = Line.ByStartPointEndPoint(center, childCenter);
                                 tree.Add(line);
                                 Q.Enqueue(V);
                             }
@@ -463,7 +455,7 @@ namespace Unfold
                         }
                         // look at BFS implementation again - CLRS ? colors? I am mutating verts too many times?
                         // check how many times this loop is running with acounter
-                        current_vertex.Explored = true;
+                        CurrentVertex.Explored = true;
 
 
                     }
@@ -474,7 +466,7 @@ namespace Unfold
 
                 foreach (var Vertex in TreeTransformedToGraph)
                 {
-                    Vertex.Graph_Edges = Vertex.TreeEdges;
+                    Vertex.GraphEdges = Vertex.TreeEdges;
                     //Vertex.TreeEdges.Clear();
 
                 }
@@ -489,19 +481,22 @@ namespace Unfold
             }
         }
 
+        /// <summary>
+        /// class that contains the unfolding methods and algorithms that perform unfolding
+        /// </summary>
         public static class PlanarUnfolder
         {
             // these overloads are called from exposed dynamo nodes depending on input type
 
             public static List<Surface> DSPLanarUnfold(List<Face> faces)
             {
-                var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromFaces(faces);
+                var graph = GeneratePlanarUnfold.ModelTopology.GenerateTopologyFromFaces(faces);
 
                 //perform BFS on the graph and get back the tree
-                var nodereturn = UnfoldPlanar.ModelGraph.BFS<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(graph);
+                var nodereturn = GeneratePlanarUnfold.ModelGraph.BFS<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>(graph);
                 object tree = nodereturn["BFS finished"];
 
-                var casttree = tree as List<UnfoldPlanar.GraphVertex<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>>;
+                var casttree = tree as List<GeneratePlanarUnfold.GraphVertex<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>>;
 
 
                 return PlanarUnfold(casttree);
@@ -510,13 +505,13 @@ namespace Unfold
 
             public static List<Surface> DSPLanarUnfold(List<Surface> surfaces)
             {
-                var graph = UnfoldPlanar.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
+                var graph = GeneratePlanarUnfold.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
 
                 //perform BFS on the graph and get back the tree
-                var nodereturn = UnfoldPlanar.ModelGraph.BFS<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(graph);
+                var nodereturn = GeneratePlanarUnfold.ModelGraph.BFS<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>(graph);
                 object tree = nodereturn["BFS finished"];
 
-                var casttree = tree as List<UnfoldPlanar.GraphVertex<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>>;
+                var casttree = tree as List<GeneratePlanarUnfold.GraphVertex<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>>;
 
 
                 return PlanarUnfold(casttree);
@@ -547,7 +542,7 @@ namespace Unfold
                 //repeat, until there is only one node in the tree.
                 // at this point all faces should be coplanar with this surface
 
-                var sortedtree = tree.OrderBy(x => x.Finish_Time).ToList();
+                var sortedtree = tree.OrderBy(x => x.FinishTime).ToList();
 
                 var disconnectedSet = new List<Surface>();
                 while (sortedtree.Count > 1)
@@ -563,10 +558,10 @@ namespace Unfold
                     var child = sortedtree.Last();
                     var parent = child.Parent;
                     //weak code, shoould have a method for this - find edge that leads to
-                    var edge = parent.Graph_Edges.Where(x => x.Head.Equals(child)).First();
+                    var edge = parent.GraphEdges.Where(x => x.Head.Equals(child)).First();
 
-                    double nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
-                    Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.UnfoldPolySurface, parent.Face, edge.Real_Edge) as Surface;
+                    double nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.GeometryEdge);
+                    Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.UnfoldPolySurface, parent.Face, edge.GeometryEdge) as Surface;
 
                     //at this point need to check if the rotated face has intersected with any other face that has been been
                     // folded already, all of these already folded faces should exist either in the parent unfoldedpolysurface
@@ -616,7 +611,9 @@ namespace Unfold
                     }
 
                     if (overlapflag)
+                        
                     {
+                        //TODO must fix this, need to organize final output and align all final subsets to some plane
                         var r = new Random();
                         // if any result was a surface then we overlapped we need to move the folded branch far away and pick a new
                         // branch to start the unfold from

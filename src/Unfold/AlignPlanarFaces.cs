@@ -20,15 +20,17 @@ namespace Unfold
         /// <param name="StartPointOnSharedEdge"></param>
         /// <param name="sharedEdge"></param>
         /// <returns></returns>
-        public static List<Point> FindPointsOfEdge_StartingAtPoint(List<UnfoldPlanar.EdgeLikeEntity> edges, 
-            Point StartPointOnSharedEdge, UnfoldPlanar.EdgeLikeEntity sharedEdge)
+        public static List<Point> FindPointsOfEdge_StartingAtPoint(List<GeneratePlanarUnfold.EdgeLikeEntity> edges, 
+            Point StartPointOnSharedEdge, GeneratePlanarUnfold.EdgeLikeEntity sharedEdge)
         {
-            UnfoldPlanar.EdgeLikeEntity found_edge = null;
+            GeneratePlanarUnfold.EdgeLikeEntity found_edge = null;
 
             Point Start = null;
             Point End = null;
 
             // we are searching for an edge that has the same start point as the shared edge, but is not the shared edge
+            
+            // TODO(mike) replace this with spatialEquals comparisons
             foreach (var edge in edges)
             {
                 if ((edge.End.IsAlmostEqualTo(StartPointOnSharedEdge)) || (edge.Start.IsAlmostEqualTo(StartPointOnSharedEdge)))
@@ -41,6 +43,7 @@ namespace Unfold
             }
 
             //reverse if needed
+            // we need these edges to point from the shared edge away.
             if (!found_edge.Start.IsAlmostEqualTo(sharedEdge.Start))
             {
 
@@ -64,8 +67,8 @@ namespace Unfold
         /// <param name="referenceFace"></param>
         /// <param name="sharedEdge"></param>
         /// <returns></returns>
-        public static double CheckNormalConsistency(UnfoldPlanar.FaceLikeEntity facetoRotate, 
-            UnfoldPlanar.FaceLikeEntity referenceFace, UnfoldPlanar.EdgeLikeEntity sharedEdge)
+        public static double CheckNormalConsistency(GeneratePlanarUnfold.FaceLikeEntity facetoRotate, 
+            GeneratePlanarUnfold.FaceLikeEntity referenceFace, GeneratePlanarUnfold.EdgeLikeEntity sharedEdge)
         {
             // assumption that face A is rotation face
             // and face B is reference face.
@@ -82,8 +85,8 @@ namespace Unfold
             Surface refsurface = referenceFace.SurfaceEntity;
             Surface rotsurface = facetoRotate.SurfaceEntity;
 
-            List<UnfoldPlanar.EdgeLikeEntity> refedegs = referenceFace.EdgeLikeEntities;
-            List<UnfoldPlanar.EdgeLikeEntity> rotedges = facetoRotate.EdgeLikeEntities;
+            List<GeneratePlanarUnfold.EdgeLikeEntity> refedegs = referenceFace.EdgeLikeEntities;
+            List<GeneratePlanarUnfold.EdgeLikeEntity> rotedges = facetoRotate.EdgeLikeEntities;
 
             Vector AB = Vector.ByTwoPoints(sharedcurve.StartPoint, sharedcurve.EndPoint); //Edge from A TO B// this is the shared edge
             Vector ABnorm = AB.Normalized();
@@ -97,15 +100,14 @@ namespace Unfold
            Vector ADnorm = ADVector.Normalized();
 
            Vector firstCross = ABnorm.Cross(ADnorm).Normalized();
-           Console.WriteLine("first cross" + firstCross);
+           
          
             Vector  rotFaceNormal = rotsurface.NormalAtParameter(.5, .5);
-          Console.WriteLine("rotFaceNormal" + rotFaceNormal);
+        
 
            double abxad_dot_normal_rot_face =  firstCross.Dot(rotFaceNormal);
            
-           Console.WriteLine("first dot product");
-           Console.WriteLine(abxad_dot_normal_rot_face);
+           
            
             // replace this with almost equal
           
@@ -123,15 +125,14 @@ namespace Unfold
 
            Vector secondCross = ACnorm.Cross(ABnorm).Normalized();
 
-           Console.WriteLine("second cross" + secondCross);
+          
 
            Vector refFaceNormal = refsurface.NormalAtParameter(.5, .5);
            
-            Console.WriteLine("refFaceNormal" + refFaceNormal);
-           
+          
             double acxab_dot_normal_ref_face = secondCross.Dot(refFaceNormal);
            
-           Console.WriteLine("second dot product");
+          
            Console.WriteLine(acxab_dot_normal_ref_face);
            
             if (Math.Abs(acxab_dot_normal_ref_face -1)<.0001)
@@ -140,7 +141,7 @@ namespace Unfold
            }
 
             //debug section
-
+#if DEBUG
             Console.WriteLine(ABnorm);
             Console.WriteLine(ADnorm);
             Console.WriteLine(ACnorm);
@@ -161,7 +162,7 @@ namespace Unfold
             Console.WriteLine(referenceFace.SurfaceEntity.PerimeterCurves()[0]);
             Console.WriteLine(referenceFace.SurfaceEntity.PerimeterCurves()[1]);
             Console.WriteLine(referenceFace.SurfaceEntity.PerimeterCurves()[2]);
-
+#endif
 
 
            double result = refFaceNormalOK * rotFaceNormalOK;
@@ -177,8 +178,8 @@ namespace Unfold
         /// <param name="referenceFace"></param>
         /// <param name="sharedEdge"></param>
         /// <returns></returns>
-        public static Geometry MakeGeometryCoPlanarAroundEdge( double normalconsistency, UnfoldPlanar.FaceLikeEntity facetoRotate,
-            UnfoldPlanar.FaceLikeEntity referenceFace, UnfoldPlanar.EdgeLikeEntity sharedEdge)
+        public static Geometry MakeGeometryCoPlanarAroundEdge( double normalconsistency, GeneratePlanarUnfold.FaceLikeEntity facetoRotate,
+            GeneratePlanarUnfold.FaceLikeEntity referenceFace, GeneratePlanarUnfold.EdgeLikeEntity sharedEdge)
         {
             
             Vector rotFaceNorm = facetoRotate.SurfaceEntity.NormalAtParameter(.5,.5);
@@ -193,20 +194,15 @@ namespace Unfold
 
             var c = rotFaceNorm.Dot(refFaceNorm)*-1.0 * normalconsistency;
 
-            Console.WriteLine("c" + c);
-
             var radians = Math.Atan2(s, c);
-
-            Console.WriteLine("first radians calc" + radians);
 
             var degrees = radians * (180.0 / Math.PI) ;
             
-            Console.WriteLine ("first degree calc" + degrees);
-            
             degrees = 180.0 - degrees;
-
+# if DEBUG
             Console.WriteLine(" about to to rotate");
             Console.WriteLine(degrees);
+# endif
             Geometry rotatedFace = facetoRotate.SurfaceEntity.Rotate(PlaneRotOrigin, degrees);
 
             return rotatedFace;

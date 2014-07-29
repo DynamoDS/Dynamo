@@ -53,10 +53,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnfoldingTests.cs" />
     <Compile Include="GeometryLikeEntityTests.cs" />
     <Compile Include="HostFactorySteup.cs" />
     <Compile Include="TopologyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnfoldTestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Unfold\Unfold.csproj">

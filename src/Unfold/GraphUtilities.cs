@@ -20,10 +20,12 @@ namespace Unfold
         /// <param name="nodes"></param>
         /// <param name="faces"></param>
         /// <returns></returns>
-        public static List<UnfoldPlanar.GraphVertex<K,T>> find_nodes_by_matching_faces<K,T>(List<UnfoldPlanar.GraphVertex<K,T>> nodes, List<T> facelikes) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
+        public static List<GeneratePlanarUnfold.GraphVertex<K,T>> FindNodesByMatchingFaces<K,T>(List<GeneratePlanarUnfold.GraphVertex<K,T>> nodes, List<T> facelikes) 
+            where T:IUnfoldablePlanarFace<K> 
+            where K:IUnfoldableEdge
         {
 
-            List<UnfoldPlanar.GraphVertex<K,T>> output = new List<UnfoldPlanar.GraphVertex<K,T>>();
+            List<GeneratePlanarUnfold.GraphVertex<K,T>> output = new List<GeneratePlanarUnfold.GraphVertex<K,T>>();
 
             foreach (var face in facelikes)
             {
@@ -46,9 +48,9 @@ namespace Unfold
         /// <param name="facelikes"></param>
         /// <param name="edgedict"></param>
         /// <returns></returns>
-        public static K find_real_edge_by_two_faces<T,K>(List<UnfoldPlanar.GraphVertex<K,T>> graph, List<T> facelikes, Dictionary<K, List<T>> edgedict)
-            where T:IUnfoldPlanarFace<K> 
-            where K:IUnfoldEdge
+        public static K FindRealEdgeByTwoFaces<T,K>(List<GeneratePlanarUnfold.GraphVertex<K,T>> graph, List<T> facelikes, Dictionary<K, List<T>> edgedict)
+            where T:IUnfoldablePlanarFace<K> 
+            where K:IUnfoldableEdge
         {
             foreach (KeyValuePair<K, List<T>> entry in edgedict) 
                     
@@ -79,52 +81,54 @@ namespace Unfold
         }
 
 
-        public static List<UnfoldPlanar.GraphVertex<K,T>> CloneGraph<K,T>(List<UnfoldPlanar.GraphVertex<K,T>> graph ) where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
+        public static List<GeneratePlanarUnfold.GraphVertex<K,T>> CloneGraph<K,T>(List<GeneratePlanarUnfold.GraphVertex<K,T>> graph ) 
+            where T:IUnfoldablePlanarFace<K> 
+            where K:IUnfoldableEdge
         {
             ///this is really a clone method in next 3 for loops
             //create new verts and store them in a new list
-            List<UnfoldPlanar.GraphVertex<K,T>> graph_to_traverse = new List<UnfoldPlanar.GraphVertex<K,T>>();
-            foreach (UnfoldPlanar.GraphVertex<K,T> vert_to_copy in graph)
+            List<GeneratePlanarUnfold.GraphVertex<K,T>> graphToTraverse = new List<GeneratePlanarUnfold.GraphVertex<K,T>>();
+            foreach (GeneratePlanarUnfold.GraphVertex<K,T> vertToCopy in graph)
             {
-                var vert = new UnfoldPlanar.GraphVertex<K,T>(vert_to_copy.Face);
-                graph_to_traverse.Add(vert);
+                var vert = new GeneratePlanarUnfold.GraphVertex<K,T>(vertToCopy.Face);
+                graphToTraverse.Add(vert);
             }
 
 
             // build the rest of the graphcopy - set the other properties of the verts correctly
-            foreach (UnfoldPlanar.GraphVertex<K,T> vert_to_copy in graph)
+            foreach (GeneratePlanarUnfold.GraphVertex<K,T> vert_to_copy in graph)
             {
-                List<UnfoldPlanar.GraphVertex<K,T>> vertlist = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { vert_to_copy.Face });
-                UnfoldPlanar.GraphVertex<K,T> vert = vertlist[0];
+                List<GeneratePlanarUnfold.GraphVertex<K,T>> vertlist = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { vert_to_copy.Face });
+                GeneratePlanarUnfold.GraphVertex<K,T> vert = vertlist[0];
                 vert.Explored = vert_to_copy.Explored;
-                vert.Finish_Time = vert_to_copy.Finish_Time;
+                vert.FinishTime = vert_to_copy.FinishTime;
                 if (vert_to_copy.Parent != null)
                 {
-                    vert.Parent = graph_to_traverse.Where(x => x.Equals(vert_to_copy.Parent)).First();
+                    vert.Parent = graphToTraverse.Where(x => x.Equals(vert_to_copy.Parent)).First();
                 }
-                foreach (Unfold.UnfoldPlanar.GraphEdge<K,T> edge_to_copy in vert_to_copy.Graph_Edges)
+                foreach (Unfold.GeneratePlanarUnfold.GraphEdge<K,T> edge_to_copy in vert_to_copy.GraphEdges)
                 {
 
                     // find the same faces in the new graph, the nodes that represent these faces...// but we must make sure that these nodes
                     // that are returned are the ones inside the new graph
                     // may make sense to add a property that either is a name , id, or graph owner ...
-                    List<UnfoldPlanar.GraphVertex<K,T>> newtail = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { edge_to_copy.Tail.Face });
-                    List<UnfoldPlanar.GraphVertex<K,T>> newhead = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { edge_to_copy.Head.Face });
-                    UnfoldPlanar.GraphEdge<K,T> edge = new UnfoldPlanar.GraphEdge<K,T>(edge_to_copy.Real_Edge, newtail[0], newhead[0]);
-                    vert.Graph_Edges.Add(edge);
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newtail = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Tail.Face });
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newhead = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Head.Face });
+                    GeneratePlanarUnfold.GraphEdge<K,T> edge = new GeneratePlanarUnfold.GraphEdge<K,T>(edge_to_copy.GeometryEdge, newtail[0], newhead[0]);
+                    vert.GraphEdges.Add(edge);
                 }
 
                 // same logic for tree edges
 
-                foreach (Unfold.UnfoldPlanar.GraphEdge<K, T> edge_to_copy in vert_to_copy.TreeEdges)
+                foreach (Unfold.GeneratePlanarUnfold.GraphEdge<K, T> edge_to_copy in vert_to_copy.TreeEdges)
                 {
 
                     // find the same faces in the new graph, the nodes that represent these faces...// but we must make sure that these nodes
                     // that are returned are the ones inside the new graph
                     // may make sense to add a property that either is a name , id, or graph owner ...
-                    List<UnfoldPlanar.GraphVertex<K, T>> newtail = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { edge_to_copy.Tail.Face });
-                    List<UnfoldPlanar.GraphVertex<K, T>> newhead = find_nodes_by_matching_faces(graph_to_traverse, new List<T>() { edge_to_copy.Head.Face });
-                    UnfoldPlanar.GraphEdge<K, T> edge = new UnfoldPlanar.GraphEdge<K, T>(edge_to_copy.Real_Edge, newtail[0], newhead[0]);
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newtail = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Tail.Face });
+                    List<GeneratePlanarUnfold.GraphVertex<K, T>> newhead = FindNodesByMatchingFaces(graphToTraverse, new List<T>() { edge_to_copy.Head.Face });
+                    GeneratePlanarUnfold.GraphEdge<K, T> edge = new GeneratePlanarUnfold.GraphEdge<K, T>(edge_to_copy.GeometryEdge, newtail[0], newhead[0]);
                     vert.TreeEdges.Add(edge);
                 }
 
@@ -132,22 +136,22 @@ namespace Unfold
 
             }
 
-            return graph_to_traverse;
+            return graphToTraverse;
         }
 
         //   http://stackoverflow.com/questions/6643076/tarjan-cycle-detection-help-c-sharp
         //  http://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
-        public static class tarjansAlgo<K,T> where T:IUnfoldPlanarFace<K> where K:IUnfoldEdge
+        public static class tarjansAlgo<K,T> where T:IUnfoldablePlanarFace<K> where K:IUnfoldableEdge
        {
 
             static int Index;
-            static Stack<UnfoldPlanar.GraphVertex<K,T>> VertStack;
-            static List<UnfoldPlanar.GraphVertex<K,T>> graphcopy;
-            static List<List<UnfoldPlanar.GraphVertex<K,T>>> stronglyConnectedComponents;
+            static Stack<GeneratePlanarUnfold.GraphVertex<K,T>> VertStack;
+            static List<GeneratePlanarUnfold.GraphVertex<K,T>> graphcopy;
+            static List<List<GeneratePlanarUnfold.GraphVertex<K,T>>> stronglyConnectedComponents;
 
 
             //use for cycle detection to assert that the BFS tree has no cycles and is a tree
-            public static List<List<UnfoldPlanar.GraphVertex<K,T>>> CycleDetect(List<UnfoldPlanar.GraphVertex<K,T>> graph)
+            public static List<List<GeneratePlanarUnfold.GraphVertex<K,T>>> CycleDetect(List<GeneratePlanarUnfold.GraphVertex<K,T>> graph)
             {
 
                 var GraphWithTags = CloneGraph<K,T>(graph);
@@ -158,9 +162,9 @@ namespace Unfold
                     vert.LowLink = -1;
                 }
 
-                stronglyConnectedComponents = new List<List<UnfoldPlanar.GraphVertex<K,T>>>();
+                stronglyConnectedComponents = new List<List<GeneratePlanarUnfold.GraphVertex<K,T>>>();
                 Index = 0;
-                VertStack = new Stack<UnfoldPlanar.GraphVertex<K,T>>();
+                VertStack = new Stack<GeneratePlanarUnfold.GraphVertex<K,T>>();
 
                 graphcopy = GraphWithTags;
                 foreach (var vert in GraphWithTags)
@@ -175,16 +179,16 @@ namespace Unfold
                 return stronglyConnectedComponents;
             }
 
-            private static void checkStrongConnect(UnfoldPlanar.GraphVertex<K,T> vertex)
+            private static void checkStrongConnect(GeneratePlanarUnfold.GraphVertex<K,T> vertex)
             {
                 vertex.Index = Index;
                 vertex.LowLink = Index;
                 Index = Index + 1;
                 VertStack.Push(vertex);
 
-                var adjlist = vertex.Graph_Edges.Select(x => x.Head).ToList();
+                var adjlist = vertex.GraphEdges.Select(x => x.Head).ToList();
 
-                foreach (UnfoldPlanar.GraphVertex<K,T> AdjVert in adjlist)
+                foreach (GeneratePlanarUnfold.GraphVertex<K,T> AdjVert in adjlist)
                 {
 
                     if (AdjVert.Index < 0)
@@ -206,8 +210,8 @@ namespace Unfold
                 if (vertex.LowLink == vertex.Index)
                 {
 
-                    var components = new List<UnfoldPlanar.GraphVertex<K,T>>();
-                    UnfoldPlanar.GraphVertex<K,T> X;
+                    var components = new List<GeneratePlanarUnfold.GraphVertex<K,T>>();
+                    GeneratePlanarUnfold.GraphVertex<K,T> X;
 
                     do
                     {
@@ -225,13 +229,15 @@ namespace Unfold
 
             }
         }
-            public static List<UnfoldPlanar.GraphEdge<K, T>> GetAllGraphEdges<K,T>(List<UnfoldPlanar.GraphVertex<K, T>> graph) where K:IUnfoldEdge where T:IUnfoldPlanarFace<K> 
+            public static List<GeneratePlanarUnfold.GraphEdge<K, T>> GetAllGraphEdges<K,T>(List<GeneratePlanarUnfold.GraphVertex<K, T>> graph) 
+                where K:IUnfoldableEdge 
+                where T:IUnfoldablePlanarFace<K> 
             {
-             var alledges = new List<UnfoldPlanar.GraphEdge<K, T>>();
+             var alledges = new List<GeneratePlanarUnfold.GraphEdge<K, T>>();
         
-            foreach (UnfoldPlanar.GraphVertex<K, T> vertex in graph)
+            foreach (GeneratePlanarUnfold.GraphVertex<K, T> vertex in graph)
             {
-                foreach (UnfoldPlanar.GraphEdge<K, T> graphedge in vertex.Graph_Edges)
+                foreach (GeneratePlanarUnfold.GraphEdge<K, T> graphedge in vertex.GraphEdges)
                 {
 
                     alledges.Add(graphedge);
