@@ -340,7 +340,7 @@ namespace UnfoldTests
 
 
 
-                            int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                            double nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
                             Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
 
                             AssertSurfacesAreCoplanar(rotatedFace, parent.Face.SurfaceEntity);
@@ -398,7 +398,7 @@ namespace UnfoldTests
                             var child = edge.Head;
 
 
-                            int nc = AlignPlanarFaces.CheckNormalConsistency(parent.Face, child.Face, edge.Real_Edge);
+                            double nc = AlignPlanarFaces.CheckNormalConsistency(parent.Face, child.Face, edge.Real_Edge);
                             Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, parent.Face, child.Face, edge.Real_Edge) as Surface;
 
                             AssertSurfacesAreCoplanar(rotatedFace, child.Face.SurfaceEntity);
@@ -456,7 +456,7 @@ namespace UnfoldTests
                             AssertEdgeCoincidentWithBothFaces<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(parent.Face, child.Face, edge.Real_Edge);
 
 
-                            int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                            double nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
                             Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
 
                             AssertSurfacesAreCoplanar(rotatedFace, parent.Face.SurfaceEntity);
@@ -517,7 +517,7 @@ namespace UnfoldTests
                             AssertEdgeCoincidentWithBothFaces<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(parent.Face, child.Face, edge.Real_Edge);
 
 
-                            int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                            double nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
                             Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
 
                             AssertSurfacesAreCoplanar(rotatedFace, parent.Face.SurfaceEntity);
@@ -579,7 +579,7 @@ namespace UnfoldTests
                             AssertEdgeCoincidentWithBothFaces<UnfoldPlanar.EdgeLikeEntity, UnfoldPlanar.FaceLikeEntity>(parent.Face, child.Face, edge.Real_Edge);
 
 
-                            int nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
+                            double nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.Real_Edge);
                             Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.Face, parent.Face, edge.Real_Edge) as Surface;
 
                             AssertSurfacesAreCoplanar(rotatedFace, parent.Face.SurfaceEntity);
