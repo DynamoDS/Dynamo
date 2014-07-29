@@ -28,7 +28,8 @@ copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\FunctionObject.ds %cwd%\
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\DSCoreNodes_DynamoCustomization.xml %cwd%\temp\bin\DSCoreNodes_DynamoCustomization.xml
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCustomization.xml %cwd%\temp\bin\ProtoGeometry_DynamoCustomization.xml
 
-robocopy %cwd%\..\..\extern\LibG %cwd%\temp\bin\LibG
+robocopy %cwd%\..\..\extern\LibG_219 %cwd%\temp\bin\LibG_219
+robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 
 robocopy %cwd%\..\..\ %cwd%\Extra README.md
 cd %cwd%\Extra
