@@ -5,6 +5,7 @@ using System.Reflection;
 using Autodesk.Revit.DB;
 
 using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.Mirror;
 using Revit.GeometryConversion;
@@ -16,18 +17,20 @@ using PolyCurve = Autodesk.DesignScript.Geometry.PolyCurve;
 
 namespace Dynamo
 {
-    class VisualizationManagerRevit : VisualizationManager
+    class RevitVisualizationManager : VisualizationManager
     {
         private ElementId keeperId = ElementId.InvalidElementId;
+        private readonly DynamoModel dynamoModel;
 
         public ElementId KeeperId
         {
             get { return keeperId; }
         }
 
-        public VisualizationManagerRevit() : base()
+        public RevitVisualizationManager(DynamoModel dynamoModel, string context) : base(dynamoModel)
         {
-            var context = dynSettings.Controller.Context;
+            this.dynamoModel = dynamoModel;
+
             if (context == Context.VASARI_2014 || 
                 context == Context.REVIT_2015)
             {
@@ -38,7 +41,7 @@ namespace Dynamo
 
                 RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
-                dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
+                this.dynamoModel.CleaningUp += CleanupVisualizations;
             }
             else
             {
