@@ -20,7 +20,6 @@ namespace Dynamo
     class RevitVisualizationManager : VisualizationManager
     {
         private ElementId keeperId = ElementId.InvalidElementId;
-        private readonly DynamoModel dynamoModel;
 
         public ElementId KeeperId
         {
@@ -29,8 +28,6 @@ namespace Dynamo
 
         public RevitVisualizationManager(DynamoModel dynamoModel, string context) : base(dynamoModel)
         {
-            this.dynamoModel = dynamoModel;
-
             if (context == Context.VASARI_2014 || 
                 context == Context.REVIT_2015)
             {
@@ -41,7 +38,7 @@ namespace Dynamo
 
                 RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
-                this.dynamoModel.CleaningUp += CleanupVisualizations;
+                dynamoModel.CleaningUp += CleanupVisualizations;
             }
             else
             {
