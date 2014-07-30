@@ -1,6 +1,7 @@
 ﻿#region
 using System.Diagnostics;
 
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 
 using Dynamo.Core;
@@ -15,8 +16,10 @@ using RevitServices.Transactions;
 
 namespace Dynamo.Applications
 {
-    internal class DynamoRunner_Revit : DynamoRunner
+    internal class DynamoRevitRunner : DynamoRunner
     {
+        private readonly DynamoRevitModel dynamoRevitModel;
+
         public TransactionMode TransMode
         {
             get
@@ -24,7 +27,7 @@ namespace Dynamo.Applications
                 if (TransactionManager.Instance.Strategy is AutomaticTransactionStrategy)
                     return TransactionMode.Automatic;
 
-                return TransactionMode.Debug;
+                return TransactionMode.Manual;
             }
             set
             {
@@ -38,29 +41,30 @@ namespace Dynamo.Applications
                         break;
                 }
 
-                ViewModels.DynamoViewModel.RunInDebug = value == TransactionMode.Debug;
+                dynamoRevitModel.RunInDebug = value == TransactionMode.Manual;
             }
         }
 
-        public DynamoRunner_Revit(DynamoModel viewModel)
+        public DynamoRevitRunner(DynamoRevitModel dynamoRevitModel)
+            : base(dynamoRevitModel)
         {
-            this.viewModel = viewModel;
+            this.dynamoRevitModel = dynamoRevitModel;
         }
          
         protected override void OnRunCancelled(bool error)
         {
             base.OnRunCancelled(error);
 
-            if (viewModel.transaction != null
-                && viewModel.transaction.Status == TransactionStatus.Started)
-                viewModel.transaction.CancelTransaction();
+            if (dynamoRevitModel.transaction != null
+                && dynamoRevitModel.transaction.Status == TransactionStatus.Started)
+                dynamoRevitModel.transaction.CancelTransaction();
         }
 
         protected override void Evaluate()
         {
-            if (viewModel.DynamoViewModel.RunInDebug)
+            if (dynamoRevitModel.RunInDebug)
             {
-                TransMode = TransactionMode.Debug; //Debug transaction control
+                TransMode = TransactionMode.Manual; //Debug transaction control
             }
             else
             {

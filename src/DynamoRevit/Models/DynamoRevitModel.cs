@@ -60,7 +60,7 @@ namespace Dynamo.Applications
      
         #endregion
 
-        public DynamoRevitModel(string context, IPreferences preferences, bool isTestMode = false) :
+        public DynamoRevitModel(string context, IPreferences preferences, RevitServicesUpdater updater, bool isTestMode = false) :
             base(context, preferences, isTestMode)
         {
             RevitUpdater = updater;
@@ -225,7 +225,7 @@ namespace Dynamo.Applications
                 {
                     TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
-                    var keeperId = ((VisualizationManagerRevit) VisualizationManager).KeeperId;
+                    var keeperId = ((RevitVisualizationManager) VisualizationManager).KeeperId;
 
                     if (keeperId != ElementId.InvalidElementId)
                     {
