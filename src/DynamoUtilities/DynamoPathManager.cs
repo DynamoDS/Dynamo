@@ -54,7 +54,7 @@ namespace DynamoUtilities
         /// The ASM folder which contains LibG and the 
         /// ASM binaries.
         /// </summary>
-        public string LibG { get; set; }
+        public string LibG { get; private set; }
 
         /// <summary>
         /// All 'nodes' folders.
@@ -79,6 +79,8 @@ namespace DynamoUtilities
         /// The Dynamo folder in AppData
         /// </summary>
         public string AppData { get; set;}
+
+        public string GeometryFactory { get; set; }
 
         /// <summary>
         /// Additional paths that should be searched during
@@ -146,8 +148,9 @@ namespace DynamoUtilities
             {
                 Directory.CreateDirectory(CommonSamples);
             }
+            
+            SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
 
-            LibG = Path.Combine(MainExecPath, "libg_219");
             Ui = Path.Combine(MainExecPath , "UI");
 
             if (Nodes == null)
@@ -273,6 +276,13 @@ namespace DynamoUtilities
             {
                 addResolvePaths.Add(path);
             }
+        }
+
+        public void SetLibGPath(string path)
+        {
+            LibG = path;
+            var splits = LibG.Split('\\');
+            GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
         }
     }
 }
