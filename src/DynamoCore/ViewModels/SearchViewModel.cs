@@ -217,7 +217,7 @@ namespace Dynamo.ViewModels
             MaxNumSearchResults = 35;
             Visible = false;
             searchText = "";
-            searchIconAlignment = System.Windows.HorizontalAlignment.Center;
+            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -225,7 +225,7 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            this.AddRootCategory(BuiltinNodeCategories.IO);                        
+            this.AddRootCategory(BuiltinNodeCategories.IO);
         }
 
 
@@ -850,7 +850,7 @@ namespace Dynamo.ViewModels
             }
 
         }
-        
+
         /// <summary>
         ///     Adds DesignScript function groups
         /// </summary>
@@ -937,7 +937,7 @@ namespace Dynamo.ViewModels
             var cat = "";
             if (attribs.Length > 0)
             {
-                cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;                
+                cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
             }
 
             attribs = t.GetCustomAttributes(typeof (NodeSearchTagsAttribute), false);
