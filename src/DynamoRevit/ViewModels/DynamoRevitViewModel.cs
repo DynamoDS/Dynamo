@@ -37,6 +37,7 @@ namespace Dynamo
             IEnumerable<ElementId> selectedIds =
                 DocumentManager.Instance.CurrentUIDocument.Selection.Elements.Cast<Element>()
                     .Select(x => x.Id);
+
             IEnumerable<RevitTransactionNode> transNodes =
                 this.Model.CurrentWorkspace.Nodes.OfType<RevitTransactionNode>();
             List<RevitTransactionNode> foundNodes =
