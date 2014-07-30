@@ -58,11 +58,6 @@ namespace Dynamo.Applications
 
         public RevitServicesUpdater RevitUpdater { get; private set; }
 
-        /// <summary>
-        ///     A dictionary which temporarily stores element names for setting after element deletion.
-        /// </summary>
-        public Dictionary<ElementId, string> ElementNameStore { get; set; }
-
         public bool InIdleThread
         {
             get { return RevitServices.Threading.IdlePromise.InIdleThread; }
@@ -95,7 +90,6 @@ namespace Dynamo.Applications
             TransactionWrapper.FailuresRaised += TransactionManager_FailuresRaised;
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
-            ElementNameStore = new Dictionary<ElementId, string>();
 
             SetupPython();
 
