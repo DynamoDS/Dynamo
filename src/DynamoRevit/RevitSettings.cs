@@ -19,23 +19,7 @@ namespace Dynamo.Utilities
 {
     internal class dynUtils
     {
-        /// <summary>
-        ///     Utility function to determine if an Element of the given ID exists in the document.
-        /// </summary>
-        /// <returns>True if exists, false otherwise.</returns>
-        public static bool TryGetElement<T>(ElementId id, out T e) where T : Element
-        {
-            try
-            {
-                e = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id) as T;
-                return e != null && e.Id != null;
-            }
-            catch
-            {
-                e = null;
-                return false;
-            }
-        }
+
 
     }
 

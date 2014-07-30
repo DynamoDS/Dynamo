@@ -227,75 +227,22 @@ namespace Dynamo.Applications
             OnRevitDocumentChanged();
         }
 
-        public override void OnEvaluationCompleted(object sender, EventArgs e)
+        /// <summary>
+        ///     Utility function to determine if an Element of the given ID exists in the document.
+        /// </summary>
+        /// <returns>True if exists, false otherwise.</returns>
+        private static bool TryGetElement<T>(ElementId id, out T e) where T : Element
         {
-            //Cleanup Delegate
-            Action cleanup = delegate
+            try
             {
-                //TODO: perhaps this should occur inside of ResetRuns in the event that
-                //      there is nothing to be deleted?
-
-                //Initialize a transaction (if one hasn't been aleady)
-                TransactionManager.Instance.EnsureInTransaction(
-                    DocumentManager.Instance.CurrentUIDocument.Document);
-
-                //Reset all elements
-                IEnumerable<RevitTransactionNode> query =
-                    this.AllNodes.OfType<RevitTransactionNode>();
-
-                foreach (RevitTransactionNode element in query)
-                    element.ResetRuns();
-
-                //////
-                /* FOR NON-DEBUG RUNS, THIS IS THE ACTUAL END POINT FOR DYNAMO TRANSACTION */
-                //////
-
-                //Close global transaction.
-                TransactionManager.Instance.TransactionTaskDone();
-            };
-
-            //Rename Delegate
-            Action rename = delegate
+                e = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id) as T;
+                return e != null && e.Id != null;
+            }
+            catch
             {
-                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-
-                foreach (var kvp in ElementNameStore)
-                {
-                    //find the element and rename it
-                    Element el;
-                    if (dynUtils.TryGetElement(kvp.Key, out el))
-                    {
-                        //if the element is not stored with a unique name
-                        //add a unique suffix to it
-                        try
-                        {
-                            if (el is ReferencePlane)
-                            {
-                                var rp = el as ReferencePlane;
-                                rp.Name = kvp.Value;
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            if (el is ReferencePlane)
-                            {
-                                var rp = el as ReferencePlane;
-                                rp.Name = kvp.Value + "_" + Guid.NewGuid();
-                            }
-                        }
-                    }
-                }
-
-                ElementNameStore.Clear();
-
-                TransactionManager.Instance.TransactionTaskDone();
-            };
-
-            cleanup();
-            rename();
-            TransactionManager.Instance.ForceCloseTransaction();
-
-            base.OnEvaluationCompleted(sender, e);
+                e = null;
+                return false;
+            }
         }
 
         public override void ShutDown(bool shutDownHost, EventArgs args = null)
