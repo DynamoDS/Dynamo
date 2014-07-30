@@ -35,6 +35,12 @@ namespace Dynamo.Applications
 {
     internal class DynamoRevitModel : DynamoModel
     {
+        public enum TransactionMode
+        {
+            Debug,
+            Manual,
+            Automatic
+        }
 
         #region Events
 
@@ -48,11 +54,9 @@ namespace Dynamo.Applications
 
         #endregion
 
-        #region
+        #region Properties/Fields
 
         public RevitServicesUpdater RevitUpdater { get; private set; }
-
-        #endregion
 
         /// <summary>
         ///     A dictionary which temporarily stores element names for setting after element deletion.
@@ -63,13 +67,8 @@ namespace Dynamo.Applications
         {
             get { return RevitServices.Threading.IdlePromise.InIdleThread; }
         }
-
-        public enum TransactionMode
-        {
-            Debug,
-            Manual,
-            Automatic
-        }
+                
+        #endregion
 
         public DynamoRevitModel(string context, IPreferences preferences, bool isTestMode = false) :
             base(context, preferences, isTestMode)
@@ -306,15 +305,13 @@ namespace Dynamo.Applications
             RevitServices.Threading.IdlePromise.ExecuteOnShutdown(
                 delegate
                 {
-                    TransactionManager.Instance.EnsureInTransaction(
-                        DocumentManager.Instance.CurrentDBDocument);
+                    TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
                     var keeperId = ((VisualizationManagerRevit) VisualizationManager).KeeperId;
 
                     if (keeperId != ElementId.InvalidElementId)
                     {
                         DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                        keeperId = ElementId.InvalidElementId;
                     }
 
                     TransactionManager.Instance.ForceCloseTransaction();

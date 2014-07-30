@@ -41,34 +41,9 @@ namespace Dynamo.Utilities
 
     public static class dynRevitSettings
     {
-        private static Options geometryOptions;
-
-        public static Stack<ElementsContainer> ElementsContainers =
-            new Stack<ElementsContainer>(new[] { new ElementsContainer() });
-
         public static Level DefaultLevel { get; set; }
         public static DynamoWarningSwallower WarningSwallower { get; set; }
-
-        public static Options GeometryOptions
-        {
-            get
-            {
-                if (geometryOptions == null)
-                {
-                    geometryOptions = new Options
-                    {
-                        ComputeReferences = true,
-                        DetailLevel = ViewDetailLevel.Medium,
-                        IncludeNonVisibleObjects = false
-                    };
-                }
-
-                return geometryOptions;
-            }
-        }
-
         public static DynamoViewModel Controller { get; internal set; }
-
 
     }
 }
