@@ -871,6 +871,73 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
         }
+        [Test]
+        public void Test_IFnode_3483_1()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\ifnode_3483.dyn");
+
+            AssertPreviewValue("516de967-91ac-4a93-87ce-7f130774268a", 5.00);
+        }
+        [Test]
+        public void Test_IFnode_3483_2()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\ifnode_3483_2.dyn");
+
+            AssertPreviewValue("70b5aeba-80b7-48cc-a48d-6c755c28555c", new object []{ 1, 1, 1, new object []{ -2, -1, 0, 1, 2 },new object[] { -2, -1, 0, 1, 2 } });
+        }
+        [Test]
+        public void Test_ConditionalCustomFunction_3483()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\conditionalCustomFunction_3483.dyn");
+
+            AssertPreviewValue("46f484ed-eecd-45cd-9904-0020a3c98999", 2.65);
+            //AssertPreviewValue("f994a38f-00ac-4d05-8e5a-02a1adef596c", 2.65);
+            
+        }
+        [Test]
+        public void Test_CustomFunctionobject_3483()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\CustomFunctionobject_3483.dyn");
+
+            AssertPreviewValue("dace0b8c-381e-4de5-824d-c1651ec94bc6", new double[] {1,1,1,1,1,2,3});
+        }
+        
+        [Test]
+        public void Test_IfinputFunctionObject_3483()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\IfinputFunctionObject_3483.dyn");
+
+            AssertPreviewValue("079fa696-e6e7-402f-866f-9bf4306b5020", 1.00);
+        }
+        [Test]
+        public void Test_IfAsFunctionobject_3483()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\IfAsFunctionobject_3483.dyn");
+
+            AssertPreviewValue("80d14b69-4796-48c9-a34d-f447abf7b5ba", new object[] {1,1,new double[]{-2,-1,0,1,2},1,1});
+        }
+        [Test]
+        public void Test_IfOutputFunctionObject_3483()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Test_IfOutputFunctionObject_3483.dyn");
+
+            AssertPreviewValue("dace0b8c-381e-4de5-824d-c1651ec94bc6", new bool[] { true, true, true, false, false });
+        }
+
     }
 
     [Category("DSCustomNode")]
