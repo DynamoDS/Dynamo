@@ -12,6 +12,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
@@ -156,7 +157,7 @@ namespace Dynamo.Applications
             var versionInt = int.Parse(versionNumber);
             if (versionInt > 2014)
             {
-                DynamoPathManager.Instance.LibG = Path.Combine(assDir, "libg_220");
+                DynamoPathManager.Instance.SetLibGPath(Path.Combine(assDir, "libg_220"));
             }
         }
     }
