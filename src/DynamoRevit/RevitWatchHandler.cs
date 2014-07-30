@@ -25,6 +25,15 @@ namespace Dynamo.Applications
     /// </summary>
     public class RevitWatchHandler : IWatchHandler
     {
+        private readonly IVisualizationManager visualizationManager;
+        private readonly IPreferences preferences;
+
+        public RevitWatchHandler(IVisualizationManager vizManager, IPreferences prefs)
+        {
+            this.preferences = prefs;
+            this.visualizationManager = vizManager;
+        }
+
         internal WatchViewModel ProcessThing(Element element, string tag, bool showRawData = true)
         {
             var id = element.Id;
@@ -38,10 +47,10 @@ namespace Dynamo.Applications
 
             var elementString =
                 element.ToString(
-                    dynSettings.Controller.PreferenceSettings.NumberFormat,
+                    this.preferences.NumberFormat,
                     CultureInfo.InvariantCulture);
 
-            var node = new WatchViewModel(elementString, tag);
+            var node = new WatchViewModel(visualizationManager, elementString, tag);
             node.Clicked += () => DocumentManager.Instance.CurrentUIDocument.ShowElements(element.InternalElement);
             node.Link = id.ToString(CultureInfo.InvariantCulture);
 
@@ -50,26 +59,28 @@ namespace Dynamo.Applications
 
         internal WatchViewModel ProcessThing(object value, string tag, bool showRawData = true)
         {
-            var node = new WatchViewModel(ToString(value), tag);
+            var node = new WatchViewModel(visualizationManager, ToString(value), tag);
             return node;
         }
 
         internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchViewModel(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+                return new WatchViewModel(visualizationManager, 
+                    unit.Value.ToString(this.preferences.NumberFormat, CultureInfo.InvariantCulture), 
+                    tag);
 
-            return new WatchViewModel(unit.ToString(), tag);
+            return new WatchViewModel(visualizationManager, unit.ToString(), tag);
         }
 
         internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(visualizationManager, value.ToString(this.preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(value, tag);
+            return new WatchViewModel(visualizationManager, value, tag);
         }
 
         internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData = true)
@@ -104,7 +115,7 @@ namespace Dynamo.Applications
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
             if(value == null)
-                return new WatchViewModel("null", tag);
+                return new WatchViewModel(visualizationManager, "null", tag);
 
             return ProcessThing(value, tag, showRawData);
         }
