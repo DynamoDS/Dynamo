@@ -228,14 +228,11 @@ namespace Dynamo.Search
         {
             BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
-            {
                 binding.UpdateSource();
-            }
 
             searchTimer.IsEnabled = true;
             searchTimer.Stop();
             searchTimer.Start();
-            
         }
 
         void SearchTimerTick(object sender, EventArgs e)
@@ -360,5 +357,6 @@ namespace Dynamo.Search
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
         }
+
     }
 }

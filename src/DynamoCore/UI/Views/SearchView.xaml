@@ -16,8 +16,7 @@
              d:DesignHeight="300"  
              x:Name="SearchControl" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}"
-             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}"
-             >
+             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -463,7 +462,8 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                </Style>              
+                </Style>
+
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneWay}"></Setter>

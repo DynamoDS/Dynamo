@@ -62,12 +62,12 @@ namespace Revit.GeometryReferences
             {
                 return TryGetCurveReference(curve);
             }
-            catch (RuntimeBinderException e)
+            catch (RuntimeBinderException)
             {
                 throw new ArgumentException(nodeTypeString +
                                             " requires a ElementCurveReference extracted from a Revit Element! ");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new ArgumentException("Could not obtain a CurveReference from the provided data! " + nodeTypeString +
                                             " requires a ElementCurveReference extracted from a Revit Element! ");
