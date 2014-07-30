@@ -9,7 +9,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
 {
-    public class CustomNodeDefinition
+    public class CustomNodeDefinition : IFunctionDescriptor
     {
         internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
 
@@ -105,10 +105,10 @@ namespace Dynamo
         private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
         {
             return WorkspaceModel.Nodes
-                            .OfType<Function>()
-                            .Select(node => node.Definition)
-                            .Where(def => def != this)
-                            .Distinct();
+                .OfType<Function>()
+                .Select(node => node.Definition)
+                .Where(def => def != this)
+                .Distinct();
         }
 
         #endregion
