@@ -268,19 +268,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void testAnd_StringInput()
-        {
-            Assert.Inconclusive("and should always return true/false");
-            DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(logicTestFolder, "testAndStringInput.dyn");
-
-            RunModel(testFilePath);
-            AssertPreviewValue("893a8746-b74f-4078-a125-8b96a48ec782", "b");
-            AssertPreviewValue("6fa95218-d960-4069-ab38-0fec7c815e06", "a");
-
-        }
-
-        [Test]
         public void testIf_StringInput()
         {
             DynamoModel model = Controller.DynamoModel;

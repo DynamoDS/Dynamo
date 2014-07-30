@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -71,8 +72,8 @@ namespace Dynamo.Tests
             var valuePostCollapse = watchNode.CachedValue;
 
             // Ensure the values are equal and both 65.
-            var svPreCollapse = ((long)valuePreCollapse.Data);
-            var svPostCollapse = ((long)valuePostCollapse.Data);
+            var svPreCollapse = ((long)valuePreCollapse);
+            var svPostCollapse = ((long)valuePostCollapse);
             Assert.AreEqual(65, svPreCollapse);
             Assert.AreEqual(svPreCollapse, svPostCollapse);
         }
@@ -305,15 +306,15 @@ namespace Dynamo.Tests
                 "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
             };
 
-            foreach (var guid in nodesToCollapse)
+            foreach (
+                var node in
+                    nodesToCollapse.Select(guid => model.CurrentWorkspace.NodeFromWorkspace(guid)))
             {
-                var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
                 model.AddToSelection(node);
             }
 
             NodeCollapser.Collapse(
-                 DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                    .Select(x => (x as NodeModel)),
+                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                     model.CurrentWorkspace,
                     new FunctionNamePromptEventArgs
                     {
@@ -329,10 +330,10 @@ namespace Dynamo.Tests
             var workspace = model.CurrentWorkspace;
             Assert.AreEqual(6, workspace.Nodes.Count);
 
-            List<ModelBase> modelsToDelete = new List<ModelBase>();
+            var modelsToDelete = new List<ModelBase>();
             var addition = workspace.FirstNodeFromWorkspace<DSFunction>();
             Assert.IsNotNull(addition);
-            Assert.AreEqual("+", (addition as DSFunction).NickName);
+            Assert.AreEqual("+", addition.NickName);
 
             modelsToDelete.Add(addition);
             model.DeleteModelInternal(modelsToDelete);
@@ -363,19 +364,19 @@ namespace Dynamo.Tests
             var watch =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "157557d2-2452-413a-9944-1df3df793cee");
-            var doubleWatchVal = (double)watch.CachedValue.Data;
+            var doubleWatchVal = (double)watch.CachedValue;
             Assert.AreEqual(15.0, doubleWatchVal, 0.001);
 
             var watch2 =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
-            var doubleWatchVal1 = (double)watch2.CachedValue.Data;
+            var doubleWatchVal1 = (double)watch2.CachedValue;
             Assert.AreEqual(15.0, doubleWatchVal1, 0.001);
 
             var watch3 =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "1aca382d-ca81-4955-a6c1-0f549df19fd7");
-            var doubleWatchVal2 = (double)watch3.CachedValue.Data;
+            var doubleWatchVal2 = (double)watch3.CachedValue;
             Assert.AreEqual(15.0, doubleWatchVal2, 0.001);
         }
 
@@ -407,10 +408,10 @@ namespace Dynamo.Tests
             Assert.IsNotNull(watchNode);
 
             // odd numbers between 0 and 5
-            Assert.IsTrue(watchNode.CachedValue.IsCollection);
-            var list = watchNode.CachedValue.GetElements();
+            Assert.IsTrue(watchNode.CachedValue is ICollection);
+            var list = (watchNode.CachedValue as ICollection).Cast<object>();
 
-            Assert.AreEqual(new[] { 1, 3, 5 }, list.Select(x => x.Data).ToList());
+            Assert.AreEqual(new[] { 1, 3, 5 }, list.ToList());
         }
 
         /// <summary>
@@ -458,7 +459,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, Controller.DynamoModel.HomeSpace.Nodes.Count);
             Assert.IsInstanceOf<Function>(Controller.DynamoModel.HomeSpace.Nodes.First());
-            Assert.AreEqual(customNodeDef, (Controller.DynamoModel.HomeSpace.Nodes.First() as Function).Definition);
+            Assert.AreSame(customNodeDef, (Controller.DynamoModel.HomeSpace.Nodes.First() as Function).Definition);
         }
 
 
@@ -654,15 +655,16 @@ namespace Dynamo.Tests
 
             var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
 
-            Assert.IsTrue(firstWatch.CachedValue.IsCollection);
-            Assert.IsAssignableFrom<double>(firstWatch.CachedValue.GetElements()[0].Data);
-            Assert.AreEqual(0, firstWatch.CachedValue.GetElements()[0].Data);
+            Assert.IsTrue(firstWatch.CachedValue is ICollection);
+            Assert.AreEqual(0, (firstWatch.CachedValue as ICollection).Cast<double>().First());
 
             var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
 
-            Assert.IsTrue(restWatch.CachedValue.IsCollection);
-            Assert.IsTrue(restWatch.CachedValue.GetElements()[0].IsCollection);
-            Assert.IsFalse(restWatch.CachedValue.GetElements()[0].GetElements().Any());
+            Assert.IsTrue(restWatch.CachedValue is ICollection);
+            Assert.IsTrue((restWatch.CachedValue as ICollection).Cast<object>().First() is ICollection);
+            Assert.IsFalse(
+                ((restWatch.CachedValue as ICollection).Cast<object>().First() as ICollection)
+                    .Cast<object>().Any());
         }
 
         //[Test]

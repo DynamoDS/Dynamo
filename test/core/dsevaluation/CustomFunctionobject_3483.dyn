@@ -1,0 +1,26 @@
+<Workspace Version="0.7.1.17276" X="-2003.61065735517" Y="-988.983199974176" zoom="1.51853689560374" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCore.Map type="DSCore.Map" guid="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" nickname="List.Map" x="1737.10999244986" y="947.589859927998" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="dace0b8c-381e-4de5-824d-c1651ec94bc6" nickname="Watch" x="1978.43185893075" y="922.44290157917" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ac94e86e-7591-4e32-8830-9723de891878" nickname="Number" x="1396.46960951143" y="1008.85636751931" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-3..3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e445066a-c275-4633-9160-b63f89072fff" nickname="Pass Nothing Below 1" x="1519.88087793354" y="848.765107591202" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f6533d2f-8a68-4957-865d-eeceda9da281" />
+      <Name value="Pass Nothing Below 1" />
+      <Description value="Takes inputs and only passes 1 or values above 1" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" start_index="0" end="dace0b8c-381e-4de5-824d-c1651ec94bc6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac94e86e-7591-4e32-8830-9723de891878" start_index="0" end="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e445066a-c275-4633-9160-b63f89072fff" start_index="0" end="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
