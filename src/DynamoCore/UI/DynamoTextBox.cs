@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+
+using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -72,21 +74,32 @@ namespace Dynamo.Nodes
 
         public event Action OnChangeCommitted;
 
-        private readonly DynamoViewModel dynamoViewModel;
         private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
         private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
 
+        private NodeViewModel nodeViewModel;
+        private NodeViewModel NodeViewModel
+        {
+            get
+            {
+                if (this.nodeViewModel != null) return this.nodeViewModel;
+
+                var f = WPF.FindUpVisualTree<dynNodeView>(this);
+                if (f != null) this.nodeViewModel = f.ViewModel;
+
+                return this.nodeViewModel;
+            }
+        }
+
         #region Class Operational Methods
 
-        public DynamoTextBox(DynamoViewModel dynamoViewModel)
-            : this(dynamoViewModel, string.Empty)
+        public DynamoTextBox()
+            : this(string.Empty)
         {
         }
 
-        public DynamoTextBox(DynamoViewModel dynamoViewModel, string initialText)
+        public DynamoTextBox(string initialText)
         {
-            this.dynamoViewModel = dynamoViewModel;
-
             //turn off the border
             Background = clear;
             BorderThickness = new Thickness(1);
@@ -174,6 +187,8 @@ namespace Dynamo.Nodes
             if (this.Pending)
             {
                 var expr = GetBindingExpression(TextProperty);
+
+                var nvm = NodeViewModel;
                 if (expr != null)
                 {
                     // There are two ways in which the bound data source can be 
@@ -186,22 +201,21 @@ namespace Dynamo.Nodes
                     // which case undo recording has to be done. It is in the 
                     // second case a command is being sent to actually update the 
                     // data source (also record the update for undo).
-                    // 
-                    NodeModel nodeModel = GetBoundModel(expr.DataItem);
+
                     if (false == recordForUndo)
                         expr.UpdateSource();
-                    else
+                    else if (nvm != null)
                     {
                         string propName = expr.ParentBinding.Path.Path;
-                        dynamoViewModel.ExecuteCommand(
+                        nvm.DynamoViewModel.ExecuteCommand(
                             new DynCmd.UpdateModelValueCommand(
-                                nodeModel.GUID, propName, this.Text));
+                                nvm.NodeModel.GUID, propName, this.Text));
                     }
                 }
 
                 if (OnChangeCommitted != null)
                     OnChangeCommitted();
-
+                
                 Pending = false;
             }
         }
@@ -225,8 +239,6 @@ namespace Dynamo.Nodes
 
     public class StringTextBox : DynamoTextBox
     {
-        public StringTextBox(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
-        {}
 
         #region Class Event Handlers
 
@@ -272,15 +284,13 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    
-
     public class CodeNodeTextBox : DynamoTextBox
     {
 
 
         bool shift, enter;
-        public CodeNodeTextBox(DynamoViewModel dynamoViewModel, string s)
-            : base(dynamoViewModel, s)
+        public CodeNodeTextBox(string s)
+            : base( s)
         {
             shift = enter = false;
 

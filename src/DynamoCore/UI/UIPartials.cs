@@ -26,12 +26,12 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var addButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "AddInPort");
+            var addButton = new DynamoNodeButton(this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             //addButton.Height = 20;
 
-            var subButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "RemoveInPort");
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             //subButton.Height = 20;
@@ -102,13 +102,13 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var addButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "AddInPort");
+            var addButton = new DynamoNodeButton(this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            var subButton = new DynamoNodeButton(nodeUI.ViewModel.DynamoViewModel, this, "RemoveInPort");
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -182,7 +182,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel)
+            var tb = new DynamoTextBox
             {
                 Background =
                     new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
@@ -246,7 +246,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel, Value ?? "0.0")
+            var tb = new DynamoTextBox(Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -451,7 +451,7 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var tb = new CodeNodeTextBox(nodeUI.ViewModel.DynamoViewModel, Code)
+            var tb = new CodeNodeTextBox(Code)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -462,12 +462,11 @@ namespace Dynamo.Nodes
                 TextWrapping = TextWrapping.Wrap
             };
 
-
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
+            tb.DataContext = nodeUI.ViewModel;
             tb.BindToProperty(
                 new Binding("Code")
                 {
@@ -490,8 +489,9 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel, Symbol)
+            var tb = new DynamoTextBox(Symbol)
             {
+                DataContext = nodeUI.ViewModel,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background =
@@ -502,7 +502,6 @@ namespace Dynamo.Nodes
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
             tb.BindToProperty(
                 new Binding("Symbol")
                 {
@@ -528,7 +527,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(nodeUI.ViewModel.DynamoViewModel, InputSymbol)
+            var tb = new DynamoTextBox(InputSymbol)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -706,7 +705,7 @@ namespace Dynamo.Nodes
             base.SetupCustomUIElements(nodeUI);
 
             //add a text box to the input grid of the control
-            var tb = new StringTextBox(nodeUI.ViewModel.DynamoViewModel)
+            var tb = new StringTextBox
             {
                 AcceptsReturn = true,
                 AcceptsTab = true,
@@ -751,17 +750,28 @@ namespace Dynamo.Nodes
         private string eventName = string.Empty;
         private ModelBase model = null;
         private DynamoViewModel dynamoViewModel;
+        private DynamoViewModel DynamoViewModel
+        {
+            get
+            {
+                if (this.dynamoViewModel != null) return this.dynamoViewModel;
 
-        public DynamoNodeButton(DynamoViewModel dynamoViewModel)
+                var f = WPF.FindUpVisualTree<dynNodeView>(this);
+                if (f != null) this.dynamoViewModel = f.ViewModel.DynamoViewModel;
+
+                return this.dynamoViewModel;
+            }
+        }
+
+        public DynamoNodeButton()
             : base()
         {
-            this.dynamoViewModel = dynamoViewModel;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
             Margin = new Thickness(1, 0, 1, 0);
         }
 
-        public DynamoNodeButton(DynamoViewModel dynamoViewModel, ModelBase model, string eventName)
-            : this(dynamoViewModel)
+        public DynamoNodeButton(ModelBase model, string eventName)
+            : this()
         {
             this.model = model;
             this.eventName = eventName;
@@ -778,7 +788,7 @@ namespace Dynamo.Nodes
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
                 var command = new DynCmd.ModelEventCommand(model.GUID, eventName);
-                dynamoViewModel.ExecuteCommand(command);
+                this.DynamoViewModel.ExecuteCommand(command);
             }
         }
     }

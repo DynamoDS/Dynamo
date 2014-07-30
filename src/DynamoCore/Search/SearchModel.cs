@@ -443,6 +443,18 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        /// Add a root category, assuming it doesn't already exist
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal BrowserRootElement AddRootCategoryToStart(string name)
+        {
+            var ele = new BrowserRootElement(name, BrowserRootCategories);
+            BrowserRootCategories.Insert(0, ele);
+            return ele;
+        }
+
+        /// <summary>
         /// Determine whether a category exists in search
         /// </summary>
         /// <param name="categoryName"></param>

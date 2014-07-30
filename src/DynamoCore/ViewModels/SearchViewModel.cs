@@ -154,14 +154,14 @@ namespace Dynamo.ViewModels
             Visible = false;
             searchText = "";
 
-            topResult = this.Model.AddRootCategory("Top Result");
-            this.Model.AddRootCategory(BuiltinNodeCategories.CORE);
-            this.Model.AddRootCategory(BuiltinNodeCategories.LOGIC);
-            this.Model.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
-            this.Model.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.Model.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            this.Model.AddRootCategory(BuiltinNodeCategories.IO);
-
+            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.IO);
+            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.ANALYZE);
+            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.REVIT);
+            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.GEOMETRY);
+            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.LOGIC);
+            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.CORE);
+            topResult = this.Model.AddRootCategoryToStart("Top Result");
+            
             this.Model.RequestSync += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
         }

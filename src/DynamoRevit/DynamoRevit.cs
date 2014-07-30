@@ -23,6 +23,7 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Services;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 using DynamoUnits;
 
@@ -158,54 +159,30 @@ namespace Dynamo.Applications
     public class DynamoRevit : IExternalCommand
     {
         public static RevitServicesUpdater Updater;
-        private DynamoController dynamoController;
+        private ViewModels.DynamoViewModel dynamoViewModel;
         private bool handledCrash;
 
-        public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            RevThread.IdlePromise.RegisterIdle(revit.Application);
+            RevThread.IdlePromise.RegisterIdle(commandData.Application);
 
-            if (revit.JournalData != null && revit.JournalData.ContainsKey("debug"))
-            {
-                if (bool.Parse(revit.JournalData["debug"]))
-                    Debugger.Launch();
-            }
-
-            AppDomain.CurrentDomain.AssemblyResolve +=
-                Analyze.Render.AssemblyHelper.ResolveAssemblies;
-
-            //Add an assembly load step for the System.Windows.Interactivity assembly
-            //Revit owns a version of this as well. Adding our step here prevents a duplicative
-            //load of the dll at a later time.
-            string interactivityPath = Path.Combine(
-                DynamoPathManager.Instance.MainExecPath,
-                "System.Windows.Interactivity.dll");
-            if (File.Exists(interactivityPath))
-                Assembly.LoadFrom(interactivityPath);
+            HandleDebug(commandData);
+            InitializeAssemblies();
 
             try
             {
-                #region default level
-                var fecLevel =
-                    new FilteredElementCollector(revit.Application.ActiveUIDocument.Document);
-                fecLevel.OfClass(typeof(Level));
-                var defaultLevel = fecLevel.ToElements()[0] as Level;
-                #endregion
+                SetupDefaultLevel(commandData);
 
                 var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-                dynSettings.DynamoLogger = logger;
 
                 if (DocumentManager.Instance.CurrentUIApplication == null)
-                    DocumentManager.Instance.CurrentUIApplication = revit.Application;
+                    DocumentManager.Instance.CurrentUIApplication = commandData.Application;
 
                 DocumentManager.OnLogError += dynSettings.DynamoLogger.Log;
 
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
-                //TODO: has to be changed when we handle multiple docs
-                Updater = new RevitServicesUpdater(
-                    DynamoRevitApp.ControlledApplication,
-                    DynamoRevitApp.Updaters);
+                Updater = new RevitServicesUpdater( DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
                 Updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
                 Updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
 
@@ -216,24 +193,22 @@ namespace Dynamo.Applications
                         IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
                         var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-                        string context = r.Replace(revit.Application.Application.VersionName, "");
+                        string context = r.Replace(commandData.Application.Application.VersionName, "");
 
                         //they changed the application version name conventions for vasari
                         //it no longer has a version year so we can't compare it to other versions
-                        //TODO:come up with a more stable way to test for Vasari beta 3
                         if (context == "Vasari")
                             context = "Vasari 2014";
 
-                        dynamoController = CreateDynamoRevitControllerAndViewModel(
-                            Updater,
+                        dynamoViewModel = CreateDynamoRevitControllerAndViewModel( Updater,
                             logger,
                             context);
 
                         var dynamoView = new DynamoView
                         {
-                            DataContext = dynamoController.DynamoViewModel
+                            DataContext = dynamoViewModel.DynamoViewModel
                         };
-                        dynamoController.UIDispatcher = dynamoView.Dispatcher;
+                        dynamoViewModel.UIDispatcher = dynamoView.Dispatcher;
 
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;
@@ -242,14 +217,14 @@ namespace Dynamo.Applications
 
                         dynamoView.Show();
 
-                        if (revit.JournalData != null && revit.JournalData.ContainsKey("dynPath"))
-                            dynamoController.DynamoModel.OpenWorkspace(revit.JournalData["dynPath"]);
+                        if (commandData.JournalData != null && commandData.JournalData.ContainsKey("dynPath"))
+                            dynamoViewModel.DynamoModel.OpenWorkspace(commandData.JournalData["dynPath"]);
 
                         dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException;
                         dynamoView.Closing += dynamoView_Closing;
                         dynamoView.Closed += dynamoView_Closed;
 
-                        revit.Application.ViewActivating += Application_ViewActivating;
+                        commandData.Application.ViewActivating += Application_ViewActivating;
                     });
 
                 // Disable the Dynamo button to prevent a re-run
@@ -275,7 +250,7 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
-        public static DynamoController_Revit CreateDynamoRevitControllerAndViewModel(
+        public static DynamoViewModel CreateDynamoRevitControllerAndViewModel(
             RevitServicesUpdater updater, DynamoLogger logger, string context)
         {
             BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
@@ -287,7 +262,8 @@ namespace Dynamo.Applications
             string corePath =
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
-            var dynamoController = new DynamoController_Revit(
+
+            var dynamoController = new DynamoViewModel(
                 updater,
                 context,
                 updateManager,
@@ -308,6 +284,40 @@ namespace Dynamo.Applications
             dynamoController.VisualizationManager = new VisualizationManagerRevit();
 
             return dynamoController;
+        }
+
+        private void SetupDefaultLevel(ExternalCommandData revit)
+        {
+            #region default level
+            var fecLevel =
+                new FilteredElementCollector(revit.Application.ActiveUIDocument.Document);
+            fecLevel.OfClass(typeof(Level));
+            var defaultLevel = fecLevel.ToElements()[0] as Level;
+            #endregion
+        }
+
+        private void InitializeAssemblies()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve +=
+                Analyze.Render.AssemblyHelper.ResolveAssemblies;
+
+            //Add an assembly load step for the System.Windows.Interactivity assembly
+            //Revit owns a version of this as well. Adding our step here prevents a duplicative
+            //load of the dll at a later time.
+            string interactivityPath = Path.Combine(
+                DynamoPathManager.Instance.MainExecPath,
+                "System.Windows.Interactivity.dll");
+            if (File.Exists(interactivityPath))
+                Assembly.LoadFrom(interactivityPath);
+        }
+
+        private void HandleDebug(ExternalCommandData commandData)
+        {
+            if (commandData.JournalData != null && commandData.JournalData.ContainsKey("debug"))
+            {
+                if (bool.Parse(commandData.JournalData["debug"]))
+                    Debugger.Launch();
+            }
         }
 
         /// <summary>

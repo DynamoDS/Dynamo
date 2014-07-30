@@ -19,10 +19,10 @@ namespace Dynamo.Nodes
 
         public virtual void SetupCustomUIElements(dynNodeView view)
         {
-            var addButton = new DynamoNodeButton(view.ViewModel.DynamoViewModel, this, "AddInPort") { Content = "+", Width = 20 };
+            var addButton = new DynamoNodeButton( this, "AddInPort") { Content = "+", Width = 20 };
             //addButton.Height = 20;
 
-            var subButton = new DynamoNodeButton(view.ViewModel.DynamoViewModel, this, "RemoveInPort") { Content = "-", Width = 20 };
+            var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
             //subButton.Height = 20;
 
             var wp = new WrapPanel

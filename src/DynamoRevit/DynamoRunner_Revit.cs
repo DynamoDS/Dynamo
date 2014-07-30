@@ -4,9 +4,12 @@ using System.Diagnostics;
 using Autodesk.Revit.DB;
 
 using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 using RevitServices.Threading;
+using RevitServices.Transactions;
 
 #endregion
 
@@ -14,32 +17,50 @@ namespace Dynamo.Applications
 {
     internal class DynamoRunner_Revit : DynamoRunner
     {
-        private readonly DynamoController_Revit controllerRevit;
-
-        public DynamoRunner_Revit(DynamoController_Revit controllerRevit)
+        public TransactionMode TransMode
         {
-            this.controllerRevit = controllerRevit;
+            get
+            {
+                if (TransactionManager.Instance.Strategy is AutomaticTransactionStrategy)
+                    return TransactionMode.Automatic;
+
+                return TransactionMode.Debug;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case TransactionMode.Automatic:
+                        TransactionManager.Instance.Strategy = new AutomaticTransactionStrategy();
+                        break;
+                    default:
+                        TransactionManager.Instance.Strategy = new DebugTransactionStrategy();
+                        break;
+                }
+
+                ViewModels.DynamoViewModel.RunInDebug = value == TransactionMode.Debug;
+            }
         }
 
-
+        public DynamoRunner_Revit(DynamoModel viewModel)
+        {
+            this.viewModel = viewModel;
+        }
+         
         protected override void OnRunCancelled(bool error)
         {
             base.OnRunCancelled(error);
 
-            if (controllerRevit.transaction != null
-                && controllerRevit.transaction.Status == TransactionStatus.Started)
-                controllerRevit.transaction.CancelTransaction();
+            if (viewModel.transaction != null
+                && viewModel.transaction.Status == TransactionStatus.Started)
+                viewModel.transaction.CancelTransaction();
         }
-
 
         protected override void Evaluate()
         {
-            //DocumentManager.Instance.CurrentDBDocument = DocumentManager.Instance.CurrentUIDocument.Document;
-
-            if (controllerRevit.DynamoViewModel.RunInDebug)
+            if (viewModel.DynamoViewModel.RunInDebug)
             {
-                controllerRevit.TransMode = TransactionMode.Debug; //Debug transaction control
-                dynSettings.DynamoLogger.Log("Running expression in debug.");
+                TransMode = TransactionMode.Debug; //Debug transaction control
             }
             else
             {
@@ -49,7 +70,7 @@ namespace Dynamo.Applications
                 // will trigger the update for a Revit related node. Now just
                 // run the execution in the idle thread until we find out a 
                 // way to control the execution.
-                controllerRevit.TransMode = TransactionMode.Automatic;
+                TransMode = TransactionMode.Automatic;
                     //Automatic transaction control
                 Debug.WriteLine("Adding a run to the idle stack.");
             }

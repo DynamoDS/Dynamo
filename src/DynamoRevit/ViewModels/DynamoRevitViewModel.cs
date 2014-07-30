@@ -1,11 +1,16 @@
-﻿using Dynamo.Models;
+﻿using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
-    public class DynamoRevitViewModel : DynamoViewModel
+    public class DynamoRevitViewModel : ViewModels.DynamoViewModel
     {
-        public DynamoRevitViewModel(DynamoModel dynamoModel, string commandFilePath) : base(dynamoModel, commandFilePath) { }
+        public DynamoRevitViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler, IVisualizationManager vizManager, string commandFilePath) : 
+            base(dynamoModel, watchHandler, vizManager, commandFilePath)
+    {
+        
+    }
 
         public override bool CanRunDynamically
         {
