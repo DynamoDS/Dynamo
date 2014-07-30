@@ -45,15 +45,15 @@ namespace DSCoreNodesTests
         {
             var sorted = Enumerable.Range(1, 5).ToList();
 
-            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted)));
+            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted).Cast<object>()));
         }
 
         [Test]
         public static void SortMixedList1()
         {
             Assert.AreEqual(
-                new ArrayList { 1, 2, 3.5, 4.002, 5 },
-                List.Sort(new ArrayList { 2, 3.5, 5, 4.002, 1 }));
+                new List<object> { 1, 2, 3.5, 4.002, 5 },
+                List.Sort(new List<object> { 2, 3.5, 5, 4.002, 1 }));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace DSCoreNodesTests
             var obj = new object();
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3.5, 4.002, 5, false, true, "aaa", "bb", obj },
-                List.Sort(new ArrayList { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
+                List.Sort(new List<object> { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
         }
 
         //[Test]
@@ -88,7 +88,13 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListMinimumValue()
         {
-            Assert.AreEqual(0, List.MinimumItem(new ArrayList { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(0, List.MinimumItem(new List<object> { 8, 4, 0, 66, 10 }));
+        }
+
+        [Test]
+        public static void ListMinimumValueMixed()
+        {
+            Assert.AreEqual(0, List.MinimumItem(new List<object> { 8.5, 4, 0, 6.6, 10.2 }));
         }
 
         //[Test]
@@ -100,7 +106,13 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListMaximumValue()
         {
-            Assert.AreEqual(66, List.MaximumItem(new List<int> { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(66, List.MaximumItem(new List<object> { 8, 4, 0, 66, 10 }));
+        }
+
+        [Test]
+        public static void ListMaximumValueMixed()
+        {
+            Assert.AreEqual(66, List.MaximumItem(new List<object> { 8.223, 4, 0.64, 66, 10.2 }));
         }
 
         [Test]
