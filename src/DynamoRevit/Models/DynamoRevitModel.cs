@@ -57,12 +57,7 @@ namespace Dynamo.Applications
         #region Properties/Fields
 
         public RevitServicesUpdater RevitUpdater { get; private set; }
-
-        public bool InIdleThread
-        {
-            get { return RevitServices.Threading.IdlePromise.InIdleThread; }
-        }
-                
+     
         #endregion
 
         public DynamoRevitModel(string context, IPreferences preferences, bool isTestMode = false) :
