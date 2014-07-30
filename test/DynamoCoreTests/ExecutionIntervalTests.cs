@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using Dynamo.Tests;
 using NUnit.Framework;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
     class ExecutionIntervalTests : DynamoUnitTest
     {
