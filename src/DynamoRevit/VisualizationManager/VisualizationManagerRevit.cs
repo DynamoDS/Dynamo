@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
+
+using Dynamo.Core;
 using Dynamo.Utilities;
 using ProtoCore.Mirror;
 using Revit.GeometryConversion;
@@ -26,8 +28,8 @@ namespace Dynamo
         public VisualizationManagerRevit() : base()
         {
             var context = dynSettings.Controller.Context;
-            if (context == RevitContext.VASARI_2014 || 
-                context == RevitContext.REVIT_2015)
+            if (context == Context.VASARI_2014 || 
+                context == Context.REVIT_2015)
             {
                 AlternateDrawingContextAvailable = true;
                 DrawToAlternateContext = false;

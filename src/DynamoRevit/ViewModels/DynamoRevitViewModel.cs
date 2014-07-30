@@ -7,7 +7,6 @@ using Autodesk.Revit.DB;
 using Dynamo.Applications;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -53,6 +52,7 @@ namespace Dynamo
                 foundNodes.ForEach(DynamoSelection.Instance.Selection.Add);
             }
         }
+
 
 
     }
