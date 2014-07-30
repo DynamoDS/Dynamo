@@ -1,9 +1,12 @@
-<dynWorkspace X="0" Y="0">
-  <dynElements>
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="a6e316b4-7054-42cd-a901-7bc6d4045c23" nickname="String" x="236.455476285171" y="216.443717214923" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="A+node%09with+tabs%2c+and%0d%0acarriage+returns%2c%0d%0aand+!%40%23%24%25%5e%26*+characters%2c+and+also+something+%22in+quotes%22." />
-    </Dynamo.Nodes.dynStringInput>
-  </dynElements>
-  <dynConnectors />
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="0.7.1.23670" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="a6e316b4-7054-42cd-a901-7bc6d4045c23" nickname="String" x="72.455476285171" y="145.443717214923" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="A node	with tabs, and&#xD;&#xA;carriage returns,&#xD;&#xA;and !@#$%^&amp;* characters, and also something &quot;in quotes&quot;." />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="aa68e004-c891-40be-a896-4cd7348d0dd5" nickname="Watch" x="323" y="147.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a6e316b4-7054-42cd-a901-7bc6d4045c23" start_index="0" end="aa68e004-c891-40be-a896-4cd7348d0dd5" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

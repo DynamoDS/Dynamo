@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB.Architecture;
@@ -13,6 +14,7 @@ using Dynamo.Models;
 using Autodesk.Revit.Creation;
 using Dynamo.Nodes;
 using Dynamo.Revit;
+using DSNodeServices;
 
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
@@ -31,6 +33,161 @@ namespace Dynamo.Utilities
 {
     public static class dynRevitUtils
     {
+        /// <summary>
+        /// This function gets the node which has created the element with the
+        /// given element ID
+        /// </summary>
+        /// <param name="id">The given element ID</param>
+        /// <returns>the related node, if not found, will be null</returns>
+        public static NodeModel GetNodeFromElementId(ElementId id)
+        {
+            if (id == null)
+                return null;
+
+            var workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
+
+            ProtoCore.Core core = null;
+            if (dynSettings.Controller != null)
+            {
+                var engine = dynSettings.Controller.EngineController;
+                if ((engine != null) && (engine.LiveRunnerCore != null))
+                    core = engine.LiveRunnerCore;
+            }
+
+            if (core == null)
+                return null;
+
+            // Selecting all nodes that are either a DSFunction,
+            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+            var nodeGuids = workspace.Nodes.Where((n) =>
+            {
+                return (n is DSFunction
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+            }).Select((n) => n.GUID);
+
+            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);
+
+            foreach (Guid guid in nodeTraceDataList.Keys)
+            {
+                foreach (ProtoCore.CallSite cs in nodeTraceDataList[guid])
+                {
+                    foreach (ProtoCore.CallSite.SingleRunTraceData srtd in cs.TraceData)
+                    {
+                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
+
+                        foreach (ISerializable thingy in traceData)
+                        {
+                            SerializableId sid = thingy as SerializableId;
+
+                            if ((sid != null) && (sid.IntID == id.IntegerValue))
+                            {
+                                NodeModel inm =
+                                    workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+                                    
+                                //FOUND IT!
+                                return inm;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// This function gets the nodes which have created the elements with the
+        /// given element IDs
+        /// </summary>
+        /// <param name="ids">The given element IDs</param>
+        /// <returns>the related nodes</returns>
+        public static IEnumerable<NodeModel> GetNodesFromElementIds(IEnumerable<ElementId> ids)
+        {
+            List<NodeModel> nodes = new List<NodeModel>();
+            if (!ids.Any())
+                return nodes.AsEnumerable();
+
+            var workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
+
+            ProtoCore.Core core = null;
+            if (dynSettings.Controller != null)
+            {
+                var engine = dynSettings.Controller.EngineController;
+                if ((engine != null) && (engine.LiveRunnerCore != null))
+                    core = engine.LiveRunnerCore;
+            }
+
+            if (core == null)
+                return null;
+
+            // Selecting all nodes that are either a DSFunction,
+            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+            var nodeGuids = workspace.Nodes.Where((n) =>
+            {
+                return (n is DSFunction
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+            }).Select((n) => n.GUID);
+
+            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);
+
+            List<ElementId> copiedIds = new List<ElementId>(ids);
+            bool areElementsFoundForThisNode;
+            foreach (Guid guid in nodeTraceDataList.Keys)
+            {
+                areElementsFoundForThisNode = false;
+                List<ElementId> idsToRemove = new List<ElementId>();
+                foreach (ProtoCore.CallSite cs in nodeTraceDataList[guid])
+                {
+                    foreach (ProtoCore.CallSite.SingleRunTraceData srtd in cs.TraceData)
+                    {
+                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
+
+                        foreach (ISerializable thingy in traceData)
+                        {
+                            SerializableId sid = thingy as SerializableId;
+
+                            if (sid != null)
+                            {
+                                ElementId tempId = null;
+                                foreach (var id in copiedIds)
+                                {
+                                    if (sid.IntID == id.IntegerValue)
+                                    {
+                                        //FOUND ONE
+                                        tempId = id;
+                                        areElementsFoundForThisNode = true;
+                                    }
+                                }
+
+                                if (tempId != null)
+                                    copiedIds.Remove(tempId);
+
+                                if (!copiedIds.Any())
+                                {
+                                    if (areElementsFoundForThisNode)
+                                    {
+                                        NodeModel inm =
+                                            workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+                                        nodes.Add(inm);
+                                    }
+                                    return nodes.AsEnumerable();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (areElementsFoundForThisNode)
+                {
+                    NodeModel inm =
+                        workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+                    nodes.Add(inm);
+                }
+            }
+
+            return nodes.AsEnumerable();
+        }
 
         /// <summary>
         /// Utility method used with auto-generated assets for storing ElementIds generated during evaluate.
