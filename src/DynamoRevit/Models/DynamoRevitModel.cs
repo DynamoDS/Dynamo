@@ -82,8 +82,6 @@ namespace Dynamo.Applications
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
             }
 
-            TransactionManager.Instance.TransactionWrapper.TransactionStarted += TransactionManager_TransactionCommitted;
-            TransactionManager.Instance.TransactionWrapper.TransactionCancelled += TransactionManager_TransactionCancelled;
             TransactionManager.Instance.TransactionWrapper.FailuresRaised += TransactionManager_FailuresRaised;
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
@@ -289,48 +287,6 @@ namespace Dynamo.Applications
             RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
         }
 
-        #region Element Persistence Management
-
-        private readonly Dictionary<ElementUpdateDelegate, HashSet<string>> transDelElements =
-            new Dictionary<ElementUpdateDelegate, HashSet<string>>();
-
-        private readonly List<ElementId> transElements = new List<ElementId>();
-
-        internal void RegisterSuccessfulDeleteHook(string id, ElementUpdateDelegate updateDelegate)
-        {
-            HashSet<string> elements;
-            if (!transDelElements.TryGetValue(updateDelegate, out elements))
-            {
-                elements = new HashSet<string>();
-                transDelElements[updateDelegate] = elements;
-            }
-            elements.Add(id);
-        }
-
-        private void CommitDeletions()
-        {
-            foreach (var kvp in transDelElements)
-                kvp.Key(kvp.Value);
-        }
-
-        #endregion
-
-        #region Revit Transaction Management
-
-        private void TransactionManager_TransactionCancelled()
-        {
-            RevitUpdater.RollBack(DocumentManager.Instance.CurrentDBDocument, transElements);
-            transElements.Clear();
-            transDelElements.Clear();
-        }
-
-        private void TransactionManager_TransactionCommitted()
-        {
-            transElements.Clear();
-            CommitDeletions();
-            transDelElements.Clear();
-        }
-
         private void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
         {
             IList<FailureMessageAccessor> failList = failuresAccessor.GetFailureMessages();
@@ -346,8 +302,6 @@ namespace Dynamo.Applications
                 failuresAccessor.DeleteWarning(fail);
             }
         }
-
-        #endregion
 
     }
 }
