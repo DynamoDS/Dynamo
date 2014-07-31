@@ -9717,7 +9717,7 @@ list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }
         public void DebugWatch378_T50_Defect_1456738_Replication_Race_Condition()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"//import ( ""Math.dll"");
+            string src = @"
 class Math
 {
    static def Sin ( x1 : double)

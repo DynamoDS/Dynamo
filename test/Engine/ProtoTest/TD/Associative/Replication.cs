@@ -2296,7 +2296,7 @@ c;
         public void T50_Defect_1456738_Replication_Race_Condition()
         {
             string code = @"
-//import ( ""Math.dll"");
+
 class Math
 {
    static def Sin ( x1 : double)
