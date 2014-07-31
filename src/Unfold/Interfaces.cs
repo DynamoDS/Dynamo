@@ -45,7 +45,8 @@ namespace Unfold.Interfaces
              Object OriginalEntity { get; set; }
              Surface SurfaceEntity { get; set; }
              List<K> EdgeLikeEntities { get; set; }
-           
+              int ID { get; set; }
+              List<int> IDS { get; set; }
            
 
         }

@@ -93,7 +93,9 @@ namespace Unfold
             public Object OriginalEntity { get; set; }
             public Surface SurfaceEntity { get; set; }
             public List<EdgeLikeEntity> EdgeLikeEntities { get; set; }
-            // public List<Point> Points { get; set; }
+            public int ID { get; set; }
+            public List<int> IDS {get;set;}
+            
 
             public FaceLikeEntity(Surface surface)
             {
@@ -114,7 +116,7 @@ namespace Unfold
 
                 OriginalEntity = surface;
 
-                //   Points = Surface.point
+                IDS = new List<int>();
 
             }
 
@@ -289,6 +291,9 @@ namespace Unfold
                 where T : IUnfoldablePlanarFace<K>
                 where K : IUnfoldableEdge
             {
+                // assign some ids to the faces that will operate on, we use the ids to create text and perform other mappings
+                AssignIDs<K, T>(facelikes);
+
                 Dictionary<K, List<T>> edgeDict = new Dictionary<K, List<T>>(new Unfold.Interfaces.SpatiallyEquatableComparer<K>());
                 foreach (T facelike in facelikes)
                 {
@@ -314,6 +319,24 @@ namespace Unfold
 
                 var graph = ModelGraph.GenGraph(facelikes, edgeDict);
                 return graph;
+            }
+
+            //method that iterates each face in a list and generates and assigns its id
+            
+            private static void AssignIDs<K,T>(List<T> facelikes)
+                where T: IUnfoldablePlanarFace<K>
+                where K: IUnfoldableEdge
+            {
+                for (int i = 0; i < facelikes.Count; i++)
+                {
+                    // simple id just equals index
+                    // possibly this method should be
+                    // user assignable so custom ids can be generated
+                    //that has some meaning during refolding
+                    facelikes[i].ID = i;
+                    facelikes[i].IDS = new List<int>() { i };
+                   
+                }
             }
 
 
@@ -486,6 +509,39 @@ namespace Unfold
         /// </summary>
         public static class PlanarUnfolder
         {
+
+            public class FaceTransformMap{
+
+                public CoordinateSystem CS {get; set;}
+                public List<int> IDS{get;set;}
+
+                public FaceTransformMap(CoordinateSystem cs, List<int> ids)
+                {
+                    IDS = ids;
+                    CS = cs;
+                }
+
+            }
+
+            public class PlanarUnfolding<K,T>
+                where T : IUnfoldablePlanarFace<K>
+                where K : IUnfoldableEdge
+            {
+                public List<T> StartingUnfoldableFaces {get; set;}
+                public List<Surface> UnfoldedSurfaceSet {get; set;}
+                public List<FaceTransformMap> Maps{get;set;}
+
+                public PlanarUnfolding (List<T> originalFaces, List<Surface> finalFaces, List<FaceTransformMap> transforms){
+                    StartingUnfoldableFaces = originalFaces;
+                    finalFaces = UnfoldedSurfaceSet;
+                    Maps = transforms;
+
+                }
+
+            }
+
+
+
             // these overloads are called from exposed dynamo nodes depending on input type
 
             public static List<Surface> DSPLanarUnfold(List<Face> faces)
@@ -499,7 +555,7 @@ namespace Unfold
                 var casttree = tree as List<GeneratePlanarUnfold.GraphVertex<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>>;
 
 
-                return PlanarUnfold(casttree);
+                return PlanarUnfold(casttree).UnfoldedSurfaceSet;
 
             }
 
@@ -514,7 +570,7 @@ namespace Unfold
                 var casttree = tree as List<GeneratePlanarUnfold.GraphVertex<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>>;
 
 
-                return PlanarUnfold(casttree);
+                return PlanarUnfold(casttree).UnfoldedSurfaceSet;
 
             }
 
@@ -528,7 +584,7 @@ namespace Unfold
             /// </summary>
             /// <param name="tree"></param>
             /// <returns></returns>
-            public static List<Surface> PlanarUnfold(List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> tree)
+            public static PlanarUnfolding<EdgeLikeEntity,FaceLikeEntity> PlanarUnfold(List<GraphVertex<EdgeLikeEntity, FaceLikeEntity>> tree)
             {
                 // this algorithm is a first test of recursive unfolding - overlapping is expected
 
@@ -541,10 +597,14 @@ namespace Unfold
                 //remove the child node we started with from the tree
                 //repeat, until there is only one node in the tree.
                 // at this point all faces should be coplanar with this surface
+                var allfaces = tree.Select(x=>x.Face).ToList();
 
                 var sortedtree = tree.OrderBy(x => x.FinishTime).ToList();
 
-                var disconnectedSet = new List<Surface>();
+                var disconnectedSet = new List<FaceLikeEntity>();
+
+                List<FaceTransformMap> transforms = new List<FaceTransformMap>();
+
                 while (sortedtree.Count > 1)
                 {
                     // if the tree only has nodes with no parents
@@ -563,6 +623,8 @@ namespace Unfold
                     double nc = AlignPlanarFaces.CheckNormalConsistency(child.Face, parent.Face, edge.GeometryEdge);
                     Surface rotatedFace = AlignPlanarFaces.MakeGeometryCoPlanarAroundEdge(nc, child.UnfoldPolySurface, parent.Face, edge.GeometryEdge) as Surface;
 
+                    
+                   
                     //at this point need to check if the rotated face has intersected with any other face that has been been
                     // folded already, all of these already folded faces should exist either in the parent unfoldedpolysurface
                     // or they should have been moved away, we should only need to check if the rotated face hits the polysurface.
@@ -585,14 +647,16 @@ namespace Unfold
                      List<Surface> rotFaceSubSurfaces = null;
                     if (rotatedFace is PolySurface)
                     {
+                     
                         rotFaceSubSurfaces = (rotatedFace as PolySurface).Surfaces().ToList();
                     }
                     else
                     {
+                       
                         rotFaceSubSurfaces = new List<Surface>() { rotatedFace };
                     }
 
-                    // perfrom the intersection test
+                    // perfrom the intersection test, from surfaces against all surfaces
 
                     bool overlapflag = false;
                     foreach (var surfaceToIntersect in srfList)
@@ -614,18 +678,24 @@ namespace Unfold
                         
                     {
                         //TODO must fix this, need to organize final output and align all final subsets to some plane
+                        // this randomness should be removed and replaced with logic for layout searching the current bounding boxes
+                        // of existing branches
                         var r = new Random();
                         // if any result was a surface then we overlapped we need to move the folded branch far away and pick a new
                         // branch to start the unfold from
-                        var movedUnfoldBranch = child.UnfoldPolySurface.SurfaceEntity.Translate((r.NextDouble() * 10) + 5, 0, 0);
-                        disconnectedSet.Add(movedUnfoldBranch as Surface);
+
+                        // wrap up the translated geometry as a new facelike
+                        // 
+                        var movedUnfoldBranch = new FaceLikeEntity (child.UnfoldPolySurface.SurfaceEntity.Translate((r.NextDouble() * 10) + 5, 0, 0) as Surface);
+                        movedUnfoldBranch.IDS = child.UnfoldPolySurface.IDS;
+                        disconnectedSet.Add(movedUnfoldBranch);
 
 
                     }
 
                     else
                     {
-                        // if there is no overlap we need to 
+                        // if there is no overlap we need to merge the rotated chain into the parent
 
                         List<Surface> subsurblist = null;
                         if (rotatedFace is PolySurface)
@@ -638,11 +708,26 @@ namespace Unfold
                         }
                         subsurblist.Add(parent.UnfoldPolySurface.SurfaceEntity);
 
+                       //before joining grab old parent id list
+                       var oldParentIds = parent.UnfoldPolySurface.IDS;
+                        
                         var newParentSurface = PolySurface.ByJoinedSurfaces(subsurblist);
 
-
-
+                        // replace the surface in the parent with the wrapped chain of surfaces
                         parent.UnfoldPolySurface = new FaceLikeEntity(newParentSurface);
+                        // explictly set the new chain unfoldface ids to the parents old ids
+                        parent.UnfoldPolySurface.IDS.AddRange(oldParentIds);
+                       
+                        // as we rotate up the chain we'll add each new ID entry to the list on the parent.
+                        var rotatedFaceIDs = child.UnfoldPolySurface.IDS;
+                        // add the child ids to the parent id list
+                        parent.UnfoldPolySurface.IDS.AddRange(rotatedFaceIDs);
+                        
+                        // now add the coordinate system for the current list to the transforms list
+                        transforms.Add (new FaceTransformMap(
+                        parent.UnfoldPolySurface.SurfaceEntity.ContextCoordinateSystem, parent.UnfoldPolySurface.IDS)) ;
+
+                        
                     }
 
                     child.RemoveFromGraph(sortedtree);
@@ -651,8 +736,8 @@ namespace Unfold
                 }
                 // merge the main trunk and the disconnected sets
                 var maintree = sortedtree.Select(x => x.UnfoldPolySurface.SurfaceEntity).ToList();
-                maintree.AddRange(disconnectedSet);
-                return maintree;
+                maintree.AddRange(disconnectedSet.Select(x=>x.SurfaceEntity).ToList());
+                return new PlanarUnfolding<EdgeLikeEntity, FaceLikeEntity>(allfaces, maintree, transforms);
             }
 
         }
