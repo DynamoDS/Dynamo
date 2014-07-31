@@ -18,7 +18,7 @@ namespace Dynamo.Applications
 {
     internal class DynamoRevitRunner : DynamoRunner
     {
-        private readonly DynamoRevitModel dynamoRevitModel;
+        private readonly DynamoRevitModel dynamoModel;
 
         public TransactionMode TransMode
         {
@@ -41,28 +41,28 @@ namespace Dynamo.Applications
                         break;
                 }
 
-                dynamoRevitModel.RunInDebug = value == TransactionMode.Manual;
+                dynamoModel.RunInDebug = value == TransactionMode.Manual;
             }
         }
 
-        public DynamoRevitRunner(DynamoRevitModel dynamoRevitModel)
-            : base(dynamoRevitModel)
+        public DynamoRevitRunner(DynamoRevitModel dynamoModel)
+            : base(dynamoModel)
         {
-            this.dynamoRevitModel = dynamoRevitModel;
+            this.dynamoModel = dynamoModel;
         }
          
         protected override void OnRunCancelled(bool error)
         {
             base.OnRunCancelled(error);
 
-            if (dynamoRevitModel.transaction != null
-                && dynamoRevitModel.transaction.Status == TransactionStatus.Started)
-                dynamoRevitModel.transaction.CancelTransaction();
+            if (dynamoModel.transaction != null
+                && dynamoModel.transaction.Status == TransactionStatus.Started)
+                dynamoModel.transaction.CancelTransaction();
         }
 
         protected override void Evaluate()
         {
-            if (dynamoRevitModel.RunInDebug)
+            if (dynamoModel.RunInDebug)
             {
                 TransMode = TransactionMode.Manual; //Debug transaction control
             }

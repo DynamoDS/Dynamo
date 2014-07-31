@@ -11,12 +11,12 @@ using Greg;
 
 namespace Dynamo.Applications
 {
-    internal class SingleSignOnManager
+    internal static class SingleSignOnManager
     {
         /// <summary>
         ///     A reference to the the SSONET assembly to prevent reloading.
         /// </summary>
-        private Assembly singleSignOnAssembly;
+        private static Assembly singleSignOnAssembly;
 
         /// <summary>
         ///     Delay loading of the SSONet.dll, which is used by the package manager for
@@ -41,7 +41,7 @@ namespace Dynamo.Applications
         ///     Callback for registering an authentication provider with the package manager
         /// </summary>
         /// <param name="client">The client, to which the provider will be attached</param>
-        internal void RegisterSingleSignOn(PackageManager.PackageManagerClient client)
+        internal static void RegisterSingleSignOn(PackageManager.PackageManagerClient client)
         {
             singleSignOnAssembly = singleSignOnAssembly ?? LoadSSONet();
             client.Client.Provider = client.Client.Provider

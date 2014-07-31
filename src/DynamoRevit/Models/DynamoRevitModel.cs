@@ -19,7 +19,6 @@ using DSNodeServices;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Revit;
 using Dynamo.Utilities;
 
 using Revit.Elements;
@@ -29,19 +28,11 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 using Element = Autodesk.Revit.DB.Element;
-using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
 
 namespace Dynamo.Applications
 {
     internal class DynamoRevitModel : DynamoModel
     {
-        public enum TransactionMode
-        {
-            Debug,
-            Manual,
-            Automatic
-        }
-
         #region Events
 
         public event EventHandler RevitDocumentChanged;
@@ -88,7 +79,7 @@ namespace Dynamo.Applications
 
             SetupPython();
 
-            Runner = new DynamoRunner_Revit(this);
+            Runner = new DynamoRevitRunner(this);
         }
 
         private void SetupPython()
@@ -165,6 +156,41 @@ namespace Dynamo.Applications
             if (uiDoc != null)
             {
                 DynamoRevit.SetRunEnabledBasedOnContext(uiDoc.ActiveView);
+            }
+        }
+
+        public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)
+        {
+            var view = newView as View3D;
+
+            if (view != null && view.IsPerspective
+                && this.Context != Core.Context.VASARI_2014)
+            {
+                this.Logger.LogWarning(
+                    "Dynamo is not available in a perspective view. Please switch to another view to Run.",
+                    WarningLevel.Moderate);
+                this.RunEnabled = false;
+            }
+            else
+            {
+                this.Logger.Log(
+                    string.Format("Active view is now {0}", newView.Name));
+
+                // If there is a current document, then set the run enabled
+                // state based on whether the view just activated is 
+                // the same document.
+                if (DocumentManager.Instance.CurrentUIDocument != null)
+                {
+                    this.RunEnabled =
+                        newView.Document.Equals(DocumentManager.Instance.CurrentDBDocument);
+
+                    if (this.RunEnabled == false)
+                    {
+                        this.Logger.LogWarning(
+                            "Dynamo is not pointing at this document. Run will be disabled.",
+                            WarningLevel.Error);
+                    }
+                }
             }
         }
 

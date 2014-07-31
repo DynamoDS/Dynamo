@@ -106,12 +106,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoRevitApp.cs" />
     <Compile Include="Models\DynamoRevitModel.cs" />
-    <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
-    <Compile Include="DynamoRunner_Revit.cs" />
-    <Compile Include="DynamoWarningSwallower.cs" />
-    <Compile Include="Reactor.cs" />
-    <Compile Include="RevitSettings.cs" />
+    <Compile Include="Models\DynamoRevitRunner.cs" />
+    <Compile Include="Models\DynamoWarningSwallower.cs" />
+    <Compile Include="Models\Reactor.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -124,11 +123,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
-    <Compile Include="RevitWatchHandler.cs" />
-    <Compile Include="SingleSignOnManager.cs" />
-    <Compile Include="Views\Partials.cs" />
-    <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
-    <Compile Include="WorkspaceMigrationsRevit.cs" />
+    <Compile Include="ViewModel\RevitWatchHandler.cs" />
+    <Compile Include="Models\SingleSignOnManager.cs" />
+    <Compile Include="ViewModel\RevitVisualizationManager.cs" />
+    <Compile Include="Migration\WorkspaceMigrationsRevit.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -183,10 +181,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="addins\DynamoForRevit.addin">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="addins\DynamoForVasari.addin" />
     <Content Include="Resources\logo_square_32x32.png" />
     <Content Include="Resources\logo_square_64x64.png" />
   </ItemGroup>
