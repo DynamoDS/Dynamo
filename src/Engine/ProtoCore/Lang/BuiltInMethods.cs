@@ -898,7 +898,6 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))
                     },
                     ID = MethodID.kTryGetValueFromDictionary,
-                    MethodAttributes = new MethodAttributes(true),
                 }
             };
         }

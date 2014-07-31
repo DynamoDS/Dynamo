@@ -1291,7 +1291,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static bool TryGetValueForDictionary(StackValue array, StackValue key, out StackValue value, Core core)
         {
-            Validity.Assert(array.IsArray);
             if (!array.IsArray)
             {
                 value = StackValue.Null;
