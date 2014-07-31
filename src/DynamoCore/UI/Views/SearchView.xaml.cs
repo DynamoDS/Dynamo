@@ -330,23 +330,6 @@ namespace Dynamo.Search
             SearchIcon.Source = new BitmapImage(searchIconSource);
         }
 
-        private void TextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (_viewModel != null) 
-                _viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
-        }
-
-        private void TextBoxLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (_viewModel != null)
-            {
-                if (string.IsNullOrEmpty(_viewModel.SearchText)) 
-                    _viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Center;
-                else 
-                    _viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
-            }
-        }
-
         private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
         {
             ClearSearchBox();

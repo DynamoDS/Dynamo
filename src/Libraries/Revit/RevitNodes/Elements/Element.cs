@@ -150,13 +150,15 @@ namespace Revit.Elements
 
             bool didRevitDelete = ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.Id);
 
+
+
             var elementManager = ElementIDLifecycleManager<int>.GetInstance();
             int remainingBindings = elementManager.UnRegisterAssociation(this.Id, this);
 
             // Do not delete Revit owned elements
             if (!IsRevitOwned && remainingBindings == 0 && !didRevitDelete)
             {
-                DocumentManager.Instance.DeleteElement(new ElementUUID(this.InternalUniqueId));
+                DocumentManager.Instance.DeleteElement(this.InternalElementId);
             }
             else
             {
@@ -327,14 +329,6 @@ namespace Revit.Elements
                 throw new Exception("The parameter's storage type is not an integer.");
 
             param.Set(value == false ? 0 : 1);
-        }
-
-        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, SIUnit value)
-        {
-            if(param.StorageType != StorageType.Double)
-                throw new Exception("The parameter's storage type is not an integer.");
-
-            param.Set(value.ConvertToHostUnits());
         }
 
         #endregion
@@ -531,7 +525,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="geomElem"></param>
         /// <param name="curves"></param>
-        private static void GetCurves(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElem, ref CurveArray curves)
+        private void GetCurves(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElem, ref CurveArray curves)
         {
             foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem)
             {
@@ -556,9 +550,9 @@ namespace Revit.Elements
         /// <summary>
         /// Recursively traverse the GeometryElement obtained from this Element, collecting the Curves
         /// </summary>
-        /// <param name="geomElement"></param>
+        /// <param name="geomElem"></param>
         /// <param name="faces"></param>
-        private static void GetFaces(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElement, ref FaceArray faces)
+        private void GetFaces(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElement, ref FaceArray faces)
         {
 
                 foreach (Autodesk.Revit.DB.GeometryObject geob in geomElement)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -131,12 +132,14 @@ namespace Dynamo.Models
                 }
 
                 // reassign existing nodes to point to newly deserialized function def
-                var instances = dynSettings.Controller.DynamoModel.AllNodes
+                dynSettings.Controller.DynamoModel.AllNodes
                         .OfType<Function>()
-                        .Where(el => el.Definition.FunctionId == originalGuid);
-
-                foreach (var node in instances)
-                    node.ResyncWithDefinition(origDef);
+                        .Where(el => el.Definition.FunctionId == originalGuid)
+                        .ToList()
+                        .ForEach(node =>
+                            {
+                                node.Definition = origDef;
+                            });
 
                 // update this workspace with its new id
                 newDef.FunctionId = newGuid;

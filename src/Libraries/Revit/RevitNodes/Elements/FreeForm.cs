@@ -58,7 +58,7 @@ namespace Revit.Elements
         /// solid
         /// </summary>
         /// <param name="solid"></param>
-        private FreeForm(Autodesk.Revit.DB.Solid solid)
+        private FreeForm(Autodesk.Revit.DB.Solid mySolid)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var ele =
@@ -68,7 +68,7 @@ namespace Revit.Elements
             if (ele != null)
             {
                 InternalSetFreeFormElement(ele);
-                if (InternalSetSolid(solid))
+                if (InternalSetSolid(mySolid))
                 {
                     return;
                 }
@@ -77,7 +77,7 @@ namespace Revit.Elements
             // recreate freeform
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var freeForm = FreeFormElement.Create(Document, solid);
+            var freeForm = FreeFormElement.Create(Document, mySolid);
             InternalSetFreeFormElement(freeForm);
 
             TransactionManager.Instance.TransactionTaskDone();

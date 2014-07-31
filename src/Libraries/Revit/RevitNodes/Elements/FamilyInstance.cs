@@ -143,19 +143,25 @@ namespace Revit.Elements
         #endregion
 
         #region Public properties
-        
-        public new FamilySymbol Symbol
+
+        public FamilySymbol Symbol
         {
-            // NOTE: Because AbstractFamilyInstance is not visible in the library
-            //       we redefine this method on FamilyInstance
-            get { return base.Symbol; }
+            get
+            {
+                return FamilySymbol.FromExisting(InternalFamilyInstance.Symbol, true);
+            }
         }
 
-        public new Point Location
+        public Point Location
         {
-            // NOTE: Because AbstractFamilyInstance is not visible in the library
-            //       we redefine this method on FamilyInstance
-            get { return base.Location; }
+            get
+            {
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+                DocumentManager.Regenerate();
+                var pos = InternalFamilyInstance.Location as LocationPoint;
+                TransactionManager.Instance.TransactionTaskDone();
+                return pos.Point.ToPoint();
+            }
         }
 
         #endregion

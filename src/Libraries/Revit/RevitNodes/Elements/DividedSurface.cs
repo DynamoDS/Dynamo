@@ -71,7 +71,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var divSurf = Autodesk.Revit.DB.DividedSurface.Create(Document, elementFace.InternalReference);
+            var divSurf = Document.FamilyCreate.NewDividedSurface(elementFace.InternalReference);
 
             InternalSetDividedSurface(divSurf);
             InternalSetDivisions(uDivs, vDivs);
@@ -157,7 +157,8 @@ namespace Revit.Elements
         /// <summary>
         /// Method to set the grid rotation of the internal divided surface
         /// </summary>
-        /// <param name="rotation"></param>
+        /// <param name="uDivs"></param>
+        /// <param name="vDivs"></param>
         private void InternalSetRotation(double rotation)
         {
             TransactionManager.Instance.EnsureInTransaction(Document);

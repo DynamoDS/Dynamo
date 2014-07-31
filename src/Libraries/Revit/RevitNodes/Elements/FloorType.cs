@@ -63,7 +63,7 @@ namespace Revit.Elements
         /// <summary>
         /// The name of the FloorType
         /// </summary>
-        public new string Name
+        public string Name
         {
             get { return InternalFloorType.Name; }
         }
@@ -109,7 +109,7 @@ namespace Revit.Elements
         /// <summary>
         /// Create a FloorType from a user selected Element.
         /// </summary>
-        /// <param name="floorType"></param>
+        /// <param name="pt"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static FloorType FromExisting(Autodesk.Revit.DB.FloorType floorType, bool isRevitOwned)

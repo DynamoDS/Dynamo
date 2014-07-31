@@ -14,7 +14,9 @@ namespace Revit.GeometryConversion
         public static Autodesk.DesignScript.Geometry.Mesh ToProtoType(this Autodesk.Revit.DB.Mesh mesh, 
             bool performHostUnitConversion = true)
         {
-            var pts = mesh.Vertices.Select(x => x.ToPoint(performHostUnitConversion));
+            var pts = mesh.Vertices.Select(x => x.ToPoint());
+
+            pts = performHostUnitConversion ? pts.Select(x => x.InDynamoUnits()) : pts;
 
             var tris = Enumerable.Range(0, mesh.NumTriangles)
                 .Select(mesh.get_Triangle)

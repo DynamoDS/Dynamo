@@ -127,10 +127,6 @@ limitations under the License.
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="VMDataBridge, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\VMDataBridge.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -149,12 +145,6 @@ limitations under the License.
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
-    <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
-    <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
-    <Compile Include="Nodes\FunctionCallNodeController.cs" />
-    <Compile Include="Nodes\FunctionCallBase.cs" />
-    <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
@@ -192,7 +182,7 @@ limitations under the License.
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Models\WorkspaceMigrations.cs" />
-    <Compile Include="Nodes\ZeroTouch\DSFunction.cs" />
+    <Compile Include="Nodes\DSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
@@ -356,7 +346,7 @@ limitations under the License.
     <Compile Include="Nodes\BaseTypes.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Files.cs" />
-    <Compile Include="Nodes\Custom Nodes\Function.cs" />
+    <Compile Include="Nodes\Function.cs" />
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Core\dynSettings.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />

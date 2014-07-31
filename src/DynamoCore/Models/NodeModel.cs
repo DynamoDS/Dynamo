@@ -459,18 +459,6 @@ namespace Dynamo.Models
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
         }
 
-
-
-        /// <summary>
-        ///     Return if all input ports of the node have connections.
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use IsPartiallyApplied property")]
-        public bool HasUnconnectedInput()
-        {
-            return IsPartiallyApplied;
-        }
-
         /// <summary>
         ///     Flags this node as dirty.
         /// </summary>
@@ -488,9 +476,10 @@ namespace Dynamo.Models
         {
             Type t = GetType();
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
-            return rtAttribs.Length > 0
-                ? ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription
-                : "No description provided";
+            if (rtAttribs.Length > 0)
+                return ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription;
+
+            return "No description provided";
         }
 
         /// <summary>
@@ -503,8 +492,8 @@ namespace Dynamo.Models
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            //if (OutPortData.Count == 1)
-            //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
+            if (OutPortData.Count == 1)
+                return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
 
             string id = AstIdentifierBase + "_out" + outputIndex;
             return AstFactory.BuildIdentifier(id);
@@ -712,16 +701,7 @@ namespace Dynamo.Models
             var result = BuildOutputAst(inputAstNodes);
 
             if (OutPortData.Count == 1)
-            {
-                return
-                    result.Concat(
-                        new[]
-                        {
-                            AstFactory.BuildAssignment(
-                                AstIdentifierForPreview,
-                                GetAstIdentifierForOutputIndex(0))
-                        });
-            }
+                return result;
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
@@ -757,7 +737,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="inputs"></param>
         /// <returns></returns>
-        public void AppendReplicationGuides(List<AssociativeNode> inputs)
+        protected void AppendReplicationGuides(List<AssociativeNode> inputs)
         {
             if (inputs == null || !inputs.Any())
                 return;
@@ -792,11 +772,6 @@ namespace Dynamo.Models
         #endregion
 
         #region Input and Output Connections
-
-        public IEnumerable<int> GetConnectedInputs()
-        {
-            return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
-        }
 
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
@@ -847,6 +822,15 @@ namespace Dynamo.Models
         public bool HasInput(int data)
         {
             return HasConnectedInput(data) || (InPorts.Count > data && InPorts[data].UsingDefaultValue);
+        }
+
+        /// <summary>
+        ///     Return if all input ports of the node have connections.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasUnconnectedInput()
+        {
+            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
         }
 
         /// <summary>
@@ -1442,8 +1426,6 @@ namespace Dynamo.Models
             } 
         }
 
-        private bool forceReExec = false;
-
         /// <summary>
         ///     This property forces all AST nodes that generated from this node
         ///     to be executed, even there is no change in AST nodes.
@@ -1452,11 +1434,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return forceReExec;
-            }
-            set
-            {
-                forceReExec = value;
+                return false;
             }
         }
         #endregion

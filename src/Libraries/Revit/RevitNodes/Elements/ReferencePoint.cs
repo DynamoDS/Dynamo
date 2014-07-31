@@ -80,9 +80,6 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(InternalElement);
-
-            // otherwise the point value is invalid for downstream requests
-            DocumentManager.Regenerate();
         }
 
         /// <summary>
@@ -122,7 +119,9 @@ namespace Revit.Elements
         /// <summary>
         /// Internal constructor for the ReferencePoint
         /// </summary>
-        /// <param name="xyz"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         private ReferencePoint(XYZ xyz)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -226,6 +225,7 @@ namespace Revit.Elements
         {
             get
             {
+                DocumentManager.Regenerate();
                 return InternalReferencePoint.Position.ToPoint();
             }
         }
@@ -259,6 +259,12 @@ namespace Revit.Elements
                 return xz.ToPlane();
             }
         }
+
+        public String Id
+        {
+            get { return InternalElementId.ToString(); }
+        }
+
 
         #endregion
 

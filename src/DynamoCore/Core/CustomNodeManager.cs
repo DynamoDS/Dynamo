@@ -284,7 +284,11 @@ namespace Dynamo.Utilities
         public string GetNodePath(Guid id)
         {
             var nodeInfo = GetNodeInfo(id);
-            return nodeInfo != null ? nodeInfo.Path : null;
+            if (nodeInfo != null)
+            {
+                return nodeInfo.Path;
+            }
+            return null;
         }
 
         /// <summary>
@@ -331,30 +335,33 @@ namespace Dynamo.Utilities
         public CustomNodeDefinition ReloadFunctionDefintion(Guid id)
         {
             CustomNodeDefinition def;
-            if (!GetDefinitionFromPath(id, out def))
-                return null;
-
-            if (def == null)
+            if (GetDefinitionFromPath(id, out def))
             {
-                return null;
+                if (def == null)
+                {
+                    return null;
+                }
+
+                var customNodeInstances =
+                       dynSettings.Controller
+                                  .DynamoModel
+                                  .AllNodes
+                                  .OfType<Function>()
+                                  .Where(f => f.Definition != null &&
+                                              f.Definition.FunctionId.Equals(id));
+
+                foreach (var item in customNodeInstances)
+                {
+                    item.Definition = def;
+                    item.ResyncWithDefinition();
+                    item.State = ElementState.Dead;
+                    item.ValidateConnections();
+                }
+
+                return def;
             }
 
-            var customNodeInstances =
-                dynSettings.Controller
-                    .DynamoModel
-                    .AllNodes
-                    .OfType<Function>()
-                    .Where(f => f.Controller != null &&
-                        f.Definition.FunctionId.Equals(id));
-
-            foreach (var item in customNodeInstances)
-            {
-                item.ResyncWithDefinition(def);
-                item.State = ElementState.Dead;
-                item.ValidateConnections();
-            }
-
-            return def;
+            return null;
         }
 
         /// <summary>
@@ -371,14 +378,15 @@ namespace Dynamo.Utilities
         /// </summary>
         public void RecompileAllNodes(EngineController engine)
         {
-            var compiledNodes = new HashSet<Guid>();
+            HashSet<Guid> compiledNodes = new HashSet<Guid>();
 
-            foreach (
-                var idDefPair in
-                    LoadedCustomNodes.Where(idDefPair => !compiledNodes.Contains(idDefPair.Key)))
+            foreach (var idDefPair in LoadedCustomNodes)
             {
-                idDefPair.Value.Compile(engine);
-                compiledNodes.Add(idDefPair.Key);
+                if (!compiledNodes.Contains(idDefPair.Key))
+                {
+                    idDefPair.Value.Compile(engine);
+                    compiledNodes.Add(idDefPair.Key);
+                }
             }
         }
 
@@ -399,7 +407,15 @@ namespace Dynamo.Utilities
         public bool IsInitialized(string name)
         {
             var info = GetNodeInfo(name);
-            return info != null && IsInitialized(info.Guid);
+           
+            if ( info != null )
+            {
+                return IsInitialized(info.Guid);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -418,7 +434,12 @@ namespace Dynamo.Utilities
         /// <returns>False if the name doesn't exist in this</returns>
         public Guid GetGuidFromName(string name)
         {
-            return !Contains(name) ? Guid.Empty : GetNodeInfo(name).Guid;
+            if (!Contains(name))
+            {
+                return Guid.Empty;
+            }
+
+            return GetNodeInfo(name).Guid;
         }
 
         /// <summary>
@@ -505,16 +526,16 @@ namespace Dynamo.Utilities
         {
             string name, category, description;
             Guid id;
-            return GetHeaderFromPath(path, out id, out name, out category, out description)
-                ? new CustomNodeInfo(
-                    id,
-                    Path.GetFileNameWithoutExtension(path),
-                    category,
-                    description,
-                    path)
-                : null;
+            if (GetHeaderFromPath(path, out id, out name, out category, out description))
+            {
+                return new CustomNodeInfo(id, Path.GetFileNameWithoutExtension(path), category, description, path);
+            }
+            else
+            {
+                return null;
+            }
+            
         }
-
         /// <summary>
         ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
@@ -735,9 +756,10 @@ namespace Dynamo.Utilities
 
                 def = new CustomNodeDefinition(Guid.Parse(id))
                 {
-                    WorkspaceModel = ws,
-                    IsBeingLoaded = true
+                    WorkspaceModel = ws
                 };
+
+                def.IsBeingLoaded = true;
 
                 // load a dummy version, so any nodes depending on this node
                 // will find an (empty) identifier on compilation
@@ -1013,9 +1035,14 @@ namespace Dynamo.Utilities
 
         internal CustomNodeInfo GetNodeInfo(Guid x)
         {
-            CustomNodeInfo info;
-            NodeInfos.TryGetValue(x, out info);
-            return info;
+            if (NodeInfos.ContainsKey(x))
+            {
+                return NodeInfos[x];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         internal CustomNodeInfo GetNodeInfo(string name)

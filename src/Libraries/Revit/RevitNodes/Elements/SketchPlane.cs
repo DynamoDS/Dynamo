@@ -70,7 +70,7 @@ namespace Revit.Elements
 
                 // if setting the plane fails, we delete the old Element
                 // in order to create a new one
-                DocumentManager.Instance.DeleteElement(new ElementUUID(oldEle.UniqueId));
+                DocumentManager.Instance.DeleteElement(oldEle.Id);
 
             }
 
@@ -104,7 +104,7 @@ namespace Revit.Elements
 
             XYZ newOrigin = p.Origin;
             XYZ newNorm = p.Normal;
-            var oldP = sp.GetPlane();
+            var oldP = sp.Plane;
             XYZ oldOrigin = oldP.Origin;
             XYZ oldNorm = oldP.Normal;
 

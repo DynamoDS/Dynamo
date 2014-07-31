@@ -154,11 +154,12 @@ namespace Revit.Elements
             }
         }
 
-        public new FamilySymbol Symbol
-        {    
-            // NOTE: Because AbstractFamilyInstance is not visible in the library
-            //       we redefine this method on FamilyInstance
-            get { return base.Symbol; }
+        public FamilySymbol Symbol
+        {
+            get
+            {
+                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
+            }
         }
 
         #endregion

@@ -67,7 +67,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the name of this Family Symbol
         /// </summary>
-        public new string Name
+        public string Name
         {
             get
             {

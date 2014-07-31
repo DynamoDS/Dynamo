@@ -71,7 +71,7 @@ namespace Revit.Elements
         /// <summary>
         /// The name of this family
         /// </summary>
-        public new string Name
+        public string Name
         {
             get
             {
@@ -123,7 +123,7 @@ namespace Revit.Elements
         /// <summary>
         /// Construct an Element from an existing Element in the Document
         /// </summary>
-        /// <param name="family"></param>
+        /// <param name="familyInstance"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static Family FromExisting(Autodesk.Revit.DB.Family family, bool isRevitOwned)
