@@ -787,27 +787,8 @@ namespace ProtoCore.DSASM
             int currentScopeFunction = Constants.kInvalidIndex;
             GetCallerInformation(out currentScopeClass, out currentScopeFunction);
 
-            List<bool> execStates = new List<bool>();
 
-            //
-            // Comment Jun:
-            // Storing execution states is relevant only if the current scope is a function,
-            // as this mechanism is used to keep track of maintining execution states of recursive calls
-            // This mechanism should also be ignored if the function call is non-recursive as it does not need to maintains state in that case
-            //
-            if (currentScopeFunction != Constants.kGlobalScope)
-            {
-                // Get the instruction stream where the current function resides in
-                StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexFunctionBlock));
-                Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex);
-                AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
-
-                // Get the graphnodes of the function from the instruction stream and retrive the execution states
-                execStates = depgraph.GetExecutionStatesAtScope(currentScopeClass, currentScopeFunction);
-            }
-            
-
-            // Build the stackfram for the functioncall
+            // Handle execution states at the FEP
             var stackFrame = new StackFrame(svThisPtr, 
                                             ci, 
                                             fi, 
@@ -819,7 +800,7 @@ namespace ProtoCore.DSASM
                                             0, 
                                             rmem.FramePointer, 
                                             registers, 
-                                            execStates);
+                                            null);
 
             FunctionCounter counter = FindCounter(functionIndex, classIndex, fNode.name);
             StackValue sv = StackValue.Null;
@@ -7037,9 +7018,9 @@ namespace ProtoCore.DSASM
             int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
             // This resotring execution states is only permitted if the current scope is still in a function
-            if (currentScopeFunction != Constants.kGlobalScope)
+            //if (currentScopeFunction != Constants.kGlobalScope)
             {
-                RestoreGraphNodeExecutionStates(execStateRestore);
+                RestoreGraphNodeExecutionStates(procNode, execStateRestore);
             }
 
             return;
@@ -7195,24 +7176,14 @@ namespace ProtoCore.DSASM
             return execStateRestore;
         }
 
-        private void RestoreGraphNodeExecutionStates(List<bool> execStateRestore)
+        private void RestoreGraphNodeExecutionStates(ProcedureNode procNode, List<bool> execStateRestore)
         {
-            // Restore the execution states
-            if (execStateRestore.Count > 0)
+            if (execStateRestore.Count > 0 )
             {
-                // Get the instruction stream where the current function resides in
-                StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexFunctionBlock));
-                Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex);
-                AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
-
-                int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-
-                List<AssociativeGraph.GraphNode> graphNodesInScope = depgraph.GetGraphNodesAtScope(currentScopeClass, currentScopeFunction);
-                Validity.Assert(execStateRestore.Count == graphNodesInScope.Count);
+                Validity.Assert(execStateRestore.Count == procNode.GraphNodeList.Count);
                 for (int n = 0; n < execStateRestore.Count; ++n)
                 {
-                    graphNodesInScope[n].isDirty = execStateRestore[n];
+                    procNode.GraphNodeList[n].isDirty = execStateRestore[n];
                 }
             }
         }
@@ -7345,16 +7316,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            // Now that the stack frame is popped off, we can retrieve the returned scope
-            int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-            int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-
-            // This resotring execution states is only permitted if the current scope is still in a function
-            if (currentScopeFunction != Constants.kGlobalScope)
-            {
-                RestoreGraphNodeExecutionStates(execStateRestore);
-            }
-
+            RestoreGraphNodeExecutionStates(procNode, execStateRestore);
             return;
         }
 

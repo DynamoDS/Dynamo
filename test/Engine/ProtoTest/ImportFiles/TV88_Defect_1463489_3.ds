@@ -1,0 +1,39 @@
+class A
+{
+    y : bool;
+	constructor A ( x : bool )
+	{
+	    y = x && true;
+	}
+	def foo: bool ( x : bool )
+	{
+		[Imperative]
+		{
+		    if( x == false )
+			    y = true;
+			else
+			    y = false;
+		}		
+		return = y;
+	}
+}
+
+c = A.A ( 0.6 );
+y1 = c.y;
+c1 = A.A ( 0.0 );
+y2 = c1.y; 
+d = [Imperative]
+{
+    return = A.A ( -3.5 );
+}
+y3 = d.y;
+d1 = [Imperative]
+{
+    return = A.A ( 0.0 );
+}
+y4 = d1.y;
+dymmy = 0;
+temp = c.foo( 0.6);
+temp = c1.foo( 0.0);
+temp = d.foo( -3.5);
+temp = d1.foo( 0.0 );

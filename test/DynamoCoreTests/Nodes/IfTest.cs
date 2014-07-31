@@ -60,7 +60,6 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("2569020c-9952-46c5-8962-02bbf8c9f027", 1);
             AssertPreviewValue("4cda88e3-b54e-46c1-9c80-2647de6e3468", 5);
-            AssertPreviewValue("e52d959c-27cb-48f7-9004-baf2e9a780ae", new object[] { 1, 5 });
         }
     }
 }
