@@ -20,21 +20,21 @@ namespace Dynamo
     class RevitVisualizationManager : VisualizationManager
     {
         private ElementId keeperId = ElementId.InvalidElementId;
-
+        
         public ElementId KeeperId
         {
             get { return keeperId; }
         }
 
-        public RevitVisualizationManager(DynamoModel dynamoModel, string context) : base(dynamoModel)
+        public RevitVisualizationManager(DynamoModel dynamoModel) : base(dynamoModel)
         {
-            if (context == Context.VASARI_2014 || 
-                context == Context.REVIT_2015)
+            if (dynamoModel.Context == Context.VASARI_2014 ||
+                dynamoModel.Context == Context.REVIT_2015)
             {
                 AlternateDrawingContextAvailable = true;
                 DrawToAlternateContext = false;
 
-                AlternateContextName = context;
+                AlternateContextName = dynamoModel.Context;
 
                 RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
@@ -79,7 +79,7 @@ namespace Dynamo
                 || !DrawToAlternateContext)
                 return;
 
-            var values = dynSettings.Controller.DynamoModel.Nodes
+            var values = dynamoModel.Nodes
                 .Where(x => x.IsVisible).Where(x => x.CachedValue != null)
                 .Select(x => x.CachedValue);
 
@@ -139,7 +139,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="data"></param>
         /// <param name="geoms"></param>
-        private static void RevitGeometryFromMirrorData(MirrorData data, ref List<GeometryObject> geoms)
+        private void RevitGeometryFromMirrorData(MirrorData data, ref List<GeometryObject> geoms)
         {
             if (data.IsCollection)
             {
@@ -151,7 +151,7 @@ namespace Dynamo
                     }
                     catch (Exception ex)
                     {
-                        dynSettings.DynamoLogger.Log(ex.Message);
+                        this.dynamoModel.Logger.Log(ex.Message);
                     }
                 }
             }
@@ -179,7 +179,7 @@ namespace Dynamo
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.DynamoLogger.Log(ex.Message);
+                    this.dynamoModel.Logger.Log(ex.Message);
                 }
             }
         }

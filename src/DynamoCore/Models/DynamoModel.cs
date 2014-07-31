@@ -100,7 +100,7 @@ namespace Dynamo.Models
         public PackageManagerClient PackageManagerClient { get; private set; }
         public CustomNodeManager CustomNodeManager { get; private set; }
         public DynamoLogger Logger { get; private set; }
-        public DynamoRunner Runner { get; private set; }
+        public DynamoRunner Runner { get; protected set; }
         public SearchModel SearchModel { get; private set; }
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
@@ -234,10 +234,9 @@ namespace Dynamo.Models
 
         #endregion
 
-        public DynamoModel(string context, IPreferences preferences, bool isTestMode = false)
+        public DynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false)
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            DynamoPathManager.Instance.InitializeCore(corePath);
             UsageReportingManager.Instance.InitializeCore(this);
 
             Context = context;
@@ -249,7 +248,7 @@ namespace Dynamo.Models
             {
                 this.PreferenceSettings = preferences as PreferenceSettings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-            }   
+            }
 
             InitializePreferences(preferences);
             InitializeUpdateManager();
@@ -287,8 +286,8 @@ namespace Dynamo.Models
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            Runner = new DynamoRunner(this);
             PackageManagerClient = new PackageManagerClient(this);
+            Runner = new DynamoRunner(this);
         }
 
         private void InitializeUpdateManager()

@@ -40,7 +40,7 @@ namespace Dynamo
         private bool drawToAlternateContext = true;
         //private Octree.OctreeSearch.Octree octree;
         private bool updatingPaused = false;
-        private readonly DynamoModel dynamoModel;
+        protected readonly DynamoModel dynamoModel;
         private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
         private bool alternateDrawingContextAvailable;
         private long taskId = -1;

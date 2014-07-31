@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
-using System.Windows.Threading;
-
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
@@ -17,6 +11,7 @@ using DSIronPython;
 
 using DSNodeServices;
 
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -36,11 +31,20 @@ namespace Dynamo.Applications
         #region Events
 
         public event EventHandler RevitDocumentChanged;
-
         public virtual void OnRevitDocumentChanged()
         {
             if (RevitDocumentChanged != null)
                 RevitDocumentChanged(this, EventArgs.Empty);
+        }
+
+        public delegate void DynamoRevitModelHandler(DynamoRevitModel model);
+        public event DynamoRevitModelHandler ShuttingDown;
+        private void OnShuttingDown()
+        {
+            if (ShuttingDown != null)
+            {
+                ShuttingDown(this);
+            }
         }
 
         #endregion
@@ -48,19 +52,24 @@ namespace Dynamo.Applications
         #region Properties/Fields
 
         public RevitServicesUpdater RevitUpdater { get; private set; }
+        public Reactor Reactor { get; private set; }
      
         #endregion
 
-        public DynamoRevitModel(string context, IPreferences preferences, RevitServicesUpdater updater, bool isTestMode = false) :
-            base(context, preferences, isTestMode)
+        public DynamoRevitModel(string context, IPreferences preferences, RevitServicesUpdater updater, string corePath, bool isTestMode = false) :
+            base(context, preferences, corePath, isTestMode)
         {
             RevitUpdater = updater;
+            Reactor = new Reactor(this);
+            Runner = new DynamoRunner(this); // KILLDYNSETTINGS - this is a hack
 
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
                 Application_DocumentClosed;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
                 Application_DocumentOpened;
             DocumentManager.Instance.CurrentUIApplication.ViewActivated += Revit_ViewActivated;
+
+            DocumentManager.OnLogError += this.Logger.Log;
 
             // Set the intitial document.
             if (DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument != null)
@@ -70,16 +79,13 @@ namespace Dynamo.Applications
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
             }
 
-            TransactionWrapper = TransactionManager.Instance.TransactionWrapper;
-            TransactionWrapper.TransactionStarted += TransactionManager_TransactionCommitted;
-            TransactionWrapper.TransactionCancelled += TransactionManager_TransactionCancelled;
-            TransactionWrapper.FailuresRaised += TransactionManager_FailuresRaised;
+            TransactionManager.Instance.TransactionWrapper.TransactionStarted += TransactionManager_TransactionCommitted;
+            TransactionManager.Instance.TransactionWrapper.TransactionCancelled += TransactionManager_TransactionCancelled;
+            TransactionManager.Instance.TransactionWrapper.FailuresRaised += TransactionManager_FailuresRaised;
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
 
             SetupPython();
-
-            Runner = new DynamoRevitRunner(this);
         }
 
         private void SetupPython()
@@ -155,7 +161,7 @@ namespace Dynamo.Applications
             var uiDoc = DocumentManager.Instance.CurrentUIDocument;
             if (uiDoc != null)
             {
-                DynamoRevit.SetRunEnabledBasedOnContext(uiDoc.ActiveView);
+                this.SetRunEnabledBasedOnContext(uiDoc.ActiveView);
             }
         }
 
@@ -246,20 +252,7 @@ namespace Dynamo.Applications
         {
             DisposeLogic.IsShuttingDown = true;
 
-            RevitServices.Threading.IdlePromise.ExecuteOnShutdown(
-                delegate
-                {
-                    TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-
-                    var keeperId = ((RevitVisualizationManager) VisualizationManager).KeeperId;
-
-                    if (keeperId != ElementId.InvalidElementId)
-                    {
-                        DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                    }
-
-                    TransactionManager.Instance.ForceCloseTransaction();
-                });
+            OnShuttingDown();
 
             base.ShutDown(shutDownHost, args);
             RevitUpdater.UnRegisterAllChangeHooks();
@@ -312,10 +305,6 @@ namespace Dynamo.Applications
         #endregion
 
         #region Revit Transaction Management
-
-        internal TransactionHandle transaction;
-
-        public TransactionWrapper TransactionWrapper { get; private set; }
 
         private void TransactionManager_TransactionCancelled()
         {

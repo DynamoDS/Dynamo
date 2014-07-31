@@ -68,8 +68,6 @@ namespace Dynamo.Controls
             var viewModel = DynamoViewModel.MakeSandbox(commandFilePath);
             
             var view = new DynamoView(viewModel);
-            view.DataContext = viewModel;
-            viewModel.UIDispatcher = view.Dispatcher;
 
             var app = new Application();
             app.Run(view);
@@ -86,6 +84,8 @@ namespace Dynamo.Controls
         {
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoViewModel.UIDispatcher = this.Dispatcher;
+
+            this.DataContext = dynamoViewModel;
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 

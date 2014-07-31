@@ -78,7 +78,6 @@ namespace Dynamo
 
             foreach (var correction in corrections)
             {
-                dynSettings.DynamoLogger.LogWarning("Replacing XyzZero with Xyz with default inputs.", WarningLevel.Mild);
                 elementsRoot.InsertBefore(correction.Item1, correction.Item2);
                 elementsRoot.RemoveChild(correction.Item2);
             }

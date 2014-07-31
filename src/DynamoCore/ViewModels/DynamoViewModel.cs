@@ -426,7 +426,8 @@ namespace Dynamo.ViewModels
         {
             var prefs = PreferenceSettings.Load();
 
-            var model = new DynamoModel("None", prefs);
+            var corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var model = new DynamoModel("None", prefs, corePath);
 
             var vizManager = new VisualizationManager(model);
             var watchHandler = new DefaultWatchHandler(vizManager, prefs);

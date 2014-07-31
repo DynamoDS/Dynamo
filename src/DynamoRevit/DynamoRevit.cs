@@ -25,6 +25,7 @@ using DynamoUtilities;
 
 using RevitServices.Elements;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 using MessageBox = System.Windows.Forms.MessageBox;
 using RevThread = RevitServices.Threading;
@@ -37,10 +38,9 @@ namespace Dynamo.Applications
      Regeneration(RegenerationOption.Manual)]
     public class DynamoRevit : IExternalCommand
     {
-        private DynamoViewModel dynamoViewModel;
-        private DynamoRevitModel dynamoRevitModel;
-
-        private bool handledCrash;
+        private static DynamoViewModel dynamoViewModel;
+        private static DynamoRevitModel dynamoRevitModel;
+        private static bool handledCrash;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -51,53 +51,16 @@ namespace Dynamo.Applications
 
             try
             {
-                var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-
-                if (DocumentManager.Instance.CurrentUIApplication == null)
-                    DocumentManager.Instance.CurrentUIApplication = commandData.Application;
-
-                DocumentManager.OnLogError += dynSettings.DynamoLogger.Log;
-
-                updater = new RevitServicesUpdater( DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
-                updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-                updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
-
                 RevThread.IdlePromise.ExecuteOnIdleAsync(
                     delegate
                     {
-                        //get window handle
-                        IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+                        dynamoRevitModel = InitializeCoreModel(commandData);
+                        dynamoViewModel = InitializeCoreViewModel(dynamoRevitModel);
 
-                        var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-                        string context = r.Replace(commandData.Application.Application.VersionName, "");
+                        InitializeCoreView().Show();
 
-                        //they changed the application version name conventions for vasari
-                        //it no longer has a version year so we can't compare it to other versions
-                        if (context == "Vasari")
-                            context = "Vasari 2014";
-
-                        dynamoViewModel = InitializeCore( updater,
-                            logger,
-                            context );
-
-                        var dynamoView = new DynamoView
-                        {
-                            DataContext = dynamoViewModel.DynamoViewModel
-                        };
-                        dynamoViewModel.UIDispatcher = dynamoView.Dispatcher;
-
-                        //set window handle and show dynamo
-                        new WindowInteropHelper(dynamoView).Owner = mwHandle;
-
-                        handledCrash = false;
-
-                        dynamoView.Show();
-
+                        // KILLDYNSETTINGS - more cleanup
                         TryOpenWorkspaceInCommandData(commandData);
-
-                        dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException;
-                        dynamoView.Closing += dynamoView_Closing;
-                        dynamoView.Closed += dynamoView_Closed;
 
                         commandData.Application.ViewActivating += Application_ViewActivating;
                     });
@@ -120,51 +83,88 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
-        private void TryOpenWorkspaceInCommandData(ExternalCommandData commandData)
+        #region Initialization
+
+        private static DynamoRevitModel InitializeCoreModel(ExternalCommandData commandData)
         {
+            if (DocumentManager.Instance.CurrentUIApplication == null)
+                DocumentManager.Instance.CurrentUIApplication = commandData.Application;
 
-            if (commandData.JournalData != null && commandData.JournalData.ContainsKey("dynPath"))
-                dynamoViewModel.Model.OpenWorkspace(commandData.JournalData["dynPath"]);
-        }
+            // make updater and register events
+            var updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
+            updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
+            updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
 
-
-        public DynamoViewModel InitializeCore(
-            RevitServicesUpdater updater, DynamoLogger logger, string context)
-        {
+            // set revit units
             BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
             BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
             BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
-
-            var updateManager = new UpdateManager.UpdateManager(logger);
 
             string corePath =
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
+            var drm = new DynamoRevitModel(GetRevitContext(commandData), null, updater, corePath);
+            
+            return drm;
+        }
 
-            var dynamoModel = new DynamoRevitModel( context, 
+        private static DynamoViewModel InitializeCoreViewModel(DynamoRevitModel dynamoRevitModel)
+        {
+            var vizManager = new RevitVisualizationManager(dynamoRevitModel);
+            var watchHandler = new RevitWatchHandler(vizManager, dynamoRevitModel.PreferenceSettings);
 
-            var dynamoController = new DynamoViewModel(
-                updater,
-                context,
-                updateManager,
-                corePath);
+            var dvm = new DynamoViewModel(
+                dynamoRevitModel,
+                watchHandler,
+                vizManager,
+                null);
 
-            // Generate a view model to be the data context for the view
-            dynamoController.DynamoViewModel = new DynamoViewModel(dynamoController, null);
-            dynamoController.DynamoViewModel.RequestAuthentication +=
-                dynamoController.RegisterSingleSignOn;
-            dynamoController.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
-            dynamoController.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
-                dynamoController.FindNodesFromSelection;
+            dvm.RequestAuthentication +=
+                 SingleSignOnManager.RegisterSingleSignOn;
+
+            dynamoRevitModel.ShuttingDown += (drm)=>
+                RevitServices.Threading.IdlePromise.ExecuteOnShutdown(
+                    delegate
+                    {
+                        TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+
+                        var keeperId = vizManager.KeeperId;
+
+                        if (keeperId != ElementId.InvalidElementId)
+                        {
+                            DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                        }
+
+                        TransactionManager.Instance.ForceCloseTransaction();
+                    });
+
+
+            //KILLDYNSETTINGS - not sure if this works
+            //this.dynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+            //this.dynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
+            //    dynamoController.FindNodesFromSelection;
 
             // Register the view model to handle sign-on requests
-            dynamoController.RequestAuthentication +=
-                SingleSignOnManager.RegisterSingleSignOn;
 
-            dynamoController.VisualizationManager = new RevitVisualizationManager();
+            return dvm;
+        }
 
-            return dynamoController;
+        private static DynamoView InitializeCoreView()
+        {
+            IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
+            var dynamoView = new DynamoView(dynamoViewModel);
+            new WindowInteropHelper(dynamoView).Owner = mwHandle;
+
+            handledCrash = false;
+
+            dynamoView.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
+            dynamoView.Closing += DynamoView_Closing;
+            dynamoView.Closed += DynamoView_Closed;
+
+            SingleSignOnManager.UIDispatcher = dynamoView.Dispatcher;
+
+            return dynamoView;
         }
 
         private void InitializeAssemblies()
@@ -192,6 +192,34 @@ namespace Dynamo.Applications
             }
         }
 
+        #endregion
+
+        #region Helpers
+
+        private static void TryOpenWorkspaceInCommandData(ExternalCommandData commandData)
+        {
+
+            if (commandData.JournalData != null && commandData.JournalData.ContainsKey("dynPath"))
+                dynamoViewModel.Model.OpenWorkspace(commandData.JournalData["dynPath"]);
+        }
+
+        private static string GetRevitContext(ExternalCommandData commandData)
+        {
+            var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+            string context = r.Replace(commandData.Application.Application.VersionName, "");
+
+            //they changed the application version name conventions for vasari
+            //it no longer has a version year so we can't compare it to other versions
+            if (context == "Vasari")
+                context = "Vasari 2014";
+
+            return context;
+        }
+
+        #endregion
+
+        #region View Activation
+
         /// <summary>
         ///     Handler for Revit's ViewActivating event.
         ///     Addins are not available in some views in Revit, notably perspective views.
@@ -200,10 +228,14 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
+        private static void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
         {
-            this.dynamoRevitModel.SetRunEnabledBasedOnContext(e.NewActiveView);
+            dynamoRevitModel.SetRunEnabledBasedOnContext(e.NewActiveView);
         }
+
+        #endregion
+
+        #region Exception
 
         /// <summary>
         ///     A method to deal with unhandle exceptions.  Executes right before Revit crashes.
@@ -212,7 +244,7 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args">Info about the exception</param>
-        private void DispatcherOnUnhandledException(
+        private static void Dispatcher_UnhandledException(
             object sender, DispatcherUnhandledExceptionEventArgs args)
         {
             args.Handled = true;
@@ -230,18 +262,18 @@ namespace Dynamo.Applications
                 InstrumentationLogger.LogException(args.Exception);
                 StabilityTracking.GetInstance().NotifyCrash();
 
-                this.dynamoRevitModel.Logger.LogError("Dynamo Unhandled Exception");
-                this.dynamoRevitModel.Logger.LogError(exceptionMessage);
+                dynamoRevitModel.Logger.LogError("Dynamo Unhandled Exception");
+                dynamoRevitModel.Logger.LogError(exceptionMessage);
             }
             catch { }
 
             try
             {
                 DynamoModel.IsCrashing = true;
-                this.dynamoRevitModel.OnRequestsCrashPrompt(
-                    this,
+                dynamoRevitModel.OnRequestsCrashPrompt(
+                    dynamoRevitModel,
                     new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
-                this.dynamoViewModel.Exit(false); // don't allow cancellation
+                dynamoViewModel.Exit(false); // don't allow cancellation
             }
             catch { }
             finally
@@ -249,17 +281,21 @@ namespace Dynamo.Applications
                 args.Handled = true;
 
                 // KILLDYNSETTINGS - this is suspect
-                this.dynamoRevitModel.Logger.Dispose();
+                dynamoRevitModel.Logger.Dispose();
                 DynamoRevitApp.DynamoButton.Enabled = true;
             }
         }
+
+        #endregion
+
+        #region Shutdown
 
         /// <summary>
         ///     Executes right before Dynamo closes, gives you the chance to cache whatever you might want.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void dynamoView_Closing(object sender, EventArgs e)
+        private static void DynamoView_Closing(object sender, EventArgs e)
         {
             RevThread.IdlePromise.ClearPromises();
             RevThread.IdlePromise.Shutdown();
@@ -270,16 +306,16 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void dynamoView_Closed(object sender, EventArgs e)
+        private static void DynamoView_Closed(object sender, EventArgs e)
         {
             var view = (DynamoView)sender;
 
             dynamoRevitModel.RevitUpdater.Dispose();
-            DocumentManager.OnLogError -= this.dynamoRevitModel.Logger.Log;
+            DocumentManager.OnLogError -= dynamoRevitModel.Logger.Log;
 
-            view.Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
-            view.Closing -= dynamoView_Closing;
-            view.Closed -= dynamoView_Closed;
+            view.Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
+            view.Closing -= DynamoView_Closing;
+            view.Closed -= DynamoView_Closed;
             DocumentManager.Instance.CurrentUIApplication.ViewActivating -=
                 Application_ViewActivating;
 
@@ -292,6 +328,8 @@ namespace Dynamo.Applications
 
             DynamoRevitApp.DynamoButton.Enabled = true;
         }
+
+        #endregion
 
     }
 }

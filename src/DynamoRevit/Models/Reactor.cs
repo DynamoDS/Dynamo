@@ -18,26 +18,11 @@ namespace Dynamo.Applications
 {
     public class Reactor
     {
-        private static Reactor reactor = null;
+        private readonly DynamoRevitModel dynamoRevitModel;
 
-        public static Reactor GetInstance()
+        internal Reactor(DynamoRevitModel dynamoRevitModel)
         {
-            lock (typeof(Reactor))
-            {
-                if (reactor == null)
-                {
-                    reactor = new Reactor();
-                }
-            }
-
-            return reactor;
-        }
-
-        internal Reactor()
-        {
-            var u = dynRevitSettings.Controller.Updater;
-
-            u.ElementsDeleted += OnElementsDeleted;
+            dynamoRevitModel.RevitUpdater.ElementsDeleted += OnElementsDeleted;
         }
 
         private void OnElementsDeleted(Document document, IEnumerable<ElementId> deleted)
@@ -45,16 +30,12 @@ namespace Dynamo.Applications
             if (!deleted.Any())
                 return;
 
-            var workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
+            var workspace = dynamoRevitModel.CurrentWorkspace;
 
             ProtoCore.Core core = null;
-            if (dynSettings.Controller != null)
-            {
-                var engine = dynSettings.Controller.EngineController;
-                if (engine != null && (engine.LiveRunnerCore != null))
-                    core = engine.LiveRunnerCore;
-            }
-
+            var engine = dynamoRevitModel.EngineController;
+            if (engine != null && (engine.LiveRunnerCore != null))
+                core = engine.LiveRunnerCore;
 
             if (core == null) // No execution yet as of this point.
                 return;

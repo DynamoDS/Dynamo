@@ -17,6 +17,7 @@ namespace Dynamo.Applications
         ///     A reference to the the SSONET assembly to prevent reloading.
         /// </summary>
         private static Assembly singleSignOnAssembly;
+        public static Dispatcher UIDispatcher { get; set; }
 
         /// <summary>
         ///     Delay loading of the SSONet.dll, which is used by the package manager for
@@ -47,5 +48,6 @@ namespace Dynamo.Applications
             client.Client.Provider = client.Client.Provider
                 ?? new RevitOxygenProvider(new DispatcherSynchronizationContext(UIDispatcher));
         }
+
     }
 }
