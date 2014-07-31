@@ -221,11 +221,6 @@ namespace Dynamo.Controls
             MouseRightButtonUp += new MouseButtonEventHandler(view_MouseRightButtonUp);
             PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
-            var mi = new MenuItem { Header = "Zoom to Fit" };
-            mi.Click += new RoutedEventHandler(mi_Click);
-
-            MainContextMenu.Items.Add(mi);
-
             //check this for null so the designer can load the preview
             if (dynSettings.Controller != null)
             {
@@ -319,13 +314,9 @@ namespace Dynamo.Controls
             }
         }
 
-        protected void mi_Click(object sender, RoutedEventArgs e)
+        protected void OnZoomToFitClicked(object sender, RoutedEventArgs e)
         {
             watch_view.ZoomExtents();
-        }
-
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
         }
 
         void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
