@@ -505,8 +505,11 @@ namespace Dynamo.TestInfrastructure
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
 
-                    string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-                    Assembly assembly = Assembly.LoadFile(assemblyPass);
+                    string assemblyPath = Assembly.GetExecutingAssembly().Location;
+                    string assemblyDir = Path.GetDirectoryName(assemblyPath);
+                    string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+                    Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
                     Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
                     if (type != null)
                     {
@@ -640,8 +643,11 @@ namespace Dynamo.TestInfrastructure
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
 
-                    string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-                    Assembly assembly = Assembly.LoadFile(assemblyPass);
+                    string assemblyPath = Assembly.GetExecutingAssembly().Location;
+                    string assemblyDir = Path.GetDirectoryName(assemblyPath);
+                    string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+                    Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
                     Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
                     if (type != null)
                     {
@@ -780,8 +786,12 @@ namespace Dynamo.TestInfrastructure
                 for (int i = 0; i < 1000; i++)
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
-                    string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-                    Assembly assembly = Assembly.LoadFile(assemblyPass);
+
+                    string assemblyPath = Assembly.GetExecutingAssembly().Location;
+                    string assemblyDir = Path.GetDirectoryName(assemblyPath);
+                    string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+                    Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
                     Type type = assembly.GetType("DSCore.File.Directory");
                     List<NodeModel> nodes = new List<NodeModel>();
                     if (type != null)
@@ -915,8 +925,12 @@ namespace Dynamo.TestInfrastructure
                 for (int i = 0; i < 1000; i++)
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
-                    string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-                    Assembly assembly = Assembly.LoadFile(assemblyPass);
+
+                    string assemblyPath = Assembly.GetExecutingAssembly().Location;
+                    string assemblyDir = Path.GetDirectoryName(assemblyPath);
+                    string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+                    Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
                     Type type = assembly.GetType("DSCore.File.Filename");
                     List<NodeModel> nodes = new List<NodeModel>();
                     if (type != null)
@@ -1317,8 +1331,11 @@ namespace Dynamo.TestInfrastructure
 
             try
             {
-                string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-                Assembly assembly = Assembly.LoadFile(assemblyPass);
+                string assemblyPath = Assembly.GetExecutingAssembly().Location;
+                string assemblyDir = Path.GetDirectoryName(assemblyPath);
+                string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+                Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
                 Type type = assembly.GetType("DSCoreNodesUI.NumberSeq");
                 List<NodeModel> nodes = new List<NodeModel>();
                 if (type != null)
@@ -1503,8 +1520,11 @@ namespace Dynamo.TestInfrastructure
 
             try
             {
-                string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-                Assembly assembly = Assembly.LoadFile(assemblyPass);
+                string assemblyPath = Assembly.GetExecutingAssembly().Location;
+                string assemblyDir = Path.GetDirectoryName(assemblyPath);
+                string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+                Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
                 Type type = assembly.GetType("DSCoreNodesUI.NumberRange");
                 List<NodeModel> nodes = new List<NodeModel>();
                 if (type != null)
@@ -1527,17 +1547,15 @@ namespace Dynamo.TestInfrastructure
                         {
                             //coordinates for additional nodes
                             double coordinatesX = 120;
-                            double coordinatesYNumber1 = 180;
-                            double coordinatesYNumber2 = 280;
-                            double coordinatesYNumber3 = 380;
+                            double coordinatesY = 180;
 
                             //make nodes
                             DynamoViewModel.CreateNodeCommand createNodeNumber1 =
-                                new DynamoViewModel.CreateNodeCommand(guidNumber1, "Number", coordinatesX, coordinatesYNumber1, false, true);
+                                new DynamoViewModel.CreateNodeCommand(guidNumber1, "Number", coordinatesX, coordinatesY, false, true);
                             DynamoViewModel.CreateNodeCommand createNodeNumber2 =
-                                new DynamoViewModel.CreateNodeCommand(guidNumber2, "Number", coordinatesX, coordinatesYNumber2, false, true);
+                                new DynamoViewModel.CreateNodeCommand(guidNumber2, "Number", coordinatesX, coordinatesY + 100, false, true);
                             DynamoViewModel.CreateNodeCommand createNodeNumber3 =
-                                new DynamoViewModel.CreateNodeCommand(guidNumber3, "Number", coordinatesX, coordinatesYNumber3, false, true);
+                                new DynamoViewModel.CreateNodeCommand(guidNumber3, "Number", coordinatesX, coordinatesY + 200, false, true);
 
                             //create commands
                             dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber1); //create node "Number" that connect to node "Number Range" on Start

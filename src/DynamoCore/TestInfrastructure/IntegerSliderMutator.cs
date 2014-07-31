@@ -7,6 +7,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System.Reflection;
+using System.IO;
 namespace Dynamo.TestInfrastructure
 {
     class IntegerSliderMutator : AbstractMutator
@@ -19,8 +20,11 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate()
         {
-            string assemblyPath = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-            Assembly assembly = Assembly.LoadFile(assemblyPath);
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
             Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
             List<NodeModel> nodes = new List<NodeModel>();
             if (type != null)

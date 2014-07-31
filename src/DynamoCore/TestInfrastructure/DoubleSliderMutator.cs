@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System.IO;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -20,8 +21,10 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate()
         {
-            string assemblyPath = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-            Assembly assembly = Assembly.LoadFile(assemblyPath);
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
 
             List<NodeModel> nodes = new List<NodeModel>();
 
