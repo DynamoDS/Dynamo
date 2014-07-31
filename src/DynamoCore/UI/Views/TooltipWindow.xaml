@@ -1,55 +1,163 @@
-﻿<UserControl x:Class="Dynamo.UI.Views.TooltipWindow"
+﻿<UserControl x:Class="Dynamo.UI.Views.ToolTipWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="450" 
-             MouseDown="MouseClick"
-             Background="#01000000">
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="450"
+             Background="#01000000"
+             MaxWidth="370">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Hyperlink}">
+            <Setter Property="Foreground"
+                    Value="#4192d9" />
+            <Setter Property="TextBlock.TextDecorations"
+                    Value="{x:Null}" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-    <Border CornerRadius="20" Opacity=".6" Background="Black" Grid.Column="1">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="202*"></ColumnDefinition>
-                <ColumnDefinition Width="65*"></ColumnDefinition>
-                <ColumnDefinition Width="133*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBlock Name="description" Text="description" Grid.Row="0" Grid.ColumnSpan="3" FontSize="16" Foreground="White" Margin="20,30,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
-            <TextBlock Name="inputLabel" Text="INPUT" Grid.Row="1" Foreground="Gray" Margin="20,20,0,0"></TextBlock>
-            <TextBlock Name="input" Text="input parametrs" Grid.Row="2" Grid.ColumnSpan="3" FontSize="12" Foreground="White" Margin="20,0,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
-            <TextBlock Name="outputLabel" Text="OUTPUT" Grid.Row="3" Foreground="Gray" Margin="20,20,0,0"></TextBlock>
-            <TextBlock Name="output" Text="output parametrs" Grid.Row="4" Grid.ColumnSpan="3" FontSize="12" Foreground="White" Margin="20,0,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
-            
-            <Image Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="2"></Image>
-            <Grid Grid.Row="5" Grid.ColumnSpan="3">
+        <Border CornerRadius="5"
+                Opacity=".95"
+                Background="#333333"
+                Grid.Column="1"
+                Padding="10">
+            <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="202*"></ColumnDefinition>
+                    <ColumnDefinition Width="65*"></ColumnDefinition>
+                    <ColumnDefinition Width="133*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Name="name" Text="name" Grid.Row="1" Grid.ColumnSpan="3" FontSize="14" Foreground="White" Margin="20,0,10,0" TextWrapping="WrapWithOverflow"></TextBlock>
-                <Image Grid.Row="1" Grid.Column="3" Source="D:\Projects\Dynamo\Dynamo\src\Resources\copy.png" Height="32" Width="32" Margin="0,0,20,0" MouseDown="CopyIconMouseClick"></Image>
-                <TextBlock Name="Packegs" Text="Packegs using this | Web Reference" Grid.Row="3" Foreground="Gray" Margin="20,0,0,10"></TextBlock>
+                <TextBlock Name="description"
+                           Text="{Binding Path=Description}"
+                           Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           FontSize="13"
+                           Foreground="#cccccc"
+                           Margin="0,0,10,0"
+                           TextWrapping="WrapWithOverflow"/>
+                <TextBlock Name="inputLabel"
+                           Text="INPUT"
+                           Grid.Row="1"
+                           FontSize="10"
+                           Foreground="#50b5a3"
+                           Margin="0,3,0,0"/>
+                <TextBlock Name="input"
+                           Text="{Binding Path=InputParametrs}"
+                           Grid.Row="2"
+                           Grid.ColumnSpan="3"
+                           FontSize="12"
+                           Foreground="White"
+                           TextWrapping="WrapWithOverflow"/>
+                <TextBlock Name="outputLabel"
+                           Text="OUTPUT"
+                           Grid.Row="3"
+                           FontSize="10"
+                           Foreground="#50b5a3"
+                           Margin="0,10,0,0"/>
+                <TextBlock Name="output"
+                           Text="{Binding Path=OutputParametrs}"
+                           Grid.Row="4"
+                           Grid.ColumnSpan="3"
+                           FontSize="12"
+                           Foreground="White"
+                           TextWrapping="WrapWithOverflow"
+                           Margin="0,0,0,0"/>
+
+                <Image Grid.Row="0"
+                       Grid.Column="2"
+                       Grid.ColumnSpan="2" 
+                       Height="96"
+                       Width="96"/>
+                <Grid Grid.Row="5"
+                      Grid.ColumnSpan="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="1"
+                                Grid.ColumnSpan="3"
+                                Orientation="Horizontal"
+                                Margin="0,10,0,0">
+                        <TextBlock Name="code"
+                                   Text="{Binding Path=FullName}"
+                                   FontSize="13"
+                                   FontFamily="Consolas Regular"
+                                   Foreground=" #777777"
+                                   Margin="0,0,10,0"
+                                   TextWrapping="WrapWithOverflow">
+                        </TextBlock>
+                        <Image Height="13"
+                               Width="13"
+                               Grid.Row="1"
+                               MouseDown="CopyIconMouseClick"
+                               HorizontalAlignment="Right">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="False">
+                                            <Setter Property="Source"
+                                                    Value="/DynamoCore;component/UI/Images/Tooltip/copy.png" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Source"
+                                                    Value="/DynamoCore;component/UI/Images/Tooltip/copy_hover.png" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </StackPanel>
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="0"
+                               FontSize="10"
+                               Margin="0,0,0,10">
+                        <Hyperlink Name="Packegs"
+                                   NavigateUri="http://www.google.com"
+                                   RequestNavigate="RequestNavigate">
+                            Packegs using this
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Text=" | "
+                               Grid.Row="3"
+                               Grid.Column="1"
+                               FontSize="10"
+                               Foreground="#4192d9"
+                               Margin="0,0,0,10" />
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="2"
+                               FontSize="10"
+                               Margin="0,0,0,10">
+                        <Hyperlink Name="WebReference"
+                                   NavigateUri="http://dynamobim.org"
+                                   RequestNavigate="RequestNavigate">
+                            Web Reference
+                        </Hyperlink>
+                    </TextBlock>
+
+                </Grid>
             </Grid>
-        </Grid>
-     </Border>
+        </Border>
     </Grid>
 </UserControl>

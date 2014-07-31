@@ -439,8 +439,16 @@ namespace Dynamo.UI.Controls
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
-           // this.Opacity = 0;
-            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);           
+            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
+            this.DataContextChanged += Popup_DataContextChanged;
+            
+        }
+
+        private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
+            tooltip.DataContext = this.DataContext;
+            this.Child = tooltip;
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
@@ -448,6 +456,8 @@ namespace Dynamo.UI.Controls
             double x = 0, y = 0;
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
+
+            Point targetLocation = this.PlacementTarget.PointToScreen(new Point(0, 0));
 
             switch (this.AttachmentSide)
             {
@@ -459,7 +469,16 @@ namespace Dynamo.UI.Controls
 
                 case Side.Right:
                     x = target.Width + 3*gap - 50;
-                    y = (target.Height - popup.Height) * 0.5;
+
+                    if ((dynSettings.Controller.PreferenceSettings.WindowH-48)
+                          - (popup.Height) - targetLocation.Y + gap*2> 0)
+                        y = 0;
+                    else
+                    {
+                        var delta = (dynSettings.Controller.PreferenceSettings.WindowH - 48)
+                          - (popup.Height) - targetLocation.Y + gap*2;
+                        y = delta;
+                    }
                     primaryAxis = PopupPrimaryAxis.Horizontal;
                     break;
 

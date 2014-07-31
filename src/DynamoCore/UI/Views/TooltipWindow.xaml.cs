@@ -15,126 +15,24 @@ using System.Windows.Shapes;
 namespace Dynamo.UI.Views
 {
     /// <summary>
-    /// Interaction logic for TooltipWindow.xaml
+    /// Interaction logic for ToolTipWindow.xaml
     /// </summary>
-    public partial class TooltipWindow : UserControl
+    public partial class ToolTipWindow : UserControl
     {
-        #region DependencyProperties
-        public static DependencyProperty NameProperty = DependencyProperty.Register
-            (
-                 "NodeName",
-                 typeof(string),
-                 typeof(TooltipWindow),
-                 new UIPropertyMetadata(String.Empty, OnPropertyNameChanged)
-            );
 
-        public static DependencyProperty DescriptionProperty = DependencyProperty.Register
-            (
-                 "Description",
-                 typeof(string),
-                 typeof(TooltipWindow),
-                 new UIPropertyMetadata(String.Empty, OnPropertyDescriptionChanged)
-            );
-
-        public static DependencyProperty InputParametrsProperty = DependencyProperty.Register
-            (
-                 "InputParametrs",
-                 typeof(string),
-                 typeof(TooltipWindow),
-                 new UIPropertyMetadata(String.Empty, OnPropertyInputParametrsChanged)
-            );
-        public static DependencyProperty OutputParametrsProperty = DependencyProperty.Register
-           (
-                "OutputParametrs",
-                typeof(string),
-                typeof(TooltipWindow),
-                new UIPropertyMetadata(String.Empty, OnPropertyOutputParametrsChanged)
-           );
-
-        public static readonly DependencyProperty AttachmentSideProperty =
-            DependencyProperty.Register("AttachmentSide",
-            typeof(TooltipWindow.Side), typeof(TooltipWindow),
-            new PropertyMetadata(TooltipWindow.Side.Left));
-        #endregion
-
-        #region Properties
-        public string NodeName
-        {
-            get { return (string)GetValue(NameProperty); }
-            set { SetValue(NameProperty, value); }
-        }
-        public string Description
-        {
-            get { return (string)GetValue(DescriptionProperty); }
-            set { SetValue(DescriptionProperty, value); }
-        }
-        public string InputParametrs
-        {
-            get { return (string)GetValue(InputParametrsProperty); }
-            set { SetValue(InputParametrsProperty, value); }
-        }
-        public string OutputParametrs
-        {
-            get { return (string)GetValue(OutputParametrsProperty); }
-            set { SetValue(OutputParametrsProperty, value); }
-        }
-        public enum Side
-        {
-            Left, Top, Right, Bottom
-        }
-        #endregion
-
-        #region OnPropertyChanged
-        private static void OnPropertyNameChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var node = sender as TooltipWindow;
-
-            if (node != null)
-            {
-                node.name.Text = (string)e.NewValue;
-            }
-        }
-        private static void OnPropertyDescriptionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var node = sender as TooltipWindow;
-
-            if (node != null)
-            {
-                node.description.Text = (string)e.NewValue;
-            }
-        }
-        private static void OnPropertyInputParametrsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var node = sender as TooltipWindow;
-
-            if (node != null)
-            {
-                node.input.Text = (string)e.NewValue;
-            }
-        }
-        private static void OnPropertyOutputParametrsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var node = sender as TooltipWindow;
-
-            if (node != null)
-            {
-                node.output.Text = (string)e.NewValue;
-            }
-        }
-        #endregion
-
-        public TooltipWindow()
+        public ToolTipWindow()
         {
             InitializeComponent();
         }
 
         public void CopyIconMouseClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("Copy button");
+            Clipboard.SetText(code.Text);
         }
 
-        public void MouseClick(object sender, MouseButtonEventArgs e)
+        private void RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
 

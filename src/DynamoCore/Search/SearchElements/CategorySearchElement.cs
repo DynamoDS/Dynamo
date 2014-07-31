@@ -32,19 +32,7 @@ namespace Dynamo.Search.SearchElements
         public override string Description
         {
             get { return _description; }
-        }
-
-        private string _inputParametrs;
-        public override string InputParametrs
-        {
-            get { return _inputParametrs; }
-        }
-
-        private string _outputParametrs;
-        public override string OutputParametrs
-        {
-            get { return _outputParametrs; }
-        }   
+        }  
 
         public override bool Searchable { get { return true; } }
 
@@ -92,8 +80,6 @@ namespace Dynamo.Search.SearchElements
             Keywords = "";
             NumElements = 0;
             _description = "";
-            _inputParametrs = "";
-            //_outputParametrs = "";
         }
         
         /// <summary>

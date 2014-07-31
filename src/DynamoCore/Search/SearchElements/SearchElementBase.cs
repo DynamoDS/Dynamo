@@ -28,9 +28,6 @@ namespace Dynamo.Search.SearchElements
         /// A string describing what the node does</value>
         public abstract string Description { get; }
 
-        public abstract string InputParametrs { get; }
-        public abstract string OutputParametrs { get; }
-
         /// <summary>
         /// Keywords property</summary>
         /// <value>

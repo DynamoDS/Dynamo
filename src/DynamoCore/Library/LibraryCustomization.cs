@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 using System.Xml.XPath;
-
+using System.Windows.Media.Imaging;
 using DynamoUtilities;
 
 namespace Dynamo.DSEngine
@@ -64,20 +64,8 @@ namespace Dynamo.DSEngine
 
         public string GetNamespaceCategory(string namespaceName)
         {
-            return XmlDocument.XPathEvaluate(
-                String.Format("string(/doc/namespaces/namespace[@name='{0}']/category)", namespaceName)
-                ).ToString().Trim();
-
-            //var nodes = (IEnumerable<Object>)XmlDocument.XPathEvaluate(
-            //    String.Format("/doc/namespaces/namespace", namespaceName)
-            //    );
-
-            //foreach (var node in nodes)
-            //{
-            //}
-
-            //return nodes.ToString().Trim();
-
+            var obj = XmlDocument.XPathEvaluate(String.Format("string(/doc/namespaces/namespace[@name='{0}']/category)", namespaceName));
+            return obj.ToString().Trim();
         }
     }
 }

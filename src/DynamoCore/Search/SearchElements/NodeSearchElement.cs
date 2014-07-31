@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -41,7 +42,7 @@ namespace Dynamo.Search.SearchElements
         public override string Name { get { return _name; } }
 
         private string _fullName;
-        public string FullName { get { return "</> "+_fullName; } }
+        public string FullName { get { return _fullName; } }
         /// <summary>
         /// Description property </summary>
         /// <value>
@@ -50,10 +51,10 @@ namespace Dynamo.Search.SearchElements
         public override string Description { get { return _description; } }
 
         private string _inputParametrs;
-        public override string InputParametrs { get { return _inputParametrs; } }
+        public string InputParametrs { get { return _inputParametrs; } }
 
         private string _outputParametrs;
-        public override string OutputParametrs { get { return _outputParametrs; } }
+        public string OutputParametrs { get { return _outputParametrs; } }
 
         private bool _searchable = true;
         public override bool Searchable { get { return _searchable; } }
@@ -88,7 +89,6 @@ namespace Dynamo.Search.SearchElements
                 RaisePropertyChanged("DescriptionVisibility");
             }
         }
-
         #endregion
 
         /// <summary>

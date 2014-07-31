@@ -344,6 +344,7 @@ namespace Dynamo.Search
         private void nodeButton_MouseEnter(object sender, MouseEventArgs e)
         {
             Button from_sender = sender as Button;
+            Popup.PlacementTarget = from_sender;
             Popup.DataContext = from_sender.DataContext;
         }
 

@@ -17,6 +17,7 @@ using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
 using Dynamo.Utilities;
+using System.Windows.Media.Imaging;
 
 #endregion
 
@@ -66,17 +67,16 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetDescription()); }
         }
 
         public string Description
         {
             get
             {
-                /*return !String.IsNullOrEmpty(Summary)
+                return !String.IsNullOrEmpty(Summary)
                     ? Summary + " (" + (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName) + ")"
-                    : (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName); */
-                return Summary;
+                    : (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName);
             }
         }
 
@@ -100,9 +100,25 @@ namespace Dynamo.DSEngine
     }
 
     /// <summary>
+    ///     Describes a function, whether imported or defined in a custom node.
+    /// </summary>
+    public interface IFunctionDescriptor
+    {
+        /// <summary>
+        ///     Name to be displayed for the function.
+        /// </summary>
+        string DisplayName { get; }
+
+        /// <summary>
+        ///     Return keys for multi-output functions.
+        /// </summary>
+        IEnumerable<string> ReturnKeys { get; } 
+    }
+
+    /// <summary>
     ///     Describe a DesignScript function in a imported library
     /// </summary>
-    public class FunctionDescriptor
+    public class FunctionDescriptor : IFunctionDescriptor
     {
         /// <summary>
         ///     A comment describing the Function
@@ -202,37 +218,25 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetSummary()); }
         }
-
+        
         /// <summary>
         ///     A comment describing the function along with the signature
         /// </summary>
         public string Description
         {
-            get 
-            { /*return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature;*/
-                return !String.IsNullOrEmpty(Summary) ? Summary:"";
-            }
+            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
         }
 
         public string InputParametrs
-        {
-            get 
-            { 
-                string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
-                return signature;
-            }
-        }
-
-        public string OutputParametrs
-        {
-            get
-            {
-                return ReturnType;
-            }
-        }
-
+         {
+             get 
+             { 
+                 string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
+                 return signature;
+             }
+         }
         /// <summary>
         ///     The category of this function.
         /// </summary>
@@ -697,7 +701,7 @@ namespace Dynamo.DSEngine
 
             if (importedFunctionGroups.ContainsKey(library))
             {
-                string errorMessage = string.Format("Library {0} has been loaded.", library);
+                string errorMessage = string.Format("Library {0} is already loaded.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }
