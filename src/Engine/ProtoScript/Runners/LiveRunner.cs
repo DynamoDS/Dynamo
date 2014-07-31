@@ -945,31 +945,61 @@ namespace ProtoScript.Runners
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
         /// <summary>
-        ///  These are configuration parameters passed by host application to be consumed by geometry library and persistent manager implementation. 
+        /// These are configuration parameters passed by host application to be 
+        /// consumed by geometry library and persistent manager implementation. 
         /// </summary>
-        public class Options
+        public class Configuration
         {
             /// <summary>
             /// The configuration parameters that needs to be passed to
             /// different applications.
             /// </summary>
-            public Dictionary<string, object> PassThroughConfiguration;
+            private Dictionary<String, object> passThroughConfiguration;
+            public IDictionary<string, object> PassThroughConfiguration
+            {
+                get
+                {
+                    return passThroughConfiguration;
+                }
+            }
 
             /// <summary>
             /// The path of the root graph/module
             /// </summary>
-            public string RootModulePathName;
+            public string RootModulePathName
+            {
+                get;
+                set;
+            }
 
             /// <summary>
             /// List of search directories to resolve any file reference
             /// </summary>
-            public List<string> SearchDirectories;
+            private List<String> searchDirectories;
+            public IList<string> SearchDirectories
+            {
+                get
+                {
+                    return searchDirectories;
+                }
+            }
 
             /// <summary>
-            /// If the Interpreter mode is true, the LiveRunner takes in code statements as input strings
-            /// and not SyncData
+            /// If the Interpreter mode is true, the LiveRunner takes in code 
+            /// statements as input strings and not SyncData
             /// </summary>
-            public bool InterpreterMode = false;
+            public bool InterpreterMode
+            {
+                get;
+                set;
+            }
+
+            public Configuration()
+            {
+                passThroughConfiguration = new Dictionary<string, object>();
+                searchDirectories = new List<string>();
+                RootModulePathName = string.Empty;
+            }
         }
 
         private void ResetModifiedSymbols()
@@ -993,11 +1023,10 @@ namespace ProtoScript.Runners
             }
         }
 
-        private ProtoCore.Options coreOptions = null;
-        private Options executionOptions = null;
+        private Options coreOptions = null;
+        private Configuration configuration = null;
         private int deltaSymbols = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
-
 
         private readonly Object operationsMutex = new object();
 
@@ -1010,16 +1039,32 @@ namespace ProtoScript.Runners
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
 
-
-
-        public LiveRunner()
+        public LiveRunner(): this(new Configuration())
         {
-            InitRunner(new Options());
         }
 
-        public LiveRunner(Options options)
+        public LiveRunner(Configuration configuration)
         {
-            InitRunner(options);
+            this.configuration = configuration;
+
+            graphCompiler = GraphCompiler.CreateInstance();
+            graphCompiler.SetCore(GraphUtilities.GetCore());
+
+            runner = new ProtoScriptTestRunner();
+
+            InitCore();
+
+            taskQueue = new Queue<Task>();
+
+            workerThread = new Thread(new ThreadStart(TaskExecMethod));
+            workerThread.IsBackground = true;
+            workerThread.Start();
+
+            staticContext = new ProtoCore.CompileTime.Context();
+
+            terminating = false;
+            changeSetComputer = new ChangeSetComputer(runnerCore);
+            changeSetApplier = new ChangeSetApplier();
         }
 
         public void Dispose()
@@ -1052,67 +1097,27 @@ namespace ProtoScript.Runners
             }
         }
 
-        private void InitRunner(Options options)
+        private void InitCore()
         {
-            graphCompiler = GraphToDSCompiler.GraphCompiler.CreateInstance();
-            graphCompiler.SetCore(GraphUtilities.GetCore());
-            runner = new ProtoScriptTestRunner();
-
-            executionOptions = options;
-            InitOptions();
-            InitCore();
-
-
-            taskQueue = new Queue<Task>();
-
-            workerThread = new Thread(new ThreadStart(TaskExecMethod));
-
-
-            workerThread.IsBackground = true;
-            workerThread.Start();
-
-            staticContext = new ProtoCore.CompileTime.Context();
-
-            terminating = false;
-            changeSetComputer = new ChangeSetComputer(runnerCore);
-            changeSetApplier = new ChangeSetApplier();
-        }
-
-        private void InitOptions()
-        {
-
-            // Build the options required by the core
-            Validity.Assert(coreOptions == null);
-            coreOptions = new ProtoCore.Options();
+            coreOptions = new Options();
             coreOptions.GenerateExprID = true;
             coreOptions.IsDeltaExecution = true;
             coreOptions.BuildOptErrorAsWarning = true;
-
             coreOptions.WebRunner = false;
-            coreOptions.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-
-
-            // This should have been set in the consturctor
-            Validity.Assert(executionOptions != null);
-        }
-
-        private void InitCore()
-        {
-            Validity.Assert(coreOptions != null);
-
-            // Comment Jun:
-            // It must be guaranteed that in delta exeuction, expression id's must not be autogerated
-            // expression Id's must be propagated from the graphcompiler to the DS codegenerators
-            //Validity.Assert(coreOptions.IsDeltaExecution && !coreOptions.GenerateExprID);
+            coreOptions.ExecutionMode = ExecutionMode.Serial;
 
             runnerCore = new ProtoCore.Core(coreOptions);
-
-            SyncCoreConfigurations(runnerCore, executionOptions);
-
-
             runnerCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(runnerCore));
             runnerCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(runnerCore));
             runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
+
+            runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
+            runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
+            foreach (var item in configuration.PassThroughConfiguration)
+            {
+                runnerCore.Configurations[item.Key] = item.Value;
+            }
+
             vmState = null;
         }
 
@@ -1123,33 +1128,6 @@ namespace ProtoScript.Runners
                 taskQueue.Enqueue(new PropertyChangedTask(this, arg.hostGraphNode));
             }
         }
-
-        private static void SyncCoreConfigurations(ProtoCore.Core core, Options options)
-        {
-            if (null == options)
-                return;
-            //update the root module path name, if set.
-            if (!string.IsNullOrEmpty(options.RootModulePathName))
-                core.Options.RootModulePathName = options.RootModulePathName;
-            //then update the search path, if set.
-            if (null != options.SearchDirectories)
-                core.Options.IncludeDirectories = options.SearchDirectories;
-
-            //Finally update the pass thru configuration values
-            if (null == options.PassThroughConfiguration)
-                return;
-            foreach (var item in options.PassThroughConfiguration)
-            {
-                core.Configurations[item.Key] = item.Value;
-            }
-        }
-
-
-        public void SetOptions(Options options)
-        {
-            executionOptions = options;
-        }
-
 
         #region Public Live Runner Events
 
@@ -1681,18 +1659,10 @@ namespace ProtoScript.Runners
         public void ReInitializeLiveRunner()
         {
             runner = new ProtoScriptTestRunner();
-
-            executionOptions = new Options();
             deltaSymbols = 0;
-
-            coreOptions = null;
-            InitOptions();
             InitCore();
-
             staticContext = new ProtoCore.CompileTime.Context();
-
             changeSetComputer = new ChangeSetComputer(runnerCore);
-
             CLRModuleType.ClearTypes();
         }
 
