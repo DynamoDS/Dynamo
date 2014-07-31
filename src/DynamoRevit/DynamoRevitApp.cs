@@ -141,20 +141,5 @@ namespace Dynamo.Applications
             DynamoPathManager.Instance.Nodes.Add(Path.Combine(assDir, "nodes"));
         }
 
-        private class WindowHandle : IWin32Window
-        {
-            private readonly IntPtr hwnd;
-
-            public WindowHandle(IntPtr h)
-            {
-                Debug.Assert(IntPtr.Zero != h, "expected non-null window handle");
-                hwnd = h;
-            }
-
-            public IntPtr Handle
-            {
-                get { return hwnd; }
-            }
-        }
     }
 }

@@ -168,6 +168,14 @@ namespace Dynamo.Applications
             }
         }
 
+        public override void OnEvaluationCompleted(object sender, EventArgs e)
+        {
+            // finally close the transaction!
+            TransactionManager.Instance.ForceCloseTransaction();
+
+            base.OnEvaluationCompleted(sender, e);
+        }
+
         public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)
         {
             var view = newView as View3D;
