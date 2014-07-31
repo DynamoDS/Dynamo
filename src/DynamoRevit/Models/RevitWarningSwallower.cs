@@ -4,7 +4,7 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Utilities
 {
-    public class DynamoWarningSwallower : IFailuresPreprocessor
+    public class RevitWarningSwallower : IFailuresPreprocessor
     {
         public FailureProcessingResult PreprocessFailures(FailuresAccessor a)
         {

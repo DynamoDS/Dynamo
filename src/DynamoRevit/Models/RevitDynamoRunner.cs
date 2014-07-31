@@ -16,7 +16,7 @@ using RevitServices.Transactions;
 
 namespace Dynamo.Applications
 {
-    internal class DynamoRevitRunner : DynamoRunner
+    internal class RevitDynamoRunner : DynamoRunner
     {
         protected override void Evaluate(HomeWorkspaceModel workspace)
         {

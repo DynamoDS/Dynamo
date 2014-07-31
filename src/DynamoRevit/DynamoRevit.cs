@@ -39,7 +39,7 @@ namespace Dynamo.Applications
     public class DynamoRevit : IExternalCommand
     {
         private static DynamoViewModel dynamoViewModel;
-        private static DynamoRevitModel dynamoRevitModel;
+        private static RevitDynamoModel revitDynamoModel;
         private static bool handledCrash;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -58,8 +58,8 @@ namespace Dynamo.Applications
                     delegate
                     {
                         // create core data models
-                        dynamoRevitModel = InitializeCoreModel(commandData);
-                        dynamoViewModel = InitializeCoreViewModel(dynamoRevitModel);
+                        revitDynamoModel = InitializeCoreModel(commandData);
+                        dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
 
                         // show the window
                         InitializeCoreView().Show();
@@ -114,23 +114,23 @@ namespace Dynamo.Applications
                 Assembly.LoadFrom(interactivityPath);
         }
 
-        private static DynamoRevitModel InitializeCoreModel(ExternalCommandData commandData)
+        private static RevitDynamoModel InitializeCoreModel(ExternalCommandData commandData)
         {
             var prefs = PreferenceSettings.Load();
             var corePath =
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
-            return new DynamoRevitModel(GetRevitContext(commandData), prefs, corePath);
+            return new RevitDynamoModel(GetRevitContext(commandData), prefs, corePath);
         }
 
-        private static DynamoViewModel InitializeCoreViewModel(DynamoRevitModel dynamoRevitModel)
+        private static DynamoViewModel InitializeCoreViewModel(RevitDynamoModel revitDynamoModel)
         {
-            var vizManager = new RevitVisualizationManager(dynamoRevitModel);
-            var watchHandler = new RevitWatchHandler(vizManager, dynamoRevitModel.PreferenceSettings);
+            var vizManager = new RevitVisualizationManager(revitDynamoModel);
+            var watchHandler = new RevitWatchHandler(vizManager, revitDynamoModel.PreferenceSettings);
 
             var dvm = new DynamoViewModel(
-                dynamoRevitModel,
+                revitDynamoModel,
                 watchHandler,
                 vizManager,
                 null);
@@ -138,7 +138,7 @@ namespace Dynamo.Applications
             dvm.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
-            dynamoRevitModel.ShuttingDown += (drm)=>
+            revitDynamoModel.ShuttingDown += (drm)=>
                 RevThread.IdlePromise.ExecuteOnShutdown(
                     delegate
                     {
@@ -235,7 +235,7 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private static void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
         {
-            dynamoRevitModel.SetRunEnabledBasedOnContext(e.NewActiveView);
+            revitDynamoModel.SetRunEnabledBasedOnContext(e.NewActiveView);
         }
 
         #endregion
@@ -267,16 +267,16 @@ namespace Dynamo.Applications
                 InstrumentationLogger.LogException(args.Exception);
                 StabilityTracking.GetInstance().NotifyCrash();
 
-                dynamoRevitModel.Logger.LogError("Dynamo Unhandled Exception");
-                dynamoRevitModel.Logger.LogError(exceptionMessage);
+                revitDynamoModel.Logger.LogError("Dynamo Unhandled Exception");
+                revitDynamoModel.Logger.LogError(exceptionMessage);
             }
             catch { }
 
             try
             {
                 DynamoModel.IsCrashing = true;
-                dynamoRevitModel.OnRequestsCrashPrompt(
-                    dynamoRevitModel,
+                revitDynamoModel.OnRequestsCrashPrompt(
+                    revitDynamoModel,
                     new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
                 dynamoViewModel.Exit(false); // don't allow cancellation
             }
@@ -286,7 +286,7 @@ namespace Dynamo.Applications
                 args.Handled = true;
 
                 // KILLDYNSETTINGS - this is suspect
-                dynamoRevitModel.Logger.Dispose();
+                revitDynamoModel.Logger.Dispose();
                 DynamoRevitApp.DynamoButton.Enabled = true;
             }
         }
@@ -315,8 +315,8 @@ namespace Dynamo.Applications
         {
             var view = (DynamoView)sender;
 
-            dynamoRevitModel.RevitServicesUpdater.Dispose();
-            DocumentManager.OnLogError -= dynamoRevitModel.Logger.Log;
+            revitDynamoModel.RevitServicesUpdater.Dispose();
+            DocumentManager.OnLogError -= revitDynamoModel.Logger.Log;
 
             view.Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
             view.Closing -= DynamoView_Closing;
@@ -329,7 +329,7 @@ namespace Dynamo.Applications
                 Analyze.Render.AssemblyHelper.ResolveAssemblies;
 
             // KILLDYNSETTINGS - this is suspect
-            dynamoRevitModel.Logger.Dispose();
+            revitDynamoModel.Logger.Dispose();
 
             DynamoRevitApp.DynamoButton.Enabled = true;
         }

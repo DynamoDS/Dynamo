@@ -30,7 +30,7 @@ using Element = Autodesk.Revit.DB.Element;
 
 namespace Dynamo.Applications
 {
-    internal class DynamoRevitModel : DynamoModel
+    internal class RevitDynamoModel : DynamoModel
     {
         #region Events
 
@@ -41,7 +41,7 @@ namespace Dynamo.Applications
                 RevitDocumentChanged(this, EventArgs.Empty);
         }
 
-        public delegate void DynamoRevitModelHandler(DynamoRevitModel model);
+        public delegate void DynamoRevitModelHandler(RevitDynamoModel model);
         public event DynamoRevitModelHandler ShuttingDown;
         private void OnShuttingDown()
         {
@@ -61,8 +61,8 @@ namespace Dynamo.Applications
 
         #region Constructors
 
-        public DynamoRevitModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
-            base(context, preferences, corePath, new DynamoRevitRunner(), isTestMode)
+        public RevitDynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
+            base(context, preferences, corePath, new RevitDynamoRunner(), isTestMode)
         {
             RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
             SubscribeRevitServicesUpdaterEvents();
