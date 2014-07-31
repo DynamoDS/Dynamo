@@ -213,8 +213,11 @@ c;
         }
 
         [Test]
+        [Category("Failing")]
         public void T08_FunctionPointerUpdateTest()
         {
+            string err = "MAGN-4039 Update does not work well with function pointers";
+
             string code = @"
 def foo1:int(x:int)
 {
@@ -227,7 +230,7 @@ def foo2:double(x:int, y:double = 2.0)
 a = foo1;
 b = a(3);
 a = foo2;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             object b = 5.0;
             thisTest.Verify("b", b);
         }
@@ -322,8 +325,11 @@ class A
 
         [Test]
         [Category("Negative")]
+        [Category("Failing")]
         public void T14_NegativeTest_UsingFunctionNameInNonAssignBinaryExpr()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4038
+            string err = "MAGN-4038 Compilation error for use of function pointer as a variable not reported";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 string code = @"
@@ -332,7 +338,7 @@ def foo:int(x:int)
 	return = x;
 }
 a = foo + 2;";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+                ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             });
         }
 
@@ -435,6 +441,7 @@ c = foo1(a, 3);";
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void T19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
         {
             string code = @"
@@ -474,8 +481,10 @@ b = a.x(3);    //b = 3";
 
         [Test]
         [Category("Method Resolution")]
+        [Category("Failing")]
         public void T21_FunctionPtrUpdateOnMemVar_2()
         {
+            string err = "MAGN-4039 Update does not work well with function pointers";
             string code = @"
 def foo1:int(x:int)
 {
@@ -491,10 +500,10 @@ class A
 }
 a = A.A();
 a.x = foo1;
-b = a.x(2); //b = 3;
-a.x = foo2; //b = 5.0";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object b = 5.0;
+b = a.x(2); //b = 2;
+a.x = foo2; //b = 4.0";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
+            object b = 4.0;
             thisTest.Verify("b", b);
         }
 
@@ -507,10 +516,12 @@ a.x = foo2; //b = 5.0";
         }
 
         [Test]
+        [Category("Failing")]
         public void T22_FunctionPointerArray()
         {
+            string err = "MAGN-4040 Array indexing on array of function pointers causes crash";
             string code = @"def foo(x){    return = 2 * x;}fs = {foo, foo};r = fs[0](100);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("r", 200);
         }
 
@@ -585,10 +596,12 @@ a.x = foo2; //b = 5.0";
         }
 
         [Test]
+        [Category("Failing")]
         public void T31_UsedAsMemberVariable()
         {
+            string err = "MAGN-4039 Update does not work well with function pointers";
             string code = @"class A{    f;    x;    constructor A(_x, _f)    {        x = _x;        f = _f;    }    def update()    {        x = f(x);        return = null;    }}def foo(x){    return = 2 * x;}def bar(x){    return = 3 * x;}a = A.A(2, foo);r = a.update1();a.f = bar;r = a.x;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("r", 12);
         }
 

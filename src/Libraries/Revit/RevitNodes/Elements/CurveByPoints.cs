@@ -37,7 +37,7 @@ namespace Revit.Elements
         /// <summary>
         /// Construct a model curve from the document.  The result is Dynamo owned
         /// </summary>
-        /// <param name="curve"></param>
+        /// <param name="curveByPoints"></param>
         private CurveByPoints(Autodesk.Revit.DB.CurveByPoints curveByPoints)
         {
             InternalSetCurveElement(curveByPoints);
@@ -84,7 +84,8 @@ namespace Revit.Elements
         /// <summary>
         /// Construct a Revit CurveByPoints Element (a CurveElement) from a collection of ReferencePoint's
         /// </summary>
-        /// <param name="curve"></param>
+        /// <param name="points"></param>
+        /// <param name="isReferenceLine"></param>
         /// <returns></returns>
         public static CurveByPoints ByReferencePoints(ReferencePoint[] points, bool isReferenceLine = false)
         {
@@ -104,7 +105,8 @@ namespace Revit.Elements
         /// <summary>
         /// Construct a Revit ModelCurve element from an existing element.
         /// </summary>
-        /// <param name="modelCurve"></param>
+        /// <param name="curveByPoints"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static CurveByPoints FromExisting(Autodesk.Revit.DB.CurveByPoints curveByPoints, bool isRevitOwned)
         {
