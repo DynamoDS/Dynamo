@@ -14,9 +14,10 @@ namespace Dynamo.DSEngine
 {
     internal class LiveRunnerFactory
     {
-        internal static ILiveRunner CreateLiveRunner(EngineController controller)
+        internal static ILiveRunner CreateLiveRunner(EngineController controller, string geometryFactoryFileName)
         {
             LiveRunner.Configuration configuration = new LiveRunner.Configuration();
+            configuration.PassThroughConfiguration.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, geometryFactoryFileName);
             return new LiveRunner(configuration);
         }
     }
@@ -26,10 +27,10 @@ namespace Dynamo.DSEngine
         private ILiveRunner liveRunner;
         private EngineController controller;
 
-        public LiveRunnerServices(EngineController controller)
+        public LiveRunnerServices(EngineController controller, string geometryFactoryFileName)
         {
             this.controller = controller;
-            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
+            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
       
         public void Dispose()
