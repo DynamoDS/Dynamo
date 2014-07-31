@@ -485,8 +485,16 @@ namespace ProtoCore.Lang
                         interpreter, 
                         stackFrame);
                     break;
-                case BuiltInMethods.MethodID.kTryGetValue:
-                    ret = ArrayUtils.TryGetValueFor1DArray(formalParameters[0], formalParameters[1], core);
+                case BuiltInMethods.MethodID.kTryGetValueFromDictionary:
+                    StackValue value;
+                    if (ArrayUtils.TryGetValueForDictionary(formalParameters[0], formalParameters[1], out value, core))
+                    {
+                        ret = value;
+                    }
+                    else
+                    {
+                        ret = StackValue.Null;
+                    }
                     break;
                 default:
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");

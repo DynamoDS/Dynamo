@@ -1278,5 +1278,56 @@ namespace ProtoCore.Utils
 
             return StackValue.Null;
         }
+
+        /// <summary>
+        /// Try to get value for key from a dictionary. Note this function will
+        /// recursively check each element in the array and tries to get value
+        /// for the key. 
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static bool TryGetValueForDictionary(StackValue array, StackValue key, out StackValue value, Core core)
+        {
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
+            {
+                value = StackValue.Null;
+                return false;
+            }
+
+            HeapElement he = GetHeapElement(array, core);
+            if (he.Dict == null && he.Dict.TryGetValue(key, out value))
+            {
+                return true;
+            }
+
+            var values = new List<StackValue>();
+            bool hasValue = false;
+            for (int i = 0; i < he.VisibleSize; ++i)
+            {
+                StackValue valueInElement;
+                var element = he.Stack[i];
+
+                if (TryGetValueForDictionary(element, key, out valueInElement, core))
+                {
+                    hasValue = true;
+                    values.Add(valueInElement);
+                }
+            }
+
+            if (hasValue)
+            {
+                value = HeapUtils.StoreArray(values.ToArray(), null, core);
+                return true;
+            }
+            else
+            {
+                value = StackValue.Null;
+                return false;
+            }
+        }
     }
 }
