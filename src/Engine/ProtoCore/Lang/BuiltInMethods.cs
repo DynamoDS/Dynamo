@@ -66,7 +66,8 @@ namespace ProtoCore.Lang
             kGetValues,
             kRemoveKey,
             kContainsKey,
-            kEvaluate
+            kEvaluate,
+            kTryGetValue
         }
 
         private static string[] methodNames = new string[]
@@ -128,6 +129,7 @@ namespace ProtoCore.Lang
             "RemoveKey",                // kRemoveKey
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
+            "TryGetValue",              // kTryGetValue
         };
 
         public static string GetMethodName(MethodID id)
@@ -885,6 +887,17 @@ namespace ProtoCore.Lang
                     },
                     ID = MethodID.kEvaluate,
                     MethodAttributes = new MethodAttributes(true),
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string,Type>>
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))
+                    },
+                    ID = MethodID.kTryGetValue
                 }
             };
         }
