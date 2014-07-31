@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
@@ -14,7 +15,10 @@ using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
+
+using ProtoCore;
 
 using Revit.Elements;
 
@@ -51,43 +55,29 @@ namespace Dynamo.Applications
 
         #region Properties/Fields
 
-        public RevitServicesUpdater RevitUpdater { get; private set; }
-        public Reactor Reactor { get; private set; }
+        internal RevitServicesUpdater RevitServicesUpdater { get; private set; }
      
         #endregion
+
+        #region Constructors
 
         public DynamoRevitModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
             base(context, preferences, corePath, new DynamoRevitRunner(), isTestMode)
         {
-            // make updater and register events
-            RevitUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
-            RevitUpdater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
+            RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
+            SubscribeRevitServicesUpdaterEvents();
 
-            Reactor = new Reactor(this);
-
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
-                Application_DocumentClosed;
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
-                Application_DocumentOpened;
-            DocumentManager.Instance.CurrentUIApplication.ViewActivated += Revit_ViewActivated;
-
-            DocumentManager.OnLogError += this.Logger.Log;
-
-            // Set the intitial document.
-            if (DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument != null)
-            {
-                DocumentManager.Instance.CurrentUIDocument =
-                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
-                this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
-            }
+            InitializeDocumentManager();
+            SubscribeDocumentManagerEvents();
 
             TransactionManager.Instance.TransactionWrapper.FailuresRaised += TransactionManager_FailuresRaised;
 
-            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
-
             SetupPython();
         }
+
+        #endregion
+
+        #region Initialization
 
         private void SetupPython()
         {
@@ -101,12 +91,149 @@ namespace Dynamo.Applications
             IronPythonEvaluator.EvaluationBegin += (a, b, scope, d, e) =>
             {
                 var marshaler = new DataMarshaler();
-                marshaler.RegisterMarshaler((global::Revit.Elements.Element element) => element.InternalElement);
+                marshaler.RegisterMarshaler((Revit.Elements.Element element) => element.InternalElement);
 
                 Func<object, object> unwrap = marshaler.Marshal;
                 scope.SetVariable("UnwrapElement", unwrap);
             };
         }
+
+        private void InitializeDocumentManager()
+        {
+            // Set the intitial document.
+            if (DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument != null)
+            {
+                DocumentManager.Instance.CurrentUIDocument =
+                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+            }
+        }
+
+        #endregion
+
+        #region Event subscribe/unsubscribe
+
+        private void SubscribeRevitServicesUpdaterEvents()
+        {
+            RevitServicesUpdater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
+            RevitServicesUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
+            RevitServicesUpdater.ElementsDeleted += RevitServicesUpdater_ElementsDeleted;
+        }
+
+        private void UnsubscribeRevitServicesUpdaterEvents()
+        {
+            RevitServicesUpdater.ElementAddedForID -= ElementMappingCache.GetInstance().WatcherMethodForAdd;
+            RevitServicesUpdater.ElementsDeleted -= ElementMappingCache.GetInstance().WatcherMethodForDelete;
+            RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
+        }
+
+        private void SubscribeDocumentManagerEvents()
+        {
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
+                Application_DocumentClosed;
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
+                Application_DocumentOpened;
+            DocumentManager.Instance.CurrentUIApplication.ViewActivated += Revit_ViewActivated;
+
+            DocumentManager.OnLogError += this.Logger.Log;
+        }
+
+        private void UnsubscribeDocumentManagerEvents()
+        {
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed -=
+                Application_DocumentClosed;
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened -=
+                Application_DocumentOpened;
+            DocumentManager.Instance.CurrentUIApplication.ViewActivated -= Revit_ViewActivated;
+
+            DocumentManager.OnLogError -= this.Logger.Log;
+        }
+
+        #endregion
+
+        #region Public methods
+
+        public override void OnEvaluationCompleted(object sender, EventArgs e)
+        {
+            // finally close the transaction!
+            TransactionManager.Instance.ForceCloseTransaction();
+
+            base.OnEvaluationCompleted(sender, e);
+        }
+
+        public override void ShutDown(bool shutDownHost, EventArgs args = null)
+        {
+            DisposeLogic.IsShuttingDown = true;
+
+            OnShuttingDown();
+
+            base.ShutDown(shutDownHost, args);
+
+            // unsubscribe events
+            RevitServicesUpdater.UnRegisterAllChangeHooks();
+
+            UnsubscribeDocumentManagerEvents();
+            UnsubscribeRevitServicesUpdaterEvents();
+
+            if (shutDownHost)
+            {
+                // this method cannot be called without Revit 2014
+                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
+
+                UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
+                if (uiapp.CanPostCommand(exitCommand))
+                    uiapp.PostCommand(exitCommand);
+                else
+                {
+                    MessageBox.Show(
+                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+                }
+            }
+        }
+
+        public override void ResetEngine()
+        {
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
+        }
+
+        public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)
+        {
+            var view = newView as View3D;
+
+            if (view != null && view.IsPerspective
+                && this.Context != Core.Context.VASARI_2014)
+            {
+                this.Logger.LogWarning(
+                    "Dynamo is not available in a perspective view. Please switch to another view to Run.",
+                    WarningLevel.Moderate);
+                this.RunEnabled = false;
+            }
+            else
+            {
+                this.Logger.Log(
+                    string.Format("Active view is now {0}", newView.Name));
+
+                // If there is a current document, then set the run enabled
+                // state based on whether the view just activated is 
+                // the same document.
+                if (DocumentManager.Instance.CurrentUIDocument != null)
+                {
+                    this.RunEnabled =
+                        newView.Document.Equals(DocumentManager.Instance.CurrentDBDocument);
+
+                    if (this.RunEnabled == false)
+                    {
+                        this.Logger.LogWarning(
+                            "Dynamo is not pointing at this document. Run will be disabled.",
+                            WarningLevel.Error);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Event handlers 
 
         /// <summary>
         /// Handler for Revit's DocumentOpened event.
@@ -166,49 +293,6 @@ namespace Dynamo.Applications
             }
         }
 
-        public override void OnEvaluationCompleted(object sender, EventArgs e)
-        {
-            // finally close the transaction!
-            TransactionManager.Instance.ForceCloseTransaction();
-
-            base.OnEvaluationCompleted(sender, e);
-        }
-
-        public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)
-        {
-            var view = newView as View3D;
-
-            if (view != null && view.IsPerspective
-                && this.Context != Core.Context.VASARI_2014)
-            {
-                this.Logger.LogWarning(
-                    "Dynamo is not available in a perspective view. Please switch to another view to Run.",
-                    WarningLevel.Moderate);
-                this.RunEnabled = false;
-            }
-            else
-            {
-                this.Logger.Log(
-                    string.Format("Active view is now {0}", newView.Name));
-
-                // If there is a current document, then set the run enabled
-                // state based on whether the view just activated is 
-                // the same document.
-                if (DocumentManager.Instance.CurrentUIDocument != null)
-                {
-                    this.RunEnabled =
-                        newView.Document.Equals(DocumentManager.Instance.CurrentDBDocument);
-
-                    if (this.RunEnabled == false)
-                    {
-                        this.Logger.LogWarning(
-                            "Dynamo is not pointing at this document. Run will be disabled.",
-                            WarningLevel.Error);
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Handler for Revit's ViewActivated event.
         /// This handler is called when a view is activated. It is called
@@ -229,7 +313,7 @@ namespace Dynamo.Applications
             }
         }
 
-        internal static string GetDocumentPointerMessage()
+        private static string GetDocumentPointerMessage()
         {
             var docPath = DocumentManager.Instance.CurrentUIDocument.Document.PathName;
             var message = string.IsNullOrEmpty(docPath)
@@ -257,36 +341,6 @@ namespace Dynamo.Applications
             OnRevitDocumentChanged();
         }
 
-        public override void ShutDown(bool shutDownHost, EventArgs args = null)
-        {
-            DisposeLogic.IsShuttingDown = true;
-
-            OnShuttingDown();
-
-            base.ShutDown(shutDownHost, args);
-            RevitUpdater.UnRegisterAllChangeHooks();
-
-            if (shutDownHost)
-            {
-                // this method cannot be called without Revit 2014
-                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-
-                UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-                if (uiapp.CanPostCommand(exitCommand))
-                    uiapp.PostCommand(exitCommand);
-                else
-                {
-                    MessageBox.Show(
-                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                }
-            }
-        }
-
-        public override void ResetEngine()
-        {
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
-        }
-
         private void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
         {
             IList<FailureMessageAccessor> failList = failuresAccessor.GetFailureMessages();
@@ -302,6 +356,71 @@ namespace Dynamo.Applications
                 failuresAccessor.DeleteWarning(fail);
             }
         }
+
+        private void RevitServicesUpdater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+        {
+            if (!deleted.Any())
+                return;
+
+            var workspace = this.CurrentWorkspace;
+
+            ProtoCore.Core core = null;
+            var engine = this.EngineController;
+            if (engine != null && (engine.LiveRunnerCore != null))
+                core = engine.LiveRunnerCore;
+
+            if (core == null) // No execution yet as of this point.
+                return;
+
+            // Selecting all nodes that are either a DSFunction,
+            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+            var nodeGuids = workspace.Nodes.Where((n) =>
+            {
+                return (n is DSFunction
+                    || (n is DSVarArgFunction)
+                    || (n is CodeBlockNodeModel));
+            }).Select((n) => n.GUID);
+
+            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);// core.GetTraceDataForNodes(nodeGuids);
+
+            foreach (Guid guid in nodeTraceDataList.Keys)
+            {
+                foreach (CallSite cs in nodeTraceDataList[guid])
+                {
+                    foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
+                    {
+                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
+
+                        foreach (ISerializable thingy in traceData)
+                        {
+                            SerializableId sid = thingy as SerializableId;
+
+                            foreach (ElementId eid in deleted)
+                            {
+
+                                if (sid != null)
+                                {
+                                    if (sid.IntID == eid.IntegerValue)
+                                    {
+                                        NodeModel inm =
+                                            workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
+
+                                        Validity.Assert(inm != null, "The bound node has disappeared");
+
+                                        inm.RequiresRecalc = true;
+                                        inm.ForceReExecuteOfNode = true;
+
+                                        //FOUND IT!
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
 
     }
 }

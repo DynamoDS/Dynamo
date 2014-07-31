@@ -342,7 +342,6 @@ namespace Dynamo.Models
         /// </summary>
         public void Reset()
         {
-
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
             //TODO(Luke): Push this into a resync call with the engine controller
@@ -352,10 +351,6 @@ namespace Dynamo.Models
             {
                 node.RequiresRecalc = true;
             }
-
-            //DynamoLoader.ClearCachedAssemblies();
-            //DynamoLoader.LoadNodeModels();
-
         }
 
         public virtual void ResetEngine()

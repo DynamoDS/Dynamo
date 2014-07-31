@@ -34,7 +34,7 @@ using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Applications
 {
-    [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual),
+    [Transaction(TransactionMode.Manual),
      Regeneration(RegenerationOption.Manual)]
     public class DynamoRevit : IExternalCommand
     {
@@ -90,6 +90,29 @@ namespace Dynamo.Applications
         }
 
         #region Initialization
+        private static void InitializeUnits()
+        {
+            // set revit units
+            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+        }
+
+        private static void InitializeAssemblies()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve +=
+                Analyze.Render.AssemblyHelper.ResolveAssemblies;
+
+            //Add an assembly load step for the System.Windows.Interactivity assembly
+            //Revit owns a version of this as well. Adding our step here prevents a duplicative
+            //load of the dll at a later time.
+            string interactivityPath = Path.Combine(
+                DynamoPathManager.Instance.MainExecPath,
+                "System.Windows.Interactivity.dll");
+
+            if (File.Exists(interactivityPath))
+                Assembly.LoadFrom(interactivityPath);
+        }
 
         private static DynamoRevitModel InitializeCoreModel(ExternalCommandData commandData)
         {
@@ -116,7 +139,7 @@ namespace Dynamo.Applications
                  SingleSignOnManager.RegisterSingleSignOn;
 
             dynamoRevitModel.ShuttingDown += (drm)=>
-                RevitServices.Threading.IdlePromise.ExecuteOnShutdown(
+                RevThread.IdlePromise.ExecuteOnShutdown(
                     delegate
                     {
                         TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
@@ -165,35 +188,11 @@ namespace Dynamo.Applications
                 DocumentManager.Instance.CurrentUIApplication = commandData.Application;
         }
 
-        private void InitializeUnits()
-        {
-            // set revit units
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
-        }
-
-        private void InitializeAssemblies()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve +=
-                Analyze.Render.AssemblyHelper.ResolveAssemblies;
-
-            //Add an assembly load step for the System.Windows.Interactivity assembly
-            //Revit owns a version of this as well. Adding our step here prevents a duplicative
-            //load of the dll at a later time.
-            string interactivityPath = Path.Combine(
-                DynamoPathManager.Instance.MainExecPath,
-                "System.Windows.Interactivity.dll");
-
-            if (File.Exists(interactivityPath))
-                Assembly.LoadFrom(interactivityPath);
-        }
-
         private void HandleDebug(ExternalCommandData commandData)
         {
             if (commandData.JournalData != null && commandData.JournalData.ContainsKey("debug"))
             {
-                if (bool.Parse(commandData.JournalData["debug"]))
+                if (Boolean.Parse(commandData.JournalData["debug"]))
                     Debugger.Launch();
             }
         }
@@ -316,7 +315,7 @@ namespace Dynamo.Applications
         {
             var view = (DynamoView)sender;
 
-            dynamoRevitModel.RevitUpdater.Dispose();
+            dynamoRevitModel.RevitServicesUpdater.Dispose();
             DocumentManager.OnLogError -= dynamoRevitModel.Logger.Log;
 
             view.Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
@@ -336,6 +335,5 @@ namespace Dynamo.Applications
         }
 
         #endregion
-
     }
 }

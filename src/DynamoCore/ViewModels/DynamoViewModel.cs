@@ -478,12 +478,12 @@ namespace Dynamo.ViewModels
 
         #region Event handler destroy/create
 
-        internal void DestroyHandlers()
+        internal void UnsubscibeAllEvents()
         {
-            DestroyDispatcherHandlers();
-            DestroyModelChangedHandlers();
-            DestroyUpdateManagerHandlers();
-            DestroyLoggerHandlers();
+            UnsubscribeDispatcherEvents();
+            UnsubscribeModelChangedEvents();
+            UnsubscribeUpdateManagerEvents();
+            UnsubscribeLoggerEvents();
         }
 
         private void InitializeRecentFiles()
@@ -500,7 +500,7 @@ namespace Dynamo.ViewModels
             model.Logger.PropertyChanged += Instance_PropertyChanged;
         }
 
-        private void DestroyLoggerHandlers()
+        private void UnsubscribeLoggerEvents()
         {
             model.Logger.PropertyChanged -= Instance_PropertyChanged;
         }
@@ -511,7 +511,7 @@ namespace Dynamo.ViewModels
             model.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
         }
 
-        private void DestroyUpdateManagerHandlers()
+        private void UnsubscribeUpdateManagerEvents()
         {
             model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
             model.UpdateManager.ShutdownRequested -= updateManager_ShutdownRequested;
@@ -525,7 +525,7 @@ namespace Dynamo.ViewModels
             model.RequestCancelActiveStateForNode += this.CancelActiveState;
         }
 
-        private void DestroyModelChangedHandlers()
+        private void UnsubscribeModelChangedEvents()
         {
             model.PropertyChanged -= _model_PropertyChanged;
             model.WorkspaceCleared -= ModelWorkspaceCleared;
@@ -538,7 +538,7 @@ namespace Dynamo.ViewModels
             this.Model.RequestDispatcherInvoke += TryDispatcherInvoke;
         }
 
-        private void DestroyDispatcherHandlers()
+        private void UnsubscribeDispatcherEvents()
         {
             this.Model.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
             this.Model.RequestDispatcherInvoke -= TryDispatcherInvoke;
