@@ -14,12 +14,10 @@ namespace Dynamo.DSEngine
 {
     internal class LiveRunnerFactory
     {
-        internal static ILiveRunner CreateLiveRunner(EngineController controller, string geometryFactoryFileName)
+        internal static ILiveRunner CreateLiveRunner(EngineController controller)
         {
-            LiveRunner.Options option = new LiveRunner.Options();
-            option.PassThroughConfiguration = new Dictionary<string, object>();
-            option.PassThroughConfiguration.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, geometryFactoryFileName);
-            return new LiveRunner(option);
+            LiveRunner.Configuration configuration = new LiveRunner.Configuration();
+            return new LiveRunner(configuration);
         }
     }
 
@@ -28,19 +26,14 @@ namespace Dynamo.DSEngine
         private ILiveRunner liveRunner;
         private EngineController controller;
 
-        public LiveRunnerServices(EngineController controller, string geometryFactoryFileName)
+        public LiveRunnerServices(EngineController controller)
         {
             this.controller = controller;
-            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
-
-            liveRunner.GraphUpdateReady += GraphUpdateReady;
-            liveRunner.NodeValueReady += NodeValueReady;
+            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
         }
       
         public void Dispose()
         {
-            liveRunner.GraphUpdateReady -= GraphUpdateReady;
-            liveRunner.NodeValueReady -= NodeValueReady;
             if (liveRunner is IDisposable)
                 (liveRunner as IDisposable).Dispose();
         }

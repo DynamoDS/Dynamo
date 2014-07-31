@@ -39,14 +39,14 @@ namespace Dynamo.DSEngine
             get { return syncDataManager; }
         }
 
-        public EngineController(DynamoController controller, string geometryFactoryFileName)
+        public EngineController(DynamoController controller)
         {
             libraryServices = LibraryServices.GetInstance();
             libraryServices.LibraryLoading += this.LibraryLoading;
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
-            liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
+            liveRunnerServices = new LiveRunnerServices(this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(this);

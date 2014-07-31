@@ -311,7 +311,7 @@ namespace Dynamo
 
             DisposeLogic.IsShuttingDown = false;
 
-            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+            EngineController = new EngineController(this);
             CustomNodeManager.RecompileAllNodes(EngineController);
 
             //This is necessary to avoid a race condition by causing a thread join
@@ -382,7 +382,7 @@ namespace Dynamo
                 EngineController = null;
             }
 
-            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+            EngineController = new EngineController(this);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
