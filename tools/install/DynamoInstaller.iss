@@ -72,7 +72,6 @@ Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwr
 ;LibG
 Source: temp\bin\LibG_219\*; DestDir: {app}\libg_219; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-;Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
 ;Icon
 Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
@@ -97,7 +96,6 @@ Type: filesandordirs; Name: {app}\libg_220
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
-;Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
