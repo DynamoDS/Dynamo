@@ -1298,7 +1298,7 @@ namespace ProtoCore.Utils
             }
 
             HeapElement he = GetHeapElement(array, core);
-            if (he.Dict == null && he.Dict.TryGetValue(key, out value))
+            if (he.Dict != null && he.Dict.TryGetValue(key, out value))
             {
                 return true;
             }
