@@ -81,7 +81,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-		[Category("Failing")]
         public void PartialApplicationWithMultipleOutputs()
         {
             var model = Controller.DynamoModel;
@@ -98,9 +97,6 @@ namespace Dynamo.Tests
         [Test]
         public void Sequence()
         {
-            //TODO: cannot finish test until migration is completed for Sequence and Formula nodes
-            Assert.Inconclusive("Deprecated: Sequence, Formula");
-
             var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\sequence\sequence.dyn");
@@ -298,17 +294,12 @@ namespace Dynamo.Tests
         [Test]
         public void OpeningDynWithDyfMissingIsOkayAndRunsOkay()
         {
-            Assert.DoesNotThrow(delegate
-                {
-                    var model = dynSettings.Controller.DynamoModel;
-                    var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
-                    string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
+            string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
 
-                    RunModel(openPath);
+            RunModel(openPath);
 
-                    Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count, 11);
-
-                });
+            Assert.AreEqual(11, dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
         }
 
         [Test]
@@ -332,7 +323,9 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
             RunModel(openPath);
 
-            AssertPreviewValue("a6e316b4-7054-42cd-a901-7bc6d4045c23",
+            var watch = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+
+            AssertPreviewValue(watch.GUID.ToString(),
                 "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".");
         }
 
@@ -346,24 +339,20 @@ namespace Dynamo.Tests
             Controller.DynamoViewModel.OpenCommand.Execute(openPath);
             dynSettings.Controller.RunExpression(null);
 
-            var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
-            var watchData = watch.GetValue(0);
-            Assert.IsTrue(watchData.IsCollection);
-            Assert.AreEqual(5, watchData.GetElements().Count);
+            var watch = dynSettings.Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            AssertPreviewValue(watch.GUID.ToString(), new[] { 5, 5, 5, 5, 5 });
 
             //change the value of the list
-            var numNode = (DoubleInput)Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
+            var numNode = Controller.DynamoModel.CurrentWorkspace.Nodes.OfType<DoubleInput>().Last();
             numNode.Value = "3";
             dynSettings.Controller.RunExpression(null);
 
-            watchData = watch.GetValue(0);
-            Assert.IsTrue(watchData.IsCollection);
-            Assert.AreEqual(3, watchData.GetElements().Count);
+            AssertPreviewValue(watch.GUID.ToString(), new[] { 5, 5, 5 });
 
             //test the negative case
             numNode.Value = "-1";
             dynSettings.Controller.RunExpression(null);
-            Assert.IsNull(watch.GetValue(0).GetElements());
+            AssertPreviewValue(watch.GUID.ToString(), null);
         }
 
         [Test]
@@ -376,7 +365,7 @@ namespace Dynamo.Tests
             Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             //set the path to the image file
-            var pathNode = (DSCore.File.Filename)model.Nodes.First(x => x is DSCore.File.Filename);
+            var pathNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
             RunCurrentModel();
@@ -394,7 +383,7 @@ namespace Dynamo.Tests
             Controller.DynamoViewModel.OpenCommand.Execute(openPath);
 
             //set the path to the csv file
-            var pathNode = (DSCore.File.Filename)model.Nodes.First(x => x is DSCore.File.Filename);
+            var pathNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
             pathNode.Value = Path.Combine(examplePath, "TestExportToCSV.txt");
 
             //clean up the text file
@@ -402,9 +391,10 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
 
-            AssertPreviewValue("6cf3efb3-127f-4bbd-9008-25cc1ba15bd8", true);
+            var exportNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
+            AssertPreviewValue(exportNode.GUID.ToString(), true);
 
-            StreamReader sr = new StreamReader(pathNode.Value);
+            var sr = new StreamReader(pathNode.Value);
             String line = sr.ReadToEnd();
 
             StringAssert.AreEqualIgnoringCase("1, 2, 3, 4, 5\r\n-2, 2.6, 9\r\n0\r\n", line);
@@ -413,6 +403,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestExportToCSVFile_Negativ()
         {
+            var model = dynSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
 
             string openPath = Path.Combine(examplePath, "TestExportToCSVFile_Negative.dyn");
@@ -420,10 +411,9 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
 
-            AssertPreviewValue("906cfd65-37fc-4f54-ac21-3d59a32feb5a", false);
+            var exportNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
+            AssertPreviewValue(exportNode.GUID.ToString(), false);
         }
-
-
 
         [Test]
         public void UsingDefaultValue()
@@ -437,8 +427,8 @@ namespace Dynamo.Tests
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
             var expectedValue = new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
             var oldVal = watch.CachedValue;
-            Assert.IsTrue(oldVal.IsCollection);
-            AssertValue(oldVal, expectedValue);
+            Assert.IsTrue(oldVal is ICollection);
+            Assert.AreEqual(oldVal, expectedValue);
 
             // Pretend we never ran
             model.Nodes.ForEach(
@@ -451,15 +441,13 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(null);
 
             var newVal = watch.CachedValue;
-            Assert.IsTrue(newVal.IsCollection);
-            AssertValue(newVal, expectedValue);
+            Assert.IsTrue(newVal is ICollection);
+            Assert.AreEqual(newVal, expectedValue);
         }
 
         [Test]
         public void Formula()
         {
-            Assert.Inconclusive();
-
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
 
@@ -469,22 +457,20 @@ namespace Dynamo.Tests
             {
                 "2a8f6086-dd36-49f6-b9c1-dfd5dbc683ea", 
                 "226f0d3a-7578-46f8-9f60-9fc24dd82c48",
-                "af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
+                //"af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
             }.Select(guid => model.CurrentWorkspace.NodeFromWorkspace<Watch>(guid));
 
             dynSettings.Controller.RunExpression(null);
 
             foreach (var watch in watches)
             {
-                Assert.AreEqual(19, watch.CachedValue.Data);
+                Assert.AreEqual(19, watch.CachedValue);
             }
         }
 
         [Test]
         public void AndNode()
         {
-            Assert.Inconclusive("Porting : Formula");
-
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
@@ -507,8 +493,6 @@ namespace Dynamo.Tests
         [Test]
         public void IfNode()
         {
-            Assert.Inconclusive("Porting : Formula");
-
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 

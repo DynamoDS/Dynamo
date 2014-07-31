@@ -65,6 +65,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +87,7 @@
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
+    <Compile Include="Setup.cs" />
     <Compile Include="TimeStampOrderingTests.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
@@ -96,7 +98,6 @@
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="CustomNodes.cs" />
-    <Compile Include="Setup.cs" />
     <Compile Include="FileReading.cs" />
     <Compile Include="Nodes\ListTests.cs" />
     <Compile Include="DynamoUnitTest.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="UndoRedoRecorderTests.cs" />
     <Compile Include="UnitsOfMeasureTests.cs" />
     <Compile Include="UtilityTests.cs" />
+    <Compile Include="XmlDocumentationTests.cs" />
     <Compile Include="XmlHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
