@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
@@ -8,7 +7,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
-using Dynamo.Utilities;
 using Autodesk.DesignScript.Runtime;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -29,6 +27,7 @@ namespace DSCore.File
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
+
             //add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton
             {
@@ -53,7 +52,10 @@ namespace DSCore.File
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
-            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
+            tb.TextChanged += delegate { 
+                tb.ScrollToHorizontalOffset(double.PositiveInfinity); 
+                view.ViewModel.DynamoViewModel.ReturnFocusToSearch(); 
+            };
             tb.Margin = new Thickness(0,5,0,5);
 
             var sp = new StackPanel();
@@ -72,7 +74,6 @@ namespace DSCore.File
 
         protected abstract void readFileButton_Click(object sender, RoutedEventArgs e);
     }
-
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]

@@ -85,7 +85,7 @@ namespace Dynamo.Nodes
 
             tbSlider.PreviewMouseUp += delegate
             {
-                dynSettings.ReturnFocusToSearch();
+                nodeUI.ViewModel.DynamoViewModel.ReturnFocusToSearch();
             };
 
             // build grid for input and expander

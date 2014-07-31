@@ -17,8 +17,6 @@ namespace Dynamo.Tests
         public override void Init()
         {
             base.Init();
-            // hide the excel window for tests
-            ExcelInterop.ShowOnStartup = false;
 
             // In unit-test scenario we are redirecting 'PreferenceSettings' to 
             // load from a non-existing preference XML file. That way each test 
