@@ -220,7 +220,7 @@ namespace Dynamo.Tests
             DynamoController.IsTestMode = false;
             var decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer);
             var decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer);
-            Assert.AreEqual(MigrationManager.Decision.Abort, decision1);
+            Assert.AreEqual(MigrationManager.Decision.Migrate, decision1);
             Assert.AreEqual(MigrationManager.Decision.Retain, decision2);
 
             DynamoController.IsTestMode = true;

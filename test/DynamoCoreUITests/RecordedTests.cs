@@ -2755,6 +2755,13 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test]
+        public void TestListMapUpdateForCustomNode()
+        {
+            // For regression http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3917
+            RunCommandsFromFile("Defect_MAGN_3917.xml");
+            AssertPreviewValue("91fb442c-8e17-4a2f-8b0b-cf520b543c18", new object [] { 43} );
+        }
 
         #endregion
 
