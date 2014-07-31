@@ -54,7 +54,7 @@ namespace Dynamo.Models
 
         public CustomNodeDefinition CustomNodeDefinition
         {
-            get { return dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
+            get { return DynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(this); }
         }
 
         public override void Modified()
@@ -65,12 +65,12 @@ namespace Dynamo.Models
                 return;
 
             CustomNodeDefinition.RequiresRecalc = true;
-            CustomNodeDefinition.SyncWithWorkspace(dynamoModel, false, true);
+            CustomNodeDefinition.SyncWithWorkspace(DynamoModel, false, true);
         }
 
         public List<Function> GetExistingNodes()
         {
-            return dynamoModel.AllNodes
+            return DynamoModel.AllNodes
                 .OfType<Function>()
                 .Where(el => el.Definition == CustomNodeDefinition)
                 .ToList();
@@ -103,9 +103,9 @@ namespace Dynamo.Models
 
             if (originalPath == null)
             {
-                CustomNodeDefinition.AddToSearch(this.dynamoModel.SearchModel);
-                dynamoModel.SearchModel.OnRequestSync();
-                CustomNodeDefinition.UpdateCustomNodeManager(dynamoModel.CustomNodeManager);
+                CustomNodeDefinition.AddToSearch(this.DynamoModel.SearchModel);
+                DynamoModel.SearchModel.OnRequestSync();
+                CustomNodeDefinition.UpdateCustomNodeManager(DynamoModel.CustomNodeManager);
             }
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -116,23 +116,23 @@ namespace Dynamo.Models
                 if ( !File.Exists(originalPath) )
                 {
                     CustomNodeDefinition.FunctionId = newGuid;
-                    CustomNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
+                    CustomNodeDefinition.SyncWithWorkspace(DynamoModel, true, true);
                     return false;
                 }
 
                 var newDef = CustomNodeDefinition;
 
                 // reload the original funcdef from its path
-                dynamoModel.CustomNodeManager.Remove(originalGuid);
-                dynamoModel.CustomNodeManager.AddFileToPath(originalPath);
-                var origDef = dynamoModel.CustomNodeManager.GetFunctionDefinition(originalGuid);
+                DynamoModel.CustomNodeManager.Remove(originalGuid);
+                DynamoModel.CustomNodeManager.AddFileToPath(originalPath);
+                var origDef = DynamoModel.CustomNodeManager.GetFunctionDefinition(originalGuid);
                 if (origDef == null)
                 {
                     return false;
                 }
 
                 // reassign existing nodes to point to newly deserialized function def
-                dynamoModel.AllNodes
+                DynamoModel.AllNodes
                         .OfType<Function>()
                         .Where(el => el.Definition.FunctionId == originalGuid)
                         .ToList()
@@ -143,7 +143,7 @@ namespace Dynamo.Models
 
                 // update this workspace with its new id
                 newDef.FunctionId = newGuid;
-                newDef.SyncWithWorkspace(dynamoModel, true, true);
+                newDef.SyncWithWorkspace(DynamoModel, true, true);
             }
 
             return true;

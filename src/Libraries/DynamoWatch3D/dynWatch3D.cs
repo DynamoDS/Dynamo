@@ -65,6 +65,8 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            this.DynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;
 
@@ -165,8 +167,8 @@ namespace Dynamo.Nodes
             }
             catch(Exception ex)
             {
-                dynSettings.DynamoLogger.Log(ex);
-                dynSettings.DynamoLogger.Log("View attributes could not be read from the file.");
+                this.DynamoModel.Logger.Log(ex);
+                this.DynamoModel.Logger.Log("View attributes could not be read from the file.");
             }
             
         }
@@ -182,7 +184,7 @@ namespace Dynamo.Nodes
         public void GetBranchVisualization(object parameters)
         {
             var taskId = (long)parameters;
-            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
+            this.DynamoViewModel.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -213,9 +215,8 @@ namespace Dynamo.Nodes
 
         private void CheckForLatestRender(object obj)
         {
-            dynSettings.Controller.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
+            this.DynamoViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
-
 
         #endregion
 
@@ -223,5 +224,7 @@ namespace Dynamo.Nodes
         {
             return false; // Previews are not shown for this node type.
         }
+
+        public DynamoViewModel DynamoViewModel { get; set; }
     }
 }

@@ -18,14 +18,10 @@ namespace Dynamo.Applications
 {
     internal class DynamoRevitRunner : DynamoRunner
     {
-        public DynamoRevitRunner(DynamoRevitModel dynamoModel)
-            : base(dynamoModel)
-        {}
-         
-        protected override void Evaluate()
+        protected override void Evaluate(HomeWorkspaceModel workspace)
         {
             //Run in idle thread no matter what
-            IdlePromise.ExecuteOnIdleSync(base.Evaluate);
+            IdlePromise.ExecuteOnIdleSync(() => base.Evaluate(workspace));
         }
     }
 }

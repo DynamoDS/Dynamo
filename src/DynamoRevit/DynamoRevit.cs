@@ -47,19 +47,24 @@ namespace Dynamo.Applications
             RevThread.IdlePromise.RegisterIdle(commandData.Application);
 
             HandleDebug(commandData);
+
             InitializeAssemblies();
+            InitializeUnits();
+            InitializeDocumentManager(commandData);
 
             try
             {
                 RevThread.IdlePromise.ExecuteOnIdleAsync(
                     delegate
                     {
+                        // create core data models
                         dynamoRevitModel = InitializeCoreModel(commandData);
                         dynamoViewModel = InitializeCoreViewModel(dynamoRevitModel);
 
+                        // show the window
                         InitializeCoreView().Show();
 
-                        // KILLDYNSETTINGS - more cleanup
+                        // KILLDYNSETTINGS - is this ever used?
                         TryOpenWorkspaceInCommandData(commandData);
 
                         commandData.Application.ViewActivating += Application_ViewActivating;
@@ -70,6 +75,7 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
+                // notify instrumentation
                 InstrumentationLogger.LogException(ex);
                 StabilityTracking.GetInstance().NotifyCrash();
 
@@ -87,21 +93,12 @@ namespace Dynamo.Applications
 
         private static DynamoRevitModel InitializeCoreModel(ExternalCommandData commandData)
         {
-            if (DocumentManager.Instance.CurrentUIApplication == null)
-                DocumentManager.Instance.CurrentUIApplication = commandData.Application;
-
-            // set revit units
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
-
-            string corePath =
+            var prefs = PreferenceSettings.Load();
+            var corePath =
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
-            var drm = new DynamoRevitModel(GetRevitContext(commandData), null, corePath);
-            
-            return drm;
+            return new DynamoRevitModel(GetRevitContext(commandData), prefs, corePath);
         }
 
         private static DynamoViewModel InitializeCoreViewModel(DynamoRevitModel dynamoRevitModel)
@@ -160,6 +157,20 @@ namespace Dynamo.Applications
             SingleSignOnManager.UIDispatcher = dynamoView.Dispatcher;
 
             return dynamoView;
+        }
+
+        private void InitializeDocumentManager(ExternalCommandData commandData)
+        {
+            if (DocumentManager.Instance.CurrentUIApplication == null)
+                DocumentManager.Instance.CurrentUIApplication = commandData.Application;
+        }
+
+        private void InitializeUnits()
+        {
+            // set revit units
+            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
         }
 
         private void InitializeAssemblies()

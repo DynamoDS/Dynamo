@@ -30,7 +30,8 @@ namespace Dynamo.Models
         #region internal members
 
         internal readonly NodeFactory NodeFactory;
-        protected DynamoModel dynamoModel;
+        internal DynamoModel DynamoModel;
+
         private string _fileName;
         private string _name;
         private double _height = 100;
@@ -398,7 +399,7 @@ namespace Dynamo.Models
         protected WorkspaceModel( DynamoModel dynamoModel, String name, IEnumerable<NodeModel> e,
             IEnumerable<ConnectorModel> c, double x, double y)
         {
-            this.dynamoModel = dynamoModel;
+            this.DynamoModel = dynamoModel;
             NodeFactory = new NodeFactory(this, dynamoModel);
 
             Name = name;
@@ -432,7 +433,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            dynamoModel.Logger.Log("Saving " + newPath + "...");
+            DynamoModel.Logger.Log("Saving " + newPath + "...");
             try
             {
                 if (SaveInternal(newPath))
@@ -441,8 +442,8 @@ namespace Dynamo.Models
             catch (Exception ex)
             {
                 //Log(ex);
-                dynamoModel.Logger.Log(ex.Message);
-                dynamoModel.Logger.Log(ex.StackTrace);
+                DynamoModel.Logger.Log(ex.Message);
+                DynamoModel.Logger.Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
@@ -496,7 +497,7 @@ namespace Dynamo.Models
             if (node == null)
             {
                 string format = "Failed to create node '{0}' (GUID: {1})";
-                dynamoModel.Logger.Log(string.Format(format, nodeName, nodeId));
+                DynamoModel.Logger.Log(string.Format(format, nodeName, nodeId));
                 return null;
             }
 
@@ -527,10 +528,10 @@ namespace Dynamo.Models
 
             node.EnableInteraction();
 
-            if (dynamoModel.CurrentWorkspace == dynamoModel.HomeSpace)
+            if (DynamoModel.CurrentWorkspace == DynamoModel.HomeSpace)
                 node.SaveResult = true;
 
-            dynamoModel.OnNodeAdded(node);
+            DynamoModel.OnNodeAdded(node);
             return node;
         }
 
@@ -543,14 +544,14 @@ namespace Dynamo.Models
                 if (c != null)
                     this.Connectors.Add(c);
 
-                this.dynamoModel.OnConnectorAdded(c);
+                this.DynamoModel.OnConnectorAdded(c);
 
                 return c;
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log(e.Message);
-                dynamoModel.Logger.Log(e);
+                DynamoModel.Logger.Log(e.Message);
+                DynamoModel.Logger.Log(e);
             }
 
             return null;
@@ -768,9 +769,9 @@ namespace Dynamo.Models
             try
             {
                 ProtoCore.Core core = null;
-                if (dynamoModel != null)
+                if (DynamoModel != null)
                 {
-                    var engine = dynamoModel.EngineController;
+                    var engine = DynamoModel.EngineController;
                     if (engine != null && (engine.LiveRunnerCore != null))
                         core = engine.LiveRunnerCore;
                 }
@@ -797,8 +798,8 @@ namespace Dynamo.Models
             {
                 // We'd prefer file saving process to not crash Dynamo,
                 // otherwise user will lose the last hope in retaining data.
-                dynamoModel.Logger.Log(exception.Message);
-                dynamoModel.Logger.Log(exception.StackTrace);
+                DynamoModel.Logger.Log(exception.Message);
+                DynamoModel.Logger.Log(exception.StackTrace);
             }
         }
 
@@ -862,7 +863,7 @@ namespace Dynamo.Models
                 return;
 
             Dictionary<string, string> variableNameMap;
-            string code = this.dynamoModel.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
+            string code = this.DynamoModel.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
             //UndoRedo Action Group----------------------------------------------
             UndoRecorder.BeginActionGroup();
@@ -942,7 +943,7 @@ namespace Dynamo.Models
             //End UndoRedo Action Group------------------------------------------
 
             // select node
-            var placedNode = this.dynamoModel.Nodes.Find((node) => node.GUID == nodeId);
+            var placedNode = this.DynamoModel.Nodes.Find((node) => node.GUID == nodeId);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -971,7 +972,7 @@ namespace Dynamo.Models
             model.HasUnsavedChanges = false;
 
             // KILLDYNSETTINGS - just expose this as an event on dynamoModel
-            this.dynamoModel.OnWorkspaceSaved(model);
+            this.DynamoModel.OnWorkspaceSaved(model);
         }
 
         private void MarkUnsaved(
@@ -1404,7 +1405,7 @@ namespace Dynamo.Models
                 });
 
             // KILLDYNSETTINGS: shouldn't know about the dispatcher - whether it exists or not
-            dynamoModel.OnRequestDispatcherInvoke(getString);
+            DynamoModel.OnRequestDispatcherInvoke(getString);
             return outData;
 
             //if (dynamoModel != null &&

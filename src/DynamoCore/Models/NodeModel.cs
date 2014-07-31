@@ -27,7 +27,7 @@ namespace Dynamo.Models
 
         // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
         public WorkspaceModel WorkSpace { get; internal set; }
-        internal DynamoModel DynamoModel { get; set; }
+        public DynamoModel DynamoModel { get; set; }
 
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;

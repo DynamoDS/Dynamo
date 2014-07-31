@@ -132,7 +132,7 @@ namespace Dynamo.Models
             }
         }
 
-        public WorkspaceModel HomeSpace { get; protected set; }
+        public HomeWorkspaceModel HomeSpace { get; protected set; }
 
         // move to DynamoModel
         private ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
@@ -234,11 +234,18 @@ namespace Dynamo.Models
 
         #endregion
 
-        public DynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false)
+        public DynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) : 
+            this(context, preferences, corePath, new DynamoRunner(), isTestMode)
+        {
+
+        }
+
+        public DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, bool isTestMode = false)
         {
             DynamoPathManager.Instance.InitializeCore(corePath);
             UsageReportingManager.Instance.InitializeCore(this);
 
+            Runner = runner;
             Context = context;
             IsTestMode = isTestMode;
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
@@ -287,7 +294,6 @@ namespace Dynamo.Models
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             PackageManagerClient = new PackageManagerClient(this);
-            Runner = new DynamoRunner(this);
         }
 
         private void InitializeUpdateManager()
@@ -366,13 +372,13 @@ namespace Dynamo.Models
 
         public void RunExpression()
         {
-            Runner.RunExpression();
+            Runner.RunExpression(this.HomeSpace);
         }
 
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)
-                Runner.CancelAsync();
+                Runner.CancelAsync(this.EngineController);
             else
                 RunExpression();
         }
@@ -380,7 +386,7 @@ namespace Dynamo.Models
         internal void ForceRunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)
-                Runner.CancelAsync();
+                Runner.CancelAsync(this.EngineController);
             else
             {
                 Logger.Log("Beginning engine reset");

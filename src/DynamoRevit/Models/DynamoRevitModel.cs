@@ -57,7 +57,7 @@ namespace Dynamo.Applications
         #endregion
 
         public DynamoRevitModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
-            base(context, preferences, corePath, isTestMode)
+            base(context, preferences, corePath, new DynamoRevitRunner(), isTestMode)
         {
             // make updater and register events
             RevitUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
@@ -65,7 +65,6 @@ namespace Dynamo.Applications
             RevitUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
 
             Reactor = new Reactor(this);
-            Runner = new DynamoRunner(this); // KILLDYNSETTINGS - this is a hack
 
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
                 Application_DocumentClosed;

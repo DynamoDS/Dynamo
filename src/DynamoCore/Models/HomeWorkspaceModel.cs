@@ -25,14 +25,14 @@ namespace Dynamo.Models
         {
             (sender as DispatcherTimer).Stop();
 
-            this.dynamoModel.RunExpression();
+            this.DynamoModel.RunExpression();
         }
 
         public override void Modified()
         {
             base.Modified();
 
-            if (this.dynamoModel.DynamicRunEnabled)
+            if (this.DynamoModel.DynamicRunEnabled)
             {
 
                 // This dispatch timer is to avoid updating graph too frequently.

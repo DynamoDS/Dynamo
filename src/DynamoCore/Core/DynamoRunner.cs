@@ -7,6 +7,7 @@ using System.Threading;
 
 using DSNodeServices;
 
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -25,16 +26,9 @@ namespace Dynamo.Core
         /// </summary>
         protected static Object RunControlMutex = new object();
 
-        private readonly DynamoModel dynamoModel;
-
         private bool cancelSet;
         private int? execInternval;
         private Thread evaluationThread = null;
-
-        public DynamoRunner(DynamoModel dynamoModel)
-        {
-            this.dynamoModel = dynamoModel;
-        }
 
         public bool Running { get; protected set; }
 
@@ -43,12 +37,12 @@ namespace Dynamo.Core
         /// </summary>
         public bool NeedsAdditionalRun { get; protected set; }
 
-        public void CancelAsync()
+        public void CancelAsync(EngineController engineController)
         {
             if (Running)
             {
                 cancelSet = true;
-                dynamoModel.EngineController.LiveRunnerCore.RequestCancellation();
+                engineController.LiveRunnerCore.RequestCancellation();
                 
                 // We need to wait for evaluation thread to complete after a cancellation
                 // until the LR and Engine controller are reset properly
@@ -57,8 +51,10 @@ namespace Dynamo.Core
             }
         }
 
-        public void RunExpression(int? executionInterval = null)
+        public void RunExpression(HomeWorkspaceModel workspaceModel, int? executionInterval = null)
         {
+            var dynamoModel = workspaceModel.DynamoModel;
+
             execInternval = executionInterval;
 
             lock (RunControlMutex)
@@ -78,8 +74,8 @@ namespace Dynamo.Core
                 // is obtained.
                 // 
                 IEnumerable<KeyValuePair<Guid, List<string>>> traceData =
-                    dynamoModel.HomeSpace.PreloadedTraceData;
-                dynamoModel.HomeSpace.PreloadedTraceData = null; // Reset.
+                    workspaceModel.PreloadedTraceData;
+                workspaceModel.PreloadedTraceData = null; // Reset.
                 dynamoModel.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
                 //We are now considered running
@@ -96,28 +92,28 @@ namespace Dynamo.Core
                 {
                     Validity.Assert(Running);
                 }
-                RunAsync();
+                RunAsync(workspaceModel);
             }
             else
             {
                 //for testing, we do not want to run asynchronously, as it will finish the 
                 //test before the evaluation (and the run) is complete
                 //RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
-                RunSync();
+                RunSync(workspaceModel);
             }
         }
 
-        private void RunAsync()
+        private void RunAsync(HomeWorkspaceModel workspaceModel)
         {
-            evaluationThread = new Thread(RunSync);
+            evaluationThread = new Thread(() => RunSync(workspaceModel));
             evaluationThread.Start();
         }
 
-        private void RunSync()
+        private void RunSync(HomeWorkspaceModel workspaceModel)
         {
             do
             {
-                Evaluate();
+                Evaluate(workspaceModel);
 
                 if (execInternval == null)
                     break;
@@ -126,14 +122,16 @@ namespace Dynamo.Core
                 Thread.Sleep(sleep);
             } while (!cancelSet);
 
-            RunComplete();
+            RunComplete(workspaceModel);
         }
 
         /// <summary>
         ///     Method to group together all the tasks associated with an execution being complete
         /// </summary>
-        private void RunComplete()
+        private void RunComplete(HomeWorkspaceModel workspaceModel)
         {
+            var dynamoModel = workspaceModel.DynamoModel;
+
             dynamoModel.OnRunCompleted(this, false);
 
             lock (RunControlMutex)
@@ -149,21 +147,21 @@ namespace Dynamo.Core
             }
         }
 
-
-        protected virtual void Evaluate()
+        protected virtual void Evaluate(HomeWorkspaceModel workspace)
         {
+            var dynamoModel = workspace.DynamoModel;
+
             var sw = new Stopwatch();
 
             try
             {
                 sw.Start();
 
-                dynamoModel.EngineController.GenerateGraphSyncData(
-                    dynamoModel.HomeSpace.Nodes);
+                dynamoModel.EngineController.GenerateGraphSyncData(workspace.Nodes);
 
                 //No additional work needed
                 if (dynamoModel.EngineController.HasPendingGraphSyncData)
-                    Eval();
+                    Eval(workspace);
             }
             catch (Exception ex)
             {
@@ -190,8 +188,10 @@ namespace Dynamo.Core
             dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
-        private void Eval()
+        private void Eval(HomeWorkspaceModel workspaceModel)
         {
+            var dynamoModel = workspaceModel.DynamoModel;
+
             //Print some stuff if we're in debug mode
             if (dynamoModel.RunInDebug) { }
 
@@ -209,14 +209,13 @@ namespace Dynamo.Core
                 if (DynamoModel.IsTestMode == false && (fatalException != null))
                 {
                     Action showFailureMessage =
-                        () => Nodes.Utilities.DisplayEngineFailureMessage(this.dynamoModel, fatalException);
+                        () => Nodes.Utilities.DisplayEngineFailureMessage(dynamoModel, fatalException);
 
                     // The "Run" method is guaranteed to be called on a background 
                     // thread (for Revit's case, it is the idle thread). Here we 
                     // schedule the message to show up when the UI gets around and 
                     // handle it.
                     // 
-                    // KILLDYNSETTINGS: should not be using the UIDispatcher here
                     dynamoModel.OnRequestDispatcherBeginInvoke(showFailureMessage);
                 }
 
@@ -227,7 +226,7 @@ namespace Dynamo.Core
                 if (updated)
                 {
                     ObservableCollection<NodeModel> nodes =
-                        dynamoModel.HomeSpace.Nodes;
+                        workspaceModel.Nodes;
                     foreach (NodeModel node in nodes)
                         node.IsUpdated = true;
                 }
