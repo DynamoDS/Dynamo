@@ -712,7 +712,7 @@ namespace Dynamo.Models
             // find nodes with of the same type with the same GUID
             var query = CurrentWorkspace.Nodes.Where((n) =>
             {
-                return n.GUID.Equals(nodeId) && n.Name.Equals(node.Name);
+                return n.GUID.Equals(nodeId) && n.Name.Equals(nodeName);
             });
 
             // safely ignore a node of the same type with the same GUID
