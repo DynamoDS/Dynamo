@@ -90,11 +90,6 @@ namespace Dynamo.Applications
             if (DocumentManager.Instance.CurrentUIApplication == null)
                 DocumentManager.Instance.CurrentUIApplication = commandData.Application;
 
-            // make updater and register events
-            var updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
-            updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
-
             // set revit units
             BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
             BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
@@ -104,7 +99,7 @@ namespace Dynamo.Applications
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
-            var drm = new DynamoRevitModel(GetRevitContext(commandData), null, updater, corePath);
+            var drm = new DynamoRevitModel(GetRevitContext(commandData), null, corePath);
             
             return drm;
         }

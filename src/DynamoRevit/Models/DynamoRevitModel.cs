@@ -56,10 +56,14 @@ namespace Dynamo.Applications
      
         #endregion
 
-        public DynamoRevitModel(string context, IPreferences preferences, RevitServicesUpdater updater, string corePath, bool isTestMode = false) :
+        public DynamoRevitModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
             base(context, preferences, corePath, isTestMode)
         {
-            RevitUpdater = updater;
+            // make updater and register events
+            RevitUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
+            RevitUpdater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
+            RevitUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
+
             Reactor = new Reactor(this);
             Runner = new DynamoRunner(this); // KILLDYNSETTINGS - this is a hack
 
