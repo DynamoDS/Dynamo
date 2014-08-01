@@ -13,6 +13,8 @@
       <ComponentGroupRef Id="DYNAMO_LIBG_220"/>
       <ComponentGroupRef Id="DYNAMO_UI_FONTS"/>
       <ComponentGroupRef Id="DYNAMO_UI_THEMES"/>
+      <ComponentGroupRef Id="SAMPLES"/>
+      <ComponentGroupRef Id="DEFINITIONS"/>
     </Feature>
     
     <Feature Id="REVIT_2014_FEATURE" Title="Dynamo for Revit 2014" Level="1">
@@ -51,6 +53,11 @@
             </Directory>
           </Directory>
         </Directory>
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
+          <Directory Id="PROGDATA_07" Name="0.7"/>
+        </Directory>
+      </Directory>
     </Directory>
   </Fragment>
 
