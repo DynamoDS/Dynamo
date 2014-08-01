@@ -435,8 +435,6 @@ namespace Dynamo.Tests
             //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
-        // ParametricTowerSamples() this test was removed as there was nothing in this test case.
-
         [Test]
         [TestModel(@".\empty.rfa")]
         public void Attractor_1()
@@ -467,8 +465,6 @@ namespace Dynamo.Tests
 
         }
 
-        // Attractor_2(): Atrractor_1 is covering the same scenario so removing this test case.
-
         [Test]
         [TestModel(@".\Samples\IndexedFamilyInstances.rfa")]
         public void IndexedFamilyInstances()
@@ -496,8 +492,6 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(familyInstance);
             }
         }
-
-        // AdaptiveComponentPlacement() This test case we are covering in AdaptiveComponentTests.cs
 
         [Test]
         [TestModel(@".\Samples\tesselation.rfa")]
@@ -545,23 +539,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(25, model.CurrentWorkspace.Connectors.Count);
 
             RunCurrentModel();
-            var refPoint = "a80c323f-7443-42fd-a38c-4a84623fdeb5";
-            AssertPreviewCount(refPoint, 122);
+            var refPointNodeID = "a80c323f-7443-42fd-a38c-4a84623fdeb5";
+            AssertPreviewCount(refPointNodeID, 122);
 
             // get all Reference Points.
             for (int i = 0; i <= 120; i++)
             {
-                var point = GetPreviewValueAtIndex(refPoint, i) as Point;
+                var point = GetPreviewValueAtIndex(refPointNodeID, i) as Point;
                 Assert.IsNotNull(point);
             }
-
-            //// get all Lines
-            //for (int i = 121; i <= 483; i++)
-            //{
-            //    var lines = GetPreviewValueAtIndex(refPoint, i) as Line;
-            //    Assert.IsNotNull(lines);
-            //}
-
         }
 
         [Test]
