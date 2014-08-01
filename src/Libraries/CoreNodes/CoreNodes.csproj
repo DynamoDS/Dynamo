@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
     <Compile Include="Logic.cs" />
