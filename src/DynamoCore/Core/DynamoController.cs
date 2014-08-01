@@ -402,7 +402,7 @@ namespace Dynamo
 
         public void RunExpression(object parameters) // For unit test cases.
         {
-            RunExpression();
+            Runner.RunExpression(parameters as int?);
         }
 
         public void RunExpression()

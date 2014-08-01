@@ -11,53 +11,30 @@ using Autodesk.DesignScript.Geometry;
 namespace Dynamo.DSEngine
 {
     /// <summary>
-    /// Provides extension methods for reading XML comments from reflected members.
+    /// Provides extension methods for reading XML documentation from reflected members.
     /// </summary>
     public static class XmlDocumentationExtensions
     {
+        #region Public methods
 
-        public static string GetXmlDocumentation(this TypedParameter member)
-        {
-            XDocument xml = null;
-
-            if (member.Function != null && member.Function.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Function.Assembly);
-
-            return GetXmlDocumentation(member, xml);
-        }
-
-        public static string GetXmlDocumentation(this TypedParameter parameter, XDocument xml)
-        {
-            if (xml == null) return String.Empty;
-
-            return xml.XPathEvaluate(
-                String.Format(
-                    "string(/doc/members/member[@name='{0}']/param[@name='{1}'])",
-                    GetMemberElementName(parameter.Function),
-                    parameter.Name )
-                ).ToString().Trim();
-        }
-
-        public static string GetXmlDocumentation(this FunctionDescriptor member)
+        public static string GetSummary(this FunctionDescriptor member)
         {
             XDocument xml = null;
 
             if (member.Assembly != null)
                 xml = DocumentationServices.GetForAssembly(member.Assembly);
 
-            return GetXmlDocumentation(member, xml);
+            return member.GetSummary(xml);
         }
 
-        private static string GetXmlDocumentation(this FunctionDescriptor member, XDocument xml)
+        public static string GetDescription(this TypedParameter member)
         {
-            if (xml == null) return String.Empty;
+            XDocument xml = null;
 
-            return xml.XPathEvaluate(
-                String.Format(
-                    "string(/doc/members/member[@name='{0}']/summary)",
-                    GetMemberElementName(member)
-                    )
-                ).ToString().Trim();
+            if (member.Function != null && member.Function.Assembly != null)
+                xml = DocumentationServices.GetForAssembly(member.Function.Assembly);
+
+            return member.GetDescription(xml);
         }
 
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
@@ -67,20 +44,91 @@ namespace Dynamo.DSEngine
             if (member.Assembly != null)
                 xml = DocumentationServices.GetForAssembly(member.Assembly);
 
-            return GetSearchTags(member, xml);
+            return member.GetSearchTags(xml);
+        }
+
+        #endregion
+
+        #region Overloads specifying XDocument
+
+        public static string GetDescription(this TypedParameter parameter, XDocument xml)
+        {
+            if (xml == null) return String.Empty;
+
+            return GetMemberElement(parameter.Function, 
+                String.Format("param[@name='{0}']", parameter.Name), xml).CleanUpDocString();
+        }
+
+        public static string GetSummary(this FunctionDescriptor member, XDocument xml)
+        {
+            if (xml == null) return String.Empty;
+
+            return GetMemberElement(member, "summary", xml).CleanUpDocString();
         }
 
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XDocument xml)
         {
             if (xml == null) return new List<string>();
 
-            return xml.XPathEvaluate(
-                String.Format(
-                    "string(/doc/members/member[@name='{0}']/search)",
-                    GetMemberElementName(member)
-                    )
-                ).ToString().Split(',').Select(x => x.Trim()).Where(x => x != String.Empty);
+            return GetMemberElement(member, "search", xml)
+                .CleanUpDocString()
+                .Split(',')
+                .Select(x => x.Trim())
+                .Where(x => x != String.Empty);
+        }
 
+        #endregion
+
+        #region Helpers
+
+        private static string CleanUpDocString(this string text)
+        {
+            if (String.IsNullOrEmpty(text)) return String.Empty;
+
+            // trim, clean up new lines, and clean out excessive internal spaces
+            var sb = new StringBuilder();
+            var lastChar = ' ';
+
+            foreach (var currentChar in text.Trim())
+            {
+                if (currentChar == ' ' && lastChar == ' ') continue;
+                if (currentChar == '\n') continue;
+                sb.Append(currentChar);
+                lastChar = currentChar;
+            }
+
+            return sb.ToString();
+        }
+
+        private static string GetMemberElement(FunctionDescriptor function,
+            string suffix, XDocument xml)
+        {
+            // Construct the entire function descriptor name, including CLR style names
+            string clrMemberName = GetMemberElementName(function);
+
+            // match clr member name
+            var match = xml.XPathEvaluate(
+                String.Format("string(/doc/members/member[@name='{0}']/{1})", clrMemberName, suffix));
+
+            if (match is String && !string.IsNullOrEmpty((string)match))
+            {
+                return match as string;
+            }
+
+            // fallback, namespace qualified method name
+            var methodName = function.QualifiedName;
+
+            // match with fallback
+            match = xml.XPathEvaluate(
+                String.Format(
+                    "string(/doc/members/member[contains(@name,'{0}')]/{1})", methodName, suffix));
+
+            if (match is String && !string.IsNullOrEmpty((string)match))
+            {
+                return match as string;
+            }
+
+            return String.Empty;
         }
 
         private static string PrimitiveMap(string s)
@@ -106,7 +154,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private static object GetMemberElementName(FunctionDescriptor member)
+        private static string GetMemberElementName(FunctionDescriptor member)
         {
             char prefixCode;
 
@@ -151,6 +199,7 @@ namespace Dynamo.DSEngine
             return String.Format("{0}:{1}", prefixCode, memberName);
         }
 
+        #endregion
     }
 
 }

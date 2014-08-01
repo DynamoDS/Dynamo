@@ -709,6 +709,16 @@ namespace Dynamo.Models
             if (nodeId == Guid.Empty)
                 throw new ArgumentException("Node ID must be specified", "nodeId");
 
+            // find nodes with of the same type with the same GUID
+            var query = CurrentWorkspace.Nodes.Where((n) =>
+            {
+                return n.GUID.Equals(nodeId) && n.Name.Equals(nodeName);
+            });
+
+            // safely ignore a node of the same type with the same GUID
+            if (query.Any())
+                return query.First();
+
             NodeModel node = CreateNodeInstance(nodeName);
             if (node == null)
             {
@@ -717,12 +727,13 @@ namespace Dynamo.Models
                 return null;
             }
 
-            // find nodes with of the same type with the same GUID
-            var query = CurrentWorkspace.Nodes.Where((n) => { return n.GUID.Equals(nodeId) && n.Name.Equals(node.Name); });
-
-            // safely ignore a node of the same type with the same GUID
-            if (query.Any())
-                return query.First();
+            // Fix for: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4024
+            // Various derived classes of NodeModel like CodeBlockNode, build 
+            // their internal variables based on the node's GUID. In cases like 
+            // this, a node's GUID must be finalized before variable generation 
+            // logic kicks in.
+            // 
+            node.GUID = nodeId; // Set the node's GUID before anything else.
 
             if (useDefaultPos == false) // Position was specified.
             {
@@ -735,9 +746,6 @@ namespace Dynamo.Models
 
             if (null != xmlNode)
                 node.Load(xmlNode);
-
-            // Override the guid so we can store for connection lookup
-            node.GUID = nodeId;
 
             DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = viewModel.CurrentSpaceViewModel;
@@ -1067,32 +1075,7 @@ namespace Dynamo.Models
         /// <returns> The newly instantiated dynNode</returns>
         public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            object createdNode = null;
-
-            if (elementType.IsAssignableFrom(typeof(DSVarArgFunction)))
-            {
-                // If we are looking at a 'DSVarArgFunction', we'd better had 
-                // 'signature' readily available, otherwise we have a problem.
-                if (string.IsNullOrEmpty(signature))
-                {
-                    var message = "Unknown function signature";
-                    throw new ArgumentException(message, "signature");
-                }
-
-                // Invoke the constructor that takes in a 'FunctionDescriptor'.
-                var engine = dynSettings.Controller.EngineController;
-                var functionDescriptor = engine.GetFunctionDescriptor(signature);
-
-                if (functionDescriptor == null)
-                    throw new UnresolvedFunctionException(signature);
-
-                createdNode = Activator.CreateInstance(elementType,
-                    new object[] { functionDescriptor });
-            }
-            else
-            {
-                createdNode = Activator.CreateInstance(elementType);
-            }
+            object createdNode =  Activator.CreateInstance(elementType);
 
             // The attempt to create node instance may fail due to "elementType"
             // being something else other than "NodeModel" derived object type. 
@@ -1631,9 +1614,9 @@ namespace Dynamo.Models
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
 #if USE_DSENGINE
                 else if (node is DSFunction)
-                    nodeName = ((node as DSFunction).Definition.MangledName);
+                    nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
-                    nodeName = ((node as DSVarArgFunction).Definition.MangledName);
+                    nodeName = ((node as DSVarArgFunction).Controller.MangledName);
 #endif
 
                 var xmlDoc = new XmlDocument();

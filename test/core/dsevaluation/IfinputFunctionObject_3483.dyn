@@ -1,0 +1,31 @@
+<Workspace Version="0.7.1.17276" X="-968.679568898671" Y="-1110.255932403" zoom="1.04742193708453" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="1cc3e186-f4b2-4788-877d-07b770fcd889" nickname="Number" x="1474.67636556537" y="1581.06337519408" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <DSCoreNodesUI.Logic.If type="DSCoreNodesUI.Logic.If" guid="1b3646c5-1a9d-418a-8941-091c2945f3ae" nickname="If" x="1672.62745641033" y="1424.51369265614" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="6f50a690-a984-4f26-9584-37035231b5e3" nickname="Double Slider" x="1101.27248399722" y="1573.27358283896" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>2.352</System.Double>
+      <Range min="-5" max="5" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="079fa696-e6e7-402f-866f-9bf4306b5020" nickname="Watch" x="1893.79560999403" y="1495.86369448171" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="459f4895-0227-4035-aa18-f52d508a5a6e" nickname="Pass Nothing Below 1" x="1465.36485082562" y="1398.86227514776" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f6533d2f-8a68-4957-865d-eeceda9da281" />
+      <Name value="Pass Nothing Below 1" />
+      <Description value="Takes inputs and only passes 1 or values above 1" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1cc3e186-f4b2-4788-877d-07b770fcd889" start_index="0" end="1b3646c5-1a9d-418a-8941-091c2945f3ae" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b3646c5-1a9d-418a-8941-091c2945f3ae" start_index="0" end="079fa696-e6e7-402f-866f-9bf4306b5020" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6f50a690-a984-4f26-9584-37035231b5e3" start_index="0" end="1b3646c5-1a9d-418a-8941-091c2945f3ae" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="459f4895-0227-4035-aa18-f52d508a5a6e" start_index="0" end="1b3646c5-1a9d-418a-8941-091c2945f3ae" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
