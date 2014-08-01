@@ -17,10 +17,12 @@
     
     <Feature Id="REVIT_2014_FEATURE" Title="Dynamo for Revit 2014" Level="1">
       <ComponentGroupRef Id="REVIT_2014" />
+      <ComponentGroupRef Id="REVIT_2014_NODES"/>
     </Feature>
     
     <Feature Id="REVIT_2015_FEATURE" Title="Dynamo for Revit 2015" Level="1">
       <ComponentGroupRef Id="REVIT_2015" />
+      <ComponentGroupRef Id="REVIT_2015_NODES"/>
     </Feature>
 
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.SolutionDir)..\tools\install\Extra\DynamoInstaller.ico"/>
@@ -331,18 +333,80 @@
     </ComponentGroup>
 
     <ComponentGroup Id="DYNAMO_UI_FONTS" Directory="UI_FONTS_DIRECTORY">
-      
+      <Component Id="OpenSans_Bold.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-Bold.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_BoldItalic.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-BoldItalic.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_ExtraBold.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-ExtraBold.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_ExtraBoldItalic.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-ExtraBoldItalic.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_Italic.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-Italic.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_Light.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-Light.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_LightItalic.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-LightItalic.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_Regular.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-Regular.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_Semibold.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-Semibold.ttf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="OpenSans_SemiboldItalic.ttf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Fonts\OpenSans-SemiboldItalic.ttf" ProcessorArchitecture="x64"/>
+      </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="DYNAMO_UI_THEMES" Directory="UI_THEMES_MODERN_DIRECTORY">
-      
+      <Component Id="Connectors.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\Connectors.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DataTemplates.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\DataTemplates.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoColorsAndBrushes.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\DynamoColorsAndBrushes.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoConverters.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\DynamoConverters.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoModern.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\DynamoModern.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoText.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\DynamoText.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="MenuStyleDictionary.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\MenuStyleDictionary.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Ports.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\Ports.xaml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ToolbarStyleDictionary.xaml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\UI\Themes\Modern\ToolbarStyleDictionary.xaml" ProcessorArchitecture="x64"/>
+      </Component>
     </ComponentGroup>
     
     <ComponentGroup Id="REVIT_2014" Directory="REVIT_2014_DIRECTORY">
+    </ComponentGroup>
+    
+    <ComponentGroup Id="REVIT_2014_NODES" Directory="REVIT_2014_NODES_DIRECTORY">
     </ComponentGroup>
 
     <ComponentGroup Id="REVIT_2015" Directory="REVIT_2015_DIRECTORY">
     </ComponentGroup>
     
+    <ComponentGroup Id="REVIT_2015_NODES" Directory="REVIT_2015_NODES_DIRECTORY">
+    </ComponentGroup>
+    
   </Fragment>
+
 </Wix>
