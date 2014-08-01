@@ -166,6 +166,13 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
+            InputParametrs = parameters.Select(
+                par =>
+                {
+                   return  Tuple.Create<string,string>(par.Name, par.DisplayTypeName);
+
+                }
+                );
 
             ReturnType = returnType ?? "var[]..[]";
             Type = type;
@@ -229,14 +236,16 @@ namespace Dynamo.DSEngine
             get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
         }
 
-        public string InputParametrs
-         {
-             get 
-             { 
-                 string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
-                 return signature;
-             }
-         }
+        public IEnumerable<Tuple<string,string>> InputParametrs
+        {
+            //get 
+            //{ 
+            //    string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
+            //    return signature;
+            //}
+            get;
+            set;
+        }
         /// <summary>
         ///     The category of this function.
         /// </summary>

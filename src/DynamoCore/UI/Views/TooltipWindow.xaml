@@ -3,18 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="450"
              Background="#01000000"
              MaxWidth="370">
     <UserControl.Resources>
-        <Style TargetType="{x:Type Hyperlink}">
-            <Setter Property="Foreground"
-                    Value="#4192d9" />
-            <Setter Property="TextBlock.TextDecorations"
-                    Value="{x:Null}" />
-        </Style>
+        <ResourceDictionary>
+            <controls:SplitTooLongString x:Key="SplitTooLongString" />
+            <controls:EmtpyListToNone x:Key="EmtpyListToNone" />
+            <controls:EmtpyStringToNone x:Key="EmtpyStringToNone" />
+            <controls:AddColonToNotNoneString x:Key="AddColonToNotNoneString" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -47,40 +49,62 @@
                            FontSize="13"
                            Foreground="#cccccc"
                            Margin="0,0,10,0"
-                           TextWrapping="WrapWithOverflow"/>
+                           TextWrapping="WrapWithOverflow" />
                 <TextBlock Name="inputLabel"
                            Text="INPUT"
                            Grid.Row="1"
                            FontSize="10"
                            Foreground="#50b5a3"
-                           Margin="0,3,0,0"/>
-                <TextBlock Name="input"
-                           Text="{Binding Path=InputParametrs}"
-                           Grid.Row="2"
-                           Grid.ColumnSpan="3"
-                           FontSize="12"
-                           Foreground="White"
-                           TextWrapping="WrapWithOverflow"/>
+                           Margin="0,3,0,0" />
+                <ListBox x:Name="input"
+                         ItemsSource="{Binding InputParametrs, Converter={StaticResource EmtpyListToNone}}"
+                         Grid.Row="2"
+                         Grid.ColumnSpan="3"
+                         Background="Transparent"
+                         BorderBrush="Transparent">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Item1}"
+                                           Foreground="#cccccc"
+                                           FontSize="13" />
+                                <TextBlock Text="{Binding Item2,Converter={StaticResource AddColonToNotNoneString}}"
+                                           Foreground="#777777"
+                                           FontSize="13"
+                                           Margin="-1" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <TextBlock Name="outputLabel"
                            Text="OUTPUT"
                            Grid.Row="3"
                            FontSize="10"
                            Foreground="#50b5a3"
-                           Margin="0,10,0,0"/>
+                           Margin="0,10,0,0" />
                 <TextBlock Name="output"
-                           Text="{Binding Path=OutputParametrs}"
+                           Text="{Binding Path=OutputParametrs, Converter={StaticResource EmtpyStringToNone}}"
                            Grid.Row="4"
                            Grid.ColumnSpan="3"
-                           FontSize="12"
-                           Foreground="White"
-                           TextWrapping="WrapWithOverflow"
-                           Margin="0,0,0,0"/>
+                           FontSize="13"
+                           Foreground="#777777" />
 
                 <Image Grid.Row="0"
                        Grid.Column="2"
-                       Grid.ColumnSpan="2" 
+                       Grid.ColumnSpan="2"
                        Height="96"
-                       Width="96"/>
+                       Width="96" />
                 <Grid Grid.Row="5"
                       Grid.ColumnSpan="3">
                     <Grid.RowDefinitions>
@@ -94,21 +118,27 @@
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type Hyperlink}">
+                            <Setter Property="Foreground"
+                                    Value="#4192d9" />
+                            <Setter Property="TextBlock.TextDecorations"
+                                    Value="{x:Null}" />
+                        </Style>
+                    </Grid.Resources>
                     <StackPanel Grid.Row="1"
-                                Grid.ColumnSpan="3"
+                                Grid.ColumnSpan="4"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Name="code"
-                                   Text="{Binding Path=FullName}"
+                                   Text="{Binding Path=FullName, Converter={StaticResource SplitTooLongString}}"
                                    FontSize="13"
                                    FontFamily="Consolas Regular"
                                    Foreground=" #777777"
-                                   Margin="0,0,10,0"
-                                   TextWrapping="WrapWithOverflow">
+                                   Margin="0,0,10,0">
                         </TextBlock>
                         <Image Height="13"
                                Width="13"
-                               Grid.Row="1"
                                MouseDown="CopyIconMouseClick"
                                HorizontalAlignment="Right">
                             <Image.Style>
@@ -129,6 +159,7 @@
                             </Image.Style>
                         </Image>
                     </StackPanel>
+
                     <TextBlock Grid.Row="3"
                                Grid.Column="0"
                                FontSize="10"

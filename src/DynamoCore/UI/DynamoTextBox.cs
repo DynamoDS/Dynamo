@@ -439,13 +439,13 @@ namespace Dynamo.UI.Controls
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
-            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
             this.DataContextChanged += Popup_DataContextChanged;
-            
+            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
         }
 
         private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            this.Child = null;
             Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
             tooltip.DataContext = this.DataContext;
             this.Child = tooltip;
@@ -476,7 +476,7 @@ namespace Dynamo.UI.Controls
                     else
                     {
                         var delta = (dynSettings.Controller.PreferenceSettings.WindowH - 48)
-                          - (popup.Height) - targetLocation.Y + gap*2;
+                          - (popup.Height) - targetLocation.Y + gap * 2;
                         y = delta;
                     }
                     primaryAxis = PopupPrimaryAxis.Horizontal;

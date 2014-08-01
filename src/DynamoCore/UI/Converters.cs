@@ -1591,4 +1591,72 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class SplitTooLongString : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string text = value.ToString();
+            if (text.Length > 40)
+                return text.Insert(text.LastIndexOf(".")+1, "\n");
+
+            return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class EmtpyListToNone : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                List<Tuple<string, string>> list = new List<Tuple<string, string>>();
+                list.Add(Tuple.Create<string, string>("","none"));
+                return list;
+            }
+               
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class AddColonToNotNoneString : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((string)value != "none")
+                return " : "+(string)value;
+
+            return (string)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+    public class EmtpyStringToNone : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (String.IsNullOrEmpty((string)value))
+                return "none";
+
+            return (string)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }
