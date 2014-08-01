@@ -62,6 +62,15 @@
       <Component Id="DynamoSandbox.exe" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\DynamoSandbox.exe" ProcessorArchitecture="x64"/>
       </Component>
+      <Component Id="DynamoSandbox.exe.config" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoSandbox.exe.config" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="InstallUpdate.exe" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\InstallUpdate.exe" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="InstallUpdate.exe.config" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\InstallUpdate.exe.config" ProcessorArchitecture="x64"/>
+      </Component>
       <Component Id="ProtoTestConsoleRunner.exe" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\ProtoTestConsoleRunner.exe" ProcessorArchitecture="x64"/>
       </Component>
@@ -185,6 +194,9 @@
       <Component Id="ProtoGeometry.dll" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\ProtoGeometry.dll" ProcessorArchitecture="x64"/>
       </Component>
+      <Component Id="ProtoGeometry.config" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoGeometry.config" ProcessorArchitecture="x64"/>
+      </Component>
       <Component Id="ProtoGeometry.xml" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\ProtoGeometry.xml" ProcessorArchitecture="x64"/>
       </Component>
@@ -199,6 +211,9 @@
       </Component>
       <Component Id="ProtoScript.dll" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\ProtoScript.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoScript.dll.config" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoScript.dll.config" ProcessorArchitecture="x64"/>
       </Component>
       <Component Id="ProtoTest.dll" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\ProtoTest.dll" ProcessorArchitecture="x64"/>
