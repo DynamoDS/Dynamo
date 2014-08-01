@@ -20,51 +20,25 @@
     <MediaTemplate />
 
     <Feature Id="DYNAMO_CORE_FEATURE" Title="Dynamo Core" Level="1">
-      <ComponentGroupRef Id="DYNAMO_CORE" />
-      <ComponentGroupRef Id="DYNAMO_CORE_NODES" />
-      <ComponentGroupRef Id="DYNAMO_LIBG_219"/>
-      <ComponentGroupRef Id="DYNAMO_LIBG_220"/>
-      <ComponentGroupRef Id="DYNAMO_UI_FONTS"/>
-      <ComponentGroupRef Id="DYNAMO_UI_THEMES"/>
+      <ComponentGroupRef Id="RELEASE"/>
       <ComponentGroupRef Id="SAMPLES"/>
       <ComponentGroupRef Id="DEFINITIONS"/>
-    </Feature>
-    
-    <Feature Id="REVIT_2014_FEATURE" Title="Dynamo for Revit 2014" Level="1">
-      <ComponentGroupRef Id="REVIT_2014" />
-      <ComponentGroupRef Id="REVIT_2014_NODES"/>
-    </Feature>
-    
-    <Feature Id="REVIT_2015_FEATURE" Title="Dynamo for Revit 2015" Level="1">
-      <ComponentGroupRef Id="REVIT_2015" />
-      <ComponentGroupRef Id="REVIT_2015_NODES"/>
     </Feature>
 
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.SolutionDir)..\tools\install\Extra\DynamoInstaller.ico"/>
     <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
-  
+
+    <!--http://wix.tramontana.co.hu/tutorial/getting-started/where-to-install-->
+    <Property Id="DYNAMO_INSTALLDIR">
+      <RegistrySearch Id='Revit2015Registry' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
+    </Property>
+    
   </Product>
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
-        <Directory Id="ProgramFiles64Folder">
-          <Directory Id="APPLICATIONROOTDIRECTORY" Name="Dynamo 0.7">
-            <Directory Id="NODES_DIRECTORY" Name="nodes"/>
-            <Directory Id="REVIT_2014_DIRECTORY" Name="Revit_2014">
-              <Directory Id="REVIT_2014_NODES_DIRECTORY" Name="nodes"/>
-            </Directory>
-            <Directory Id="REVIT_2015_DIRECTORY" Name="Revit_2015">
-              <Directory Id="REVIT_2015_NODES_DIRECTORY" Name="nodes"/>
-            </Directory>
-            <Directory Id="LIBG_219_DIRECTORY" Name="libg_219"/>
-            <Directory Id="LIBG_220_DIRECTORY" Name="libg_220"/>
-            <Directory Id="UI_DIRECTORY" Name="UI">
-              <Directory Id="UI_FONTS_DIRECTORY" Name="Fonts"/>
-              <Directory Id="UI_THEMES_DIRECTORY" Name="Themes">
-                <Directory Id="UI_THEMES_MODERN_DIRECTORY" Name="Modern"/>
-              </Directory>
-            </Directory>
-          </Directory>
+        <Directory Id="DYNAMO_INSTALLDIR">
         </Directory>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
@@ -78,7 +52,7 @@
   <!--http://msdn.microsoft.com/en-us/library/gg513929.aspx-->
   <Fragment>
     
-    <ComponentGroup Id="DYNAMO_CORE" Directory="APPLICATIONROOTDIRECTORY">
+    <!--<ComponentGroup Id="DYNAMO_CORE" Directory="APPLICATIONROOTDIRECTORY">
       <Component Id="DynamoSandbox.exe" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\DynamoSandbox.exe" ProcessorArchitecture="x64"/>
       </Component>
@@ -568,7 +542,7 @@
       <Component Id="DynamoRaaS.dll" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\nodes\DynamoRaaS.dll" ProcessorArchitecture="x64"/>
       </Component>
-    </ComponentGroup>
+    </ComponentGroup>-->
     
   </Fragment>
 
