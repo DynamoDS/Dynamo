@@ -2297,7 +2297,12 @@ namespace ProtoCore.DSASM
             bool isFirstGraphSet = false;
             ProtoCore.AssociativeGraph.GraphNode entryNode = null;
 
-            List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
+            StackValue svFunctionBlock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock);
+            Validity.Assert(svFunctionBlock.IsBlockIndex);
+            int langBlockDecl = (int)svFunctionBlock.opdata;
+            ProcedureNode procNode = GetProcedureNode(langBlockDecl, classIndex, procIndex);
+
+            List<AssociativeGraph.GraphNode> graphNodes = procNode.GraphNodeList;//istream.dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
             if (graphNodes != null)
             {
                 foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodes)
@@ -2305,10 +2310,14 @@ namespace ProtoCore.DSASM
                     graphNode.isDirty = true;
                     if (!isFirstGraphSet)
                     {
-                        // Setting the first graph of this function to be in executed (not dirty) state
-                        isFirstGraphSet = true;
-                        graphNode.isDirty = false;
-                        entryNode = graphNode;
+                        // Get the first graphnode of this function
+                        if (graphNode.ProcedureOwned)
+                        {
+                            // Setting the first graph of this function to be in executed (not dirty) state
+                            isFirstGraphSet = true;
+                            graphNode.isDirty = false;
+                            entryNode = graphNode;
+                        }
                     }
 
                     if (DSASM.Constants.kInvalidIndex == setentry)
