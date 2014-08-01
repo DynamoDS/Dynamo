@@ -1,1 +1,0 @@
-list1 = { true, false };list2 = !list1; // { false, true }                            

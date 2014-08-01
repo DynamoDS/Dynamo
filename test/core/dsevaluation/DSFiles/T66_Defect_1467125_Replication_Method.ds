@@ -1,1 +1,0 @@
-a = {1,2};b = { 10, 11 };c = { { 1 }, { 2 } };d = { {0 } };def foo(x : var, y : var){    return = x + y;}rab = foo(a, b);rac = foo(a, c);rad = foo(a, d);

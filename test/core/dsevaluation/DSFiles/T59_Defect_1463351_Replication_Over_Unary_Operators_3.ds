@@ -1,1 +1,0 @@
-list1 = { { true, null}, 0, 1 };list2 = !list1;

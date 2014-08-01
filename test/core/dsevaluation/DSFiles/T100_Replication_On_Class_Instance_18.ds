@@ -1,1 +1,0 @@
-class B{ b1=0;}class A{	x : var[];	def foo (y)	{		x = y;		return = x;	}}s = A.A();y = s.foo(B.B()).b1;

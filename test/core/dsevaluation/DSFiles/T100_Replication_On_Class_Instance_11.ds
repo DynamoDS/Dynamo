@@ -1,1 +1,0 @@
-class C{	def f(a : int)	{		return = 1;	} }def foo ( t : C[], a, b){    return = t.f(a..b);}p = {C.C(), C.C()};x = 1;y = 2;a = foo(p, x, y); y = 1; 

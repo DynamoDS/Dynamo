@@ -1,1 +1,0 @@
-y;[Associative]{    def foo : int ( a : int, b : int )    {        return = a + b;    }    x1 = 0;    x2 =  { 1, 2.5, null };    y = foo ( x1, x2 );}                            

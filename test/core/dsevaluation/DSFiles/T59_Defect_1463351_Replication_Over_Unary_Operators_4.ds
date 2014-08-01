@@ -1,1 +1,0 @@
-class A{}a1 = A.A();b1 = { true, a1 };b = !b1;

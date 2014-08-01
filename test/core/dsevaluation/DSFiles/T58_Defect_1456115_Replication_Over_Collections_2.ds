@@ -1,1 +1,0 @@
-def foo : double (arr1 : double[], arr2 : double[] ){return = arr1[0] + arr2[0];}arr = { {2.5,3}, {1.5,2} };two = foo (arr, arr);t1 = two[0];t2 = two[1];

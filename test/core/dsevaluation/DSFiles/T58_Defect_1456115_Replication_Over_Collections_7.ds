@@ -1,1 +1,0 @@
-class A{    x : var;        def foo : int ( a : int, b : int )    {        x = a + b;        return = x;    }}a1 = A.A();test = a1.x;x1 = { 3, 4 };x2 =  { null, 1 };y = a1.foo( {3, 4 }, { null, 1} );

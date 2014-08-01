@@ -1,1 +1,0 @@
-class Point{x : var;y : var;z : var;constructor Create(xx : double){x = xx;}}class Circle{centerPt : var;radius : var;constructor Create(cp : Point, rad : double){centerPt = cp;radius = rad;}}c1;[Associative]{coords = {0.0,1,2,3,4,5,6,7,8,9};pts = Point.Create(coords);circs = Circle.Create(pts, 5.0); c1 = Count ( circs );}
