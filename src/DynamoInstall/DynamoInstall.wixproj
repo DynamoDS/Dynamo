@@ -37,7 +37,7 @@
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
-    <PreBuildEvent>"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "$(SolutionDir)..\doc\distrib\Samples" -cg SAMPLES -gg -scom -sreg -dr PROGDATA_07 -var env.DYNAMO_SAMPLES_PATH -out "$(ProjectDir)Samples.wxs"
+    <PreBuildEvent>"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "$(SolutionDir)..\doc\distrib\Samples" -cg SAMPLES -gg -scom -sreg -dr PROGDATA_07 -var env.DYNAMO_SAMPLES_PATH -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
 "C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "$(SolutionDir)..\doc\distrib\migration_nodes" -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA_07 -var env.DYNAMO_MIGRATION_NODES_PATH -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
   </PropertyGroup>
   <!--
