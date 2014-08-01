@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Dynamo" Language="1033" Version="0.7.1" Manufacturer="Dynamo" UpgradeCode="f84e2239-049c-43cb-b875-ada28893a9db">
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64"/>
+  
+  <Product Id="*" 
+           Name="Dynamo" 
+           Language="1033" 
+           Version="0.7.1" 
+           Manufacturer="Dynamo" 
+           UpgradeCode="f84e2239-049c-43cb-b875-ada28893a9db">
+    
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" 
+             Platform="x64"/>
 
-    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MajorUpgrade 
+      Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    
     <MediaTemplate />
 
     <Feature Id="DYNAMO_CORE_FEATURE" Title="Dynamo Core" Level="1">

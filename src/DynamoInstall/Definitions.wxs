@@ -2,24 +2,24 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="PROGDATA_07">
-            <Directory Id="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Name="Definitions" />
+            <Directory Id="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Name="definitions" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
         <ComponentGroup Id="DEFINITIONS">
-            <Component Id="cmp6A2C256CC62791E91F6182191CBB885C" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{574024E2-2540-4682-BFB7-5336FAE413C8}">
+            <Component Id="cmp6A2C256CC62791E91F6182191CBB885C" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{FE678952-435A-4342-B55B-B63FE39ED1E9}">
                 <File Id="fil35DE848678CC7A0329C54F9546403585" KeyPath="yes" Source="$(env.DYNAMO_MIGRATION_NODES_PATH)\BoundingBoxXYZ.dyf" />
             </Component>
-            <Component Id="cmp33C03A4E175C05C2875826D0C6A03E1D" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{356A64A2-5CEF-4C33-82FA-5BFC68B08AAC}">
+            <Component Id="cmp33C03A4E175C05C2875826D0C6A03E1D" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{3E870F95-0EA7-47DA-9167-1B2628BD9C1A}">
                 <File Id="fil66D277C6DA9ABC54D02B275C87BEB1E9" KeyPath="yes" Source="$(env.DYNAMO_MIGRATION_NODES_PATH)\ModelCurveFromCurveLoop.dyf" />
             </Component>
-            <Component Id="cmp752E6AD65704CD0394BDC3B0910095EA" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{3FD30941-34EE-4F87-B579-EB1825C2CE60}">
+            <Component Id="cmp752E6AD65704CD0394BDC3B0910095EA" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{030E084F-45BD-4EBE-9335-5005A9F79F0C}">
                 <File Id="fil8468DC40364B0244BC7A9370EAC6C9C8" KeyPath="yes" Source="$(env.DYNAMO_MIGRATION_NODES_PATH)\TransformOriginVectors.dyf" />
             </Component>
-            <Component Id="cmpFA91F87561FECE46C461E2352C5BEF66" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{AB7A934C-6F58-447C-B989-145983AC6176}">
+            <Component Id="cmpFA91F87561FECE46C461E2352C5BEF66" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{D9611C9A-9E1D-4E46-ABF8-A1B4D3FE5482}">
                 <File Id="filB01E018EE3E46C3C1570753BF307E71A" KeyPath="yes" Source="$(env.DYNAMO_MIGRATION_NODES_PATH)\XyzFromListOfNumbers.dyf" />
             </Component>
-            <Component Id="cmpEDD2A4604308CC866C87A4EED552A3C1" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{1920EAD3-2769-47F5-AF68-0CD875B89AF2}">
+            <Component Id="cmpEDD2A4604308CC866C87A4EED552A3C1" Directory="dir2F0021EF16DBDDD0C278C0BCAE6BB725" Guid="{0DF3AE77-ABD2-4EB9-8219-0CBB0BE0C519}">
                 <File Id="filB64B1418E38304EDD4E89E63BEC37CA8" KeyPath="yes" Source="$(env.DYNAMO_MIGRATION_NODES_PATH)\XyzGrid.dyf" />
             </Component>
         </ComponentGroup>
