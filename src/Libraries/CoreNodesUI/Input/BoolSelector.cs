@@ -22,6 +22,11 @@ namespace DSCoreNodesUI
             Value = false;
         }
 
+        public override bool ForceReExecuteOfNode
+        {
+            get { return true; }
+        }
+
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
