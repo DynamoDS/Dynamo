@@ -1,0 +1,1 @@
+def foo(x: int, y: int){ return = x + y;};a = {};o = foo(a, 1);

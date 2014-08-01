@@ -1,0 +1,1 @@
+class A{     a = 1; }def foo( x:A[] ){	b1 = x;	return = b1;}d = foo( A.A() );d1 = d.a;

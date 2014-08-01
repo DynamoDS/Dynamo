@@ -1,0 +1,1 @@
+class A{    a : int = 0;            }def foo ( x1 : A){    x1.a = -1;    return = x1;}a1 = A.A();a1 = foo ( a1);b = a1.a;a1.a = 2;

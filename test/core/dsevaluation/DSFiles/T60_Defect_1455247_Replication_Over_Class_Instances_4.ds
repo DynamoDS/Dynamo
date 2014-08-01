@@ -1,0 +1,1 @@
+class Point{    x : var;    y : var;    z : var;    constructor Create(xx : double, yy: double, zz: double)    {        x = xx;        y = yy;        z = zz;    }}x1 = { { 0.0, 1 } };y1 = { 0, 2.0, 3 };z1 = { 0, 1 };pts = Point.Create(x1, y1, z1);c1 = Count ( pts );

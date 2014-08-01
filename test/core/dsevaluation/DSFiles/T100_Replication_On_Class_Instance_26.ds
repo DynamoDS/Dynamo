@@ -1,0 +1,1 @@
+class A{     a : int = 0;        def foo(x : int)    {       a = x;       return = a ;    }    }class B{     static def test_foo(a: A[], b : int[])    {       return = a.foo(b) ;    }       }ax = { A.A(), A.A() };bx = { 2, 3};res = B.test_foo(ax, bx );bx = 2;

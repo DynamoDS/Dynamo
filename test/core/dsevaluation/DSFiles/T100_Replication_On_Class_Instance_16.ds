@@ -1,0 +1,1 @@
+class C{	def t ( )    {        return = D.D();    }}class D{	def f(a : int)	{		return = a;	} }p = {C.C(), C.C()};x = 0;y = 3;a = p.t().f((x..y)[1..2]); y = 4;

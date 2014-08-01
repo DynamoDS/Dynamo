@@ -1,0 +1,1 @@
+class A{     a : int;        def foo(x : int)    {       a =        {            x => a1;                        }        return = a ;    }}ax = A.A();res = ax.foo(1);

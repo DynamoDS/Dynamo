@@ -1,0 +1,1 @@
+def fun : double(arg: double) { return = 4.0; }a = fun({{1.0}, {2.0}});

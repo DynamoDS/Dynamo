@@ -1,0 +1,1 @@
+def foo2  (x ){return = x + 1;}def foo  (x:double ){return = x + 1;}arr1 = {1,2.0,3,4};sum1 = foo2(arr1);arr2 = {1,2.0,3,4};sum2 = foo(arr1);

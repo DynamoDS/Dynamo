@@ -1,0 +1,1 @@
+class Point_2D{    x : int;    y : int;    constructor ValueCtor(x1 : int, y1 : int)    {    x = x1;    y = y1;    }    def GetValue()    {        return = x * y;    }}list1 = { { 1, 2, 3 }, { 1, 2, 3 }, { 1, 2, 3 } };list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };list3 = Point_2D.ValueCtor(list1, list2);list2_0_0 = list3[0][0].GetValue(); 
