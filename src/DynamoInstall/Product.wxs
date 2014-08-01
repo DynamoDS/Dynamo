@@ -473,9 +473,9 @@
         <File Id="SimpleRaas_2014" 
               Source="$(var.DynamoCore.TargetDir)\Revit_2014\SimpleRaaS.dll" ProcessorArchitecture="x64"/>
       </Component>
-      <Component Id="SimpleRaaS_DynamoCustomization.2014.dll" Win64="yes">
+      <Component Id="SimpleRaaS_DynamoCustomization.2014.xml" Win64="yes">
         <File Id="SimpleRaasCustomization_2014" 
-              Source="$(var.DynamoCore.TargetDir)\Revit_2014\SimpleRaaS_DynamoCustomization.dll" ProcessorArchitecture="x64"/>
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\SimpleRaaS_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
       </Component>
     </ComponentGroup>
     
