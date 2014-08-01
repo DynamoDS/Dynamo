@@ -18892,7 +18892,9 @@ t2 = c[1].x;
         public void DebugWatch668_T62_Condition_Not_Evaluate_ToBool()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
+            string src = @"
+A;
+[Imperative]
 {
     A = 1;
     if (0)       
