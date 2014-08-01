@@ -247,7 +247,6 @@ namespace Dynamo.Nodes
                 // an empty Code Block Node should not be recorded, this method also checks and removes
                 // any unwanted recordings
                 value = CodeBlockUtils.FormatUserText(value);
-                // Remove CodeBlock node if it's empty
                 if (value == "")
                 {
                     if (this.Code == "")
@@ -474,7 +473,7 @@ namespace Dynamo.Nodes
                 return;
 
             IdentifierNode identifierNode = null;
-            foreach (var parsedNode in parsedNodes.Reverse())
+            foreach(var parsedNode in parsedNodes.Reverse())
             {
                 var statement = parsedNode as BinaryExpressionNode;
                 if (null == statement)
@@ -801,7 +800,7 @@ namespace Dynamo.Nodes
             {
                 var identNode = astNode as IdentifierNode;
                 var ident = identNode.Value;
-                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident))
+                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
                     && !tempVariables.Contains(ident)
                     && !identNode.Equals(this.identifier))
                 {

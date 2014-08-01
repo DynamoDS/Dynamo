@@ -24,6 +24,21 @@ namespace DynamoWebServer
             webSocketServer.NewDataReceived += socketServer_NewDataReceived;
         }
 
+        public bool Setup(IRootConfig rootConfig, IServerConfig serverConfig)
+        {
+            return webSocketServer.Setup(rootConfig, serverConfig);
+        }
+
+        public bool Start()
+        {
+            return webSocketServer.Start();
+        }
+
+        public WebSocketSession GetAppSessionByID(string sessionID)
+        {
+            return webSocketServer.GetAppSessionByID(sessionID);
+        }
+
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
             if (NewSessionConnected != null)
@@ -46,21 +61,6 @@ namespace DynamoWebServer
         {
             if (SessionClosed != null)
                 SessionClosed(session, reason);
-        }
-
-        public bool Setup(IRootConfig rootConfig, IServerConfig serverConfig)
-        {
-            return webSocketServer.Setup(rootConfig, serverConfig);
-        }
-
-        public bool Start()
-        {
-            return webSocketServer.Start();
-        }
-
-        public WebSocketSession GetAppSessionByID(string sessionID)
-        {
-            return webSocketServer.GetAppSessionByID(sessionID);
         }
     }
 }

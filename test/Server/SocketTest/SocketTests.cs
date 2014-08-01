@@ -34,17 +34,15 @@ namespace Dynamo.Tests
         [Test]
         public void CanDeserialize()
         {
-            var commandPathes = Directory.GetFiles(Path.Combine(GetTestDirectory(), @"core\commands"));
-            Assert.NotNull(commandPathes);
-            Assert.Greater(commandPathes.Length, 0);
-            foreach (var path in commandPathes)
+            var testDir = Path.Combine(GetTestDirectory(), @"core\commands");
+            var commandPaths = Directory.GetFiles(testDir, "*.txt");
+            Assert.NotNull(commandPaths);
+            Assert.Greater(commandPaths.Length, 0);
+            foreach (var path in commandPaths)
             {
-                if (path.EndsWith(".txt"))
-                {
-                    var text = File.ReadAllText(path);
-                    var message = MessageHandler.DeserializeMessage(text);
-                    Assert.NotNull(message);
-                }
+                var text = File.ReadAllText(path);
+                var message = MessageHandler.DeserializeMessage(text);
+                Assert.NotNull(message);
             }
         }
 

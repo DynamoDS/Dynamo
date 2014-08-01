@@ -165,7 +165,6 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
-        private string serializedLibraryItemsList;
         List<LibraryItem> allLibraryItems;
 
         #endregion
@@ -1133,16 +1132,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public string GetAllNodesWithCategoriesInJson()
-        {
-            if (serializedLibraryItemsList == null)
-            {
-                GetAllLibraryItemsByCategory();
-            }
-            return serializedLibraryItemsList;
-        }
-
-        public List<LibraryItem> GetAllLibraryItemsByCategory()
+        public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory()
         {
             if (allLibraryItems == null)
             {
@@ -1151,14 +1141,12 @@ namespace Dynamo.ViewModels
                 {
                     allLibraryItems.AddRange(GetLibraryItemsByCategory(elem));
                 }
-
-                serializedLibraryItemsList = JsonConvert.SerializeObject(allLibraryItems);
             }
             return allLibraryItems;
         }
 
 
-        private List<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
+        private IEnumerable<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
         {
             var result = new List<LibraryItem>();
             foreach (BrowserItem item in elem.Items)

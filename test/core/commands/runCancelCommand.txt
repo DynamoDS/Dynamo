@@ -1,1 +1,8 @@
-{"$type":"DynamoWebServer.Messages.RecordableCommandsMessage, DynamoWebServer","commands":[{"$type":"Dynamo.ViewModels.DynamoViewModel+RunCancelCommand, DynamoCore"}]}
+{  
+   "$type":"DynamoWebServer.Messages.RecordableCommandsMessage, DynamoWebServer",
+   "commands":[  
+      {  
+         "$type":"Dynamo.ViewModels.DynamoViewModel+RunCancelCommand, DynamoCore"
+      }
+   ]
+}

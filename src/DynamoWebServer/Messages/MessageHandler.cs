@@ -18,6 +18,13 @@ namespace DynamoWebServer.Messages
     public class MessageHandler
     {
         static readonly JsonSerializerSettings JsonSettings;
+
+        public string SessionId { get; private set; }
+        public event ResultReadyEventHandler ResultReady;
+
+        private Message message;
+        private DynamoViewModel dynamoViewModel;
+
         static MessageHandler()
         {
             JsonSettings = new JsonSerializerSettings
@@ -27,35 +34,11 @@ namespace DynamoWebServer.Messages
             };
         }
 
-        private Message message;
-        private DynamoViewModel dynamoViewModel;
-        public string SessionId { get; private set; }
-
         public MessageHandler(Message msg, string sessionId)
         {
             this.message = msg;
             this.SessionId = sessionId;
         }
-
-        #region Class Data Members
-
-        /// <summary>
-        /// Send the results of the execution
-        /// </summary>
-        public event ResultReadyEventHandler ResultReady;
-        
-        protected void OnResultReady(object sender, ResultReadyEventArgs e)
-        {
-            if (ResultReady != null)
-            {
-                e.SessionID = SessionId;
-                ResultReady(sender, e);
-            }
-        }
-
-        #endregion
-
-        #region Public Class Operational Methods
 
         /// <summary>
         /// This method serializes the Message object in the json form. 
@@ -71,7 +54,7 @@ namespace DynamoWebServer.Messages
         /// </summary>
         /// <param name="jsonString">Json string that contains all its arguments.</param>
         /// <returns>Reconstructed Message</returns>
-        public static Message DeserializeMessage(string jsonString)
+        internal static Message DeserializeMessage(string jsonString)
         {
             try
             {
@@ -99,9 +82,19 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Send the results of the execution
+        /// </summary>
+        protected void OnResultReady(object sender, ResultReadyEventArgs e)
+        {
+            if (ResultReady != null)
+            {
+                e.SessionID = SessionId;
+                ResultReady(sender, e);
+            }
+        }
 
-        #region Private Class Operational Methods
+        #region Private Class Helper Methods
 
         private void ExecuteCommands()
         {
@@ -115,13 +108,9 @@ namespace DynamoWebServer.Messages
                 {
                     manager.RenderComplete += ModifiedNodesData;
                 }
-                command.Execute(dynamoViewModel);
+                dynamoViewModel.ExecuteCommand(command);
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void SelectTabByGuid(DynamoViewModel dynamoViewModel, Guid guid)
         {

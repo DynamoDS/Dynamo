@@ -54,7 +54,7 @@ namespace DynamoWebServer
                 {
                     Port = httpBindingport,
                     Ip = httpBindingAddress,
-                    MaxConnectionNumber = 100,
+                    MaxConnectionNumber = 5,
                     ReceiveBufferSize = 256 * 1024
                 }))
                 {

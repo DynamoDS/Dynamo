@@ -1,1 +1,9 @@
-{"$type":"DynamoWebServer.Messages.RecordableCommandsMessage, DynamoWebServer","commands":[{"$type":"Dynamo.ViewModels.DynamoViewModel+DeleteModelCommand, DynamoCore","modelGuid":"b43c1f0e-d88f-bfd7-8dd8-dc5536c18390"}]}
+{  
+   "$type":"DynamoWebServer.Messages.RecordableCommandsMessage, DynamoWebServer",
+   "commands":[  
+      {  
+         "$type":"Dynamo.ViewModels.DynamoViewModel+DeleteModelCommand, DynamoCore",
+         "modelGuid":"b43c1f0e-d88f-bfd7-8dd8-dc5536c18390"
+      }
+   ]
+}
