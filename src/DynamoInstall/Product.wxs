@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Dynamo" Language="1033" Version="0.7.1" Manufacturer="Dynamo" UpgradeCode="f84e2239-049c-43cb-b875-ada28893a9db">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64"/>
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
+
+    <Feature Id="DYNAMO_CORE_FEATURE" Title="Dynamo Core" Level="1">
+      <ComponentGroupRef Id="DYNAMO_CORE" />
+      <ComponentGroupRef Id="DYNAMO_CORE_NODES" />
+      <ComponentGroupRef Id="DYNAMO_LIBG_219"/>
+      <ComponentGroupRef Id="DYNAMO_LIBG_220"/>
+      <ComponentGroupRef Id="DYNAMO_UI_FONTS"/>
+      <ComponentGroupRef Id="DYNAMO_UI_THEMES"/>
+    </Feature>
+    
+    <Feature Id="REVIT_2014_FEATURE" Title="Dynamo for Revit 2014" Level="1">
+      <ComponentGroupRef Id="REVIT_2014" />
+    </Feature>
+    
+    <Feature Id="REVIT_2015_FEATURE" Title="Dynamo for Revit 2015" Level="1">
+      <ComponentGroupRef Id="REVIT_2015" />
+    </Feature>
+
+    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.SolutionDir)..\tools\install\Extra\DynamoInstaller.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+        <Directory Id="ProgramFiles64Folder">
+          <Directory Id="APPLICATIONROOTDIRECTORY" Name="Dynamo 0.7">
+            <Directory Id="NODES_DIRECTORY" Name="nodes"/>
+            <Directory Id="REVIT_2014_DIRECTORY" Name="Revit_2014">
+              <Directory Id="REVIT_2014_NODES_DIRECTORY" Name="nodes"/>
+            </Directory>
+            <Directory Id="REVIT_2015_DIRECTORY" Name="Revit_2015">
+              <Directory Id="REVIT_2015_NODES_DIRECTORY" Name="nodes"/>
+            </Directory>
+            <Directory Id="LIBG_219_DIRECTORY" Name="libg_219"/>
+            <Directory Id="LIBG_220_DIRECTORY" Name="libg_220"/>
+            <Directory Id="UI_DIRECTORY" Name="UI">
+              <Directory Id="UI_FONTS_DIRECTORY" Name="Fonts"/>
+              <Directory Id="UI_THEMES_DIRECTORY" Name="Themes">
+                <Directory Id="UI_THEMES_MODERN_DIRECTORY" Name="Modern"/>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+    </Directory>
+  </Fragment>
+
+  <!--Notes about working with x64-->
+  <!--http://msdn.microsoft.com/en-us/library/gg513929.aspx-->
+  <Fragment>
+    <ComponentGroup Id="DYNAMO_CORE" Directory="APPLICATIONROOTDIRECTORY">
+      <Component Id="DynamoSandbox.exe" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoSandbox.exe" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoTestConsoleRunner.exe" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoTestConsoleRunner.exe" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="CSharpAnalytics.WinForms.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\CSharpAnalytics.WinForms.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSCoreNodes.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSCoreNodes.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSCoreNodes.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSCoreNodes.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSCoreNodes_DynamoCustomization.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSCoreNodes_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSIronPython.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSIronPython.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSIronPython_DynamoCustomization.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSIronPython_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSNodeServices.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSNodeServices.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSOffice.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSOffice.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSOffice_DynamoCustomization.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DSOffice_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoArduino.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoArduino.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoArduino.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoArduino.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoCore.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoCore.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoCrypto.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoCrypto.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoMSOffice.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoMSOffice.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoPython.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoPython.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoPython.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoPython.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoUnits.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoUnits.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoUnits_DynamoCustomization.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoUnits_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoUtilities.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\DynamoUtilities.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="FFITarget.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\FFITarget.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="GraphLayout.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\GraphLayout.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="GraphToDSCompiler.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\GraphToDSCompiler.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Greg.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Greg.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="HelixToolkit.Wpf.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\HelixToolkit.Wpf.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="HelixToolkit.Wpf.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\HelixToolkit.Wpf.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ICSharpCode.AvalonEdit.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ICSharpCode.AvalonEdit.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Ionic.Zip.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Ionic.Zip.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="MIConvexHullPlugin.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\MIConvexHullPlugin.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Microsoft.Office.Interop.Excel.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Microsoft.Office.Interop.Excel.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Microsoft.Practices.Prism.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Microsoft.Practices.Prism.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Microsoft.Scripting.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Microsoft.Scripting.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Microsoft.Vbe.Interop.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Microsoft.Vbe.Interop.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Moq.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Moq.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="NCalc.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\NCalc.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Newtonsoft.Json.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="nunit.framework.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\nunit.framework.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Office.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Office.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoAssociative.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoAssociative.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoCore.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoCore.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoGeometry.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoGeometry.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoGeometry.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoGeometry.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoGeometry_DynamoCustomization.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoGeometry_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoImperative.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoImperative.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoInterface.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoInterface.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoScript.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoScript.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoTest.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoTest.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="ProtoTestFx.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\ProtoTestFx.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RestSharp.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\RestSharp.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SimplexNoise.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\SimplexNoise.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="System.Net.Http.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\System.Net.Http.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="System.Windows.Interactivity.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\System.Windows.Interactivity.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Tessellation.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Tessellation.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Tessellation_DynamoCustomization.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Tessellation_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="VMDataBridge.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\VMDataBridge.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="WorkflowTests.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\WorkflowTests.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Flatten.ds" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Flatten.ds" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="FunctionObject.ds" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\FunctionObject.ds" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Optimize.ds" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Optimize.ds" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="License.rtf" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\License.rtf" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Dynamo.cer" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Dynamo.cer" ProcessorArchitecture="x64"/>
+      </Component>
+    </ComponentGroup>
+    
+    <ComponentGroup Id="DYNAMO_CORE_NODES" Directory="NODES_DIRECTORY">
+      <Component Id="DSCoreNodesUI.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\nodes\DSCoreNodesUI.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DSIronPythonNode.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\nodes\DSIronPythonNode.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoWatch3D.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\nodes\DynamoWatch3D.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="Migrations.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\nodes\Migrations.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SamplesLibraryUI.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\nodes\SamplesLibraryUI.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="UnitsUI.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\nodes\UnitsUI.dll" ProcessorArchitecture="x64"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="DYNAMO_LIBG_219" Directory="LIBG_219_DIRECTORY">
+      <Component Id="boost_chrono_vc100_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\boost_chrono-vc100-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="boost_regex_vc100_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\boost_regex-vc100-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="boost_system_vc100_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\boost_system-vc100-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="boost_thread_vc100_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\boost_thread-vc100-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibG.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\LibG.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibG.Managed.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\LibG.Managed.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibG.ProtoInterface.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\LibG.ProtoInterface.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibGCore.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\LibGCore.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="msvcp100.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\msvcp100.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="msvcr100.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_219\msvcr100.dll" ProcessorArchitecture="x64"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="DYNAMO_LIBG_220" Directory="LIBG_220_DIRECTORY">
+      <Component Id="boost_chrono_vc110_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_220\boost_chrono-vc110-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="boost_regex_vc110_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_220\boost_regex-vc110-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="boost_system_vc110_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_220\boost_system-vc110-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="boost_thread_vc110_mt_1_51.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_220\boost_thread-vc110-mt-1_51.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibG.220.dll" Win64="yes">
+        <File Id="LibG_220" Source="$(var.DynamoCore.TargetDir)\libg_220\LibG.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibG.Managed.220.dll" Win64="yes">
+        <File Id="LibGManaged_220" Source="$(var.DynamoCore.TargetDir)\libg_220\LibG.Managed.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibG.ProtoInterface.220.dll" Win64="yes">
+        <File Id="LibGProtoInterface_220" Source="$(var.DynamoCore.TargetDir)\libg_220\LibG.ProtoInterface.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="LibGCore.220.dll" Win64="yes">
+        <File Id="LibGCore_220" Source="$(var.DynamoCore.TargetDir)\libg_220\LibGCore.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="msvcp110.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_220\msvcp110.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="msvcr110.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\libg_220\msvcr110.dll" ProcessorArchitecture="x64"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="DYNAMO_UI_FONTS" Directory="UI_FONTS_DIRECTORY">
+      
+    </ComponentGroup>
+
+    <ComponentGroup Id="DYNAMO_UI_THEMES" Directory="UI_THEMES_MODERN_DIRECTORY">
+      
+    </ComponentGroup>
+    
+    <ComponentGroup Id="REVIT_2014" Directory="REVIT_2014_DIRECTORY">
+    </ComponentGroup>
+
+    <ComponentGroup Id="REVIT_2015" Directory="REVIT_2015_DIRECTORY">
+    </ComponentGroup>
+    
+  </Fragment>
+</Wix>
