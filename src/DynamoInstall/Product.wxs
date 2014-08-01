@@ -19,21 +19,22 @@
     
     <MediaTemplate />
 
-    <Feature Id="DYNAMO_CORE_FEATURE" Title="Dynamo Core" Level="1">
-      <ComponentGroupRef Id="RELEASE"/>
-      <ComponentGroupRef Id="SAMPLES"/>
-      <ComponentGroupRef Id="DEFINITIONS"/>
-    </Feature>
-
-    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.SolutionDir)..\tools\install\Extra\DynamoInstaller.ico"/>
-    <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
-
     <!--http://wix.tramontana.co.hu/tutorial/getting-started/where-to-install-->
     <Property Id="DYNAMO_INSTALLDIR">
       <RegistrySearch Id='Revit2015Registry' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
     </Property>
     
+    <Feature Id="DYNAMO_CORE_FEATURE" Title="Dynamo Core" Level="1">
+      <ComponentGroupRef Id="RELEASE"/>
+      <ComponentGroupRef Id="SAMPLES"/>
+      <ComponentGroupRef Id="DEFINITIONS"/>
+      <Condition Level="0">DYNAMO_INSTALLDIR=""</Condition>
+    </Feature>
+
+    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.SolutionDir)..\tools\install\Extra\DynamoInstaller.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
+
   </Product>
 
   <Fragment>
