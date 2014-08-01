@@ -47,6 +47,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static int GetUpcastCountTo(ClassNode from, ClassNode to, Core core)
         {
+            int fromID = core.ClassTable.ClassNodes.IndexOf(from);
             int toID = core.ClassTable.ClassNodes.IndexOf(to);
 
             List<int> upcastChain = GetClassUpcastChain(from, core);

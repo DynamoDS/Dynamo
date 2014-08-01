@@ -71,6 +71,10 @@ namespace ProtoAssociative
                             core.builtInsLoaded = true;
 
                             codeBlockNode = p.root;
+
+                            //core.AstNodeList = p.GetParsedASTList(codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode);
+                            List<ProtoCore.AST.Node> astNodes = ProtoCore.Utils.ParserUtils.GetAstNodes(codeBlockNode);
+                            core.AstNodeList = astNodes;
                         }
                         else
                         {

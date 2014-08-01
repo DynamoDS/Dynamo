@@ -940,6 +940,12 @@ namespace ProtoCore
         // This is set to true when the temporary core is used for precompilation of CBN's in GraphUI
         public bool IsParsingCodeBlockNode { get; set; }
 
+        // This is the AST node list of default imported libraries needed for Graph Compiler
+        public ProtoCore.AST.AssociativeAST.CodeBlockNode ImportNodes { get; set; }
+
+        // The root AST node obtained from parsing an expression in a Graph node in GraphUI
+        public List<ProtoCore.AST.Node> AstNodeList { get; set; }
+
         public enum ErrorType
         {
             OK,
@@ -959,6 +965,7 @@ namespace ProtoCore
         }
 
         public Dictionary<ulong, ulong> codeToLocation = new Dictionary<ulong, ulong>();
+        public Dictionary<ulong, ErrorEntry> LocationErrorMap = new Dictionary<ulong, ErrorEntry>();
 
         //STop
         public Stopwatch StopWatch;
@@ -1316,6 +1323,9 @@ namespace ProtoCore
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError);
             }
             
+            if (AstNodeList != null) 
+                AstNodeList.Clear();
+
             ExpressionUID = 0;
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
         }

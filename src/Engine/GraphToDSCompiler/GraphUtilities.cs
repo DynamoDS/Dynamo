@@ -242,6 +242,17 @@ namespace GraphToDSCompiler
 
         }
 
+        public static ProtoCore.AST.AssociativeAST.CodeBlockNode ImportNodes
+        {
+            get
+            {
+                if (core != null)
+                    return core.ImportNodes;
+                else
+                    return null;
+            }
+        }
+
         public static ProtoCore.BuildStatus BuildStatus { get { return core.BuildStatus; } }
 
         public static uint runningUID = Constants.UIDStart;
@@ -294,6 +305,26 @@ namespace GraphToDSCompiler
             rootModulePath = string.Empty;
         }
 
+        /// <summary>
+        /// This function returns the AST form of a variable to be watched
+        /// If input is 'a' then output is binary expression AST 'watch_result_var = a'
+        /// </summary>
+        /// <param name="lhsValueToInspect"></param>
+        /// <returns></returns>
+        public static ProtoCore.AST.AssociativeAST.BinaryExpressionNode GetWatchExpressionAST(string lhsValueToInspect)
+        {
+            if (string.IsNullOrEmpty(lhsValueToInspect))
+            {
+                return null;
+            }
+
+            ProtoCore.AST.AssociativeAST.BinaryExpressionNode bnode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
+                new ProtoCore.AST.AssociativeAST.IdentifierNode(ProtoCore.DSASM.Constants.kWatchResultVar),
+                new ProtoCore.AST.AssociativeAST.IdentifierNode(lhsValueToInspect),
+                ProtoCore.DSASM.Operator.assign);
+
+            return bnode;
+        } 
         
         /// <summary>
         /// This function returns the DS code form of a variable to be watched
@@ -1312,6 +1343,77 @@ namespace GraphToDSCompiler
             }
         }
 
+        private static void GetOutputLines(string code, ProtoCore.Core core, Dictionary<int, string> outputLines)
+        {
+            Validity.Assert(code != null);
+            if (!String.IsNullOrEmpty(code))
+            {
+
+                System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
+                ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
+                ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
+
+                p.Parse();
+
+                foreach (var astNode in core.AstNodeList)
+                {
+                    var binaryExpr = astNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                    while (binaryExpr != null)
+                    {
+                        var lhsVariable = binaryExpr.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
+                        if (lhsVariable != null)
+                        {
+                            outputLines[lhsVariable.line] = lhsVariable.Name;
+                        }
+
+                        // deal with the case of continuous assingment
+                        binaryExpr = binaryExpr.RightNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                    }
+                }
+            }
+        }
+        
+
+        private static void GetOutputLines(string code, ProtoCore.Core core, HashSet<VariableLine> outputLines)
+        {
+            
+            foreach (var astNode in core.AstNodeList)
+            {
+                var binaryExpr = astNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                while (binaryExpr != null)
+                {
+                    var lhsVariable = binaryExpr.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
+                    if (lhsVariable != null)
+                    {
+                        var varlinePair = new VariableLine(lhsVariable.Name, lhsVariable.line);
+                        outputLines.Add(varlinePair);
+                    }
+                    else 
+                    {
+                        var lhs = binaryExpr.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierListNode;
+                        Validity.Assert(lhs != null);
+
+                        // TODO: Get identifier list name by DFS Traversing the node
+                        /*List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
+                        astList.Add(lhs as ProtoCore.AST.AssociativeAST.AssociativeNode);
+                        ProtoCore.SourceGen codegen = new ProtoCore.SourceGen(astList);
+                        codegen.GenerateCode();*/
+
+                        string stmt = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(code, lhs);
+                        int equalIndex = stmt.IndexOf('=');
+                        string identListName = ProtoCore.Utils.ParserUtils.GetLHSatAssignment(stmt, equalIndex)[0]; // codegen.Code;
+                        
+                        string varname = identListName.Split('.')[0];
+                        var varlinePair = new VariableLine(varname, lhs.line);
+                        //var varlinePair = new VariableLine(identListName, lhs.line);
+                        outputLines.Add(varlinePair);
+                    }
+
+                    // deal with the case of continuous assingment
+                    binaryExpr = binaryExpr.RightNode as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                }
+            }            
+        }
         /// <summary>
         /// Temporary implementation for importing external libraries
         /// </summary>
