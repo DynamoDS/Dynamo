@@ -505,8 +505,6 @@ namespace Dynamo.Tests
         [Test]
         public void PerformAllNode()
         {
-            Assert.Inconclusive("Porting : FileWriter");
-            
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
@@ -515,14 +513,12 @@ namespace Dynamo.Tests
             var dummy = model.CurrentWorkspace.FirstNodeFromWorkspace<DSCoreNodesUI.DummyNode>();
             Assert.IsNotNull(dummy);
 
-            Assert.Inconclusive("Test inconclusive due to Deprecated node");
+            const string textAndFileName = @"test.txt";
+            model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
 
-            //const string textAndFileName = @"test.txt";
-            //model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
+            dynSettings.Controller.RunExpression();
 
-            //dynSettings.Controller.RunExpression();
-
-            //File.Delete(textAndFileName);
+            File.Delete(textAndFileName);
 
             //var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
 
