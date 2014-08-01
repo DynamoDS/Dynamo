@@ -10,6 +10,8 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using ProtoCore.AST.AssociativeAST;
 using Autodesk.DesignScript.Runtime;
 
@@ -68,9 +70,10 @@ namespace DSIronPythonNode
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
+
         public PythonNode()
         {
-            _script = "import clr\nclr.AddReference('ProtoGeometry')\n"
+            script = "import clr\nclr.AddReference('ProtoGeometry')\n"
                 + "from Autodesk.DesignScript.Geometry import *\n"
                 + "#The inputs to this node will be stored as a list in the IN variable.\n"
                 + "dataEnteringNode = IN\n\n"
@@ -82,16 +85,17 @@ namespace DSIronPythonNode
             RegisterAllPorts();
         }
 
-        private string _script;
+        private string script;
+        private DynamoViewModel dynamoViewModel;
 
         public string Script
         {
-            get { return _script; }
+            get { return script; }
             set
             {
-                if (_script != value)
+                if (script != value)
                 {
-                    _script = value;
+                    script = value;
                     RaisePropertyChanged("Script");
                 }
             }
@@ -99,6 +103,8 @@ namespace DSIronPythonNode
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
+            this.dynamoViewModel = view.ViewModel.DynamoViewModel;
+
             base.SetupCustomUIElements(view);
 
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
@@ -120,7 +126,7 @@ namespace DSIronPythonNode
 
         private void EditScriptContent()
         {
-            var editWindow = new ScriptEditorWindow();
+            var editWindow = new ScriptEditorWindow(dynamoViewModel);
             editWindow.Initialize(GUID, "ScriptContent", Script);
             bool? acceptChanged = editWindow.ShowDialog();
             if (acceptChanged.HasValue && acceptChanged.Value)
@@ -135,7 +141,7 @@ namespace DSIronPythonNode
             return new[]
             {
                 CreateOutputAST(
-                    AstFactory.BuildStringNode(_script),
+                    AstFactory.BuildStringNode(script),
                     inputAstNodes,
                     new List<Tuple<string, AssociativeNode>>())
             };
@@ -145,7 +151,7 @@ namespace DSIronPythonNode
         {
             if (name == "ScriptContent")
             {
-                _script = value;
+                script = value;
                 return true;
             }
 
@@ -161,7 +167,7 @@ namespace DSIronPythonNode
 
             XmlElement script = xmlDoc.CreateElement("Script");
             //script.InnerText = this.tb.Text;
-            script.InnerText = _script;
+            script.InnerText = this.script;
             nodeElement.AppendChild(script);
         }
 
@@ -174,7 +180,7 @@ namespace DSIronPythonNode
             
             if (scriptNode != null)
             {
-                _script = scriptNode.InnerText;
+                script = scriptNode.InnerText;
             }
         }
 
@@ -194,7 +200,7 @@ namespace DSIronPythonNode
             base.DeserializeCore(element, context);
             var helper = new XmlElementHelper(element);
             var script = helper.ReadString("Script", string.Empty);
-            _script = script;
+            this.script = script;
         }
 
         #endregion
