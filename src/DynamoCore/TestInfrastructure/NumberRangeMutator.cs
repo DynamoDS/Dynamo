@@ -34,15 +34,15 @@ namespace Dynamo.TestInfrastructure
             if (nodes.Count == 0)
                 return 0;
 
-            Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of node "Number" that connect to node "Number Range" on Start
-            Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of node "Number" that connect to node "Number Range" on End
-            Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of node "Number" that connect to node "Number Range" on Step
+            Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of the node "Number" to connect to the node "Number Range" on Start
+            Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of the node "Number" to connect to the node "Number Range" on End
+            Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of the node "Number" to connect to the node "Number Range" on Step
 
             foreach (NodeModel n in nodes)
             {
                 dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
                 {
-                    //make connection
+                    //create commands
                     DynamoViewModel.MakeConnectionCommand connToStart1 =
                         new DynamoViewModel.MakeConnectionCommand(guidNumber1, 0, (PortType)1, (DynamoViewModel.MakeConnectionCommand.Mode)0);
                     DynamoViewModel.MakeConnectionCommand connToStart2 =
@@ -58,7 +58,7 @@ namespace Dynamo.TestInfrastructure
                     DynamoViewModel.MakeConnectionCommand connToStep2 =
                         new DynamoViewModel.MakeConnectionCommand(n.GUID, 2, (PortType)0, (DynamoViewModel.MakeConnectionCommand.Mode)1);
 
-                    //create connections
+                    //execute commands
                     DynamoViewModel.ExecuteCommand(connToStart1); //"Number" with "Number Range" on Start
                     DynamoViewModel.ExecuteCommand(connToStart2); //"Number" with "Number Range" on Start
                     DynamoViewModel.ExecuteCommand(connToAmount1); //"Number" with "Number Range" on End

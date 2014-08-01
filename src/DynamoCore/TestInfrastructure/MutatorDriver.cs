@@ -42,17 +42,24 @@ namespace Dynamo.TestInfrastructure
                 {
                     try
                     {
-                        CodeBlockNodeTest(writer);
                         ConnectorTest(writer);
+                        CopyNodeTest(writer);
+                        DeleteNodeTest(writer);
+
+                        CodeBlockNodeTest(writer);
+
                         IntegerSliderTest(writer);
                         DoubleSliderTest(writer);
+                        
                         DirectoryPathTest(writer);
                         FilePathTest(writer);
+                        
                         NumberInputTest(writer);
                         StringInputTest(writer);
+                        
                         NumberSequenceTest(writer);
                         NumberRangeTest(writer);
-                        DeleteNodeTest(writer);
+                        ListTest(writer);
                     }
                     finally
                     {
@@ -66,6 +73,8 @@ namespace Dynamo.TestInfrastructure
                 }).
                 Start();
         }
+
+        #region Copy/Delete Tests
 
         private void DeleteNodeTest(StreamWriter writer)
         {
@@ -196,9 +205,119 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("CodeBlockNodeTest : " + (passed ? "pass" : "FAIL"));
+                dynSettings.DynamoLogger.Log("DeleteNodeTest : " + (passed ? "pass" : "FAIL"));
             }
         }
+
+        private void CopyNodeTest(StreamWriter writer)
+        {
+            bool passed = false;
+
+            try
+            {
+                List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.ToList();
+                if (nodes.Count == 0)
+                    return;
+
+                Random rand = new Random(1);
+
+                for (int i = 0; i < 1000; i++)
+                {
+                    foreach (NodeModel n in nodes)
+                    {
+                        writer.WriteLine("##### - Beginning run: " + i);
+                        writer.WriteLine("### - Beginning eval");
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel =
+                                new DynamoViewModel.RunCancelCommand(false, false);
+                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        }));
+                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+                        writer.WriteLine("### - Eval complete");
+                        writer.Flush();
+
+                        int nodesCount = nodes.Count;
+
+                        List<AbstractMutator> mutators = new List<AbstractMutator>()
+                        {
+                            new CopyNodeMutator(rand)
+                        };
+                        AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
+                        int numberOfUndosNeeded = mutator.Mutate();
+                        Thread.Sleep(100);
+
+                        writer.WriteLine("### - Beginning undo");
+                        for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                        {
+                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            {
+                                DynamoViewModel.UndoRedoCommand undoCommand =
+                                    new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            }));
+                            Thread.Sleep(100);
+                        }
+                        writer.WriteLine("### - undo complete");
+                        writer.Flush();
+
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel =
+                                new DynamoViewModel.RunCancelCommand(false, false);
+                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        }));
+                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+
+                        writer.WriteLine("### - Beginning test of CopyNode");
+                        if (n.OutPorts.Count > 0)
+                        {
+                            try
+                            {
+                                int curNodesCount = dynamoController.DynamoModel.Nodes.ToList().Count;
+
+                                if (nodesCount != curNodesCount)
+                                {
+                                    writer.WriteLine("!!!!!!!!!!! - test of CopyNode is failed");
+                                    writer.WriteLine(n.GUID);
+
+                                    writer.WriteLine("Was: " + curNodesCount);
+                                    writer.WriteLine("Should have been: " + nodesCount);
+                                    writer.Flush();
+                                    return;
+
+                                    Debug.WriteLine("==========> Failure on run: " + i);
+                                    Debug.WriteLine("Lookup map failed to agree");
+                                    Validity.Assert(false);
+                                }
+
+                            }
+                            catch (Exception)
+                            {
+                                writer.WriteLine("!!!!!!!!!!! - test of CopyNode is failed");
+                                writer.Flush();
+                                return;
+                            }
+                        }
+                        writer.WriteLine("### - test of CopyNode complete");
+                        writer.Flush();
+                    }
+                    passed = true;
+                }
+            }
+            finally
+            {
+                dynSettings.DynamoLogger.Log("CopyNodeTest : " + (passed ? "pass" : "FAIL"));
+            }
+        }
+
+        #endregion
 
         #region CodeBlockNode Test
 
@@ -1323,7 +1442,7 @@ namespace Dynamo.TestInfrastructure
 
         #endregion
 
-        #region Sequence/Range Tests
+        #region Sequence/Range/List Tests
 
         private void NumberSequenceTest(StreamWriter writer)
         {
@@ -1350,17 +1469,16 @@ namespace Dynamo.TestInfrastructure
                     {
                         Random rand = new Random(1);
 
-                        Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of node "Number" that connect to node "Number Sequence" on Start
-                        Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of node "Number" that connect to node "Number Sequence" on Amount
-                        Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of node "Number" that connect to node "Number Sequence" on Step
+                        Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of the node "Number" to connect to the node "Number Sequence" on Start
+                        Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of the node "Number" to connect to the node "Number Sequence" on Amount
+                        Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of the node "Number" to connect to the node "Number Sequence" on Step
 
                         dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
                         {
-                            //coordinates for additional nodes
                             double coordinatesX = 120;
                             double coordinatesY = 180;
 
-                            //make nodes
+                            //create nodes
                             DynamoViewModel.CreateNodeCommand createNodeNumber1 =
                                 new DynamoViewModel.CreateNodeCommand(guidNumber1, "Number", coordinatesX, coordinatesY, false, true);
                             DynamoViewModel.CreateNodeCommand createNodeNumber2 =
@@ -1369,9 +1487,9 @@ namespace Dynamo.TestInfrastructure
                                 new DynamoViewModel.CreateNodeCommand(guidNumber3, "Number", coordinatesX, coordinatesY + 200, false, true);
 
                             //execute commands
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber1); //create node "Number" that connect to node "Number Sequence" on Start
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber2); //create node "Number" that connect to node "Number Sequence" on Amount
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber3); //create node "Number" that connect to node "Number Sequence" on Step                    
+                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber1);
+                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber2);
+                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber3);                  
                         }));
 
                         for (int i = 0; i < 1000; i++)
@@ -1539,28 +1657,27 @@ namespace Dynamo.TestInfrastructure
                     {
                         Random rand = new Random(1);
 
-                        Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of node "Number" that connect to node "Number Range" on Start
-                        Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of node "Number" that connect to node "Number Range" on Amount
-                        Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of node "Number" that connect to node "Number Range" on Step
+                        Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of the node "Number" to connect to the node "Number Range" on Start
+                        Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of the node "Number" to connect to the node "Number Range" on Amount
+                        Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of the node "Number" to connect to the node "Number Range" on Step
 
                         dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
                         {
-                            //coordinates for additional nodes
                             double coordinatesX = 120;
                             double coordinatesY = 180;
 
-                            //make nodes
-                            DynamoViewModel.CreateNodeCommand createNodeNumber1 =
+                            //create nodes
+                            DynamoViewModel.CreateNodeCommand createNodeCmd1 =
                                 new DynamoViewModel.CreateNodeCommand(guidNumber1, "Number", coordinatesX, coordinatesY, false, true);
-                            DynamoViewModel.CreateNodeCommand createNodeNumber2 =
+                            DynamoViewModel.CreateNodeCommand createNodeCmd2 =
                                 new DynamoViewModel.CreateNodeCommand(guidNumber2, "Number", coordinatesX, coordinatesY + 100, false, true);
-                            DynamoViewModel.CreateNodeCommand createNodeNumber3 =
+                            DynamoViewModel.CreateNodeCommand createNodeCmd3 =
                                 new DynamoViewModel.CreateNodeCommand(guidNumber3, "Number", coordinatesX, coordinatesY + 200, false, true);
 
-                            //create commands
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber1); //create node "Number" that connect to node "Number Range" on Start
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber2); //create node "Number" that connect to node "Number Range" on End
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber3); //create node "Number" that connect to node "Number Range" on Step                    
+                            //execute commands
+                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd1);
+                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd2);
+                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd3);                  
                         }));
 
                         for (int i = 0; i < 1000; i++)
@@ -1691,8 +1808,6 @@ namespace Dynamo.TestInfrastructure
                             dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand2);
                             dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand3);
                         }));
-
-                        dynSettings.DynamoLogger.Log("NumberRangeTest : " + (passed ? "pass" : "FAIL"));
                     }
                 }
             }
@@ -1700,6 +1815,175 @@ namespace Dynamo.TestInfrastructure
             finally
             {
                 dynSettings.DynamoLogger.Log("NumberRangeTest : " + (passed ? "pass" : "FAIL"));
+            }
+        }
+
+        private void ListTest(StreamWriter writer)
+        {
+            bool passed = false;
+
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+
+            Type type = assembly.GetType("DSCoreNodesUI.CreateList");
+            List<NodeModel> nodes = new List<NodeModel>();
+            if (type != null)
+                nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+
+            if (nodes.Count == 0)
+                return;
+
+            foreach (NodeModel n in nodes)
+            {
+                try
+                {
+                    Random rand = new Random(1);
+
+                    Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of the node "Number" to coonect to the node "List" on InPorts(0)
+
+                    dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        double coordinatesX = 120;
+                        double coordinatesY = 180;
+
+                        //create auxiliar node
+                        DynamoViewModel.CreateNodeCommand createNodeCmd =
+                            new DynamoViewModel.CreateNodeCommand(guidNumber1, "Number", coordinatesX, coordinatesY, false, true);
+
+                        //execute command
+                        dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd);                    
+                    }));
+
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        writer.WriteLine("##### - Beginning run: " + i);
+                        writer.WriteLine("### - Beginning eval");
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel =
+                                new DynamoViewModel.RunCancelCommand(false, false);
+                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        }));
+                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+                        writer.WriteLine("### - Eval complete");
+                        writer.Flush();
+
+                        Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+                        if (n.OutPorts.Count > 0)
+                        {
+                            List<ConnectorModel> firstNodeConnectors = n.AllConnectors.ToList(); //Get node connectors
+                            foreach (ConnectorModel connector in firstNodeConnectors)
+                            {
+                                Guid guid = connector.Start.Owner.GUID;
+                                Object data = connector.Start.Owner.GetValue(0).Data;
+                                String val = data != null ? data.ToString() : "null";
+                                valueMap.Add(guid, val);
+                                writer.WriteLine(guid + " :: " + val);
+                                writer.Flush();
+                            }
+                        }
+
+                        List<AbstractMutator> mutators = new List<AbstractMutator>()
+                        {
+                            new ListMutator(rand)
+                        };
+                        AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
+                        int numberOfUndosNeeded = mutator.Mutate();
+                        Thread.Sleep(100);
+
+                        writer.WriteLine("### - Beginning undo");
+                        for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                        {
+                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            {
+                                List<NodeModel> listNodes = new List<NodeModel>();
+                                listNodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+
+                                for (int j = 0; j < listNodes.Count; j++)
+                                {
+                                    DynamoViewModel.UndoRedoCommand undoCommand =
+                                        new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                    dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                }
+                            }));
+                            Thread.Sleep(100);
+                        }
+                        writer.WriteLine("### - undo complete");
+                        writer.Flush();
+
+                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel =
+                                new DynamoViewModel.RunCancelCommand(false, false);
+                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        }));
+                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+
+                        writer.WriteLine("### - Beginning test of List");
+                        if (n.OutPorts.Count > 0)
+                        {
+                            try
+                            {
+                                List<ConnectorModel> firstNodeConnectors = n.AllConnectors.ToList();
+                                foreach (ConnectorModel connector in firstNodeConnectors)
+                                {
+                                    String valmap = valueMap[connector.Start.Owner.GUID].ToString();
+                                    Object data = connector.Start.Owner.GetValue(0).Data;
+                                    String nodeVal = data != null ? data.ToString() : "null";
+
+                                    if (valmap != nodeVal)
+                                    {
+                                        writer.WriteLine("!!!!!!!!!!! - test of List is failed");
+                                        writer.WriteLine(n.GUID);
+
+                                        writer.WriteLine("Was: " + nodeVal);
+                                        writer.WriteLine("Should have been: " + valmap);
+                                        writer.Flush();
+                                        return;
+
+                                        Debug.WriteLine("==========> Failure on run: " + i);
+                                        Debug.WriteLine("Lookup map failed to agree");
+                                        Validity.Assert(false);
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine("### - test of List is passed");
+                                        writer.Flush();
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                writer.WriteLine("!!!!!!!!!!! - test of List is failed");
+                                writer.Flush();
+                                return;
+                            }
+                        }
+                        writer.WriteLine("### - test of List complete");
+                        writer.Flush();
+                    }
+                    passed = true;
+                }
+                finally
+                {
+                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.DeleteModelCommand delNumberCmd =
+                            new DynamoViewModel.DeleteModelCommand(Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"));
+
+                        dynamoController.DynamoViewModel.ExecuteCommand(delNumberCmd);
+                    }));
+
+                    dynSettings.DynamoLogger.Log("ListTest : " + (passed ? "pass" : "FAIL"));
+                }
             }
         }
 
