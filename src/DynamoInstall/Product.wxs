@@ -27,6 +27,7 @@
 
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.SolutionDir)..\tools\install\Extra\DynamoInstaller.ico"/>
     <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
+  
   </Product>
 
   <Fragment>
@@ -56,6 +57,7 @@
   <!--Notes about working with x64-->
   <!--http://msdn.microsoft.com/en-us/library/gg513929.aspx-->
   <Fragment>
+    
     <ComponentGroup Id="DYNAMO_CORE" Directory="APPLICATIONROOTDIRECTORY">
       <Component Id="DynamoSandbox.exe" Win64="yes">
         <File Source="$(var.DynamoCore.TargetDir)\DynamoSandbox.exe" ProcessorArchitecture="x64"/>
@@ -396,15 +398,141 @@
     </ComponentGroup>
     
     <ComponentGroup Id="REVIT_2014" Directory="REVIT_2014_DIRECTORY">
+      <Component Id="DynamoRaaSHelper.2014.dll" Win64="yes">
+        <File Id="DynamoRaasHelper_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\DynamoRaaSHelper.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRevitDS.2014.dll" Win64="yes">
+        <File Id="DynamoRevitDS_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\DynamoRevitDS.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRevitDS.2014.xml" Win64="yes">
+        <File Id="DynamoRevitDSxml_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\DynamoRevitDS.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRevitVersionSelector.2014.dll" Win64="yes">
+        <File Id="DynamoRevitVersionSelector_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\DynamoRevitVersionSelector.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="GregRevitAuth.2014.dll" Win64="yes">
+        <File Id="GregRevitAuth_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\GregRevitAuth.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="JobMonitor.2014.dll" Win64="yes">
+        <File Id="JobMonitor_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\JobMonitor.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitNodes.2014.dll" Win64="yes">
+        <File Id="RevitNodes_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\RevitNodes.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitNodes.2014.xml" Win64="yes">
+        <File Id="RevitNodesxml_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\RevitNodes.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitNodes_DynamoCustomization.2014.2014.xml" Win64="yes">
+        <File Id="RevitNodesCustomization_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\RevitNodes_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitRaaS.2014.dll" Win64="yes">
+        <File Id="RevitRaas_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\RevitRaaS.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitRaaS.dll.2014.config" Win64="yes">
+        <File Id="RevitRaasconfig_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\RevitRaaS.dll.config" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitServices.2014.dll" Win64="yes">
+        <File Id="RevitServices_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\RevitServices.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitTestFrameworkTypes.2014.dll" Win64="yes">
+        <File Id="RevitTestFrameworkTypes_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\RevitTestFrameworkTypes.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SDF.2014.dll" Win64="yes">
+        <File Id="SDF_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\SDF.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SimpleRaaS.2014.dll" Win64="yes">
+        <File Id="SimpleRaas_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\SimpleRaaS.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SimpleRaaS_DynamoCustomization.2014.dll" Win64="yes">
+        <File Id="SimpleRaasCustomization_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\SimpleRaaS_DynamoCustomization.dll" ProcessorArchitecture="x64"/>
+      </Component>
     </ComponentGroup>
     
     <ComponentGroup Id="REVIT_2014_NODES" Directory="REVIT_2014_NODES_DIRECTORY">
+      <Component Id="DSRevitNodesUI.2014.dll" Win64="yes">
+        <File Id="DSRevitNodesUI_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\nodes\DSRevitNodesUI.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRaaS.2014.dll" Win64="yes">
+        <File Id="DynamoRaas_2014" 
+              Source="$(var.DynamoCore.TargetDir)\Revit_2014\nodes\DynamoRaaS.dll" ProcessorArchitecture="x64"/>
+      </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="REVIT_2015" Directory="REVIT_2015_DIRECTORY">
+      <Component Id="DynamoRaaSHelper.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\DynamoRaaSHelper.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRevitDS.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\DynamoRevitDS.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRevitDS.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\DynamoRevitDS.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRevitVersionSelector.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\DynamoRevitVersionSelector.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="GregRevitAuth.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\GregRevitAuth.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="JobMonitor.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\JobMonitor.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitNodes.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\RevitNodes.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitNodes.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\RevitNodes.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitNodes_DynamoCustomization.xml" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\RevitNodes_DynamoCustomization.xml" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitRaaS.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\RevitRaaS.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitRaaS.dll.config" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\RevitRaaS.dll.config" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitServices.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\RevitServices.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="RevitTestFrameworkTypes.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\RevitTestFrameworkTypes.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SDF.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\SDF.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SimpleRaaS.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\SimpleRaaS.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="SimpleRaaS_DynamoCustomization.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\SimpleRaaS_DynamoCustomization.dll" ProcessorArchitecture="x64"/>
+      </Component>
     </ComponentGroup>
     
     <ComponentGroup Id="REVIT_2015_NODES" Directory="REVIT_2015_NODES_DIRECTORY">
+      <Component Id="DSRevitNodesUI.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\nodes\DSRevitNodesUI.dll" ProcessorArchitecture="x64"/>
+      </Component>
+      <Component Id="DynamoRaaS.dll" Win64="yes">
+        <File Source="$(var.DynamoCore.TargetDir)\Revit_2015\nodes\DynamoRaaS.dll" ProcessorArchitecture="x64"/>
+      </Component>
     </ComponentGroup>
     
   </Fragment>
