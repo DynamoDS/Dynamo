@@ -18,14 +18,14 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsLiteral = false;
 
         // The immediate scope of this AST is within a function 
-        public bool ProcedureOwned = false;
+        public bool IsProcedureOwned = false;
 
         protected AssociativeNode() { }
 
         protected AssociativeNode(AssociativeNode rhs) : base(rhs)
         {
             IsModifier = rhs.IsModifier;
-            ProcedureOwned = rhs.ProcedureOwned;
+            IsProcedureOwned = rhs.IsProcedureOwned;
         }
     }
 
