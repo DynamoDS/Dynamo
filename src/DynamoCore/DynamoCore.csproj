@@ -53,6 +53,7 @@ limitations under the License.
     <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoCore.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -225,8 +226,8 @@ limitations under the License.
     <Compile Include="UI\Views\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\TooltipWindow.xaml.cs">
-      <DependentUpon>TooltipWindow.xaml</DependentUpon>
+    <Compile Include="UI\Views\ToolTipWindow.xaml.cs">
+      <DependentUpon>ToolTipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
@@ -610,7 +611,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\TooltipWindow.xaml">
+    <Page Include="UI\Views\ToolTipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -792,6 +793,10 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

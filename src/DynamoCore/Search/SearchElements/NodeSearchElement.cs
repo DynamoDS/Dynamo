@@ -108,10 +108,7 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
-            if (inputParametrs!=null)
             this._inputParametrs = inputParametrs;
-            Tuple<string,string> t = Tuple.Create<string, string>("a","b");
-            
             this._outputParametrs = outputParametrs;
         }
 
