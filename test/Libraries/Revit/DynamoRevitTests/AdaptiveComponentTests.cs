@@ -24,10 +24,13 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+
+            // TODO:(Ritesh)Need to add more verification. 
+            // Tracking ID http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3983
         }
 
         [Test]

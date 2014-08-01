@@ -1730,6 +1730,7 @@ d1 = Average(d);";
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         [Category("Design Issue")]
         public void T058_Average_DataType_02()
         {
@@ -2981,6 +2982,7 @@ d = { };
         }
 
         [Test]
+        [Category("ProtoGeometry")]
         public void BIM53_RemoveDuplicates_geoemtry_1467447()
         {//1467446
             String code =
@@ -3852,9 +3854,9 @@ t4 = Math.Pow( -2..2, -2..2 ) ;
             thisTest.Verify("a1", 4.0);
             thisTest.Verify("b1", 0.25);
             thisTest.Verify("c1", 0.160);
-            //thisTest.Verify("d1", Double.NaN);
+            TestFrameWork.AssertNan("d1");
             thisTest.Verify("t1", 1.0);
-            //thisTest.Verify("t2", Double.PositiveInfinity);
+            TestFrameWork.AssertInfinity("t2");
             thisTest.Verify("t4", new Object[] { 0.25, -1.0, 1.0, 1.0, 4.0 });
         }
 
