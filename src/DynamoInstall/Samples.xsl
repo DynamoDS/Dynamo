@@ -15,9 +15,9 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="wix:Directory/@Name['migration_nodes']">
+    <xsl:template match="wix:Directory/@Name['Samples']">
         <xsl:attribute name="Name">
-            <xsl:value-of select="'definitions'"/>
+            <xsl:value-of select="'samples'"/>
         </xsl:attribute>
     </xsl:template>
 
