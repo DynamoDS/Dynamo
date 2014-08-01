@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
+using System.Windows;
+using System.Globalization;
+
+
+namespace TextAsGeometry
+{
+    public class StringToGeometry
+    {
+        private Autodesk.DesignScript.Geometry.Line LineSegmentsToProtoLine (LineSegment lineseg1, LineSegment lineseg2){
+
+        var startwp = lineseg1.Point;
+        var endwp = lineseg2.Point;
+
+            var start = Autodesk.DesignScript.Geometry.Point.ByCoordinates(startwp.X,startwp.Y,0);
+
+            var end = Autodesk.DesignScript.Geometry.Point.ByCoordinates(endwp.X,endwp.Y,0);
+
+            return Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(start, end);
+
+    }
+
+        private System.Windows.Media.Geometry TextGeoFromString(string inputstring)
+        {
+
+            System.Windows.FontStyle fontStyle = FontStyles.Normal;
+            FontWeight fontWeight = FontWeights.Medium;
+
+            // Create the formatted text based on the properties set.
+            FormattedText formattedText = new FormattedText(
+                inputstring,
+                CultureInfo.GetCultureInfo("en-us"),
+                FlowDirection.LeftToRight,
+                new Typeface("Verdana"),
+                11,
+                System.Windows.Media.Brushes.Black);
+
+            // Build the geometry object that represents the text.
+
+            return formattedText.BuildGeometry(new System.Windows.Point(0, 0));
+        }
+
+
+
+        private List<List<Autodesk.DesignScript.Geometry.Line>> TextGeoToProtoGeo(System.Windows.Media.Geometry textGeometry)
+        {
+            // flatten the geometry
+            var flatten = textGeometry.GetFlattenedPathGeometry();
+            // get the figure collection from the flattened geometry
+            PathFigureCollection pfc = flatten.Figures;
+            //iterate all path figures
+
+            // convert all the linesegments into protolines nested foreach figure
+
+           var  lineCollector = new List<List<LineSegment>>();
+
+            lineCollector = pfc.Select(pf => pf.Segments.OfType<LineSegment>().ToList()).ToList();
+
+            var zipped = lineCollector.Select(x=>x.Zip(x.Skip(1), LineSegmentsToProtoLine).ToList()).ToList();
+
+
+            return zipped;
+
+
+
+        }
+    }
+}
