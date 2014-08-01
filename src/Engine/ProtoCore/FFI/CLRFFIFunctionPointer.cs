@@ -254,8 +254,10 @@ namespace ProtoFFI
 
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
+            int nParamCount = mArgTypes.Length;
             int paramCount = mArgTypes.Length;
             int envSize = IsDNI ? 2 : 0;
+            int totalParamCount = paramCount + envSize;
 
             List<Object> parameters = new List<object>();
             List<StackValue> s = dsi.runtime.rmem.Stack;

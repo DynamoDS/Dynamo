@@ -348,6 +348,20 @@ public Node root { get; set; }
         return isPostFixedRepGuide;
     }
 
+
+    private bool IsPostfixedNumber(string number)
+    {
+        if (number.Length > 1)
+        {
+            char lastChar = number[number.Length-1];
+            if (lastChar == ProtoCore.DSASM.Constants.kLongestPostfix)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private bool IsNumber()
     {
         Token pt = la;
@@ -795,6 +809,7 @@ public Node root { get; set; }
 		if (rootImport && core.IsParsingPreloadedAssembly)
 		{
 		ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock, builtinMethodsLoaded);
+		core.ImportNodes = codeblock;
 		}
 		
 		while (StartOf(1)) {
@@ -2178,13 +2193,17 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			   }
 			   else
 			   {
+			       string rhsName = null;
 			       ProtoCore.AST.AssociativeAST.ExprListNode dimList = null;
+			       int dim = 0;
 			       if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
 			       {
+			           rhsName = rnode.Name;
 			           ProtoCore.AST.AssociativeAST.IdentifierNode rhsINode = rnode as ProtoCore.AST.AssociativeAST.IdentifierNode;
 			           if (rhsINode.ArrayDimensions != null)
 			           {
 			               dimList = ProtoCore.Utils.CoreUtils.BuildArrayExprList(rhsINode.ArrayDimensions);
+			               dim = dimList.list.Count;
 			           }
 			           else
 			           {

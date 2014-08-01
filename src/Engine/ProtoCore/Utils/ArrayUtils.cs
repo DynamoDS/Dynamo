@@ -1228,6 +1228,7 @@ namespace ProtoCore.Utils
 
                 if (index >= 0 && index < he.VisibleSize)
                 {
+                    StackValue oldValue = he.Stack[index];
                     he.Stack[index] = StackValue.Null;
 
                     if (index == he.VisibleSize - 1)
