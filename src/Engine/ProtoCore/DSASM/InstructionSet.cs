@@ -72,7 +72,6 @@ namespace ProtoCore.DSASM
         CALL,
         CALLR,
         RETURN,
-        END,
         JMP,
         CJMP,
         JMP_EQ,

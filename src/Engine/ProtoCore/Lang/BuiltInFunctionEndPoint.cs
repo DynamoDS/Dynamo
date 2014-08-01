@@ -608,7 +608,6 @@ namespace ProtoCore.Lang
 
             // If the function still isn't found, then it may be a function 
             // pointer. 
-            string dynamicFunctionName = string.Empty;
             if (procNode == null)
             {
                 int memvarIndex = classNode.GetFirstVisibleSymbolNoAccessCheck(dynamicFunction.Name);
@@ -744,10 +743,6 @@ namespace ProtoCore.Lang
         internal static int GetElapsedTime(ProtoCore.DSASM.Interpreter runtime)
         {
             TimeSpan ts = runtime.runtime.Core.GetCurrentTime();
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-            ts.Hours, ts.Minutes, ts.Seconds,
-            ts.Milliseconds / 10);
-            //Console.WriteLine(elapsedTime);
             int ms = ts.Milliseconds;
             return ms;
         }
@@ -836,7 +831,6 @@ namespace ProtoCore.Lang
                 return DSASM.StackValue.Null;
             }
             // Open the file to read from.
-            List<String> rowsCollection = new List<String>();
             List<Object[]> CSVdatalist = new List<Object[]>();
             int colNum = 0;
             var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -1392,7 +1386,6 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                ProtoCore.Core core = runtime.runtime.Core;
                 runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArguments);
                 return false;
             }
@@ -1662,14 +1655,12 @@ namespace ProtoCore.Lang
             StackValue[] svArray = runtime.runtime.rmem.GetArrayElements(sv);
 
             List<StackValue> svList = new List<StackValue>();
-            int index = 0;
             foreach (StackValue op in svArray)
             {
                 if (!op.IsArray)
                 {
                     if (!op.IsNull)
                     {
-                        index++;
                         svList.Add(op);
                     }
                 }
@@ -1698,7 +1689,6 @@ namespace ProtoCore.Lang
             }
             string typeString = FileIOBuiltIns.ConvertToString(sv2, runtime);
             List<StackValue> svList = new List<StackValue>();
-            int index = 0;
             StackValue[] svArray = runtime.runtime.rmem.GetArrayElements(sv1);
 
             if (typeString == "array")
@@ -1708,7 +1698,6 @@ namespace ProtoCore.Lang
             {
                 if (op.metaData.type == type)
                 {
-                    index++;
                     svList.Add(op);
                 }
             }

@@ -120,7 +120,6 @@ namespace ProtoFFI
         internal ImportNode Compile(ImportModuleHandler importer)
         {
             ImportNode impNode = null;
-            ProtoCore.AST.AssociativeAST.CodeBlockNode code = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
             foreach (var item in mData)
             {
                 SortedSet<Type> types = GetTypesForImport(item.Value.Data);

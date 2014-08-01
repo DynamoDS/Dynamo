@@ -136,46 +136,6 @@ namespace ProtoFFI
             return true;
         }
 
-        private ProtoCore.AST.AssociativeAST.CodeBlockNode MergeCodeBlockNode(ref ProtoCore.AST.AssociativeAST.ImportNode importedNode, 
-            ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode)
-        {
-            if(codeBlockNode == null || codeBlockNode.Body == null || importedNode == null)
-                return codeBlockNode;
-
-            ProtoCore.AST.AssociativeAST.CodeBlockNode importedCodeBlock = importedNode.CodeNode;
-            if (importedCodeBlock == null)
-            {
-                importedNode.CodeNode = codeBlockNode;
-                return codeBlockNode;
-            }
-
-            foreach (var item in codeBlockNode.Body)
-            {
-                ProtoCore.AST.AssociativeAST.ClassDeclNode classNode = item as ProtoCore.AST.AssociativeAST.ClassDeclNode;
-                if (classNode != null)
-                {
-                    ProtoCore.AST.AssociativeAST.ClassDeclNode importedClass = null;
-                    if (TryGetClassNode(importedCodeBlock, classNode.className, out importedClass))
-                    {
-                        bool dummyClassNode = IsEmptyClassNode(classNode);
-                        bool dummyImportClass = IsEmptyClassNode(importedClass);
-
-                        Validity.Assert(dummyImportClass || dummyClassNode, string.Format("{0} is imported more than once!!", classNode.className));
-                        if (dummyImportClass && !dummyClassNode)
-                        {
-                            importedNode.CodeNode.Body.Remove(importedClass);
-                            importedNode.CodeNode.Body.Add(classNode);
-                        }
-                    }
-                    else
-                        importedNode.CodeNode.Body.Add(classNode);
-                }
-                else
-                    importedNode.CodeNode.Body.Add(item); //TODO other conflict resolution needs to be done here.
-            }
-            return importedNode.CodeNode;
-        }
-
         private static bool IsEmptyClassNode(ProtoCore.AST.AssociativeAST.ClassDeclNode classNode)
         {
             if (null == classNode)

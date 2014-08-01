@@ -154,16 +154,6 @@ namespace ProtoCore
             ssaPointerList = new List<AST.AssociativeAST.AssociativeNode>();
         }
 
-
-        private ProcedureNode GetProcedureNode(int classIndex, int functionIndex)
-        {
-            if (Constants.kGlobalScope != classIndex)
-            {
-                return core.ClassTable.ClassNodes[classIndex].vtable.procList[functionIndex];
-            }
-            return codeBlock.procedureTable.procList[functionIndex];
-        }
-
         /// <summary>
         /// Append the graphnode to the instruction stream and procedure nodes
         /// </summary>
@@ -297,18 +287,8 @@ namespace ProtoCore
                 return;
             }
 
-            bool isLanguageBlock = CodeBlockType.kLanguage == codeBlock.blockType;
             int langblockOffset = 0;
             bool isGlobal = null == localProcedure;
-
-            /*
-            // Remove this check once the global stackframe push is implemented
-            if (isLanguageBlock && 0 != codeBlock.codeBlockId && !isGlobal)
-            {
-                langblockOffset = ProtoCore.DSASM.StackFrame.kStackFrameSize;
-            }
-            
-             * */
 
             if (ProtoCore.DSASM.Constants.kGlobalScope != globalClassIndex)
             {
@@ -628,7 +608,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -759,7 +738,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -815,8 +793,6 @@ namespace ProtoCore
         {
             Guid guid = graphNode == null ? default(Guid) : graphNode.guid;
 
-            bool isRefFromIdentifier = false;
-
             dynamic node = pNode;
             if (node is ProtoCore.AST.ImperativeAST.IdentifierListNode || node is ProtoCore.AST.AssociativeAST.IdentifierListNode)
             {
@@ -827,8 +803,6 @@ namespace ProtoCore
                     buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                     throw new BuildHaltException(message);
                 }
-
-                isRefFromIdentifier = DfsEmitIdentList(bnode.LeftNode, bnode, contextClassScope, ref lefttype, ref depth, ref finalType, isLeftidentList, ref isFirstIdent, ref isMethodCallPresent, ref firstSymbol, graphNode, subPass);
 
                 if (lefttype.rank > 0)
                 {
@@ -2687,8 +2661,6 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
-	        AssociativeGraph.GraphNode dependent = new AssociativeGraph.GraphNode();
-
             // Push all dependent pointers
             ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerList);
 

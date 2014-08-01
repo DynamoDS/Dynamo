@@ -110,14 +110,6 @@ namespace ProtoCore
                 }
             }
 
-            private void PushFrame(List<StackValue> stackData)
-            {
-                if (null != stackData && stackData.Count > 0)
-                {
-                    Stack.AddRange(stackData);
-                }
-            }
-
             public void PushStackFrame(int ptr, int classIndex, int funcIndex, int pc, int functionBlockDecl, int functionBlockCaller, StackFrameType callerType, StackFrameType type, int depth, int fp, List<StackValue> registers, int locsize, int executionStates)
             {
                 // TODO Jun: Performance

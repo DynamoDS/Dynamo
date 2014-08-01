@@ -792,7 +792,6 @@ namespace ProtoCore.DSASM.Mirror
                     throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
                 }
 
-                RuntimeMemory rmem = MirrorTarget.rmem;
                 Obj retVal = Unpack(MirrorTarget.rmem.GetStackData(block, index, classcope), MirrorTarget.rmem.Heap, core);
 
                 return retVal;
@@ -807,37 +806,6 @@ namespace ProtoCore.DSASM.Mirror
         public void UpdateValue(int line, int index, double value)
         {
         }
-
-        [Obsolete]
-        private bool __Set_Value(string varName, int? value)
-        {
-            int blockId = 0;
-            AssociativeGraph.GraphNode graphNode = MirrorTarget.GetFirstGraphNode(varName, out blockId);
-
-            // There was no variable to set
-            if (null == graphNode)
-            {
-                return false;
-            }
-
-            int index = graphNode.updateNodeRefList[0].nodeList[0].symbol.index;
-            graphNode.isDirty = true;
-            int startpc = graphNode.updateBlock.startpc;
-            MirrorTarget.Modify_istream_entrypoint_FromSetValue(blockId, startpc);
-
-            StackValue sv;
-            if (null == value)
-            {
-                sv = StackValue.Null;
-            }
-            else
-            {
-                sv = StackValue.BuildInt((long)value);
-            }
-            MirrorTarget.Modify_istream_instrList_FromSetValue(blockId, startpc, sv);
-            return true;
-        }
-
 
         //
         //  1.	Get the graphnode given the varname
@@ -1042,8 +1010,6 @@ namespace ProtoCore.DSASM.Mirror
                         throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5202}");
                     }
 
-                    RuntimeMemory rmem = MirrorTarget.rmem;
-
                     SymbolNode symNode = exe.runtimeSymbols[block].symbolList[index];
                     if (symNode.absoluteFunctionIndex == Constants.kGlobalScope)
                     {
@@ -1068,8 +1034,6 @@ namespace ProtoCore.DSASM.Mirror
                     {
                         throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
                     }
-
-                    RuntimeMemory rmem = MirrorTarget.rmem;
 
                     return MirrorTarget.rmem.GetStackData(block, index, classcope);
                 }
@@ -1111,8 +1075,6 @@ namespace ProtoCore.DSASM.Mirror
 
         public Obj GetFirstValue(string name, int startBlock = 0, int classcope = Constants.kGlobalScope)
         {
-            ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;
-
             Obj retVal = Unpack(GetRawFirstValue(name, startBlock, classcope), MirrorTarget.rmem.Heap, core);
             return retVal;
         }
@@ -1186,7 +1148,6 @@ namespace ProtoCore.DSASM.Mirror
 
                 case AddressType.Null:
                     {
-                        Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
                             Payload = null, 
