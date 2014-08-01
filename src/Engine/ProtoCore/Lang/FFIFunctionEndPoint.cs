@@ -36,8 +36,6 @@ namespace ProtoCore.Lang
         }
 
         private bool Validate(FFIFunctionPointer p){ return true; /*todo implement arg type checking*/}
-        private bool ValidateReturn(Object p){ return true; /*TODO implement returyn type checking*/}
-
 
         public override bool DoesPredicateMatch(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, List<ReplicationInstruction> replicationInstructions)
         {
@@ -125,8 +123,6 @@ namespace ProtoCore.Lang
                 {
                     return ProtoCore.DSASM.StackValue.Null;
                 }
-
-                List<object> ps = new List<object>(); //obsolete
 
                 {
 

@@ -333,8 +333,6 @@ namespace ProtoCore.DSASM
 
             executingLanguage = exe.instrStreamList[exeblock].language;
 
-
-            string engine = ProtoCore.Utils.CoreUtils.GetLanguageString(language);
             if (Language.kAssociative == executingLanguage)
             {
                 if (fepRun)
@@ -760,13 +758,11 @@ namespace ProtoCore.DSASM
 
             int currentClassIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
             int currentFunctionIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-            bool isGlobalScope = Constants.kGlobalScope == currentClassIndex && Constants.kGlobalScope == currentFunctionIndex;
             if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
                 if (Constants.kGlobalScope != currentFunctionIndex)
                 {
                     int currentFunctionDeclBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock).opdata;
-                    ProcedureNode currentProcCall = GetProcedureNode(currentFunctionDeclBlock, currentClassIndex, currentFunctionIndex);
                 }
             }
 
@@ -2268,7 +2264,6 @@ namespace ProtoCore.DSASM
         {
             int setentry = entry;
             bool isFirstGraphSet = false;
-            ProtoCore.AssociativeGraph.GraphNode entryNode = null;
             foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
             {
                 graphNode.isDirty = true;
@@ -2277,7 +2272,6 @@ namespace ProtoCore.DSASM
                     // Setting the first graph of this function to be in executed (not dirty) state
                     isFirstGraphSet = true;
                     graphNode.isDirty = false;
-                    entryNode = graphNode;
                 }
 
                 if (DSASM.Constants.kInvalidIndex == setentry)
@@ -2285,7 +2279,6 @@ namespace ProtoCore.DSASM
                     // Set the entry point as this graph and mark this graph as executed 
                     setentry = graphNode.updateBlock.startpc;
                     graphNode.isDirty = false;
-                    entryNode = graphNode;
                 }
             }
             pc = setentry;
@@ -2957,8 +2950,6 @@ namespace ProtoCore.DSASM
 
             // Restore the previous state
             rmem = core.Rmem;
-            bool _isNewFunction = rmem.FramePointer == 0;
-
 
             if (core.DebugProps.isResume)   // resume from a breakpoint, 
             {
@@ -4619,17 +4610,14 @@ namespace ProtoCore.DSASM
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
         {
-            ProcedureNode pn = null;
             SymbolTable st = null;
             List<StackValue> ptrList = new List<StackValue>();
             if (DSASM.Constants.kInvalidIndex == classIndex)
             {
-                pn = exe.procedureTable[blockId].procList[functionIndex];
                 st = core.CompleteCodeBlockList[blockId].symbolTable;
             }
             else
             {
-                pn = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex];
                 st = exe.classTable.ClassNodes[classIndex].symbols;
             }
 
@@ -4786,10 +4774,6 @@ namespace ProtoCore.DSASM
 
         }
 
-        private void END_Handler(Instruction instruction)
-        {
-
-        }
         private void ALLOC_Handler(Instruction instruction)
         {
             throw new NotImplementedException();
@@ -4848,7 +4832,6 @@ namespace ProtoCore.DSASM
 
             int blockId = DSASM.Constants.kInvalidIndex;
             StackValue op1 = instruction.op1;
-            StackValue op2 = instruction.op2;
 
             if (op1.IsVariableIndex ||
                 op1.IsMemberVariableIndex ||
@@ -5258,10 +5241,7 @@ namespace ProtoCore.DSASM
             int depth = (int)instruction.op1.opdata;
 
             runtimeVerify(instruction.op2.IsClassIndex);
-            int scope = (int)instruction.op2.opdata;
-
             runtimeVerify(instruction.op3.IsBlockIndex);
-            int blockId = (int)instruction.op3.opdata;
 
             StackValue sv = GetFinalPointer(depth, isDotFunctionBody);
             rmem.Push(sv);
@@ -5285,7 +5265,6 @@ namespace ProtoCore.DSASM
             SymbolNode snode = GetSymbolNode(blockId, classIndex, symbolIndex);
             runtimeVerify(null != snode);
 
-            int stackindex = rmem.GetStackIndex(snode);
             StackValue array = rmem.GetAtRelative(snode);
 
             if (!array.IsArray && snode.datatype.IsIndexable)
@@ -5371,7 +5350,6 @@ namespace ProtoCore.DSASM
                     //    %tvar = obj;
                     //    %tSSA = %tvar;
                     blockId = core.RunningBlock;
-                    string symbol = core.DSExecutable.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata].name;
 
                     //if (!CoreUtils.IsSSATemp(symbol))
                     {
@@ -5447,9 +5425,6 @@ namespace ProtoCore.DSASM
                     dimList.AddRange(Properties.executingGraphNode.updateDimensions);
                 }
 
-
-                // Comment Jun: Store the indices into the symbol into the map                
-                SymbolNode symbol = core.DSExecutable.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata];
 
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
                 ProtoCore.AssociativeEngine.ArrayUpdate.UpdateSymbolArrayIndex(symbol.name, indexIntoList, symbolArrayIndexMap);
@@ -5989,7 +5964,6 @@ namespace ProtoCore.DSASM
         }
         private void MOV_Handler(Instruction instruction)
         {
-            int dimensions = 0;
             int blockId = DSASM.Constants.kInvalidIndex;
             if (instruction.op2.IsVariableIndex ||
                 instruction.op2.IsMemberVariableIndex ||
@@ -5998,7 +5972,6 @@ namespace ProtoCore.DSASM
             {
                 StackValue svDim = rmem.Pop();
                 runtimeVerify(svDim.IsArrayDimension);
-                dimensions = (int)svDim.opdata;
 
                 StackValue svBlock = rmem.Pop();
                 runtimeVerify(svBlock.IsBlockIndex);
@@ -6556,11 +6529,7 @@ namespace ProtoCore.DSASM
             core.DebugProps.CurrentBlockId = blockId;
 
             runtimeVerify(instruction.op2.IsInteger);
-            int entrypoint = (int)instruction.op2.opdata;
-
-            ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
             // TODO(Jun/Jiong): Considering store the orig block id to stack frame
-            int origRunningBlock = core.RunningBlock;
             core.RunningBlock = blockId;
 
             core.Rmem = rmem;
@@ -7013,10 +6982,6 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            // Now that the stack frame is popped off, we can retrieve the returned scope
-            int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-            int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-
             // This resotring execution states is only permitted if the current scope is still in a function
             //if (currentScopeFunction != Constants.kGlobalScope)
             {
@@ -7194,7 +7159,6 @@ namespace ProtoCore.DSASM
 
             runtimeVerify(rmem.ValidateStackFrame());
 
-            int ptr = (int)rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr).opdata;
             int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
             int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
@@ -7318,103 +7282,6 @@ namespace ProtoCore.DSASM
 
             RestoreGraphNodeExecutionStates(procNode, execStateRestore);
             return;
-        }
-
-        private void SerialReplication(ProcedureNode procNode, ref int exeblock, int ci, int fi, DebugFrame debugFrame = null)
-        {
-            // TODO: Decide where to insert this common code block for Serial mode and Debugging - pratapa
-            if (core.Options.ExecutionMode == ProtoCore.ExecutionMode.Serial || core.Options.IDEDebugMode)
-            {
-                RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
-
-                core.ContinuationStruct.RunningResult.Add(RX);
-                core.ContinuationStruct.Result = RX;
-
-                pc = core.ContinuationStruct.InitialPC;
-
-                if (core.ContinuationStruct.Done)
-                {
-                    RX = HeapUtils.StoreArray(core.ContinuationStruct.RunningResult.ToArray(), null, core);
-                    GCUtils.GCRetain(RX, core);
-
-                    core.ContinuationStruct.RunningResult.Clear();
-                    core.ContinuationStruct.IsFirstCall = true;
-
-                    if (core.Options.IDEDebugMode)
-                    {
-                        // If stepping over function call in debug mode
-                        if (core.DebugProps.RunMode == Runmode.StepNext)
-                        {
-                            // if stepping over outermost function call
-                            if (!core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsFunctionStepOver))
-                            {
-                                core.DebugProps.SetUpStepOverFunctionCalls(core, procNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
-                            }
-                        }
-                        // The DebugFrame passed here is the previous one that was popped off before this call
-                        // In the case of Dot call the debugFrame obtained here is the one for the member function
-                        // for both Break and non Break cases - pratapa
-                        DebugPerformCoercionAndGC(debugFrame);
-
-                        // If call returns to Dot Call, restore debug props for Dot call
-                        debugFrame = core.DebugProps.DebugStackFrame.Peek();
-                        if (debugFrame.IsDotCall)
-                        {
-                            List<Instruction> instructions = istream.instrList;
-                            bool wasPopped = RestoreDebugPropsOnReturnFromBuiltIns(ref exeblock, ref instructions);
-                            if (wasPopped)
-                            {
-                                executingBlock = exeblock;
-                                core.DebugProps.CurrentBlockId = exeblock;
-                            }
-                            else
-                            {
-                                core.DebugProps.RestoreCallrForNoBreak(core, procNode, false);
-                            }
-                            DebugPerformCoercionAndGC(debugFrame);
-                        }
-
-                        //core.DebugProps.DebugEntryPC = currentPC;
-                    }
-                    // Perform return type coercion, GC and/or GC for Dot methods for Non-debug, Serial mode replication case
-                    else
-                    {
-                        // If member function
-                        // 1. Release array arguments to Member function
-                        // 2. Release this pointer
-                        bool isBaseCall = false;
-                        StackValue? thisPtr = null;
-                        if (thisPtr != null)
-                        {
-                            // Replicating member function
-                            PerformCoercionAndGC(null, false, thisPtr, core.ContinuationStruct.InitialArguments, core.ContinuationStruct.InitialDotCallDimensions);
-
-                            // Perform coercion and GC for Dot call
-                            ProcedureNode dotCallprocNode = null;
-                            List<StackValue> dotCallArgs = new List<StackValue>();
-                            List<StackValue> dotCallDimensions = new List<StackValue>();
-                            PerformCoercionAndGC(dotCallprocNode, false, null, dotCallArgs, dotCallDimensions);
-                        }
-                        else
-                        {
-                            PerformCoercionAndGC(procNode, isBaseCall, null, core.ContinuationStruct.InitialArguments, core.ContinuationStruct.InitialDotCallDimensions);
-                        }
-                    }
-
-                    pc++;
-                    return;
-
-                }
-                else
-                {
-                    // Jump back to Callr to call ResolveForReplication and recompute fep with next argument
-                    core.ContinuationStruct.IsFirstCall = false;
-
-                    ReturnToCallSiteForReplication(procNode, ci, fi);
-                    return;
-                }
-
-            }
         }
 
         private void ReturnToCallSiteForReplication(ProcedureNode procNode, int ci, int fi)
@@ -7761,7 +7628,6 @@ namespace ProtoCore.DSASM
 
 
             StackValue svType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
-            StackFrameType type = (StackFrameType)svType.opdata;
 
             isInFunction = IsInsideFunction();
 
@@ -7913,7 +7779,6 @@ namespace ProtoCore.DSASM
                 bool addNewModifiedRef = true;
                 for (int i = 0; i < istream.xUpdateList.Count; ++i)
                 {
-                    var udpatedRef = istream.xUpdateList[i];
                     if (modifiedRef.IsEqual(istream.xUpdateList[i]))
                     {
                         istream.xUpdateList[i].symbolData = modifiedRef.symbolData;

@@ -465,10 +465,6 @@ namespace ProtoFFI
         }
 
         static readonly MethodInfo mDisposeMethod;
-        private static void Dispose()
-        {
-            //Do nothing.
-        }
 
         private static bool isEmpty(CLRModuleType type)
         {
@@ -581,18 +577,6 @@ namespace ProtoFFI
             {
                 SupressImportIntoVMAttribute supressImport = item as SupressImportIntoVMAttribute;
                 if (null != supressImport)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private bool AllowsRankReduction(MethodInfo method)
-        {
-            object[] atts = method.GetCustomAttributes(false);
-            foreach (var item in atts)
-            {
-                if (item is AllowRankReductionAttribute)
                     return true;
             }
 
@@ -1045,34 +1029,6 @@ namespace ProtoFFI
                 extensionAppType, assemblyAttribute, false);
         }
 
-        private static void SetOption(Type configType, string setting, object value)
-        {
-            try
-            {
-                PropertyInfo prop = configType.GetProperty(setting);
-                if (null == prop)
-                    return;
-
-                MethodInfo m = prop.GetSetMethod(true);
-                if(null != m)
-                    m.Invoke(null, new object[] { value });
-            }
-            catch (System.Exception)
-            {
-            }
-        }
-
-        private Type GetConfigurationType()
-        {
-            Type[] types = GetTypes(string.Empty);
-            foreach (var item in types)
-            {
-                if ("Configuration" == CLRObjectMarshler.GetCategory(item))
-                    return item;
-            }
-            return null;
-        }
-
         private Type[] GetTypes(string typeName)
         {
             Type[] types = null;
@@ -1126,7 +1082,6 @@ namespace ProtoFFI
                 string extension = System.IO.Path.GetExtension(name);
                 string filename = System.IO.Path.GetFileName(name);
 
-                bool isDLL = string.Compare(extension, ".dll", StringComparison.OrdinalIgnoreCase) == 0;
                 try
                 {
                     Assembly theAssembly = FFIExecutionManager.Instance.LoadAssembly(name);

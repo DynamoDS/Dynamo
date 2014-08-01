@@ -266,7 +266,6 @@ namespace ProtoFFI
                 }
 
                 _Array arr = (_Array)Marshal.PtrToStructure(arrPtr, typeof(_Array));
-                var elem = arr.elements;
                 
                 if (mReturnType.Name == "double")
                 {
@@ -310,10 +309,8 @@ namespace ProtoFFI
         {
             int paramCount = mArgTypes.Count;
             int envSize = IsDNI ? 2 : 0;
-            int totalParamCount = paramCount + envSize;
 
             List<Object> parameters = new List<object>();
-            List<StackValue> s = dsi.runtime.rmem.Stack;
             if (IsDNI)
             {
                 parameters.Add(DLLFFIHandler.Env);

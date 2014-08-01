@@ -109,8 +109,6 @@ namespace ProtoCore
                     //cn now represents the class node of the argument
                     //argTypeNode represents the class node of the argument
 
-                    int coersionScore = cn.GetCoercionScore(core.ClassTable.ClassNodes.IndexOf(argTypeNode));
-
                     //TODO(Jun)This is worrying test
 
                     //Disable var as exact match, otherwise resolution between double and var will fail

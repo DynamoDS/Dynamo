@@ -204,7 +204,6 @@ namespace ProtoFFI
             */
         }
 
-        private Dictionary<String, Dictionary<String, DSPropertyChangedHandler>> mSubscribers = new Dictionary<String,Dictionary<String, DSPropertyChangedHandler>>();
         #endregion
     }
 }
