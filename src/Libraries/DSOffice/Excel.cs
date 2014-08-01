@@ -9,7 +9,17 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSOffice
 {
-    class ExcelInterop
+    public class ExcelCloseEventArgs : EventArgs
+    {
+        public ExcelCloseEventArgs(bool saveWorkbooks = true)
+        {
+            this.SaveWorkbooks = saveWorkbooks;
+        }
+
+        public bool SaveWorkbooks { get; private set; }
+    }
+
+    internal class ExcelInterop
     {
         private static Microsoft.Office.Interop.Excel.Application _app;
         public static Microsoft.Office.Interop.Excel.Application App
@@ -63,7 +73,8 @@ namespace DSOffice
                 throw new Exception("Excel could not be opened.");
             }
 
-            dynSettings.Controller.DynamoModel.CleaningUp += DynamoModelOnCleaningUp;
+            // KILLDYNSETTINGS - is this safe
+            AppDomain.CurrentDomain.ProcessExit += DynamoModelOnCleaningUp;
 
             excel.Visible = ShowOnStartup;
 
@@ -119,7 +130,7 @@ namespace DSOffice
         {
             if(eventArgs != null)
             {
-                Dynamo.Nodes.ExcelCloseEventArgs args = eventArgs as Dynamo.Nodes.ExcelCloseEventArgs;
+                var args = eventArgs as ExcelCloseEventArgs;
                 if (args != null)
                 {
                     TryQuitAndCleanup(args.SaveWorkbooks);
