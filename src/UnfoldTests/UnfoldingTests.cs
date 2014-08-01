@@ -391,7 +391,7 @@ namespace UnfoldTests
                 Solid testcube = UnfoldTestUtils.SetupCube();
                 List<Face> faces = testcube.Faces.ToList();
 
-                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(faces);
+                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(faces).UnfoldedSurfaceSet;
 
                 // must check each surface in each polysurface
                 // against everyother surface inside this polysurface and check coplanarity and centers
@@ -420,7 +420,7 @@ namespace UnfoldTests
                 Solid testcube = UnfoldTestUtils.SetupCube();
                 List<Face> faces = testcube.Faces.ToList();
                 List<Surface> surfaces = faces.Select(x => x.SurfaceGeometry()).ToList();
-                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(surfaces);
+                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(surfaces).UnfoldedSurfaceSet;
 
                 // must check each surface in each polysurface
                 // against everyother surface inside this polysurface and check coplanarity and centers
@@ -456,7 +456,7 @@ namespace UnfoldTests
                 List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>() { x[0], x[1], x[2] })).ToList();
 
 
-                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(trisurfaces);
+                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(trisurfaces).UnfoldedSurfaceSet;
 
                 // must check each surface in each polysurface
                 // against everyother surface inside this polysurface and check coplanarity and centers
@@ -492,7 +492,7 @@ namespace UnfoldTests
                 List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>() { x[0], x[1], x[2] })).ToList();
 
 
-                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(trisurfaces);
+                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(trisurfaces).UnfoldedSurfaceSet;
 
                 // must check each surface in each polysurface
                 // against everyother surface inside this polysurface and check coplanarity and centers
@@ -528,7 +528,7 @@ namespace UnfoldTests
                 List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>() { x[0], x[1], x[2] })).ToList();
 
 
-                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(trisurfaces);
+                var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(trisurfaces).UnfoldedSurfaceSet;
 
                 // must check each surface in each polysurface
                 // against everyother surface inside this polysurface and check coplanarity and centers

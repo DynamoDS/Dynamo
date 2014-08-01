@@ -514,11 +514,13 @@ namespace Unfold
 
                 public CoordinateSystem CS {get; set;}
                 public List<int> IDS{get;set;}
-
-                public FaceTransformMap(CoordinateSystem cs, List<int> ids)
+                
+                
+                    public FaceTransformMap(CoordinateSystem cs, List<int> ids)
                 {
                     IDS = ids;
                     CS = cs;
+                   
                 }
 
             }
@@ -530,12 +532,14 @@ namespace Unfold
                 public List<T> StartingUnfoldableFaces {get; set;}
                 public List<Surface> UnfoldedSurfaceSet {get; set;}
                 public List<FaceTransformMap> Maps{get;set;}
+                public Dictionary<int, Point> StartingPoints { get; set; }
 
                 public PlanarUnfolding (List<T> originalFaces, List<Surface> finalFaces, List<FaceTransformMap> transforms){
                     StartingUnfoldableFaces = originalFaces;
-                    finalFaces = UnfoldedSurfaceSet;
+                    UnfoldedSurfaceSet = finalFaces;
                     Maps = transforms;
 
+                   StartingPoints =  StartingUnfoldableFaces.ToDictionary(x => x.ID, x => Tessellate.MeshHelpers.SurfaceAsPolygonCenter(x.SurfaceEntity));
                 }
 
             }
@@ -543,8 +547,14 @@ namespace Unfold
 
 
             // these overloads are called from exposed dynamo nodes depending on input type
+            // These methods now return unfolding objects which will need to be split up
+            // and returned in dynamo with a multiout node, in the future after generic bug fixed or after refactor
+            // I would like to expose PlanarunfoldingResult object with query methods
+            // might be able to make the rest of these methods generic now....
 
-            public static List<Surface> DSPLanarUnfold(List<Face> faces)
+
+            public static PlanarUnfolding<EdgeLikeEntity,FaceLikeEntity> DSPLanarUnfold(List<Face> faces)
+                
             {
                 var graph = GeneratePlanarUnfold.ModelTopology.GenerateTopologyFromFaces(faces);
 
@@ -555,11 +565,11 @@ namespace Unfold
                 var casttree = tree as List<GeneratePlanarUnfold.GraphVertex<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>>;
 
 
-                return PlanarUnfold(casttree).UnfoldedSurfaceSet;
+                return PlanarUnfold(casttree);
 
             }
 
-            public static List<Surface> DSPLanarUnfold(List<Surface> surfaces)
+            public static PlanarUnfolding<EdgeLikeEntity, FaceLikeEntity> DSPLanarUnfold(List<Surface> surfaces)
             {
                 var graph = GeneratePlanarUnfold.ModelTopology.GenerateTopologyFromSurfaces(surfaces);
 
@@ -570,7 +580,7 @@ namespace Unfold
                 var casttree = tree as List<GeneratePlanarUnfold.GraphVertex<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>>;
 
 
-                return PlanarUnfold(casttree).UnfoldedSurfaceSet;
+                return PlanarUnfold(casttree);
 
             }
 
@@ -599,11 +609,18 @@ namespace Unfold
                 // at this point all faces should be coplanar with this surface
                 var allfaces = tree.Select(x=>x.Face).ToList();
 
+                
+
                 var sortedtree = tree.OrderBy(x => x.FinishTime).ToList();
 
                 var disconnectedSet = new List<FaceLikeEntity>();
 
                 List<FaceTransformMap> transforms = new List<FaceTransformMap>();
+
+
+                // as an initial set, we'll record the starting coordinate system of each surface
+                transforms.AddRange(allfaces.Select(x => new FaceTransformMap(x.SurfaceEntity.ContextCoordinateSystem, x.IDS)).ToList());
+
 
                 while (sortedtree.Count > 1)
                 {
@@ -685,7 +702,7 @@ namespace Unfold
                         // branch to start the unfold from
 
                         // wrap up the translated geometry as a new facelike
-                        // 
+                        // when this transformation occurs we need to save the coordinate system as well to the transformation map
                         var movedUnfoldBranch = new FaceLikeEntity (child.UnfoldPolySurface.SurfaceEntity.Translate((r.NextDouble() * 10) + 5, 0, 0) as Surface);
                         movedUnfoldBranch.IDS = child.UnfoldPolySurface.IDS;
                         disconnectedSet.Add(movedUnfoldBranch);
@@ -706,26 +723,34 @@ namespace Unfold
                         {
                             subsurblist = new List<Surface>() { rotatedFace };
                         }
-                        subsurblist.Add(parent.UnfoldPolySurface.SurfaceEntity);
 
-                       //before joining grab old parent id list
-                       var oldParentIds = parent.UnfoldPolySurface.IDS;
-                        
+
+
+                        //below section is in flux - the idea is to push the rotatedface - which might be a polysurface or surface into
+                        // the parent vertex's unfoldpolysurface property, then to contract the graph, removing the child node.
+                        // at the same time we are trying to build a map of all the rotation transformations we are producing
+                        // and to which faces they have been applied, we must push the intermediate coordinate systems
+                        // as well as the ids to which they apply through the graph as well.
+
+                        // add the parent surface into this list of surfaces we'll use to create a new polysurface
+                        subsurblist.Add(parent.UnfoldPolySurface.SurfaceEntity);
+                       
+
                         var newParentSurface = PolySurface.ByJoinedSurfaces(subsurblist);
 
                         // replace the surface in the parent with the wrapped chain of surfaces
                         parent.UnfoldPolySurface = new FaceLikeEntity(newParentSurface);
-                        // explictly set the new chain unfoldface ids to the parents old ids
-                        parent.UnfoldPolySurface.IDS.AddRange(oldParentIds);
                        
                         // as we rotate up the chain we'll add each new ID entry to the list on the parent.
                         var rotatedFaceIDs = child.UnfoldPolySurface.IDS;
                         // add the child ids to the parent id list
                         parent.UnfoldPolySurface.IDS.AddRange(rotatedFaceIDs);
+                        parent.UnfoldPolySurface.IDS.Add(child.Face.ID);
                         
-                        // now add the coordinate system for the current list to the transforms list
+                        // now add the coordinate system for the rotatedface to the transforms list
+                       
                         transforms.Add (new FaceTransformMap(
-                        parent.UnfoldPolySurface.SurfaceEntity.ContextCoordinateSystem, parent.UnfoldPolySurface.IDS)) ;
+                        rotatedFace.ContextCoordinateSystem, parent.UnfoldPolySurface.IDS)) ;
 
                         
                     }
