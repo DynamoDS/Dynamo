@@ -15,10 +15,10 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="wix:Directory/@Name['Samples']">
+    <!--<xsl:template match="wix:Directory/@Name['Samples']">
         <xsl:attribute name="Name">
             <xsl:value-of select="'samples'"/>
         </xsl:attribute>
-    </xsl:template>
+    </xsl:template>-->
 
 </xsl:stylesheet>
