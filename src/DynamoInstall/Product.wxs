@@ -19,15 +19,14 @@
     
     <MediaTemplate />
 
-    <!--http://wix.tramontana.co.hu/tutorial/getting-started/where-to-install-->
+    <!--Property used to define on which version of Revit to install.-->
+    <Property Id="REVIT_FLAVOR"/>
+    
+    <!--Find Revit installation by finding the uninstall registry key.-->
     <Property Id="DYNAMO_INSTALLDIR">
-      <RegistrySearch Id='Revit2014Registry' Type='raw' Win64='yes'
-        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2014' Name='InstallLocation' />
+      <RegistrySearch Id='RevitRegistry' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[REVIT_FLAVOR]' Name='InstallLocation' />
     </Property>
-    <!--<Property Id="DYNAMO_INSTALLDIR">
-      <RegistrySearch Id='Revit2015Registry' Type='raw' Win64='yes'
-        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
-    </Property>-->
     
     <Feature Id="DYNAMO_CORE_FEATURE" Title="Dynamo Core" Level="1">
       <ComponentGroupRef Id="RELEASE"/>
