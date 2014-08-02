@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Unfold;
+using Unfold.Interfaces;
 
 namespace Unfold
 {
@@ -20,10 +21,12 @@ namespace Unfold
         /// <param name="StartPointOnSharedEdge"></param>
         /// <param name="sharedEdge"></param>
         /// <returns></returns>
-        public static List<Point> FindPointsOfEdgeStartingAtPoint(List<GeneratePlanarUnfold.EdgeLikeEntity> edges, 
-            Point StartPointOnSharedEdge, GeneratePlanarUnfold.EdgeLikeEntity sharedEdge)
+        public static List<Point> FindPointsOfEdgeStartingAtPoint<K,T>(List<K> edges, 
+            Point StartPointOnSharedEdge, K sharedEdge)
+            where K : IUnfoldableEdge
+            where T : IUnfoldablePlanarFace<K>
         {
-            GeneratePlanarUnfold.EdgeLikeEntity foundEdge = null;
+            K foundEdge = default(K);
 
             Point Start = null;
             Point End = null;
@@ -67,8 +70,10 @@ namespace Unfold
         /// <param name="referenceFace"></param>
         /// <param name="sharedEdge"></param>
         /// <returns></returns>
-        public static double CheckNormalConsistency(GeneratePlanarUnfold.FaceLikeEntity facetoRotate, 
-            GeneratePlanarUnfold.FaceLikeEntity referenceFace, GeneratePlanarUnfold.EdgeLikeEntity sharedEdge)
+        public static double CheckNormalConsistency<K,T>(T facetoRotate, 
+            T referenceFace, K sharedEdge)
+            where K:IUnfoldableEdge
+            where T:IUnfoldablePlanarFace<K>
         {
             // assumption that face A is rotation face
             // and face B is reference face.
@@ -85,13 +90,13 @@ namespace Unfold
             Surface refsurface = referenceFace.SurfaceEntity;
             Surface rotsurface = facetoRotate.SurfaceEntity;
 
-            List<GeneratePlanarUnfold.EdgeLikeEntity> refedegs = referenceFace.EdgeLikeEntities;
-            List<GeneratePlanarUnfold.EdgeLikeEntity> rotedges = facetoRotate.EdgeLikeEntities;
+            List<K> refedegs = referenceFace.EdgeLikeEntities;
+            List<K> rotedges = facetoRotate.EdgeLikeEntities;
 
             Vector AB = Vector.ByTwoPoints(sharedcurve.StartPoint, sharedcurve.EndPoint); //Edge from A TO B// this is the shared edge
             Vector ABnorm = AB.Normalized();
 
-            List<Point> ADedgePoints = AlignPlanarFaces.FindPointsOfEdgeStartingAtPoint(rotedges,sharedEdge.Start,sharedEdge);
+            List<Point> ADedgePoints = AlignPlanarFaces.FindPointsOfEdgeStartingAtPoint<K,T>(rotedges,sharedEdge.Start,sharedEdge);
 
             Point ADstart = ADedgePoints[0];
             Point ADend = ADedgePoints[1];
@@ -116,7 +121,7 @@ namespace Unfold
                rotFaceNormalOK = 1.0;
            }
 
-           List<Point> ACedgePoints = AlignPlanarFaces.FindPointsOfEdgeStartingAtPoint(refedegs,sharedEdge.Start , sharedEdge);
+           List<Point> ACedgePoints = AlignPlanarFaces.FindPointsOfEdgeStartingAtPoint<K,T>(refedegs,sharedEdge.Start , sharedEdge);
            Point ACstart = ACedgePoints[0];
            Point ACend = ACedgePoints[1];
 
@@ -178,8 +183,10 @@ namespace Unfold
         /// <param name="referenceFace"></param>
         /// <param name="sharedEdge"></param>
         /// <returns></returns>
-        public static Geometry MakeGeometryCoPlanarAroundEdge( double normalconsistency, GeneratePlanarUnfold.FaceLikeEntity facetoRotate,
-            GeneratePlanarUnfold.FaceLikeEntity referenceFace, GeneratePlanarUnfold.EdgeLikeEntity sharedEdge)
+        public static Geometry MakeGeometryCoPlanarAroundEdge<K,T>( double normalconsistency, T facetoRotate,
+           T referenceFace, K sharedEdge)
+            where K:IUnfoldableEdge
+            where T:IUnfoldablePlanarFace<K>
         {
             
             Vector rotFaceNorm = facetoRotate.SurfaceEntity.NormalAtParameter(.5,.5);

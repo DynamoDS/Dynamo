@@ -52,6 +52,7 @@
     <Compile Include="GraphUtilities.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="ModelToGraph.cs" />
+    <Compile Include="PlanarUnfolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tessellate.cs" />
   </ItemGroup>

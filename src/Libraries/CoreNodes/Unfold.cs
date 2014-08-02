@@ -18,7 +18,7 @@ namespace DSCore
         [MultiReturn(new[] { "surfaces", "unfoldingObject" })]
        public static Dictionary<string, object> UnfoldListOfFacesAndReturnTransforms(List<Face> faces)
        {
-           var unfolding = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(faces);
+           var unfolding = PlanarUnfolder.DSPLanarUnfold(faces);
            return new Dictionary<string, object> 
                 {   
                     { "surfaces", (unfolding.UnfoldedSurfaceSet)},
@@ -31,7 +31,7 @@ namespace DSCore
         [MultiReturn(new[] { "surfaces", "unfoldingObject" })]
         public static Dictionary<string, object> UnfoldListOfSurfacesAndReturnTransforms(List<Surface> surfaces)
         {
-            var unfolding = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(surfaces);
+            var unfolding = PlanarUnfolder.DSPLanarUnfold(surfaces);
             return new Dictionary<string, object> 
                 {   
                     { "surfaces", (unfolding.UnfoldedSurfaceSet)},
@@ -42,7 +42,7 @@ namespace DSCore
         }
 
 
-       public static Geometry MapGeometryToUnfoldingByID(GeneratePlanarUnfold.PlanarUnfolder.PlanarUnfolding<GeneratePlanarUnfold.EdgeLikeEntity,GeneratePlanarUnfold.FaceLikeEntity> unfolding, Geometry geometryToTransform, int id){
+       public static Geometry MapGeometryToUnfoldingByID(PlanarUnfolder.PlanarUnfolding<GeneratePlanarUnfold.EdgeLikeEntity,GeneratePlanarUnfold.FaceLikeEntity> unfolding, Geometry geometryToTransform, int id){
 
           
 
@@ -81,7 +81,7 @@ namespace DSCore
         public static List<Surface> UnfoldListOfFaces(List<Face> faces){
 
 
-          var unfoldsurfaces =  GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(faces);
+          var unfoldsurfaces =  PlanarUnfolder.DSPLanarUnfold(faces);
           return unfoldsurfaces.UnfoldedSurfaceSet;
         }
 
@@ -89,7 +89,7 @@ namespace DSCore
         {
 
 
-            var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(surfaces);
+            var unfoldsurfaces = PlanarUnfolder.DSPLanarUnfold(surfaces);
             return unfoldsurfaces.UnfoldedSurfaceSet;
         }
 
@@ -101,7 +101,7 @@ namespace DSCore
             //convert triangles to surfaces
             List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>(){x[0], x[1], x[2]})).ToList();
 
-            var unfoldsurfaces = GeneratePlanarUnfold.PlanarUnfolder.DSPLanarUnfold(trisurfaces);
+            var unfoldsurfaces = PlanarUnfolder.DSPLanarUnfold(trisurfaces);
             return unfoldsurfaces.UnfoldedSurfaceSet;
         }
 

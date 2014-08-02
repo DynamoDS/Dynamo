@@ -40,7 +40,7 @@ namespace Unfold.Interfaces
         }
 
      [SupressImportIntoVM]
-       public interface IUnfoldablePlanarFace<K> where K:IUnfoldableEdge
+       public interface IUnfoldablePlanarFace<K> where K:IUnfoldableEdge 
         {
              Object OriginalEntity { get; set; }
              Surface SurfaceEntity { get; set; }
@@ -48,7 +48,7 @@ namespace Unfold.Interfaces
               int ID { get; set; }
               List<int> IDS { get; set; }
            
-
+        
         }
      [SupressImportIntoVM]
       public  interface IUnfoldableEdge : ISpatialEquatable
