@@ -17,7 +17,7 @@
 
     <xsl:template match="wix:DirectoryRef[@Id='DYNAMO_INSTALLDIR']/wix:Directory/@Name['Release']">
         <xsl:attribute name="Name">
-            <xsl:value-of select="'Dynamo 0.7'"/>
+            <xsl:value-of select="'Dynamo'"/>
         </xsl:attribute>
     </xsl:template>
 

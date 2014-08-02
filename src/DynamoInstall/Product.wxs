@@ -17,7 +17,7 @@
       Schedule="afterInstallInitialize"
       DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     
-    <MediaTemplate />
+    <MediaTemplate EmbedCab="yes" />
 
     <!--Property used to define on which version of Revit to install.-->
     <Property Id="REVIT_FLAVOR"/>
