@@ -87,18 +87,21 @@
                     </Image>
                 </Button.Content>
             </Button>            
-        </Grid>        
+        </Grid>
 
         <Border BorderThickness="0,0,0,1"
                 BorderBrush="#3F3F3F"
                 Grid.Row="1">
-            <Grid Name="SearchTextBoxGrid"  Height="30" VerticalAlignment="Center" MouseEnter="SearchTextBoxGrid_MouseEnter" MouseLeave="SearchTextBoxGrid_MouseLeave">
-                                    <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <Grid Name="SearchTextBoxGrid"
+                  Height="30"
+                  VerticalAlignment="Center"
+                  MouseEnter="SearchTextBoxGrid_MouseEnter"
+                  MouseLeave="SearchTextBoxGrid_MouseLeave">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
                 <StackPanel Name="SearchIconAndTextBlockGrid"
                             Grid.ColumnSpan="2"
@@ -139,10 +142,11 @@
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
                          CaretBrush="#DDD"
-                         Margin="26,7,-6,5"
-                         Grid.ColumnSpan="3" />
+                         Margin="23,7,-6,5"
+                         Grid.ColumnSpan="2" />
 
-                <Button Name="SearchCancelButton" Grid.Column="2"
+                <Button Name="SearchCancelButton"
+                        Grid.Column="2"
                         Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                         Click="SearchCancelButton_Click"
                         VerticalAlignment="Center">
@@ -151,10 +155,10 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
-                                                    <Image Name="SearchCancelImage"
-                                           Source="/DynamoCore;component/UI/Images/searchcancel_normal.png"
-                                           Width="20"
-                                           Height="20"/>
+                                        <Image Name="SearchCancelImage"
+                                               Source="/DynamoCore;component/UI/Images/searchcancel_normal.png"
+                                               Width="20"
+                                               Height="20" />
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
