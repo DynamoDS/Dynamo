@@ -30,7 +30,6 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUtilities;
-using DynamoWebServer;
 
 using String = System.String;
 
@@ -57,14 +56,9 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public static Application MakeSandboxAndRun(string commandFilePath, bool turnOnServer)
+        public static Application MakeSandboxAndRun(string commandFilePath)
         {
             var ui = MakeSandbox(commandFilePath);
-
-            if (turnOnServer)
-            {
-                dynSettings.EnableServer(new WebServer());
-            }
 
             var app = new Application();
             app.Run(ui);

@@ -1,10 +1,10 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using DynamoWebServer.Messages;
+using System.Collections.Generic;
 
 namespace DynamoWebServer.Responses
 {
     public class ComputationResponse : Response
     {
-        public string Nodes { get; set; }
+        public IEnumerable<ExecutedNode> Nodes { get; set; }
     }
 }

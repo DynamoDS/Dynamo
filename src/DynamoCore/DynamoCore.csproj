@@ -451,10 +451,6 @@ limitations under the License.
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoWebServer\DynamoWebServer.csproj">
-      <Project>{55636e8f-53b1-4e27-a0d7-68a00da13c92}</Project>
-      <Name>DynamoWebServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
       <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
       <Name>DynamoCrypto</Name>
