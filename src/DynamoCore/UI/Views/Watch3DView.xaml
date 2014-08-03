@@ -18,6 +18,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
             <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
         </ResourceDictionary>
@@ -28,7 +29,63 @@
             MinHeight="100" MinWidth="100">
 
         <Grid.ContextMenu>
-            <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
+            <ContextMenu Name="MainContextMenu"
+                         x:FieldModifier="public">
+
+                <MenuItem Header="Switch to Node _View">
+                    <MenuItem.Command>
+                        <Binding Path="PlacementTarget.DataContext.ToggleCanNavigateBackgroundCommand"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.Command>
+                    <MenuItem.Visibility>
+                        <Binding Path="PlacementTarget.DataContext.IsBackgroundPreview"
+                                 Mode="OneWay"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
+                                 Converter="{StaticResource BoolToVisibilityConverter}"
+                                 ConverterParameter="Collapse" />
+                    </MenuItem.Visibility>
+                </MenuItem>
+
+                <MenuItem Header="_Rotate">
+                    <MenuItem.Command>
+                        <Binding Path="PlacementTarget.DataContext.ToggleOrbitCommand"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.Command>
+                    <MenuItem.IsChecked>
+                        <Binding Path="PlacementTarget.DataContext.IsOrbiting"
+                                 Mode="OneWay"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.IsChecked>
+                    <MenuItem.Visibility>
+                        <Binding Path="PlacementTarget.DataContext.IsBackgroundPreview"
+                                 Mode="OneWay"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
+                                 Converter="{StaticResource BoolToVisibilityConverter}"
+                                 ConverterParameter="Collapse" />
+                    </MenuItem.Visibility>
+                </MenuItem>
+
+                <MenuItem Header="_Pan">
+                    <MenuItem.Command>
+                        <Binding Path="PlacementTarget.DataContext.TogglePanCommand"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.Command>
+                    <MenuItem.IsChecked>
+                        <Binding Path="PlacementTarget.DataContext.IsPanning"
+                                 Mode="OneWay"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.IsChecked>
+                    <MenuItem.Visibility>
+                        <Binding Path="PlacementTarget.DataContext.IsBackgroundPreview"
+                                 Mode="OneWay"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
+                                 Converter="{StaticResource BoolToVisibilityConverter}"
+                                 ConverterParameter="Collapse" />
+                    </MenuItem.Visibility>
+                </MenuItem>
+
+                <MenuItem Header="_Zoom to Fit"
+                          Click="OnZoomToFitClicked" />
             </ContextMenu>
         </Grid.ContextMenu>
 

@@ -41,7 +41,18 @@ namespace Dynamo.Nodes
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
+
+        public DelegateCommand ToggleCanNavigateBackgroundCommand
+        {
+            get
+            {
+                var dvm = dynSettings.Controller.DynamoViewModel;
+                return dvm.ToggleCanNavigateBackgroundCommand;
+            }
+        }
+
         public bool WatchIsResizable { get; set; }
+        public bool IsBackgroundPreview { get { return false; } }
 
         public Watch3DView View { get; private set; }
 

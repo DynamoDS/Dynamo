@@ -155,7 +155,7 @@ namespace DSRevitNodesTests
 
         }
 
-        [Test]
+        [Test, Ignore]
         [TestModel(@".\AdaptiveComponents.rfa")]
         public void ByPointsOnFace_ValidInput()
         {

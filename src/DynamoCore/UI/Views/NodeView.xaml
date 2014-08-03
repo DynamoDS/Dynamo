@@ -37,8 +37,7 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public"
-                         ContextMenuOpening="MainContextMenu_ContextMenuOpening">
+                         x:FieldModifier="public">
                 <MenuItem Name="deleteElem_cm"
                           Header="Delete"
                           Command="{Binding Path=DeleteCommand}" />

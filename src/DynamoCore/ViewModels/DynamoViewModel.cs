@@ -569,6 +569,7 @@ namespace Dynamo.ViewModels
         }
 
         public bool WatchIsResizable { get; set; }
+        public bool IsBackgroundPreview { get { return true; } }
 
         public string Version
         {
@@ -812,6 +813,8 @@ namespace Dynamo.ViewModels
                 if (this.PublishCurrentWorkspaceCommand != null)
                     this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged("IsHomeSpace");
+                RaisePropertyChanged("IsPanning");
+                RaisePropertyChanged("IsOrbiting");
             }
         }
 
