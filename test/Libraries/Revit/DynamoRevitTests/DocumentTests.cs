@@ -57,14 +57,14 @@ namespace Dynamo.Tests
             SwapCurrentModel(_emptyModelPath);
         }
 
-        [Test]
+        [Test, Ignore]
         [TestModel(@"./empty.rfa")]
         public void AttachesToNewDocumentWhenAllDocsWereClosed()
         {
             Assert.Inconclusive("Cannot test. API required for allowing closing all docs.");
         }
 
-        [Test]
+        [Test, Ignore]
         [TestModel(@"./empty.rfa")]
         public void WhenActiveDocumentResetIsRequiredVisualizationsAreCleared()
         {
