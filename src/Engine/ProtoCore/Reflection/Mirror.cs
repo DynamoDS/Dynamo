@@ -230,21 +230,7 @@ namespace ProtoCore
                 Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
                 if (sv.IsPointer)
                 {
-                    ClassNode classNode = core.ClassTable.ClassNodes[(int)sv.metaData.type];
-                    //assemblyName = classNode.ExternLib;                    
-                    //return classNode.name;
-                    /*if (!asmType.ContainsKey(classNode.ExternLib))
-                    {
-                        List<string> types = new List<string>();
-                        types.Add(classNode.name);
-                        asmType.Add(classNode.ExternLib, types);
-                    }
-                    else
-                    {
-                        List<string> types = asmType[classNode.ExternLib];
-                        if (!types.Contains(classNode.name))
-                            types.Add(classNode.name);
-                    }*/
+                    ClassNode classNode = core.ClassTable.ClassNodes[sv.metaData.type];
                     List<string> types = new List<string>();
                     types.Add(classNode.name);
                     asmType.Add(classNode.ExternLib, types);
@@ -518,7 +504,7 @@ namespace ProtoCore
                 IList<ClassNode> classNodes = core.DSExecutable.classTable.ClassNodes;
                 Validity.Assert(classNodes != null && classNodes.Count > 0);
 
-                this.classNode = classNodes[(int)svData.metaData.type];
+                this.classNode = classNodes[svData.metaData.type];
                 this.ClassName = this.classNode.name;
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
@@ -686,7 +672,7 @@ namespace ProtoCore
                 List<ProcedureNode> procList = procedureTable.procList;
                 foreach (ProcedureNode pNode in procList)
                 {
-                    if (pNode.isConstructor == true)
+                    if (pNode.isConstructor)
                         constructors.Add(new MethodMirror(pNode));
                 }
                                 
