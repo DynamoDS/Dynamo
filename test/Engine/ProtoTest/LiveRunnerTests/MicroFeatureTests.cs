@@ -5484,6 +5484,7 @@ r = foo();
             AssertValue("r", 16);
         }
 
+        [Test]
         public void TestNestedLanguageBlockReExecution07()
         {
             string code = @"
@@ -5559,6 +5560,8 @@ r = func_11546f565974453bae527393c546bbff(x);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("r", 1024);
         }
+
+        [Test]
         public void TestNestedLanguageBlockReExecution08()
         {
             string code = @"
@@ -5596,7 +5599,8 @@ t = f(3);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("t", 6);
         }
-        
+
+        [Test]
         public void TestNestedLanguageBlockReExecution09()
         {
             string code = @"
@@ -5642,6 +5646,53 @@ t = func_f417d5607cc14ef8bde1b821bada91da(r);
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("t", 24);
+        }
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution10()
+        {
+            string code = @"
+def foo: var[]..[](x : var[]..[])
+{
+    t0 = 1;
+    cond= (x) <= (t0);
+    v0 = [Imperative]
+    {
+        if(cond)
+        {
+            return = [Associative]
+            {
+                t1 = 1;
+                return = t1;
+            }
+        }
+        else
+        {
+            return = [Associative]
+            {
+                t2 = 1;
+                v2 = (x) - (t2);
+                v3 = foo(v2);
+                v4 = (x) * (v3);
+                return = v4;
+
+            }
+        }
+    }
+    v1 = v0;
+    return = v1;
+}
+
+t = 5;
+v = foo(t);
+";
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("v", 120);
         }
     }
 
