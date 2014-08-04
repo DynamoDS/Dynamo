@@ -465,6 +465,10 @@ namespace ProtoFFI
         }
 
         static readonly MethodInfo mDisposeMethod;
+        private static void Dispose()
+        {
+             //Do nothing.
+       }
 
         private static bool isEmpty(CLRModuleType type)
         {
