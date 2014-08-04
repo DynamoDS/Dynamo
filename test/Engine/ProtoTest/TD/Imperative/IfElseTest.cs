@@ -2083,18 +2083,19 @@ t2 = c[1].x;
         public void T62_Condition_Not_Evaluate_ToBool()
         {
             string err = "1467170 Sprint 25 - Rev 3142 it must skip the else loop if the conditional cannot be evaluate to bool it must be skip both if and else";
-            string src = @"[Imperative]
+            string src = @"
+A;
+[Imperative]
 {
     A = 1;
     if (0)       
  	   A = 2; 
     else 
 	  A= 3;
-}
-//expected A=1;//Received A=3;";
+}";
             thisTest.VerifyRunScriptSource(src, err);
             //Verification 
-            thisTest.Verify("A", 1);
+            thisTest.Verify("A", 3);
         }
 
 

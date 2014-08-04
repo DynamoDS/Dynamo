@@ -47,12 +47,9 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static int GetUpcastCountTo(ClassNode from, ClassNode to, Core core)
         {
-            int fromID = core.ClassTable.ClassNodes.IndexOf(from);
             int toID = core.ClassTable.ClassNodes.IndexOf(to);
 
             List<int> upcastChain = GetClassUpcastChain(from, core);
-
-            //Validity.Assert(upcastChain.Contains(toID), "Asked to upcast a class to a class that wasn't in its upcast chain");
 
             if (!upcastChain.Contains(toID))
                 return int.MaxValue;
