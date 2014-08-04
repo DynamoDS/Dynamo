@@ -83,6 +83,16 @@ namespace DynamoUtilities
         public string GeometryFactory { get; set; }
 
         /// <summary>
+        /// A directory containing the ASM 219 DLLs
+        /// </summary>
+        public string ASM219Host { get; set; }
+
+        /// <summary>
+        /// A directory containing the ASM 220 DLLs
+        /// </summary>
+        public string ASM220Host { get; set; }
+
+        /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
         /// </summary>
@@ -150,6 +160,9 @@ namespace DynamoUtilities
             }
             
             SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
+
+            ASM219Host = null;
+            ASM220Host = null;
 
             Ui = Path.Combine(MainExecPath , "UI");
 
@@ -283,6 +296,74 @@ namespace DynamoUtilities
             LibG = path;
             var splits = LibG.Split('\\');
             GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
+        }
+
+        /// <summary>
+        /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs
+        /// </summary>
+        /// <returns>True if it finds a directory, false if it can't find a directory</returns>
+        public bool FindAndSetASMHostPath()
+        {
+            string baseSearchDirectory = @"C:\Program Files\Autodesk";
+            DirectoryInfo root = null;
+
+            try
+            {
+                root = new DirectoryInfo(baseSearchDirectory);
+            }
+            catch (Exception e)
+            {
+                // TODO: print to console
+
+                return false;
+            }
+
+            System.IO.FileInfo[] files = null;
+            System.IO.DirectoryInfo[] subDirs = null;
+
+            try
+            {
+                subDirs = root.GetDirectories();
+            }
+            // This is thrown if even one of the files requires permissions greater 
+            // than the application provides. 
+            catch (UnauthorizedAccessException e)
+            {
+                // TODO: figure out how to print to the console that Sandbox needs higher permissions
+                return false;
+            }
+
+            if (subDirs.Length == 0)
+                return false;
+
+            foreach (System.IO.DirectoryInfo dirInfo in subDirs)
+            {
+                files = dirInfo.GetFiles("*.*");
+
+                foreach (System.IO.FileInfo fi in files)
+                {
+                    if (fi.Name.ToUpper() == "ASMAHL219A.DLL")
+                    {
+                        // we found a match for the ASM 219 dir
+                        ASM219Host = dirInfo.FullName;
+
+                        break;
+                    }
+
+                    if (fi.Name.ToUpper() == "ASMAHL220A.DLL")
+                    {
+                        // we found a match for the ASM 220 dir
+                        ASM220Host = dirInfo.FullName;
+
+                        break;
+                    }
+                }
+
+                if (ASM219Host != null && ASM220Host != null)
+                    return true;
+            }
+
+            return ASM219Host != null || ASM220Host != null;
         }
     }
 }
