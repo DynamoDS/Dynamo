@@ -50,7 +50,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(
+            NodeCollapser.Collapse(ViewModel,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -100,7 +100,7 @@ namespace Dynamo.Tests
             model.AddToSelection(minNode);
             model.AddToSelection(numNode);
 
-            NodeCollapser.Collapse(
+            NodeCollapser.Collapse(ViewModel,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -143,7 +143,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(
+            NodeCollapser.Collapse(ViewModel,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -211,7 +211,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
             Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
 
-            NodeCollapser.Collapse(
+            NodeCollapser.Collapse(ViewModel,
                 selectionSet.AsEnumerable(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -311,7 +311,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(
+            NodeCollapser.Collapse(ViewModel,
                  DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
                     .Select(x => (x as NodeModel)),
                     model.CurrentWorkspace,

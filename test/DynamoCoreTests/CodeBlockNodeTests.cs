@@ -300,7 +300,7 @@ b = c[w][x][y][z];";
 
             // Connect the two nodes
             var workspace = ViewModel.Model.CurrentWorkspace;
-            ConnectorModel connector = ConnectorModel.Make(codeBlockNode1, codeBlockNode0,
+            ConnectorModel connector = ConnectorModel.Make(workspace, codeBlockNode1, codeBlockNode0,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector);
 
@@ -334,7 +334,7 @@ b = c[w][x][y][z];";
             var watchNode = workspace.NodeFromWorkspace<Watch>(nodeGuid);
 
             // Connect the two nodes
-            ConnectorModel connector0 = ConnectorModel.Make(codeBlockNode0, watchNode,
+            ConnectorModel connector0 = ConnectorModel.Make(workspace, codeBlockNode0, watchNode,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector0);
 
@@ -352,7 +352,7 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(codeBlockNode1, @"false;");
 
             // Connect the two code block nodes
-            ConnectorModel connector1 = ConnectorModel.Make(codeBlockNode1, codeBlockNode0,
+            ConnectorModel connector1 = ConnectorModel.Make(workspace, codeBlockNode1, codeBlockNode0,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector1);
 
@@ -393,7 +393,7 @@ b = c[w][x][y][z];";
             var pointOriginNode = workspace.NodeFromWorkspace<DSFunction>(nodeGuid);
 
             // Connect the two nodes
-            ConnectorModel connector = ConnectorModel.Make(pointOriginNode, codeBlockNode,
+            ConnectorModel connector = ConnectorModel.Make(workspace, pointOriginNode, codeBlockNode,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector);
 

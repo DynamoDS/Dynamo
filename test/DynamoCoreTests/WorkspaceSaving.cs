@@ -438,7 +438,7 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             // make change
-            dynamoModel.CreateNode(0.0, 0.0, "Add");
+            dynamoModel.CurrentWorkspace.AddNode(0.0, 0.0, "Add");
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
 
@@ -466,7 +466,7 @@ namespace Dynamo.Tests
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
             Assert.IsFalse(def.WorkspaceModel.HasUnsavedChanges);
 
-            dynamoModel.CreateNode(0.0, 0.0, "Add");
+            dynamoModel.CurrentWorkspace.AddNode(0.0, 0.0, "Add");
             Assert.IsTrue(def.WorkspaceModel.HasUnsavedChanges);
             Assert.AreEqual(1, def.WorkspaceModel.Nodes.Count );
             
@@ -654,13 +654,13 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = Path.Combine(TempFolder, "Constant2.dyf");
-            var originalNumElements = ViewModel.SearchViewModel.SearchDictionary.NumElements;
+            var originalNumElements = ViewModel.Model.SearchModel.SearchDictionary.NumElements;
             nodeWorkspace.SaveAs(newPath); // introduces new function id
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
-            
+
             ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
-            Assert.AreEqual(originalNumElements + 1, ViewModel.SearchViewModel.SearchDictionary.NumElements);
+            Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             Assert.AreEqual(2, ViewModel.SearchViewModel.SearchResults.Count);
 
@@ -738,7 +738,7 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
-            var originalNumElements = ViewModel.SearchViewModel.SearchDictionary.NumElements;
+            var originalNumElements = ViewModel.Model.SearchModel.SearchDictionary.NumElements;
 
             // save as
             nodeWorkspace.SaveAs(newPath); // introduces new function id
@@ -754,7 +754,7 @@ namespace Dynamo.Tests
             ViewModel.Model.CustomNodeManager.Refactor(dummyInfo1);
 
             // num elements is unchanged by refactor
-            Assert.AreEqual(originalNumElements + 1, ViewModel.SearchViewModel.SearchDictionary.NumElements);
+            Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             // search for refactored node
             ViewModel.SearchViewModel.SearchAndUpdateResultsSync("TheNoodle");
@@ -792,7 +792,7 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
-            var originalNumElements = ViewModel.SearchViewModel.SearchDictionary.NumElements;
+            var originalNumElements = ViewModel.Model.SearchModel.SearchDictionary.NumElements;
 
             // save as
             nodeWorkspace.SaveAs(newPath); // introduces new function id
@@ -808,7 +808,7 @@ namespace Dynamo.Tests
             ViewModel.Model.CustomNodeManager.Refactor(dummyInfo1);
 
             // num elements is unchanged by refactor
-            Assert.AreEqual(originalNumElements + 1, ViewModel.SearchViewModel.SearchDictionary.NumElements);
+            Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             // search common base name
             ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");

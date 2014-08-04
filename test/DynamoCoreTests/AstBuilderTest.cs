@@ -45,7 +45,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            AstBuilder builder = new AstBuilder(null);
+            AstBuilder builder = new AstBuilder(model, null);
             var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
             string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
             Console.WriteLine(code);

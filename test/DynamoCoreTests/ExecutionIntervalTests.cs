@@ -21,17 +21,17 @@ namespace Dynamo
 
             int runCount = 0;
 
-            ViewModel.EvaluationCompleted += delegate
+            ViewModel.Model.EvaluationCompleted += delegate
             {
                 runCount++;
                 if (runCount == 2)
                 {
-                    ViewModel.RunCancelInternal(false, true);
+                    ViewModel.Model.RunCancelInternal(false, true);
                     Assert.Pass();
                 }
             };
 
-            ViewModel.RunExpression(2000);
+            ViewModel.Model.Runner.RunExpression(ViewModel.Model.HomeSpace, 2000);
 
             //If we reach this point, then the Assert.Pass() call was never reached 
             //and so ExecutionInterval is broken.
