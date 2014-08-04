@@ -28,17 +28,17 @@ namespace RevitServices.Elements
 
         private readonly ControlledApplication application;
 
-        public event ElementUpdateDelegate ElementsAdded;
-        public event ElementUpdateDelegateElementId ElementAddedForID;
-        public event ElementUpdateDelegate ElementsModified;
+        public event ElementAddDelegate ElementsAdded;
+        public event ElementUpdateElementIdDelegate ElementAddedForID;
+        public event ElementModifyDelegate ElementsModified;
         public event ElementDeleteDelegate ElementsDeleted;
 
         #region Event Invokers
 
-        protected virtual void OnElementsAdded(IEnumerable<string> updated)
+        protected virtual void OnElementsAdded(Document doc, IEnumerable<string> updated)
         {
             var handler = ElementsAdded;
-            if (handler != null) handler(updated);
+            if (handler != null) handler(doc, updated);
         }
 
         protected virtual void OnElementsAdded(Document doc, IEnumerable<ElementId> updated)
@@ -48,16 +48,16 @@ namespace RevitServices.Elements
         }
 
 
-        protected virtual void OnElementsModified(IEnumerable<string> updated)
+        protected virtual void OnElementsModified(Document doc, IEnumerable<string> modified)
         {
             var handler = ElementsModified;
-            if (handler != null) handler(updated);
+            if (handler != null) handler(doc, modified);
         }
 
-        protected virtual void OnElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+        protected virtual void OnElementsDeleted(Document doc, IEnumerable<ElementId> deleted)
         {
             var handler = ElementsDeleted;
-            if (handler != null) handler(document, deleted);
+            if (handler != null) handler(doc, deleted);
         }
 
         #endregion
@@ -108,31 +108,31 @@ namespace RevitServices.Elements
         /// </summary>
         /// <param name="doc">Document to perform the Rollback on.</param>
         /// <param name="deleted">Sequence of elements to have registered deletion callbacks invoked.</param>
-        public void RollBack(Document doc, ICollection<ElementId> deleted)
+        public void RollBack(Document document, ICollection<ElementId> deleted)
         {
             var empty = new List<string>();
-            ProcessUpdates(doc, empty, deleted, empty, new List<ElementId>());
+            ProcessUpdates(document, empty, deleted, empty, new List<ElementId>());
         }
 
-        private void ProcessUpdates(Document doc, IEnumerable<string> modified, 
+        private void ProcessUpdates(Document document, IEnumerable<string> modified, 
             IEnumerable<ElementId> deleted, IEnumerable<string> added, 
             IEnumerable<ElementId> addedIds )
         {
-            OnElementsModified(modified.Distinct());
-            OnElementsDeleted(doc, deleted.Distinct());
-            OnElementsAdded(added.Distinct());
-            OnElementsAdded(doc, addedIds);
+            OnElementsModified(document, modified.Distinct());
+            OnElementsDeleted(document, deleted.Distinct());
+            OnElementsAdded(document, added.Distinct());
+            OnElementsAdded(document, addedIds);
         }
 
         void ApplicationDocumentChanged(object sender, DocumentChangedEventArgs args)
         {
-            var doc = args.GetDocument();
-            var added = args.GetAddedElementIds().Select(x => doc.GetElement(x).UniqueId);
+            var document = args.GetDocument();
+            var added = args.GetAddedElementIds().Select(x => document.GetElement(x).UniqueId);
             var addedIds = args.GetAddedElementIds();
-            var modified = args.GetModifiedElementIds().Select(x => doc.GetElement(x).UniqueId).ToList();
+            var modified = args.GetModifiedElementIds().Select(x => document.GetElement(x).UniqueId).ToList();
             var deleted = args.GetDeletedElementIds();
 
-            ProcessUpdates(doc, modified, deleted, added, addedIds);
+            ProcessUpdates(document, modified, deleted, added, addedIds);
         }
 
         /// <summary>
@@ -148,19 +148,27 @@ namespace RevitServices.Elements
     }
 
     /// <summary>
-    /// Callback for when Elements have been updated.
+    /// Callback for when Elements have been added.
     /// </summary>
-    /// <param name="updated">All modified elements that have been registered with this callback.</param>
-    public delegate void ElementUpdateDelegate(IEnumerable<string> updated);
+    /// <param name="document">Document from which added elements originated.</param>
+    /// <param name="updated">All added elements that have been registered with this callback.</param>
+    public delegate void ElementAddDelegate(Document document, IEnumerable<string> updated);
 
 
     /// <summary>
     /// Callback for when Elements have been updated.
     /// Recoemnt using the UUID version instead
     /// </summary>
-    /// <param name="updated">All modified elements that have been registered with this callback.</param>
-    public delegate void ElementUpdateDelegateElementId(Document document, IEnumerable<ElementId> deleted);
-
+    /// <param name="document">Document from which updated elements originated.</param>
+    /// <param name="updated">All updated elements that have been registered with this callback.</param>
+    public delegate void ElementUpdateElementIdDelegate(Document document, IEnumerable<ElementId> updated);
+    
+    /// <summary>
+    /// Callback for when Elements have been modified.
+    /// </summary>
+    /// <param name="document">Document from which modified elements originated.</param>
+    /// <param name="modified">All modified elements that have been registered with this callback.</param>
+    public delegate void ElementModifyDelegate(Document document, IEnumerable<string> modified);
 
     /// <summary>
     ///     Callback for when Elements have been deleted.
