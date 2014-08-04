@@ -242,7 +242,7 @@ namespace ProtoCore.DSASM.Mirror
                         if ((null != visibleProperties) && visibleProperties.Contains(propName) == false)
                             continue; // This property is not to be displayed.
 
-                        if (!firstPropertyDisplayed)
+                        if (firstPropertyDisplayed)
                             classtrace.Append(", ");
 
                         string propValue = "";
