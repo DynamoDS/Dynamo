@@ -20,7 +20,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Runs an embedded IronPython script")]
     public class Python : NodeModel
     {
-        
+        public Python(WorkspaceModel workspaceModel) : base(workspaceModel) { }
+
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
@@ -49,8 +50,9 @@ namespace Dynamo.Nodes
     public class PythonVarIn : VariableInput
     {
         
-
         // implement methods from variableinput
+        public PythonVarIn(WorkspaceModel ws) : base(ws) { }
+
         protected override string GetInputRootName()
         {
             return "IN";
@@ -94,8 +96,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Runs a IronPython script from a string")]
     public class PythonString : NodeModel
     {
+        public PythonString(WorkspaceModel workspaceModel) : base(workspaceModel) { }
 
-       
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {

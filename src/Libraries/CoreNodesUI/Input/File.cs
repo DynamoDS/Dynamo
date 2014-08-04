@@ -17,7 +17,8 @@ namespace DSCore.File
     [SupressImportIntoVM]
     public abstract class FileSystemBrowser : DSCoreNodesUI.String
     {
-        protected FileSystemBrowser(string tip)
+        protected FileSystemBrowser(WorkspaceModel workspace, string tip)
+            : base(workspace)
         {
             OutPortData[0].ToolTipString = tip;
             RegisterAllPorts();
@@ -82,7 +83,7 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
-        public Filename() : base("Filename") { }
+        public Filename(WorkspaceModel workspace) : base(workspace, "Filename") { }
 
         protected override void readFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -112,7 +113,7 @@ namespace DSCore.File
     //MAGN -3382 [IsVisibleInDynamoLibrary(false)]
     public class Directory : FileSystemBrowser
     {
-        public Directory() : base("Directory") { }
+        public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
 
         protected override void readFileButton_Click(object sender, RoutedEventArgs e)
         {

@@ -328,7 +328,7 @@ namespace Dynamo.Controls
             view.mainGrid.Focus();
 
             var node = this.ViewModel.NodeModel;
-            if (node.WorkSpace.Nodes.Contains(node))
+            if (node.Workspace.Nodes.Contains(node))
             {
                 Guid nodeGuid = this.ViewModel.NodeModel.GUID;
                 this.ViewModel.DynamoViewModel.ExecuteCommand(

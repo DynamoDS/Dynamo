@@ -12,6 +12,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
+using Dynamo.Applications.Models;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;

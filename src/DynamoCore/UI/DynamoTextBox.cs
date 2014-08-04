@@ -264,7 +264,7 @@ namespace Dynamo.Nodes
         protected override void OnThumbDragStarted(System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
             base.OnThumbDragStarted(e);
-            nodeModel.WorkSpace.RecordModelForModification(nodeModel);
+            nodeModel.Workspace.RecordModelForModification(nodeModel);
             (nodeModel as IBlockingModel).OnBlockingStarted(EventArgs.Empty);
         }
 
@@ -279,7 +279,7 @@ namespace Dynamo.Nodes
         {
             base.OnPreviewMouseLeftButtonDown(e);
             if (e.OriginalSource is System.Windows.Shapes.Rectangle)
-                nodeModel.WorkSpace.RecordModelForModification(nodeModel);
+                nodeModel.Workspace.RecordModelForModification(nodeModel);
         }
         #endregion
     }

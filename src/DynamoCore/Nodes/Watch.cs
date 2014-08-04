@@ -67,7 +67,8 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public Watch()
+        public Watch(WorkspaceModel ws)
+            : base(ws)
         {
             InPortData.Add(new PortData("", "Node to evaluate."));
             OutPortData.Add(new PortData("", "Watch contents."));
@@ -81,7 +82,7 @@ namespace Dynamo.Nodes
                 p.PortDisconnected += p_PortDisconnected;
             }
 
-            this.DynamoModel.EvaluationCompleted += DynamoModelEvaluationCompleted;
+            this.Workspace.DynamoModel.EvaluationCompleted += DynamoModelEvaluationCompleted;
         }
 
         void DynamoModelEvaluationCompleted(object sender, EventArgs e)
@@ -203,7 +204,7 @@ namespace Dynamo.Nodes
                 var inputVar = this.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
                 //Get RuntimeMirror for input ast identifier.
-                var mirror = this.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
+                var mirror = this.Workspace.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
                 if (null == mirror)
                     return new WatchViewModel(this.dynamoViewModel.VisualizationManager, nullString, inputVar);
 

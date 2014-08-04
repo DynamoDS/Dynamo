@@ -30,7 +30,7 @@ namespace Dynamo.Models
         #region internal members
 
         internal readonly NodeFactory NodeFactory;
-        internal DynamoModel DynamoModel;
+        public DynamoModel DynamoModel { get; private set; }
 
         private string _fileName;
         private string _name;
@@ -1124,7 +1124,7 @@ namespace Dynamo.Models
                     // or the selection set was not quite set up properly.
                     // 
                     var node = model as NodeModel;
-                    Debug.Assert(this == node.WorkSpace);
+                    Debug.Assert(this == node.Workspace);
 
                     // Note that AllConnectors is duplicated as a separate list 
                     // by calling its "ToList" method. This is the because the 
@@ -1145,7 +1145,7 @@ namespace Dynamo.Models
                     node.DisableReporting();
                     node.Destroy();
                     node.Cleanup();
-                    node.WorkSpace.Nodes.Remove(node);
+                    node.Workspace.Nodes.Remove(node);
                 }
                 else if (model is ConnectorModel)
                 {
@@ -1249,7 +1249,6 @@ namespace Dynamo.Models
             else // Other node types.
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeInstance(typeName);
-                nodeModel.WorkSpace = this;
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
             }

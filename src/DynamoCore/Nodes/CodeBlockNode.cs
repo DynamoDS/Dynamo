@@ -43,19 +43,19 @@ namespace Dynamo.Nodes
 
         #region Public Methods
 
-        public CodeBlockNodeModel()
+        public CodeBlockNodeModel(WorkspaceModel workspace)
+            : base(workspace)
         {
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workSpace, double XPos, double YPos)
+        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double XPos, double YPos) : base(workspace)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             this.X = XPos;
             this.Y = YPos;
             this.code = userCode;
             this.GUID = guid;
-            this.WorkSpace = workSpace;
             this.shouldFocus = false;
             ProcessCodeDirect();
         }
@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
 
                         DisableReporting();
                         {
-                            WorkSpace.UndoRecorder.BeginActionGroup();
+                            Workspace.UndoRecorder.BeginActionGroup();
 
                             var inportConnections = new OrderedDictionary();
                             var outportConnections = new OrderedDictionary();
@@ -166,25 +166,25 @@ namespace Dynamo.Nodes
 
                             if (string.IsNullOrEmpty(code))
                             {
-                                WorkSpace.UndoRecorder.PopFromUndoGroup();
-                                WorkSpace.UndoRecorder.RecordCreationForUndo(this);
+                                Workspace.UndoRecorder.PopFromUndoGroup();
+                                Workspace.UndoRecorder.RecordCreationForUndo(this);
                             }
                             else
-                                WorkSpace.UndoRecorder.RecordModificationForUndo(this);
+                                Workspace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
                             ProcessCode(ref errorMessage, ref warningMessage);
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
-                            WorkSpace.UndoRecorder.EndActionGroup();
+                            Workspace.UndoRecorder.EndActionGroup();
                         }
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         ReportPosition();
 
-                        if (WorkSpace != null)
+                        if (Workspace != null)
                         {
-                            WorkSpace.Modified();
+                            Workspace.Modified();
                         }
 
                         EnableReporting();
@@ -239,7 +239,7 @@ namespace Dynamo.Nodes
             if (name == "Code")
             {
                 //Remove the UpdateValue's recording
-                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                this.Workspace.UndoRecorder.PopFromUndoGroup();
 
                 //Since an empty Code Block Node should not exist, this checks for such instances.
                 // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
@@ -250,13 +250,13 @@ namespace Dynamo.Nodes
                 {
                     if (this.Code == "")
                     {
-                        this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                        this.Workspace.UndoRecorder.PopFromUndoGroup();
                         Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
-                        this.WorkSpace.Nodes.Remove(this);
+                        this.Workspace.Nodes.Remove(this);
                     }
                     else
                     {
-                        this.WorkSpace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
+                        this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
                     }
                 }
                 else
@@ -379,9 +379,9 @@ namespace Dynamo.Nodes
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
 
-            if (WorkSpace != null)
+            if (Workspace != null)
             {
-                WorkSpace.Modified();
+                Workspace.Modified();
             }
 
             ClearError();
@@ -616,7 +616,7 @@ namespace Dynamo.Nodes
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
                         (inportConnections[portName] as List<PortModel>).Add(connector.Start);
-                        WorkSpace.UndoRecorder.RecordDeletionForUndo(connector);
+                        Workspace.UndoRecorder.RecordDeletionForUndo(connector);
                     }
                 }
                 else
@@ -645,7 +645,7 @@ namespace Dynamo.Nodes
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
                         (outportConnections[portName] as List<PortModel>).Add(connector.End);
-                        WorkSpace.UndoRecorder.RecordDeletionForUndo(connector);
+                        Workspace.UndoRecorder.RecordDeletionForUndo(connector);
                     }
                 }
                 else
@@ -681,9 +681,9 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel startNode = startPortModel.Owner;
-                            ConnectorModel connector = this.WorkSpace.AddConnection(startNode, this,
+                            ConnectorModel connector = this.Workspace.AddConnection(startNode, this,
                                 startNode.GetPortIndexAndType(startPortModel, out p), i);
-                            this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                            this.Workspace.UndoRecorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -711,9 +711,9 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel endNode = endPortModel.Owner;
-                            var connector = this.WorkSpace.AddConnection(this, endNode, i,
+                            var connector = this.Workspace.AddConnection(this, endNode, i,
                                 endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
-                            this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                            this.Workspace.UndoRecorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -740,9 +740,9 @@ namespace Dynamo.Nodes
                     {
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
-                        var connector = this.WorkSpace.AddConnection(this, endNode, index,
+                        var connector = this.Workspace.AddConnection(this, endNode, index,
                             endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
-                        WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                        Workspace.UndoRecorder.RecordCreationForUndo(connector);
                     }
                     outportConnections[index] = null;
                     undefinedIndices.Remove(index);
@@ -769,13 +769,13 @@ namespace Dynamo.Nodes
                 {
                     PortType p;
                     NodeModel endNode = endPortModel.Owner;
-                    ConnectorModel connector = this.WorkSpace.AddConnection(
+                    ConnectorModel connector = this.Workspace.AddConnection(
                         this,
                         endNode,
                         undefinedIndices[0],
                         endNode.GetPortIndexAndType(endPortModel, out p),
                         PortType.INPUT);
-                    WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                    Workspace.UndoRecorder.RecordCreationForUndo(connector);
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);

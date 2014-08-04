@@ -623,6 +623,11 @@ namespace Dynamo.Nodes
 
     public abstract partial class VariableInput : NodeModel
     {
+        public VariableInput(WorkspaceModel ws)
+            : base(ws)
+        {
+        }
+
         protected abstract string GetInputRootName();
         protected abstract string GetTooltipRootName();
 
@@ -725,7 +730,7 @@ namespace Dynamo.Nodes
 
     public abstract partial class VariableInputAndOutput : NodeModel
     {
-        protected VariableInputAndOutput()
+        protected VariableInputAndOutput(WorkspaceModel ws) : base(ws)
         {
         }
 
@@ -879,7 +884,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
     public partial class Sublists : BasicInteractive<string>
     {
-        public Sublists()
+        public Sublists(WorkspaceModel ws): base(ws)
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists."));
             InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}..."));
@@ -1148,7 +1153,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Composes two single parameter functions into one function.")]
     public class ComposeFunctions : NodeModel
     { 
-        public ComposeFunctions()
+        public ComposeFunctions(WorkspaceModel ws) : base(ws)
         {
             InPortData.Add(new PortData("f", "A Function"));
             InPortData.Add(new PortData("g", "A Function"));
@@ -1188,8 +1193,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Applies a function to arguments.")]
     public class Apply1 : VariableInput
     {
-        public Apply1()
-        {
+        public Apply1(WorkspaceModel ws) : base(ws)
+        { 
             InPortData.Add(new PortData("func", "Function"));
             OutPortData.Add(new PortData("result", "Result of function application."));
 
@@ -1291,7 +1296,8 @@ namespace Dynamo.Nodes
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue(T val);
 
-        protected BasicInteractive()
+        protected BasicInteractive(WorkspaceModel ws)
+            : base(ws)
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
@@ -1361,10 +1367,7 @@ namespace Dynamo.Nodes
             get { return true; }
         }
 
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewNumber(Value);
-        //}
+        public Double(WorkspaceModel ws) : base(ws) { }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -1384,10 +1387,7 @@ namespace Dynamo.Nodes
 
     public abstract class Integer : BasicInteractive<int>
     {
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewNumber(Value);
-        //}
+        public Integer(WorkspaceModel ws) : base(ws) { }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -1399,18 +1399,12 @@ namespace Dynamo.Nodes
 
     public abstract class Bool : BasicInteractive<bool>
     {
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewNumber(Value ? 1 : 0);
-        //}
+        public Bool(WorkspaceModel ws) : base(ws) { }
     }
 
     public abstract partial class AbstractString : BasicInteractive<string>
     {
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    return FScheme.Value.NewString(Value);
-        //}
+        public AbstractString(WorkspaceModel ws) : base(ws) { }
 
         public override string PrintExpression()
         {
@@ -1460,7 +1454,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public StringInput()
+        public StringInput(WorkspaceModel ws): base(ws)
         {
             RegisterAllPorts();
             Value = "";
@@ -1538,7 +1532,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public partial class DoubleInput : NodeModel
     {
-        public DoubleInput()
+        public DoubleInput(WorkspaceModel ws)
+            : base(ws)
         {
             OutPortData.Add(new PortData("", ""));
             RegisterAllPorts();
@@ -2220,7 +2215,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected DropDrownBase()
+        protected DropDrownBase(WorkspaceModel ws) : base(ws)
         {
             Items.CollectionChanged += Items_CollectionChanged;
         }

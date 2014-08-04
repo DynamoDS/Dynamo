@@ -28,9 +28,9 @@ using RevitServices.Transactions;
 
 using Element = Autodesk.Revit.DB.Element;
 
-namespace Dynamo.Applications
+namespace Dynamo.Applications.Models
 {
-    internal class RevitDynamoModel : DynamoModel
+    public class RevitDynamoModel : DynamoModel
     {
         #region Events
 
@@ -54,8 +54,7 @@ namespace Dynamo.Applications
         #endregion
 
         #region Properties/Fields
-
-        internal RevitServicesUpdater RevitServicesUpdater { get; private set; }
+        public RevitServicesUpdater RevitServicesUpdater { get; private set; }
      
         #endregion
 

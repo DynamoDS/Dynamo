@@ -62,10 +62,10 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { this, UndoRedoRecorder.UserAction.Modification }
                 };
-                WorkSpace.RecordModelsForUndo(models);
+                Workspace.RecordModelsForUndo(models);
             }
             else
-                WorkSpace.RecordModelForModification(this);
+                Workspace.RecordModelForModification(this);
         }
 
         protected override bool HandleModelEventCore(string eventName)
@@ -86,7 +86,7 @@ namespace Dynamo.Nodes
                 // For that reason, that entry on the undo-stack needs to be 
                 // popped (the node modification will be recorded here instead).
                 // 
-                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                this.Workspace.UndoRecorder.PopFromUndoGroup();
 
                 RecordModels();
                 RemoveInput();
@@ -141,10 +141,10 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { this, UndoRedoRecorder.UserAction.Modification }
                 };
-                WorkSpace.RecordModelsForUndo(models);
+                Workspace.RecordModelsForUndo(models);
             }
             else
-                WorkSpace.RecordModelForModification(this);
+                Workspace.RecordModelForModification(this);
         }
 
         protected override bool HandleModelEventCore(string eventName)
@@ -165,7 +165,7 @@ namespace Dynamo.Nodes
                 // For that reason, that entry on the undo-stack needs to be 
                 // popped (the node modification will be recorded here instead).
                 // 
-                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                this.Workspace.UndoRecorder.PopFromUndoGroup();
 
                 RecordModels();
                 RemoveInput();
@@ -269,7 +269,7 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
+            Workspace.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
         void Preferences_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -360,14 +360,14 @@ namespace Dynamo.Nodes
                 CanEditName = false
             };
 
-            dynamoModel.OnRequestsFunctionNamePrompt(this, args);
+            Workspace.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    this.DynamoModel.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    this.Workspace.DynamoModel.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
 
                 if (args.CanEditName) workspace.Name = args.Name;
@@ -562,7 +562,6 @@ namespace Dynamo.Nodes
 
     public partial class Watch
     {
-
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
@@ -612,7 +611,7 @@ namespace Dynamo.Nodes
 
             nodeUI.MainContextMenu.Items.Add(rawDataMenuItem);
 
-            ((PreferenceSettings)DynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)this.Workspace.DynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
         }

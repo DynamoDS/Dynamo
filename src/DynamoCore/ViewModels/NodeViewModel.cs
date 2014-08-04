@@ -116,7 +116,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
+                if (nodeLogic.Workspace is CustomNodeWorkspaceModel)
                     return "Not available in custom nodes";
 
                 var variableName = nodeLogic.AstIdentifierBase;

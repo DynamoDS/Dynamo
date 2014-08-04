@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting;
 using System.Text;
 
@@ -53,9 +54,6 @@ namespace Dynamo.Models
 
             if (node == null) return node;
 
-            node.DynamoModel = dynamoModel;
-            node.WorkSpace = workspaceModel;
-
             return node;
         }
 
@@ -64,8 +62,8 @@ namespace Dynamo.Models
         private NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
         {
             if (functionItem.IsVarArg)
-                return new DSVarArgFunction(functionItem);
-            return new DSFunction(functionItem);
+                return new DSVarArgFunction(this.workspaceModel, functionItem);
+            return new DSFunction(this.workspaceModel, functionItem);
         }
 
         private NodeModel GetCustomNodeByName(string name)
@@ -85,7 +83,8 @@ namespace Dynamo.Models
         {
             TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
 
-            ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+            ObjectHandle obj = Activator.CreateInstance(tld.Assembly.Location, tld.Type.FullName, false, 0, 
+                null, new object[]{this.workspaceModel}, null, null);
             var newEl = (NodeModel)obj.Unwrap();
             newEl.DisableInteraction();
             return newEl;
@@ -96,7 +95,8 @@ namespace Dynamo.Models
             TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
             try
             {
-                ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
+                ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName, false, 0,
+                    null, new object[] { this.workspaceModel }, null, null);
                 var newEl = (NodeModel)obj.Unwrap();
                 newEl.DisableInteraction();
                 return newEl;
@@ -132,11 +132,13 @@ namespace Dynamo.Models
                     throw new UnresolvedFunctionException(signature);
 
                 createdNode = Activator.CreateInstance(elementType,
-                    new object[] { functionDescriptor });
+                    new object[] { this.workspaceModel, functionDescriptor });
             }
             else
             {
-                createdNode = Activator.CreateInstance(elementType);
+                createdNode = Activator.CreateInstance(
+                    elementType,
+                    new object[] { this.workspaceModel });
             }
 
             // The attempt to create node instance may fail due to "elementType"
@@ -163,8 +165,6 @@ namespace Dynamo.Models
             }
 
             node.GUID = guid;
-            node.DynamoModel = dynamoModel;
-            node.WorkSpace = workspaceModel;
 
             return node;
         }

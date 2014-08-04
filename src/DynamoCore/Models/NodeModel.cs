@@ -25,10 +25,6 @@ namespace Dynamo.Models
     {
         #region private members
 
-        // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
-        public WorkspaceModel WorkSpace { get; internal set; }
-        public DynamoModel DynamoModel { get; set; }
-
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
@@ -57,6 +53,8 @@ namespace Dynamo.Models
         #endregion
 
         #region public members
+
+        public WorkspaceModel Workspace { get; private set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -312,7 +310,7 @@ namespace Dynamo.Models
 
                 cachedMirrorData = null;
 
-                var engine = DynamoModel.EngineController;
+                var engine = Workspace.DynamoModel.EngineController;
                 var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
                 if (runtimeMirror != null)
@@ -499,8 +497,10 @@ namespace Dynamo.Models
 
         #endregion
 
-        protected NodeModel()
+        protected NodeModel(WorkspaceModel workspaceModel)
         {
+            this.Workspace = workspaceModel;
+
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
 
@@ -547,7 +547,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Called when this node is being removed from the workspace.
+        ///     Called when this node is being removed from the Workspace.
         /// </summary>
         public virtual void Destroy() { }
 
@@ -558,7 +558,7 @@ namespace Dynamo.Models
 
         public MirrorData GetValue(int outPortIndex)
         {
-            return DynamoModel.EngineController.GetMirror(
+            return Workspace.DynamoModel.EngineController.GetMirror(
                 GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
         }
 
@@ -593,8 +593,8 @@ namespace Dynamo.Models
         /// </summary>
         protected internal void ReportModification()
         {
-            if (IsReportingModifications && WorkSpace != null)
-                WorkSpace.Modified();
+            if (IsReportingModifications && Workspace != null)
+                Workspace.Modified();
         }
 
         #endregion
@@ -605,7 +605,7 @@ namespace Dynamo.Models
         ///     Override this to implement custom save data for your Element. If overridden, you should also override
         ///     LoadNode() in order to read the data back when loaded.
         /// </summary>
-        /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
+        /// <param name="xmlDoc">The XmlDocument representing the whole Workspace containing this Element.</param>
         /// <param name="nodeElement">The XmlElement representing this Element.</param>
         /// <param name="context">Why is this being called?</param>
         protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context) { }
@@ -613,8 +613,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Saves this node into an XML Document.
         /// </summary>
-        /// <param name="xmlDoc">Overall XmlDocument representing the entire workspace being saved.</param>
-        /// <param name="dynEl">The XmlElement representing this node in the workspace.</param>
+        /// <param name="xmlDoc">Overall XmlDocument representing the entire Workspace being saved.</param>
+        /// <param name="dynEl">The XmlElement representing this node in the Workspace.</param>
         /// <param name="context">The context of this save operation.</param>
         public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
@@ -665,7 +665,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Called when the node's workspace has been saved.
+        ///     Called when the node's Workspace has been saved.
         /// </summary>
         protected internal virtual void OnSave() { }
         
@@ -985,7 +985,7 @@ namespace Dynamo.Models
             //    //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
             //    // 
 
-            if (this.DynamoModel != null) this.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
+            if (this.Workspace.DynamoModel != null) this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
         }
 
         public void Error(string p)
@@ -1445,7 +1445,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void UpdateRenderPackage(int maxTesselationDivisions)
         {
-            if (DynamoModel == null)
+            if (Workspace.DynamoModel == null)
             {
                 return;
             }
@@ -1467,7 +1467,7 @@ namespace Dynamo.Models
             var ident = AstIdentifierForPreview.Name;
 
             var data = from varName in drawableIds
-                        select DynamoModel.EngineController.GetMirror(varName)
+                        select Workspace.DynamoModel.EngineController.GetMirror(varName)
                         into mirror
                         where mirror != null
                         select mirror.GetData();
@@ -1482,7 +1482,7 @@ namespace Dynamo.Models
             List<IRenderPackage> newRenderPackages = new List<IRenderPackage>();
             foreach (var varName in drawableIds)
             {
-                var graphItems = DynamoModel.EngineController.GetGraphicItems(varName);
+                var graphItems = Workspace.DynamoModel.EngineController.GetGraphicItems(varName);
                 if (graphItems == null)
                     continue;
 
@@ -1731,8 +1731,8 @@ namespace Dynamo.Models
 
         public bool ShouldDisplayPreview()
         {
-            // Previews are only shown in Home workspace.
-            if (!(this.WorkSpace is HomeWorkspaceModel))
+            // Previews are only shown in Home Workspace.
+            if (!(this.Workspace is HomeWorkspaceModel))
                 return false;
 
             return this.ShouldDisplayPreviewCore();

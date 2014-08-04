@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
     {
         private Image image;
 
-        public WatchImageCore()
+        public WatchImageCore(WorkspaceModel ws) : base(ws)
         {
             InPortData.Add(new PortData("image", "image"));
             OutPortData.Add(new PortData("image", "image"));
@@ -81,7 +81,7 @@ namespace Dynamo.Nodes
         {
             if (this.InPorts[0].Connectors.Count == 0) return null;
 
-            var mirror = this.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
+            var mirror = this.Workspace.DynamoModel.EngineController.GetMirror(AstIdentifierForPreview.Name);
 
             if (null == mirror)
                 return null;

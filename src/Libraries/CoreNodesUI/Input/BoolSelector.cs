@@ -22,7 +22,7 @@ namespace DSCoreNodesUI
     {
         private DynamoViewModel dynamoViewModel;
 
-        public BoolSelector()
+        public BoolSelector(WorkspaceModel workspace) : base(workspace)
         {
             Value = false;
         }

@@ -19,7 +19,7 @@ namespace DSIronPythonNode
 {
     public abstract class PythonNodeBase : VariableInputNode
     {
-        protected PythonNodeBase()
+        protected PythonNodeBase(WorkspaceModel workspace) : base(workspace)
         {
             OutPortData.Add(new PortData("OUT", "Result of the python script"));
             ArgumentLacing = LacingStrategy.Disabled;
@@ -71,7 +71,7 @@ namespace DSIronPythonNode
     public sealed class PythonNode : PythonNodeBase
     {
 
-        public PythonNode()
+        public PythonNode(WorkspaceModel workspace) : base(workspace)
         {
             script = "import clr\nclr.AddReference('ProtoGeometry')\n"
                 + "from Autodesk.DesignScript.Geometry import *\n"
@@ -213,7 +213,7 @@ namespace DSIronPythonNode
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
     {
-        public PythonStringNode()
+        public PythonStringNode(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("script", "Python script to run."));
             AddInput();

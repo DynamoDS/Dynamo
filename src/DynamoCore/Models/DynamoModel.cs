@@ -419,7 +419,7 @@ namespace Dynamo.Models
 
         private void RemoveNodeFromMap(NodeModel n)
         {
-            if (n.WorkSpace != HomeSpace)
+            if (n.Workspace != HomeSpace)
             {
                 return;
             }
@@ -434,7 +434,7 @@ namespace Dynamo.Models
 
         private void AddNodeToMap(NodeModel n)
         {
-            if (n.WorkSpace != HomeSpace)
+            if (n.Workspace != HomeSpace)
             {
                 return;
             }
@@ -847,7 +847,6 @@ namespace Dynamo.Models
 
                         if (el != null)
                         {
-                            el.WorkSpace = CurrentWorkspace;
                             el.Load(elNode);
                         }
                         else
@@ -1182,7 +1181,7 @@ namespace Dynamo.Models
                 }
 
                 //don't let users paste connectors between workspaces
-                if (startNode.WorkSpace != CurrentWorkspace)
+                if (startNode.Workspace != CurrentWorkspace)
                 {
                     continue;
                 }

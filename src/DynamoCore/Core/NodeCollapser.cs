@@ -93,7 +93,7 @@ namespace Dynamo.Utilities
                     .Select(
                         outerNode =>
                         {
-                            var node = new Apply1();
+                            var node = new Apply1(newNodeWorkspace);
 
                             //MVVM : Don't make direct reference to view here
                             //MVVM: no reference to view here
@@ -111,7 +111,6 @@ namespace Dynamo.Utilities
 
                             //store the element in the elements list
                             newNodeWorkspace.Nodes.Add(node);
-                            node.WorkSpace = newNodeWorkspace;
 
                             node.DisableReporting();
 
@@ -226,7 +225,6 @@ namespace Dynamo.Utilities
                 undoRecorder.RecordDeletionForUndo(ele);
                 ele.SaveResult = false;
                 currentWorkspace.Nodes.Remove(ele);
-                ele.WorkSpace = newNodeWorkspace;
             }
 
             //  add to new
@@ -275,7 +273,7 @@ namespace Dynamo.Utilities
                     inConnectors.Add(Tuple.Create(inputNode, inputData));
 
                     //Create Symbol Node
-                    node = new Symbol
+                    node = new Symbol(newNodeWorkspace)
                     {
                         InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName
                     };
@@ -294,7 +292,6 @@ namespace Dynamo.Utilities
 
                     //store the element in the elements list
                     newNodeWorkspace.Nodes.Add(node);
-                    node.WorkSpace = newNodeWorkspace;
 
                     node.DisableReporting();
 
@@ -362,7 +359,7 @@ namespace Dynamo.Utilities
                         outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
 
                         //Create Symbol Node
-                        var node = new Output
+                        var node = new Output(newNodeWorkspace)
                         {
                             Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
                         };
@@ -381,7 +378,6 @@ namespace Dynamo.Utilities
 
                         //store the element in the elements list
                         newNodeWorkspace.Nodes.Add(node);
-                        node.WorkSpace = newNodeWorkspace;
 
                         node.DisableReporting();
 
@@ -453,12 +449,10 @@ namespace Dynamo.Utilities
                                 .Select(port => new { node, port })).Distinct())
                 {
                     //Create Symbol Node
-                    var node = new Output
+                    var node = new Output(newNodeWorkspace)
                     {
                         Symbol = hanging.node.OutPortData[hanging.port].NickName
                     };
-
-                    //dynNodeView nodeUI = node.NodeUI;
 
                     var elNameAttrib =
                         node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as
@@ -472,7 +466,6 @@ namespace Dynamo.Utilities
 
                     //store the element in the elements list
                     newNodeWorkspace.Nodes.Add(node);
-                    node.WorkSpace = newNodeWorkspace;
 
                     node.DisableReporting();
 

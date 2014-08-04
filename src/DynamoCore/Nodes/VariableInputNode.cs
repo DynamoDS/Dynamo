@@ -13,17 +13,17 @@ namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
+        public VariableInputNode(WorkspaceModel workspace) : base(workspace)
+        {}
 
         private int inputAmtLastBuild;
         private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>(); 
 
         public virtual void SetupCustomUIElements(dynNodeView view)
         {
-            var addButton = new DynamoNodeButton( this, "AddInPort") { Content = "+", Width = 20 };
-            //addButton.Height = 20;
+            var addButton = new DynamoNodeButton( this, "AddInPort") { Content = "+", Width = 20 };;
 
             var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
-            //subButton.Height = 20;
 
             var wp = new WrapPanel
             {
@@ -170,10 +170,10 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { this, UndoRedoRecorder.UserAction.Modification }
                 };
-                WorkSpace.RecordModelsForUndo(models);
+                Workspace.RecordModelsForUndo(models);
             }
             else
-                WorkSpace.RecordModelForModification(this);
+                Workspace.RecordModelForModification(this);
         }
 
         protected override bool HandleModelEventCore(string eventName)
@@ -195,7 +195,7 @@ namespace Dynamo.Nodes
                 // For that reason, that entry on the undo-stack needs to be 
                 // popped (the node modification will be recorded here instead).
                 // 
-                WorkSpace.UndoRecorder.PopFromUndoGroup();
+                Workspace.UndoRecorder.PopFromUndoGroup();
 
                 RecordModels();
                 RemoveInput();

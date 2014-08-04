@@ -28,7 +28,8 @@ namespace DSCoreNodesUI
                 RequestChangeColorRange(sender, e);
         }
 
-        public ColorRange()
+        public ColorRange(WorkspaceModel workspace)
+            : base(workspace)
         {
             InPortData.Add(new PortData("start", "The start color."));
             InPortData.Add(new PortData("end", "The end color."));
@@ -71,7 +72,7 @@ namespace DSCoreNodesUI
                 Height = 200
             };
 
-            var dm = this.DynamoModel;
+            var dm = this.Workspace.DynamoModel;
 
             view.inputGrid.Children.Add(drawPlane);
 

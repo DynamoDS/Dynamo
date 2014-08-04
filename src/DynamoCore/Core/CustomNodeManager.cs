@@ -511,7 +511,7 @@ namespace Dynamo.Utilities
             ////    //outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
             ////}
 
-            result = new Function(dynamoModel, def)
+            result = new Function(ws, def)
             {
                 NickName = ws.Name
             };

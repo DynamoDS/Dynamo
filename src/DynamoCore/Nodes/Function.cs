@@ -22,19 +22,15 @@ namespace Dynamo.Nodes
     [IsMetaNode]
     public partial class Function : NodeModel
     {
-        private readonly DynamoModel dynamoModel;
-
-        protected internal Function(DynamoModel dynamoModel, CustomNodeDefinition def)
+        protected internal Function(WorkspaceModel ws, CustomNodeDefinition def) : this(ws)
         {
-            this.dynamoModel = dynamoModel;
-
             Definition = def;
             ResyncWithDefinition();
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        // KILLDYNSETTINGS - does this need to exist?
-        public Function()
+        public Function(WorkspaceModel ws)
+            : base(ws)
         {}
 
         public new string Name
@@ -67,8 +63,8 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return dynamoModel.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
-                    ? dynamoModel.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
+                return Workspace.DynamoModel.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
+                    ? Workspace.DynamoModel.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
                     : "Custom Nodes";
             }
         }
@@ -242,7 +238,7 @@ namespace Dynamo.Nodes
                 {
                     LoadProxyCustomNode(funcId);
                 }
-                Definition = dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
+                Definition = Workspace.DynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
 
                 if (Definition.IsProxy)
                 {
@@ -332,10 +328,10 @@ namespace Dynamo.Nodes
                 return false;
 
             // if the dyf does not exist on the search path...
-            if (dynamoModel.CustomNodeManager.Contains(funcId))
+            if (Workspace.DynamoModel.CustomNodeManager.Contains(funcId))
                 return true;
 
-            CustomNodeManager manager = dynamoModel.CustomNodeManager;
+            CustomNodeManager manager = Workspace.DynamoModel.CustomNodeManager;
 
             // if there is a node with this name, use it instead
             if (manager.Contains(NickName))
@@ -351,16 +347,16 @@ namespace Dynamo.Nodes
         {
             var proxyDef = new CustomNodeDefinition(funcId)
             {
-                WorkspaceModel = new CustomNodeWorkspaceModel(this.dynamoModel, NickName, "Custom Nodes") { FileName = null }
+                WorkspaceModel = new CustomNodeWorkspaceModel(this.Workspace.DynamoModel, NickName, "Custom Nodes") { FileName = null }
             };
             proxyDef.IsProxy = true;
 
             string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
 
-            dynamoModel.Logger.Log(userMsg);
+            Workspace.DynamoModel.Logger.Log(userMsg);
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            dynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+            Workspace.DynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
         }
 
         //public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
@@ -500,7 +496,7 @@ namespace Dynamo.Nodes
                     return;
                 }
 
-                Definition = dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
+                Definition = Workspace.DynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
 
                 XmlNodeList inNodes = element.SelectNodes("functionInput");
                 XmlNodeList outNodes = element.SelectNodes("functionOutput");
@@ -579,7 +575,8 @@ namespace Dynamo.Nodes
     {
         private string inputSymbol = "";
 
-        public Symbol()
+        public Symbol(WorkspaceModel ws)
+            : base(ws)
         {
             OutPortData.Add(new PortData("", "Symbol"));
 
@@ -663,7 +660,8 @@ namespace Dynamo.Nodes
     {
         private string symbol = "";
 
-        public Output()
+        public Output(WorkspaceModel ws)
+            : base(ws)
         {
             InPortData.Add(new PortData("", ""));
 

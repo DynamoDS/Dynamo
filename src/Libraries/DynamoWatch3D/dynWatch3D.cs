@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public Watch3D()
+        public Watch3D(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
@@ -167,8 +167,8 @@ namespace Dynamo.Nodes
             }
             catch(Exception ex)
             {
-                this.DynamoModel.Logger.Log(ex);
-                this.DynamoModel.Logger.Log("View attributes could not be read from the file.");
+                this.Workspace.DynamoModel.Logger.Log(ex);
+                this.Workspace.DynamoModel.Logger.Log("View attributes could not be read from the file.");
             }
             
         }
