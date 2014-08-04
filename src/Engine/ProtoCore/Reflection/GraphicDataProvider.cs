@@ -152,7 +152,7 @@ namespace ProtoCore.Mirror
             if (null == classNodes || (classNodes.Count <= 0))
                 return null;
 
-            ClassNode classnode = core.DSExecutable.classTable.ClassNodes[(int)svData.metaData.type];
+            ClassNode classnode = core.DSExecutable.classTable.ClassNodes[svData.metaData.type];
             if (!classnode.IsImportedClass) //TODO: look at properties to see if it contains any FFI objects.
                 return null;
 

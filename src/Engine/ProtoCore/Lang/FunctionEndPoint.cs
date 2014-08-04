@@ -53,7 +53,7 @@ namespace ProtoCore
                 if (FormalParams[i].IsIndexable && formalParameters[i].IsArray)
                     continue;
 
-                if (FormalParams[i].UID != (int)formalParameters[i].metaData.type)
+                if (FormalParams[i].UID != formalParameters[i].metaData.type)
                     return false;
             }
             return true;
@@ -109,8 +109,6 @@ namespace ProtoCore
                     //cn now represents the class node of the argument
                     //argTypeNode represents the class node of the argument
 
-                    int coersionScore = cn.GetCoercionScore(core.ClassTable.ClassNodes.IndexOf(argTypeNode));
-
                     //TODO(Jun)This is worrying test
 
                     //Disable var as exact match, otherwise resolution between double and var will fail
@@ -123,7 +121,7 @@ namespace ProtoCore
                     continue;
                 }
 
-                if (FormalParams[i].UID != (int)formalParameters[i].metaData.type)
+                if (FormalParams[i].UID != formalParameters[i].metaData.type)
                     return false;
             }
             return true;
@@ -150,7 +148,7 @@ namespace ProtoCore
                 // Check if all the types match the current function at 'n'
                 for (int i = 0; i < args.Count; ++i)
                 {
-                    int rcvdType = (int) args[i].metaData.type;
+                    int rcvdType = args[i].metaData.type;
 
                     // If its a default argumnet, then it wasnt provided by the caller
                     // The rcvdType is the type of the argument signature
@@ -219,7 +217,7 @@ namespace ProtoCore
                     // Check if all the types match the current function at 'n'
                     for (int i = 0; i < args.Count; ++i)
                     {
-                        int rcvdType = (int)args[i].metaData.type;
+                        int rcvdType = args[i].metaData.type;
 
                         // If its a default argumnet, then it wasnt provided by the caller
                         // The rcvdType is the type of the argument signature
