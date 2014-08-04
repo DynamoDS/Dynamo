@@ -69,7 +69,6 @@ namespace ProtoCore.Utils
                     else if (token == '[')
                     {
                         StringBuilder keyword = new StringBuilder();
-                        StringBuilder fingerprint = new StringBuilder();
                         outputBuffer.Append(token);
                         char la = (char)reader.Peek(); //lookahead token
                         token = (char)reader.Read();

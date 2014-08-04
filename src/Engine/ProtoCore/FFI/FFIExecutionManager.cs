@@ -23,7 +23,7 @@ namespace ProtoFFI
         Dictionary<Core, FFIExecutionSession> mSessions = new Dictionary<Core, FFIExecutionSession>();
         ExtensionAppLoader mApploader = new ExtensionAppLoader();
 
-        static FFIExecutionManager mSelf = null;
+        static FFIExecutionManager mSelf;
 
         public static FFIExecutionManager Instance 
         { 
