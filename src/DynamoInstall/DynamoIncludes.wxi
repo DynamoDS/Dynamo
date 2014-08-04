@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Include>
-  <?define CORE_HARVEST_PATH = "C:\Users\Ian\Documents\GitHub\Dynamo\src\DynamoInstall\bin\Release\Harvest" ?>
-  <?define REVIT_2014_HARVEST_PATH = "C:\Users\Ian\Documents\GitHub\Dynamo\src\DynamoInstall\bin\Release\Harvest\Revit_2014" ?>
-  <?define REVIT_2015_HARVEST_PATH = "C:\Users\Ian\Documents\GitHub\Dynamo\src\DynamoInstall\bin\Release\Harvest\Revit_2015" ?>
-</Include>
