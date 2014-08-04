@@ -28,6 +28,7 @@ The following list represents what are to be implemented in Bloodstone for it to
 - [x] Implement pan operation
 - [x] Implement zoom operation
 - [x] Implement zoom extent with double-click
+- [ ] Remove "alpha" uniform from Phong fragment shader
 - [ ] Set the background Cornflower blue to match the geometry contents
 - [ ] Output diagnostic information on Dynamo
 - [ ] Fix creation failure for Parallels

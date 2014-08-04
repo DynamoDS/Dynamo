@@ -20,7 +20,7 @@ uniform vec4 controlParams;
 const vec3 lightPosition = vec3(5000.0, 55000.0, 10000.0);
 const vec3 ambientColor  = vec3(0.3, 0.3, 0.3);
 const vec3 diffuseColor  = vec3(0.5, 0.5, 0.5);
-const vec3 specularColor = vec3(1.0, 1.0, 1.0);
+const vec3 specularColor = vec3(0.8, 0.8, 0.8);
 
 void main(void)
 {
@@ -29,27 +29,30 @@ void main(void)
     // 
     if (controlParams[0] < 3.0)
     {
-        outColor = vec4(vertColor.xyz, alpha);
+        outColor = vec4(vertColor.rgb, alpha);
         return;
     }
 
     vec3 normal = normalize(vertNormal);
-    vec3 lightDir = normalize(lightPosition);
+    vec3 finalColor = vec3(0.0, 0.0, 0.0);
     
-    float specular = 0.0;
-    float lambertian = max(dot(lightDir, normal), 0.0);
+    // BEGIN - For multiple lights
+    vec3 lightDir = normalize(lightPosition - vertPosition);
+    vec3 viewDir = normalize(-vertPosition);
+    vec3 reflectDir = normalize(-reflect(lightDir, normal));
     
-    if(lambertian > 0.0) {
-        vec3 reflectDir = reflect(-lightDir, normal);
-        vec3 viewDir = normalize(-vertPosition);
-        float specAngle = max(dot(reflectDir, viewDir), 0.0);
-        specular = pow(specAngle, 4.0);
-        // specular = pow(specAngle, 16.0);
-        // specular *= lambertian;
-    }
-    
-    vec3 a = ambientColor * vertColor.rgb;
-    outColor = vec4(a +
-        lambertian * diffuseColor +
-        specular * specularColor, alpha);
+    // Calculate diffuse term.
+    vec3 diffuse = vertColor.rgb * max(dot(normal, lightDir), 0.0);
+    diffuse = clamp(diffuse, 0.0, 1.0); 
+
+    // Calculate specular term.
+    float lambertian = max(dot(reflectDir, viewDir), 0.0);
+    vec3 specular = specularColor * pow(lambertian, 4.0);
+    specular = clamp(specular, 0.0, 1.0); 
+
+    vec3 ambient = ambientColor * vertColor.rgb;
+    finalColor += ambient + diffuse + specular;
+    // END - For multiple lights
+
+    outColor = vec4(finalColor.rgb, 1.0);
 }
