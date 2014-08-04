@@ -14,7 +14,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenCustomNodeWorkspace()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 

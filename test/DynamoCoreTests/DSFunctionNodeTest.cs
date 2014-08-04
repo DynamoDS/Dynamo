@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestLoadingFunctions()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\dsfunctions.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -30,12 +30,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestAddFunction()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\add.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // get add node
             var addNode = model.CurrentWorkspace.NodeFromWorkspace("c969ebda-d77e-4cd3-985e-187dd1dccb03");
@@ -50,12 +50,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestAbs()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\abs.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // get abs node
             var absNode = model.CurrentWorkspace.NodeFromWorkspace("2c26388d-3d14-443a-ac41-c2bb0987a58e");
@@ -78,12 +78,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestCount()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\count.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // get count node
             var count = model.CurrentWorkspace.NodeFromWorkspace("007b5942-12b0-4cea-aa05-b43531b6ccb8");

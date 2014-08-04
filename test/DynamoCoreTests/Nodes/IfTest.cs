@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestIFBasic()
         {
-            DynamoModel model = ViewModel.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfBasic.dyn");
             RunModel(testFilePath);
 
@@ -32,7 +32,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfAsFunctionObject()
         {
-            DynamoModel model = ViewModel.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFAsFunctionObject.dyn");
             RunModel(testFilePath);
 
@@ -43,7 +43,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode1()
         {
-            DynamoModel model = ViewModel.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfInCustomNode1.dyn");
             RunModel(testFilePath);
 
@@ -54,7 +54,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode2()
         {
-            DynamoModel model = ViewModel.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFInCustomNode2.dyn");
             RunModel(testFilePath);
 

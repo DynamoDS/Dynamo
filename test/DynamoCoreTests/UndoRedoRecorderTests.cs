@@ -597,7 +597,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestBasicAttributes()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
             //model.CreateNode(400, 100, "Dynamo.Nodes.Addition");
             //var sumNode = Controller.DynamoViewModel.Model.Nodes[0] as Addition;
 
@@ -652,7 +652,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDoubleInput()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
             //model.CreateNode(400, 0, "Number");
 
             //var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleInput;
@@ -684,7 +684,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDoubleSliderInput()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
             //model.CreateNode(400, 0, "Number Slider");
 
             //var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleSliderInput;
@@ -726,7 +726,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestBool()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
             model.CreateNode(0, 0, "Boolean");
 
             var boolNode = ViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
@@ -881,7 +881,7 @@ namespace Dynamo.Tests
         public void TestFormula()
         {
             /*
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
             model.CreateNode(0, 0, "Formula");
 
             var formulaNode = Controller.DynamoViewModel.Model.Nodes[0] as Formula;
@@ -917,12 +917,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestFunctionNode()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_serialization\");
             string openPath = Path.Combine(examplePath, "graph function.dyn");
             string openPath2 = Path.Combine(examplePath, "GraphFunction.dyf");
             Assert.IsTrue(
-                ViewModel.CustomNodeManager.AddFileToPath(openPath2)!= null);
+                ViewModel.Model.CustomNodeManager.AddFileToPath(openPath2)!= null);
             ViewModel.OpenCommand.Execute(openPath);
 
             ViewModel.Model.RunExpression();
@@ -967,7 +967,7 @@ namespace Dynamo.Tests
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
-            var workspace = ViewModel.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
@@ -990,7 +990,7 @@ namespace Dynamo.Tests
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
-            var workspace = ViewModel.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 

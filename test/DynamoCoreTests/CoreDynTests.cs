@@ -536,7 +536,7 @@ namespace Dynamo.Tests
             //const string textAndFileName = @"test.txt";
             //model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
 
-            //dynSettings.Controller.RunExpression();
+            //ViewModel.Model.RunExpression();
 
             //File.Delete(textAndFileName);
 

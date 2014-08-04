@@ -13,7 +13,7 @@ namespace Dynamo.Tests
         [Test]
         public void WhenStartingDynamoInputAndOutputNodesAreMissingFromSearch()
         {
-            Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), ViewModel.DynamoModel.CurrentWorkspace );
+            Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace );
 
             // search and results are correct
             ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
@@ -27,15 +27,15 @@ namespace Dynamo.Tests
         public void WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch()
         {
             // goto custom node workspace
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
 
             // go to homeworkspace
-            ViewModel.DynamoModel.CurrentWorkspace =
-                ViewModel.DynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First();
+            ViewModel.Model.CurrentWorkspace =
+                ViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().First();
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Home");
 
@@ -51,7 +51,7 @@ namespace Dynamo.Tests
         public void WhenCustomNodeWorkspaceIsFocusedInputAndOutputNodesArePresentInSearch()
         {
             // goto custom node workspace
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 

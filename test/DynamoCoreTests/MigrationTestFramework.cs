@@ -36,7 +36,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             GetPreviewValues();
         }

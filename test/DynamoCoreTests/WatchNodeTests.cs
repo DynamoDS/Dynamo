@@ -85,12 +85,12 @@ namespace Dynamo.Tests
         [Test]
         public void WatchLiterals()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             dynSettings.Controller.PreferenceSettings.NumberFormat = "f0";
 
@@ -115,12 +115,12 @@ namespace Dynamo.Tests
         [Test]
         public void Watch1DCollections()
         {
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             dynSettings.Controller.PreferenceSettings.NumberFormat = "f0";
 
