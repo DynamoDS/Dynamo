@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "Custom Rounding");
-            var loader = new PackageLoader();
+            var loader = new PackageLoader(null);
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             Assert.IsNotNull(pkg);
@@ -44,14 +44,14 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsNullForInvalidDirectory()
         {
             var pkgDir = "";
-            var loader = new PackageLoader();
+            var loader = new PackageLoader(null);
             var pkg = loader.ScanPackageDirectory(pkgDir);
         }
 
         [Test]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var loader = new PackageLoader(null, PackagesDirectory);
             loader.LoadPackages();
             Assert.AreEqual(4, loader.LocalPackages.Count);
         }
@@ -60,7 +60,7 @@ namespace Dynamo.Tests
         public void LoadPackagesReturnsNoPackagesForInvalidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
-            var loader = new PackageLoader(pkgDir);
+            var loader = new PackageLoader(null, pkgDir);
             loader.LoadPackages();
             Assert.AreEqual(0, loader.LocalPackages.Count);
         }
@@ -70,32 +70,34 @@ namespace Dynamo.Tests
         {
             Assert.Inconclusive("Porting : Formula");
 
-            var loader = new PackageLoader(PackagesDirectory);
-            loader.LoadPackages();
-            var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
-            Assert.AreEqual(3, pkg.LoadedCustomNodes.Count );
+            //var loader = new PackageLoader(PackagesDirectory);
+            //loader.LoadPackages();
+            //var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
+            //Assert.AreEqual(3, pkg.LoadedCustomNodes.Count );
 
-            foreach (var nodeInfo in pkg.LoadedCustomNodes)
-            {
-                var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
-                Assert.IsNotNull(funcDef);
+            //foreach (var nodeInfo in pkg.LoadedCustomNodes)
+            //{
+            //    var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+            //    Assert.IsNotNull(funcDef);
 
-                var foundPkg = loader.GetOwnerPackage(funcDef);
+            //    var foundPkg = loader.GetOwnerPackage(funcDef);
 
-                Assert.IsNotNull(foundPkg);
-                Assert.AreEqual(pkg.Name, foundPkg.Name);
-                Assert.IsTrue(pkg.Name == foundPkg.Name);
-            }
+            //    Assert.IsNotNull(foundPkg);
+            //    Assert.AreEqual(pkg.Name, foundPkg.Name);
+            //    Assert.IsTrue(pkg.Name == foundPkg.Name);
+            //}
         
         }
 
         [Test]
         public void GetOwnerPackageReturnsNullForInvalidFunction()
         {
-            var loader = new PackageLoader(PackagesDirectory);
-            var info = dynSettings.CustomNodeManager.AddFileToPath(
+            var loader = new PackageLoader(null, PackagesDirectory);
+
+            var info = ViewModel.Model.CustomNodeManager.AddFileToPath(
                 Path.Combine(new string[] {GetTestDirectory(), "core", "combine", "combine2.dyf"}));
-            var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(info.Guid);
+
+            var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(info.Guid);
             Assert.IsNotNull(funcDef);
             var foundPkg = loader.GetOwnerPackage(funcDef);
             Assert.IsNull(foundPkg);
@@ -165,9 +167,9 @@ namespace Dynamo.Tests
         [Test]
         public void ListAllReturnsAllPackages()
         {
-            var elements = dynSettings.PackageManagerClient.ListAll();
-            Assert.AreNotEqual(0, elements.Count);
-            Console.WriteLine(elements.Count);
+            var elements = ViewModel.Model.PackageManagerClient.ListAll();
+            Assert.AreNotEqual(0, elements.Count());
+            Console.WriteLine(elements.Count());
         }
 
         [Test]

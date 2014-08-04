@@ -29,8 +29,8 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(dynamoFilePath, "Dynamo file path is invalid or missing.");
             
             //open the dyn file
-            Assert.True(dynSettings.Controller.DynamoViewModel.OpenCommand.CanExecute(dynamoFilePath));
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(dynamoFilePath);
+            Assert.True(ViewModel.OpenCommand.CanExecute(dynamoFilePath));
+            ViewModel.OpenCommand.Execute(dynamoFilePath);
 
 
             AssertNoDummyNodes();

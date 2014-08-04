@@ -622,7 +622,7 @@ namespace Dynamo.Tests
 
             // put in workspace
             model.Home(null);
-            model.CreateNode(0.0, 0.0, newDef.FunctionId.ToString());
+            model.CurrentWorkspace.AddNode(0.0, 0.0, newDef.FunctionId.ToString());
 
             // run expression
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
@@ -701,7 +701,7 @@ namespace Dynamo.Tests
             var homeWorkspace = model.Workspaces.OfType<HomeWorkspaceModel>().First();
             model.CurrentWorkspace = homeWorkspace;
             foreach (var i in Enumerable.Range(0, 10))
-                model.CreateNode(0.0, 0.0, oldId.ToString());
+                model.CurrentWorkspace.AddNode(0.0, 0.0, oldId.ToString());
             
             // SaveAs
             var newPath = this.GetNewFileNameOnTempPath("dyf");

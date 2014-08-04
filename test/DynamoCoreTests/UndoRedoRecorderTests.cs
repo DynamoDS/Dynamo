@@ -598,7 +598,7 @@ namespace Dynamo.Tests
         public void TestBasicAttributes()
         {
             //var model = ViewModel.Model;
-            //model.CreateNode(400, 100, "Dynamo.Nodes.Addition");
+            //model.CurrentWorkspace.AddNode(400, 100, "Dynamo.Nodes.Addition");
             //var sumNode = Controller.DynamoViewModel.Model.Nodes[0] as Addition;
 
             ////Assert inital values
@@ -653,7 +653,7 @@ namespace Dynamo.Tests
         public void TestDoubleInput()
         {
             //var model = ViewModel.Model;
-            //model.CreateNode(400, 0, "Number");
+            //model.CurrentWorkspace.AddNode(400, 0, "Number");
 
             //var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleInput;
             //numNode.Value = "0.0";
@@ -685,7 +685,7 @@ namespace Dynamo.Tests
         public void TestDoubleSliderInput()
         {
             //var model = ViewModel.Model;
-            //model.CreateNode(400, 0, "Number Slider");
+            //model.CurrentWorkspace.AddNode(400, 0, "Number Slider");
 
             //var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleSliderInput;
             //numNode.X = 400; //To check if NodeModel base Serialization method is being called
@@ -727,7 +727,7 @@ namespace Dynamo.Tests
         public void TestBool()
         {
             var model = ViewModel.Model;
-            model.CreateNode(0, 0, "Boolean");
+            model.CurrentWorkspace.AddNode(0, 0, "Boolean");
 
             var boolNode = ViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
             boolNode.Value = false;
@@ -882,7 +882,7 @@ namespace Dynamo.Tests
         {
             /*
             var model = ViewModel.Model;
-            model.CreateNode(0, 0, "Formula");
+            model.CurrentWorkspace.AddNode(0, 0, "Formula");
 
             var formulaNode = Controller.DynamoViewModel.Model.Nodes[0] as Formula;
             formulaNode.FormulaString = "x+y";
