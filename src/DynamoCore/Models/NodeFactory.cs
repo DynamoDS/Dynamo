@@ -22,13 +22,10 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Create a build-in node from a type object in a given workspace.
+        ///     Create a NodeModel from a function descriptor name, a NodeModel name, a NodeModel nickname, or a custom node name
         /// </summary>
-        /// <param name="elementType"> The Type object from which the node can be activated </param>
-        /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
-        /// <param name="signature"> The signature of the function along with parameter information </param>
-        /// <param name="guid"> The unique identifier for the node in the workspace. </param>
-        /// <returns> The newly instantiated dynNode</returns>
+        /// <param name="name">A name</param>
+        /// <returns>If the name is valid, a new NodeModel.  Otherwise, null.</returns>
         internal NodeModel CreateNodeInstance(string name)
         {
             NodeModel node;
@@ -41,77 +38,29 @@ namespace Dynamo.Models
             }
             else if (dynamoModel.BuiltInTypesByName.ContainsKey(name))
             {
-                node = GetBuiltinTypeByName(name);
+                node = GetNodeModelInstanceByName(name);
             }
             else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(name))
             {
-                node = GetBuiltinTypByNickName(name);
+                node = GetNodeModelInstanceByNickName(name);
             }
             else
             {
                 node = GetCustomNodeByName(name);
             }
 
-            if (node == null) return node;
-
             return node;
         }
 
-        #region Helper methods
-
-        private NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
-        {
-            if (functionItem.IsVarArg)
-                return new DSVarArgFunction(this.workspaceModel, functionItem);
-            return new DSFunction(this.workspaceModel, functionItem);
-        }
-
-        private NodeModel GetCustomNodeByName(string name)
-        {
-            Function func;
-
-            if (dynamoModel.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
-            {
-                return func;
-            }
-
-            dynamoModel.Logger.Log("Failed to find CustomNodeDefinition.");
-            return null;
-        }
-
-        private NodeModel GetBuiltinTypeByName(string name)
-        {
-            TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
-
-            ObjectHandle obj = Activator.CreateInstance(tld.Assembly.Location, tld.Type.FullName, false, 0, 
-                null, new object[]{this.workspaceModel}, null, null);
-            var newEl = (NodeModel)obj.Unwrap();
-            newEl.DisableInteraction();
-            return newEl;
-        }
-
-        private NodeModel GetBuiltinTypByNickName(string name)
-        {
-            TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
-            try
-            {
-                ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName, false, 0,
-                    null, new object[] { this.workspaceModel }, null, null);
-                var newEl = (NodeModel)obj.Unwrap();
-                newEl.DisableInteraction();
-                return newEl;
-            }
-            catch (Exception ex)
-            {
-                dynamoModel.Logger.Log("Failed to load built-in type");
-                dynamoModel.Logger.Log(ex);
-                return null;
-            }
-        }
-
-        #endregion
-
-        public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
+        /// <summary>
+        ///     Create a NodeModel from a type object
+        /// </summary>
+        /// <param name="elementType"> The Type object from which the node can be activated </param>
+        /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
+        /// <param name="signature"> The signature of the function along with parameter information </param>
+        /// <param name="guid"> The unique identifier for the node in the workspace. </param>
+        /// <returns> The newly instantiated NodeModel</returns>
+        internal NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
             object createdNode = null;
 
@@ -136,9 +85,7 @@ namespace Dynamo.Models
             }
             else
             {
-                createdNode = Activator.CreateInstance(
-                    elementType,
-                    new object[] { this.workspaceModel });
+                createdNode = this.GetNodeModelInstanceByType(elementType);
             }
 
             // The attempt to create node instance may fail due to "elementType"
@@ -168,6 +115,58 @@ namespace Dynamo.Models
 
             return node;
         }
+
+        #region Helper methods
+
+        private NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
+        {
+            if (functionItem.IsVarArg)
+                return new DSVarArgFunction(this.workspaceModel, functionItem);
+            return new DSFunction(this.workspaceModel, functionItem);
+        }
+
+        private NodeModel GetCustomNodeByName(string name)
+        {
+            Function func;
+
+            if (dynamoModel.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
+            {
+                return func;
+            }
+
+            dynamoModel.Logger.Log("Failed to find CustomNodeDefinition.");
+            return null;
+        }
+
+        private NodeModel GetNodeModelInstanceByName(string name)
+        {
+            TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
+            return this.GetNodeModelInstanceByType(tld.Type);
+        }
+
+        private NodeModel GetNodeModelInstanceByNickName(string name)
+        {
+            TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
+            return this.GetNodeModelInstanceByType(tld.Type);
+        }
+
+        private NodeModel GetNodeModelInstanceByType(Type type)
+        {
+            try
+            {
+                var newEl = (NodeModel)Activator.CreateInstance(type, this.workspaceModel);
+                newEl.DisableInteraction();
+                return newEl;
+            }
+            catch (Exception ex)
+            {
+                dynamoModel.Logger.Log("Failed to load built-in type");
+                dynamoModel.Logger.Log(ex);
+                return null;
+            }
+        }
+
+        #endregion
 
     }
 }
