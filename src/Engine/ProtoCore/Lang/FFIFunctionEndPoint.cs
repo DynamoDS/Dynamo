@@ -126,8 +126,6 @@ namespace ProtoCore.Lang
                     return ProtoCore.DSASM.StackValue.Null;
                 }
 
-                List<object> ps = new List<object>(); //obsolete
-
                 {
 
                     interpreter.runtime.executingBlock = core.RunningBlock;

@@ -822,7 +822,7 @@ namespace ProtoCore
             Validity.Assert(svThisPtr.IsPointer,
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
-            int typeID = (int) svThisPtr.metaData.type;
+            int typeID = svThisPtr.metaData.type;
 
             //Test for exact match
             List<FunctionEndPoint> exactFeps = new List<FunctionEndPoint>();
@@ -1251,7 +1251,7 @@ namespace ProtoCore
                 //Lookup the trace data in the cache
                 if (invokeCount < traceData.Count)
                 {
-                    singleRunTraceData = (SingleRunTraceData) traceData[invokeCount];
+                    singleRunTraceData = traceData[invokeCount];
                 }
                 else
                 {
@@ -1288,7 +1288,7 @@ namespace ProtoCore
                 //Lookup the trace data in the cache
                 if (invokeCount < traceData.Count)
                 {
-                    singleRunTraceData = (SingleRunTraceData)traceData[invokeCount];
+                    singleRunTraceData = traceData[invokeCount];
                 }
                 else
                 {
@@ -1905,7 +1905,7 @@ namespace ProtoCore
                 return coercedRet;
             }
 
-            if (!core.ClassTable.ClassNodes[(int) ret.metaData.type].ConvertibleTo(retType.UID))
+            if (!core.ClassTable.ClassNodes[ret.metaData.type].ConvertibleTo(retType.UID))
             {
                 //@TODO(Luke): log no-type coercion possible warning
 
