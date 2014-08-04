@@ -122,21 +122,28 @@ namespace Dynamo.Applications
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
-            return new RevitDynamoModel(GetRevitContext(commandData), prefs, corePath);
+            return RevitDynamoModel.Start(
+                new RevitDynamoModel.StartConfiguration()
+                {
+                    Preferences = prefs,
+                    DynamoCorePath = corePath
+                });
         }
 
         private static DynamoViewModel InitializeCoreViewModel(RevitDynamoModel revitDynamoModel)
         {
             var vizManager = new RevitVisualizationManager(revitDynamoModel);
-            var watchHandler = new RevitWatchHandler(vizManager, revitDynamoModel.PreferenceSettings);
 
-            var dvm = new DynamoViewModel(
-                revitDynamoModel,
-                watchHandler,
-                vizManager,
-                null);
+            var viewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = revitDynamoModel,
+                    VisualizationManager = vizManager,
+                    WatchHandler =
+                        new RevitWatchHandler(vizManager, revitDynamoModel.PreferenceSettings)
+                });
 
-            dvm.RequestAuthentication +=
+            viewModel.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
             revitDynamoModel.ShuttingDown += (drm)=>
@@ -163,7 +170,7 @@ namespace Dynamo.Applications
 
             // Register the view model to handle sign-on requests
 
-            return dvm;
+            return viewModel;
         }
 
         private static DynamoView InitializeCoreView()

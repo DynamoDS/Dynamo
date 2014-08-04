@@ -7,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
@@ -21,7 +20,6 @@ using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Services;
 using Dynamo.UI;
-using Dynamo.UI.Prompts;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -32,14 +30,14 @@ using DynamoUtilities;
 
 using Microsoft.Practices.Prism;
 
-using ProtoCore.DSASM;
-
 using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 
 using Dynamo.ViewModels;
 using Dynamo.DSEngine;
+
+using Double = System.Double;
 
 namespace Dynamo.Models
 {
@@ -234,13 +232,43 @@ namespace Dynamo.Models
 
         #endregion
 
-        public DynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) : 
-            this(context, preferences, corePath, new DynamoRunner(), isTestMode)
+        public struct StartConfiguration
         {
-
+            public string Context { get; set; }
+            public string DynamoCorePath { get; set; }
+            public IPreferences Preferences { get; set; }
+            public bool StartInTestMode { get; set; }
+            public DynamoRunner Runner { get; set; }
         }
 
-        public DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, bool isTestMode = false)
+        /// <summary>
+        /// Start DynamoModel with all default configuration options
+        /// </summary>
+        /// <returns></returns>
+        public static DynamoModel Start()
+        {
+            return Start(new StartConfiguration());
+        }
+
+        /// <summary>
+        /// Start DynamoModel with custom configuration.  Defaults will be assigned not provided.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static DynamoModel Start(StartConfiguration configuration)
+        {
+            // where necessary, assign defaults
+            var context = configuration.Context ?? Core.Context.NONE;
+            var corePath = configuration.DynamoCorePath
+                ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var testMode = configuration.StartInTestMode;
+            var prefs = configuration.Preferences ?? new PreferenceSettings();
+            var runner = configuration.Runner ?? new DynamoRunner();
+
+            return new DynamoModel(context, prefs, corePath, runner, testMode);
+        }
+
+        protected DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, bool isTestMode = false)
         {
             DynamoPathManager.Instance.InitializeCore(corePath);
             UsageReportingManager.Instance.InitializeCore(this);
@@ -312,10 +340,10 @@ namespace Dynamo.Models
 
         private void InitializePreferences(IPreferences preferences)
         {
-            SIUnit.LengthUnit = preferences.LengthUnit;
-            SIUnit.AreaUnit = preferences.AreaUnit;
-            SIUnit.VolumeUnit = preferences.VolumeUnit;
-            SIUnit.NumberFormat = preferences.NumberFormat;
+            BaseUnit.LengthUnit = preferences.LengthUnit;
+            BaseUnit.AreaUnit = preferences.AreaUnit;
+            BaseUnit.VolumeUnit = preferences.VolumeUnit;
+            BaseUnit.NumberFormat = preferences.NumberFormat;
         }
 
         #region internal methods
@@ -692,7 +720,7 @@ namespace Dynamo.Models
                 xmlDoc.Load(xmlPath);
 
                 TimeSpan previousElapsed = sw.Elapsed;
-                Logger.Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
+                Logger.Log(String.Format("{0} elapsed for loading xml.", sw.Elapsed));
 
                 double cx = 0;
                 double cy = 0;
@@ -711,15 +739,15 @@ namespace Dynamo.Models
                     {
                         if (att.Name.Equals("X"))
                         {
-                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            cx = Double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                         else if (att.Name.Equals("Y"))
                         {
-                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            cy = Double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                         else if (att.Name.Equals("zoom"))
                         {
-                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                            zoom = Double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
                         else if (att.Name.Equals("Version"))
                         {
@@ -746,10 +774,10 @@ namespace Dynamo.Models
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
                 {
-                    string backupPath = string.Empty;
+                    string backupPath = String.Empty;
                     if (!IsTestMode && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
-                        string message = string.Format(
+                        string message = String.Format(
                             "Original file '{0}' gets backed up at '{1}'",
                             Path.GetFileName(xmlPath), backupPath);
 
@@ -815,8 +843,8 @@ namespace Dynamo.Models
 
                     string nickname = nicknameAttrib.Value;
 
-                    double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-                    double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
+                    double x = Double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
+                    double y = Double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
                     bool isVisible = true;
                     if (isVisAttrib != null)
@@ -840,8 +868,8 @@ namespace Dynamo.Models
                         // is possible since some legacy nodes have been made to derive from
                         // "MigrationNode" object type that is not derived from "NodeModel".
                         // 
-                        typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(this, typeName);
+                        typeName = Utils.PreprocessTypeName(typeName);
+                        Type type = Utils.ResolveType(this, typeName);
                         if (type != null)
                             el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
 
@@ -865,7 +893,7 @@ namespace Dynamo.Models
                     }
 
                     // If a custom node fails to load its definition, convert it into a dummy node.
-                    var function = el as Dynamo.Nodes.Function;
+                    var function = el as Function;
                     if ((function != null) && (function.Definition == null))
                     {
                         var e = elNode as XmlElement;
@@ -877,9 +905,9 @@ namespace Dynamo.Models
                     {
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
-                        var type = Dynamo.Nodes.Utilities.ResolveType(this, typeName);
+                        var type = Utils.ResolveType(this, typeName);
 
-                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, string.Empty, guid);
+                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid);
                         el.Load(dummyElement);
                     }
 
@@ -919,7 +947,7 @@ namespace Dynamo.Models
                         el.SaveResult = true;
                 }
 
-                Logger.Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
+                Logger.Log(String.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
                 //OnRequestLayoutUpdate(this, EventArgs.Empty);
@@ -967,7 +995,7 @@ namespace Dynamo.Models
                     OnConnectorAdded(newConnector);
                 }
 
-                Logger.Log(string.Format("{0} ellapsed for loading connectors.",
+                Logger.Log(String.Format("{0} ellapsed for loading connectors.",
                     sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
@@ -982,8 +1010,8 @@ namespace Dynamo.Models
                         XmlAttribute yAttrib = note.Attributes[2];
 
                         string text = textAttrib.Value;
-                        double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-                        double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
+                        double x = Double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
+                        double y = Double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
                         // TODO(Ben): Shouldn't we be reading in the Guid 
                         // from file instead of generating a new one here?
@@ -993,7 +1021,7 @@ namespace Dynamo.Models
 
                 #endregion
 
-                Logger.Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
+                Logger.Log(String.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
 
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
@@ -1004,7 +1032,7 @@ namespace Dynamo.Models
                     new Action(() =>
                     {
                         sw.Stop();
-                        Logger.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
+                        Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
                     }));
 
                 #endregion

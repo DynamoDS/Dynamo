@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Autodesk.Revit.DB;
@@ -60,7 +62,32 @@ namespace Dynamo.Applications.Models
 
         #region Constructors
 
-        public RevitDynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
+        public new struct StartConfiguration
+        {
+            public string Context { get; set; }
+            public string DynamoCorePath { get; set; }
+            public IPreferences Preferences { get; set; }
+            public bool StartInTestMode { get; set; }
+        }
+
+        public new static RevitDynamoModel Start()
+        {
+            return RevitDynamoModel.Start(new StartConfiguration());
+        }
+
+        public static RevitDynamoModel Start(RevitDynamoModel.StartConfiguration configuration)
+        {
+            // where necessary, assign defaults
+            var context = configuration.Context ?? Core.Context.REVIT_2014;
+            var corePath = configuration.DynamoCorePath
+                ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var testMode = configuration.StartInTestMode;
+            var prefs = configuration.Preferences ?? new PreferenceSettings();
+
+            return new RevitDynamoModel(context, prefs, corePath, testMode);
+        }
+
+        private RevitDynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
             base(context, preferences, corePath, new RevitDynamoRunner(), isTestMode)
         {
             RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);

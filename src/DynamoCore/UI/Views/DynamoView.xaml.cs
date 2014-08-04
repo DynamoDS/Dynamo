@@ -65,7 +65,10 @@ namespace Dynamo.Controls
 
         public static DynamoApp MakeStandaloneAndRun(string commandFilePath)
         {
-            var viewModel = DynamoViewModel.MakeSandbox(commandFilePath);
+            var viewModel = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration()
+            {
+                CommandFilePath = commandFilePath
+            });
             
             var view = new DynamoView(viewModel);
 

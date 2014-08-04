@@ -422,23 +422,30 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public static DynamoViewModel MakeSandbox(string commandFilePath = null)
+        public struct StartConfiguration
         {
-            var prefs = PreferenceSettings.Load();
-
-            var corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var model = new DynamoModel("None", prefs, corePath);
-
-            var vizManager = new VisualizationManager(model);
-            var watchHandler = new DefaultWatchHandler(vizManager, prefs);
-
-            var viewModel = new DynamoViewModel(model, watchHandler, 
-                vizManager, commandFilePath);
-
-            return viewModel;
+            public string CommandFilePath { get; set; }
+            public IVisualizationManager VisualizationManager { get; set; }
+            public IWatchHandler WatchHandler { get; set; }
+            public DynamoModel DynamoModel { get; set; }
         }
 
-        public DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
+        public static DynamoViewModel Start()
+        {
+            return Start(new StartConfiguration());
+        }
+
+        public static DynamoViewModel Start(StartConfiguration startConfiguration)
+        {
+            var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
+            var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
+            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
+                model.PreferenceSettings);
+            
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath);
+        }
+
+        protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
             IVisualizationManager vizManager, string commandFilePath)
         {
             // initialize core data structures
