@@ -94,6 +94,15 @@ namespace Dynamo.Search
 
         #region Initialization
 
+        /// <summary>
+        /// Constructor without any arguments.  Does not initialize the DynamoModel
+        /// field.
+        /// </summary>
+        internal SearchModel()
+        {
+            InitializeCore();
+        }
+
         internal SearchModel(DynamoModel model)
         {
             DynamoModel = model;
@@ -316,7 +325,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The name</param>
         /// <returns>A list of output</returns>
-        internal static List<string> SplitCategoryName(string categoryName)
+        public static List<string> SplitCategoryName(string categoryName)
         {
             if (System.String.IsNullOrEmpty(categoryName))
                 return new List<string>();
@@ -494,7 +503,7 @@ namespace Dynamo.Search
         ///     Adds DesignScript function groups
         /// </summary>
         /// <param name="func"></param>
-        internal void Add(IEnumerable<FunctionGroup> functionGroups)
+        public void Add(IEnumerable<FunctionGroup> functionGroups)
         {
             if (null == functionGroups)
                 return;
@@ -564,7 +573,7 @@ namespace Dynamo.Search
         ///     Adds a local DynNode to search
         /// </summary>
         /// <param name="dynNode">A Dynamo node object</param>
-        internal void Add(Type t)
+        public void Add(Type t)
         {
             // get name, category, attributes (this is terribly ugly...)
             var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
@@ -646,7 +655,7 @@ namespace Dynamo.Search
 
         }
 
-        internal bool Add(CustomNodeInfo nodeInfo)
+        public bool Add(CustomNodeInfo nodeInfo)
         {
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
             nodeEle.Executed += this.OnExecuted;
@@ -704,7 +713,7 @@ namespace Dynamo.Search
         /// Removes a node from search and all empty parent categories
         /// </summary>
         /// <param name="nodeName">The name of the node</param>
-        internal void RemoveNodeAndEmptyParentCategory(string nodeName)
+        public void RemoveNodeAndEmptyParentCategory(string nodeName)
         {
             var nodes = _searchElements.Where(x => x.Name == nodeName).ToList();
             if (!nodes.Any())
@@ -724,7 +733,7 @@ namespace Dynamo.Search
         /// Removes a node from search and all empty parent categories
         /// </summary>
         /// <param name="nodeName">The name of the node</param>
-        internal void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
+        public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
         {
             var nodes = _searchElements
                 .Where(x => x is CustomNodeSearchElement)
