@@ -238,6 +238,7 @@ namespace Dynamo.Models
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
+            public IUpdateManager UpdateManager { get; set; }
             public DynamoRunner Runner { get; set; }
         }
 
@@ -264,11 +265,12 @@ namespace Dynamo.Models
             var testMode = configuration.StartInTestMode;
             var prefs = configuration.Preferences ?? new PreferenceSettings();
             var runner = configuration.Runner ?? new DynamoRunner();
+            var updateManager = configuration.UpdateManager;
 
-            return new DynamoModel(context, prefs, corePath, runner, testMode);
+            return new DynamoModel(context, prefs, corePath, runner, updateManager, testMode);
         }
 
-        protected DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, bool isTestMode = false)
+        protected DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, IUpdateManager updateManager, bool isTestMode)
         {
             DynamoPathManager.Instance.InitializeCore(corePath);
             UsageReportingManager.Instance.InitializeCore(this);
@@ -286,7 +288,7 @@ namespace Dynamo.Models
             }
 
             InitializePreferences(preferences);
-            InitializeUpdateManager();
+            InitializeUpdateManager(updateManager);
 
             //Start heartbeat reporting
             //This needs to be done after the update manager has been initialised
@@ -324,9 +326,9 @@ namespace Dynamo.Models
             PackageManagerClient = new PackageManagerClient(this);
         }
 
-        private void InitializeUpdateManager()
+        private void InitializeUpdateManager(IUpdateManager updateManager)
         {
-            UpdateManager = new UpdateManager.UpdateManager(this);
+            UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
             UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this.Logger, UpdateManager.UpdateDataAvailable));
         }
 

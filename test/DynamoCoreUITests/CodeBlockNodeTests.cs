@@ -46,7 +46,7 @@ namespace DynamoCoreUITests
         {
             if (this.ViewModel != null)
             {
-                this.ViewModel.ShutDown(true);
+                this.ViewModel.Model.ShutDown(true);
                 this.ViewModel = null;
                 this.commandCallback = null;
             }
@@ -190,13 +190,13 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return ViewModel.DynamoModel.CurrentWorkspace.GetModelInternal(id);
+            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
         }
 
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUI.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
@@ -206,25 +206,31 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException(message);
             }
 
-            // Create the controller to run alongside the view.
-            this.ViewModel = DynamoController.MakeSandbox(commandFilePath);
-            var controller = this.ViewModel;
-            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
-            DynamoController.IsTestMode = true;
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = model
+                });
+
+            ViewModel.DynamicRunEnabled = autoRun;
 
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
-            var dynamoView = new DynamoView();
-            dynamoView.DataContext = controller.DynamoViewModel;
-            controller.UIDispatcher = dynamoView.Dispatcher;
+            var dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
-            Assert.IsNotNull(controller);
-            Assert.IsNotNull(controller.DynamoModel);
-            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
-            workspace = controller.DynamoModel.CurrentWorkspace;
-            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+            Assert.IsNotNull(ViewModel);
+            Assert.IsNotNull(ViewModel.Model);
+            Assert.IsNotNull(ViewModel.Model.CurrentWorkspace);
+            workspace = ViewModel.Model.CurrentWorkspace;
+            workspaceViewModel = ViewModel.CurrentSpaceViewModel;
         }
 
         private void RegisterCommandCallback(CommandCallback commandCallback)
@@ -236,7 +242,7 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException("RunCommandsFromFile called twice");
 
             this.commandCallback = commandCallback;
-            var automation = this.ViewModel.DynamoViewModel.Automation;
+            var automation = this.ViewModel.Automation;
             automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
         }
 

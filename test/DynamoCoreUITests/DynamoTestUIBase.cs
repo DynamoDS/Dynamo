@@ -11,14 +11,10 @@ using NUnit.Framework;
 
 namespace DynamoCoreUITests
 {
-    public class DynamoTestUI
+    public class DynamoTestUIBase
     {
-        protected DynamoController Controller { get; set; }
-        
-        protected DynamoViewModel Vm { get; set; }
-        
-        protected DynamoView Ui { get; set; }
-        
+        protected DynamoViewModel ViewModel { get; set; }
+        protected DynamoView View { get; set; }
         protected DynamoModel Model { get; set; }
 
         protected string ExecutingDirectory
@@ -48,16 +44,21 @@ namespace DynamoCoreUITests
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            Controller = DynamoController.MakeSandbox();
-            DynamoController.IsTestMode = true;
+            Model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
 
             //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Model = Controller.DynamoModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
+            View = new DynamoView(ViewModel);
+            View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
@@ -67,16 +68,15 @@ namespace DynamoCoreUITests
         {
             //Ensure that we leave the workspace marked as
             //not having changes.
-            Controller.DynamoModel.HomeSpace.HasUnsavedChanges = false;
+            Model.HomeSpace.HasUnsavedChanges = false;
 
-            if (Ui.IsLoaded)
-                Ui.Close();
+            if (View.IsLoaded)
+                View.Close();
 
-            Controller.ShutDown(false);
+            Model.ShutDown(false);
 
-            Controller = null;
-            Vm = null;
-            Ui = null;
+            ViewModel = null;
+            View = null;
             Model = null;
 
             GC.Collect();
