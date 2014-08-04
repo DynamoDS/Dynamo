@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class DSLibraryTest : DSEvaluationUnitTest
+    class DSLibraryTest : DSEvaluationViewModelUnitTest
     {
         [SetUp]
         public override void Init()

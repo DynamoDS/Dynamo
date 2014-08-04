@@ -9,7 +9,7 @@ using System.IO;
 
 namespace Dynamo.Tests
 {
-    internal class UtilityTests : DynamoUnitTest
+    internal class UtilityTests : DynamoViewModelUnitTest
     {
         [Test]
         public void PreprocessTypeName00()

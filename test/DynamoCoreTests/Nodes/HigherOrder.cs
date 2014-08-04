@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace Dynamo.Nodes
 {
     [TestFixture]
-    public class HigherOrder : DSEvaluationUnitTest
+    public class HigherOrder : DSEvaluationViewModelUnitTest
     {
         string TestFolder { get { return GetTestDirectory(); } }
 

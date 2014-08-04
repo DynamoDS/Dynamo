@@ -72,7 +72,7 @@
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CustomNodeManagerTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
-    <Compile Include="DSEvaluationTest.cs" />
+    <Compile Include="DSEvaluationViewModelTest.cs" />
     <Compile Include="DSFunctionNodeTest.cs" />
     <Compile Include="DSLibraryTest.cs" />
     <Compile Include="DynamoDefects.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="Setup.cs" />
     <Compile Include="FileReading.cs" />
     <Compile Include="Nodes\ListTests.cs" />
-    <Compile Include="DynamoUnitTest.cs" />
+    <Compile Include="DynamoViewModelUnitTest.cs" />
     <Compile Include="Nodes\LogicTests.cs" />
     <Compile Include="Nodes\StringTests.cs" />
     <Compile Include="PackageManager\PackageDependencyTests.cs" />

@@ -15,7 +15,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class MigrationTestFramework : Dynamo.Tests.DSEvaluationUnitTest
+    class MigrationTestFramework : Dynamo.Tests.DSEvaluationViewModelUnitTest
     {
         /// <summary>
         /// Automated creation of regression test cases.

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Dynamo.Tests
 {
-	class ListTests : DSEvaluationUnitTest
+	class ListTests : DSEvaluationViewModelUnitTest
 	{
 		string listTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "list"); } }
 
@@ -18,7 +18,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestBuildSublistsEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_emptyInput.dyn");
 			RunModel(testFilePath);
 
@@ -28,7 +28,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestBuildSublistsInvalidInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_invalidInput.dyn");
 			RunModel(testFilePath);
 
@@ -38,7 +38,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestBuildSublistsNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("9240cdc9-5bbf-4579-930c-ef742a91d798", new int[][] { new int[] { 1 }, new int[] { 3 } });
@@ -48,7 +48,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestBuildSublistsStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_stringInput.dyn");
 			RunModel(testFilePath);
 
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestConcatenateListsEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("760c9f00-e12c-4db9-bbdf-a19562efdd09", new int[]{});
@@ -73,7 +73,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestConcatenateListsSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -83,7 +83,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestConcatenateListsNormalInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_normalInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("364b303f-8f0b-4964-b333-e937299c8352", new object[] { 10, 20, 10, 20, 10, "a", "b", "a", "b" });
@@ -97,7 +97,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("a54ad1f8-9b02-4ebf-9d4e-a53608906145", new int[]{});
@@ -106,7 +106,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListInvalidInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_invalidInput.dyn");
 			RunModel(testFilePath);
 
@@ -116,7 +116,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("87345663-8421-46f0-acd2-051e4ec5ff88", new int[][]{new int[]{1}, new int[]{2,3}, new int[]{4,5}});
@@ -125,7 +125,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalLeftListStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("87345663-8421-46f0-acd2-051e4ec5ff88", new string[][] { new string[] { "a" }, new string[] { "b", "a" }, new string[] { "b" } });
@@ -139,7 +139,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalRightListEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("49f4ebe5-fd49-462b-9896-fe1244f66486", new int[]{});
@@ -149,7 +149,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalRightListInvalidInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_invalidInput.dyn");
 			RunModel(testFilePath);
 
@@ -158,7 +158,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestDiagonalRightListNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("e84bf89e-e7a0-427c-adae-adcd61646e4e", new int[][] { new int[] { 5 }, new int[] { 3 }, new int[] { 1, 4 }, new int[] { 2 } });
@@ -172,7 +172,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_emptyInput.dyn");
 			RunModel(testFilePath);
 		}
@@ -180,7 +180,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -190,7 +190,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("879fda8f-b9f4-453b-bf4d-faeb76ce5ffc", 10);
@@ -199,7 +199,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFirstOfListStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("879fda8f-b9f4-453b-bf4d-faeb76ce5ffc", "a");
@@ -212,7 +212,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("d98b4671-fa55-4303-a9a2-e1b383d737da", 1);
@@ -222,7 +222,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -232,7 +232,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("d98b4671-fa55-4303-a9a2-e1b383d737da", 0);
@@ -242,7 +242,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestIsEmptyListStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("d98b4671-fa55-4303-a9a2-e1b383d737da", 0);
@@ -256,7 +256,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("8ab87f7a-2577-46b9-bee6-512b1678b028", 0);
@@ -266,7 +266,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -276,7 +276,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("18473048-4a5f-4b23-8578-d9b8c0f32c0f", 5);
@@ -286,7 +286,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestStringLengthStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testListLength_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("18473048-4a5f-4b23-8578-d9b8c0f32c0f", 4);
@@ -300,7 +300,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestPartitionStringEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("6cad28c0-605a-4b58-84a2-87939f81f61e", new int[] { });
@@ -310,7 +310,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestPartitionStringSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -320,7 +320,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestPartitionStringNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("a3cdc54a-5965-47ea-b294-f893b1b64ae2", new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5 } });
@@ -330,7 +330,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestPartitionStringStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPartitionList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("a3cdc54a-5965-47ea-b294-f893b1b64ae2", new string[][] { new string[] { "a", "b", "a" }, new string[] { "b" } });
@@ -344,7 +344,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPlatten_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("4cc4e5f0-4338-43bb-911e-d7c10ea2b53c", new int[] { });
@@ -354,7 +354,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPlatten_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -364,7 +364,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenNormalInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPlatten_normalInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("6e46f30d-2214-4ff7-a666-0516d2af7c64", new object[] 
@@ -380,7 +380,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenCompletlyEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_emptyInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("641db696-5626-4af0-b07e-6335c6dc4bc9", new int[] { });
@@ -389,7 +389,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenCompletlySingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -399,7 +399,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestFlattenCompletlyNormalInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_normalInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("76609452-9c1d-4d71-9223-bb13c323f3a6", new object[] { 0, 1, 2, 3, 4, "a", "b", "c", "d", "a", "b", "c", "d" });
@@ -413,7 +413,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRepeatEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testRepeat_emptyInput.dyn");
 			RunModel(testFilePath);
 		}
@@ -421,7 +421,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRepeatNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testRepeat_numberInput.dyn");
 			RunModel(testFilePath);
 			var a1 = new[] { 0, 1, 2, 3, 4 };
@@ -432,7 +432,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRepeatStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testRepeat_stringInput.dyn");
 			RunModel(testFilePath);
 
@@ -448,7 +448,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRestOfListEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_emptyInput.dyn");
 			RunModel(testFilePath);
 
@@ -458,7 +458,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRestOfListSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -468,7 +468,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRestOfListNumberInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_numberInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("3d3e481b-16ef-4837-b94e-7922f9e42029", new int[] { 20, 10, 20, 10 });
@@ -478,7 +478,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestRestOfListStringInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testRestOfList_stringInput.dyn");
 			RunModel(testFilePath);
 			AssertPreviewValue("3d3e481b-16ef-4837-b94e-7922f9e42029", new string[] { "b", "a", "b" });
@@ -491,7 +491,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestTransposeEmptyInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_emptyInput.dyn");
 			RunModel(testFilePath);
 			dynSettings.Controller.RunExpression(null);
@@ -504,7 +504,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestTransposeSingleInput()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_singleInput.dyn");
 			RunModel(testFilePath);
 
@@ -522,7 +522,7 @@ namespace Dynamo.Tests
 			// }                                { 24 }
 			//                              }
 
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_normalInput.dyn");
 			RunModel(testFilePath);
 
@@ -549,7 +549,7 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestTranspose()
 		{
-			DynamoModel model = Controller.DynamoModel;
+			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
 			RunModel(testFilePath);
 

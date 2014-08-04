@@ -14,23 +14,23 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
-    public class DSEvaluationUnitTest : DynamoUnitTest
+    public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
         public void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
         }
 
         public void RunModel(string relativeDynFilePath)
         {
             OpenModel(relativeDynFilePath);
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
         }
 
         public void RunCurrentModel() // Run currently loaded model.
         {
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Dynamo.Tests
     }
 
     [Category("DSExecution")]
-    class DSEvaluationTest : DSEvaluationUnitTest
+    class DSEvaluationViewModelTest : DSEvaluationViewModelUnitTest
     {
         [Test]
         public void TestCodeBlockNode01()
@@ -685,7 +685,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
             var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
-            var node = Controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            var node = ViewModel.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
             Assert.IsTrue(node.State == Models.ElementState.Warning);
         }
 
@@ -735,7 +735,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
 
-            model.AddToSelection(Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+            model.AddToSelection(ViewModel.DynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("5a7f7549-fbef-4c3f-8578-c67471eaa87f"));
 
             model.Copy(null);
@@ -748,7 +748,7 @@ namespace Dynamo.Tests
             //run the graph after copy paste
             dynSettings.Controller.RunExpression();
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DSVarArgFunction>();
+            var nodes = ViewModel.DynamoModel.Nodes.OfType<DSVarArgFunction>();
             foreach (var item in nodes)
             {
                 AssertPreviewValue(item.GUID.ToString(), new string[] { "Dynamo", "DS" });   
@@ -845,16 +845,16 @@ namespace Dynamo.Tests
     }
 
     [Category("DSCustomNode")]
-    class CustomNodeEvaluation : DSEvaluationUnitTest
+    class CustomNodeEvaluationViewModel : DSEvaluationViewModelUnitTest
     {
         [Test]
         public void CustomNodeNoInput01()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "NoInput.dyf"))
+                ViewModel.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "NoInput.dyf"))
                 != null);
 
             string openPath = Path.Combine(examplePath, "TestNoInput.dyn");
@@ -872,11 +872,11 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWithInput02()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "CNWithInput.dyf"))
+                ViewModel.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "CNWithInput.dyf"))
                 != null);
 
             string openPath = Path.Combine(examplePath, "TestCNWithInput.dyn");
@@ -892,11 +892,11 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWithCBNAndGeometry()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Centroid.dyf"))
+                ViewModel.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Centroid.dyf"))
                 != null);
 
             string openPath = Path.Combine(examplePath, "TestCentroid.dyn");
@@ -916,11 +916,11 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeMultipleInGraph()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             var dyfPath = Path.Combine(examplePath, "Poly.dyf");
-            Assert.IsNotNull(Controller.CustomNodeManager.AddFileToPath(dyfPath));
+            Assert.IsNotNull(ViewModel.CustomNodeManager.AddFileToPath(dyfPath));
 
             RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
 
@@ -933,11 +933,11 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeConditional()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Conditional.dyf"))
+                ViewModel.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Conditional.dyf"))
                 != null);
 
             string openPath = Path.Combine(examplePath, "TestConditional.dyn");
@@ -960,11 +960,11 @@ namespace Dynamo.Tests
             // which cannot be found, so foo.dyf would be a proxy custom node,
             // as opening a dyn file will compile all custom nodes, the 
             // compilation of that proxy custom node should have any problem.
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "bar.dyf"))
+                ViewModel.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "bar.dyf"))
                 != null);
 
             string openPath = Path.Combine(examplePath, "foobar.dyn");

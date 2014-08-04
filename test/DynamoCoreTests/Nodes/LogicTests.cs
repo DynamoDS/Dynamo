@@ -6,14 +6,14 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class ComparisonTests : DSEvaluationUnitTest
+    class ComparisonTests : DSEvaluationViewModelUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
 
         [Test]
         public void testLessThan_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         [Test]
         public void testLessThan_StringInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanStringInput.dyn");
 
             RunModel(testFilePath);
@@ -37,7 +37,7 @@ namespace Dynamo.Tests
         [Test]
         public void testLessThan_InvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanInvalidInput.dyn");
 
             RunModel(testFilePath);
@@ -46,7 +46,7 @@ namespace Dynamo.Tests
         [Test]
         public void testEqual_InvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testEqualInvalidInput.dyn");
 
             RunModel(testFilePath);
@@ -55,7 +55,7 @@ namespace Dynamo.Tests
         [Test]
         public void testEqual_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testEqualNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -67,7 +67,7 @@ namespace Dynamo.Tests
         [Test]
         public void testEqual_StringInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testEqualStringInput.dyn");
 
             RunModel(testFilePath);
@@ -79,7 +79,7 @@ namespace Dynamo.Tests
         [Test]
         public void testGreaterThan_InvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanInvalidInput.dyn");
 
             RunModel(testFilePath);
@@ -89,7 +89,7 @@ namespace Dynamo.Tests
         [Test]
         public void testGreaterThan_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -101,7 +101,7 @@ namespace Dynamo.Tests
         [Test]
         public void testGreaterThan_StringInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanStringInput.dyn");
 
             RunModel(testFilePath);
@@ -113,7 +113,7 @@ namespace Dynamo.Tests
         [Test]
         public void testGreaterThanOrEqual_InvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanOrEqualInvalidInput.dyn");
 
             RunModel(testFilePath);
@@ -122,7 +122,7 @@ namespace Dynamo.Tests
         [Test]
         public void testGreaterThanOrEqual_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanOrEqualNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -135,7 +135,7 @@ namespace Dynamo.Tests
         [Test]
         public void testGreaterThanOrEqual_StringInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanOrEqualStringInput.dyn");
 
             RunModel(testFilePath);
@@ -149,7 +149,7 @@ namespace Dynamo.Tests
         [Test]
         public void testLessThanOrEqual_InvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanOrEqualInvalidInput.dyn");
 
             RunModel(testFilePath);
@@ -159,7 +159,7 @@ namespace Dynamo.Tests
         [Test]
         public void testLessThanOrEqual_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanOrEqualNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -173,7 +173,7 @@ namespace Dynamo.Tests
         [Test]
         public void testLessThanOrEqual_StringInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanOrEqualStringInput.dyn");
 
             RunModel(testFilePath);
@@ -186,7 +186,7 @@ namespace Dynamo.Tests
         [Test]
         public void testCompare_DoubleInteger()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testCompare_DoubleInteger.dyn");
 
             RunModel(testFilePath);
@@ -199,7 +199,7 @@ namespace Dynamo.Tests
         [Test]
         public void testCompare_BooleanInteger()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testCompare_BooleanInteger.dyn");
 
             RunModel(testFilePath);
@@ -212,7 +212,7 @@ namespace Dynamo.Tests
         [Test]
         public void testCompare_BooleanBoolean()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testCompare_BooleanBoolean.dyn");
 
             RunModel(testFilePath);
@@ -225,7 +225,7 @@ namespace Dynamo.Tests
         [Test]
         public void testCompare_StringInteger()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testCompare_StringInteger.dyn");
 
             RunModel(testFilePath);
@@ -238,7 +238,7 @@ namespace Dynamo.Tests
         [Test]
         public void testCompare_StringDouble()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testCompare_StringDouble.dyn");
 
             RunModel(testFilePath);
@@ -250,14 +250,14 @@ namespace Dynamo.Tests
     }
 
     [TestFixture]
-    class ConditionalTest : DSEvaluationUnitTest
+    class ConditionalTest : DSEvaluationViewModelUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
 
         [Test]
         public void testAnd_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testAndNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -271,7 +271,7 @@ namespace Dynamo.Tests
         public void testAnd_StringInput()
         {
             Assert.Inconclusive("and should always return true/false");
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testAndStringInput.dyn");
 
             RunModel(testFilePath);
@@ -283,7 +283,7 @@ namespace Dynamo.Tests
         [Test]
         public void testIf_StringInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testIfNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -298,7 +298,7 @@ namespace Dynamo.Tests
         [Test]
         public void testNot_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testNotNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -310,7 +310,7 @@ namespace Dynamo.Tests
         [Test]
         public void testOr_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testOrNumberInput.dyn");
 
             RunModel(testFilePath);
@@ -323,7 +323,7 @@ namespace Dynamo.Tests
         [Test]
         public void testXor_NumberInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testXorNumberInput.dyn");
 
             RunModel(testFilePath);

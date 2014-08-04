@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Dynamo
 {
-    class ExecutionIntervalTests : DynamoUnitTest
+    class ExecutionIntervalTests : DynamoViewModelUnitTest
     {
         [Test]
         public void EvalTwiceAndCancel()
@@ -17,21 +17,21 @@ namespace Dynamo
             var examplePath = Path.Combine(GetTestDirectory(), @"core\executioninterval\");
 
             string openPath = Path.Combine(examplePath, "pause.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
 
             int runCount = 0;
 
-            Controller.EvaluationCompleted += delegate
+            ViewModel.EvaluationCompleted += delegate
             {
                 runCount++;
                 if (runCount == 2)
                 {
-                    Controller.RunCancelInternal(false, true);
+                    ViewModel.RunCancelInternal(false, true);
                     Assert.Pass();
                 }
             };
 
-            Controller.RunExpression(2000);
+            ViewModel.RunExpression(2000);
 
             //If we reach this point, then the Assert.Pass() call was never reached 
             //and so ExecutionInterval is broken.

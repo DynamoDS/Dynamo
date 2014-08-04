@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class WatchNodeTests : DynamoUnitTest
+    class WatchNodeTests : DynamoViewModelUnitTest
     {
         /// <summary>
         /// Validates the watch content of a WatchViewModel branch with the 
@@ -40,7 +40,7 @@ namespace Dynamo.Tests
         {
             string var = sourceNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = ViewModel.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
             AssertWatchContent(watch, mirror.GetData());
         }
@@ -85,12 +85,12 @@ namespace Dynamo.Tests
         [Test]
         public void WatchLiterals()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
 
             dynSettings.Controller.PreferenceSettings.NumberFormat = "f0";
 
@@ -115,12 +115,12 @@ namespace Dynamo.Tests
         [Test]
         public void Watch1DCollections()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.RunExpression(null));
 
             dynSettings.Controller.PreferenceSettings.NumberFormat = "f0";
 

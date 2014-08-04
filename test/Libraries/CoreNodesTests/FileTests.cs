@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class FileWritingTests : DSEvaluationUnitTest
+    class FileWritingTests : DSEvaluationViewModelUnitTest
     {
         [Test]
         public void FileWriter()
@@ -29,7 +29,7 @@ namespace Dynamo.Tests
             string fullPath = Path.Combine(TempFolder, "filewriter.txt");
             path.Value = fullPath;
 
-            Controller.RunExpression(null);
+            ViewModel.RunExpression(null);
 
             AssertPreviewValue("48c04164-6435-4124-9fe6-b3319ef177da", true);
         }
@@ -51,7 +51,7 @@ namespace Dynamo.Tests
             var path = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
             path.Value = TempFolder;
 
-            Controller.RunExpression(null);
+            ViewModel.RunExpression(null);
 
             AssertPreviewValue("48c04164-6435-4124-9fe6-b3319ef177da", true);
         }

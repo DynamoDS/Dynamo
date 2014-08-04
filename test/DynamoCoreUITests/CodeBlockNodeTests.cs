@@ -16,7 +16,7 @@ namespace DynamoCoreUITests
     //public delegate void CommandCallback(string commandTag);
 
     [TestFixture]
-    public class CodeBlockNodeTests : DSEvaluationUnitTest
+    public class CodeBlockNodeTests : DSEvaluationViewModelUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
@@ -44,10 +44,10 @@ namespace DynamoCoreUITests
         [TearDown]
         protected void Exit()
         {
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
-                this.Controller.ShutDown(true);
-                this.Controller = null;
+                this.ViewModel.ShutDown(true);
+                this.ViewModel = null;
                 this.commandCallback = null;
             }
 
@@ -190,7 +190,7 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
+            return ViewModel.DynamoModel.CurrentWorkspace.GetModelInternal(id);
         }
 
         protected void RunCommandsFromFile(string commandFileName,
@@ -200,15 +200,15 @@ namespace DynamoCoreUITests
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
                 var message = "Multiple DynamoController detected!";
                 throw new InvalidOperationException(message);
             }
 
             // Create the controller to run alongside the view.
-            this.Controller = DynamoController.MakeSandbox(commandFilePath);
-            var controller = this.Controller;
+            this.ViewModel = DynamoController.MakeSandbox(commandFilePath);
+            var controller = this.ViewModel;
             controller.DynamoViewModel.DynamicRunEnabled = autoRun;
             DynamoController.IsTestMode = true;
 
@@ -236,7 +236,7 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException("RunCommandsFromFile called twice");
 
             this.commandCallback = commandCallback;
-            var automation = this.Controller.DynamoViewModel.Automation;
+            var automation = this.ViewModel.DynamoViewModel.Automation;
             automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
         }
 

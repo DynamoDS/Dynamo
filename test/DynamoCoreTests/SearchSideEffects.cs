@@ -8,63 +8,63 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    public class SearchSideEffects : DynamoUnitTest
+    public class SearchSideEffects : DynamoViewModelUnitTest
     {
         [Test]
         public void WhenStartingDynamoInputAndOutputNodesAreMissingFromSearch()
         {
-            Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), Controller.DynamoModel.CurrentWorkspace );
+            Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), ViewModel.DynamoModel.CurrentWorkspace );
 
             // search and results are correct
-            Controller.SearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(0, Controller.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
 
-            Controller.SearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(0, Controller.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
         }
 
         [Test]
         public void WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch()
         {
             // goto custom node workspace
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
 
             // go to homeworkspace
-            Controller.DynamoModel.CurrentWorkspace =
-                Controller.DynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First();
+            ViewModel.DynamoModel.CurrentWorkspace =
+                ViewModel.DynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First();
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Home");
 
             // search and results are correct
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("Input");
-            Assert.AreEqual(0, Controller.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Input");
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
 
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("Output");
-            Assert.AreEqual(0, Controller.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Output");
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
         }
 
         [Test]
         public void WhenCustomNodeWorkspaceIsFocusedInputAndOutputNodesArePresentInSearch()
         {
             // goto custom node workspace
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
 
             // search and results are correct
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("Input");
-            Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
-            Assert.AreEqual("Input", Controller.SearchViewModel.SearchResults[0].Name);
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Input");
+            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
+            Assert.AreEqual("Input", ViewModel.SearchViewModel.SearchResults[0].Name);
 
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("Output");
-            Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
-            Assert.AreEqual("Output", Controller.SearchViewModel.SearchResults[0].Name);
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Output");
+            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
+            Assert.AreEqual("Output", ViewModel.SearchViewModel.SearchResults[0].Name);
 
         }
     }

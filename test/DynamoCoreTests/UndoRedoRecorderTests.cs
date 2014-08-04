@@ -592,7 +592,7 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class SerializationTests : DynamoUnitTest
+    internal class SerializationTests : DynamoViewModelUnitTest
     {
         [Test]
         public void TestBasicAttributes()
@@ -729,7 +729,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Boolean");
 
-            var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
+            var boolNode = ViewModel.DynamoViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
             boolNode.Value = false;
             boolNode.X = 400; //To check if base Serialization method is being called
 
@@ -917,13 +917,13 @@ namespace Dynamo.Tests
         [Test]
         public void TestFunctionNode()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_serialization\");
             string openPath = Path.Combine(examplePath, "graph function.dyn");
             string openPath2 = Path.Combine(examplePath, "GraphFunction.dyf");
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(openPath2)!= null);
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+                ViewModel.CustomNodeManager.AddFileToPath(openPath2)!= null);
+            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression(null);
             System.Threading.Thread.Sleep(500);
@@ -965,9 +965,9 @@ namespace Dynamo.Tests
         public void TestDummyNodeInternals00()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
+            ViewModel.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.DynamoModel.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
@@ -988,9 +988,9 @@ namespace Dynamo.Tests
         public void TestDummyNodeInternals01()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
+            ViewModel.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.DynamoModel.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
