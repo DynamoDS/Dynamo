@@ -6628,6 +6628,8 @@ namespace ProtoCore.DSASM
             runtimeVerify(instruction.op2.IsClassIndex);
             int ci = (int)instruction.op2.opdata;
 
+            rmem.Pop();
+
             StackValue svBlock = rmem.Pop();
             int blockId = (int)svBlock.opdata;
             if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
