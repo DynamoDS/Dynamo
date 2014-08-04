@@ -729,7 +729,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Boolean");
 
-            var boolNode = ViewModel.DynamoViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
+            var boolNode = ViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
             boolNode.Value = false;
             boolNode.X = 400; //To check if base Serialization method is being called
 
@@ -923,9 +923,9 @@ namespace Dynamo.Tests
             string openPath2 = Path.Combine(examplePath, "GraphFunction.dyf");
             Assert.IsTrue(
                 ViewModel.CustomNodeManager.AddFileToPath(openPath2)!= null);
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
             System.Threading.Thread.Sleep(500);
 
             // check if the node is loaded
@@ -965,7 +965,7 @@ namespace Dynamo.Tests
         public void TestDummyNodeInternals00()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
+            ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.DynamoModel.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
@@ -988,7 +988,7 @@ namespace Dynamo.Tests
         public void TestDummyNodeInternals01()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
+            ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.DynamoModel.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(

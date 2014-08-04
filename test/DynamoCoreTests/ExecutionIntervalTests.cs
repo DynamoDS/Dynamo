@@ -17,7 +17,7 @@ namespace Dynamo
             var examplePath = Path.Combine(GetTestDirectory(), @"core\executioninterval\");
 
             string openPath = Path.Combine(examplePath, "pause.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             int runCount = 0;
 

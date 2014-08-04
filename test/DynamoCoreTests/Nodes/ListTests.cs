@@ -494,7 +494,7 @@ namespace Dynamo.Tests
 			DynamoModel model = ViewModel.DynamoModel;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_emptyInput.dyn");
 			RunModel(testFilePath);
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 			var watch = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
 
 			var actual = watch.GetValue(0).GetElements();
@@ -871,7 +871,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
 
 			// run the expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			//  before Reversing
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -1399,7 +1399,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(5, workspace.Connectors.Count);
 
 			// run the expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
@@ -1515,7 +1515,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(8, workspace.Connectors.Count);
 
 			// run the expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
 			var actual = addToList.GetValue(0).GetElements();
@@ -1580,7 +1580,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
 			// run the expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			Dictionary<int, object> validationData = new Dictionary<int, object>()
 			{
@@ -1692,7 +1692,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
 
 			// run the expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var guid = "66e94123-deaf-4bc8-8c5f-b3bc0996a57e";
 			var splitList = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
@@ -1733,7 +1733,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
 			// run the expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
 			var firstOutput = takeFromList.GetValue(0).GetElements();
@@ -1891,7 +1891,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(22, workspace.Connectors.Count);
 
 			// run expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var guid = "492db019-4807-4810-8919-10b94e8ca083";
 			var shiftListIndeces = workspace.NodeFromWorkspace<DSFunction>(guid);
@@ -2007,7 +2007,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
 			// run expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var getFromList = model.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
 			var output = getFromList.GetValue(0).GetElements();
@@ -2162,7 +2162,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(20, workspace.Connectors.Count);
 
 			// run expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var guid = "4bd0ced4-29ee-4f4e-95af-d0573e04731a";
 			var takeEveryNth = workspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>(guid);
@@ -2547,7 +2547,7 @@ namespace Dynamo.Tests
 			Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
 			// run expression
-			dynSettings.Controller.RunExpression(null);
+			ViewModel.Model.RunExpression();
 
 			var joinList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSVarArgFunction>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
 			var actual = joinList.GetValue(0).GetElements();

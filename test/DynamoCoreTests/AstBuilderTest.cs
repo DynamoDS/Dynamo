@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             var model = ViewModel.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             AstBuilder builder = new AstBuilder(null);
             var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
@@ -61,7 +61,7 @@ namespace Dynamo.Tests
             var model = ViewModel.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\cyclic.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var sortedNodes = AstBuilder.TopologicalSort(model.CurrentWorkspace.Nodes);
             Assert.AreEqual(sortedNodes.Count(), 2);
@@ -81,7 +81,7 @@ namespace Dynamo.Tests
             // 
             var model = ViewModel.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multioutputs.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -122,7 +122,7 @@ namespace Dynamo.Tests
             // 
             var model = ViewModel.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multiinputs.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -162,7 +162,7 @@ namespace Dynamo.Tests
             // 
             var model = ViewModel.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\tri.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -199,7 +199,7 @@ namespace Dynamo.Tests
             //
             var model = ViewModel.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\linear.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
             int shuffleCount = 10;
@@ -244,7 +244,7 @@ namespace Dynamo.Tests
             var model = ViewModel.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var nodes = model.CurrentWorkspace.Nodes.ToList();
             int shuffleCount = 10;

@@ -260,7 +260,7 @@ b = c[w][x][y][z];";
         public void Defect_MAGN_784()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             Assert.IsFalse(ViewModel.DynamoModel.CurrentWorkspace.CanUndo);
             Assert.IsFalse(ViewModel.DynamoModel.CurrentWorkspace.CanRedo);
@@ -329,7 +329,7 @@ b = c[w][x][y][z];";
             var command = new DynCmd.CreateNodeCommand(
                 nodeGuid, "Watch", 0, 0, true, false);
 
-            ViewModel.DynamoViewModel.ExecuteCommand(command);
+            ViewModel.ExecuteCommand(command);
             var workspace = ViewModel.DynamoModel.CurrentWorkspace;
             var watchNode = workspace.NodeFromWorkspace<Watch>(nodeGuid);
 
@@ -388,7 +388,7 @@ b = c[w][x][y][z];";
             var command = new DynCmd.CreateNodeCommand(
                 nodeGuid, "Point.Origin", 0, 0, true, false);
 
-            ViewModel.DynamoViewModel.ExecuteCommand(command);
+            ViewModel.ExecuteCommand(command);
             var workspace = ViewModel.DynamoModel.CurrentWorkspace;
             var pointOriginNode = workspace.NodeFromWorkspace<DSFunction>(nodeGuid);
 
@@ -656,7 +656,7 @@ b = c[w][x][y][z];";
             var command = new DynCmd.CreateNodeCommand(
                 nodeGuid, "Code Block", 0, 0, true, false);
 
-            ViewModel.DynamoViewModel.ExecuteCommand(command);
+            ViewModel.ExecuteCommand(command);
             var workspace = ViewModel.DynamoModel.CurrentWorkspace;
             var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(nodeGuid);
 
@@ -667,7 +667,7 @@ b = c[w][x][y][z];";
         private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
         {
             var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
-            ViewModel.DynamoViewModel.ExecuteCommand(command);
+            ViewModel.ExecuteCommand(command);
         }
     }
 }

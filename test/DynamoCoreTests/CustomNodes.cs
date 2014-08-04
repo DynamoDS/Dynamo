@@ -27,7 +27,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
@@ -168,7 +168,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-number-chain.dyn"));
+            ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-number-chain.dyn"));
 
             // Ensure all the nodes we are looking for are actually there.
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
@@ -296,7 +296,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var nodesToCollapse = new[]
             {
@@ -323,7 +323,7 @@ namespace Dynamo.Tests
                         Success = true
                     });
 
-            ViewModel.DynamoViewModel.GoToWorkspace(
+            ViewModel.GoToWorkspace(
                 ViewModel.CustomNodeManager.GetGuidFromName("__CollapseTest2__"));
 
             var workspace = model.CurrentWorkspace;
@@ -347,14 +347,14 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
 
             string openPath = Path.Combine(examplePath, "reduce-example.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -390,14 +390,14 @@ namespace Dynamo.Tests
                 != null);
 
             string openPath = Path.Combine(examplePath, "filter-example.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -430,7 +430,7 @@ namespace Dynamo.Tests
             const string description = "Description";
             const string category = "Custom Node Category";
 
-            ViewModel.DynamoViewModel.ExecuteCommand(
+            ViewModel.ExecuteCommand(
                 new DynamoViewModel.CreateCustomNodeCommand(
                     Guid.NewGuid(),
                     name,
@@ -445,9 +445,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(description, customNodeWs.Description);
             Assert.AreEqual(category, customNodeWs.Category);
 
-            ViewModel.DynamoViewModel.HomeCommand.Execute(null);
+            ViewModel.HomeCommand.Execute(null);
 
-            ViewModel.DynamoViewModel.ExecuteCommand(
+            ViewModel.ExecuteCommand(
                 new DynamoViewModel.CreateNodeCommand(
                     Guid.NewGuid(),
                     customNodeDef.FunctionId.ToString(),
@@ -473,7 +473,7 @@ namespace Dynamo.Tests
 
             var instance = ViewModel.DynamoModel.HomeSpace.Nodes.First() as Function;
 
-            ViewModel.DynamoViewModel.GoToWorkspaceCommand.Execute(instance.Definition.FunctionId);
+            ViewModel.GoToWorkspaceCommand.Execute(instance.Definition.FunctionId);
 
             var currentInPortAmt = 0;
             var currentOutPortAmt = 0;
@@ -500,7 +500,7 @@ namespace Dynamo.Tests
             {
                 var guid = Guid.NewGuid();
 
-                ViewModel.DynamoViewModel.ExecuteCommand(
+                ViewModel.ExecuteCommand(
                     new DynamoViewModel.CreateNodeCommand(
                         guid,
                         inputName,
@@ -522,7 +522,7 @@ namespace Dynamo.Tests
             {
                 var guid = Guid.NewGuid();
 
-                ViewModel.DynamoViewModel.ExecuteCommand(
+                ViewModel.ExecuteCommand(
                     new DynamoViewModel.CreateNodeCommand(
                         guid,
                         outputName,
@@ -560,7 +560,7 @@ namespace Dynamo.Tests
             {
                 DynamoSelection.Instance.ClearSelection();
                 ViewModel.DynamoModel.AddToSelection(nodeModel);
-                ViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+                ViewModel.DeleteCommand.Execute(null);
             };
 
             Action<Symbol> deleteInput = input =>
@@ -621,7 +621,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "multi-custom.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression();
 
@@ -648,7 +648,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             dynSettings.Controller.RunExpression();
 

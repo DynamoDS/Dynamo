@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
             Assert.IsNotNull(nodeWorkspace);
@@ -27,7 +27,7 @@ namespace Dynamo.Tests
         public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
             
             ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Sequence2");
             Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);

@@ -54,9 +54,9 @@ namespace Dynamo.Tests
         public void CanOpenGoodFile()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(5, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(400.0, 100.0, "Add");
-            Assert.AreEqual(ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count, 1);
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count, 1);
         }
 
         [Test]
@@ -75,9 +75,9 @@ namespace Dynamo.Tests
             DynCmd.CreateNoteCommand command = new DynCmd.CreateNoteCommand(
                 id, "This is a test note.", 200.0, 200.0, false);
 
-            var ws = ViewModel.DynamoViewModel.CurrentSpace;
+            var ws = ViewModel.CurrentSpace;
             dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
-            Assert.AreEqual(ViewModel.DynamoViewModel.CurrentSpace.Notes.Count, 1);
+            Assert.AreEqual(ViewModel.CurrentSpace.Notes.Count, 1);
         }
 
         [Test]
@@ -112,9 +112,9 @@ namespace Dynamo.Tests
             {
                 model.CreateNode(0, 0, "Add");
 
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
         }
@@ -126,10 +126,10 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            Assert.AreNotEqual(0, ViewModel.DynamoViewModel.LogText.Length);
+            Assert.AreNotEqual(0, ViewModel.LogText.Length);
             dynSettings.Controller.ClearLog(null);
 
-            Assert.AreEqual(0, ViewModel.DynamoViewModel.LogText.Length);
+            Assert.AreEqual(0, ViewModel.LogText.Length);
         }
 
         // Clearworkspace 
@@ -138,7 +138,7 @@ namespace Dynamo.Tests
         public void CanClearWorkspaceWithEmptyWorkspace()
         {
             dynSettings.Controller.DynamoModel.Clear(null);
-            Assert.AreEqual(0, ViewModel.DynamoViewModel.Model.Nodes.Count());
+            Assert.AreEqual(0, ViewModel.Model.Nodes.Count());
         }
 
         [Test]
@@ -146,17 +146,17 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            Assert.AreEqual(0, ViewModel.DynamoViewModel.Model.Nodes.Count());
+            Assert.AreEqual(0, ViewModel.Model.Nodes.Count());
 
             model.CreateNode(400.0, 100.0, "Add");
             model.CreateNode(100.0, 100.0, "Number");
             model.CreateNode(100.0, 300.0, "Number");
 
-            Assert.AreEqual(3, ViewModel.DynamoViewModel.Model.Nodes.Count());
+            Assert.AreEqual(3, ViewModel.Model.Nodes.Count());
 
             model.Clear(null);
 
-            Assert.AreEqual(0, ViewModel.DynamoViewModel.Model.Nodes.Count());
+            Assert.AreEqual(0, ViewModel.Model.Nodes.Count());
         }
 
         [Test]
@@ -171,9 +171,9 @@ namespace Dynamo.Tests
             {
                 model.CreateNode(0, 0, "Add");
 
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -233,9 +233,9 @@ namespace Dynamo.Tests
             {
                 model.CreateNode(0, 0, "Add");
 
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -245,7 +245,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes, ViewModel.ClipBoard.Count);
             model.Paste(null);
 
-            Assert.AreEqual(numNodes * 2, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(numNodes * 2, ViewModel.CurrentSpace.Nodes.Count);
         }
 
         [Test]
@@ -260,9 +260,9 @@ namespace Dynamo.Tests
             {
                 model.CreateNode(0, 0, "Add");
 
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -272,7 +272,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes, ViewModel.ClipBoard.Count);
 
             model.Paste(null);
-            Assert.AreEqual(numNodes * 2, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(numNodes * 2, ViewModel.CurrentSpace.Nodes.Count);
         }
 
         [Test]
@@ -286,9 +286,9 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 model.CreateNode(0, 0, "Add");
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -303,7 +303,7 @@ namespace Dynamo.Tests
                 model.Paste(null);
 
                 Assert.AreEqual(numNodes, ViewModel.ClipBoard.Count);
-                Assert.AreEqual(numNodes * (i + 1), ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(numNodes * (i + 1), ViewModel.CurrentSpace.Nodes.Count);
             }
         }
 
@@ -319,9 +319,9 @@ namespace Dynamo.Tests
             {
                 model.CreateNode(0, 0, "Add");
 
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
@@ -374,7 +374,7 @@ namespace Dynamo.Tests
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            ViewModel.DynamoViewModel.SaveAsCommand.Execute(path);
+            ViewModel.SaveAsCommand.Execute(path);
             
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -391,12 +391,12 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 model.CreateNode(0, 0, "Add");
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
             }
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            ViewModel.DynamoViewModel.SaveAsCommand.Execute(path);
+            ViewModel.SaveAsCommand.Execute(path);
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -410,9 +410,9 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            ViewModel.DynamoViewModel.SaveAsCommand.Execute(null);
+            ViewModel.SaveAsCommand.Execute(null);
 
-            Assert.IsNull(ViewModel.DynamoViewModel.CurrentSpace.FileName);
+            Assert.IsNull(ViewModel.CurrentSpace.FileName);
         }
 
         [Test]
@@ -425,12 +425,12 @@ namespace Dynamo.Tests
             for (int i = 0; i < numNodes; i++)
             {
                 model.CreateNode(0, 0, "Add");
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
             }
 
-            ViewModel.DynamoViewModel.SaveCommand.Execute(null);
+            ViewModel.SaveCommand.Execute(null);
 
-            Assert.IsNull(ViewModel.DynamoViewModel.CurrentSpace.FileName);
+            Assert.IsNull(ViewModel.CurrentSpace.FileName);
         }
 
 
@@ -481,14 +481,14 @@ namespace Dynamo.Tests
             for (int i = 0; i < 20; i++)
             {
                 model.Home(null);
-                Assert.AreEqual(true, ViewModel.DynamoViewModel.ViewingHomespace);
+                Assert.AreEqual(true, ViewModel.ViewingHomespace);
             }
         }
 
         [Test]
         public void TestRecordModelsForModificationWithEmptyInput()
         {
-            WorkspaceModel workspace = ViewModel.DynamoViewModel.CurrentSpace;
+            WorkspaceModel workspace = ViewModel.CurrentSpace;
             Assert.AreEqual(false, workspace.CanUndo);
 
             // Calling the method with a null argument.
@@ -510,7 +510,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestRecordCreatedModelsWithEmptyInput()
         {
-            WorkspaceModel workspace = ViewModel.DynamoViewModel.CurrentSpace;
+            WorkspaceModel workspace = ViewModel.CurrentSpace;
             Assert.AreEqual(false, workspace.CanUndo);
 
             // Calling the method with a null argument.
@@ -532,7 +532,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestRecordAndDeleteModelsWithEmptyInput()
         {
-            WorkspaceModel workspace = ViewModel.DynamoViewModel.CurrentSpace;
+            WorkspaceModel workspace = ViewModel.CurrentSpace;
             Assert.AreEqual(false, workspace.CanUndo);
 
             // Calling the method with a null argument.
@@ -562,24 +562,24 @@ namespace Dynamo.Tests
             model.CreateNode(100.0, 300.0, "Dynamo.Nodes.Watch");
 
             var cd1 = new Dictionary<string, object>();
-            cd1.Add("start", ViewModel.DynamoViewModel.Model.Nodes[1]);
-            cd1.Add("end", ViewModel.DynamoViewModel.Model.Nodes[0]);
+            cd1.Add("start", ViewModel.Model.Nodes[1]);
+            cd1.Add("end", ViewModel.Model.Nodes[0]);
             cd1.Add("port_start", 0);
             cd1.Add("port_end", 0);
 
             model.CreateConnection(cd1);
 
             var cd2 = new Dictionary<string, object>();
-            cd2.Add("start", ViewModel.DynamoViewModel.Model.Nodes[2]); //first number node
-            cd2.Add("end", ViewModel.DynamoViewModel.Model.Nodes[0]); //+ node
+            cd2.Add("start", ViewModel.Model.Nodes[2]); //first number node
+            cd2.Add("end", ViewModel.Model.Nodes[0]); //+ node
             cd2.Add("port_start", 0); //first output
             cd2.Add("port_end", 1); //second input
 
             model.CreateConnection(cd2);
 
             var cd3 = new Dictionary<string, object>();
-            cd3.Add("start", ViewModel.DynamoViewModel.Model.Nodes[0]); // add
-            cd3.Add("end", ViewModel.DynamoViewModel.Model.Nodes[3]); // watch
+            cd3.Add("start", ViewModel.Model.Nodes[0]); // add
+            cd3.Add("end", ViewModel.Model.Nodes[3]); // watch
             cd3.Add("port_start", 0); //first output
             cd3.Add("port_end", 0); //second input
 
@@ -587,13 +587,13 @@ namespace Dynamo.Tests
 
             //controller.DynamoViewModel.LogText = "";
 
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Thread.Sleep(250);
 
-            Assert.AreEqual(ViewModel.DynamoViewModel.Model.Nodes[3] is Watch, true);
+            Assert.AreEqual(ViewModel.Model.Nodes[3] is Watch, true);
 
-            var w = (Watch)ViewModel.DynamoViewModel.Model.Nodes[3];
+            var w = (Watch)ViewModel.Model.Nodes[3];
             Assert.AreEqual(4.0, w.CachedValue.Data);
         }
 
@@ -605,7 +605,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = dynSettings.Controller.DynamoModel;
             var workspace = dynamoModel.CurrentWorkspace;
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(1, workspace.Nodes.Count);
 
             var node = workspace.NodeFromWorkspace<DSVarArgFunction>(
@@ -628,9 +628,9 @@ namespace Dynamo.Tests
             {
                 model.CreateNode(0, 0, "Add");
 
-                Assert.AreEqual(i + 1, ViewModel.DynamoViewModel.CurrentSpace.Nodes.Count);
+                Assert.AreEqual(i + 1, ViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -638,7 +638,7 @@ namespace Dynamo.Tests
             // the number selected stays the same
             for (int i = 0; i < numNodes; i++)
             {
-                model.AddToSelection(ViewModel.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(ViewModel.Model.Nodes[i]);
                 Assert.AreEqual(numNodes, DynamoSelection.Instance.Selection.Count);
             }
         }
@@ -648,7 +648,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(16, 32, "Add");
-            NodeModel locatable = ViewModel.DynamoViewModel.Model.Nodes[0];
+            NodeModel locatable = ViewModel.Model.Nodes[0];
 
             Point startPoint = new Point(8, 64);
             var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
@@ -669,7 +669,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\nodeLocationTest.dyn");
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             var node = dynSettings.Controller.DynamoModel.Nodes.First();
@@ -677,7 +677,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             node = dynSettings.Controller.DynamoModel.Nodes.First();
@@ -685,7 +685,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
             node = dynSettings.Controller.DynamoModel.Nodes.First();
@@ -752,7 +752,7 @@ namespace Dynamo.Tests
         {
             // Create the node with given information.
             var nodeGuid = Guid.NewGuid();
-            var vm = this.ViewModel.DynamoViewModel;
+            var vm = this.ViewModel;
             vm.ExecuteCommand(new DynCmd.CreateNodeCommand(nodeGuid,
                 "DSCore.List.Join@var[]..[]", 0, 0, true, false));
 
