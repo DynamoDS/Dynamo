@@ -258,11 +258,11 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNode(0, 0, "Add");
+                var node = model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-                model.AddToSelection(Controller.DynamoViewModel.Model.Nodes[i]);
+                model.AddToSelection(node);
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -448,32 +448,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanSelectNodeAndTheRestAreDeslected()
-        {
-            Assert.Inconclusive("Test not valid after move of selection handling logic to view.");
-
-            //var model = dynSettings.Controller.DynamoModel;
-
-            //int numNodes = 100;
-
-            //// create 100 nodes, and select them as you go
-            //for (int i = 0; i < numNodes; i++)
-            //{
-            //    var sumData = new Dictionary<string, object>();
-            //    sumData.Add("name", "Add");
-            //    //DynamoCommands.CommandQueue.Enqueue(Tuple.Create<object, object>(DynamoCommands.CreateNodeCommand, sumData));
-            //    //DynamoCommands.ProcessCommandQueue();
-            //    model.CreateNode(sumData);
-
-            //    Assert.AreEqual(i + 1, controller.DynamoViewModel.CurrentWorkspace.Nodes.Count);
-
-            //    DynamoSelection.Instance.Selection.Add();
-            //    controller.OnRequestSelect(null, new ModelEventArgs( controller.DynamoViewModel.Model.Nodes[i], null) );
-            //    Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
-            //}
-        }
-
-        [Test]
         public void CanStayHomeWhenInHomeWorkspace()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -594,7 +568,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(Controller.DynamoViewModel.Model.Nodes[3] is Watch, true);
 
             var w = (Watch)Controller.DynamoViewModel.Model.Nodes[3];
-            Assert.AreEqual(4.0, w.CachedValue.Data);
+            Assert.AreEqual(4.0, w.CachedValue);
         }
 
         [Test]
@@ -612,7 +586,7 @@ namespace Dynamo.Tests
                 Guid.Parse("a182d3f8-bb7d-4480-8aa5-eaacd6161415"));
 
             Assert.IsNotNull(node);
-            Assert.IsNotNull(node.Definition);
+            Assert.IsNotNull(node.Controller.Definition);
             Assert.AreEqual(3, node.InPorts.Count);
         }
         

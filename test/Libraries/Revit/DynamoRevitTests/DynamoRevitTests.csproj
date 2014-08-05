@@ -81,6 +81,7 @@
     <Compile Include="AnalysisDisplayTests.cs" />
     <Compile Include="DividedCurveTests.cs" />
     <Compile Include="DocumentTests.cs" />
+    <Compile Include="ElementBindingTests.cs" />
     <Compile Include="MaterialTests.cs" />
     <Compile Include="MigrationTest.cs" />
     <Compile Include="ModelCurveTests.cs" />

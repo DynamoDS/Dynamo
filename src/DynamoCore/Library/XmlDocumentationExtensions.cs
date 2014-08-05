@@ -11,7 +11,7 @@ using Autodesk.DesignScript.Geometry;
 namespace Dynamo.DSEngine
 {
     /// <summary>
-    /// Provides extension methods for reading XML comments from reflected members.
+    /// Provides extension methods for reading XML documentation from reflected members.
     /// </summary>
     public static class XmlDocumentationExtensions
     {

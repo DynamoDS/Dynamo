@@ -105,10 +105,10 @@ namespace Dynamo
         private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
         {
             return WorkspaceModel.Nodes
-                            .OfType<Function>()
-                            .Select(node => node.Definition)
-                            .Where(def => def != this)
-                            .Distinct();
+                .OfType<Function>()
+                .Select(node => node.Definition)
+                .Where(def => def != this)
+                .Distinct();
         }
 
         #endregion

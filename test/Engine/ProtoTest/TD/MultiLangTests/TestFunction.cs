@@ -2633,7 +2633,6 @@ a1;a2;a3;
         [Test]
         public void T87_Function_Returning_From_Imp_Block_Inside_Assoc()
         {
-            Assert.Fail("1456110 - Sprint16: Rev 889 : Returning from an imperative block inside an associative function is failing");
             string code = @"
 def foo : int( a : int)
 {
@@ -2798,8 +2797,10 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
+        [Category("Failing")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4011
             string str = "";
             string code = @"class Test
 {
@@ -3920,24 +3921,27 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void TV39_Defect_1449956_2()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4012
             string code = @"
 [Imperative]
 {
 def recursion: int ( a : int )
 {
+
 	if ( a ==0 || a < 0)
 		return = 0;
 	
 	 
 		return = a + recursion(a - 1);
+
 }
 	x = recursion( 10 );
 	y = recursion( -1 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.Fail("1467237 - Sprint25: rev 3418 : Regression : Recursion not being supported in Imperative code");
             thisTest.Verify("x", 55, 0);
             thisTest.Verify("y", 0, 0);
         }
@@ -4273,7 +4277,7 @@ x = foo( 0 );
             string code = @"
 def recursion : int(a : int)
 {
-    local = [Imperative]
+    loc = [Imperative]
     {
         if (a <= 0)
         {
@@ -4281,7 +4285,7 @@ def recursion : int(a : int)
         }
         return = a + recursion(a - 1);
     }
-    return = local;
+    return = loc;
 }
 a = 10;
 [Imperative]
@@ -5701,11 +5705,10 @@ b;c;d;
 
         [Test]
         [Category("Method Resolution")]
+        [Category("Failing")]
         public void TV78_Defect_1460866()
         {
-            //Assert.Fail("1466878 - Sprint 23 : rev 2497 : regression : NUnit hanging due to function overloading issue ");
-            Assert.Fail("1467026 - Sprint23 : rev 2530 : CompilerInternalException : Function with same name and signature is declared in parallel language blocks");
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4013
             string code = @"
 def foo( a:int )
 {
@@ -5745,6 +5748,8 @@ z2 = [Imperative]
             thisTest.Verify("y", v1);
             thisTest.Verify("z1", v1);
             thisTest.Verify("z2", 1);
+
+            thisTest.VerifyRuntimeWarningCount(0);
         }
 
         [Test]
@@ -6098,24 +6103,23 @@ def count ( a : double[] )
 }
 def foo ( b : int[], f1 : function )
 {
-    return = count( b );
+    return = f1( b );
 }
 a = foo ( { 1, 2,  { 3, 4 } },  count );
 d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
-// boolean can't be converted to double, so the following statement
-// will generate a method resultion fail exception
-// b = foo ( { true, false },  count );
+
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 3);
-            // thisTest.Verify("b", 2);
-            thisTest.Verify("d", 5);
+            thisTest.Verify("a", new object[] { 1, 1, 2 });
+            thisTest.Verify("d", new object[] { 1, 1, 2, 1, 1 });
         }
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void TV84_Function_Pointer_Implicit_Conversion_4()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4014
             string code = @"
 def count ( a : double[] )
 {
@@ -6132,7 +6136,7 @@ def count ( a : double[] )
 }
 def foo ( b : int[], f1 : function )
 {
-    return = count( b );
+    return = f1( b );
 }
 [Imperative]
 {
@@ -6141,8 +6145,8 @@ def foo ( b : int[], f1 : function )
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 3);
-            thisTest.Verify("d", 5);
+            thisTest.Verify("a", new object[] {1,1,2});
+            thisTest.Verify("d", new object[] {1,1,2,1,1});
         }
 
         [Test]
@@ -6605,12 +6609,12 @@ d1 = [Imperative]
         }
 
         [Test]
-
         [Category("Design Issue")]
         [Category("Update")]
+        [Category("Failing")]
         public void TV88_Defect_1463489_3()
         {
-            Assert.Fail("1459777 - Sprint 17 : Rev 1526 : Design Issue : When class property is updated the the variables derived from the class instance should be updated ? ");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1510
             string src = string.Format("{0}{1}", testPath, "TV88_Defect_1463489_3.ds");
             fsr.LoadAndPreStart(src, runnerConfig);
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
@@ -6881,10 +6885,11 @@ y1;y2;y3;y4;
 
         [Test]
         [Category("Method Resolution")]
+        [Category("Failing")]
         public void TV91_Defect_1463703_3()
         {
-            string error = "1467080 sprint23 : rev 2681 : method overload issue over functions with same name and signature in multiple language blocks";
-            //Assert.Fail("1466269 - Sprint 22 - rev 2418 - Regression : DS throws warning Multiple type+pattern match parameters found, non-deterministic dispatch ");
+            // Tracked  by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4013
+            string error = "MAGN-4013 Method overload issue over functions with same name and signature in multiple language blocks";
             string code = @"def foo2 : int[] ( a : int[] )
 {
 	return  = a;
@@ -6950,8 +6955,8 @@ x2 =
 ";
             thisTest.VerifyRunScriptSource(code, error);
 
-            Object[] v1 = new Object[] { new Object[] { 1, 9 }, new Object[] { 1, 9 } };
-            Object[] v2 = new Object[] { new Object[] { 4, 9 }, new Object[] { 4, 9 }, new Object[] { 1, 2 }, new Object[] { 3, 4 } };
+            Object[] v1 = new Object[] { new Object[] { 0, 9 }, new Object[] { 1, 9 } };
+            Object[] v2 = new Object[] { new Object[] { 2, 9 }, new Object[] { 4, 9 }, new Object[] { 1, 2 }, new Object[] { 3, 4 } };
             thisTest.Verify("x1", v1);
             thisTest.Verify("x2", v2);
         }
@@ -7486,12 +7491,15 @@ b1 = foo ( a1 );";
         }
 
         [Test]
+        [Category("Failing")]
         public void TV89_typeConversion_FunctionArguments_1467060_6()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
+
             //This failure is no longer related to this defect. Back to TD.
             //New defect - no converting type arguments correctly
             //Assert.Fail("DNL-1467060 - Sprint 23 : rev 2570 : Method resolution fails when passed a heterogenous array of double and int to a function which expects double ");
-            string error = "1467326 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             string code = @"def foo ( x : int[])
 {
     return = x;
@@ -8582,7 +8590,7 @@ result3 =
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -8692,7 +8700,7 @@ p = foo(x);
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("p", new Object[] { 2, 1, 1 });
+            thisTest.Verify("p", 3);
             thisTest.VerifyBuildWarningCount(0);
         }
 
@@ -8723,6 +8731,31 @@ r = f.foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("r", 42);
+        }
+
+        [Test]
+        [Category("Failing")]
+        public void TestFunctionOverloadFromNestedLanguageBlock01()
+        {
+            string code = @"
+def f()
+{
+    return = 1;
+}
+
+[Imperative]
+{
+    def f()
+	{
+		return = 2;
+	}
+}
+
+a = f();
+";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3987
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("a", 1);
         }
     }
 }

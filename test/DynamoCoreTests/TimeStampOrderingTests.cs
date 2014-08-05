@@ -5,9 +5,8 @@ using System.Text;
 using Dynamo.Core;
 using NUnit.Framework;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
-    [TestFixture]
     class TimeStampOrderingTests
     {
         [Test]
@@ -38,10 +37,6 @@ namespace Dynamo
             TimeStamp b = next;
             Assert.IsFalse(b > next);
             Assert.IsFalse(b < next);
-
-
-
-
         }
     }
 }

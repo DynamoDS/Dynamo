@@ -212,7 +212,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
 =                                   (. node = null; .)
     (                                   
         
-            ( IF (IsTypedVariable())
+            ( IF (IsLocallyTypedVariable())
                 ident               (. 
                                         if (IsKeyWord(t.val, true))
                                         {
@@ -223,6 +223,13 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                                         NodeUtils.SetNodeLocation(typedVar, t);
                                     .)
                 ':'
+                
+                
+                kw_local        (.
+                                    typedVar.IsLocal = true;
+                                .)
+                
+
                 ident
                                     (. 
                                        int type = core.TypeSystem.GetType(t.val); 
@@ -258,6 +265,76 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                                     (. node = typedVar; .)
 
             )
+            |
+            (IF (IsLocalVariable())
+            (      
+                ident       (.  
+                                    if (IsKeyWord(t.val, true))
+                                    {
+                                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                    }
+                                    var identNode = new ProtoCore.AST.ImperativeAST.IdentifierNode();
+                                    identNode.Name = identNode.Value = t.val;
+                                    NodeUtils.SetNodeLocation(identNode, t);
+                                .)
+                ':' 
+                kw_local            (.
+                                        identNode.IsLocal = true;
+                                    .)
+                                    (.  node = identNode; .)
+            )
+            )
+            |
+            ( IF (IsTypedVariable())
+                ident               (. 
+                                        if (IsKeyWord(t.val, true))
+                                        {
+                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                        }
+                                        var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
+                                        typedVar.Name = typedVar.Value = t.val;
+                                        NodeUtils.SetNodeLocation(typedVar, t);
+                                    .)
+                ':'
+                
+
+                ident
+                                    (. 
+                                       int type = core.TypeSystem.GetType(t.val); 
+                                       if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
+                                       {
+                                           var unknownType = new ProtoCore.Type();
+                                           unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
+                                           unknownType.Name = t.val; 
+                                           typedVar.datatype = unknownType;
+                                       }
+                                       else
+                                       {
+                                           typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+                                       }
+                                    .)
+
+                [                   (. var datatype = typedVar.datatype; .)
+                    openbracket closebracket    
+                                    (. datatype.rank = 1; .)
+                    [
+                        ( ".." openbracket closebracket )   
+                                    (. datatype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
+                        |
+                        ( 
+                            {
+                                openbracket closebracket    
+                                    (. datatype.rank++; .)
+                            } 
+                        )
+                    ]
+                                    (. typedVar.datatype = datatype; .)
+                ]
+                                    (. node = typedVar; .)
+
+            )
+
+
             |
             Imperative_IdentifierList<out node>
         
