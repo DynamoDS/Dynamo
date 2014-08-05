@@ -18,12 +18,12 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rvt")]
         public void BasisX()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Transform\BasisX.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // Check that all nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
@@ -31,7 +31,7 @@ namespace Dynamo.Tests
 
             //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            var nodes = Controller.DynamoModel.Nodes;
+            var nodes = ViewModel.Model.Nodes;
 
             double dummyNodesCount = nodes.OfType<DummyNode>().Count();
 
@@ -42,11 +42,11 @@ namespace Dynamo.Tests
             }
 
             // Run the model
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // Check node output
             NodeModel node = model.CurrentWorkspace.NodeFromWorkspace("58d488dd-b668-467f-b3ac-d46b5a97fabe");
-            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.AstIdentifierBase);
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(node.AstIdentifierBase);
             Assert.IsNotNull(mirror);
 
             var point = mirror.GetData().Data as Point;
@@ -58,12 +58,12 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rvt")]
         public void BasisY()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Transform\BasisY.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // Check that all nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
@@ -71,7 +71,7 @@ namespace Dynamo.Tests
 
             //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            var nodes = Controller.DynamoModel.Nodes;
+            var nodes = ViewModel.Model.Nodes;
 
             double dummyNodesCount = nodes.OfType<DummyNode>().Count();
 
@@ -82,11 +82,11 @@ namespace Dynamo.Tests
             }
 
             // Run the model
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // Check node output
             NodeModel node = model.CurrentWorkspace.NodeFromWorkspace("7fdb538d-22a3-412c-b646-d0fb23ca2dc6");
-            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.AstIdentifierBase);
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(node.AstIdentifierBase);
             Assert.IsNotNull(mirror);
 
             var point = mirror.GetData().Data as Point;
@@ -98,12 +98,12 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rvt")]
         public void BasisZ()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Transform\BasisZ.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // Check that all nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
@@ -111,7 +111,7 @@ namespace Dynamo.Tests
 
             //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            var nodes = Controller.DynamoModel.Nodes;
+            var nodes = ViewModel.Model.Nodes;
 
             double dummyNodesCount = nodes.OfType<DummyNode>().Count();
 
@@ -122,11 +122,11 @@ namespace Dynamo.Tests
             }
 
             // Run the model
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // Check node output
             NodeModel node = model.CurrentWorkspace.NodeFromWorkspace("783ce70c-789d-4c2a-ad40-c16d6d933fd4");
-            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.AstIdentifierBase);
+            RuntimeMirror mirror = ViewModel.Model.EngineController.GetMirror(node.AstIdentifierBase);
             Assert.IsNotNull(mirror);
 
             var point = mirror.GetData().Data as Point;

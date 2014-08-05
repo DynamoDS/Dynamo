@@ -91,7 +91,8 @@ namespace Dynamo.Applications
         }
 
         #region Initialization
-        private static void InitializeUnits()
+
+        public static void InitializeUnits()
         {
             // set revit units
             BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
@@ -99,7 +100,7 @@ namespace Dynamo.Applications
             BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
         }
 
-        private static void InitializeAssemblies()
+        public static void InitializeAssemblies()
         {
             AppDomain.CurrentDomain.AssemblyResolve +=
                 Analyze.Render.AssemblyHelper.ResolveAssemblies;
@@ -126,7 +127,8 @@ namespace Dynamo.Applications
                 new RevitDynamoModel.StartConfiguration()
                 {
                     Preferences = prefs,
-                    DynamoCorePath = corePath
+                    DynamoCorePath = corePath,
+                    Context = GetRevitContext(commandData)
                 });
         }
 

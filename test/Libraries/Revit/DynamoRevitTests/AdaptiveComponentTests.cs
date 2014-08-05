@@ -14,12 +14,12 @@ namespace Dynamo.Tests
         [TestModel(@".\AdaptiveComponent\AdaptiveComponentByFace.rfa")]
         public void AdaptiveComponentByFace()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByFace.dyn");
             string testPath = Path.GetFullPath(testFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -27,19 +27,19 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
         [TestModel(@".\AdaptiveComponent\AdaptiveComponentByCurve.rfa")]
         public void AdaptiveComponentByCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByCurve.dyn");
             string testPath = Path.GetFullPath(testFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -59,12 +59,12 @@ namespace Dynamo.Tests
         [TestModel(@".\AdaptiveComponent\AdaptiveComponent.rfa")]
         public void AdaptiveComponent()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponent.dyn");
             string testPath = Path.GetFullPath(testFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -72,7 +72,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
 
-            dynSettings.Controller.RunExpression();
+            ViewModel.Model.RunExpression();
 
             var refPtNodeId = "ac5bd8f9-fcf5-46db-b795-3590044edb56";
             AssertPreviewCount(refPtNodeId, 5);

@@ -18,6 +18,7 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 
 using ProtoCore;
@@ -68,6 +69,7 @@ namespace Dynamo.Applications.Models
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
+            public IUpdateManager UpdateManager { get; set; }
         }
 
         public new static RevitDynamoModel Start()
@@ -83,12 +85,13 @@ namespace Dynamo.Applications.Models
                 ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var testMode = configuration.StartInTestMode;
             var prefs = configuration.Preferences ?? new PreferenceSettings();
+            var updateManager = configuration.UpdateManager;
 
-            return new RevitDynamoModel(context, prefs, corePath, testMode);
+            return new RevitDynamoModel(context, prefs, corePath, updateManager, testMode);
         }
 
-        private RevitDynamoModel(string context, IPreferences preferences, string corePath, bool isTestMode = false) :
-            base(context, preferences, corePath, new RevitDynamoRunner(), isTestMode)
+        private RevitDynamoModel(string context, IPreferences preferences, string corePath, IUpdateManager updateManager, bool isTestMode) :
+            base(context, preferences, corePath, new RevitDynamoRunner(), updateManager, isTestMode)
         {
             RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
             SubscribeRevitServicesUpdaterEvents();

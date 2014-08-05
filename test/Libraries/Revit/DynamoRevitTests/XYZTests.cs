@@ -18,7 +18,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void XYZFromReferencePoint()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\XYZ\XYZFromReferencePoint.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -38,7 +38,7 @@ namespace Dynamo.Tests
             //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(rp), args);
 
             ////find the XYZFromReferencePoint node
-            //var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is XyzFromReferencePoint).First();
+            //var node = ViewModel.Model.Nodes.Where(x => x is XyzFromReferencePoint).First();
 
             //FScheme.Value v = ((NodeWithOneOutput)node).Evaluate(args);
             //Assert.IsInstanceOf(typeof(XYZ), ((FScheme.Value.Container)v).Item);
@@ -53,8 +53,8 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZByPolar.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
@@ -64,8 +64,8 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZBySphericalCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
@@ -75,8 +75,8 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZToPolarCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
@@ -86,8 +86,8 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZToSphericalCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Dynamo.Tests
             var initialDoc = DocumentManager.Instance.CurrentUIDocument;
             var newDoc = OpenAndActivateNewModel(_emptyModelPath1);
 
-            Assert.False(dynSettings.Controller.DynamoViewModel.RunEnabled);
+            Assert.False(ViewModel.RunEnabled);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Dynamo.Tests
             // Swap to a document that only has one open perspective view
             SwapCurrentModel(Path.Combine(_testPath, "model_with_box.rvt"));
 
-            Assert.False(dynSettings.Controller.DynamoViewModel.RunEnabled);
+            Assert.False(ViewModel.RunEnabled);
 
             // Then you need to swap back because the journal's ID_FLUSH_UNDO
             // is disabled in perspective as well

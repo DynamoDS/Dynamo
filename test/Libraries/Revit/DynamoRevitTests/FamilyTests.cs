@@ -15,7 +15,7 @@ namespace Dynamo.Tests
         [TestModel(@".\Family\GetCurvesFromFamilyInstance.rfa")]
         public void GetCurvesFromFamilyInstance()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Family\GetCurvesFromFamilyInstance.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -23,7 +23,7 @@ namespace Dynamo.Tests
             //model.Open(testPath);
             //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            //var node = (CurvesFromFamilyInstance)dynSettings.Controller.DynamoModel.Nodes.First(x => x is CurvesFromFamilyInstance);
+            //var node = (CurvesFromFamilyInstance)ViewModel.Model.Nodes.First(x => x is CurvesFromFamilyInstance);
             //Assert.IsTrue(node.OldValue.IsCollection);
 
             //// check that we get the correct number of curves back from the instance
@@ -33,7 +33,7 @@ namespace Dynamo.Tests
             //// get the filter node from dynamo and  make sure it has an empty list as output
             ////we've filtered the list of distances by 0 to make sure distances between orginal points
             //// and end points of new curves are 0.
-            //var filterNode = (FilterOut)dynSettings.Controller.DynamoModel.Nodes.First(x => x is FilterOut);
+            //var filterNode = (FilterOut)ViewModel.Model.Nodes.First(x => x is FilterOut);
             //Assert.IsTrue(filterNode.OldValue.IsCollection);
             
             //// ensure it is empty
@@ -48,7 +48,7 @@ namespace Dynamo.Tests
         [TestModel(@".\Family\GetFamilyInstancesByType.rv")]
         public void GetFamilyInstancesByType()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstancesByType.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -57,7 +57,7 @@ namespace Dynamo.Tests
             //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //var node =
-            //    (GetFamilyInstancesByType)dynSettings.Controller.DynamoModel.Nodes.First(x => x is GetFamilyInstancesByType);
+            //    (GetFamilyInstancesByType)ViewModel.Model.Nodes.First(x => x is GetFamilyInstancesByType);
             //Assert.IsTrue(node.OldValue.IsCollection);
 
             //var list = node.OldValue.GetElements();
@@ -73,15 +73,15 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstanceLocation.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
         [TestModel(@".\Family\AC_locationStandAlone.rfa")]
         public void CanLocateAdaptiveComponent()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Family\AC_locationStandAlone.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -106,7 +106,7 @@ namespace Dynamo.Tests
         [TestModel(@".\Family\AC_locationInDividedSurface.rfa")]
         public void CanLocateAdaptiveComponentInDividedSurface()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Family\AC_locationInDividedSurface.dyn");
             //string testPath = Path.GetFullPath(samplePath);
