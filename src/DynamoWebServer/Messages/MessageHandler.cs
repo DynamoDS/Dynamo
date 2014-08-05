@@ -18,6 +18,13 @@ namespace DynamoWebServer.Messages
     public class MessageHandler
     {
         static readonly JsonSerializerSettings JsonSettings;
+        
+        public string SessionId { get; private set; }
+        public event ResultReadyEventHandler ResultReady;
+
+        private Message message;
+        private DynamoViewModel dynamoViewModel;
+        
         static MessageHandler()
         {
             JsonSettings = new JsonSerializerSettings
@@ -27,10 +34,6 @@ namespace DynamoWebServer.Messages
             };
         }
 
-        private Message message;
-        private DynamoViewModel dynamoViewModel;
-        public string SessionId { get; private set; }
-
         public MessageHandler(Message msg, string sessionId)
         {
             this.message = msg;
@@ -39,11 +42,6 @@ namespace DynamoWebServer.Messages
 
         #region Class Data Members
 
-        /// <summary>
-        /// Send the results of the execution
-        /// </summary>
-        public event ResultReadyEventHandler ResultReady;
-        
         protected void OnResultReady(object sender, ResultReadyEventArgs e)
         {
             if (ResultReady != null)
