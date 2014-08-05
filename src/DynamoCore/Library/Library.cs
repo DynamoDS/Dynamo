@@ -166,6 +166,7 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
+            if(parameters.Any())
             InputParametrs = parameters.Select(
                 par =>
                 {
@@ -235,16 +236,13 @@ namespace Dynamo.DSEngine
         {
             get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
         }
-
+        /// <summary>
+        ///     Inputs for Node
+        /// </summary>
         public IEnumerable<Tuple<string,string>> InputParametrs
         {
-            //get 
-            //{ 
-            //    string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
-            //    return signature;
-            //}
             get;
-            set;
+            private set;
         }
         /// <summary>
         ///     The category of this function.

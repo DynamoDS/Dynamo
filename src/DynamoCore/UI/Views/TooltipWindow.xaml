@@ -12,10 +12,10 @@
              MaxWidth="370">
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:SplitTooLongString x:Key="SplitTooLongString" />
+            <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:EmtpyListToNone x:Key="EmtpyListToNone" />
-            <controls:EmtpyStringToNone x:Key="EmtpyStringToNone" />
-            <controls:AddColonToNotNoneString x:Key="AddColonToNotNoneString" />
+            <controls:InputParameterToColon x:Key="InputParameterToColon" />
+            <controls:InputParameterTypeConverter x:Key="InputParameterTypeConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -75,15 +75,20 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Item1}"
-                                           Foreground="#cccccc"
-                                           FontSize="13" />
-                                <TextBlock Text="{Binding Item2,Converter={StaticResource AddColonToNotNoneString}}"
-                                           Foreground="#777777"
-                                           FontSize="13"
-                                           Margin="-1" />
-                            </StackPanel>
+                            <TextBlock FontSize="13"
+                                       Margin="-1">
+                            <Run Foreground="#cccccc"
+                                 Text="{Binding Item1, Mode=OneWay}" />
+                            <Run Foreground="#777777"
+                                 Text="{Binding Item1, Mode=OneWay, Converter={StaticResource InputParameterToColon}}" />
+                            <Run Foreground="#777777">
+                                <Run.Text>
+                                <Binding Path="Item2"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource InputParameterTypeConverter}" />
+                                </Run.Text>
+                            </Run>
+                            </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -94,7 +99,7 @@
                            Foreground="#50b5a3"
                            Margin="0,10,0,0" />
                 <TextBlock Name="output"
-                           Text="{Binding Path=OutputParametrs, Converter={StaticResource EmtpyStringToNone}}"
+                           Text="{Binding Path=OutputParametrs, Converter={StaticResource InputParameterTypeConverter}}"
                            Grid.Row="4"
                            Grid.ColumnSpan="3"
                            FontSize="13"
@@ -131,7 +136,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Name="code"
-                                   Text="{Binding Path=FullName, Converter={StaticResource SplitTooLongString}}"
+                                   Text="{Binding Path=FullName, Converter={StaticResource FullyQualifiedNameToDisplayConverter}}"
                                    FontSize="13"
                                    FontFamily="Consolas Regular"
                                    Foreground=" #777777"

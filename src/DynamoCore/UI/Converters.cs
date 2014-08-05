@@ -1592,7 +1592,7 @@ namespace Dynamo.Controls
         }
     }
 
-    public class SplitTooLongString : IValueConverter
+    public class FullyQualifiedNameToDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -1605,7 +1605,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            throw new NotSupportedException();
         }
     }
 
@@ -1625,38 +1625,41 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            throw new NotSupportedException();
         }
     }
 
-    public class AddColonToNotNoneString : IValueConverter
+    public class InputParameterTypeConverter : IValueConverter
     {
+        private static readonly string NoneString = "none";
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((string)value != "none")
-                return " : "+(string)value;
+            var input = value as string;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+                return NoneString;
 
-            return (string)value;
+            return input;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            throw new NotSupportedException();
         }
     }
-    public class EmtpyStringToNone : IValueConverter
+    public class InputParameterToColon : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (String.IsNullOrEmpty((string)value))
-                return "none";
+                return string.Empty;
 
-            return (string)value;
+            return ":";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            throw new NotSupportedException();
         }
     }
 }
