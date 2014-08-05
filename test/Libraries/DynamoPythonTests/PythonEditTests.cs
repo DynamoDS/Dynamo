@@ -20,9 +20,9 @@ namespace Dynamo.Tests
         public void PythonScriptEdit_WorkspaceChangesReflected()
         {
             // open file
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var workspace = model.CurrentWorkspace;
@@ -41,9 +41,9 @@ namespace Dynamo.Tests
         public void PythonScriptEdit_UndoRedo()
         {
             // open file
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
@@ -60,13 +60,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(model.CurrentWorkspace.HasUnsavedChanges);
 
             // undo change
-            ViewModel.DynamoViewModel.UndoCommand.Execute(null);
+            ViewModel.UndoCommand.Execute(null);
 
             // check value is back to original
             Assert.AreEqual(pynode.Script, origScript);
 
             // redo change
-            ViewModel.DynamoViewModel.RedoCommand.Execute(null);
+            ViewModel.RedoCommand.Execute(null);
 
             // script is edited
             Assert.AreEqual(pynode.Script, newScript);
@@ -76,9 +76,9 @@ namespace Dynamo.Tests
         public void VarInPythonScriptEdit_WorkspaceChangesReflected()
         {
             // open file
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
@@ -95,9 +95,9 @@ namespace Dynamo.Tests
         public void VarInPythonScriptEdit_UndoRedo()
         {
             // open file
-            var model = ViewModel.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
-            ViewModel.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
             var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
@@ -114,13 +114,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(model.CurrentWorkspace.HasUnsavedChanges);
 
             // undo change
-            ViewModel.DynamoViewModel.UndoCommand.Execute(null);
+            ViewModel.UndoCommand.Execute(null);
 
             // check value is back to original
             Assert.AreEqual(pynode.Script, origScript);
 
             // redo change
-            ViewModel.DynamoViewModel.RedoCommand.Execute(null);
+            ViewModel.RedoCommand.Execute(null);
 
             // script is edited
             Assert.AreEqual(pynode.Script, newScript);
@@ -131,7 +131,7 @@ namespace Dynamo.Tests
             var command = new DynCmd.UpdateModelValueCommand(
                 pythonNode.GUID, "ScriptContent", value);
 
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+            ViewModel.ExecuteCommand(command);
         }
     }
 }
