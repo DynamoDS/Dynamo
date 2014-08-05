@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Unfold.Interfaces;
+using DynamoText;
 
 namespace Unfold
 {
@@ -51,6 +52,153 @@ namespace Unfold
             }
 
         }
+
+        public class UnfoldableFaceLabel<K,T> 
+            where T : IUnfoldablePlanarFace<K>
+            where K : IUnfoldableEdge
+        {
+
+            public string Label { get; set; }
+            public List<Curve> LabelGeometry {get; set;}
+            public List<Curve> AlignedLabelGeometry { get; set; }
+            public int ID { get;set; }
+            public T UnfoldableFace { get; set; }
+
+
+            private IEnumerable<Curve> GenLabelGeometryFromId(int id){
+
+                List<List<Curve>> textgeo = TextFromString.FromStringOriginAndScale(id.ToString(), Point.ByCoordinates(0, 0, 0), 1.0) as List<List<Curve>>;
+
+                List<Curve> flattextgeo = textgeo.SelectMany(x => x).ToList();
+
+                return flattextgeo;
+                
+                
+            }
+
+            private IEnumerable<Curve> AlignGeoToFace(IEnumerable<Curve> geo)
+            {
+                var ApproxCenter = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(UnfoldableFace.SurfaceEntity);
+                var norm = UnfoldableFace.SurfaceEntity.NormalAtPoint(ApproxCenter);
+
+                var facePlane = Plane.ByOriginNormal(ApproxCenter, norm);
+
+                var finalCordSystem = CoordinateSystem.ByPlane(facePlane);
+
+                return geo.Select(x => x.Transform(finalCordSystem)).Cast<Curve>().AsEnumerable();
+
+            }
+
+            public UnfoldableFaceLabel(T face)
+            {
+                ID = face.ID;
+                LabelGeometry = GenLabelGeometryFromId(ID).ToList();
+                Label = ID.ToString();
+                UnfoldableFace = face;
+                AlignedLabelGeometry = AlignGeoToFace(LabelGeometry).ToList();
+
+            }
+
+
+        
+}
+
+       
+
+          public static List<G> MapGeometryToUnfoldingByID<K,T,G>(PlanarUnfolder.PlanarUnfolding<K, T> unfolding, List<G> geometryToTransform, int id)
+      where T : IUnfoldablePlanarFace<K>
+      where K : IUnfoldableEdge
+      where G : Geometry
+          {
+                // find bounding box of set of curves
+                var myBox =  BoundingBox.ByGeometry(geometryToTransform);
+
+                  // find the center of this box and use as start point
+                  var geoStartPoint = myBox.MinPoint.Add((myBox.MaxPoint.Subtract(myBox.MinPoint.AsVector()).AsVector().Scale(.5)));
+             
+              // transform each curve using this new center as an offset so it ends up translated correctly to the surface center
+         var  transformedgeo = geometryToTransform.Select(x => MapGeometryToUnfoldingByID(unfolding, x, id, geoStartPoint)).ToList();
+
+         return transformedgeo;
+       }
+
+
+          public static G MapGeometryToUnfoldingByID<K, T, G>(PlanarUnfolder.PlanarUnfolding<K, T> unfolding, G geometryToTransform, int id)
+
+              where T : IUnfoldablePlanarFace<K>
+              where K : IUnfoldableEdge
+              where G : Geometry
+          {
+
+              // grab all transforms that were applied to this surface id
+              var map = unfolding.Maps;
+              var applicableTransforms = map.Where(x => x.IDS.Contains(id));
+              var transforms = applicableTransforms.Select(x => x.CS).ToList();
+
+
+              // set the geometry to the first applicable transform
+              geometryToTransform = geometryToTransform.Transform(transforms.First()) as G;
+
+              // get bb of geo to transform
+              var myBox = geometryToTransform.BoundingBox;
+              // find the center of this box and use as start point
+              var geoStartPoint = myBox.MinPoint.Add((myBox.MaxPoint.Subtract(myBox.MinPoint.AsVector()).AsVector().Scale(.5)));
+              //create vector from unfold surface center startpoint and the current geo center and translate to this start position
+              geometryToTransform = geometryToTransform.Translate(Vector.ByTwoPoints(geoStartPoint, unfolding.StartingPoints[id])) as G;
+
+              // at this line, geo to transform is in the CS of the 
+              //unfold surface and is that the same position, so following the transform
+              // chain will bring the geo to a similar final location as the unfold
+
+              G aggregatedGeo = geometryToTransform;
+              for (int i = 0; i + 1 < transforms.Count; i++)
+              {
+                  aggregatedGeo = aggregatedGeo.Transform(transforms[i + 1]) as G;
+
+              }
+
+              return aggregatedGeo;
+
+          }
+
+
+          public static G MapGeometryToUnfoldingByID<K, T, G>(PlanarUnfolder.PlanarUnfolding<K, T> unfolding, G geometryToTransform, int id, Point offset)
+
+              where T : IUnfoldablePlanarFace<K>
+              where K : IUnfoldableEdge
+              where G : Geometry
+          {
+
+              // grab all transforms that were applied to this surface id
+              var map = unfolding.Maps;
+              var applicableTransforms = map.Where(x => x.IDS.Contains(id));
+              var transforms = applicableTransforms.Select(x => x.CS).ToList();
+
+
+              // set the geometry to the first applicable transform
+              geometryToTransform = geometryToTransform.Transform(transforms.First()) as G;
+
+              var geoStartPoint = offset;
+              //create vector from unfold surface center startpoint and the current geo center and translate to this start position
+              geometryToTransform = geometryToTransform.Translate(Vector.ByTwoPoints(geoStartPoint, unfolding.StartingPoints[id])) as G;
+
+              // at this line, geo to transform is in the CS of the 
+              //unfold surface and is that the same position, so following the transform
+              // chain will bring the geo to a similar final location as the unfold
+
+              G aggregatedGeo = geometryToTransform;
+              for (int i = 0; i + 1 < transforms.Count; i++)
+              {
+                  aggregatedGeo = aggregatedGeo.Transform(transforms[i + 1]) as G;
+
+              }
+
+              return aggregatedGeo;
+
+          }
+
+
+
 
 
 
@@ -217,11 +365,19 @@ namespace Unfold
                     var translatedGeoContainer = new T();
                     translatedGeoContainer.SurfaceEntity = (child.UnfoldPolySurface.SurfaceEntity.Translate((r.NextDouble() * 10) + 5, 0, 0) as Surface);
                     translatedGeoContainer.OriginalEntity = translatedGeoContainer.SurfaceEntity;
+                    
 
                     var movedUnfoldBranch = translatedGeoContainer;
                     movedUnfoldBranch.IDS = child.UnfoldPolySurface.IDS;
                     disconnectedSet.Add(movedUnfoldBranch);
 
+
+                    // put the child ids back into the new translated geo container
+                    translatedGeoContainer.IDS.AddRange(movedUnfoldBranch.IDS);
+                    translatedGeoContainer.IDS.Add(child.Face.ID);
+
+                    transforms.Add(new FaceTransformMap(
+                   translatedGeoContainer.SurfaceEntity.ContextCoordinateSystem, translatedGeoContainer.IDS));
                   
                 }
 
@@ -250,7 +406,9 @@ namespace Unfold
                     // add the parent surface into this list of surfaces we'll use to create a new polysurface
                     subsurblist.Add(parent.UnfoldPolySurface.SurfaceEntity);
 
-
+                    // need to extract the parentIDchain, this is previous faces that been made coplanar with the parent
+                    // we need to grab them before the parent unfoldchain is replaced
+                    var parentIDchain = parent.UnfoldPolySurface.IDS;
                     var newParentSurface = PolySurface.ByJoinedSurfaces(subsurblist);
 
                     // replace the surface in the parent with the wrapped chain of surfaces
@@ -260,16 +418,28 @@ namespace Unfold
 
                     parent.UnfoldPolySurface = wrappedChainOfUnfolds;
 
-                    // as we rotate up the chain we'll add each new ID entry to the list on the parent.
+                    // as we rotate up the chain we'll add the new IDs entry to the list on the parent.
+                   
                     var rotatedFaceIDs = child.UnfoldPolySurface.IDS;
                     // add the child ids to the parent id list
                     parent.UnfoldPolySurface.IDS.AddRange(rotatedFaceIDs);
                     parent.UnfoldPolySurface.IDS.Add(child.Face.ID);
+                    
 
+                    // note that we add the parent ID chain to the parent unfold chain, replacing it
+                    // but that we DO NOT add these ids to the current transformation map, since we're not transforming them
+                    // right now, we just need to keep them from being deleted while adding the new ids.
+                   
+                    parent.UnfoldPolySurface.IDS.AddRange(parentIDchain);
                     // now add the coordinate system for the rotatedface to the transforms list
 
+                    var currentIDsToStoreTransforms = new List<int>();
+
+                    currentIDsToStoreTransforms.Add(child.Face.ID);
+                    currentIDsToStoreTransforms.AddRange(rotatedFaceIDs);
+
                     transforms.Add(new FaceTransformMap(
-                    rotatedFace.ContextCoordinateSystem, parent.UnfoldPolySurface.IDS));
+                    rotatedFace.ContextCoordinateSystem, currentIDsToStoreTransforms));
 
 
                 }

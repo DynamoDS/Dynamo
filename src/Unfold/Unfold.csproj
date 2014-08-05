@@ -62,6 +62,10 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\TextAsGeometry\DynamoText.csproj">
+      <Project>{13f3e64e-5afb-4397-912b-8104e84d9427}</Project>
+      <Name>DynamoText</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

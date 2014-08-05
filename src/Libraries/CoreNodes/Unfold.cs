@@ -35,47 +35,42 @@ namespace DSCore
             return new Dictionary<string, object> 
                 {   
                     { "surfaces", (unfolding.UnfoldedSurfaceSet)},
-                    {" unfoldingObject",(unfolding)},
+                    {"unfoldingObject",(unfolding)},
                     
                 };
 
         }
+        public static List<List<Curve>> GenerateLabels
+           (PlanarUnfolder.PlanarUnfolding<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity> unfoldingObject)
+        {
+
+            var labels = unfoldingObject.StartingUnfoldableFaces.Select(x =>
+              new PlanarUnfolder.UnfoldableFaceLabel<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>(x)).ToList();
+
+            return labels.Select(x => x.AlignedLabelGeometry).ToList();
+
+        }
 
 
-       public static Geometry MapGeometryToUnfoldingByID(PlanarUnfolder.PlanarUnfolding<GeneratePlanarUnfold.EdgeLikeEntity,GeneratePlanarUnfold.FaceLikeEntity> unfolding, Geometry geometryToTransform, int id){
+
+
+       public static List<List<Curve>> GenerateLabelsAndTransformToUnfold
+           (PlanarUnfolder.PlanarUnfolding<GeneratePlanarUnfold.EdgeLikeEntity,GeneratePlanarUnfold.FaceLikeEntity> unfoldingObject){
+        
+           var labels =   unfoldingObject.StartingUnfoldableFaces.Select(x=>
+             new PlanarUnfolder.UnfoldableFaceLabel<GeneratePlanarUnfold.EdgeLikeEntity,GeneratePlanarUnfold.FaceLikeEntity>(x)).ToList();
+        
+           // need to make one piece of geometry from list of geo...
+           var transformedGeo = labels.Select(x=> PlanarUnfolder.MapGeometryToUnfoldingByID(unfoldingObject,x.AlignedLabelGeometry,x.ID)).ToList();
 
           
-
-           // grab all transforms that were applied to this surface id
-           var map = unfolding.Maps;
-           var applicableTransforms = map.Where(x => x.IDS.Contains(id));
-           var transforms = applicableTransforms.Select(x => x.CS).ToList();
-
-           // now test
-           //transform geo from first to last.
-
-          
-
-           geometryToTransform = geometryToTransform.Transform(transforms.First());
-
-
-           var myBox = geometryToTransform.BoundingBox;
-           var geoStartPoint = myBox.MinPoint.Add((myBox.MaxPoint.Subtract(myBox.MinPoint.AsVector()).AsVector().Scale(.5)));
-
-           geometryToTransform = geometryToTransform.Translate(Vector.ByTwoPoints(geoStartPoint,unfolding.StartingPoints[id])) ;
-
-           Geometry aggregatedGeo = geometryToTransform;
-           for (int i = 0; i + 1 < transforms.Count; i++) {
-               aggregatedGeo = aggregatedGeo.Transform(transforms[i + 1]);
-               
-
-            }
-
-
-           return aggregatedGeo;
-           
+           return transformedGeo; 
            
        }
+
+
+           
+       
 
 
         public static List<Surface> UnfoldListOfFaces(List<Face> faces){
@@ -105,7 +100,10 @@ namespace DSCore
             return unfoldsurfaces.UnfoldedSurfaceSet;
         }
 
-       // method is for debugging the BFS output visually in dynamo, very useful
+
+        // The following methods may be removed from Import eventually
+        # region  
+        // method is for debugging the BFS output visually in dynamo, very useful
         public static object BFSTestTesselation(List<Surface> surfaces)
         {
 
@@ -130,9 +128,9 @@ namespace DSCore
            List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>() { x[0], x[1], x[2] })).ToList();
 
            return trisurfaces;
-           
-       }
 
+       }
+        #endregion
 
     }
 }
