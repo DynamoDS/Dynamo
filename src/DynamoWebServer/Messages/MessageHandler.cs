@@ -188,15 +188,15 @@ namespace DynamoWebServer.Messages
                 else
                 {
                     data = "null";
-                    if (item.Value.CachedValue != null)
+                    if (node.CachedValue != null)
                     {
-                        if (item.Value.CachedValue.IsCollection)
+                        if (node.CachedValue.IsCollection)
                         {
                             data = "Array";
                         }
                         else
                         {
-                            if (item.Value.CachedValue.Data != null)
+                            if (node.CachedValue.Data != null)
                             {
                                 data = item.Value.CachedValue.Data.ToString();
                             }
@@ -207,7 +207,7 @@ namespace DynamoWebServer.Messages
                 // send only updated nodes back
                 if (node.IsUpdated)
                 {
-                    var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.RenderPackages);
+                    var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.IsGraphic);
                     nodes.Add(execNode);
                 }
             }

@@ -45,12 +45,13 @@ namespace DynamoWebServer.Messages
         public bool IsGraphic { get; private set; }
 
         public ExecutedNode(string id, string state, string stateMessage,
-            string data, List<IRenderPackage> packages)
+            string data, bool isGraphic)
         {
             this.NodeID = id;
             this.State = state;
             this.StateMessage = stateMessage;
             this.Data = data;
+            this.IsGraphic = IsGraphic;
         }
 
         

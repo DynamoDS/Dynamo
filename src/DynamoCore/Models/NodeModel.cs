@@ -1681,6 +1681,11 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Indicates whether the node should be drawn
+        /// </summary>
+        public bool IsGraphic { get { return GetDrawableIds().Count() > 0; } }
+
+        /// <summary>
         /// Gets the drawable Id as registered with visualization manager for
         /// the given output port on the given node.
         /// </summary>
