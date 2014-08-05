@@ -3,6 +3,7 @@
 <AddIn Type="Application">
 <Name>Dynamo For Revit</Name>
 <Assembly>"DynamoRevitDS.dll"</Assembly>
+<VisibilityMode>AlwaysVisible</VisibilityMode>
 <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>
 <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
 <VendorId>Dynamo</VendorId>

@@ -50,6 +50,8 @@
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
     <PreBuildEvent>rmdir $(DYNAMO_HARVEST_PATH)
+
+$(DYNAMO_REVIT_SIGN_TOOLS)\SignData.exe $(DYNAMO_BASE)\bin\AnyCPU\Release\Revit_2015\DynamoRevitDS.dll $(DYNAMO_REVIT_SIGN_TOOLS)\pair.dat INT
 robocopy $(TargetDir)..\..\..\..\bin\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int
 
 "C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var env.DYNAMO_HARVEST_PATH -out "$(ProjectDir)Release.wxs"

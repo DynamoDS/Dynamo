@@ -6,7 +6,7 @@
            Language="1033" 
            Version="0.7.1" 
            Manufacturer="Dynamo" 
-           UpgradeCode="f84e2239-049c-43cb-b875-ada28893a9db">
+           UpgradeCode="f84e2239-049c-43cb-b875-ada28893a9db" >
 
     <Package InstallerVersion="200" 
              Compressed="yes" 
@@ -19,8 +19,8 @@
     
     <MediaTemplate EmbedCab="yes" />
 
-    <UIRef Id="WixUI_FeatureTree"/>
-    <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>
+    <!--<UIRef Id="WixUI_FeatureTree"/>
+    <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
     <!--Property used to define on which version of Revit to install.-->
     <Property Id="REVIT_FLAVOR" Value="Autodesk Revit Architecture 2015"/>
@@ -57,9 +57,10 @@
       <RegistrySearch Id='RevitForDynamo' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[REVIT_FLAVOR]' Name='InstallLocation' />
     </Property>
+    
     <Property Id='DYNAMO_INSTALLDIR'></Property>
     <SetProperty Id="DYNAMO_INSTALLDIR" Value="[DYNAMO_INSTALL_BASE]\AddIns\Dynamo" After="LaunchConditions"></SetProperty>
-                  
+
     <CustomAction Id="AdjustInstallDir"
                Property="DYNAMO_INSTALLDIR"
                Value="[DYNAMO_INSTALLDIR]\AddIns\Dynamo" />
@@ -91,7 +92,7 @@
       <Condition Level="0">(REVIT_2015="" AND REVIT_ARCHITECTURE_2015="") OR INSTALL_FOR_REVIT_2015=0</Condition>
     </Feature>
 
-    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.SolutionDir)..\tools\install\Extra\DynamoInstaller.ico"/>
+    <Icon Id="DynamoInstaller.ico" SourceFile="$(env.DYNAMO_BASE)\tools\install\Extra\DynamoInstaller.ico"/>
     <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
   
   </Product>
@@ -108,12 +109,12 @@
   
     <ComponentGroup Id="REVIT_2014" Directory="DYNAMO_INSTALLDIR">
       <Component Id="DynamoForRevit2015.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
-        <File Id="DynamoForRevit2015.addin" Source="$(var.TargetDir)..\..\..\..\tools\install\Extra\DynamoForRevit2014.addin"/>
+        <File Id="DynamoForRevit2015.addin" Source="$(env.DYNAMO_BASE)\tools\install\Extra\DynamoForRevit2014.addin"/>
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="REVIT_2015" Directory="DYNAMO_INSTALLDIR">
       <Component Id="DynamoForRevit2014.addin" Guid="fde9dc0b-4b8c-46d3-9950-42c9f66b5e60">
-        <File Id="DynamoForRevit2014.addin" Source="$(var.TargetDir)..\..\..\..\tools\install\Extra\DynamoForRevit2015.addin"></File>
+        <File Id="DynamoForRevit2014.addin" Source="$(env.DYNAMO_BASE)\tools\install\Extra\DynamoForRevit2015.addin"></File>
       </Component>
     </ComponentGroup>
   </Fragment>
