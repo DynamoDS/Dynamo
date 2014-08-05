@@ -9,12 +9,18 @@ namespace DynamoWebServer.Messages
 
     public class ResultReadyEventArgs : EventArgs
     {
-        public ResultReadyEventArgs(Response response) 
+        public Response Response { get; private set; }
+        public string SessionId { get; set; }
+
+        public ResultReadyEventArgs(Response response)
         {
-            this.Response = response;
+            Response = response;
         }
 
-        public Response Response { get; private set; }
-        public string SessionID { get; set; }
+        public ResultReadyEventArgs(Response response, string sessionId)
+        {
+            SessionId = sessionId;
+            Response = response;
+        }
     }
 }

@@ -159,10 +159,6 @@ limitations under the License.
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Messages\ExecutedNode.cs" />
-    <Compile Include="Messages\MessageHandler.cs" />
-    <Compile Include="Messages\Message.cs" />
-    <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
