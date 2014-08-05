@@ -29,8 +29,6 @@
     <Compile Include="Definitions.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Release.wxs" />
-    <Compile Include="Revit2014.wxs" />
-    <Compile Include="Revit2015.wxs" />
     <Compile Include="Samples.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -51,13 +49,10 @@
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
-    <PreBuildEvent>robocopy $(TargetDir)..\..\..\..\bin\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int Revit_2014 Revit_2015
-robocopy $(TargetDir)..\..\..\..\bin\AnyCPU\Release\Revit_2014 $(DYNAMO_REVIT_2014_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e
-robocopy $(TargetDir)..\..\..\..\bin\AnyCPU\Release\Revit_2015 $(DYNAMO_REVIT_2015_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e
+    <PreBuildEvent>rmdir $(DYNAMO_HARVEST_PATH)
+robocopy $(TargetDir)..\..\..\..\bin\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int
 
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -dr DYNAMO_INSTALLDIR -var env.DYNAMO_HARVEST_PATH -t "$(ProjectDir)Release.xsl" -out "$(ProjectDir)Release.wxs"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_REVIT_2014_HARVEST_PATH) -cg REVIT_2014 -gg -scom -sreg -dr DYNAMO_INSTALLDIR -var env.DYNAMO_REVIT_2014_HARVEST_PATH -out "$(ProjectDir)Revit2014.wxs"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_REVIT_2015_HARVEST_PATH) -cg REVIT_2015 -gg -scom -sreg -dr DYNAMO_INSTALLDIR -var env.DYNAMO_REVIT_2015_HARVEST_PATH -out "$(ProjectDir)Revit2015.wxs"
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var env.DYNAMO_HARVEST_PATH -out "$(ProjectDir)Release.wxs"
 
 "C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "$(SolutionDir)..\doc\distrib\Samples" -cg SAMPLES -gg -scom -sreg -dr PROGDATA_07 -var env.DYNAMO_SAMPLES_PATH -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
 "C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "$(SolutionDir)..\doc\distrib\migration_nodes" -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA_07 -var env.DYNAMO_MIGRATION_NODES_PATH -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
