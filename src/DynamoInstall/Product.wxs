@@ -19,7 +19,7 @@
     
     <MediaTemplate EmbedCab="yes" />
 
-    <UIRef Id="WixUI_FeatureTree" />
+    <UIRef Id="WixUI_FeatureTree"/>
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf" />
 
     <!--Property used to define on which version of Revit to install.-->
