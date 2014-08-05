@@ -77,6 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IWebSocket.cs" />
+    <Compile Include="Messages\GeometryData.cs" />
+    <Compile Include="Messages\GeometryMessage.cs" />
     <Compile Include="Messages\ExecutedNode.cs" />
     <Compile Include="Messages\LibraryItemsListMessage.cs" />
     <Compile Include="Messages\Message.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Responses\GeometryDataResponse.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Responses\ComputationResponse.cs" />
     <Compile Include="Responses\ContentResponse.cs" />

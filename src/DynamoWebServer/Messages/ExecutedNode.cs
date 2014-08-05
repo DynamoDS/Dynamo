@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
+using System.IO;
 
 namespace DynamoWebServer.Messages
 {
@@ -13,31 +14,6 @@ namespace DynamoWebServer.Messages
     [DataContract]
     public class ExecutedNode
     {
-        /// <summary>
-        /// The class that represents data for drawing a graphic primitive 
-        /// </summary>
-        public class Primitive
-        {
-            /// <summary>
-            /// Name of the graphic primitive
-            /// </summary>
-            [DataMember]
-            public string PrimitiveType { get; private set; }
-
-            /// <summary>
-            /// Data that is needed for drawing this primitive. For example
-            /// coordinates of a point
-            /// </summary>
-            [DataMember]
-            public string PrimitiveData { get; private set; }
-
-            public Primitive(string type, string data)
-            {
-                PrimitiveType = type;
-                PrimitiveData = data;
-            }
-        }
-
         /// <summary>
         /// Guid of the specified node
         /// </summary>
@@ -68,13 +44,6 @@ namespace DynamoWebServer.Messages
         [DataMember]
         public bool IsGraphic { get; private set; }
 
-        /// <summary>
-        /// List of the graphic primitives that result object consist of.
-        /// It is empty for nongraphic objects
-        /// </summary>
-        [DataMember]
-        public List<Primitive> GraphicPrimitives { get; private set; }
-
         public ExecutedNode(string id, string state, string stateMessage,
             string data, List<IRenderPackage> packages)
         {
@@ -82,62 +51,8 @@ namespace DynamoWebServer.Messages
             this.State = state;
             this.StateMessage = stateMessage;
             this.Data = data;
-            GeneratePrimitives(packages);
         }
 
-        private void GeneratePrimitives(List<IRenderPackage> packages)
-        {
-            IsGraphic = packages != null && packages.Any();
-
-            if (IsGraphic)
-            {
-                GraphicPrimitives = new List<Primitive>();
-                foreach (var package in packages)
-                {
-                    // Add points
-                    GraphicPrimitives.AddRange(GeneratePoints(package.PointVertices));
-
-                    var points = GeneratePoints(package.LineStripVertices);
-                    // Add lines
-                    GraphicPrimitives.AddRange(ConcatPoints(points, 2, "Line"));
-
-                    points = GeneratePoints(package.TriangleVertices);
-                    // Add triangles
-                    GraphicPrimitives.AddRange(ConcatPoints(points, 3, "Triangle"));
-                }
-            }
-        }
-
-        private List<Primitive> GeneratePoints(List<double> coordinates)
-        {
-            if (coordinates == null)
-                return null;
-            string name = "Point";
-            string data;
-            var points = new List<Primitive>();
-            for (int i = 2; i < coordinates.Count; i += 3)
-            {
-                data = "(" + coordinates[i - 2] + ";" + coordinates[i - 1] + ";" + coordinates[i] + ")";
-                points.Add(new Primitive(name, data));
-            }
-            return points;
-        }
-
-        private List<Primitive> ConcatPoints(List<Primitive> points, int count, string newName)
-        {
-            string data;
-            var concatPoints = new List<Primitive>();
-            while (points.Count >= count)
-            {
-                data = string.Empty;
-                for (int j = 0; j < count; j++)
-                {
-                    data += points[j].PrimitiveData;
-                }
-                points.RemoveRange(0, count);
-                concatPoints.Add(new Primitive(newName, data));
-            }
-            return concatPoints;
-        }
+        
     }
 }

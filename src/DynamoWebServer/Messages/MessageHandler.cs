@@ -18,13 +18,6 @@ namespace DynamoWebServer.Messages
     public class MessageHandler
     {
         static readonly JsonSerializerSettings JsonSettings;
-
-        public string SessionId { get; private set; }
-        public event ResultReadyEventHandler ResultReady;
-
-        private Message message;
-        private DynamoViewModel dynamoViewModel;
-
         static MessageHandler()
         {
             JsonSettings = new JsonSerializerSettings
@@ -34,11 +27,35 @@ namespace DynamoWebServer.Messages
             };
         }
 
+        private Message message;
+        private DynamoViewModel dynamoViewModel;
+        public string SessionId { get; private set; }
+
         public MessageHandler(Message msg, string sessionId)
         {
             this.message = msg;
             this.SessionId = sessionId;
         }
+
+        #region Class Data Members
+
+        /// <summary>
+        /// Send the results of the execution
+        /// </summary>
+        public event ResultReadyEventHandler ResultReady;
+        
+        protected void OnResultReady(object sender, ResultReadyEventArgs e)
+        {
+            if (ResultReady != null)
+            {
+                e.SessionID = SessionId;
+                ResultReady(sender, e);
+            }
+        }
+
+        #endregion
+
+        #region Public Class Operational Methods
 
         /// <summary>
         /// This method serializes the Message object in the json form. 
@@ -54,7 +71,7 @@ namespace DynamoWebServer.Messages
         /// </summary>
         /// <param name="jsonString">Json string that contains all its arguments.</param>
         /// <returns>Reconstructed Message</returns>
-        internal static Message DeserializeMessage(string jsonString)
+        public static Message DeserializeMessage(string jsonString)
         {
             try
             {
@@ -80,11 +97,15 @@ namespace DynamoWebServer.Messages
                     LibraryItems = dynSettings.Controller.SearchViewModel.GetAllLibraryItemsByCategory()
                 }));
             }
+            else if (message is GeometryMessage)
+            {
+                RetrieveGeometry(((GeometryMessage) message).NodeID);
+            }
         }
 
-        /// <summary>
-        /// Send the results of the execution
-        /// </summary>
+        #endregion
+
+        #region Private Class Operational Methods
         protected void OnResultReady(object sender, ResultReadyEventArgs e)
         {
             if (ResultReady != null)
@@ -108,9 +129,13 @@ namespace DynamoWebServer.Messages
                 {
                     manager.RenderComplete += ModifiedNodesData;
                 }
-                dynamoViewModel.ExecuteCommand(command);
+                command.Execute(dynamoViewModel);
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void SelectTabByGuid(DynamoViewModel dynamoViewModel, Guid guid)
         {
@@ -126,10 +151,13 @@ namespace DynamoWebServer.Messages
                 {
                     var name = dynSettings.Controller.CustomNodeManager.LoadedCustomNodes[guid]
                         .WorkspaceModel.Name;
-                    var workspace = dynamoViewModel.Workspaces.First(elem => elem.Name == name);
-                    var index = dynamoViewModel.Workspaces.IndexOf(workspace);
+                    var workspace = dynamoViewModel.Workspaces.FirstOrDefault(elem => elem.Name == name);
+                    if (workspace != null)
+                    {
+                        var index = dynamoViewModel.Workspaces.IndexOf(workspace);
 
-                    dynamoViewModel.CurrentWorkspaceIndex = index;
+                        dynamoViewModel.CurrentWorkspaceIndex = index;
+                    }
                 }
             }
         }
@@ -178,8 +206,12 @@ namespace DynamoWebServer.Messages
                     }                
 			    }
 
-                var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.RenderPackages);
-                nodes.Add(execNode);
+                // send only updated nodes back
+                if (node.IsUpdated)
+                {
+                    var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.RenderPackages);
+                    nodes.Add(execNode);
+                }
             }
 
             OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
@@ -187,6 +219,20 @@ namespace DynamoWebServer.Messages
                 Nodes = nodes
             }));
             dynSettings.Controller.VisualizationManager.RenderComplete -= ModifiedNodesData;
+        }
+
+        private void RetrieveGeometry(string nodeId)
+        {
+            Guid guid;
+            if (Guid.TryParse(nodeId, out guid))
+            {
+                NodeModel model = dynSettings.Controller.DynamoModel.NodeMap[guid];
+
+                OnResultReady(this, new ResultReadyEventArgs(new GeometryDataResponse
+                {
+                    GeometryData = new GeometryData(nodeId, model.RenderPackages)
+                }));
+            }
         }
 
         #endregion
