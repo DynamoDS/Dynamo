@@ -551,5 +551,159 @@ namespace UnfoldTests
 
         }
 
+
+        [TestFixture]
+        public class MappingFaceTransformsTests
+        {
+            // not a test, may not belong in general utilities
+             public void MapLabelsToFinalFaceLocations(List<Face> faces)
+            {
+
+
+            }
+
+             public void MapLabelsToFinalFaceLocations(List<Surface> surfaces)
+            {
+
+
+            }
+
+             public void AssertLabelsGoodStartingLocationAndOrientation(List<PlanarUnfolder.UnfoldableFaceLabel
+                 <GeneratePlanarUnfold.EdgeLikeEntity,GeneratePlanarUnfold.FaceLikeEntity>> labels)
+             {
+                 // get aligned geometry
+                 var alignedGeo = labels.Select(x => x.AlignedLabelGeometry).ToList();
+                 // assert that the bounding box of the label at least intersects the face it represents
+                 foreach (var curveList in alignedGeo)
+                 {
+                     Random rnd = new Random();
+                     
+                     var index = alignedGeo.IndexOf(curveList);
+                     var bb = BoundingBox.ByGeometry(curveList);
+                     
+                     var curvePoints = curveList.Select(x=>x.StartPoint);
+                     var threepoints = curvePoints.OrderBy(x => rnd.Next()).Take(3).ToList();
+
+                     var triangleOnPlaneOfLabel = Surface.ByPerimeterPoints(threepoints);
+
+                     Console.WriteLine("index = " + index.ToString());
+                     // assert that the box intersects with the bounding box of the surface
+                     Assert.IsTrue(bb.Intersects(BoundingBox.ByGeometry(labels[index].UnfoldableFace.SurfaceEntity)));
+                     
+                     //also assert that the face normal is parallel with the normal of the boundingbox plane
+
+                     var face = labels[index].UnfoldableFace.SurfaceEntity;
+
+                     UnfoldTestUtils.AssertSurfacesAreCoplanar(triangleOnPlaneOfLabel, face);
+
+
+                 }
+
+                 
+
+
+             }
+
+
+             [Test]
+
+
+             public void UnfoldAndLabelCubeFromFaces()
+             {
+
+                 // unfold cube
+                 Solid testcube = UnfoldTestUtils.SetupCube();
+                 List<Face> faces = testcube.Faces.ToList();
+
+                 var unfoldObject = PlanarUnfolder.DSPLanarUnfold(faces);
+
+                 var unfoldsurfaces = unfoldObject.UnfoldedSurfaceSet;
+
+                 Console.WriteLine("generating labels");
+                 
+                 // generate labels
+                 var labels = unfoldObject.StartingUnfoldableFaces.Select(x =>
+                new PlanarUnfolder.UnfoldableFaceLabel<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>(x)).ToList();
+
+                 AssertLabelsGoodStartingLocationAndOrientation(labels);
+                 
+                 // next check the positions of the translated labels
+
+             }
+
+
+             public void UnfoldAndLabelCubeFromSurfacs()
+             {
+
+                 // unfold cube
+                 Solid testcube = UnfoldTestUtils.SetupCube();
+                 List<Face> faces = testcube.Faces.ToList();
+
+                 var unfoldObject = PlanarUnfolder.DSPLanarUnfold(faces);
+
+                 var unfoldsurfaces = unfoldObject.UnfoldedSurfaceSet;
+
+                 Console.WriteLine("generating labels");
+
+                 // generate labels
+                 var labels = unfoldObject.StartingUnfoldableFaces.Select(x =>
+                new PlanarUnfolder.UnfoldableFaceLabel<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>(x)).ToList();
+
+                 AssertLabelsGoodStartingLocationAndOrientation(labels);
+
+                 // next check the positions of the translated labels
+
+             }
+
+             public void UnfoldAndLabelExtrudedLFromSurfacs()
+             {
+
+                 // unfold cube
+                 Solid testcube = UnfoldTestUtils.SetupCube();
+                 List<Face> faces = testcube.Faces.ToList();
+
+                 var unfoldObject = PlanarUnfolder.DSPLanarUnfold(faces);
+
+                 var unfoldsurfaces = unfoldObject.UnfoldedSurfaceSet;
+
+                 Console.WriteLine("generating labels");
+
+                 // generate labels
+                 var labels = unfoldObject.StartingUnfoldableFaces.Select(x =>
+                new PlanarUnfolder.UnfoldableFaceLabel<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>(x)).ToList();
+
+                 AssertLabelsGoodStartingLocationAndOrientation(labels);
+
+                 // next check the positions of the translated labels
+
+             }
+
+             public void UnfoldAndLabelCone()
+             {
+
+                 // unfold cube
+                 Solid testcube = UnfoldTestUtils.SetupCube();
+                 List<Face> faces = testcube.Faces.ToList();
+
+                 var unfoldObject = PlanarUnfolder.DSPLanarUnfold(faces);
+
+                 var unfoldsurfaces = unfoldObject.UnfoldedSurfaceSet;
+
+                 Console.WriteLine("generating labels");
+
+                 // generate labels
+                 var labels = unfoldObject.StartingUnfoldableFaces.Select(x =>
+                new PlanarUnfolder.UnfoldableFaceLabel<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity>(x)).ToList();
+
+                 AssertLabelsGoodStartingLocationAndOrientation(labels);
+
+                 // next check the positions of the translated labels
+
+             }
+
+
+
+        }
+
     }
 }

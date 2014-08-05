@@ -40,6 +40,29 @@ namespace DSCore
                 };
 
         }
+
+        [MultiReturn(new[] { "surfaces", "unfoldingObject" })]
+        public static Dictionary<string, object> UnfoldListOfTesselatedSurfacesAndReturnTransforms(List<Surface> surfaces)
+        {
+
+            //handle tesselation here
+            var pointtuples = Tessellate.Tesselate(surfaces);
+            //convert triangles to surfaces
+            List<Surface> trisurfaces = pointtuples.Select(x => Surface.ByPerimeterPoints(new List<Point>() { x[0], x[1], x[2] })).ToList();
+
+            var unfolding = PlanarUnfolder.DSPLanarUnfold(trisurfaces);
+            return new Dictionary<string, object> 
+                {   
+                    { "surfaces", (unfolding.UnfoldedSurfaceSet)},
+                    {"unfoldingObject",(unfolding)},
+                    
+                };
+
+        }
+
+
+
+
         public static List<List<Curve>> GenerateLabels
            (PlanarUnfolder.PlanarUnfolding<GeneratePlanarUnfold.EdgeLikeEntity, GeneratePlanarUnfold.FaceLikeEntity> unfoldingObject)
         {
