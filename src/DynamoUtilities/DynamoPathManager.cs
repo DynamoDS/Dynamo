@@ -82,6 +82,8 @@ namespace DynamoUtilities
 
         public string GeometryFactory { get; set; }
 
+        public string AsmPreloader { get; set; }
+
         /// <summary>
         /// A directory containing the ASM 219 DLLs
         /// </summary>
@@ -296,6 +298,7 @@ namespace DynamoUtilities
             LibG = path;
             var splits = LibG.Split('\\');
             GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
+            AsmPreloader = splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll";
         }
 
         /// <summary>
@@ -338,6 +341,10 @@ namespace DynamoUtilities
 
             foreach (System.IO.DirectoryInfo dirInfo in subDirs)
             {
+                // AutoCAD directories don't seem to contain all the needed ASM DLLs
+                if (!dirInfo.Name.Contains("Revit") && !dirInfo.Name.Contains("Vasari"))
+                    continue;
+
                 files = dirInfo.GetFiles("*.*");
 
                 foreach (System.IO.FileInfo fi in files)
