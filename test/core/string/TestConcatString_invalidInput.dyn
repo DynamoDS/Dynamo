@@ -1,18 +1,16 @@
-<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="cc16be22-af85-4626-b759-4a82e10bf1b0" nickname="Watch" x="735" y="320.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynConcatStrings type="Dynamo.Nodes.dynConcatStrings" guid="eb4d8a34-5437-4064-ad52-db5c58a95451" nickname="Concat Strings" x="561" y="171.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="cda85fc3-3191-4dec-b484-68bc5bc159b9" nickname="String" x="231" y="202.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="0.7.1.33289" X="-236.596619148521" Y="-5.44668727992172" zoom="1.03605787560061" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="cc16be22-af85-4626-b759-4a82e10bf1b0" nickname="Watch" x="568.986108256461" y="183.927216652099" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="eb4d8a34-5437-4064-ad52-db5c58a95451" nickname="String.Concat" x="415.255246201894" y="180.671970450206" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" assembly="DSCoreNodes.dll" function="DSCore.String.Concat@string[]" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="cda85fc3-3191-4dec-b484-68bc5bc159b9" nickname="String" x="281.491042895511" y="165.122699422511" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="a" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="0eff6e0f-41ad-492c-aa6f-5f527dd47124" nickname="Split String" x="362" y="248.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="eb4d8a34-5437-4064-ad52-db5c58a95451" start_index="0" end="cc16be22-af85-4626-b759-4a82e10bf1b0" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="cda85fc3-3191-4dec-b484-68bc5bc159b9" start_index="0" end="eb4d8a34-5437-4064-ad52-db5c58a95451" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="cda85fc3-3191-4dec-b484-68bc5bc159b9" start_index="0" end="0eff6e0f-41ad-492c-aa6f-5f527dd47124" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="cda85fc3-3191-4dec-b484-68bc5bc159b9" start_index="0" end="0eff6e0f-41ad-492c-aa6f-5f527dd47124" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="0eff6e0f-41ad-492c-aa6f-5f527dd47124" start_index="0" end="eb4d8a34-5437-4064-ad52-db5c58a95451" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="80e57df2-7c88-4818-a58d-7def31aaa42a" nickname="Code Block" x="269.095123170535" y="238.974482739424" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="eb4d8a34-5437-4064-ad52-db5c58a95451" start_index="0" end="cc16be22-af85-4626-b759-4a82e10bf1b0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cda85fc3-3191-4dec-b484-68bc5bc159b9" start_index="0" end="eb4d8a34-5437-4064-ad52-db5c58a95451" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="80e57df2-7c88-4818-a58d-7def31aaa42a" start_index="0" end="eb4d8a34-5437-4064-ad52-db5c58a95451" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
