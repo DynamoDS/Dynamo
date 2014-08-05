@@ -8,10 +8,12 @@
           UpgradeCode="364eedd1-51f4-4a8d-b63e-1814dffcf212"
           IconSourceFile="$(env.DYNAMO_BASE)\doc\distrib\Images\logo_square_32x32.ico" >
     
-    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLargeLicense" />
+    <!--<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLargeLicense" />-->
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense" />
+    <WixVariable Id="WixStdbaLicenseUrl" Value="" />
     
 		<Chain>
-			 <MsiPackage SourceFile="$(var.DynamoInstall_Core.TargetDir)\Dynamo.msi" 
+			 <MsiPackage SourceFile="$(var.DynamoInstall.TargetDir)\DynamoInstall.msi" 
                    DisplayInternalUI="yes"/> 
        <MsiPackage SourceFile="$(env.DYNAMO_BASE)\tools\install\Extra\IronPython-2.7.3.msi" 
                    Permanent="yes" /> 

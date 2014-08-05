@@ -49,9 +49,6 @@
       <Name>WixUIExtension</Name>
     </WixExtension>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="DynamoIncludes.wxi" />
-  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
     <PreBuildEvent>robocopy $(TargetDir)..\..\..\..\bin\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int Revit_2014 Revit_2015

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?include DynamoIncludes.wxi ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   
   <Product Id="*" 
@@ -31,18 +30,22 @@
       <RegistrySearch Id='VasariRegistry_2014' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Vasari Beta 3' Name='InstallLocation' />
     </Property>
+    
     <Property Id="REVIT_2014">
       <RegistrySearch Id='RevitRegistry_2014' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit 2014' Name='InstallLocation' />
     </Property>
+    
     <Property Id="REVIT_ARCHITECTURE_2014">
       <RegistrySearch Id='RevitRegistry_Architecture_2014' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2014' Name='InstallLocation' />
     </Property>
+    
     <Property Id="REVIT_2015">
       <RegistrySearch Id='RevitRegistry_2015' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit 2015' Name='InstallLocation' />
     </Property>
+    
     <Property Id="REVIT_ARCHITECTURE_2015">
       <RegistrySearch Id='RevitRegistry_Architecture_2015' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
