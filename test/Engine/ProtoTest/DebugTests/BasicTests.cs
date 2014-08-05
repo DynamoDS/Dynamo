@@ -3122,7 +3122,7 @@ a =
             Assert.IsTrue((Int64)startCharNo == 0);
         }
 
-        [Test, Ignore]
+        [Test]
         [Category("Debugger")]
         public void TestStepNextClass()
         {
@@ -3151,13 +3151,14 @@ a = p.x;
             Obj o = vms.mirror.GetDebugValue("p");
             string type = vms.mirror.GetType("p");
 
-
-            // Step
-            vms = fsr.StepOver();
+            Assert.IsTrue(type == "V");
 
             // Second var
             o = vms.mirror.GetDebugValue("a");
             type = vms.mirror.GetType("a");
+
+            Assert.IsTrue((Int64)o.Payload == 10);
+            Assert.IsTrue(type == "int");
         }
 
         [Test]
