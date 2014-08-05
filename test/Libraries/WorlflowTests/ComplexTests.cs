@@ -19,7 +19,6 @@ namespace Dynamo.Tests
         {
             // This will test user workflow which contains many nodes, final output is Solid using
             // sweep.
-            DynamoModel model = ViewModel.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\RandomModel_V3.dyn");
             
             RunModel(openPath);
