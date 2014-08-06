@@ -72,10 +72,8 @@ namespace Dynamo.Tests
             var valuePostCollapse = watchNode.CachedValue;
 
             // Ensure the values are equal and both 65.
-            var svPreCollapse = ((long)valuePreCollapse);
-            var svPostCollapse = ((long)valuePostCollapse);
-            Assert.AreEqual(65, svPreCollapse);
-            Assert.AreEqual(svPreCollapse, svPostCollapse);
+            Assert.AreEqual(65, valuePreCollapse);
+            Assert.AreEqual(valuePreCollapse, valuePostCollapse);
         }
 
         [Test]
@@ -655,8 +653,7 @@ namespace Dynamo.Tests
 
             var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
 
-            Assert.IsTrue(firstWatch.CachedValue is ICollection);
-            Assert.AreEqual(0, (firstWatch.CachedValue as ICollection).Cast<double>().First());
+            Assert.AreEqual(new ArrayList { 0 }, firstWatch.CachedValue);
 
             var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
 
