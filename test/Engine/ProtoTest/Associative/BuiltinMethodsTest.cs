@@ -807,7 +807,131 @@ x = foo(5);
             // This case crashes nunit 
             //Assert.Fail("This test case crashes Nunit");
         }
+
+        [Test]
+        public void TestTryGetValueFromDictionary01()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+r = TryGetValueFromDictionary(a, ""in"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 42);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary02()
+        {
+            string code = @"
+a = {};
+key = ""in"";
+a[key] = 42;
+r = TryGetValueFromDictionary(a, key);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 42);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary03()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {a, b};
+r1 = TryGetValueFromDictionary(c, ""in"");
+r2 = TryGetValueFromDictionary(c, ""out"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 42, 24});
+            thisTest.Verify("r2", new object[] { 24, 42});
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary04()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {{a}, {b}};
+r1 = TryGetValueFromDictionary(c, ""in"");
+r2 = TryGetValueFromDictionary(c, ""out"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] {42}, new object[] {24}});
+            thisTest.Verify("r2", new object[] { new object[] {24}, new object[] {42}});
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary05()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {a, {b}};
+r1 = TryGetValueFromDictionary(c, ""in"");
+r2 = TryGetValueFromDictionary(c, ""out"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 42, new object[] { 24 } });
+            thisTest.Verify("r2", new object[] { 24, new object[] { 42 } });
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary06()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {a, {b}};
+r = TryGetValueFromDictionary(c, ""nonexist"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", null);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary07()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+r = TryGetValueFromDictionary(a, ""nonexist"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", null);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary08()
+        {
+            string code = @"
+a = 42;
+r = TryGetValueFromDictionary(a, ""nonexist"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", null);
+        }
     }
+
     class MathematicalFunctionMethodsTest
     {
         public TestFrameWork thisTest = new TestFrameWork();
