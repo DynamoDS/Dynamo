@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using System.Xml;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Lang;
 
 namespace Dynamo.Nodes
 {
@@ -108,20 +110,17 @@ namespace Dynamo.Nodes
         protected virtual void AssignIdentifiersForFunctionCall(NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
         {
             resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
+
+            var keys = Definition.ReturnKeys ?? Enumerable.Empty<string>();
             resultAst.AddRange(
-                (from item in
-                        (Definition.ReturnKeys ?? Enumerable.Empty<string>()).Select(
-                            (key, idx) => new { key, idx })
-                    let outputIdentiferNode = model.GetAstIdentifierForOutputIndex(item.idx)
-                    let outputIdentifier = outputIdentiferNode.ToString()
-                    let thisIdentifierNode =
-                    AstFactory.BuildIdentifier(
-                        model.AstIdentifierForPreview.Name,
-                        AstFactory.BuildStringNode(item.key))
-                    let thisIdentifier = thisIdentifierNode.ToString()
-                    where !string.Equals(outputIdentifier, thisIdentifier)
-                    select
-                    AstFactory.BuildAssignment(outputIdentiferNode, thisIdentifierNode)));
+                from item in keys.Zip(Enumerable.Range(0, keys.Count()), (key, idx) => new { key, idx })
+                let outputIdentiferNode = model.GetAstIdentifierForOutputIndex(item.idx)
+                let outputIdentifier = outputIdentiferNode.ToString()
+                let getValueCall = AstFactory.BuildFunctionCall(
+                    BuiltInMethods.GetMethodName(BuiltInMethods.MethodID.kTryGetValueFromDictionary),
+                    new List<AssociativeNode> {model.AstIdentifierForPreview, AstFactory.BuildStringNode(item.key)})
+                select
+                AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));
         }
 
         /// <summary>
