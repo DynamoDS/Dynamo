@@ -12,6 +12,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
@@ -53,7 +54,7 @@ namespace Dynamo.Applications
         {
             try
             {
-                SetupDynamoPaths();
+                SetupDynamoPaths(application.ControlledApplication.VersionNumber);
 
                 AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
@@ -130,7 +131,7 @@ namespace Dynamo.Applications
             Updaters.Add(sunUpdater);
         }
 
-        private static void SetupDynamoPaths()
+        private static void SetupDynamoPaths(string versionNumber)
         {
             // The executing assembly will be in Revit_20xx, so 
             // we have to walk up one level. Unfortunately, we
@@ -150,6 +151,14 @@ namespace Dynamo.Applications
 
             //add an additional node processing folder
             DynamoPathManager.Instance.Nodes.Add(Path.Combine(assDir, "nodes"));
+
+            // Set the LibG folder based on the context.
+            // LibG is set to reference the libg_219 folder by default.
+            var versionInt = int.Parse(versionNumber);
+            if (versionInt > 2014)
+            {
+                DynamoPathManager.Instance.SetLibGPath(Path.Combine(assDir, "libg_220"));
+            }
         }
     }
 

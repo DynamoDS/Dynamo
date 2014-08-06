@@ -54,7 +54,7 @@ namespace DynamoUtilities
         /// The ASM folder which contains LibG and the 
         /// ASM binaries.
         /// </summary>
-        public string Asm { get; set; }
+        public string LibG { get; private set; }
 
         /// <summary>
         /// All 'nodes' folders.
@@ -79,6 +79,20 @@ namespace DynamoUtilities
         /// The Dynamo folder in AppData
         /// </summary>
         public string AppData { get; set;}
+
+        public string GeometryFactory { get; set; }
+
+        public string AsmPreloader { get; set; }
+
+        /// <summary>
+        /// A directory containing the ASM 219 DLLs
+        /// </summary>
+        public string ASM219Host { get; set; }
+
+        /// <summary>
+        /// A directory containing the ASM 220 DLLs
+        /// </summary>
+        public string ASM220Host { get; set; }
 
         /// <summary>
         /// Additional paths that should be searched during
@@ -146,8 +160,12 @@ namespace DynamoUtilities
             {
                 Directory.CreateDirectory(CommonSamples);
             }
+            
+            SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
 
-            Asm = Path.Combine(MainExecPath, "dll");
+            ASM219Host = null;
+            ASM220Host = null;
+
             Ui = Path.Combine(MainExecPath , "UI");
 
             if (Nodes == null)
@@ -163,7 +181,7 @@ namespace DynamoUtilities
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            sb.AppendLine(String.Format("Ui: {0}", Asm));
+            sb.AppendLine(String.Format("Ui: {0}", LibG));
             sb.AppendLine(String.Format("Asm: {0}", Ui));
             Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
@@ -273,6 +291,86 @@ namespace DynamoUtilities
             {
                 addResolvePaths.Add(path);
             }
+        }
+
+        public void SetLibGPath(string path)
+        {
+            LibG = path;
+            var splits = LibG.Split('\\');
+            GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
+            AsmPreloader = splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll";
+        }
+
+        /// <summary>
+        /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs
+        /// </summary>
+        /// <returns>True if it finds a directory, false if it can't find a directory</returns>
+        public bool FindAndSetASMHostPath()
+        {
+            string baseSearchDirectory = @"C:\Program Files\Autodesk";
+            DirectoryInfo root = null;
+
+            try
+            {
+                root = new DirectoryInfo(baseSearchDirectory);
+            }
+            catch (Exception e)
+            {
+                // TODO: print to console
+
+                return false;
+            }
+
+            System.IO.FileInfo[] files = null;
+            System.IO.DirectoryInfo[] subDirs = null;
+
+            try
+            {
+                subDirs = root.GetDirectories();
+            }
+            // This is thrown if even one of the files requires permissions greater 
+            // than the application provides. 
+            catch (UnauthorizedAccessException e)
+            {
+                // TODO: figure out how to print to the console that Sandbox needs higher permissions
+                return false;
+            }
+
+            if (subDirs.Length == 0)
+                return false;
+
+            foreach (System.IO.DirectoryInfo dirInfo in subDirs)
+            {
+                // AutoCAD directories don't seem to contain all the needed ASM DLLs
+                if (!dirInfo.Name.Contains("Revit") && !dirInfo.Name.Contains("Vasari"))
+                    continue;
+
+                files = dirInfo.GetFiles("*.*");
+
+                foreach (System.IO.FileInfo fi in files)
+                {
+                    if (fi.Name.ToUpper() == "ASMAHL219A.DLL")
+                    {
+                        // we found a match for the ASM 219 dir
+                        ASM219Host = dirInfo.FullName;
+
+                        break;
+                    }
+
+                    if (fi.Name.ToUpper() == "ASMAHL220A.DLL")
+                    {
+                        // we found a match for the ASM 220 dir
+                        ASM220Host = dirInfo.FullName;
+
+                        break;
+                    }
+                }
+
+                if (ASM219Host != null && ASM220Host != null)
+                    return true;
+            }
+
+            return ASM219Host != null || ASM220Host != null;
         }
     }
 }

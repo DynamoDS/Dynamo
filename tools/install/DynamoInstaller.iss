@@ -32,7 +32,8 @@ UninstallDisplayName=Dynamo 0.7.1
 UsePreviousAppDir=no
 
 [Dirs]
-Name: "{app}\dll"
+Name: "{app}\libg_219"
+Name: "{app}\libg_220"
 Name: "{app}\nodes"
 
 [Components]
@@ -69,8 +70,8 @@ Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion ove
 Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoForRevit2015 DynamoForRevit2014 DynamoForRevit2016 DynamoForVasariBeta3
 
 ;LibG
-Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_219\*; DestDir: {app}\libg_219; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
 ;Icon
 Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
@@ -90,15 +91,11 @@ Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2015\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoVersionSelector.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSelector.addin"
-Type: filesandordirs; Name: {app}\dll
+Type: filesandordirs; Name: {app}\libg_219
+Type: filesandordirs; Name: {app}\libg_220
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
-Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
-Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
-
-[UninstallRun]
-Filename: "{app}\DynamoAddinGenerator.exe"; Flags: runhidden;
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
@@ -154,7 +151,6 @@ begin
   // we'll need these files to check for a revit installation
   ExtractTemporaryFile('RevitInstallDetective.exe');
   ExtractTemporaryFile('RevitAddinUtility.dll');
-  ExtractTemporaryFile('DynamoAddinGenerator.exe');
 
   // check if there is a valid revit installation on this machine, if not - fail
   if (RevitInstallationExists('Revit2016') or RevitInstallationExists('Revit2015') or RevitInstallationExists('Revit2014') or RevitInstallationExists('VasariBeta3')) then
@@ -227,17 +223,6 @@ begin
     end;
 end;
 
-function UpdateAddins() : Integer;
-var
-    iResultCode: Integer;
-begin
-  Result := 0;
-  if Exec(ExpandConstant('{tmp}\DynamoAddinGenerator.exe'), '', '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
-    Result := 0
-  else
-    Result := 1
-end;
-
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep=ssInstall) then
@@ -246,14 +231,6 @@ begin
       begin
         UnInstallOldVersion();
       end;
-    end;
-end;
-
-procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
-begin
-   if (CurUninstallStep=usPostUninstall) then
-    begin
-        UpdateAddins();
     end;
 end;
 
