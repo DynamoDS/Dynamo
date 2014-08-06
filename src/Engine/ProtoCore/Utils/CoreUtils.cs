@@ -742,7 +742,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static string[] GetResolvedClassName(ProtoCore.DSASM.ClassTable classTable, ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
         {
-            string identString = GetIdentifierStringUntilFirstParenthesis(identList);
             string[] classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
 
             // Failed to find the first time
@@ -754,7 +753,6 @@ namespace ProtoCore.Utils
                 if (leftNode is IdentifierListNode)
                 {
                     identList = leftNode as IdentifierListNode;
-                    string identListString = identList.ToString();
                     classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
                 }
                 else

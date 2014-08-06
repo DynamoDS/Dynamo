@@ -7,7 +7,7 @@ namespace DSRevitNodesTests.Elements
     [TestFixture]
     public class AbstractElementTests : RevitNodeTestBase
     {
-        [Test]
+        [Test, Ignore]
         [TestModel(@".\empty.rfa")]
         public void GetParameterByName_ValidArgs()
         {
@@ -48,7 +48,7 @@ namespace DSRevitNodesTests.Elements
                 (() => refPt.SetParameterByName("Name", -1.0));
         }
 
-        [Test]
+        [Test, Ignore]
         [TestModel(@".\empty.rfa")]
         public void OverrideColorInView_ValidArgs()
         {

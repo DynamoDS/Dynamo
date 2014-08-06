@@ -583,7 +583,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestModulo()
         {
-            Assert.Inconclusive("Modulo node does not accept double value");
             OpenModel(GetDynPath("TestModulo.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;

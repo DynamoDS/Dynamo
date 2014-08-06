@@ -325,7 +325,7 @@ namespace ProtoCore.DSASM
 
         private void GCDisposeObject(ref StackValue svPtr, Executive exe)
         {
-            int classIndex = (int)svPtr.metaData.type;
+            int classIndex = svPtr.metaData.type;
             ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
             ProcedureNode pn = null;
 

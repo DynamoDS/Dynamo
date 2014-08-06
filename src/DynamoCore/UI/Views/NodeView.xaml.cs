@@ -312,11 +312,6 @@ namespace Dynamo.Controls
             //e.Handled = true;
         }
 
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-
-        }
-
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel == null) return;
