@@ -1276,7 +1276,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Ignore, Category("Samples")]
+        [Test, Category("Samples")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Floors_and_Framing()
         {

@@ -467,8 +467,8 @@ namespace ProtoFFI
         static readonly MethodInfo mDisposeMethod;
         private static void Dispose()
         {
-            //Do nothing.
-        }
+             //Do nothing.
+       }
 
         private static bool isEmpty(CLRModuleType type)
         {
@@ -1123,10 +1123,8 @@ namespace ProtoFFI
             if (!mModules.TryGetValue(name, out module))
             {
                 //see if it is a c# dll or native dll and create correct appropriate module and then query the module for function pointers.
-                string extension = System.IO.Path.GetExtension(name);
                 string filename = System.IO.Path.GetFileName(name);
 
-                bool isDLL = string.Compare(extension, ".dll", StringComparison.OrdinalIgnoreCase) == 0;
                 try
                 {
                     Assembly theAssembly = FFIExecutionManager.Instance.LoadAssembly(name);

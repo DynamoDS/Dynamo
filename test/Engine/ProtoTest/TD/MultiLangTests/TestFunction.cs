@@ -4270,7 +4270,7 @@ x = foo( 0 );
             thisTest.Verify("x", 0, 0);
 
         }
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void TV49_Defect_1456110()
         {
@@ -4294,7 +4294,6 @@ a = 10;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.Fail("1467237 - Sprint25: rev 3418 : Regression : Recursion not being supported in Imperative code");
             thisTest.Verify("x", 55);
         }
 
