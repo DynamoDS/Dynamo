@@ -480,7 +480,15 @@
                                             <ContentPresenter />
                                         </ControlTemplate>
                                     </Button.Template>
-
+                                    <Button.ToolTip>
+                                            <Grid>
+                                                <TextBlock TextWrapping="Wrap"
+                                                           MaxWidth="320"
+                                                           Text="{Binding Path=Description}"></TextBlock>
+                                            <Image Name="tooltipImg"
+                                                   Source="{Binding Path=IconSmall}" Height="96" Width="96"></Image>
+                                            </Grid>
+                                    </Button.ToolTip>
                                     <Border Name="ContainerLight" BorderThickness="1,0,0,0" BorderBrush="#444444">
                                         <Border Name="Bd" BorderThickness="0,2,0,0" BorderBrush="Transparent" >
 
@@ -578,18 +586,6 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Converter={StaticResource BrowserItemToBooleanConverter}}"
                                      Value="True">
-                            <Setter Property="ToolTip">
-                                <Setter.Value>
-                                    <dynui:DynamoToolTip AttachmentSide="Right"
-                                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
-                                        <Grid>
-                                            <TextBlock TextWrapping="Wrap"
-                                                       MaxWidth="320"
-                                                       Text="{Binding Path=Description}"></TextBlock>
-                                        </Grid>
-                                    </dynui:DynamoToolTip>
-                                </Setter.Value>
-                            </Setter>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

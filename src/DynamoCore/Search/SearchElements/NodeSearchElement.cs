@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -46,6 +47,9 @@ namespace Dynamo.Search.SearchElements
         /// A string describing what the node does</value>
         private string _description;
         public override string Description { get { return _description; } }
+
+        private BitmapImage _iconSmall;
+        public BitmapImage IconSmall { get { return _iconSmall; } }
 
         private bool _searchable = true;
         public override bool Searchable { get { return _searchable; } }
@@ -91,7 +95,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", BitmapImage iconSmall=null)
         {
             this.Node = null;
             this._name = name;
@@ -100,6 +104,7 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
+            this._iconSmall = iconSmall;
         }
 
         public virtual NodeSearchElement Copy()

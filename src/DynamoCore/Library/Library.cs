@@ -17,6 +17,7 @@ using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
 using Dynamo.Utilities;
+using System.Windows.Media.Imaging;
 
 #endregion
 
@@ -124,6 +125,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
+        private BitmapImage iconSmall;
+
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
             : this(null, null, name, parameters, null, type) 
         { }
@@ -219,6 +222,13 @@ namespace Dynamo.DSEngine
         {
             get { return summary ?? (summary = this.GetSummary()); }
         }
+
+        public BitmapImage IconSmall
+        {
+            get { return iconSmall ?? (iconSmall = this.GetIconSmall()); }
+        }
+
+        
 
         /// <summary>
         ///     A comment describing the function along with the signature

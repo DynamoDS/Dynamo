@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 using DynamoUtilities;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.DSEngine
 {
@@ -34,6 +35,19 @@ namespace Dynamo.DSEngine
             
         }
 
+        public static LibraryCustomization GetResourceAssembly(string assemblyPath)
+        {
+            var customizationPath = "";
+            if (ResolveForAssembly(assemblyPath, ref customizationPath))
+            {
+                var c = new LibraryCustomization(XDocument.Load(customizationPath));
+                return c;
+            }
+
+            return null;
+
+        }
+
         public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)
         {
             if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
@@ -50,6 +64,24 @@ namespace Dynamo.DSEngine
             customizationPath = Path.Combine(dir, fn);
 
             return File.Exists(customizationPath);
+        }
+		
+        public static bool ResolveResourceAssembly(string assemblyLocation, ref string resourceAssemblyPath)
+        {
+            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
+            {
+                return false;
+            }
+
+            var qualifiedPath = Path.GetFullPath(assemblyLocation);
+            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+            var dir = Path.GetDirectoryName(qualifiedPath);
+
+            fn = fn + "resources.dll";
+
+            resourceAssemblyPath = Path.Combine(dir, fn);
+
+            return File.Exists(resourceAssemblyPath);
         }
     }
 

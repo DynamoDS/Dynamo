@@ -7,6 +7,12 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Autodesk.DesignScript.Geometry;
+using System.Windows.Media.Imaging;
+using DynamoUtilities;
+using System.Resources;
+using System.Collections;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Dynamo.DSEngine
 {
@@ -15,6 +21,9 @@ namespace Dynamo.DSEngine
     /// </summary>
     public static class XmlDocumentationExtensions
     {
+        private static Dictionary<string, BitmapImage> _cachedIcons =
+            new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+
         #region Public methods
 
         public static string GetSummary(this FunctionDescriptor member)
@@ -26,7 +35,75 @@ namespace Dynamo.DSEngine
 
             return member.GetSummary(xml);
         }
+        public static BitmapImage GetIconSmall(this FunctionDescriptor member)
+        {
+            XDocument xml = null;
+            string iconSmall = string.Empty;
+            if (member.Assembly != null)
+            {
+                try
+                {
+                    xml = DocumentationServices.GetForAssembly(member.Assembly);
+                    iconSmall = member.GetIconSmall(xml);
+                    if (_cachedIcons.ContainsKey(iconSmall))
+                        return _cachedIcons[iconSmall];
+                    string documentationPath = string.Empty;
+                    if (ResolveForAssembly(member.Assembly, ref documentationPath))
+                    {
+                        Assembly resourcesAssembly = Assembly.LoadFrom(documentationPath);
+                        System.IO.Stream stream =
+                            resourcesAssembly.GetManifestResourceStream
+                            (resourcesAssembly.GetManifestResourceNames()[0]);
 
+                        ResourceReader resReader = new ResourceReader(stream);
+                        Dictionary<string, object> data = resReader
+                            .OfType<DictionaryEntry>()
+                            .Select(i => new { Key = i.Key.ToString(), value = i.Value })
+                            .ToDictionary(i => i.Key, i => i.value);
+
+                        foreach (var item in data)
+                        {
+                            MemoryStream memory = new MemoryStream();
+                            var bitmap = item.Value as Bitmap;
+                            bitmap.Save(memory, ImageFormat.Png);
+                            memory.Position = 0;
+                            BitmapImage bitmapImage = new BitmapImage();
+                            bitmapImage.BeginInit();
+                            bitmapImage.StreamSource = memory;
+                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmapImage.EndInit();
+                            _cachedIcons.Add(item.Key, bitmapImage);
+                        }
+                        return _cachedIcons[iconSmall];
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            
+            return null;
+        }
+
+        public static bool ResolveForAssembly(string assemblyLocation, ref string documentationPath)
+        {
+            DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation);
+            if (!File.Exists(assemblyLocation))
+            {
+                return false;
+            }
+
+            var qualifiedPath = Path.GetFullPath(assemblyLocation);
+            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+            var dir = Path.GetDirectoryName(qualifiedPath);
+
+            fn = fn + ".resources.dll";
+
+            documentationPath = Path.Combine(dir, fn);
+
+            return File.Exists(documentationPath);
+        }
         public static string GetDescription(this TypedParameter member)
         {
             XDocument xml = null;
@@ -64,6 +141,13 @@ namespace Dynamo.DSEngine
             if (xml == null) return String.Empty;
 
             return GetMemberElement(member, "summary", xml).CleanUpDocString();
+        }
+
+        public static string GetIconSmall(this FunctionDescriptor member, XDocument xml)
+        {
+            if (xml == null) return String.Empty;
+
+            return GetMemberElement(member, "iconSmall", xml).CleanUpDocString();
         }
 
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XDocument xml)
