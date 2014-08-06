@@ -316,6 +316,10 @@ namespace Dynamo
                 DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
                 DynamoViewModel.RunEnabled = true;
+
+                //In the case that the current document is null, we also need to do
+                //a reset for the current document.
+                ResetForNewDocument();
             }
         }
 
