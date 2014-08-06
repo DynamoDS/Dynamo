@@ -133,8 +133,6 @@ namespace ProtoCore.Utils
         {
             int line = node.line;
             int col = node.col;
-            int endLine = node.endLine;
-            int endCol = node.endCol;
 
             string stmt = "";
 

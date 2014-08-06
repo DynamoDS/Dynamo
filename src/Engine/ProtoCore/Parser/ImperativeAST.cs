@@ -18,11 +18,6 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode(ImperativeNode rhs) : base(rhs)
         {
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 
     public class LanguageBlockNode : ImperativeNode
@@ -942,7 +937,7 @@ namespace ProtoCore.AST.ImperativeAST
             IfBody = new List<ImperativeNode>();
             foreach (ImperativeNode stmt in rhs.IfBody)
             {
-                ImperativeNode body = ProtoCore.Utils.NodeUtils.Clone(stmt as ImperativeNode);
+                ImperativeNode body = ProtoCore.Utils.NodeUtils.Clone(stmt);
                 IfBody.Add(body);
             }
 
@@ -953,7 +948,7 @@ namespace ProtoCore.AST.ImperativeAST
             ElseIfList = new List<ElseIfBlock>();
             foreach (ElseIfBlock elseBlock in rhs.ElseIfList)
             {
-                ImperativeNode elseNode = ProtoCore.Utils.NodeUtils.Clone(elseBlock as ImperativeNode);
+                ImperativeNode elseNode = ProtoCore.Utils.NodeUtils.Clone(elseBlock);
                 ElseIfList.Add(elseNode as ElseIfBlock);
             }
 
