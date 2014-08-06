@@ -37,7 +37,7 @@ namespace Unfold
                 var polygon = Polygon.ByPoints(ptlist);
 
                 return surface.GetClosestPoint(polygon.Center()); 
-
+            
             }
 
         }

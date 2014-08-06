@@ -240,7 +240,24 @@ namespace Unfold
         }
 
 
+        private static bool checkBoundingBoxIntersections(List<BoundingBox> bbs)
+        {
+            foreach (var bb in bbs)
+            {
+                foreach (var bb2 in bbs)
+                {
+                    if (bb != bb2)
+                    {
+                        if (bb.Intersects(bb2))
+                        {
+                            return true;
+                        }
 
+                    }
+                }
+            }
+            return false;
+        }
 
 
 
@@ -448,6 +465,58 @@ namespace Unfold
 
 
             }
+            // at this point we may have a main trunk with y nodes in it, and x disconnected branches
+            //step 1 is to align all sets down to horizontal plane and record this transform
+            // step 2 we will dilate all branches with repulsion forces between centers of boundingboxes 
+            // until there are NO intersections between any boundingboxes
+            // we must record the transforms at each step, or start and final atleast
+          
+            // collect all polysurfaces
+            var masterFacelikeSet = sortedtree.Select(x => x.UnfoldPolySurface).ToList();
+            masterFacelikeSet.AddRange(disconnectedSet);
+
+            //align all surfaces down
+            foreach (var facelike in masterFacelikeSet)
+            {
+                var surfaceToAlignDown = facelike.SurfaceEntity;
+                
+                // transform surface to horizontal plane at 0,0,0
+                facelike.SurfaceEntity = surfaceToAlignDown.Transform(CoordinateSystem.ByPlane(Plane.ByOriginXAxisYAxis(Point.ByCoordinates(0,0,0),Vector.XAxis(),Vector.YAxis())))as Surface;
+
+                // save transformation for each set, this should have all the ids present
+                transforms.Add(new FaceTransformMap(
+                        facelike.SurfaceEntity.ContextCoordinateSystem, facelike.IDS));
+
+            }
+           
+            // now begin loop
+
+            var bbs = masterFacelikeSet.Select(x=>BoundingBox.ByGeometry(x.SurfaceEntity)).ToList();
+
+
+            while (checkBoundingBoxIntersections(bbs))
+            {
+                var centers = bbs.Select(x => x.MinPoint.Add((x.MaxPoint.Subtract(x.MinPoint.AsVector()).AsVector().Scale(.5)))).ToList();
+
+                var centroid = centers.Aggregate((workingsum, next) =>
+                                                  workingsum.Add(next.AsVector())).Scale(1.0/centers.Count) as Point;
+                foreach(var facelike in masterFacelikeSet){
+
+                    var index = masterFacelikeSet.IndexOf(facelike);
+                    var displacement = Vector.ByTwoPoints(centroid,centers[index]);
+
+                    facelike.SurfaceEntity = facelike.SurfaceEntity.Translate(displacement) as Surface;
+
+                    transforms.Add(new FaceTransformMap(
+                        facelike.SurfaceEntity.ContextCoordinateSystem, facelike.IDS));
+
+                }
+
+                bbs = masterFacelikeSet.Select(x => BoundingBox.ByGeometry(x.SurfaceEntity)).ToList();
+            }
+
+
+
             // merge the main trunk and the disconnected sets
             var maintree = sortedtree.Select(x => x.UnfoldPolySurface.SurfaceEntity).ToList();
             maintree.AddRange(disconnectedSet.Select(x => x.SurfaceEntity).ToList());
