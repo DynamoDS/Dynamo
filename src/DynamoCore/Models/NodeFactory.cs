@@ -127,14 +127,17 @@ namespace Dynamo.Models
 
         private NodeModel GetCustomNodeByName(string name)
         {
-            Function func;
+            CustomNodeDefinition def;
 
-            if (dynamoModel.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
+            if (dynamoModel.CustomNodeManager.GetDefinition(Guid.Parse(name), out def))
             {
-                return func;
+                return new Function(this.workspaceModel, def)
+                {
+                    NickName = def.WorkspaceModel.Name
+                };
             }
 
-            dynamoModel.Logger.Log("Failed to find CustomNodeDefinition.");
+            dynamoModel.Logger.Log("Failed to find CustomNodeDefinition!");
             return null;
         }
 

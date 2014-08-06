@@ -445,10 +445,12 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Get a guid from the name of a node.  If it doesn't exist, returns Guid.Empty.
+        ///     Get a CustomNodeDefinition from a name of a node, also stores type internally info for future instantiation.
+        ///     And add the compiled node to the enviro.
+        ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        public bool GetNodeInstance(string name, out Function result)
+        public bool GetDefinition(string name, out CustomNodeDefinition result)
         {
             if (!Contains(name))
             {
@@ -456,18 +458,18 @@ namespace Dynamo.Utilities
                 return false;
             }
 
-            return GetNodeInstance(GetGuidFromName(name), out result);
+            return GetDefinition(GetGuidFromName(name), out result);
 
         }
 
         /// <summary>
-        ///     Get a dynFunction from a guid, also stores type internally info for future instantiation.
-        ///     And add the compiled node to the enviro
+        ///     Get a CustomNodeDefinition from a guid, also stores type internally info for future instantiation.
+        ///     And add the compiled node to the enviro.
         ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
         /// <param name="environment">The environment from which to get the </param>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        public bool GetNodeInstance(Guid guid, out Function result)
+        public bool GetDefinition(Guid guid, out CustomNodeDefinition result)
         {
             if (!Contains(guid))
             {
@@ -475,46 +477,17 @@ namespace Dynamo.Utilities
                 return false;
             }
 
-            CustomNodeDefinition def;
             if (!IsInitialized(guid))
             {
-                if (!GetDefinitionFromPath(guid, out def))
+                if (!GetDefinitionFromPath(guid, out result))
                 {
-                    result = null;
                     return false;
                 }
             }
             else
             {
-                def = LoadedCustomNodes[guid];
+                result = LoadedCustomNodes[guid];
             }
-
-            WorkspaceModel ws = def.WorkspaceModel;
-
-            //IEnumerable<string> inputs =
-            //    ws.Nodes.Where(e => e is Symbol)
-            //        .Select(s => (s as Symbol).InputSymbol);
-
-            //IEnumerable<string> outputs =
-            //    ws.Nodes.Where(e => e is Output)
-            //        .Select(o => (o as Output).Symbol);
-
-            ////if (!outputs.Any())
-            ////{
-            ////    //IEnumerable<NodeModel> topMostNodes = ws.GetTopMostNodes();
-
-            ////    //var topMost = (from topNode in topMostNodes
-            ////    //               from output in Enumerable.Range(0, topNode.OutPortData.Count)
-            ////    //               where !topNode.HasOutput(output)
-            ////    //               select Tuple.Create(output, topNode)).ToList();
-
-            ////    //outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
-            ////}
-
-            result = new Function(ws, def)
-            {
-                NickName = ws.Name
-            };
 
             return true;
         }
