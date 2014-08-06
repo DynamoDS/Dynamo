@@ -2355,16 +2355,17 @@ y = Count(xHighFrequency);";
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("a", new Object[] { new Object[] { 4.0 }, new Object[] { 4.0 } });
         }
-        [Test, Ignore]
-        [Category("Replication")]
+        [Test]
+        [Category("Replication"), Category("Failing")]
         public void T63_Defect_1467177_replication_in_imperative()
         {
             // need to move this to post R1 project
 
             String code =
 @"[Imperative]{    def foo( a )    {        a = a + 1;        return = a;    }    c = { 1,2,3 };    d = foo ( c ) ;}";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            string err = "1467177 - sprint24: rev 3152 : REGRESSION : Replication should not be supported in Imperative scope";
+            string err = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
 
             thisTest.Verify("d", null);
@@ -2899,14 +2900,15 @@ c=2 * {{1},{2}};";
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 10, 2, 2, 2, 14, 15, n1, n1, n1, n1, 2 });
         }
-        [Test, Ignore]
-        [Category("Replication")]
+        [Test]
+        [Category("Replication"), Category("Failing")]
         public void T73_Defect_1467069_2()
         {
             String code =
 @"[Imperative]{    a = {3,1,2,10};    x = {10,11,12,13,14,15};    x[a] = 2;    y = x;}";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467070 - Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope";
+            String errmsg = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 10, 11, 12, 13, 14, 15 });
@@ -2938,14 +2940,15 @@ c=2 * {{1},{2}};";
             thisTest.Verify("y1", new Object[] { 11, 3, 3, 3, 15, 16, null, null, 1, 1, 1 });
             thisTest.Verify("y2", new Object[] { 10, 2, 2, 2, 14, 15, null, null, 0, 0, 0 });
         }
-        [Test, Ignore]
-        [Category("Replication")]
+        [Test]
+        [Category("Replication"), Category("Failing")]
         public void T74_Defect_1463465()
         {
             String code =
 @"[Imperative]{def even : int (a : int) { if(( a % 2 ) > 0 )return = a + 1; else return = a;return = 0;}x = { 1, 2, 3 };c = even(x);}";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467070 - Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope";
+            String errmsg = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("c", n1);
