@@ -103,8 +103,6 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWorkspaceCanSaveAsExistingFile()
         {
-            Assert.Inconclusive("Porting : Formula");
-
             // open file
             // save as
             // file exists
@@ -589,9 +587,6 @@ namespace Dynamo.Tests
             nodeWorkspace.SaveAs(newPath);
 
             var newDef = nodeWorkspace.CustomNodeDefinition;
-
-            // if symbol isn't present, we would throw an unbound identifier
-            Assert.Inconclusive("TODO: implement me for DS");
         }
 
         [Test]

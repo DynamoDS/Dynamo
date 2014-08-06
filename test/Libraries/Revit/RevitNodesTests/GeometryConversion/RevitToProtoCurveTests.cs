@@ -286,7 +286,7 @@ namespace DSRevitNodesTests.GeometryConversion
             //}
         }
 
-        [Test]
+        [Test, Ignore]
         [TestModel(@".\empty.rfa")]
         public void CylindricalHelix_Basic()
         {

@@ -13,7 +13,7 @@ namespace ProtoTest.TD.OtherMiscTests
         public void Setup()
         {
         }
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void Fibunacci()
         {
@@ -775,11 +775,12 @@ n = Count(arr);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("n", 4);
         }
-        [Test, Ignore]
+        [Test]
+        [Category("Failing")]
         public void imperative_Replication_1467070()
         {
-            // need to move this to post R1 project
-            Assert.Fail("1467070 Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope ");
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
+            string err = "MAGN-4092 Replication should not be supported in Imperative scope";
             string code = @"
 [Imperative]
 {
@@ -798,14 +799,16 @@ a={3,4,5};
 return = t;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("t", new Object[] { null, null, 3, 4, 5 });
         }
-        [Test, Ignore]
+        [Test]
+        [Category("Failing")]
         public void imperative_Replication_1467070_2()
         {
-            // need to move this to post R1 project
-            Assert.Fail("1467070 Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope ");
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
+            string err = "MAGN-4092 Replication should not be supported in Imperative scope";
+
             string code = @"
 [Imperative]
 {
@@ -824,7 +827,7 @@ return = t;
         }
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("t", new Object[] { null, null, 3, 4, 5 });
         }
 
