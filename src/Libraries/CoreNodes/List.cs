@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using Autodesk.DesignScript.Runtime;
@@ -862,10 +863,22 @@ namespace DSCore
             {
                 return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
             }
-            
+
+            private static bool Eq(IConvertible x, IConvertible y)
+            {
+                try
+                {
+                    return Convert.ToDouble(x).Equals(Convert.ToDouble(y));
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
             private static bool Eq(object x, object y)
             {
-                return comparer.Compare(x, y) == 0;
+                return x.Equals(y);
             }
         }
         #endregion
