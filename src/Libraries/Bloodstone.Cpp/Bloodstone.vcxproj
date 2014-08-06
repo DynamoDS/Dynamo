@@ -10,24 +10,36 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <PropertyGroup Label="Globals">
-    <ProjectGuid>{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Bloodstone</RootNamespace>
-    <ProjectName>Bloodstone.Cpp</ProjectName>
-  </PropertyGroup>
+  <Choose>
+    <When Condition=" '$(VisualStudioVersion)'=='11.0' "> <!-- VS2012 -->
+      <PropertyGroup Label="Globals">
+        <ProjectGuid>{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}</ProjectGuid>
+        <Keyword>Win32Proj</Keyword>
+        <RootNamespace>Bloodstone</RootNamespace>
+        <ProjectName>Bloodstone.Cpp</ProjectName>
+        <PlatformToolset>v110</PlatformToolset>
+      </PropertyGroup>
+    </When>
+    <When Condition=" '$(VisualStudioVersion)'=='12.0' "> <!-- VS2013 -->
+      <PropertyGroup Label="Globals">
+        <ProjectGuid>{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}</ProjectGuid>
+        <Keyword>Win32Proj</Keyword>
+        <RootNamespace>Bloodstone</RootNamespace>
+        <ProjectName>Bloodstone.Cpp</ProjectName>
+        <PlatformToolset>v120</PlatformToolset>
+      </PropertyGroup>
+    </When>
+  </Choose>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>true</CLRSupport>
