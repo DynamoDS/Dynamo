@@ -996,10 +996,6 @@ namespace Dynamo.Tests
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
-            Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Centroid.dyf"))
-                != null);
-
             string openPath = Path.Combine(examplePath, "TestCentroid.dyn");
 
             RunModel(openPath);
@@ -1014,11 +1010,8 @@ namespace Dynamo.Tests
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
-            var dyfPath = Path.Combine(examplePath, "Poly.dyf");
-            Assert.IsNotNull(Controller.CustomNodeManager.AddFileToPath(dyfPath));
-
             RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
-
+            
             AssertPreviewValue("8453b5c7-2efc-4ff2-a8f3-7c376d22c240", 5.5);
             AssertPreviewValue("a9868848-0443-431b-bedd-9f63c25157e0", 3.0);
             AssertPreviewValue("9b569c4f-1f09-4ffb-a621-d0341f1fe890", 0.0);
