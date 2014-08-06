@@ -86,6 +86,7 @@
     <Compile Include="Nodes\HigherOrder.cs" />
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
+    <Compile Include="SchedulerTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="TimeStampOrderingTests.cs" />

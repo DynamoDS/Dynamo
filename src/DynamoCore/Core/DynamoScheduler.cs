@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Dynamo.Core
 {
-    partial class DynamoScheduler
+    internal partial class DynamoScheduler
     {
         #region Public Class Operational Methods
 

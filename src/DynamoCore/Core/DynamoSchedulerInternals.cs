@@ -40,8 +40,8 @@ namespace Dynamo.Core
 
         private ManualResetEvent[] waitHandles = new ManualResetEvent[]
         {
-              new ManualResetEvent(false), // Task available event
-              new ManualResetEvent(false)  // Scheduler shutdown event
+            new ManualResetEvent(false), // Task available event
+            new ManualResetEvent(false)  // Scheduler shutdown event
         };
 
         private bool taskQueueUpdated = false;

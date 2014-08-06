@@ -25,7 +25,7 @@ namespace Dynamo.Core
         /// <param name="callback">A delegate to be invoked when the AsyncTask 
         /// completes asynchronously. This parameter is optional.</param>
         /// 
-        internal AsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
+        protected AsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
         {
             if (scheduler == null)
                 throw new ArgumentNullException("scheduler");
