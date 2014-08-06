@@ -485,9 +485,9 @@ namespace ProtoCore.Lang
                         interpreter, 
                         stackFrame);
                     break;
-                case BuiltInMethods.MethodID.kTryGetValueFromDictionary:
+                case BuiltInMethods.MethodID.kTryGetValueFromNestedDictionaries:
                     StackValue value;
-                    if (ArrayUtils.TryGetValueForDictionary(formalParameters[0], formalParameters[1], out value, core))
+                    if (ArrayUtils.TryGetValueFromNestedDictionaries(formalParameters[0], formalParameters[1], out value, core))
                     {
                         ret = value;
                     }

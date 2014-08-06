@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
                 let outputIdentiferNode = model.GetAstIdentifierForOutputIndex(item.idx)
                 let outputIdentifier = outputIdentiferNode.ToString()
                 let getValueCall = AstFactory.BuildFunctionCall(
-                    BuiltInMethods.GetMethodName(BuiltInMethods.MethodID.kTryGetValueFromDictionary),
+                    BuiltInMethods.GetMethodName(BuiltInMethods.MethodID.kTryGetValueFromNestedDictionaries),
                     new List<AssociativeNode> {model.AstIdentifierForPreview, AstFactory.BuildStringNode(item.key)})
                 select
                 AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));

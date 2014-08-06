@@ -67,7 +67,7 @@ namespace ProtoCore.Lang
             kRemoveKey,
             kContainsKey,
             kEvaluate,
-            kTryGetValueFromDictionary
+            kTryGetValueFromNestedDictionaries
         }
 
         private static string[] methodNames = new string[]
@@ -129,7 +129,7 @@ namespace ProtoCore.Lang
             "RemoveKey",                // kRemoveKey
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
-            "TryGetValueFromDictionary",// kTryGetValueFromDictionary
+            "TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
         };
 
         public static string GetMethodName(MethodID id)
@@ -897,7 +897,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))
                     },
-                    ID = MethodID.kTryGetValueFromDictionary,
+                    ID = MethodID.kTryGetValueFromNestedDictionaries,
                     MethodAttributes = new MethodAttributes(true),
                 }
             };

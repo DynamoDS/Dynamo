@@ -1279,16 +1279,16 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Try to get value for key from a dictionary. Note this function will
-        /// recursively check each element in the array and tries to get value
-        /// for the key. 
+        /// Try to get value for key from nested dictionaries. This function is
+        /// used in the case that indexing into dictionaries that returned from
+        /// a replicated function whose return type is dictionary.
         /// </summary>
         /// <param name="array"></param>
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static bool TryGetValueForDictionary(StackValue array, StackValue key, out StackValue value, Core core)
+        public static bool TryGetValueFromNestedDictionaries(StackValue array, StackValue key, out StackValue value, Core core)
         {
             if (!array.IsArray)
             {
@@ -1309,7 +1309,7 @@ namespace ProtoCore.Utils
                 StackValue valueInElement;
                 var element = he.Stack[i];
 
-                if (TryGetValueForDictionary(element, key, out valueInElement, core))
+                if (TryGetValueFromNestedDictionaries(element, key, out valueInElement, core))
                 {
                     hasValue = true;
                     values.Add(valueInElement);

@@ -809,12 +809,12 @@ x = foo(5);
         }
 
         [Test]
-        public void TestTryGetValueFromDictionary01()
+        public void TestTryGetValueFromNestedDictionaries01()
         {
             string code = @"
 a = {};
 a[""in""] = 42;
-r = TryGetValueFromDictionary(a, ""in"");
+r = TryGetValueFromNestedDictionaries(a, ""in"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 42);
@@ -827,7 +827,7 @@ r = TryGetValueFromDictionary(a, ""in"");
 a = {};
 key = ""in"";
 a[key] = 42;
-r = TryGetValueFromDictionary(a, key);
+r = TryGetValueFromNestedDictionaries(a, key);
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 42);
@@ -844,8 +844,8 @@ b = {};
 b[""in""] = 24;
 b[""out""] = 42;
 c = {a, b};
-r1 = TryGetValueFromDictionary(c, ""in"");
-r2 = TryGetValueFromDictionary(c, ""out"");
+r1 = TryGetValueFromNestedDictionaries(c, ""in"");
+r2 = TryGetValueFromNestedDictionaries(c, ""out"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { 42, 24});
@@ -863,8 +863,8 @@ b = {};
 b[""in""] = 24;
 b[""out""] = 42;
 c = {{a}, {b}};
-r1 = TryGetValueFromDictionary(c, ""in"");
-r2 = TryGetValueFromDictionary(c, ""out"");
+r1 = TryGetValueFromNestedDictionaries(c, ""in"");
+r2 = TryGetValueFromNestedDictionaries(c, ""out"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] {42}, new object[] {24}});
@@ -882,8 +882,8 @@ b = {};
 b[""in""] = 24;
 b[""out""] = 42;
 c = {a, {b}};
-r1 = TryGetValueFromDictionary(c, ""in"");
-r2 = TryGetValueFromDictionary(c, ""out"");
+r1 = TryGetValueFromNestedDictionaries(c, ""in"");
+r2 = TryGetValueFromNestedDictionaries(c, ""out"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { 42, new object[] { 24 } });
@@ -901,7 +901,7 @@ b = {};
 b[""in""] = 24;
 b[""out""] = 42;
 c = {a, {b}};
-r = TryGetValueFromDictionary(c, ""nonexist"");
+r = TryGetValueFromNestedDictionaries(c, ""nonexist"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", null);
@@ -914,7 +914,7 @@ r = TryGetValueFromDictionary(c, ""nonexist"");
 a = {};
 a[""in""] = 42;
 a[""out""] = 24;
-r = TryGetValueFromDictionary(a, ""nonexist"");
+r = TryGetValueFromNestedDictionaries(a, ""nonexist"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", null);
@@ -925,7 +925,7 @@ r = TryGetValueFromDictionary(a, ""nonexist"");
         {
             string code = @"
 a = 42;
-r = TryGetValueFromDictionary(a, ""nonexist"");
+r = TryGetValueFromNestedDictionaries(a, ""nonexist"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", null);
