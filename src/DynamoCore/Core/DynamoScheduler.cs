@@ -17,16 +17,19 @@ namespace Dynamo.Core
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 
-        /// starts to process the next task in the queue, if there is any.
+        /// starts to process the next task in the queue, if there is any. Note 
+        /// that this method is meant to process only one task in queue. The 
+        /// implementation of ISchedulerThread is free to call this method again
+        /// in a fashion that matches its task fetching behavior.
         /// </summary>
         /// <param name="waitIfTaskQueueIsEmpty">This parameter is only used if 
         /// the task queue is empty at the time this method is invoked. When the
         /// task queue becomes empty, setting this to true will cause this call  
         /// to block until either the next task becomes available, or when the 
         /// scheduler is requested to shutdown.</param>
-        /// <returns>This method returns true if there is at least one task 
-        /// found queued in the task queue, or false otherwise. Note that this 
-        /// method returns false when scheduler begins to shutdown.</returns>
+        /// <returns>This method returns true if the task queue is not empty, or
+        /// false otherwise. Note that this method returns false when scheduler
+        /// begins to shutdown, even when the task queue is not empty.</returns>
         /// 
         internal bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
@@ -34,10 +37,13 @@ namespace Dynamo.Core
 
             lock (taskQueue)
             {
-                if (taskQueueModified)
+                if (taskQueueUpdated)
                 {
-                    // TODO: Add queue compacting/re-ordering codes here.
-                    taskQueueModified = false; // Done manipulating queue.
+                    // The task queue has been updated since the last time 
+                    // a task was processed, it might need compacting.
+                    CompactTaskQueue();
+                    ReprioritizeTasksInQueue();
+                    taskQueueUpdated = false;
                 }
 
                 if (taskQueue.Count > 0)
@@ -60,13 +66,16 @@ namespace Dynamo.Core
 
             // If there's no more task and wait is not desired...
             if (waitIfTaskQueueIsEmpty == false)
-                return false; // An immediate call to this method is not needed.
+                return false; // The task queue is now empty.
 
             // Block here if ISchedulerThread requests to wait.
             int index = WaitHandle.WaitAny(waitHandles);
 
-            // If a task becomes available, then an immediate call to this method is 
-            // desired, otherwise return false (in the case of scheduler shutdown).
+            // If a task becomes available, this method returns true to indicate 
+            // that an immediate call may be required (subjected to the decision 
+            // of the ISchedulerThread's implementation). In the event that the 
+            // scheduler is shutting down, then this method returns false.
+            // 
             return ((index == ((int)EventIndex.TaskAvailable)) ? true : false);
         }
 

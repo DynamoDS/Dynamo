@@ -44,7 +44,7 @@ namespace Dynamo.Core
               new ManualResetEvent(false)  // Scheduler shutdown event
         };
 
-        private bool taskQueueModified = false;
+        private bool taskQueueUpdated = false;
         private List<AsyncTask> taskQueue = new List<AsyncTask>();
         private TimeStampGenerator timeStamp = new TimeStampGenerator();
 
@@ -58,11 +58,21 @@ namespace Dynamo.Core
             {
                 taskQueue.Add(asyncTask);
                 asyncTask.TaskScheduled(); // Update internal time-stamp.
-                taskQueueModified = true; // Mark task queue as being dirty.
+                taskQueueUpdated = true; // Mark task queue as being updated.
 
                 // Signal task availability so scheduler picks it up.
                 waitHandles[(int)EventIndex.TaskAvailable].Set();
             }
+        }
+
+        private void CompactTaskQueue()
+        {
+            // TODO: Add queue compacting codes here.
+        }
+
+        private void ReprioritizeTasksInQueue()
+        {
+            // TODO: Add queue re-ordering codes here.
         }
 
         private void ProcessTaskInternal(AsyncTask asyncTask)
