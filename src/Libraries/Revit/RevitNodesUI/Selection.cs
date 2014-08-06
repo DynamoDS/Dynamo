@@ -101,6 +101,83 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract class DSSelectionsBase : DSSelectionBase
+    {
+        protected bool _canAdd = true;
+        protected bool _canRemove = true;
+
+        /// <summary>
+        /// Whether or not the Add button is enabled in the UI.
+        /// </summary>
+        public bool CanAdd
+        {
+            get { return _canAdd; }
+            set
+            {
+                _canAdd = value;
+                RaisePropertyChanged("CanAdd");
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Remove button is enabled in the UI.
+        /// </summary>
+        public bool CanRemove
+        {
+            get { return _canRemove; }
+            set
+            {
+                _canRemove = value;
+                RaisePropertyChanged("CanRemove");
+            }
+        }
+
+        /// <summary>
+        /// Handler for the add button's Click event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void addButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Disable the button once it's been clicked...
+            CanAdd = false;
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
+                delegate
+                {
+                    OnAddClick();
+                    CanAdd = true; //...and re-enable it once selection has finished.
+                });
+        }
+
+        /// <summary>
+        /// Handler for the remove button's Click event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void removeButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Disable the button once it's been clicked...
+            CanRemove = false;
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
+                delegate
+                {
+                    OnRemoveClick();
+                    CanRemove = true; //...and re-enable it once selection has finished.
+                });
+        }
+
+        /// <summary>
+        /// Override this to add selections to the current selection.
+        /// </summary>
+        protected abstract void OnAddClick();
+
+        /// <summary>
+        /// Override this to remove selections to the current selection.
+        /// </summary>
+        protected abstract void OnRemoveClick();
+
+    }
+
     public abstract class DSElementSelection : DSSelectionBase 
     {
         protected Func<string, ElementId> SelectionAction;
@@ -587,6 +664,359 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract class DSReferencesSelection : DSSelectionsBase
+    {
+        protected List<Reference> selected;
+        protected List<string> selectedUniqueIds;
+        protected Document selectionOwner;
+        protected Func<string, List<Reference>> newSelectionAction;
+        protected Func<string, List<string>, List<Reference>> addSelectionAction;
+        protected Func<string, List<string>, List<Reference>> removeSelectionAction;
+
+        /// <summary>
+        /// The Element which is selected.
+        /// </summary>
+        public virtual List<Reference> SelectedReferences
+        {
+            get { return selected; }
+            set
+            {
+                bool dirty = value != null;
+                selected = value;
+                selectionOwner = DocumentManager.Instance.CurrentDBDocument;
+
+                if (selected != null)
+                {
+                    selectedUniqueIds = selected.Select(x => x.ConvertToStableRepresentation(selectionOwner)).ToList();
+                }
+
+                if (dirty)
+                {
+                    RequiresRecalc = true;
+                }
+
+                RaisePropertyChanged("SelectedElement");
+            }
+        }
+
+        public override string SelectionText
+        {
+            get
+            {
+                return selected == null
+                                        ? "Nothing Selected"
+                                        : string.Format("References selected.");
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
+        }
+
+        public override bool ForceReExecuteOfNode
+        {
+            get { return true; }
+        }
+
+        #region protected constructors
+
+        protected DSReferencesSelection(Func<string, List<Reference>> selectionAction, 
+                                        Func<string, List<string>, List<Reference>> addAction, 
+                                        Func<string, List<string>, List<Reference>> removeAction,
+                                        string message)
+        {
+            newSelectionAction = selectionAction;
+            addSelectionAction = addAction;
+            removeSelectionAction = removeAction;
+            _selectionMessage = message;
+
+            OutPortData.Add(new PortData("References", "The geometry references."));
+            RegisterAllPorts();
+
+            var u = dynRevitSettings.Controller.Updater;
+            u.ElementsModified += u_ElementsModified;
+
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedReferences = null;
+            RaisePropertyChanged("SelectedReferences");
+            RaisePropertyChanged("SelectionText");
+        }
+
+        void u_ElementsModified(IEnumerable<string> updated)
+        {
+            var enumerable = updated as string[] ?? updated.ToArray();
+
+            if (selected == null || !enumerable.Any()) return;
+
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+
+            if (selected.Any(p => enumerable.Contains(doc.GetElement(p.ElementId).UniqueId)))
+            {
+                RequiresRecalc = true;
+            }
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+
+            var u = dynRevitSettings.Controller.Updater;
+            u.ElementsModified -= u_ElementsModified;
+        }
+
+        #endregion
+
+        #region public methods
+
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        {
+            var selectButton = new DynamoNodeButton()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
+            };
+            selectButton.Click += selectButton_Click;
+
+            var addButton = new DynamoNodeButton()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
+                Content = "Add",
+            };
+            addButton.Click += addButton_Click;
+
+            var removeButton = new DynamoNodeButton()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
+                Content = "Remove",
+            };
+            removeButton.Click += removeButton_Click;
+
+            var tb = new TextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                IsReadOnly = true,
+                IsReadOnlyCaretVisible = false
+            };
+
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+            nodeUI.inputGrid.Children.Add(tb);
+            nodeUI.inputGrid.Children.Add(selectButton);
+            nodeUI.inputGrid.Children.Add(addButton);
+            nodeUI.inputGrid.Children.Add(removeButton);
+
+            System.Windows.Controls.Grid.SetRow(selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(addButton, 1);
+            System.Windows.Controls.Grid.SetRow(removeButton, 2);
+            System.Windows.Controls.Grid.SetRow(tb, 3);
+
+            tb.DataContext = this;
+            selectButton.DataContext = this;
+            addButton.DataContext = this;
+            removeButton.DataContext = this;
+
+            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            tb.SetBinding(TextBox.TextProperty, selectTextBinding);
+
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectedReferences")
+            {
+                Mode = BindingMode.OneWay,
+                Converter = new SelectionButtonContentConverter(),
+            };
+            selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+
+            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+
+            var addButtonEnabledBinding = new System.Windows.Data.Binding("CanAdd")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            addButton.SetBinding(Button.IsEnabledProperty, addButtonEnabledBinding);
+
+            var removeButtonEnabledBinding = new System.Windows.Data.Binding("CanRemove")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            removeButton.SetBinding(Button.IsEnabledProperty, removeButtonEnabledBinding);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Callback when selection button is clicked. 
+        /// Calls the selection action, and stores the ElementId(s) of the selected objects.
+        /// </summary>
+        protected override void OnSelectClick()
+        {
+            try
+            {
+                //call the delegate associated with a selection type
+                SelectedReferences = newSelectionAction(_selectionMessage);
+                RaisePropertyChanged("SelectionText");
+                RaisePropertyChanged("SelectedReferences");
+
+                RequiresRecalc = true;
+            }
+            catch (OperationCanceledException)
+            {
+                CanSelect = true;
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log(e);
+            }
+        }
+
+        /// <summary>
+        /// Callback when add button is clicked. 
+        /// Calls the add action, and adds the ElementId(s) of the selected objects
+        /// to the existing list of References.
+        /// </summary>
+        protected override void OnAddClick()
+        {
+            try
+            {
+                //call the delegate associated with a selection type
+                SelectedReferences = addSelectionAction(_selectionMessage, selectedUniqueIds);
+                RaisePropertyChanged("SelectionText");
+                RaisePropertyChanged("SelectedReferences");
+
+                RequiresRecalc = true;
+            }
+            catch (OperationCanceledException)
+            {
+                CanAdd = true;
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log(e);
+            }
+        }
+
+        /// <summary>
+        /// Callback when add button is clicked. 
+        /// Calls the remove action, and removes the ElementId(s) of the selected objects
+        /// to the existing list of References.
+        /// </summary>
+        protected override void OnRemoveClick()
+        {
+            try
+            {
+                //call the delegate associated with a selection type
+                SelectedReferences = removeSelectionAction(_selectionMessage, selectedUniqueIds);
+                RaisePropertyChanged("SelectionText");
+                RaisePropertyChanged("SelectedReferences");
+
+                RequiresRecalc = true;
+            }
+            catch (OperationCanceledException)
+            {
+                CanRemove = true;
+            }
+            catch (Exception e)
+            {
+                dynSettings.DynamoLogger.Log(e);
+            }
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            List<GeometryObject> geomObjects = new List<GeometryObject>();
+            List<string> stableReps = new List<string>();
+            AssociativeNode node;
+
+            if (SelectedReferences != null)
+            {
+                var dbDocument = DocumentManager.Instance.CurrentDBDocument;
+
+                if (dbDocument != null)
+                {
+                    foreach (var element in SelectedReferences)
+                    {
+                        stableReps.Add(element.ConvertToStableRepresentation(dbDocument));
+                    }
+                }  
+            }
+
+            var newInputs = stableReps.Select(p =>
+                AstFactory.BuildFunctionCall(
+                "GeometryObjectSelector",
+                "ByReferenceStableRepresentation",
+                new List<AssociativeNode>
+                {
+                    AstFactory.BuildStringNode(p)
+                }
+                )).ToList();
+
+            node = AstFactory.BuildExprList(newInputs);
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };       
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            foreach (string selectedElement in selectedUniqueIds.Where(x => x != null))
+            {
+                XmlElement outEl = xmlDoc.CreateElement("instance");
+                outEl.SetAttribute("id", selectedElement);
+                nodeElement.AppendChild(outEl);
+            }
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            if (SelectedReferences != null)
+            {
+                SelectedReferences.Clear();
+            }
+
+            List<Reference> loadedReferences = new List<Reference>();
+            
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    Reference saved = null;
+                    var id = subNode.Attributes[0].Value;
+                    try
+                    {
+                        saved = Reference.ParseFromStableRepresentation(
+                            DocumentManager.Instance.CurrentDBDocument, id);
+                    }
+                    catch
+                    {
+                        dynSettings.DynamoLogger.Log(
+                            "Unable to find reference with stable id: " + id);
+                    }
+                    loadedReferences.Add(saved);
+                }
+            }
+            SelectedReferences = loadedReferences;
+        }
+    }
+
     public abstract class DSElementsSelection : DSSelectionBase
     {
         protected Func<string, List<ElementId>> SelectionAction;
@@ -657,7 +1087,6 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
-
 
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
             dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
@@ -867,6 +1296,13 @@ namespace Dynamo.Nodes
                     return "Select";
             }
 
+            else if (value.GetType() == typeof (List<Reference>))
+            {
+                var els = (List<Reference>) value;
+                if (!els.Any())
+                    return "Select";
+            }
+
             return "Change";
         }
 
@@ -922,6 +1358,34 @@ namespace Dynamo.Nodes
 
         public DSFaceSelection()
             : base(SelectionHelper.RequestFaceReferenceSelection, "Select a face."){}
+    }
+
+    [NodeName("Select Faces")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select faces.")]
+    [IsDesignScriptCompatible]
+    public class DSFacesSelection : DSReferencesSelection
+    {
+        public override string SelectionText
+        {
+            get
+            {
+                return _selectionText = SelectedReferences == null
+                                            ? "Nothing Selected"
+                                            : "Faces selected";
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
+        }
+
+        public DSFacesSelection()
+            : base(SelectionHelper.RequestFacesReferenceSelection, 
+                   SelectionHelper.RequestFacesReferenceSelectionAdd, 
+                   SelectionHelper.RequestFacesReferenceSelectionRemove,
+                   "Select faces.") { }
     }
 
     [NodeName("Select Edge")]

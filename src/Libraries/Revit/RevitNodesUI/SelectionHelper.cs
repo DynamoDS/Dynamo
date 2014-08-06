@@ -153,6 +153,79 @@ namespace Revit.Interactivity
             return faceRef;
         }
 
+        public static List<Reference> RequestFacesReferenceSelection(string message)
+        {
+            var doc = DocumentManager.Instance.CurrentUIDocument;
+
+            Selection choices = doc.Selection;
+
+            choices.Elements.Clear();
+
+            dynSettings.DynamoLogger.Log(message);
+
+            List<Reference> faceRefs = (List<Reference>)doc.Selection.PickObjects(ObjectType.Face);
+
+            return faceRefs;
+        }
+
+        public static List<Reference> RequestFacesReferenceSelectionAdd(string message, List<string> storedReferenceStrings)
+        {
+            var doc = DocumentManager.Instance.CurrentUIDocument;
+            SelElementSet choices = doc.Selection.Elements;
+            choices.Clear();          
+            List<Reference> storedFaceRefs = new List<Reference>();
+            dynSettings.DynamoLogger.Log(message);
+            List<Reference> faceRefs = (List<Reference>)doc.Selection.PickObjects(ObjectType.Face);
+            
+            foreach (var face in faceRefs)
+            {
+                storedFaceRefs.Add(face);
+            }
+
+            //The best we can do without using AFV is to select elements that have a face included in the selection.
+            //This is pretty annoying and it would be way better to visually see just what faces are tied to the node
+            //in the UI as you are modifying a selection.
+            if (storedReferenceStrings != null)
+            {
+                foreach (var storedRef in storedReferenceStrings)
+                {
+                    var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, storedRef);
+                    var geob = DocumentManager.Instance.CurrentDBDocument.GetElement(geometryReference);
+                    choices.Add(geob);
+                    storedFaceRefs.Add(geometryReference);
+                }
+            }
+
+            return storedFaceRefs;
+        }
+
+        public static List<Reference> RequestFacesReferenceSelectionRemove(string message, List<string> storedReferenceStrings)
+        {
+            var doc = DocumentManager.Instance.CurrentUIDocument;
+            var dbDoc = DocumentManager.Instance.CurrentDBDocument;
+            SelElementSet choices = doc.Selection.Elements;
+            choices.Clear();
+            List<Reference> storedFaceRefs = new List<Reference>();
+            dynSettings.DynamoLogger.Log(message);
+
+            List<Reference> faceRefs = (List<Reference>)doc.Selection.PickObjects(ObjectType.Face);
+            List<string> stableFaceRefsStrings = faceRefs.Select(p => p.ConvertToStableRepresentation(dbDoc)).ToList();
+            
+            if (storedReferenceStrings != null)
+            {
+                List<string> newStableRefStrings = storedReferenceStrings.Where(p => stableFaceRefsStrings.Contains(p) == false).ToList();
+                foreach (var storedRef in newStableRefStrings)
+                {
+                    var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, storedRef);
+                    var geob = DocumentManager.Instance.CurrentDBDocument.GetElement(geometryReference);
+                    choices.Add(geob);
+                    storedFaceRefs.Add(geometryReference);
+                }
+            }
+
+            return storedFaceRefs;
+        }
+
         public static Reference RequestEdgeReferenceSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
