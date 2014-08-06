@@ -17,11 +17,15 @@ namespace ProtoCore.AST.AssociativeAST
 
         public bool IsLiteral = false;
 
+        // The immediate scope of this AST is within a function 
+        public bool IsProcedureOwned = false;
+
         protected AssociativeNode() { }
 
         protected AssociativeNode(AssociativeNode rhs) : base(rhs)
         {
             IsModifier = rhs.IsModifier;
+            IsProcedureOwned = rhs.IsProcedureOwned;
         }
     }
 
@@ -1104,6 +1108,21 @@ namespace ProtoCore.AST.AssociativeAST
                 (Body == null ? base.GetHashCode() : Body.GetHashCode());
 
             return bodyHashCode;
+        }
+
+        public override string ToString()
+        {
+            if (Body == null)
+            {
+                return string.Empty;
+            }
+
+            var buf = new StringBuilder();
+            for (int i = 0; i < Body.Count; ++i)
+            {
+                buf.Append(Body[i].ToString());
+            }
+            return buf.ToString();
         }
     }
 
@@ -2715,6 +2734,7 @@ namespace ProtoCore.AST.AssociativeAST
             return new IdentifierListNode
             {
                 LeftNode = new IdentifierNode(className),
+                Optr = Operator.dot,
                 RightNode = BuildFunctionCall(functionName, arguments)
             };
         }

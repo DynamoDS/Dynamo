@@ -1171,13 +1171,14 @@ namespace Dynamo.Models
                 nodeLookup.Add(node.GUID, newGuid);
 
                 string nodeName = node.GetType().ToString();
+
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
 #if USE_DSENGINE
                 else if (node is DSFunction)
-                    nodeName = ((node as DSFunction).Definition.MangledName);
+                    nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
-                    nodeName = ((node as DSVarArgFunction).Definition.MangledName);
+                    nodeName = ((node as DSVarArgFunction).Controller.MangledName);
 #endif
 
                 var xmlDoc = new XmlDocument();
@@ -1185,7 +1186,21 @@ namespace Dynamo.Models
                 xmlDoc.AppendChild(dynEl);
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                createdModels.Add(CurrentWorkspace.AddNode(newGuid, nodeName, node.X, node.Y + 100, false, false, dynEl));
+                var newNode = CurrentWorkspace.AddNode(
+                    newGuid,
+                    nodeName,
+                    node.X,
+                    node.Y + 100,
+                    false,
+                    false,
+                    dynEl);
+                createdModels.Add(newNode);
+
+                newNode.ArgumentLacing = node.ArgumentLacing;
+                if (!string.IsNullOrEmpty(node.NickName))
+                {
+                    newNode.NickName = node.NickName;
+                }
             }
 
             OnRequestLayoutUpdate(this, EventArgs.Empty);

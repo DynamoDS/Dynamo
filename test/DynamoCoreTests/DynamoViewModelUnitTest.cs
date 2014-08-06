@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -21,20 +22,19 @@ namespace Dynamo.Tests
     {
         protected DynamoViewModel ViewModel;
 
-        [SetUp]
         public override void Init()
         {
             base.Init();
             StartDynamo();
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             try
             {
                 ViewModel.Model.ShutDown(false, null);
-                this.ViewModel = null;
+                ViewModel = null;
+                DynamoSelection.Instance.ClearSelection();
             }
             catch (Exception ex)
             {
@@ -72,27 +72,6 @@ namespace Dynamo.Tests
                     DynamoModel = model
                 });
         }
-
-        ///// <summary>
-        ///// Enables starting Dynamo with a mock IUpdateManager
-        ///// </summary>
-        ///// <param name="updateManager"></param>
-        ///// <param name="watchHandler"></param>
-        ///// <param name="preferences"></param>
-        ///// <param name="visualizationManager"></param>
-        //protected void StartDynamo(IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences, IVisualizationManager visualizationManager)
-        //{
-        //    var corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        //    DynamoPathManager.Instance.InitializeCore(corePath);
-
-
-        //    //create a new instance of the ViewModel
-        //    DynamoViewModel = new DynamoController(RevitContext.NONE, updateManager, watchHandler, preferences, corePath);
-        //    DynamoViewModel.DynamoViewModel = new DynamoViewModel(DynamoViewModel, null);
-        //    DynamoController.IsTestMode = true;
-        //    DynamoViewModel.VisualizationManager = new VisualizationManager();
-        //}
 
         /// <summary>
         ///     Runs a basic unit tests that loads a file, runs it, and confirms that

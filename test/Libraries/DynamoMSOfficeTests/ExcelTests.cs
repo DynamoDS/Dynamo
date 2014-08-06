@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace Dynamo.Tests
             //var app = ExcelInterop.ExcelApp;
             //Assert.IsTrue(ExcelInterop.IsExcelProcessRunning);
             //Assert.IsTrue(ExcelInterop.HasExcelReference);
-            //Controller.DynamoModel.OnCleanup(null);
+            //ViewModel.Model.OnCleanup(null);
             //Thread.Sleep(100); 
             //Assert.IsFalse( ExcelInterop.IsExcelProcessRunning );
             //Assert.IsFalse(ExcelInterop.HasExcelReference);
@@ -109,10 +110,10 @@ namespace Dynamo.Tests
 
             ViewModel.Model.RunExpression();
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = watch.CachedValue as ICollection;
 
-            Assert.AreEqual(3, list.Count());
+            Assert.AreEqual(3, list.Count);
 
         }
 
@@ -134,8 +135,7 @@ namespace Dynamo.Tests
 
             ViewModel.Model.RunExpression();
 
-            Assert.IsTrue(watch.CachedValue.Class.ClassName == "DSOffice.WorkSheet");
-
+            Assert.IsNotNull(watch.CachedValue);
         }
 
         [Test]
@@ -181,22 +181,21 @@ namespace Dynamo.Tests
 
             ViewModel.Model.RunExpression();
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
-            Assert.AreEqual(16, list.Count());
+            Assert.AreEqual(16, list.Count);
 
             // contents of first workbook is ascending array of numbers starting at 1
             var counter = 1;
             for (var i = 0; i < 16; i++)
             {
                 // get data returns 2d array
-                Assert.IsTrue(list[i].IsCollection);
-                var rowList = list[i].GetElements();
+                Assert.IsTrue(list[i] is ICollection);
+                var rowList = (list[i] as ICollection).Cast<object>().ToList();
                 Assert.AreEqual(1, rowList.Count());
-                Assert.AreEqual(counter++, rowList[0].Data);
+                Assert.AreEqual(counter++, rowList[0]);
             }
-
         }
 
         [Test]
@@ -217,22 +216,22 @@ namespace Dynamo.Tests
 
             ViewModel.Model.RunExpression();
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
-            Assert.AreEqual(18, list.Count());
+            Assert.AreEqual(18, list.Count);
 
             // 18 x 3 array of numbers
             for (var i = 0; i < 18; i++)
             {
                 // get data returns 2d array
-                Assert.IsTrue(list[i].IsCollection);
-                var rowList = list[i].GetElements();
-                Assert.AreEqual(3, rowList.Count());
+                Assert.IsTrue(list[i] is ICollection);
+                var rowList = (list[i] as ICollection).Cast<object>().ToList();
+                Assert.AreEqual(3, rowList.Count);
 
                 for (var j = 0; j < 3; j++)
                 {
-                    Assert.AreEqual(rowList[j].Data, (i+1)+j);
+                    Assert.AreEqual(rowList[j], (i+1)+j);
                 }
             }
         }
@@ -254,27 +253,27 @@ namespace Dynamo.Tests
 
             ViewModel.Model.RunExpression();
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
-            Assert.AreEqual(4, list.Count());
+            Assert.AreEqual(4, list.Count);
 
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual("a", rowList[0].Data);
+            Assert.IsTrue(list[0] is ICollection);
+            var rowList = (list[0] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("a", rowList[0]);
 
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.IsNull(rowList[0].Data);
+            Assert.IsTrue(list[1] is ICollection);
+            rowList = (list[1] as ICollection).Cast<object>().ToList();
+            Assert.IsNull(rowList[0]);
 
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual("cell is", rowList[0].Data);
+            Assert.IsTrue(list[2] is ICollection);
+            rowList = (list[2] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("cell is", rowList[0]);
 
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.AreEqual("missing", rowList[0].Data);
+            Assert.IsTrue(list[3] is ICollection);
+            rowList = (list[3] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("missing", rowList[0]);
         }
 
         [Test]
@@ -295,31 +294,31 @@ namespace Dynamo.Tests
 
             ViewModel.Model.RunExpression();
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
             Assert.AreEqual(5, list.Count());
 
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual(1, rowList[0].Data);
+            Assert.IsTrue(list[0] is ICollection);
+            var rowList = (list[0] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(1, rowList[0]);
 
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.AreEqual("word", rowList[0].Data);
+            Assert.IsTrue(list[1] is ICollection);
+            rowList = (list[1] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("word", rowList[0]);
 
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual(2, rowList[0].Data);
+            Assert.IsTrue(list[2] is ICollection);
+            rowList = (list[2] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(2, rowList[0]);
 
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.AreEqual(3, rowList[0].Data);
+            Assert.IsTrue(list[3] is ICollection);
+            rowList = (list[3] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(3, rowList[0]);
 
-            Assert.IsTrue(list[4].IsCollection);
-            rowList = list[4].GetElements();
-            Assert.AreEqual("palabra", rowList[0].Data);
+            Assert.IsTrue(list[4] is ICollection);
+            rowList = (list[4] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("palabra", rowList[0]);
 
         }
 
@@ -355,52 +354,52 @@ namespace Dynamo.Tests
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
             var list1 = writeNode.CachedValue.GetElements();
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list2 = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list2 = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
             Assert.AreEqual(5, list1.Count());
             Assert.AreEqual(5, list2.Count());
 
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList = list2[0].GetElements();
-            Assert.AreEqual(1, rowList[0].Data);
+            Assert.IsTrue(list2[0] is ICollection);
+            var rowList = (list2[0] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(1, rowList[0]);
 
-            Assert.IsTrue(list2[1].IsCollection);
-            rowList = list2[1].GetElements();
-            Assert.AreEqual("word", rowList[0].Data);
+            Assert.IsTrue(list2[1] is ICollection);
+            rowList = (list2[1] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("word", rowList[0]);
 
-            Assert.IsTrue(list2[2].IsCollection);
-            rowList = list2[2].GetElements();
-            Assert.AreEqual(2, rowList[0].Data);
+            Assert.IsTrue(list2[2] is ICollection);
+            rowList = (list2[2] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(2, rowList[0]);
 
-            Assert.IsTrue(list2[3].IsCollection);
-            rowList = list2[3].GetElements();
-            Assert.AreEqual(3, rowList[0].Data);
+            Assert.IsTrue(list2[3] is ICollection);
+            rowList = (list2[3] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(3, rowList[0]);
 
-            Assert.IsTrue(list2[4].IsCollection);
-            rowList = list2[4].GetElements();
-            Assert.AreEqual("palabra", rowList[0].Data);
+            Assert.IsTrue(list2[4] is ICollection);
+            rowList = (list2[4] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("palabra", rowList[0]);
 
             Assert.IsTrue(list1[0].IsCollection);
-            rowList = list1[0].GetElements();
-            Assert.AreEqual(1, rowList[0].Data);
+            var rowList2 = list1[0].GetElements();
+            Assert.AreEqual(1, rowList2[0].Data);
 
             Assert.IsTrue(list1[1].IsCollection);
-            rowList = list1[1].GetElements();
-            Assert.AreEqual("word", rowList[0].Data);
+            rowList2 = list1[1].GetElements();
+            Assert.AreEqual("word", rowList2[0].Data);
 
             Assert.IsTrue(list1[2].IsCollection);
-            rowList = list1[2].GetElements();
-            Assert.AreEqual(2, rowList[0].Data);
+            rowList2 = list1[2].GetElements();
+            Assert.AreEqual(2, rowList2[0].Data);
 
             Assert.IsTrue(list1[3].IsCollection);
-            rowList = list1[3].GetElements();
-            Assert.AreEqual(3, rowList[0].Data);
+            rowList2 = list1[3].GetElements();
+            Assert.AreEqual(3, rowList2[0].Data);
 
             Assert.IsTrue(list1[4].IsCollection);
-            rowList = list1[4].GetElements();
-            Assert.AreEqual("palabra", rowList[0].Data);
+            rowList2 = list1[4].GetElements();
+            Assert.AreEqual("palabra", rowList2[0].Data);
 
         }
 
@@ -417,32 +416,32 @@ namespace Dynamo.Tests
             var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             ViewModel.Model.RunExpression();
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
             Assert.AreEqual(5, list.Count());
 
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual("doodle", rowList[0].Data);
+            Assert.IsTrue(list[0] is ICollection);
+            var rowList = (list[0] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual("doodle", rowList[0]);
 
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.AreEqual(0, rowList[0].Data);
+            Assert.IsTrue(list[1] is ICollection);
+            rowList = (list[1] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(0, rowList[0]);
 
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual(21029, rowList[0].Data);
+            Assert.IsTrue(list[2] is ICollection);
+            rowList = (list[2] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(21029, rowList[0]);
 
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
+            Assert.IsTrue(list[3] is ICollection);
+            rowList = (list[3] as ICollection).Cast<object>().ToList();
             //Assert.IsTrue(rowList[0].IsContainer);
-            Assert.IsNull(rowList[0].Data);
+            Assert.IsNull(rowList[0]);
 
-            Assert.IsTrue(list[4].IsCollection);
-            rowList = list[4].GetElements();
-            Assert.AreEqual(-90, rowList[0].Data);
+            Assert.IsTrue(list[4] is ICollection);
+            rowList = (list[4] as ICollection).Cast<object>().ToList();
+            Assert.AreEqual(-90, rowList[0]);
 
         }
 
@@ -453,10 +452,9 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            var getWorksheet = ViewModel.Model.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
-                node.NickName == "Excel.GetExcelWorksheetByName").FirstOrDefault();
+            var getWorksheet = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node is DSFunction &&
+                node.NickName == "Excel.GetExcelWorksheetByName");
             ViewModel.Model.RunExpression();
-            Assert.AreEqual(watch.CachedValue.Class.ClassName, "DSOffice.WorkSheet");
             Assert.IsNull(getWorksheet.CachedValue.Data);
         }
 
@@ -464,32 +462,34 @@ namespace Dynamo.Tests
         public void CanAddSingleItemToExcelWorksheet()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddSingleItemData.dyn");
+
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             ViewModel.Model.RunExpression();
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
             Assert.AreEqual(1, list.Count());
 
             // get data returns 2d array
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
+            Assert.IsTrue(list[0] is ICollection);
+            var rowList = (list[0] as ICollection).Cast<object>().ToList();
             Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(100.0, rowList[0].Data);
+            Assert.AreEqual(100.0, rowList[0]);
         }
 
         [Test]
         public void CanAdd1DListToExcelWorksheet()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add1DListData.dyn");
+
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             ViewModel.Model.RunExpression();
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            Assert.IsTrue(watch.CachedValue is ICollection);
+            var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
             Assert.AreEqual(101, list.Count());
 
@@ -498,10 +498,10 @@ namespace Dynamo.Tests
             for (var i = 0; i < 101; i++)
             {
                 // get data returns 2d array
-                Assert.IsTrue(list[i].IsCollection);
-                var rowList = list[i].GetElements();
+                Assert.IsTrue(list[i]is ICollection);
+                var rowList = (list[i] as ICollection).Cast<object>().ToList();
                 Assert.AreEqual(1, rowList.Count());
-                Assert.AreEqual(counter++, rowList[0].Data);
+                Assert.AreEqual(counter++, rowList[0]);
             }
 
         }
@@ -535,17 +535,6 @@ namespace Dynamo.Tests
                 counter = 0;
             }
 
-        }
-
-        [Test]
-        public void CanCreateNewWorkbook()
-        {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(2, ViewModel.CurrentSpace.Nodes.Count);
-            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            ViewModel.Model.RunExpression();
-            Assert.AreEqual(watch.CachedValue.Class.ClassName, "DSOffice.WorkBook");
         }
 
         [Test]

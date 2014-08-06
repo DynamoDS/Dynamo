@@ -492,21 +492,21 @@ namespace ProtoCore
                 }
                 else if (option == StackFrameFlagOptions.IsReplicating)
                 {
-                    if(debugFrame.IsReplicating == true)
+                    if(debugFrame.IsReplicating)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsExternalFunction)
                 {
-                    if (debugFrame.IsExternalFunction == true)
+                    if (debugFrame.IsExternalFunction)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsFunctionStepOver)
                 {
-                    if (debugFrame.FunctionStepOver == true)
+                    if (debugFrame.FunctionStepOver)
                     {
                         return true;
                     }
@@ -829,7 +829,7 @@ namespace ProtoCore
             InstructionStream istream;
 
             int pc = tempPC;
-            if (core.DebugProps.InlineConditionOptions.isInlineConditional == true)
+            if (core.DebugProps.InlineConditionOptions.isInlineConditional)
             {
                 tempPC = InlineConditionOptions.startPc;
                 limit = InlineConditionOptions.endPc;
@@ -1533,7 +1533,7 @@ namespace ProtoCore
 
             var nodeMap = new Dictionary<Guid, List<CallSite>>();
 
-            if (nodeGuids.Count() <= 0) // Nothing to persist now.
+            if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeMap;
 
             // Attempt to get the list of graph node if one exists.
@@ -1561,7 +1561,7 @@ namespace ProtoCore
                 var matchingGraphNodes = graphNodes.
                     Where(gn => gn.guid == nodeGuid);
 
-                if (matchingGraphNodes.Count() <= 0)
+                if (!matchingGraphNodes.Any())
                     continue;
 
                 // Get all callsites that match the graph node ids.

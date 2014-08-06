@@ -16,8 +16,8 @@ namespace Dynamo.DSEngine
     {
         internal static ILiveRunner CreateLiveRunner(EngineController controller)
         {
-            LiveRunner.Options option = new LiveRunner.Options();
-            return new LiveRunner(option);
+            LiveRunner.Configuration configuration = new LiveRunner.Configuration();
+            return new LiveRunner(configuration);
         }
     }
 
@@ -31,15 +31,10 @@ namespace Dynamo.DSEngine
             this.dynamoModel = dynamoModel;
 
             liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
-
-            liveRunner.GraphUpdateReady += GraphUpdateReady;
-            liveRunner.NodeValueReady += NodeValueReady;
         }
       
         public void Dispose()
         {
-            liveRunner.GraphUpdateReady -= GraphUpdateReady;
-            liveRunner.NodeValueReady -= NodeValueReady;
             if (liveRunner is IDisposable)
                 (liveRunner as IDisposable).Dispose();
         }

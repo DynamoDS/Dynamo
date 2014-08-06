@@ -38,19 +38,9 @@ namespace Dynamo.Applications
         {
             var id = element.Id;
 
-            // Do not process element for watch which have been removed
-            // from the Revit database.
-            if (!element.InternalElement.IsValidObject)
-            {
-                return null;
-            }
+            var node = new WatchViewModel(visualizationManager, 
+                element.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
 
-            var elementString =
-                element.ToString(
-                    this.preferences.NumberFormat,
-                    CultureInfo.InvariantCulture);
-
-            var node = new WatchViewModel(visualizationManager, elementString, tag);
             node.Clicked += () => DocumentManager.Instance.CurrentUIDocument.ShowElements(element.InternalElement);
             node.Link = id.ToString(CultureInfo.InvariantCulture);
 

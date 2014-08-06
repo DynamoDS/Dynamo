@@ -88,7 +88,7 @@ namespace Revit.Elements
             // We have to clean up the old ModelText b/c we can't mutate it's position
             if (oldEle != null)
             {
-                DocumentManager.Instance.DeleteElement( oldEle.Id );
+                DocumentManager.Instance.DeleteElement(new ElementUUID(oldEle.UniqueId));
             }
 
             var mt = CreateModelText(text, sketchPlane, xCoordinateInPlane, yCoordinateInPlane, textDepth, modelTextType);

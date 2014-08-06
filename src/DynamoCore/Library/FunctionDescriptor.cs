@@ -12,9 +12,25 @@ using ProtoCore.Utils;
 namespace Dynamo.DSEngine
 {
     /// <summary>
+    ///     Describes a function, whether imported or defined in a custom node.
+    /// </summary>
+    public interface IFunctionDescriptor
+    {
+        /// <summary>
+        ///     Name to be displayed for the function.
+        /// </summary>
+        string DisplayName { get; }
+
+        /// <summary>
+        ///     Return keys for multi-output functions.
+        /// </summary>
+        IEnumerable<string> ReturnKeys { get; }
+    }
+
+    /// <summary>
     ///     Describe a DesignScript function in a imported library
     /// </summary>
-    public class FunctionDescriptor
+    public class FunctionDescriptor : IFunctionDescriptor
     {
         /// <summary>
         ///     A comment describing the Function
@@ -22,7 +38,7 @@ namespace Dynamo.DSEngine
         private string summary;
 
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
-            : this(null, null, name, parameters, null, type) 
+            : this(null, null, name, parameters, null, type)
         { }
 
         public FunctionDescriptor(
@@ -114,7 +130,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetXmlDocumentation()); }
+            get { return summary ?? (summary = this.GetSummary()); }
         }
 
         /// <summary>
@@ -193,7 +209,7 @@ namespace Dynamo.DSEngine
             {
                 var descBuf = new StringBuilder();
                 descBuf.Append(DisplayName);
-                
+
                 if (Parameters != null && Parameters.Any())
                 {
                     string signature = string.Join(", ", Parameters.Select(p => p.ToString()));

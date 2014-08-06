@@ -97,8 +97,6 @@ namespace Dynamo.Tests
             fec.OfClass(typeof(CurveElement));
 
             Assert.AreEqual(fec.ToElements().Count(), 1);
-
-            CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
         }
 
         [Test]

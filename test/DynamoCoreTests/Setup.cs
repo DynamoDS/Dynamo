@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         [TearDown]
         public void RunAfterAllTests()
         {
-
+            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
         } 
     }
 }

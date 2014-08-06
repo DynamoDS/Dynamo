@@ -9,9 +9,8 @@ using Dynamo.Tests;
 
 using NUnit.Framework;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Tests
 {
-    [TestFixture]
     public class HigherOrder : DSEvaluationViewModelUnitTest
     {
         string TestFolder { get { return GetTestDirectory(); } }

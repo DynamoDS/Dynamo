@@ -76,7 +76,7 @@ namespace Dynamo.Controls
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
-            this.SizeChanged += OnSizeChanged;
+            this.nodeBorder.SizeChanged += OnSizeChanged;
             this.DataContextChanged += OnDataContextChanged;
 
             Canvas.SetZIndex(this, 1);
@@ -105,7 +105,7 @@ namespace Dynamo.Controls
         {
             if (ViewModel != null)
             {
-                var size = new double[] { ActualWidth, ActualHeight };
+                var size = new double[] { ActualWidth, nodeBorder.ActualHeight };
                 if (ViewModel.SetModelSizeCommand.CanExecute(size))
                 {
                     //Debug.WriteLine(string.Format("Updating {2} node size {0}:{1}", size[0], size[1], ViewModel.NodeLogic.GetType().ToString()));
@@ -310,11 +310,6 @@ namespace Dynamo.Controls
             //set handled to avoid triggering key press
             //events on the workbench
             //e.Handled = true;
-        }
-
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-
         }
 
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

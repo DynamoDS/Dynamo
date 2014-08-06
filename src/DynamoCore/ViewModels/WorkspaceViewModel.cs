@@ -593,77 +593,113 @@ namespace Dynamo.ViewModels
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             Model.RecordModelsForModification(models.ToList());
 
-            var toAlign = DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .ToList();
+            var toAlign = DynamoSelection.Instance.Selection.OfType<ILocatable>().ToList();
 
-            if (alignType == "HorizontalCenter")  // make vertial line of elements
+            switch (alignType)
             {
-                var xAll = GetSelectionAverageX();
-                toAlign.ForEach((x) => { x.CenterX = xAll; });
-            }
-            else if (alignType == "HorizontalLeft")
-            {
-                var xAll = GetSelectionMinX();
-                toAlign.ForEach((x) => { x.X = xAll; });
-            }
-            else if (alignType == "HorizontalRight")
-            {
-                var xAll = GetSelectionMaxX();
-                toAlign.ForEach((x) => { x.X = xAll - x.Width; });
-            }
-            else if (alignType == "VerticalCenter")
-            {
-                var yAll = GetSelectionAverageY();
-                toAlign.ForEach((x) => { x.CenterY = yAll; });
+                case "HorizontalCenter":
+                {
+                    var xAll = GetSelectionAverageX();
+                    toAlign.ForEach((x) => { x.CenterX = xAll; });
+                }
+                    break;
+                case "HorizontalLeft":
+                {
+                    var xAll = GetSelectionMinX();
+                    toAlign.ForEach((x) => { x.X = xAll; });
+                }
+                    break;
+                case "HorizontalRight":
+                {
+                    var xAll = GetSelectionMaxX();
+                    toAlign.ForEach((x) => { x.X = xAll - x.Width; });
+                }
+                    break;
+                case "VerticalCenter":
+                {
+                    var yAll = GetSelectionAverageY();
+                    toAlign.ForEach((x) => { x.CenterY = yAll; });
+                }
+                    break;
+                case "VerticalTop":
+                {
+                    var yAll = GetSelectionMinY();
+                    toAlign.ForEach((x) => { x.Y = yAll; });
+                }
+                    break;
+                case "VerticalBottom":
+                {
+                    var yAll = GetSelectionMaxY();
+                    toAlign.ForEach((x) => { x.Y = yAll - x.Height; });
+                }
+                    break;
+                case "VerticalDistribute":
+                {
+                    if (DynamoSelection.Instance.Selection.Count <= 2) return;
 
-            }
-            else if (alignType == "VerticalTop")
-            {
-                var yAll = GetSelectionMinY();
-                toAlign.ForEach((x) => { x.Y = yAll; });
-            }
-            else if (alignType == "VerticalBottom")
-            {
-                var yAll = GetSelectionMaxY();
-                toAlign.ForEach((x) => { x.Y = yAll - x.Height; });
-            }
-            else if (alignType == "VerticalDistribute")
-            {
-                if (DynamoSelection.Instance.Selection.Count <= 2) return;
+                    var yMin = GetSelectionMinY();
+                    var yMax = GetSelectionMaxY();
 
-                var yMin = GetSelectionMinY();
-                var yMax = GetSelectionMaxTopY();
-                var spacing = (yMax - yMin) / (DynamoSelection.Instance.Selection.Count - 1);
-                int count = 0;
+                    var spacing = 0.0;
+                    var span = yMax - yMin;
 
-                toAlign.OrderBy((x) => x.Y)
-                           .ToList()
-                           .ForEach((x) => x.Y = yMin + spacing * count++);
-            }
-            else if (alignType == "HorizontalDistribute")
-            {
-                if (DynamoSelection.Instance.Selection.Count <= 2) return;
+                    var nodeHeightSum =
+                        DynamoSelection.Instance.Selection.Where(y => y is ILocatable)
+                            .Cast<ILocatable>()
+                            .Sum((y) => y.Height);
 
-                var xMin = GetSelectionMinX();
-                var xMax = GetSelectionMaxLeftX();
-                var spacing = (xMax - xMin) / (DynamoSelection.Instance.Selection.Count - 1);
-                int count = 0;
+                    if (span > nodeHeightSum)
+                    {
+                        spacing = (span - nodeHeightSum)
+                            /(DynamoSelection.Instance.Selection.Count - 1);
+                    }
 
-                toAlign.OrderBy((x) => x.X)
-                           .ToList()
-                           .ForEach((x) => x.X = xMin + spacing * count++);
+                    var cursor = yMin;
+                    foreach (var node in toAlign.OrderBy(y => y.Y))
+                    {
+                        node.Y = cursor;
+                        cursor += node.Height + spacing;
+                    }
+                }
+                    break;
+                case "HorizontalDistribute":
+                {
+                    if (DynamoSelection.Instance.Selection.Count <= 2) return;
+
+                    var xMin = GetSelectionMinX();
+                    var xMax = GetSelectionMaxX();
+
+                    var spacing = 0.0;
+                    var span = xMax - xMin;
+                    var nodeWidthSum =
+                        DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                            .Cast<ILocatable>()
+                            .Sum((x) => x.Width);
+
+                    // If there is more span than total node width,
+                    // distribute the nodes with a gap. If not, leave
+                    // the spacing at 0 and the nodes will distribute
+                    // up against each other.
+                    if (span > nodeWidthSum)
+                    {
+                        spacing = (span - nodeWidthSum)
+                            /(DynamoSelection.Instance.Selection.Count - 1);
+                    }
+
+                    var cursor = xMin;
+                    foreach (var node in toAlign.OrderBy(x => x.X))
+                    {
+                        node.X = cursor;
+                        cursor += node.Width + spacing;
+                    }
+                }
+                    break;
             }
 
             toAlign.ForEach(x => x.ReportPosition());
         }
 
-        private bool CanAlignSelected(string alignType)
-        {
-            return DynamoSelection.Instance.Selection.Count > 1;
-        }
-
-        private bool CanAlignSelected(object parameter)
+        private static bool CanAlignSelected(object parameter)
         {
             return DynamoSelection.Instance.Selection.Count > 1;
         }
@@ -690,7 +726,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanHide(object parameters)
+        private static bool CanHide(object parameters)
         {
             // Workspaces other than HOME can be hidden (i.e. closed), but we 
             // are enabling it also for the HOME workspace. When clicked, the 
@@ -714,7 +750,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanSetCurrentOffset(object parameter)
+        private static bool CanSetCurrentOffset(object parameter)
         {
             return true;
         }
@@ -736,17 +772,15 @@ namespace Dynamo.ViewModels
             AlignSelectedCommand.RaiseCanExecuteChanged();
         }
 
-        private bool CanCreateNodeFromSelection(object parameter)
+        private static bool CanCreateNodeFromSelection(object parameter)
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         private bool CanZoom(double zoom)
         {
-            if ((zoom < 0 && Model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)
-                || (zoom > 0 && Model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM))
-                return false;
-            return true;
+            return (!(zoom < 0) || !(Model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)) && (!(zoom > 0) 
+                || !(Model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM));
         }
 
         private void SetZoom(object zoom)
@@ -754,13 +788,10 @@ namespace Dynamo.ViewModels
             Model.Zoom = Convert.ToDouble(zoom);
         }
 
-        private bool CanSetZoom(object zoom)
+        private static bool CanSetZoom(object zoom)
         {
             double setZoom = Convert.ToDouble(zoom);
-            if (setZoom >= WorkspaceModel.ZOOM_MINIMUM && setZoom <= WorkspaceModel.ZOOM_MAXIMUM)
-                return true;
-            else
-                return false;
+            return setZoom >= WorkspaceModel.ZOOM_MINIMUM && setZoom <= WorkspaceModel.ZOOM_MAXIMUM;
         }
 
         private bool _fitViewActualZoomToggle = false;
@@ -806,7 +837,7 @@ namespace Dynamo.ViewModels
             _fitViewActualZoomToggle = false;
         }
 
-        private bool CanResetFitViewToggle(object o)
+        private static bool CanResetFitViewToggle(object o)
         {
             return true;
         }
@@ -839,28 +870,24 @@ namespace Dynamo.ViewModels
                 var function =
                     (Function)DynamoViewModel.Model.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
 
-                if (function != null)
-                {
-                    //select the element
-                    DynamoSelection.Instance.ClearSelection();
-                    DynamoSelection.Instance.Selection.Add(function);
+                if (function == null) return;
 
-                    //focus on the element
-                    DynamoViewModel.ShowElement(function);
-                }
+                //select the element
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(function);
+
+                //focus on the element
+                DynamoViewModel.ShowElement(function);
             }
             catch
             {
                 DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
-                return;
             }
         }
 
-        private bool CanFindById(object id)
+        private static bool CanFindById(object id)
         {
-            if (!string.IsNullOrEmpty(id.ToString()))
-                return true;
-            return false;
+            return !string.IsNullOrEmpty(id.ToString());
         }
 
         private void FindNodesFromSelection(object parameter)
@@ -870,9 +897,7 @@ namespace Dynamo.ViewModels
 
         private bool CanFindNodesFromSelection(object parameter)
         {
-            if (FindNodesFromElements != null)
-                return true;
-            return false;
+            return FindNodesFromElements != null;
         }
 
         private void DoGraphAutoLayout(object o)
@@ -918,7 +943,7 @@ namespace Dynamo.ViewModels
             FitViewInternal();
         }
 
-        private bool CanDoGraphAutoLayout(object o)
+        private static bool CanDoGraphAutoLayout(object o)
         {
             return true;
         }
@@ -949,7 +974,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.VisualizationManager.Pause();
         }
 
-        private bool CanPauseVisualizationManagerUpdates(object parameter)
+        private static bool CanPauseVisualizationManagerUpdates(object parameter)
         {
             return true;
         }
@@ -959,7 +984,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.VisualizationManager.UnPause();
         }
 
-        private bool CanUnPauseVisualizationManagerUpdates(object parameter)
+        private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
         {
             return true;
         }

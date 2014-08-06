@@ -22,6 +22,12 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
         }
 
+        public void OpenSampleModel(string relativeFilePath)
+        {
+            string openPath = Path.Combine(GetSampleDirectory(), relativeFilePath);
+            ViewModel.OpenCommand.Execute(openPath);
+        }
+
         public void RunModel(string relativeDynFilePath)
         {
             OpenModel(relativeDynFilePath);
@@ -71,10 +77,31 @@ namespace Dynamo.Tests
             AssertValue(svValue, value);
         }
 
+        public void AssertInfinity(string dsVariable, int startBlock = 0)
+        {
+            RuntimeMirror mirror = GetRuntimeMirror(dsVariable);
+            MirrorData data = mirror.GetData();
+            Assert.IsTrue(System.Double.IsInfinity(Convert.ToDouble(data.Data)));
+        }
+
         public void AssertPreviewValue(string guid, object value)
         {
             string previewVariable = GetVarName(guid);
             AssertValue(previewVariable, value);
+        }
+
+        /// <summary>
+        /// Compares preview value of two nodes and asserts they are same.
+        /// </summary>
+        /// <param name="guid1">guid for first node</param>
+        /// <param name="guid2">guid for second node</param>
+        public void AssertSamePreviewValues(string guid1, string guid2)
+        {
+            string var1 = GetVarName(guid1);
+            var data1 = GetRuntimeMirror(var1).GetData();
+            string var2 = GetVarName(guid2);
+            var data2 = GetRuntimeMirror(var2).GetData();
+            AssertMirrorData(data1, data2);
         }
 
         public void SelectivelyAssertPreviewValues(string guid, Dictionary<int, object> selectedValue)
@@ -149,6 +176,26 @@ namespace Dynamo.Tests
                 Assert.AreEqual(value, data.Data);
         }
 
+        private void AssertMirrorData(MirrorData data1, MirrorData data2)
+        {
+            if (data1.IsNull)
+                Assert.True(data2.IsNull);
+            else if (data1.IsCollection)
+            {
+                Assert.True(data2.IsCollection);
+                List<MirrorData> elems1 = data1.GetElements();
+                List<MirrorData> elems2 = data2.GetElements();
+                Assert.AreEqual(elems1.Count, elems2.Count);
+                int i = 0;
+                foreach (var item in elems1)
+                {
+                    AssertMirrorData(item, elems2[i++]);
+                }
+            }
+            else
+                Assert.AreEqual(data1.Data, data2.Data);
+        }
+
         private void AssertCollection(MirrorData data, IEnumerable collection)
         {
             Assert.IsTrue(data.IsCollection);
@@ -180,7 +227,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void Regress561()
         {
             // 1; ----> x
@@ -659,6 +705,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void UsingFunctionObject01()
         {
             RunModel(@"core\dsevaluation\FunctionObject.dyn");
@@ -718,7 +765,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
             AssertPreviewValue("0ffe94bd-f926-4e81-83f7-7975e67a3713",
-                new int[] { 2, 4, 6, 8, 10, 12, 14, 16 });
+                new int[] { 2, 4, 6, 8 });
         }
 
         [Test]
@@ -785,6 +832,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void Defect_MAGN_3264()
         {
             // Function object to property method and used in apply 
@@ -812,25 +860,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Formula_Simple()
-        {
-            
-            RunModel(@"core\dsevaluation\SimpleFormula.dyn");
-            AssertPreviewValue("6637546b-7998-4c48-bdb6-0bcf9f6ae997", new int[]{ 2, 6, 12, 20, 30 });
-        }
-        [Test]
         public void CBNAndFormula()
         {
-
             RunModel(@"core\dsevaluation\CBNWithFormula.dyn");
-            AssertPreviewValue("60979b20-8089-4d5a-93bf-2cf829f74060", 3);
-        }
-        [Test]
-        public void FormulaIntegration()
-        {
-
-            RunModel(@"core\dsevaluation\FormulaIntegration1.dyn");
-            AssertPreviewValue("88d3bb73-42cd-4ffc-82e2-402c9550d5b1", new double[] { 0.000000, 0.001038, 0.002289, -0.007827, -0.035578, -0.046003, 0.034186, 0.216376, 0.315323, 0.000000 });
+            var id =
+                ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().GUID;
+            AssertPreviewValue(id.ToString(), 3);
         }
 
         [Test]
@@ -842,6 +877,152 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
         }
+        [Test]
+        public void Test_IFnode_3483_1()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\ifnode_3483.dyn");
+
+            AssertPreviewValue("516de967-91ac-4a93-87ce-7f130774268a", 5.00);
+        }
+        [Test]
+        public void Test_IFnode_3483_2()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\ifnode_3483_2.dyn");
+
+            AssertPreviewValue("70b5aeba-80b7-48cc-a48d-6c755c28555c", new object []{ 1, 1, 1, new object []{ -2, -1, 0, 1, 2 },new object[] { -2, -1, 0, 1, 2 } });
+        }
+        [Test]
+        public void Test_ConditionalCustomFunction_3483()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\conditionalCustomFunction_3483.dyn");
+
+            AssertPreviewValue("46f484ed-eecd-45cd-9904-0020a3c98999", 2.647);
+            
+            
+        }
+        [Test]
+        public void Test_CustomFunctionobject_3483()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\CustomFunctionobject_3483.dyn");
+
+            AssertPreviewValue("dace0b8c-381e-4de5-824d-c1651ec94bc6", new double[] {1,1,1,1,1,2,3});
+        }
+        
+        [Test]
+        public void Test_IfinputFunctionObject_3483()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\IfinputFunctionObject_3483.dyn");
+
+            AssertPreviewValue("079fa696-e6e7-402f-866f-9bf4306b5020", 1.00);
+        }
+        
+        [Test]
+        public void Test_IfAsFunctionobject_3483()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\IfAsFunctionobject_3483.dyn");
+
+            AssertPreviewValue("80d14b69-4796-48c9-a34d-f447abf7b5ba", new object[] {1,1,new double[]{-2,-1,0,1,2},1,1});
+        }
+        
+        [Test]
+        public void Test_IfOutputFunctionObject_3483()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\IfOutputCustomFunction_3483.dyn");
+
+            AssertPreviewValue("dace0b8c-381e-4de5-824d-c1651ec94bc6", new bool[] { true, true, true, false, false });
+        }
+        
+        [Test]
+        public void Test_If_CustomNode_4058()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\Test_IfINCustomNode_4058.dyn");
+
+            AssertPreviewValue("4c70f814-5c42-4fb9-89b0-b3cfe6f93b6d", 6.00);
+        }
+        [Test]
+        public void TestSingleIFRecusion_4058()
+        {
+            var model = ViewModel.Model;
+            Assert.Inconclusive("Single IF Recursion ");
+
+            RunModel(@"core\dsevaluation\TestSingleIFRecusion_4058.dyn");
+
+            AssertPreviewValue("4c70f814-5c42-4fb9-89b0-b3cfe6f93b6d", 4);
+            
+        }
+        [Test]
+        public void TestMultipleIFCN_4058()
+        {
+            var model = ViewModel.Model;
+            
+
+            RunModel(@"core\dsevaluation\testMultipleIFCN_4058.dyn");
+
+            AssertPreviewValue("201866a4-e368-41e9-8264-bf4d8fb65ed1", 10);
+
+        }
+        [Test]
+        public void TestMultipleIFRecursion_4058()
+        {
+            var model = ViewModel.Model;
+            Assert.Inconclusive("MultipleIF Recursion ");
+
+            RunModel(@"core\dsevaluation\testMultipleIFRecursion_4058.dyn");
+
+            AssertPreviewValue("201866a4-e368-41e9-8264-bf4d8fb65ed1", new double []{ 1,1,2,3,5});
+
+        }
+        [Test]
+        public void TestNestedIFNORecursion_4058()
+        {
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\TestNestedIfNoRecursion_4058.dyn");
+
+            AssertPreviewValue("f7f34898-2eb3-48fb-9a65-6084446dfbd0", 11);
+
+        }
+        [Test]
+        public void TestNestedIFRecursion_4058()
+        {
+            var model = ViewModel.Model;
+            Assert.Inconclusive("MultipleIF Recursion ");
+
+            RunModel(@"core\dsevaluation\NestedIFRecursion_4058.dyn");
+
+            AssertPreviewValue("2a09f286-b0fe-443a-be87-591f5c6e9264", "Odd");
+
+        }
+        [Test]
+        public void NestedIFRecursionMultiple_4058()
+        {
+            
+            var model = ViewModel.Model;
+            Assert.Inconclusive("MultipleIF Recursion");
+
+            RunModel(@"core\dsevaluation\NestedIFRecursionMultiple_4058.dyn");
+
+            AssertPreviewValue("e6a9eec4-a18d-437d-8779-adfd6141bf19", 9);
+
+        }
+       
+        
     }
 
     [Category("DSCustomNode")]
@@ -892,7 +1073,6 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWithCBNAndGeometry()
         {
-            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
@@ -900,23 +1080,17 @@ namespace Dynamo.Tests
                 != null);
 
             string openPath = Path.Combine(examplePath, "TestCentroid.dyn");
-            //model.Open(openPath);
 
             RunModel(openPath);
 
-            // check all the nodes and connectors are loaded
-                       
-            
-            AssertPreviewValue("6542259f-b7c2-4a09-962b-7712ca269306", 0.00);
-            AssertValue("x", 5.5);
-            AssertValue("y", 3.0);
-            AssertValue("z", 0.0);
+            AssertPreviewValue("6ad5aa92-b3f5-492f-aa7c-4ae307587967", 5.5);
+            AssertPreviewValue("7095a283-62e8-4f95-b1bf-f8919b700c96", 3.0);
+            AssertPreviewValue("7a4b9510-c64c-48cb-81c7-24616cec56fc", 0.0);
         }
 
         [Test]
         public void CustomNodeMultipleInGraph()
         {
-            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             var dyfPath = Path.Combine(examplePath, "Poly.dyf");
@@ -924,10 +1098,9 @@ namespace Dynamo.Tests
 
             RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
 
-            AssertPreviewValue("6542259f-b7c2-4a09-962b-7712ca269306", 0.00);
-            AssertValue("x", 5.5);
-            AssertValue("y", 3.0);
-            AssertValue("z", 0.0);
+            AssertPreviewValue("8453b5c7-2efc-4ff2-a8f3-7c376d22c240", 5.5);
+            AssertPreviewValue("a9868848-0443-431b-bedd-9f63c25157e0", 3.0);
+            AssertPreviewValue("9b569c4f-1f09-4ffb-a621-d0341f1fe890", 0.0);
         }
 
         [Test]

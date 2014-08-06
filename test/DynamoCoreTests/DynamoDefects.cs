@@ -14,9 +14,6 @@ namespace Dynamo.Tests
         [Test]
         public void T01_Defect_MAGN_110()
         {
-            Assert.Inconclusive("Porting : AngleInput");
-
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_110.dyn");
             RunModel(openPath);
             Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -30,9 +27,6 @@ namespace Dynamo.Tests
         [Test]
         public void Defect_MAGN_942_Equal()
         {
-            Assert.Inconclusive("Porting : Formula");
-
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_Equal.dyn");
             RunModel(openPath);
 
@@ -68,9 +62,6 @@ namespace Dynamo.Tests
         [Test]
         public void Defect_MAGN_942_GreaterThanOrEqual()
         {
-            Assert.Inconclusive("Porting : Formula");
-
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_GreaterThanOrEqual.dyn");
             RunModel(openPath);
 
@@ -99,9 +90,6 @@ namespace Dynamo.Tests
         [Test]
         public void Defect_MAGN_942_LessThanOrEqual()
         {
-            Assert.Inconclusive("Porting : Formula");
-
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_LessThanOrEqual.dyn");
             RunModel(openPath);
 

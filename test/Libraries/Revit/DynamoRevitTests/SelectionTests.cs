@@ -52,8 +52,6 @@ namespace Dynamo.Tests
             //greater than what is possible
             typeSelNode.SelectedIndex = count + 5;
             Assert.AreEqual(typeSelNode.SelectedIndex, -1);
-
-            //Assert.Inconclusive("Porting : FamilyTypeSelector");
         }
 
         [Test]
@@ -74,8 +72,6 @@ namespace Dynamo.Tests
 
             var selNodes = model.AllNodes.Where(x => x is DSElementSelection || x is DSModelElementsSelection);
             Assert.IsFalse(selNodes.Any(x => x.CachedValue == null));
-
-            //Assert.Inconclusive("Porting : MultipleElementSelectionBase");
         }
     }
 }

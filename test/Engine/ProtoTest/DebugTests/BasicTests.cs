@@ -3122,7 +3122,7 @@ a =
             Assert.IsTrue((Int64)startCharNo == 0);
         }
 
-        [Test, Ignore]
+        [Test]
         [Category("Debugger")]
         public void TestStepNextClass()
         {
@@ -3151,13 +3151,14 @@ a = p.x;
             Obj o = vms.mirror.GetDebugValue("p");
             string type = vms.mirror.GetType("p");
 
-
-            // Step
-            vms = fsr.StepOver();
+            Assert.IsTrue(type == "V");
 
             // Second var
             o = vms.mirror.GetDebugValue("a");
             type = vms.mirror.GetType("a");
+
+            Assert.IsTrue((Int64)o.Payload == 10);
+            Assert.IsTrue(type == "int");
         }
 
         [Test]
@@ -7801,41 +7802,6 @@ x = 10;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
-        public void TestFFIDebugging1()
-        {
-            String code =
-            @"
-import (""ProtoGeometry.dll"");
-
-WCS = CoordinateSystem.Identity();
-line1 = Line.ByStartPointEndPoint(Point.ByCartesianCoordinates(WCS, 5.0 , 5.0, 0.0), Point.ByCartesianCoordinates(WCS, 10.0 , 5.0, 0.0));
-line1.Color = Color.Red;
-x = line1.Color;
-            ";
-
-            fsr.PreStart(code, runnerConfig);
-            fsr.Step();
-
-            fsr.Step();
-            DebugRunner.VMState vms = fsr.Step();
-            Obj o = vms.mirror.GetDebugValue("WCS");
-            Assert.AreEqual("CoordinateSystem", vms.mirror.GetType(o));
-
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("line1");
-            Assert.AreEqual("Line", vms.mirror.GetType(o));
-
-            fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("x");
-            Assert.AreEqual("Color", vms.mirror.GetType(o));
-        }
-
-        [Test]
         [Category("Debugger")]
         public void TestFFISetPropertyImperative()
         {
@@ -10921,14 +10887,14 @@ b = 2;";
             fsr.PreStart(
                  @"
         import(""ProtoGeometry.dll"");
-        WCS = CoordinateSystem.Identity();
-        testSolid = Sphere.ByCenterPointRadius(WCS.Origin, 10.3);
-        testPlaneX = Plane.ByOriginNormal(WCS.Origin, WCS.XAxis, 40);
+        origin = Point.ByCoordinates(0,0,0);
+        testSolid = Sphere.ByCenterPointRadius(origin, 10.3);
+        testPlaneX = Plane.ByOriginNormal(origin, Vector.ByCoordinates(1,0,0));
         intersectCurveX = testSolid.Intersect(testPlaneX);
-        testPlaneY = Plane.ByOriginNormal(WCS.Origin, WCS.YAxis, 40);
+        testPlaneY = Plane.ByOriginNormal(origin, Vector.ByCoordinates(0,1,0));
         //Returns 2 arcs, expect 1 circle 
         onlyintersectCurveY = testSolid.Intersect(testPlaneY);
-        testPlaneZ = Plane.ByOriginNormal(WCS.Origin, WCS.ZAxis, 40); //Returns 1 circle 
+        testPlaneZ = Plane.ByOriginNormal(origin, Vector.ByCoordinates(0,0,1)); //Returns 1 circle 
         nowintersectCurveZ = testSolid.Intersect(testPlaneZ);
             ", runnerConfig);
             DebugRunner.VMState vms = fsr.StepOver();
@@ -10959,9 +10925,9 @@ b = 2;";
             fsr.PreStart(
                  @"
         import(""ProtoGeometry.dll"");
-        WCS = CoordinateSystem.Identity();
-        testSolid = Sphere.ByCenterPointRadius(WCS.Origin, 10.3);
-        testPlaneX = Plane.ByOriginNormal(WCS.Origin, WCS.XAxis, 40);
+        origin = Point.ByCoordinates(0,0,0);
+        testSolid = Sphere.ByCenterPointRadius(origin, 10.3);
+        testPlaneX = Plane.ByOriginNormal(origin, Vector.ByCoordinates(1,0,0));
         intersectCurveX = testSolid.Intersect(testPlaneX);
         def foo()
         {
@@ -10969,10 +10935,10 @@ b = 2;";
             b = 5;
             c = 6;
     
-            testPlaneY = Plane.ByOriginNormal(WCS.Origin, WCS.YAxis, 40);
+            testPlaneY = Plane.ByOriginNormal(origin,  Vector.ByCoordinates(0,1,0));
         //Returns 2 arcs, expect 1 circle 
             onlyintersectCurveY = testSolid.Intersect(testPlaneY);
-            testPlaneZ = Plane.ByOriginNormal(WCS.Origin, WCS.ZAxis, 40); //Returns 1 circle 
+            testPlaneZ = Plane.ByOriginNormal(origin,  Vector.ByCoordinates(0,0,1)); //Returns 1 circle 
             nowintersectCurveZ = testSolid.Intersect(testPlaneZ);
 return = a;
         }
@@ -10992,7 +10958,7 @@ return = a;
             // It should not be available.
             Assert.AreEqual(10.3, (Double)objExecVal.Payload);
             watchRunner = new ExpressionInterpreterRunner(core);
-            ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.Centroid.X");
+            ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.CenterPoint.X");
             Obj objExecVal11 = mirror11.GetWatchValue();
 
 
@@ -11004,13 +10970,9 @@ return = a;
             vms = fsr.Step();
             vms = fsr.Step();
 
-
-
-
             watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror2 = watchRunner.Execute(@"a");
             Obj objExecVal2 = mirror2.GetWatchValue();
-
 
             // It should not be available.
             Assert.AreEqual(4, (Int64)objExecVal2.Payload);
@@ -11031,8 +10993,8 @@ return = a;
             // It should not be available.
             Assert.AreEqual(4, (Int64)objExecVal3.Payload);
 
-
         }
+
         [Test]
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
         public void Testdotproperty_523_4()
@@ -11044,9 +11006,9 @@ return = a;
         [Imperative]
         {
 
-            WCS = CoordinateSystem.Identity();
-            testSolid = Sphere.ByCenterPointRadius(WCS.Origin, 10.3);
-            testPlaneX = Plane.ByOriginNormal(WCS.Origin, WCS.XAxis, 40);
+            origin = Point.ByCoordinates(0,0,0);
+            testSolid = Sphere.ByCenterPointRadius(origin, 10.3);
+            testPlaneX = Plane.ByOriginNormal(origin, Vector.ByCoordinates(1,0,0));
             intersectCurveX = testSolid.Intersect(testPlaneX);
         
             def foo()
@@ -11055,10 +11017,10 @@ return = a;
                 b = 5;
                 c = 6;
     
-                testPlaneY = Plane.ByOriginNormal(WCS.Origin, WCS.YAxis, 40);
+                testPlaneY = Plane.ByOriginNormal(origin, Vector.ByCoordinates(0,1,0));
                 //Returns 2 arcs, expect 1 circle 
                 onlyintersectCurveY = testSolid.Intersect(testPlaneY);
-                testPlaneZ = Plane.ByOriginNormal(WCS.Origin, WCS.ZAxis, 40); //Returns 1 circle 
+                testPlaneZ = Plane.ByOriginNormal(origin, Vector.ByCoordinates(0,0,1)); //Returns 1 circle 
                 nowintersectCurveZ = testSolid.Intersect(testPlaneZ);
                 return = a;
             }
@@ -11079,7 +11041,7 @@ return = a;
             // It should not be available.
             Assert.AreEqual(10.3, (Double)objExecVal.Payload);
             watchRunner = new ExpressionInterpreterRunner(core);
-            ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.Centroid.X");
+            ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.CenterPoint.X");
 
             Obj objExecVal11 = mirror11.GetWatchValue();
 
@@ -11125,9 +11087,9 @@ return = a;
         [Imperative]
         {
 
-            WCS = CoordinateSystem.Identity();
-            testSolid = Sphere.ByCenterPointRadius(WCS.Origin, 10.3);
-            testPlaneX = Plane.ByOriginNormal(WCS.Origin, WCS.XAxis, 40);
+            origin = Point.ByCoordinates(0,0,0);
+            testSolid = Sphere.ByCenterPointRadius(origin, 10.3);
+            testPlaneX = Plane.ByOriginNormal(origin, Vector.ByCoordintes(1,0,0));
             intersectCurveX = testSolid.Intersect(testPlaneX);
         
             def foo()
@@ -11136,10 +11098,10 @@ return = a;
                 b = 5;
                 c = 6;
     
-                testPlaneY = Plane.ByOriginNormal(WCS.Origin, WCS.YAxis, 40);
+                testPlaneY = Plane.ByOriginNormal(origin, Vector.ByCoordintes(0,1,0));
                 //Returns 2 arcs, expect 1 circle 
                 onlyintersectCurveY = testSolid.Intersect(testPlaneY);
-                testPlaneZ = Plane.ByOriginNormal(WCS.Origin, WCS.ZAxis, 40); //Returns 1 circle 
+                testPlaneZ = Plane.ByOriginNormal(origin, Vector.ByCoordintes(0,0,1)); //Returns 1 circle 
                 nowintersectCurveZ = testSolid.Intersect(testPlaneZ);
                 return = a;
             }
@@ -11160,7 +11122,7 @@ return = a;
             // It should not be available.
             Assert.AreEqual(10.3, (Double)objExecVal.Payload);
             watchRunner = new ExpressionInterpreterRunner(core);
-            ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.Centroid.X");
+            ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.CenterPoint.X");
 
             Obj objExecVal11 = mirror11.GetWatchValue();
 
@@ -12597,17 +12559,14 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
             fsr.PreStart(
  @"
 import(""ProtoGeometry.dll"");
-import(""DSCoreNodes.dll"");
-
-WCS = CoordinateSystem.Identity( );
 
 p = 0..10..#5;
 isPass5 = Count ( p ) == 5 ? true : false ; // verification
 
-startPts = Point.ByCartesianCoordinates( WCS, p, 0, 0 );
+startPts = Point.ByCoordinates(p, 0, 0 );
 isPass6 = Count ( startPts ) == 5 ? true : false ; // verification
 
-endPts = Count(p) >= 1 ? Point.ByCartesianCoordinates( WCS, 0, p, 0 ) : Point.ByCartesianCoordinates( WCS, 0, 0, 0 ); // => at this line, the debugging stops !
+endPts = Count(p) >= 1 ? Point.ByCoordinates(0, p, 0 ) : Point.ByCoordinates(0, 0, 0 ); // => at this line, the debugging stops !
 
 isPass7 = Count ( endPts ) == 5 ? true : false ; // verification
 
@@ -14829,74 +14788,6 @@ myNeTwst = myTest.Transform(1);
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
-        public void Defect_711_debug_GC_array_itemmodified()
-        {
-            string src = @" 
-import(""ProtoGeometry.dll"");
-WCS = CoordinateSystem.Identity();
-class SphereCone
-{
-    shape;
-    constructor(x, y, z, size)
-    {
-        Origin = Point.ByCoordinates(x, y, z);
-        shape = {
-            Sphere.ByCenterPointRadius(Origin, size * 0.25),
-            Cone.ByCenterLineRadius(Line.ByStartPointDirectionLength(Origin, CoordinateSystem.WCS.ZAxis, -size), size * 0.01, size * 0.5)
-        };
-    }
-}
-
-xs = -12..12..12;    // xs = {-12, 0, 12}
-sizes = 2..2..#Count(xs); //
-shapes = SphereCone(xs, 10, 0, sizes);
-xs = -12..12..6;
-
-[Imperative]
-{
-    for(index in 0..4) 
-    {
-        sizes[index] = index + 1;
-    }
-}
-
-shapes[2] = Sphere.ByCenterPointRadius(WCS.Origin, 1);
-";
-
-            fsr.PreStart(src, runnerConfig);
-            DebugRunner.VMState vms = fsr.Step();   // myTest = Test.FirstApproach({ 1, 2 }); 
-
-            ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
-            {
-                LineNo = 29,
-                CharNo = 5
-            };
-
-            fsr.ToggleBreakpoint(cp);
-
-            fsr.Run();  // closing brace of Transform()            
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
-            ExecutionMirror mirror = watchRunner.Execute(@"shapes");
-            Obj objExecVal = mirror.GetWatchValue();
-            Assert.AreNotEqual(null, objExecVal);
-            Assert.AreNotEqual(null, objExecVal.Payload);
-            List<Obj> lo = vms.mirror.GetArrayElements(objExecVal);
-            string type1 = vms.mirror.GetType(lo[0]);
-            string type2 = vms.mirror.GetType(lo[1]);
-            string type3 = vms.mirror.GetType(lo[2]);
-            string type4 = vms.mirror.GetType(lo[3]);
-            string type5 = vms.mirror.GetType(lo[4]);
-            Assert.IsTrue(type1 == "SphereCone");
-            Assert.IsTrue(type2 == "SphereCone");
-            Assert.IsTrue(type3 == "Sphere");
-            Assert.IsTrue(type4 == "SphereCone");
-            Assert.IsTrue(type5 == "SphereCone");
-
-        }
-
-        [Test]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionForFFIProperty()
         {
@@ -15925,52 +15816,6 @@ x = add(y);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
-        }
-
-        //Test the support of Replication Guides, relates to IDE-492
-        [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
-        public void UseCaseTesting_Range_expression_with_replication_guide_1()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
-@"
-import(""ProtoGeometry.dll"");
-WCS = CoordinateSystem.Identity(); // setup world coordinatesystem
-// single step through these instructions
-// each change to points should force a re-execution of line 9
-
-points = Point.ByCartesianCoordinates(WCS, (1..5)<1>, (1..6)<2>, 0);
-p00 = points[0][0].X;
-
-", runnerConfig);
-
-            DebugRunner.VMState vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            Obj o = vms.mirror.GetDebugValue("points");
-            string type = vms.mirror.GetType("points");
-
-
-            Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
-            List<Obj> llo = vms.mirror.GetArrayElements(lo[0]);
-            type = vms.mirror.GetType(llo[0]);
-
-            Assert.IsTrue(type == "Point");
-
-            vms = fsr.Step();
-            Obj p = vms.mirror.GetDebugValue("p00");
-            Assert.IsTrue(llo.Count == 6);
-
-            //Dictionary<string, Obj> os_0 = vms.mirror.GetProperties(p);
-            Assert.IsTrue((double)p.Payload == 1.0);
-            //Assert.IsTrue((double)os_0["X"].Payload == 1.0);
-            //Assert.IsTrue((double)os_0["Y"].Payload == 1.0);
-            //Assert.IsTrue((double)os_0["Z"].Payload == 0);
-
         }
 
         //To test the update order issue in assoc. code, relates to DNL-1467407

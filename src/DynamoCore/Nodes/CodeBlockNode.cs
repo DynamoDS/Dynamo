@@ -3,20 +3,16 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Core;
+
 using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
-using System.Windows.Media;
-using System.Windows;
-using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {

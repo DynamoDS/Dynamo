@@ -34,7 +34,7 @@ namespace DSCore
                         ? AstFactory.BuildFunctionObject(
                             "__Map",
                             2,
-                            new[] { 0, 1 }.Where(HasConnectedInput),
+                            new[] { 0, 1 }.Where(HasConnectedInput).Select(x => 1 - x),
                             Enumerable.Reverse(inputAstNodes).ToList())
                         : AstFactory.BuildFunctionCall("__Map", Enumerable.Reverse(inputAstNodes).ToList()))
             };

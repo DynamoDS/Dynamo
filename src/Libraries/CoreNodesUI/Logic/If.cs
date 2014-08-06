@@ -67,7 +67,7 @@ namespace DSCoreNodesUI.Logic
                     FalseExpression = inputAstNodes[2]
                 };
             }
-            
+
             return new[]
             {
                 AstFactory.BuildAssignment(lhs, rhs)

@@ -6,6 +6,7 @@ using RTF.Framework;
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using Dynamo.Nodes;
+using DSRevitNodesTests;
 
 namespace Dynamo.Tests
 {
@@ -178,7 +179,7 @@ namespace Dynamo.Tests
 
         [Test]
         [TestModel(@".\empty.rfa")]
-        public void Defect_MAGN_3784()
+        public void MAGN_3784()
         {
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3784
@@ -213,7 +214,7 @@ namespace Dynamo.Tests
 
             refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
             Assert.IsNotNull(refPt);
-            Assert.AreEqual(10, refPt.X);
+            (10.0).ShouldBeApproximately(refPt.X);
 
             RunCurrentModel();
 
@@ -223,7 +224,7 @@ namespace Dynamo.Tests
             AssertPreviewCount(selectElementType, 1);
 
             Assert.IsNotNull(refPt1);
-            Assert.AreEqual(10, refPt1.X);
+            (10.0).ShouldBeApproximately(refPt1.X, 1.0e-6);
 
         }
     }
