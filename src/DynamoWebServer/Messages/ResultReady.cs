@@ -10,7 +10,7 @@ namespace DynamoWebServer.Messages
     public class ResultReadyEventArgs : EventArgs
     {
         public Response Response { get; private set; }
-        public string SessionId { get; set; }
+        public string SessionId { get; private set; }
 
         public ResultReadyEventArgs(Response response)
         {
