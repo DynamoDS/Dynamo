@@ -565,7 +565,7 @@ def foo(x, y, z)
 }
 
 param = { 2, 3, 4 };
-x = Evaluate(foo, param);
+x = Evaluate(foo, param, true);
 ";           
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 9); 
@@ -587,7 +587,7 @@ def foo(x, y)
 }
 
 param = { 2, 3, 4 };
-x = Evaluate(foo, param);
+x = Evaluate(foo, param, true);
 param = { 5, 6 };
 ";           
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -611,7 +611,7 @@ def bar(x, y, z)
 
 t = foo;
 param = { 2, 3, 4 };
-x = Evaluate(t, param);
+x = Evaluate(t, param, true);
 t = bar;
 ";           
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -635,7 +635,7 @@ def bar(x, y, z)
 }
 
 param = {2, 3, 4 };
-x = Evaluate({ foo, bar }, param);
+x = Evaluate({ foo, bar }, param, true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 9, 24});
@@ -655,7 +655,7 @@ def foo(x, y, z)
 param = {{2, 3, 4}, {5,6,7}, {8, 9, 10} };
 // e.q. 
 // foo({2,3,4}, {5,6,7}, {8, 9, 10});
-x = Evaluate(foo, param);
+x = Evaluate(foo, param, true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 15, 18, 21 });
@@ -677,7 +677,7 @@ def foo(f : function, x, y)
     return = f(x, y);
 }
 
-x = Evaluate(foo, { bar, 2, 3 });
+x = Evaluate(foo, { bar, 2, 3 }, true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 6);
@@ -696,15 +696,15 @@ def multiplyBy2(z)
 
 def bar(y, z)
 {
-    return = y * Evaluate(multiplyBy2, { z });
+    return = y * Evaluate(multiplyBy2, { z }, true);
 }
 
 def foo(x, y, z)
 {
-    return = x + Evaluate(bar, { y, z });
+    return = x + Evaluate(bar, { y, z }, true);
 }
 
-x = Evaluate(foo, { 2, 3, 4 });
+x = Evaluate(foo, { 2, 3, 4 }, true);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 26);
@@ -728,7 +728,7 @@ def f2(x)
 
 def foo(evalFunction : function, fptr : function, param : var[])
 {
-    return = evalFunction(fptr, param);
+    return = evalFunction(fptr, param, true);
 }
 
 x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
@@ -756,7 +756,7 @@ class Foo
     
     def DoEvaluate()
     {
-        return = Evaluate(fptr, params);
+        return = Evaluate(fptr, params, true);
     }
 }
 
@@ -794,7 +794,7 @@ def foo(x)
         }
         else
         {
-            return = x * Evaluate(foo, { x - 1 });
+            return = x * Evaluate(foo, { x - 1 }, true);
         }
     }
 }
