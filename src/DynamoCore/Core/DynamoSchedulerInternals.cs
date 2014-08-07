@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Dynamo.Core
@@ -10,7 +8,7 @@ namespace Dynamo.Core
     {
         #region TimeStampGenerator Nested Class
 
-        class TimeStampGenerator
+        sealed class TimeStampGenerator
         {
             private long timeStampValue = 1024;
             private readonly object timeStampMutex = new object();
@@ -19,12 +17,7 @@ namespace Dynamo.Core
             {
                 get
                 {
-                    lock (timeStampMutex)
-                    {
-                        long value = timeStampValue;
-                        timeStampValue = timeStampValue + 1;
-                        return value;
-                    }
+                    lock (timeStampMutex) { return timeStampValue++; }
                 }
             }
         }
@@ -33,20 +26,20 @@ namespace Dynamo.Core
 
         #region Private Class Data Members
 
-        private enum EventIndex : int
+        private enum EventIndex
         {
             TaskAvailable, Shutdown
         }
 
-        private ManualResetEvent[] waitHandles = new ManualResetEvent[]
+        private readonly ManualResetEvent[] waitHandles =
         {
             new ManualResetEvent(false), // Task available event
             new ManualResetEvent(false)  // Scheduler shutdown event
         };
 
-        private bool taskQueueUpdated = false;
-        private List<AsyncTask> taskQueue = new List<AsyncTask>();
-        private TimeStampGenerator timeStamp = new TimeStampGenerator();
+        private bool taskQueueUpdated;
+        private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
+        private readonly TimeStampGenerator timeStamp = new TimeStampGenerator();
 
         #endregion
 
@@ -57,7 +50,7 @@ namespace Dynamo.Core
             lock (taskQueue)
             {
                 taskQueue.Add(asyncTask);
-                asyncTask.TaskScheduled(); // Update internal time-stamp.
+                asyncTask.MarkTaskAsScheduled(); // Update internal time-stamp.
                 taskQueueUpdated = true; // Mark task queue as being updated.
 
                 // Signal task availability so scheduler picks it up.
@@ -75,11 +68,12 @@ namespace Dynamo.Core
             // TODO: Add queue re-ordering codes here.
         }
 
-        private void ProcessTaskInternal(AsyncTask asyncTask)
+        private static void ProcessTaskInternal(AsyncTask asyncTask)
         {
             try
             {
                 asyncTask.Execute(); // Internally sets the ExecutionStartTime
+                asyncTask.HandleTaskCompletion(null); // Completed successfully.
             }
             catch (Exception exception)
             {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dynamo.Core
 {
@@ -9,9 +6,8 @@ namespace Dynamo.Core
     {
         #region Private Class Data Members
 
-        private Exception exception = null;
-        private DynamoScheduler scheduler = null;
-        private Action<AsyncTask> callback = null;
+        private readonly DynamoScheduler scheduler;
+        private readonly Action<AsyncTask> callback;
 
         #endregion
 
@@ -32,7 +28,7 @@ namespace Dynamo.Core
 
             this.scheduler = scheduler;
             this.callback = callback;
-            this.CreationTime = scheduler.NextTimeStamp;
+            CreationTime = scheduler.NextTimeStamp;
         }
 
         /// <summary>
@@ -41,15 +37,15 @@ namespace Dynamo.Core
         /// internally by the DynamoScheduler.
         /// </summary>
         /// 
-        internal void TaskScheduled()
+        internal void MarkTaskAsScheduled()
         {
-            if (this.ScheduledTime != 0)
+            if (ScheduledTime != 0)
             {
-                var message = "Task cannot be scheduled twice";
+                const string message = "Task cannot be scheduled twice";
                 throw new InvalidOperationException(message);
             }
 
-            this.ScheduledTime = scheduler.NextTimeStamp;
+            ScheduledTime = scheduler.NextTimeStamp;
         }
 
         /// <summary>
@@ -61,8 +57,8 @@ namespace Dynamo.Core
         /// 
         internal void Execute()
         {
-            this.ExecutionStartTime = scheduler.NextTimeStamp;
-            this.ExecuteCore();
+            ExecutionStartTime = scheduler.NextTimeStamp;
+            ExecuteCore();
         }
 
         /// <summary>
@@ -74,13 +70,13 @@ namespace Dynamo.Core
         /// 
         internal void HandleTaskCompletion(Exception exception)
         {
-            this.ExecutionEndTime = scheduler.NextTimeStamp;
-            this.exception = exception;
-            this.HandleTaskCompletionCore();
+            ExecutionEndTime = scheduler.NextTimeStamp;
+            Exception = exception;
+            HandleTaskCompletionCore();
 
             // If exists, the registered callback Action is invoked.
-            if (this.callback != null)
-                this.callback(this);
+            if (callback != null)
+                callback(this);
         }
 
         #endregion
@@ -91,7 +87,7 @@ namespace Dynamo.Core
         internal long ScheduledTime { get; private set; }
         internal long ExecutionStartTime { get; private set; }
         internal long ExecutionEndTime { get; private set; }
-        internal Exception Exception { get { return this.exception; } }
+        internal Exception Exception { get; private set; }
 
         #endregion
 

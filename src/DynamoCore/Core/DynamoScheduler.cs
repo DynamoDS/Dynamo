@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 
 namespace Dynamo.Core
 {
@@ -13,7 +9,7 @@ namespace Dynamo.Core
         /// <summary>
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
-        internal long NextTimeStamp { get { return this.timeStamp.Next; } }
+        internal long NextTimeStamp { get { return timeStamp.Next; } }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 
@@ -60,15 +56,16 @@ namespace Dynamo.Core
 
             if (nextTask != null)
             {
-                this.ProcessTaskInternal(nextTask);
+                ProcessTaskInternal(nextTask);
                 return true; // This method should be called again.
             }
 
             // If there's no more task and wait is not desired...
-            if (waitIfTaskQueueIsEmpty == false)
+            if (!waitIfTaskQueueIsEmpty)
                 return false; // The task queue is now empty.
 
             // Block here if ISchedulerThread requests to wait.
+            // ReSharper disable once CoVariantArrayConversion
             int index = WaitHandle.WaitAny(waitHandles);
 
             // If a task becomes available, this method returns true to indicate 
@@ -76,7 +73,7 @@ namespace Dynamo.Core
             // of the ISchedulerThread's implementation). In the event that the 
             // scheduler is shutting down, then this method returns false.
             // 
-            return ((index == ((int)EventIndex.TaskAvailable)) ? true : false);
+            return (index == ((int)EventIndex.TaskAvailable));
         }
 
         #endregion
