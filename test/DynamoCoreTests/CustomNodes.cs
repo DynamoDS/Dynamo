@@ -361,23 +361,9 @@ namespace Dynamo.Tests
             Thread.Sleep(500);
 
             // check the output values are correctly computed
-            var watch =
-                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-                    "157557d2-2452-413a-9944-1df3df793cee");
-            var doubleWatchVal = watch.CachedValue;
-            Assert.AreEqual(15, doubleWatchVal);
-
-            var watch2 =
-                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-                    "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
-            var doubleWatchVal1 = watch2.CachedValue;
-            Assert.AreEqual(15, doubleWatchVal1);
-
-            var watch3 =
-                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-                    "1aca382d-ca81-4955-a6c1-0f549df19fd7");
-            var doubleWatchVal2 = watch3.CachedValue;
-            Assert.AreEqual(15, doubleWatchVal2);
+            AssertPreviewValue("157557d2-2452-413a-9944-1df3df793cee", 15.0);
+            AssertPreviewValue("068dd555-a5d5-4f11-af05-e4fa0cc015c9", 15.0);
+            AssertPreviewValue("1aca382d-ca81-4955-a6c1-0f549df19fd7", 15.0);
         }
 
         [Test]
