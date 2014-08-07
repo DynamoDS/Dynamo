@@ -5821,14 +5821,15 @@ namespace ProtoAssociative
                 localProcedure.name = funcDef.Name;
                 localProcedure.pc = ProtoCore.DSASM.Constants.kInvalidIndex;
                 localProcedure.localCount = 0; // Defer till all locals are allocated
-                localProcedure.returntype.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
+                var uid = core.TypeSystem.GetType(funcDef.ReturnType.Name);
+                var rank = funcDef.ReturnType.rank;
+                localProcedure.returntype = core.TypeSystem.BuildTypeObject(uid, rank); 
                 if (localProcedure.returntype.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.BuildData.WarningMessage.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, guid);
                     localProcedure.returntype.UID = (int)PrimitiveType.kTypeVar;
                 }
-                localProcedure.returntype.rank = funcDef.ReturnType.rank;
                 localProcedure.isConstructor = false;
                 localProcedure.isStatic = funcDef.IsStatic;
                 localProcedure.runtimeIndex = codeBlock.codeBlockId;
