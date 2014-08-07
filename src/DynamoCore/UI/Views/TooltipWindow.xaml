@@ -13,8 +13,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-            <controls:EmtpyListToNone x:Key="EmtpyListToNone" />
-            <controls:InputParameterToColon x:Key="InputParameterToColon" />
             <controls:InputParameterTypeConverter x:Key="InputParameterTypeConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -57,7 +55,7 @@
                            Foreground="#50b5a3"
                            Margin="0,3,0,0" />
                 <ListBox x:Name="input"
-                         ItemsSource="{Binding InputParametrs, Converter={StaticResource EmtpyListToNone}}"
+                         ItemsSource="{Binding InputParametrs}"
                          Grid.Row="2"
                          Grid.ColumnSpan="3"
                          Background="Transparent"
@@ -78,14 +76,12 @@
                             <TextBlock FontSize="13"
                                        Margin="-1">
                             <Run Foreground="#cccccc"
-                                 Text="{Binding Item1, Mode=OneWay}" />
-                            <Run Foreground="#777777"
-                                 Text="{Binding Item1, Mode=OneWay, Converter={StaticResource InputParameterToColon}}" />
+                                 Text="{Binding Item1, Mode=OneWay}" /> 
                             <Run Foreground="#777777">
                                 <Run.Text>
                                 <Binding Path="Item2"
                                          Mode="OneWay"
-                                         Converter="{StaticResource InputParameterTypeConverter}" />
+                                         Converter="{StaticResource InputParameterTypeConverter}" ConverterParameter="true"/>
                                 </Run.Text>
                             </Run>
                             </TextBlock>
@@ -99,11 +95,16 @@
                            Foreground="#50b5a3"
                            Margin="0,10,0,0" />
                 <TextBlock Name="output"
-                           Text="{Binding Path=OutputParametrs, Converter={StaticResource InputParameterTypeConverter}}"
                            Grid.Row="4"
                            Grid.ColumnSpan="3"
                            FontSize="13"
-                           Foreground="#777777" />
+                           Foreground="#777777">
+                    <TextBlock.Text>
+                        <Binding Path="OutputParametrs"
+                                 Mode="OneWay"
+                                 Converter="{StaticResource InputParameterTypeConverter}"/>
+                    </TextBlock.Text>
+                </TextBlock>
 
                 <Image Grid.Row="0"
                        Grid.Column="2"

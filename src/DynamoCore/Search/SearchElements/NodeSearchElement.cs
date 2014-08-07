@@ -51,7 +51,19 @@ namespace Dynamo.Search.SearchElements
         public override string Description { get { return _description; } }
 
         private IEnumerable<Tuple<string, string>> _inputParametrs;
-        public IEnumerable<Tuple<string, string>> InputParametrs { get { return _inputParametrs; } }
+        public IEnumerable<Tuple<string, string>> InputParametrs 
+        { 
+            get 
+            {
+                if (_inputParametrs==null)
+                {
+                    List<Tuple<string, string>> list = new List<Tuple<string, string>>();
+                    list.Add(Tuple.Create<string, string>("","none"));
+                    return list;
+                }
+                    return _inputParametrs;
+            } 
+        }
 
         private string _outputParametrs;
         public string OutputParametrs { get { return _outputParametrs; } }

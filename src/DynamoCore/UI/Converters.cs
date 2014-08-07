@@ -1605,61 +1605,37 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            throw new NotImplementedException();
         }
     }
 
-    public class EmtpyListToNone : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-            {
-                List<Tuple<string, string>> list = new List<Tuple<string, string>>();
-                list.Add(Tuple.Create<string, string>("","none"));
-                return list;
-            }
-               
-            return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
 
     public class InputParameterTypeConverter : IValueConverter
     {
         private static readonly string NoneString = "none";
+        private static readonly string ColonString = ":";
+        private static readonly string SpaceString = " ";
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            bool shouldPrefixColon = false;
+
+            if(parameter!=null)
+                shouldPrefixColon = ((parameter as string).Equals("true"));
+
             var input = value as string;
-            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
-                return NoneString;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString)) 
+                    return NoneString;
 
-            return input;
+            if (shouldPrefixColon)
+                return String.Concat(ColonString,SpaceString, input);
+            else 
+                return input;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
-        }
-    }
-    public class InputParameterToColon : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (String.IsNullOrEmpty((string)value))
-                return string.Empty;
-
-            return ":";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
+            throw new NotImplementedException();
         }
     }
 }
