@@ -340,7 +340,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
         }
 
-        [Test, Ignore]
+        [Test]
         public void ReduceAndRecursion()
         {
             var model = Controller.DynamoModel;
@@ -364,20 +364,20 @@ namespace Dynamo.Tests
             var watch =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "157557d2-2452-413a-9944-1df3df793cee");
-            var doubleWatchVal = (double)watch.CachedValue;
-            Assert.AreEqual(15.0, doubleWatchVal, 0.001);
+            var doubleWatchVal = watch.CachedValue;
+            Assert.AreEqual(15, doubleWatchVal);
 
             var watch2 =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
-            var doubleWatchVal1 = (double)watch2.CachedValue;
-            Assert.AreEqual(15.0, doubleWatchVal1, 0.001);
+            var doubleWatchVal1 = watch2.CachedValue;
+            Assert.AreEqual(15, doubleWatchVal1);
 
             var watch3 =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "1aca382d-ca81-4955-a6c1-0f549df19fd7");
-            var doubleWatchVal2 = (double)watch3.CachedValue;
-            Assert.AreEqual(15.0, doubleWatchVal2, 0.001);
+            var doubleWatchVal2 = watch3.CachedValue;
+            Assert.AreEqual(15, doubleWatchVal2);
         }
 
         [Test]
