@@ -17,7 +17,6 @@ namespace ProtoTest.DSASM
         }
 
         [Test]
-        [Ignore]
         [Category("StackOverflow")]
         public void StackOverflow_DNL_1467365()
         {
@@ -28,12 +27,14 @@ namespace ProtoTest.DSASM
 
         [Test]
         [Ignore]
-        [Category("StackOverflow")]
+        [Category("StackOverflow"), Category("Failing")]
         public void StackOverflow_DNL_1467354()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4091
+            string err = "MAGN-4091 Stack overflow exception with recursive static function";
             string code =
                 @"class A {static def foo() {return= A.foo(); }}Y = A.foo();";
-            thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code, err);
             thisTest.Verify("Y", null);
         }
     }

@@ -263,9 +263,13 @@ namespace Dynamo.Nodes
 
         void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
-            if (SelectedElement != null && document == selectionOwner && deleted.Contains(SelectedElement))
+            if (SelectedElement != null && document.Equals(selectionOwner) && deleted.Contains(SelectedElement))
             {
                 SelectedElement = null;
+
+                RaisePropertyChanged("SelectedElement");
+                RaisePropertyChanged("SelectionText");
+                RequiresRecalc = true;
             }
         }
 
@@ -681,9 +685,13 @@ namespace Dynamo.Nodes
 
         void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
-            if (SelectedElement != null && document == selectionOwner)
+            if (SelectedElement != null && document.Equals(selectionOwner))
             {
                 SelectedElement = SelectedElement.Where(x => !deleted.Contains(x)).ToList();
+
+                RaisePropertyChanged("SelectedElement");
+                RaisePropertyChanged("SelectionText");
+                RequiresRecalc = true;
             }
         }
 

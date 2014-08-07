@@ -857,7 +857,7 @@ a1 = 5;
         }
         
         */
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         [Category("Cyclic")]
         public void T18_Update_Variables_In_Inner_Assoc()
@@ -3732,9 +3732,10 @@ z2 = z;
             thisTest.Verify("z2", 1);
         }
         [Test, Ignore]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failing")]
         public void T51_Defect_1461388()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
             String code =
  @"
 b = 2;
@@ -3759,14 +3760,10 @@ c = 0;
 }
 c = 10;
 ";
-            string errmsg = "";
+            string errmsg = "MAGN-4094 Runtime Cyclic Dependency not detected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
-            /*
-            thisTest.Verify("a", new Object[] { 2, 2 });
-            thisTest.Verify("b", new Object[] { 3, 3 });
-            thisTest.Verify("c", 10);
-            */
+            
         }
 
         [Test]
@@ -5609,7 +5606,7 @@ b = 0;
             thisTest.Verify("a", 1);
         }
 
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void T73_Cyclic_globalvariable_1467439()
         {

@@ -1,0 +1,20 @@
+<Workspace Version="0.7.1.27937" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d70fab7e-7a2c-495e-a301-0b0797d86118" nickname="factorial" x="691" y="354.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f417d560-7cc1-4ef8-bde1-b821bada91da" />
+      <Name value="factorial" />
+      <Description value="" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="55384fc3-8266-4a43-999a-32f12de8f08a" nickname="Code Block" x="513" y="339" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="6;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="55384fc3-8266-4a43-999a-32f12de8f08a" start_index="0" end="d70fab7e-7a2c-495e-a301-0b0797d86118" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

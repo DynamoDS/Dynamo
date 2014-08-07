@@ -1263,6 +1263,38 @@ r = a[null];
         }
 
         [Test]
+        public void TestDictionary25()
+        {
+            string code = @"
+a = {};
+x = ""key"";
+a[x] = 42;
+
+y = ""key"";
+a[y] = 24;
+
+z = ""key"";
+a[z] = 12;
+
+r1 = a[x];
+r2 = a[y];
+r3 = a[z];
+r4 = a[""key""];
+
+a[""key""] = 1;
+r5 = a[""key""];
+r6 = a[x];
+r7 = a[y];
+r9 = a[z];
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r5", 1);
+            thisTest.Verify("r6", 1);
+            thisTest.Verify("r7", 1);
+            thisTest.Verify("r8", 1);
+        }
+
+        [Test]
         public void TestArrayCopyAssignment01()
         {
             String code = @"a = {1, 2, 3};b[1] = a;b[1][1] = 100;z = a[1];";

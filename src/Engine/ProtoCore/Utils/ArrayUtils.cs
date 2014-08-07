@@ -692,13 +692,16 @@ namespace ProtoCore.Utils
                 }
 
                 StackValue oldValue;
-                if (!he.Dict.TryGetValue(index, out oldValue))
+                GCUtils.GCRetain(value, core);
+                if (he.Dict.TryGetValue(index, out oldValue))
+                {
+                    GCUtils.GCRelease(oldValue, core);
+                }
+                else
                 {
                     oldValue = StackValue.Null;
+                    GCUtils.GCRetain(index, core);
                 }
-
-                GCUtils.GCRetain(index, core);
-                GCUtils.GCRetain(value, core);
                 he.Dict[index] = value;
 
                 return oldValue;

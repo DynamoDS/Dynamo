@@ -32,7 +32,10 @@ namespace Dynamo.Tests
 			string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_invalidInput.dyn");
 			RunModel(testFilePath);
 
-			Assert.Inconclusive("Add assertions");
+            var subList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>
+                ("516c4904-38d8-40d8-b247-7133f33836ce");
+            AssertPreviewValue("516c4904-38d8-40d8-b247-7133f33836ce", new int[] { });
+
 		}
 
 		[Test]
@@ -110,7 +113,10 @@ namespace Dynamo.Tests
 			string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_invalidInput.dyn");
 			RunModel(testFilePath);
 
-			Assert.Inconclusive("Add assertions");
+            var subList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>
+                ("a3f8b65f-2e02-480a-9d41-1139f0b40f07");
+
+            AssertPreviewValue("a3f8b65f-2e02-480a-9d41-1139f0b40f07", new int[] {20});
 		}
 
 		[Test]
@@ -568,8 +574,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void Sort_NumbersfFromDiffInput()
 		{
-			Assert.Inconclusive("Porting : AngleInput");
-
 			var model = dynSettings.Controller.DynamoModel;
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_NumbersfFromDiffInput.dyn");
@@ -2331,70 +2335,6 @@ namespace Dynamo.Tests
 			AssertPreviewValue("6434eb4f-89d9-4b11-8b9b-79ed937e4b24", 1);
 		}
 
-		#endregion
-
-		#region Test Smooth  
-
-		[Test]
-		public void Smooth_SimpleTest()
-		{
-			Assert.Inconclusive();
-			
-			var model = dynSettings.Controller.DynamoModel;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Smooth_SimpleTest.dyn");
-			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
-
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{4,14.242000000000001},
-				{5,15.240000000000002},
-			};
-
-			SelectivelyAssertPreviewValues("e367bd22-e0ef-402e-b6c0-3a7aaee2be63", validationData);
-		}
-
-		[Test]
-		public void Smooth_InputListNode()
-		{
-			Assert.Inconclusive();
-			
-			var model = dynSettings.Controller.DynamoModel;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Smooth_InputListNode.dyn");
-			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
-
-			Dictionary<int, object> validationData = new Dictionary<int, object>()
-			{
-				{0, 54.36},
-				{2,21.816733333333332},
-				{3,37.426796749999994},
-			};
-			SelectivelyAssertPreviewValues("ae41ff44-6f8c-4037-86ad-5ec3b22956a6", validationData);
-		}
-
-		[Test]
-		public void Smooth_NegativeTest()
-		{
-			Assert.Inconclusive();
-			
-			var model = dynSettings.Controller.DynamoModel;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\Smooth_NegativeTest.dyn");
-			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
-		}
 		#endregion
 
 		#region Test Join List -PartiallyDone
