@@ -47,28 +47,6 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public static XDocument GetResourceAssembly(string assemblyPath)
-        {
-            if (_triedPaths.ContainsKey(assemblyPath))
-            {
-                return _triedPaths[assemblyPath] ? _cached[assemblyPath] : null;
-            }
-
-            var documentationPath = "";
-            if (ResolveForAssembly(assemblyPath, ref documentationPath))
-            {
-                var c = XDocument.Load(documentationPath);
-                _triedPaths.Add(assemblyPath, true);
-                _cached.Add(assemblyPath, c);
-                return c;
-            }
-            else
-            {
-                _triedPaths.Add(assemblyPath, false);
-                return null;
-            }
-        }
-
         public static bool ResolveForAssembly(string assemblyLocation, ref string documentationPath)
         {
             DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation);

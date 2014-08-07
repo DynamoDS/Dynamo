@@ -18,6 +18,10 @@ using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
 using Dynamo.Utilities;
 using System.Windows.Media.Imaging;
+using System.Resources;
+using System.Collections;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 #endregion
 
@@ -124,8 +128,11 @@ namespace Dynamo.DSEngine
         ///     A comment describing the Function
         /// </summary>
         private string summary;
+        private string smallIconPostfix = ".Small";
 
-        private BitmapImage iconSmall;
+        private BitmapImage smallIcon;
+        private static Dictionary<string, BitmapImage> _cachedIcons =
+                new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
 
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
             : this(null, null, name, parameters, null, type) 
@@ -223,12 +230,10 @@ namespace Dynamo.DSEngine
             get { return summary ?? (summary = this.GetSummary()); }
         }
 
-        public BitmapImage IconSmall
+        public BitmapImage SmallIcon
         {
-            get { return iconSmall ?? (iconSmall = this.GetIconSmall()); }
-        }
-
-        
+            get { return smallIcon ?? (smallIcon = GetSmallIcon(this)); }
+        } 
 
         /// <summary>
         ///     A comment describing the function along with the signature
@@ -426,6 +431,74 @@ namespace Dynamo.DSEngine
             string filename = Path.GetFileNameWithoutExtension(Assembly);
 
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
+        }
+
+        private BitmapImage GetSmallIcon(FunctionDescriptor member)
+        {
+            var resourceAssemblyPath = "";
+
+            if (_cachedIcons.ContainsKey(member.QualifiedName))
+                return _cachedIcons[member.QualifiedName];
+
+            if(!string.IsNullOrEmpty(member.Assembly))
+                if (ResolveResourceAssembly(member.Assembly, ref resourceAssemblyPath))
+                    {
+                        System.Reflection.Assembly resourcesAssembly = System.Reflection.Assembly.LoadFrom(resourceAssemblyPath);
+
+                        System.IO.Stream stream =
+                            resourcesAssembly.GetManifestResourceStream
+                            (resourcesAssembly.GetManifestResourceNames()[0]);
+
+                        if (stream != null)
+                        {
+
+                                ResourceReader resReader = new ResourceReader(stream);
+                                Dictionary<string, object> data = resReader
+                                    .OfType<DictionaryEntry>()
+                                    .Select(i => new { Key = i.Key.ToString(), value = i.Value })
+                                    .ToDictionary(i => i.Key, i => i.value);
+
+                                    foreach (var item in data)
+                                    {
+                                        MemoryStream memory = new MemoryStream();
+                                        Bitmap bitmap;
+                                        BitmapImage bitmapImage = new BitmapImage();
+                                        if (item.Value != null)
+                                        {
+                                            bitmap = item.Value as Bitmap;
+                                            bitmap.Save(memory, ImageFormat.Png);
+                                            memory.Position = 0; 
+                                            bitmapImage.BeginInit();
+                                            bitmapImage.StreamSource = memory;
+                                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                                            bitmapImage.EndInit();
+                                        }
+                                        if (!_cachedIcons.ContainsKey(item.Key))
+                                            _cachedIcons.Add(item.Key, bitmapImage);
+                                    }
+                                    if (_cachedIcons.ContainsKey(String.Concat(member.QualifiedName, smallIconPostfix)))
+                                        return _cachedIcons[String.Concat(member.QualifiedName, smallIconPostfix)];
+
+
+                        }
+                        return null;
+                    }
+            return null;
+        }
+
+         public static bool ResolveResourceAssembly(string assemblyLocation, ref string resourceAssemblyPath)
+        {
+            
+
+            var qualifiedPath = Path.GetFullPath(assemblyLocation);
+            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+            var dir = Path.GetDirectoryName(qualifiedPath);
+
+            fn = fn + ".resources.dll";
+
+            resourceAssemblyPath = Path.Combine(dir, fn);
+
+            return File.Exists(resourceAssemblyPath);
         }
     }
 

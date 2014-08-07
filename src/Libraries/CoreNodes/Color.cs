@@ -3,9 +3,6 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
-    /// <iconSmall>
-    /// Core.Color
-    /// </iconSmall>
     public class Color
     {
         private System.Drawing.Color color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
@@ -17,9 +14,6 @@ namespace DSCore
         ///     Find the red component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the red component.</returns>
-        /// <iconSmall>
-        ///     Core.Color.Red.Small
-        /// </iconSmall>
         public byte Red
         {
             get { return color.R; }
@@ -29,9 +23,6 @@ namespace DSCore
         ///     Find the green component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the green component.</returns>
-        /// <iconSmall>
-        ///     Core.Color.Green.Small
-        /// </iconSmall>
         public byte Green
         {
             get { return color.G; }
@@ -41,9 +32,6 @@ namespace DSCore
         ///     Find the blue component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the blue component.</returns>
-        /// <iconSmall>
-        ///     Core.Color.Blue.Small
-        /// </iconSmall>
         public byte Blue
         {
             get { return color.B; }
@@ -53,9 +41,6 @@ namespace DSCore
         ///     Find the alpha component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the alpha component.</returns>
-        /// <iconSmall>
-        ///     Core.Color.Alpha.Small
-        /// </iconSmall>
         public byte Alpha
         {
             get { return color.A; }
@@ -75,9 +60,6 @@ namespace DSCore
         /// <param name="b">The blue value.</param>
         /// <returns name="color">Color.</returns>
         /// <search>color</search>
-        /// <iconSmall>
-        ///     Core.Color.ByARGB.Small
-        /// </iconSmall> 
         public static Color ByARGB(int a=255, int r=0, int g=0, int b=0)
         {
             return new Color(a, r, g, b);
@@ -97,9 +79,6 @@ namespace DSCore
         ///     Gets the birghtness value for this color.
         /// </summary>
         /// <returns name="val">Brightness value for the color.</returns>
-        /// <iconSmall>
-        ///     Core.Color.brightness.Small
-        /// </iconSmall>
         public static float Brightness(Color c)
         {
             return c.color.GetBrightness();
@@ -109,9 +88,6 @@ namespace DSCore
         ///     Gets the saturation value for this color.
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
-        /// <iconSmall>
-        /// Core.Color.saturation.Small
-        /// </iconSmall>
         public static float Saturation(Color c)
         {
             return c.color.GetSaturation();
@@ -121,9 +97,6 @@ namespace DSCore
         ///     Gets the hue value for this color.
         /// </summary>
         /// <returns name="val">Hue value for the color.</returns>
-        /// <iconSmall>
-        /// Core.Color.hue.Small
-        /// </iconSmall>
         public static float Hue(Color c)
         {
             return c.color.GetHue();
@@ -134,7 +107,6 @@ namespace DSCore
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
         /// <search>alpha,red,green,blue</search>
-        /// <iconSmall>Core.Color.components.Small</iconSmall>
         [MultiReturn(new string[] {"a", "r", "g", "b"})]
         public static Dictionary<string, byte> Components(Color c)
         {
@@ -155,7 +127,6 @@ namespace DSCore
         /// <param name="value">The value between 0 and 1 along the range for which you would like to sample the color.</param>
         /// <returns name="color">Color in the given range.</returns>
         /// <search>color,range,gradient</search>
-        /// <iconSmall>Core.Color.ColorRange.Small</iconSmall>
         [IsVisibleInDynamoLibrary(false)]
         public static Color BuildColorFromRange(Color start, Color end, double value)
         {
