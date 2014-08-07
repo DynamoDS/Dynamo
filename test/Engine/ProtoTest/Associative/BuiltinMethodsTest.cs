@@ -587,7 +587,7 @@ def foo(x, y)
 }
 
 param = { 2, 3, 4 };
-x = Evaluate(foo, param);
+x = Evaluate(foo, param, true);
 param = { 5, 6 };
 ";           
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
