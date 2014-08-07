@@ -3,21 +3,16 @@ using DynamoWebServer.Interfaces;
 
 namespace DynamoWebServer
 {
-    /// <summary>
-    /// Intended for managing multiple users/dynamo instances
-    /// When user logs in to the Flood, new session is created in DynamoWebServer, this session has a unique Id,
-    /// so we can push it to the SessionManager dictionary { sessionId: dynamoInstanceId }. So the dynamo web server
-    /// would know the correct Dynamo instance which should be called. 
-    /// DynamoInstanceId could be a property of dynamoViewModel, something like random GUID, created on first property call,
-    /// So each instance of dynamo would have a unique dynamoInstanceId.
+    /// For each of the clients connected to DynamoWebServer, there is a corresponding 
+    /// session. Whenever a new client connects to DynamoWebServer, a new session is 
+    /// created; likewise, whenever a client disconnects, its corresponding session is 
+    /// removed. Each session is represented by a unique identifier.
     /// 
-    /// We have to cover in more details how the new dynamo instances are instantiated. We need to keep one extra instance always
-    /// up and running, so the new user won't wait new instance setup (Idle state - 1 instance running, user connected - 2nd, 
-    /// reserve instance up, etc.) Not very efficient way, but don't have other ideas yet.
-    /// 
-    /// On client disconnected event session manager clears
-    /// corresponding record in sessions list dictionary and stops correct Dynamo instance.
-    /// </summary>
+    /// DynamoWebServer owns an instance of SessionManager. SessionManager internally
+    /// manages a map between a given session identifier and the corresponding 
+    /// DynamoViewModel instance. DynamoWebServer makes use the session identifier to 
+    /// correctly identify the target DynamoViewModel instance to work with for any 
+    /// incoming message sent from a connected client.
     public class SessionManager : ISessionManager
     {
         private string sessionId;
