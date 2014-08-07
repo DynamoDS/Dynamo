@@ -435,10 +435,48 @@ namespace Unfold
                 return graph;
             }
 
+            /// <summary>
+            /// method to generate debug geometry from a tree
+            /// </summary>
+            /// <typeparam name="K"></typeparam>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="graph"></param>
+            /// <returns></returns>
+            public List<Autodesk.DesignScript.Geometry.DesignScriptEntity> ProduceGeometryFromGraph<K, T>(List<GraphVertex<K, T>> graph)
+
+                where T : IUnfoldablePlanarFace<K>
+                where K : IUnfoldableEdge
+            {
+                var OutputGeo = new List<Autodesk.DesignScript.Geometry.DesignScriptEntity>();
+
+                foreach (var CurrentVertex in graph)
+                {
+                    //generate some geometry to visualize the BFS tree
+
+                    //create a polygon from verts, grab center, project center towards 
+                    Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(CurrentVertex.Face.SurfaceEntity);
+
+                    Sphere nodecenter = Sphere.ByCenterPointRadius(center, .1);
+                    OutputGeo.Add(nodecenter);
+
+                    foreach (var CurrentEdge in CurrentVertex.GraphEdges)
+                    {
+
+                        Point childCenter = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(CurrentVertex.Face.SurfaceEntity);
+                        Line line = Line.ByStartPointEndPoint(center, childCenter);
+                        OutputGeo.Add(line);
+                    }
+
+                }
+
+                return OutputGeo;
+            }
+
+
             // be careful here, modifying the verts may causing issues,
             // might be better to create new verts, or implement Icloneable
 
-            [MultiReturn(new[] { "tree geo", "BFS tree", "BFS finished" })]
+            [MultiReturn(new[] { "BFS intermediate", "BFS finished" })]
             public static Dictionary<string, object> BFS<K, T>(List<GraphVertex<K, T>> graph)
                 where T : IUnfoldablePlanarFace<K>
                 where K : IUnfoldableEdge
@@ -470,13 +508,6 @@ namespace Unfold
 
                         GraphVertex<K, T> CurrentVertex = Q.Dequeue();
 
-                        //generate some geometry to visualize the BFS tree
-
-                        //create a polygon from verts, grab center, project center towards 
-                        Point center = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(CurrentVertex.Face.SurfaceEntity);
-                        //  Point center = current_vertex.Face.SurfaceEntity.PointAtParameter(.5, .5);
-                        Sphere nodecenter = Sphere.ByCenterPointRadius(center, .1);
-                        tree.Add(nodecenter);
 
                         foreach (GraphEdge<K, T> vedge in CurrentVertex.GraphEdges)
                         {
@@ -490,11 +521,6 @@ namespace Unfold
 
                                 CurrentVertex.TreeEdges.Add(vedge);
 
-
-                                //Point child_center = V.Face.SurfaceEntity.PointAtParameter(.5, .5);
-                                Point childCenter = Tessellate.MeshHelpers.SurfaceAsPolygonCenter(V.Face.SurfaceEntity);
-                                Line line = Line.ByStartPointEndPoint(center, childCenter);
-                                tree.Add(line);
                                 Q.Enqueue(V);
                             }
 
@@ -510,6 +536,8 @@ namespace Unfold
 
                 TreeTransformedToGraph = GraphUtilities.CloneGraph<K, T>(graphToTraverse);
 
+                // set the grap edges to the tree edges incase
+                // we want to use general graph algos on the tree;
                 foreach (var Vertex in TreeTransformedToGraph)
                 {
                     Vertex.GraphEdges = Vertex.TreeEdges;
@@ -520,7 +548,7 @@ namespace Unfold
 
                 return new Dictionary<string, object> 
                 {   
-                    { "tree geo", (tree)},
+                    
                     {"BFS intermediate",(graphToTraverse)},
                     {"BFS finished", (TreeTransformedToGraph)}
                 };

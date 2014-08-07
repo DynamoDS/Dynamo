@@ -474,14 +474,24 @@ namespace Unfold
             // collect all polysurfaces
             var masterFacelikeSet = sortedtree.Select(x => x.UnfoldPolySurface).ToList();
             masterFacelikeSet.AddRange(disconnectedSet);
-
+            var rnd = new Random();
             //align all surfaces down
             foreach (var facelike in masterFacelikeSet)
             {
                 var surfaceToAlignDown = facelike.SurfaceEntity;
                 
+                // get the coordinate system defined by the face normal
+                var somepoint = facelike.SurfaceEntity.PointAtParameter(.5, .5);
+                var norm = facelike.SurfaceEntity.NormalAtParameter(.5,.5);
+
+                var facePlane = Plane.ByOriginNormal(somepoint, norm);
+
+                var startCoordSystem = CoordinateSystem.ByPlane(facePlane);
+
+                var randomPoint = Point.ByCoordinates(rnd.Next(2), rnd.Next(2), 0);
+
                 // transform surface to horizontal plane at 0,0,0
-                facelike.SurfaceEntity = surfaceToAlignDown.Transform(CoordinateSystem.ByPlane(Plane.ByOriginXAxisYAxis(Point.ByCoordinates(0,0,0),Vector.XAxis(),Vector.YAxis())))as Surface;
+                facelike.SurfaceEntity = surfaceToAlignDown.Transform(startCoordSystem,CoordinateSystem.ByPlane(Plane.ByOriginXAxisYAxis(randomPoint, Vector.XAxis(), Vector.YAxis()))) as Surface;
 
                 // save transformation for each set, this should have all the ids present
                 transforms.Add(new FaceTransformMap(
