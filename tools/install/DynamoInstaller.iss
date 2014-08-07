@@ -96,6 +96,11 @@ Type: filesandordirs; Name: {app}\libg_220
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
+;Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
+Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
+
+[UninstallRun]
+Filename: "{app}\DynamoAddinGenerator.exe"; Flags: runhidden;
 
 [Icons]
 Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
@@ -151,6 +156,7 @@ begin
   // we'll need these files to check for a revit installation
   ExtractTemporaryFile('RevitInstallDetective.exe');
   ExtractTemporaryFile('RevitAddinUtility.dll');
+  ExtractTemporaryFile('DynamoAddinGenerator.exe');
 
   // check if there is a valid revit installation on this machine, if not - fail
   if (RevitInstallationExists('Revit2016') or RevitInstallationExists('Revit2015') or RevitInstallationExists('Revit2014') or RevitInstallationExists('VasariBeta3')) then
@@ -223,6 +229,17 @@ begin
     end;
 end;
 
+function UpdateAddins() : Integer;
+var
+    iResultCode: Integer;
+begin
+  Result := 0;
+  if Exec(ExpandConstant('{tmp}\DynamoAddinGenerator.exe'), '', '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+    Result := 0
+  else
+    Result := 1
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep=ssInstall) then
@@ -231,6 +248,14 @@ begin
       begin
         UnInstallOldVersion();
       end;
+    end;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+   if (CurUninstallStep=usPostUninstall) then
+    begin
+        UpdateAddins();
     end;
 end;
 
