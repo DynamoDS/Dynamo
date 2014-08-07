@@ -138,7 +138,16 @@ namespace Dynamo.DSEngine
                 "Shouldn't have null nodes in the AST list");
 #endif
 
-            IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
+            IEnumerable<AssociativeNode> astNodes = null;
+            var scopedNode = node as ScopedNodeModel;
+            if (scopedNode != null)
+            {
+                astNodes = scopedNode.BuildAstInScope(inputAstNodes);
+            }
+            else
+            {
+                astNodes = node.BuildAst(inputAstNodes);
+            }
             
             if (dynSettings.Controller.DebugSettings.VerboseLogging)
             {
@@ -187,10 +196,25 @@ namespace Dynamo.DSEngine
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
-            IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
+            var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
+            var sortedNodes = TopologicalSort(topScopedNodes);
 
             if (isDeltaExecution)
             {
+                foreach (var node in sortedNodes)
+                {
+                    var scopedNode = node as ScopedNodeModel;
+                    if (scopedNode != null)
+                    {
+                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
+                        scopedNode.RequiresRecalc = dirtyInScopeNodes.Any();
+                        foreach (var dirtyNode in dirtyInScopeNodes)
+                        {
+                            dirtyNode.RequiresRecalc = false;
+                        }
+                    }
+                }
+
                 sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
             }
 

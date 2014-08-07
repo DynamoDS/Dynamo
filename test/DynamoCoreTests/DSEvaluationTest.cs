@@ -888,8 +888,7 @@ namespace Dynamo.Tests
         public void Test_ConditionalCustomFunction_3483()
         {
             RunModel(@"core\dsevaluation\conditionalCustomFunction_3483.dyn");
-            AssertPreviewValue("46f484ed-eecd-45cd-9904-0020a3c98999", 2.65);
-            
+            AssertPreviewValue("46f484ed-eecd-45cd-9904-0020a3c98999", 2.647);
         }
         [Test]
         public void Test_CustomFunctionobject_3483()
@@ -904,19 +903,98 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\IfinputFunctionObject_3483.dyn");
             AssertPreviewValue("079fa696-e6e7-402f-866f-9bf4306b5020", 1.00);
         }
+        
         [Test]
         public void Test_IfAsFunctionobject_3483()
         {
             RunModel(@"core\dsevaluation\IfAsFunctionobject_3483.dyn");
             AssertPreviewValue("80d14b69-4796-48c9-a34d-f447abf7b5ba", new object[] {1,1,new double[]{-2,-1,0,1,2},1,1});
         }
+        
         [Test]
         public void Test_IfOutputFunctionObject_3483()
         {
-            RunModel(@"core\dsevaluation\Test_IfOutputFunctionObject_3483.dyn");
+            RunModel(@"core\dsevaluation\IfOutputCustomFunction_3483.dyn");
             AssertPreviewValue("dace0b8c-381e-4de5-824d-c1651ec94bc6", new bool[] { true, true, true, false, false });
         }
+        
+        [Test]
+        public void Test_If_CustomNode_4058()
+        {
+            var model = dynSettings.Controller.DynamoModel;
 
+            RunModel(@"core\dsevaluation\Test_IfINCustomNode_4058.dyn");
+
+            AssertPreviewValue("4c70f814-5c42-4fb9-89b0-b3cfe6f93b6d", 6.00);
+        }
+        [Test]
+        public void TestSingleIFRecusion_4058()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            Assert.Inconclusive("Single IF Recursion ");
+
+            RunModel(@"core\dsevaluation\TestSingleIFRecusion_4058.dyn");
+
+            AssertPreviewValue("4c70f814-5c42-4fb9-89b0-b3cfe6f93b6d", 4);
+            
+        }
+        [Test]
+        public void TestMultipleIFCN_4058()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            
+
+            RunModel(@"core\dsevaluation\testMultipleIFCN_4058.dyn");
+
+            AssertPreviewValue("201866a4-e368-41e9-8264-bf4d8fb65ed1", 10);
+
+        }
+        [Test]
+        public void TestMultipleIFRecursion_4058()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            Assert.Inconclusive("MultipleIF Recursion ");
+
+            RunModel(@"core\dsevaluation\testMultipleIFRecursion_4058.dyn");
+
+            AssertPreviewValue("201866a4-e368-41e9-8264-bf4d8fb65ed1", new double []{ 1,1,2,3,5});
+
+        }
+        [Test]
+        public void TestNestedIFNORecursion_4058()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\TestNestedIfNoRecursion_4058.dyn");
+
+            AssertPreviewValue("f7f34898-2eb3-48fb-9a65-6084446dfbd0", 11);
+
+        }
+        [Test]
+        public void TestNestedIFRecursion_4058()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            Assert.Inconclusive("MultipleIF Recursion ");
+
+            RunModel(@"core\dsevaluation\NestedIFRecursion_4058.dyn");
+
+            AssertPreviewValue("2a09f286-b0fe-443a-be87-591f5c6e9264", "Odd");
+
+        }
+        [Test]
+        public void NestedIFRecursionMultiple_4058()
+        {
+            
+            var model = dynSettings.Controller.DynamoModel;
+            Assert.Inconclusive("MultipleIF Recursion");
+
+            RunModel(@"core\dsevaluation\NestedIFRecursionMultiple_4058.dyn");
+
+            AssertPreviewValue("e6a9eec4-a18d-437d-8779-adfd6141bf19", 9);
+
+        }
+       
+        
     }
 
     [Category("DSCustomNode")]
