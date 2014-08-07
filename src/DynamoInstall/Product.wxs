@@ -70,6 +70,7 @@
              Level="1">
       <ComponentGroupRef Id="RELEASE"/>
       <ComponentGroupRef Id="DEFINITIONS"/>
+      <ComponentRef Id="ApplicationShortcut" />
       <Feature Id="DYNAMO_CORE_SAMPLES"
              Title="Sample Content"
              Level="1" >
@@ -99,6 +100,9 @@
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Dynamo"/>
+      </Directory>
       <Directory Id="DYNAMO_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
@@ -106,7 +110,19 @@
         </Directory>
       </Directory>
     </Directory>
-  
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Dynamo 0.7"
+                  Description="Dynamo Sandbox"
+                  Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
+                  WorkingDirectory="DYNAMO_INSTALLDIR"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Dynamo_07" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+    
     <ComponentGroup Id="REVIT_2014" Directory="DYNAMO_INSTALLDIR">
       <Component Id="DynamoForRevit2015.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
         <File Id="DynamoForRevit2015.addin" Source="$(env.DYNAMO_BASE)\tools\install\Extra\DynamoForRevit2014.addin"/>
