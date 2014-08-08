@@ -82,13 +82,14 @@ namespace Dynamo.Models
             this.Connect(endPort);
         }
 
-        public static ConnectorModel Make()
+        public static ConnectorModel Make(WorkspaceModel workspace)
         {
-            return new ConnectorModel();
+            return new ConnectorModel(workspace);
         }
 
-        private ConnectorModel()
+        private ConnectorModel(WorkspaceModel workspace)
         {
+            this.workspaceModel = workspace;
         }
 
         #endregion

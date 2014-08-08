@@ -24,12 +24,11 @@ using DynamoUnits;
 
 using DynamoUtilities;
 
-using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using RevitServices.Threading;
 
 using MessageBox = System.Windows.Forms.MessageBox;
-using RevThread = RevitServices.Threading;
 
 #endregion
 
@@ -45,17 +44,13 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            RevThread.IdlePromise.RegisterIdle(commandData.Application);
-
             HandleDebug(commandData);
-
-            InitializeAssemblies();
-            InitializeUnits();
-            InitializeDocumentManager(commandData);
+            
+            InitializeCore(commandData);
 
             try
             {
-                RevThread.IdlePromise.ExecuteOnIdleAsync(
+                IdlePromise.ExecuteOnIdleAsync(
                     delegate
                     {
                         // create core data models
@@ -65,10 +60,8 @@ namespace Dynamo.Applications
                         // show the window
                         InitializeCoreView().Show();
 
-                        // KILLDYNSETTINGS - is this ever used?
                         TryOpenWorkspaceInCommandData(commandData);
-
-                        commandData.Application.ViewActivating += Application_ViewActivating;
+                        SubscribeViewActivating(commandData);
                     });
 
                 // Disable the Dynamo button to prevent a re-run
@@ -91,30 +84,6 @@ namespace Dynamo.Applications
         }
 
         #region Initialization
-
-        public static void InitializeUnits()
-        {
-            // set revit units
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
-        }
-
-        public static void InitializeAssemblies()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve +=
-                Analyze.Render.AssemblyHelper.ResolveAssemblies;
-
-            //Add an assembly load step for the System.Windows.Interactivity assembly
-            //Revit owns a version of this as well. Adding our step here prevents a duplicative
-            //load of the dll at a later time.
-            string interactivityPath = Path.Combine(
-                DynamoPathManager.Instance.MainExecPath,
-                "System.Windows.Interactivity.dll");
-
-            if (File.Exists(interactivityPath))
-                Assembly.LoadFrom(interactivityPath);
-        }
 
         private static RevitDynamoModel InitializeCoreModel(ExternalCommandData commandData)
         {
@@ -148,8 +117,8 @@ namespace Dynamo.Applications
             viewModel.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
-            revitDynamoModel.ShuttingDown += (drm)=>
-                RevThread.IdlePromise.ExecuteOnShutdown(
+            revitDynamoModel.ShuttingDown += (drm) =>
+                IdlePromise.ExecuteOnShutdown(
                     delegate
                     {
                         TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
@@ -192,11 +161,66 @@ namespace Dynamo.Applications
             return dynamoView;
         }
 
-        private void InitializeDocumentManager(ExternalCommandData commandData)
+        private static bool initializedCore;
+        private static void InitializeCore(ExternalCommandData commandData)
+        {
+            if (initializedCore) return;
+
+            IdlePromise.RegisterIdle(commandData.Application);
+            InitializeAssemblies();
+            InitializeUnits();
+            InitializeDocumentManager(commandData);
+            InitializeMigrationManager();
+
+            initializedCore = true;
+        }
+
+        private static bool registeredViewActivating;
+        private static void SubscribeViewActivating(ExternalCommandData commandData)
+        {
+            if (registeredViewActivating) return;
+            commandData.Application.ViewActivating += Application_ViewActivating;
+            registeredViewActivating = true;
+        }
+
+        private static void InitializeMigrationManager()
+        {
+            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
+        }
+
+        public static void InitializeUnits()
+        {
+            // set revit units
+            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+        }
+
+        public static void InitializeAssemblies()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve +=
+                Analyze.Render.AssemblyHelper.ResolveAssemblies;
+
+            //Add an assembly load step for the System.Windows.Interactivity assembly
+            //Revit owns a version of this as well. Adding our step here prevents a duplicative
+            //load of the dll at a later time.
+            string interactivityPath = Path.Combine(
+                DynamoPathManager.Instance.MainExecPath,
+                "System.Windows.Interactivity.dll");
+
+            if (File.Exists(interactivityPath))
+                Assembly.LoadFrom(interactivityPath);
+        }
+
+        private static void InitializeDocumentManager(ExternalCommandData commandData)
         {
             if (DocumentManager.Instance.CurrentUIApplication == null)
                 DocumentManager.Instance.CurrentUIApplication = commandData.Application;
         }
+
+        #endregion
+
+        #region Helpers
 
         private void HandleDebug(ExternalCommandData commandData)
         {
@@ -206,10 +230,6 @@ namespace Dynamo.Applications
                     Debugger.Launch();
             }
         }
-
-        #endregion
-
-        #region Helpers
 
         private static void TryOpenWorkspaceInCommandData(ExternalCommandData commandData)
         {
@@ -312,8 +332,8 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private static void DynamoView_Closing(object sender, EventArgs e)
         {
-            RevThread.IdlePromise.ClearPromises();
-            RevThread.IdlePromise.Shutdown();
+            IdlePromise.ClearPromises();
+            IdlePromise.Shutdown();
         }
 
         /// <summary>

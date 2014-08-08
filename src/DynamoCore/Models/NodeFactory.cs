@@ -62,31 +62,7 @@ namespace Dynamo.Models
         /// <returns> The newly instantiated NodeModel</returns>
         internal NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            object createdNode = null;
-
-            if (elementType.IsAssignableFrom(typeof(DSVarArgFunction)))
-            {
-                // If we are looking at a 'DSVarArgFunction', we'd better had 
-                // 'signature' readily available, otherwise we have a problem.
-                if (string.IsNullOrEmpty(signature))
-                {
-                    var message = "Unknown function signature";
-                    throw new ArgumentException(message, "signature");
-                }
-
-                // Invoke the constructor that takes in a 'FunctionDescriptor'.
-                var functionDescriptor = dynamoModel.EngineController.GetFunctionDescriptor(signature);
-
-                if (functionDescriptor == null)
-                    throw new UnresolvedFunctionException(signature);
-
-                createdNode = Activator.CreateInstance(elementType,
-                    new object[] { this.workspaceModel, functionDescriptor });
-            }
-            else
-            {
-                createdNode = this.GetNodeModelInstanceByType(elementType);
-            }
+            object createdNode = this.GetNodeModelInstanceByType(elementType);
 
             // The attempt to create node instance may fail due to "elementType"
             // being something else other than "NodeModel" derived object type. 

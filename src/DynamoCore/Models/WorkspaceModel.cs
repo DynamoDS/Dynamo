@@ -559,7 +559,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double x, double y, string text, Guid id)
         {
-            NoteModel noteModel = new NoteModel(x, y);
+            NoteModel noteModel = new NoteModel(this, x, y);
             noteModel.GUID = id;
 
             //if we have null parameters, the note is being added
@@ -1236,13 +1236,13 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
-                ConnectorModel connector = ConnectorModel.Make();
+                ConnectorModel connector = ConnectorModel.Make(this);
                 connector.Deserialize(modelData, SaveContext.Undo);
                 Connectors.Add(connector);
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
-                NoteModel noteModel = new NoteModel(0.0, 0.0);
+                NoteModel noteModel = new NoteModel(this, 0.0, 0.0);
                 noteModel.Deserialize(modelData, SaveContext.Undo);
                 Notes.Add(noteModel);
             }

@@ -23,6 +23,8 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSFunction : DSFunctionBase
     {
+        public DSFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+
         public DSFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
             : base(workspaceModel, new ZeroTouchNodeController(workspaceModel.DynamoModel.EngineController, 
                 descriptor)) { }

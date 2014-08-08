@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "Custom Rounding");
-            var loader = new PackageLoader(null);
+            var loader = ViewModel.Model.Loader.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             Assert.IsNotNull(pkg);
@@ -44,23 +44,23 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsNullForInvalidDirectory()
         {
             var pkgDir = "";
-            var loader = new PackageLoader(null);
+            var loader = ViewModel.Model.Loader.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
         }
 
         [Test]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader(null, PackagesDirectory);
+            var loader = new PackageLoader(ViewModel.Model);
             loader.LoadPackages();
-            Assert.AreEqual(4, loader.LocalPackages.Count);
+            Assert.AreEqual(1, loader.LocalPackages.Count);
         }
 
         [Test]
         public void LoadPackagesReturnsNoPackagesForInvalidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
-            var loader = new PackageLoader(null, pkgDir);
+            var loader = new PackageLoader(ViewModel.Model, pkgDir);
             loader.LoadPackages();
             Assert.AreEqual(0, loader.LocalPackages.Count);
         }
@@ -92,7 +92,7 @@ namespace Dynamo.Tests
         [Test]
         public void GetOwnerPackageReturnsNullForInvalidFunction()
         {
-            var loader = new PackageLoader(null, PackagesDirectory);
+            var loader = new PackageLoader(ViewModel.Model, PackagesDirectory);
 
             var info = ViewModel.Model.CustomNodeManager.AddFileToPath(
                 Path.Combine(new string[] {GetTestDirectory(), "core", "combine", "combine2.dyf"}));

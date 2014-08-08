@@ -21,6 +21,8 @@ namespace Dynamo.Nodes
     [IsMetaNode]
     public partial class Function : FunctionCallBase
     {
+        public Function(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+
         protected internal Function(WorkspaceModel workspace, CustomNodeDefinition def)
             : base(workspace, new CustomNodeController(workspace.DynamoModel, def))
         {

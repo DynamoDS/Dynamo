@@ -15,7 +15,6 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
 using Dynamo.Applications.Properties;
-using Dynamo.Models;
 using Dynamo.Utilities;
 
 using DynamoUtilities;
@@ -50,8 +49,6 @@ namespace Dynamo.Applications
 
                 TransactionManager.SetupManager(new AutomaticTransactionStrategy());
                 ElementBinder.IsEnabled = true;
-
-                MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
 
                 //TAF load english_us TODO add a way to localize
                 res = Resource_en_us.ResourceManager;

@@ -9,6 +9,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSOffice
 {
+    [SupressImportIntoVM]
     public class ExcelCloseEventArgs : EventArgs
     {
         public ExcelCloseEventArgs(bool saveWorkbooks = true)

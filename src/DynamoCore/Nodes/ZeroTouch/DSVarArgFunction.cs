@@ -22,6 +22,8 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSVarArgFunction : DSFunctionBase, IWpfNode
     {
+        public DSVarArgFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+
         public DSVarArgFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
             : base(workspaceModel, new ZeroTouchVarArgNodeController(workspaceModel.DynamoModel.EngineController, descriptor))
         {

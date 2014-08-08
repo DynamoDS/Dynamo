@@ -5,6 +5,8 @@ namespace Dynamo.Models
     public class NoteModel:ModelBase
     {
 
+        private readonly WorkspaceModel workspaceModel;
+
         private string _text;
         public string Text
         {
@@ -16,8 +18,9 @@ namespace Dynamo.Models
             }
         }
 
-        public NoteModel(double x, double y)
+        public NoteModel(WorkspaceModel workspace, double x, double y)
         {
+            this.workspaceModel = workspace;
             X = x;
             Y = y;
         }

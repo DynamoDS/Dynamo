@@ -54,7 +54,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(node1.Guid, guid1);
 
             // search for old name
-            var results1 = search.Search(newNodeName);
+            var results1 = search.Search(nodeName);
 
             // results are correct
             Assert.AreEqual(0, results1.Count);
@@ -132,7 +132,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, search.SearchDictionary.NumElements);
 
             // search for new name
-            var results = search.Search(nodeName);
+            var results = search.Search(newNodeName);
 
             // results are correct - only one result
             Assert.AreEqual(1, results.Count);

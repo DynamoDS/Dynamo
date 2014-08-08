@@ -13,6 +13,9 @@ using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using ProtoCore.DSASM;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
 
@@ -64,12 +67,12 @@ namespace Dynamo.Nodes
 
     public class DynamoTextBox : ClickSelectTextBox
     {
-        public event RequestReturnFocusToSearchHandler ReturnFocusToSearch;
+        public event RequestReturnFocusToSearchHandler RequestReturnFocusToSearch;
         public delegate void RequestReturnFocusToSearchHandler();
         protected void OnRequestReturnFocusToSearch()
         {
-            if (ReturnFocusToSearch != null)
-                ReturnFocusToSearch();
+            if (RequestReturnFocusToSearch != null)
+                RequestReturnFocusToSearch();
         }
 
         public event Action OnChangeCommitted;
@@ -111,6 +114,15 @@ namespace Dynamo.Nodes
             this.Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
             MinHeight = 20;
+
+            RequestReturnFocusToSearch += TryFocusSearch;
+        }
+
+        private void TryFocusSearch()
+        {
+            if (this.NodeViewModel == null) return;
+
+            this.NodeViewModel.DynamoViewModel.ReturnFocusToSearch();
         }
 
         public void BindToProperty(System.Windows.Data.Binding binding)
@@ -287,7 +299,6 @@ namespace Dynamo.Nodes
     public class CodeNodeTextBox : DynamoTextBox
     {
 
-
         bool shift, enter;
         public CodeNodeTextBox(string s)
             : base( s)
@@ -361,7 +372,10 @@ namespace Dynamo.Nodes
 
         private void HandleEscape()
         {
-            if (this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
+            var text = this.Text;
+            var cb = DataContext as CodeBlockNodeModel;
+
+            if (cb == null || cb.Code != null && text.Equals(cb.Code))
                 OnRequestReturnFocusToSearch();
             else
                 (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;

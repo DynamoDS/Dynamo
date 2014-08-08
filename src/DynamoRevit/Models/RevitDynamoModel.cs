@@ -98,8 +98,7 @@ namespace Dynamo.Applications.Models
 
             InitializeDocumentManager();
             SubscribeDocumentManagerEvents();
-
-            TransactionManager.Instance.TransactionWrapper.FailuresRaised += TransactionManager_FailuresRaised;
+            SubscribeTransactionManagerEvents();
 
             SetupPython();
         }
@@ -108,8 +107,11 @@ namespace Dynamo.Applications.Models
 
         #region Initialization
 
+        private bool setupPython;
         private void SetupPython()
         {
+            if (setupPython) return;
+
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => ElementWrapper.ToDSType(element, (bool)true));
 
             // Turn off element binding during iron python script execution
@@ -125,6 +127,8 @@ namespace Dynamo.Applications.Models
                 Func<object, object> unwrap = marshaler.Marshal;
                 scope.SetVariable("UnwrapElement", unwrap);
             };
+
+            setupPython = true;
         }
 
         private void InitializeDocumentManager()
@@ -154,6 +158,16 @@ namespace Dynamo.Applications.Models
             RevitServicesUpdater.ElementAddedForID -= ElementMappingCache.GetInstance().WatcherMethodForAdd;
             RevitServicesUpdater.ElementsDeleted -= ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
+        }
+
+        private void SubscribeTransactionManagerEvents()
+        {
+            TransactionManager.Instance.TransactionWrapper.FailuresRaised += TransactionManager_FailuresRaised;
+        }
+
+        private void UnsubscribeTransactionManagerEvents()
+        {
+            TransactionManager.Instance.TransactionWrapper.FailuresRaised -= TransactionManager_FailuresRaised;
         }
 
         private void SubscribeDocumentManagerEvents()
@@ -203,6 +217,7 @@ namespace Dynamo.Applications.Models
 
             UnsubscribeDocumentManagerEvents();
             UnsubscribeRevitServicesUpdaterEvents();
+            UnsubscribeTransactionManagerEvents();
 
             if (shutDownHost)
             {
