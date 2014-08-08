@@ -20,5 +20,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Every tom dick and harry.")]
     [IsDesignScriptCompatible]
     [IsVisibleInDynamoLibrary(false)]
-    public class TomDickHarryList : EnumAsString<TomDickHarry> { }
+    public class TomDickHarryList : EnumAsString<TomDickHarry> {
+        public TomDickHarryList(WorkspaceModel workspace) : base(workspace) { }
+    }
 }

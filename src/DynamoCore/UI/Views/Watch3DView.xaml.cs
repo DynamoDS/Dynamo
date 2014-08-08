@@ -207,10 +207,11 @@ namespace Dynamo.Controls
             Debug.WriteLine("Watch 3D view unloaded.");
 
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
         }
 
@@ -222,10 +223,11 @@ namespace Dynamo.Controls
             PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
             DrawGrid();
@@ -238,8 +240,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
-            //Dispatcher.Invoke(new Action<VisualizationEventArgs>(RenderDrawables), DispatcherPriority.Render,
-            //                    new object[] {e});
             RenderDrawables(e);
         }
 
@@ -252,11 +252,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-            if (dynSettings.Controller == null)
-            {
-                return;
-            }
-
             Dispatcher.Invoke(new Action(delegate
             {
                 var vm = (IWatchViewModel) DataContext;

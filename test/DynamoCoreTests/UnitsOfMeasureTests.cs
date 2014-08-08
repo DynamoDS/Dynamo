@@ -598,7 +598,7 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class UnitsOfMeasureDynTests : DSEvaluationUnitTest
+    internal class ViewModelUnitsOfMeasureDynTests : DSEvaluationViewModelUnitTest
     {
         [Test]
         public void CanMapOverUnits()

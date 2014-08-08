@@ -12,7 +12,8 @@ namespace Dynamo.Nodes
         /// </summary>
         public FunctionCallNodeController Controller { get; private set; }
 
-        protected FunctionCallBase(FunctionCallNodeController controller)
+        protected FunctionCallBase(WorkspaceModel workspace, FunctionCallNodeController controller) 
+            : base(workspace)
         {
             Controller = controller;
             Controller.SyncNodeWithDefinition(this);

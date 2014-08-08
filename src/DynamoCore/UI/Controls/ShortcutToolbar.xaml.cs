@@ -1,6 +1,9 @@
-﻿using Dynamo.UI.Commands;
+﻿using Dynamo.Models;
+using Dynamo.UI.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Controls
 {

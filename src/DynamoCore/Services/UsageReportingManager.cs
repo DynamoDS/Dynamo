@@ -1,7 +1,7 @@
 ﻿using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using System;
 using System.Windows;
@@ -14,9 +14,9 @@ namespace Dynamo.Services
         public DelegateCommand ToggleIsUsageReportingApprovedCommand { get; set; }
         public DelegateCommand ToggleIsAnalyticsReportingApprovedCommand { get; set; }
 
-
         #region Private
 
+        private static DynamoModel dynamoModel;
         private static UsageReportingManager instance;
 
         #endregion
@@ -44,31 +44,43 @@ namespace Dynamo.Services
         {
             get
             {
-                if (DynamoController.IsTestMode) // Do not want logging in unit tests.
+                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                if (dynSettings.Controller != null)
-                    return dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
+                if (dynamoModel != null)
+                    return dynamoModel.PreferenceSettings.IsUsageReportingApproved;
                 
                 return false;
             }
             private set
             {
-                dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved = value;
+                dynamoModel.PreferenceSettings.IsUsageReportingApproved = value;
                 RaisePropertyChanged("IsUsageReportingApproved");
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynSettings.Controller.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.Save();
                 }
                 catch (Exception args)
                 {
-                    dynSettings.Controller.IsCrashing = true;
+                    DynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
             }
+        }
+
+        /// <summary>
+        /// Provide access to the instance of DynamoModel to watch. 
+        /// This operation should be called only once at
+        /// the beginning of a Dynamo session.  It will not be mutated 
+        /// in subsequent calls.
+        /// </summary>
+        public void InitializeCore(DynamoModel dynamoModel)
+        {
+            if (UsageReportingManager.dynamoModel == null)
+                UsageReportingManager.dynamoModel = dynamoModel;
         }
 
         /// <summary>
@@ -79,30 +91,30 @@ namespace Dynamo.Services
         {
             get
             {
-                if (DynamoController.IsTestMode) // Do not want logging in unit tests.
+                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                if (dynSettings.Controller != null)
-                    return dynSettings.Controller.PreferenceSettings.IsAnalyticsReportingApproved;
+                if (dynamoModel != null)
+                    return dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
 
                 return true;
             }
 
             private set
             {
-                dynSettings.Controller.PreferenceSettings.IsAnalyticsReportingApproved = value;
+                dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynSettings.Controller.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.Save();
                 }
                 catch (Exception args)
                 {
-                    dynSettings.Controller.IsCrashing = true;
+                    DynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
             }
 
@@ -113,11 +125,11 @@ namespace Dynamo.Services
         {
             get
             {
-                return dynSettings.Controller.PreferenceSettings.IsFirstRun;
+                return dynamoModel.PreferenceSettings.IsFirstRun;
             }
             private set
             {
-                dynSettings.Controller.PreferenceSettings.IsFirstRun = value;
+                dynamoModel.PreferenceSettings.IsFirstRun = value;
                 RaisePropertyChanged("FirstRun");
             }
         }
@@ -128,21 +140,21 @@ namespace Dynamo.Services
         {
             ToggleIsUsageReportingApprovedCommand = new DelegateCommand(ToggleIsUsageReportingApproved, CanToggleIsUsageReportingApproved);
             ToggleIsAnalyticsReportingApprovedCommand = new DelegateCommand(ToggleIsAnalyticsReportingApproved, CanToggleIsAnalyticsReportingApproved);
-        
         }
 
+        // KILLDYNSETTINGS - This is abominable - passing a window?
         public void CheckIsFirstRun(Window ownerWindow)
         {
             // First run of Dynamo
-            if (dynSettings.Controller.PreferenceSettings.IsFirstRun)
+            if (dynamoModel.PreferenceSettings.IsFirstRun)
             {
                 FirstRun = false;
 
-                //Analytics enable by default
+                //Analytics enable by defaultwa
                 IsAnalyticsReportingApproved = true;
 
                 //Prompt user for detailed reporting
-                if (!DynamoController.IsTestMode)
+                if (!DynamoModel.IsTestMode)
                     ShowUsageReportingPrompt(ownerWindow);
             }
         }

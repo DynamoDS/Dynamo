@@ -41,10 +41,10 @@ namespace Dynamo.Tests
         public void ReferencePoint()
         {
             string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.AreEqual(3, ViewModel.Model.Nodes.Count);
 
-            dynSettings.Controller.RunExpression();
+            ViewModel.Model.RunExpression();
         }
     }
 }

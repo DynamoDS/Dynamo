@@ -107,7 +107,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="xmlDoc"></param>
         /// <param name="version"></param>
-        public void ProcessWorkspaceMigrations(XmlDocument xmlDoc, Version workspaceVersion)
+        public void ProcessWorkspaceMigrations(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
         {
             var methods = MigrationTargets.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.Static));
 
@@ -122,7 +122,7 @@ namespace Dynamo.Models
                     orderby result.From
                     select result).ToList();
 
-            var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+            var currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
             {
@@ -136,9 +136,9 @@ namespace Dynamo.Models
             }
         }
 
-        public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion)
+        public void ProcessNodesInWorkspace(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
         {
-            if(dynSettings.EnableMigrationLogging)
+            if(DynamoModel.EnableMigrationLogging)
             {
                 // For each new file opened, create a new migration report
                 migrationReport = new MigrationReport();
@@ -156,7 +156,7 @@ namespace Dynamo.Models
             {
                 string typeName = elNode.Attributes["type"].Value;
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                System.Type type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
 
                 if (type == null)
                 {
@@ -169,11 +169,11 @@ namespace Dynamo.Models
                 }
 
                 // Migrate the given node into one or more new nodes.
-                var migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
+                var migrationData = this.MigrateXmlNode(dynamoModel.HomeSpace, elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
-            }            
+            }
 
-            if (dynSettings.EnableMigrationLogging)
+            if (DynamoModel.EnableMigrationLogging)
             {
                 string dynFilePath = xmlDoc.BaseURI;
                 migrationReport.WriteToXmlFile(dynFilePath);
@@ -191,7 +191,7 @@ namespace Dynamo.Models
                 elNodesList.AppendChild(migratedNode);
         }
 
-        public NodeMigrationData MigrateXmlNode(XmlNode elNode, System.Type type, Version workspaceVersion)
+        public NodeMigrationData MigrateXmlNode(WorkspaceModel homespace, XmlNode elNode, System.Type type, Version workspaceVersion)
         {
             var migrations = (from method in type.GetMethods()
                               let attribute =
@@ -201,7 +201,6 @@ namespace Dynamo.Models
                               orderby result.From
                               select result).ToList();
 
-            var homespace = dynSettings.Controller.DynamoModel.HomeSpace;
             var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
 
             XmlElement nodeToMigrate = elNode as XmlElement;
@@ -218,7 +217,7 @@ namespace Dynamo.Models
                 object ret = nextMigration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
 
-                if(dynSettings.EnableMigrationLogging)
+                if(DynamoModel.EnableMigrationLogging)
                 {
                     // record migration data for successful migrations
                     migrationReport.AddMigrationDataToNodeMap(nodeToMigrate.Name, migrationData.MigratedNodes);
@@ -445,7 +444,7 @@ namespace Dynamo.Models
             // avoid large number of test failures with this change, and also 
             // ensure that our tests continue to exercise migration code changes.
             // 
-            if (DynamoController.IsTestMode)
+            if (DynamoModel.IsTestMode)
             {
                 if (fileVersion < currVersion)
                     return Decision.Migrate;
