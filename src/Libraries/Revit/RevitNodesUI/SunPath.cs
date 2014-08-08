@@ -37,11 +37,11 @@ namespace DSRevitNodesUI
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
         }
 
-        private void Updater_ElementsModified(IEnumerable<string> updated)
+        private void Updater_ElementsModified(Document document, IEnumerable<string> modified)
         {
             if (PickedSunAndShadowSettings != null)
             {
-                if (!updated.Contains(PickedSunAndShadowSettings.UniqueId)) return;
+                if (!modified.Contains(PickedSunAndShadowSettings.UniqueId)) return;
 
                 _sunVector = GetSunDirection(PickedSunAndShadowSettings);
                 RequiresRecalc = true;

@@ -64,8 +64,8 @@ namespace Dynamo
                 var u = dynRevitSettings.Controller.Updater;
 
                 u.ElementsDeleted += OnElementsDeleted;
+                u.ElementsModified += OnElementsModified;
             }
-
 
             private void OnElementsDeleted(Document document, IEnumerable<ElementId> deleted)
             {
@@ -73,6 +73,20 @@ namespace Dynamo
                     return;
 
                 var nodes = dynRevitUtils.GetNodesFromElementIds(deleted);
+                foreach (var node in nodes)
+                {
+                    node.RequiresRecalc = true;
+                    node.ForceReExecuteOfNode = true;
+                }
+            }
+
+            private void OnElementsModified(Document document, IEnumerable<string> modified)
+            {
+                if (!modified.Any())
+                    return;
+
+                var modifiedIds = modified.Select(x => document.GetElement(x).Id);
+                var nodes = dynRevitUtils.GetNodesFromElementIds(modifiedIds);
                 foreach (var node in nodes)
                 {
                     node.RequiresRecalc = true;
@@ -121,8 +135,11 @@ namespace Dynamo
             ElementNameStore = new Dictionary<ElementId, string>();
 
             SetupPython();
-
             Runner = new DynamoRunner_Revit(this);
+
+            //Initiate the singleton
+            Reactor.GetInstance();
+
         }
 
         private void SetupPython()
@@ -480,26 +497,26 @@ namespace Dynamo
 
         #region Element Persistence Management
 
-        private readonly Dictionary<ElementUpdateDelegate, HashSet<string>> transDelElements =
-            new Dictionary<ElementUpdateDelegate, HashSet<string>>();
+        private readonly Dictionary<ElementDeleteDelegate, HashSet<ElementId>> transDelElements =
+            new Dictionary<ElementDeleteDelegate, HashSet<ElementId>>();
 
         private readonly List<ElementId> transElements = new List<ElementId>();
 
-        internal void RegisterSuccessfulDeleteHook(string id, ElementUpdateDelegate updateDelegate)
+        internal void RegisterSuccessfulDeleteHook(string id, ElementDeleteDelegate deleteDelegate)
         {
-            HashSet<string> elements;
-            if (!transDelElements.TryGetValue(updateDelegate, out elements))
+            HashSet<ElementId> elements;
+            if (!transDelElements.TryGetValue(deleteDelegate, out elements))
             {
-                elements = new HashSet<string>();
-                transDelElements[updateDelegate] = elements;
+                elements = new HashSet<ElementId>();
+                transDelElements[deleteDelegate] = elements;
             }
-            elements.Add(id);
+            elements.Add(DocumentManager.Instance.CurrentDBDocument.GetElement(id).Id);
         }
 
         private void CommitDeletions()
         {
             foreach (var kvp in transDelElements)
-                kvp.Key(kvp.Value);
+                kvp.Key(DocumentManager.Instance.CurrentDBDocument, kvp.Value.AsEnumerable());
         }
 
         #endregion

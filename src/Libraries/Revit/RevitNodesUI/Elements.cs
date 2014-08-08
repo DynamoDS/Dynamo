@@ -34,14 +34,14 @@ namespace DSRevitNodesUI
             get { return forceReExecuteOfNode; }
         }
 
-        private void Updater_ElementsAdded(IEnumerable<string> updated)
+        private void Updater_ElementsAdded(Document document, IEnumerable<string> updated)
         {
             forceReExecuteOfNode = true;
             RequiresRecalc = true;
         }
 
 
-        protected void Updater_ElementsModified(IEnumerable<string> updated)
+        protected void Updater_ElementsModified(Document document, IEnumerable<string> updated)
         {
             forceReExecuteOfNode = true;
             RequiresRecalc = true;

@@ -273,9 +273,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        void Updater_ElementsModified(IEnumerable<string> updated)
+        void Updater_ElementsModified(Document document, IEnumerable<string> modified)
         {
-            if (SelectedElement != null && updated.Contains(selectedUniqueId))
+            if (SelectedElement != null && modified.Contains(selectedUniqueId))
             {
                 RequiresRecalc = true;
             }
@@ -416,13 +416,12 @@ namespace Dynamo.Nodes
             RaisePropertyChanged("SelectionText");
         }
 
-        void u_ElementsModified(IEnumerable<string> updated)
+        void u_ElementsModified(Document doc, IEnumerable<string> modified)
         {
-            var enumerable = updated as string[] ?? updated.ToArray();
+            var enumerable = modified as string[] ?? modified.ToArray();
 
             if (Selected == null || !enumerable.Any()) return;
  
-            var doc = DocumentManager.Instance.CurrentDBDocument;
             if(enumerable.Contains(doc.GetElement(Selected).UniqueId))
             {
                 RequiresRecalc = true;
@@ -695,12 +694,12 @@ namespace Dynamo.Nodes
             }
         }
 
-        void Updater_ElementsModified(IEnumerable<string> updated)
+        void Updater_ElementsModified(Document document, IEnumerable<string> modified)
         {
-            if (SelectedElement != null && selectedUniqueIds.Any(updated.Contains))
+            if (SelectedElement != null && selectedUniqueIds.Any(modified.Contains))
             {
-
                 RequiresRecalc = true;
+                ForceReExecuteOfNode = true;
             }
         }
 
