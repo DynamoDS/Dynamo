@@ -56,40 +56,6 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public class DynamoApp
-        {
-            public DynamoViewModel ViewModel;
-            public DynamoView View;
-            public Application App;
-        }
-
-        public static DynamoApp MakeStandaloneAndRun(string commandFilePath)
-        {
-            var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
-                {
-                    Preferences = PreferenceSettings.Load()
-                });
-
-            var viewModel = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration()
-            {
-                CommandFilePath = commandFilePath,
-                DynamoModel = model
-            });
-            
-            var view = new DynamoView(viewModel);
-
-            var app = new Application();
-            app.Run(view);
-
-            return new DynamoApp()
-            {
-                App = app,
-                ViewModel = viewModel,
-                View = view
-            };
-        }
-
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;

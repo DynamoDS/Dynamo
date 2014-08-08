@@ -1,20 +1,53 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Windows;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
+using DynamoUtilities;
 
 namespace DynamoSandbox
 {
     class Program
     {
+        private static DynamoViewModel MakeStandaloneAndRun(string commandFilePath)
+        {
+            DynamoPathManager.Instance.InitializeCore(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    Preferences = PreferenceSettings.Load()
+                });
+
+            var viewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    CommandFilePath = commandFilePath,
+                    DynamoModel = model
+                });
+
+            var view = new DynamoView(viewModel);
+
+            var app = new Application();
+            app.Run(view);
+
+            return viewModel;
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
-            DynamoView.DynamoApp app = null;
+            DynamoViewModel viewModel = null;
 
             try
             {
@@ -37,7 +70,7 @@ namespace DynamoSandbox
                     }
                 }
 
-                app = DynamoView.MakeStandaloneAndRun(commandFilePath);
+                viewModel = MakeStandaloneAndRun(commandFilePath);
             }
             catch (Exception e)
             {
@@ -46,7 +79,7 @@ namespace DynamoSandbox
                 {
 #if DEBUG
                     // Display the recorded command XML when the crash happens, so that it maybe saved and re-run later
-                    app.ViewModel.SaveRecordedCommand.Execute(null);
+                    viewModel.SaveRecordedCommand.Execute(null);
 #endif
 
                     DynamoModel.IsCrashing = true;
@@ -55,12 +88,12 @@ namespace DynamoSandbox
 
                     // Show the unhandled exception dialog so user can copy the 
                     // crash details and report the crash if she chooses to.
-                    app.ViewModel.Model.OnRequestsCrashPrompt(null,
+                    viewModel.Model.OnRequestsCrashPrompt(null,
                         new CrashPromptArgs(e.Message + "\n\n" + e.StackTrace));
 
                     // Give user a chance to save (but does not allow cancellation)
                     bool allowCancellation = false;
-                    app.ViewModel.Exit(allowCancellation);
+                    viewModel.Exit(allowCancellation);
                 }
                 catch
                 {
