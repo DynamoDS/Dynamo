@@ -980,7 +980,7 @@ namespace Dynamo.ViewModels
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
+            var searchEle = new NodeSearchElement(name, description, tags, t.FullName, t.Module.Name);
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;
