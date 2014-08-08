@@ -29,6 +29,7 @@ namespace DSRevitNodesUI
             {
                 SelectedIndex = 0;
             }
+            this.ForceReExecuteOfNode = true;
         }
     }
 
@@ -41,7 +42,7 @@ namespace DSRevitNodesUI
         private const string noFamilyTypes = "No family types available.";
 
         public FamilyTypes():base("Family Type"){ }
-        
+
         protected override void PopulateItems()
         {
             Items.Clear();
