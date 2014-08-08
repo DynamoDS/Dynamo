@@ -106,39 +106,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamoRunner_Revit.cs" />
-    <Compile Include="Packing\CygonRectanglePacker.cs" />
-    <Compile Include="DynamoController_Revit.cs" />
-    <Compile Include="FunctionWithRevit.cs" />
-    <Compile Include="RevitAPINode.cs" />
-    <Compile Include="RevitSettings.cs" />
-    <Compile Include="RevitTransactionNode.cs" />
-    <Compile Include="RevitUtils.cs" />
-    <Compile Include="ElementsContainer.cs" />
+    <Compile Include="DynamoRevitApp.cs" />
+    <Compile Include="Models\RevitDynamoModel.cs" />
+    <Compile Include="Models\RevitDynamoRunner.cs" />
+    <Compile Include="Models\RevitNodeModel.cs" />
+    <Compile Include="Models\RevitWarningSwallower.cs" />
     <Compile Include="DynamoRevit.cs" />
-    <Compile Include="OutOfSpaceException.cs" />
-    <Compile Include="ParticleSystem\DynamicRelaxation.cs" />
-    <Compile Include="ParticleSystem\Particle.cs" />
-    <Compile Include="ParticleSystem\ParticleSpring.cs" />
-    <Compile Include="ParticleSystem\ParticleSystem.cs" />
-    <Compile Include="ParticleSystem\VerletIntegrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Packing\RectanglePacker.cs" />
     <Compile Include="Resource_en_us.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
-    <Compile Include="RevitWatchHandler.cs" />
-    <Compile Include="Views\Partials.cs" />
-    <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
-    <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
-    <Compile Include="WorkspaceMigrationsRevit.cs" />
+    <Compile Include="ViewModel\RevitWatchHandler.cs" />
+    <Compile Include="Models\SingleSignOnManager.cs" />
+    <Compile Include="ViewModel\RevitVisualizationManager.cs" />
+    <Compile Include="Migration\WorkspaceMigrationsRevit.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -193,10 +181,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="addins\DynamoForRevit.addin">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="addins\DynamoForVasari.addin" />
     <Content Include="Resources\logo_square_32x32.png" />
     <Content Include="Resources\logo_square_64x64.png" />
   </ItemGroup>

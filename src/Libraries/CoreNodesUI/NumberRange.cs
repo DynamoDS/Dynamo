@@ -14,7 +14,8 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
-        public NumberRange()
+        public NumberRange(WorkspaceModel workspace)
+            : base(workspace)
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at"));
             InPortData.Add(new PortData("end", "Number to end the sequence at"));
@@ -50,7 +51,8 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {
-        public NumberSeq()
+        public NumberSeq(WorkspaceModel workspace)
+            : base(workspace)
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at"));
             InPortData.Add(new PortData("amount", "Amount of numbers in the sequence"));

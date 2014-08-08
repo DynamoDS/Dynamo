@@ -10,6 +10,10 @@ using System.Windows.Media;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
+
+using Dynamo.Applications;
+using Dynamo.Applications.Models;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Revit.Elements;
 using Dynamo.Controls;
@@ -22,12 +26,14 @@ using Element = Revit.Elements.Element;
 
 namespace Dynamo.Nodes
 {
-    public abstract class DSSelectionBase : NodeModel, IWpfNode
+    public abstract class DSSelectionBase : RevitNodeModel, IWpfNode
     {
         protected bool _canSelect = true;
         protected string _selectionText ="";
         protected string _selectionMessage;
         protected string _selectButtonContent;
+
+        protected DSSelectionBase(WorkspaceModel workspaceModel) : base(workspaceModel) { }
 
         /// <summary>
         /// The text that describes this selection.
@@ -103,7 +109,7 @@ namespace Dynamo.Nodes
 
     public abstract class DSElementSelection : DSSelectionBase 
     {
-        protected Func<string, ElementId> SelectionAction;
+        protected Func<string, ILogger, ElementId> SelectionAction;
 
         private string selectedUniqueId;
         private ElementId selectedElement;
@@ -172,7 +178,7 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected DSElementSelection(Func<string, ElementId> action, string message)
+        protected DSElementSelection(WorkspaceModel workspaceModel, Func<string, ILogger, ElementId> action, string message) : base(workspaceModel)
         {
             SelectionAction = action;
             _selectionMessage = message;
@@ -180,9 +186,12 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Element", "The selected element."));
             RegisterAllPorts();
 
-            dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
-            dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
-            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            if (revMod == null) return;
+
+            revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
+            revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
+            revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
@@ -196,8 +205,8 @@ namespace Dynamo.Nodes
         {
             base.Destroy();
 
-            dynRevitSettings.Controller.Updater.ElementsModified -= Updater_ElementsModified;
-            dynRevitSettings.Controller.Updater.ElementsDeleted -= Updater_ElementsDeleted;
+            RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
+            RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= Updater_ElementsDeleted;
         }
 
         #endregion
@@ -292,7 +301,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedElement = SelectionAction(_selectionMessage);
+                SelectedElement = SelectionAction(_selectionMessage, this.RevitDynamoModel.Logger);
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
@@ -302,7 +311,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log(e);
+                RevitDynamoModel.Logger.Log(e);
             }
         }
 
@@ -349,7 +358,7 @@ namespace Dynamo.Nodes
     public abstract class DSReferenceSelection : DSSelectionBase
     {
         protected Reference Selected;
-        protected Func<string, Reference> SelectionAction;
+        protected Func<string, ILogger, Reference> SelectionAction;
 
         /// <summary>
         /// The Element which is selected.
@@ -395,7 +404,7 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected DSReferenceSelection(Func<string, Reference> action, string message)
+        protected DSReferenceSelection(WorkspaceModel workspaceModel, Func<string, ILogger, Reference> action, string message) : base(workspaceModel)
         {
             SelectionAction = action;
             _selectionMessage = message;
@@ -403,10 +412,15 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Reference", "The geometry reference."));
             RegisterAllPorts();
 
-            var u = dynRevitSettings.Controller.Updater;
+            // we need to obtain the dynamo model directly from the workspace model 
+            // here, as it is not yet initialized on the base class
+            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            if (revMod == null) return;
+
+            var u = revMod.RevitServicesUpdater;
             u.ElementsModified += u_ElementsModified;
 
-            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+            revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
@@ -433,7 +447,7 @@ namespace Dynamo.Nodes
         {
             base.Destroy();
 
-            var u = dynRevitSettings.Controller.Updater;
+            var u = RevitDynamoModel.RevitServicesUpdater;
             u.ElementsModified -= u_ElementsModified;
         }
 
@@ -444,7 +458,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton()
+            var selectButton = new DynamoNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -505,7 +519,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedElement = SelectionAction(_selectionMessage);
+                SelectedElement = SelectionAction(_selectionMessage, this.RevitDynamoModel.Logger);
                 RaisePropertyChanged("SelectionText");
 
                 RequiresRecalc = true;
@@ -516,7 +530,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log(e);
+                Workspace.DynamoModel.Logger.Log(e);
             }
         }
 
@@ -578,7 +592,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        dynSettings.DynamoLogger.Log(
+                        RevitDynamoModel.Logger.Log(
                             "Unable to find reference with stable id: " + id);
                     }
                     SelectedElement = saved;
@@ -589,7 +603,7 @@ namespace Dynamo.Nodes
 
     public abstract class DSElementsSelection : DSSelectionBase
     {
-        protected Func<string, List<ElementId>> SelectionAction;
+        protected Func<string, ILogger, List<ElementId>> SelectionAction;
 
         private List<string> selectedUniqueIds = new List<string>();
         private List<ElementId> selectedElements = new List<ElementId>();
@@ -650,7 +664,8 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected DSElementsSelection(Func<string, List<ElementId>> action, string message)
+        protected DSElementsSelection(WorkspaceModel workspaceModel, Func<string, ILogger, List<ElementId>> action, string message) 
+            : base(workspaceModel)
         {
             SelectionAction = action;
             _selectionMessage = message;
@@ -658,10 +673,14 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
 
+            // we need to obtain the dynamo model directly from the workspace model 
+            // here, as it is not yet initialized on the base constructor
+            var revMod = workspaceModel.DynamoModel as RevitDynamoModel;
+            if (revMod == null) return;
 
-            dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
-            dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
-            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+            revMod.RevitServicesUpdater.ElementsModified += Updater_ElementsModified;
+            revMod.RevitServicesUpdater.ElementsDeleted += Updater_ElementsDeleted;
+            revMod.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
@@ -675,8 +694,8 @@ namespace Dynamo.Nodes
         {
             base.Destroy();
 
-            dynRevitSettings.Controller.Updater.ElementsModified -= Updater_ElementsModified;
-            dynRevitSettings.Controller.Updater.ElementsDeleted -= Updater_ElementsDeleted;
+            RevitDynamoModel.RevitServicesUpdater.ElementsModified -= Updater_ElementsModified;
+            RevitDynamoModel.RevitServicesUpdater.ElementsDeleted -= Updater_ElementsDeleted;
         }
 
         #endregion
@@ -711,7 +730,7 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var selectButton = new DynamoNodeButton()
+            var selectButton = new DynamoNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -774,7 +793,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedElement = SelectionAction(_selectionMessage);
+                SelectedElement = SelectionAction(_selectionMessage, this.RevitDynamoModel.Logger);
                 RaisePropertyChanged("SelectionText");
 
                 RequiresRecalc = true;
@@ -785,7 +804,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log(e);
+                this.RevitDynamoModel.Logger.Log(e);
             }
         }
 
@@ -883,8 +902,8 @@ namespace Dynamo.Nodes
     [IsVisibleInDynamoLibrary(false)]
     public class DSAnalysisResultSelection : DSElementSelection
     {
-        public DSAnalysisResultSelection()
-            : base(SelectionHelper.RequestAnalysisResultInstanceSelection, "Select an analysis result.")
+        public DSAnalysisResultSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestAnalysisResultInstanceSelection, "Select an analysis result.")
         { }
     }
 
@@ -894,8 +913,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class DSModelElementSelection : DSElementSelection
     {
-        public DSModelElementSelection()
-            : base(SelectionHelper.RequestModelElementSelection, "Select Model Element")
+        public DSModelElementSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestModelElementSelection, "Select Model Element")
         { }
     }
     
@@ -920,8 +939,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DSFaceSelection()
-            : base(SelectionHelper.RequestFaceReferenceSelection, "Select a face."){}
+        public DSFaceSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestFaceReferenceSelection, "Select a face.") { }
     }
 
     [NodeName("Select Edge")]
@@ -945,8 +964,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DSEdgeSelection()
-            : base(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.")
+        public DSEdgeSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.")
         { }
     }
 
@@ -989,8 +1008,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DSPointOnElementSelection()
-            : base(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.")
+        public DSPointOnElementSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.")
         { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -1049,8 +1068,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DSUVOnElementSelection()
-            : base(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.")
+        public DSUVOnElementSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.")
         { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -1094,8 +1113,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class DSDividedSurfaceFamiliesSelection : DSElementsSelection
     {
-        public DSDividedSurfaceFamiliesSelection()
-            :base(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface."){}
+        public DSDividedSurfaceFamiliesSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface.") { }
     }
 
     [NodeName("Select Model Elements")]
@@ -1127,7 +1146,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DSModelElementsSelection()
-            : base(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements."){}
+        public DSModelElementsSelection(WorkspaceModel workspaceModel)
+            : base(workspaceModel, SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.") { }
     }
 }

@@ -20,7 +20,7 @@ namespace DSCoreNodesUI.Logic
      NodeDescription("Scoped If statement"), IsDesignScriptCompatible]
     public class ScopedIf : ScopedNodeModel
     {
-        public ScopedIf()
+        public ScopedIf(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             InPortData.Add(new PortData("test", "Test block"));
             InPortData.Add(new PortData("true", "True block"));
@@ -32,7 +32,7 @@ namespace DSCoreNodesUI.Logic
 
         private List<AssociativeNode> GetAstsForBranch(int branch, List<AssociativeNode> inputAstNodes)
         {
-            AstBuilder astBuilder = new AstBuilder(null);
+            AstBuilder astBuilder = new AstBuilder(this.Workspace.DynamoModel, null);
 
             // Get all upstream nodes and then remove nodes that are not 
             var nodes = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));

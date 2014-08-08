@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -22,11 +24,12 @@ namespace Dynamo.DSEngine
     public class LiveRunnerServices : IDisposable
     {
         private ILiveRunner liveRunner;
-        private EngineController controller;
+        private readonly DynamoModel dynamoModel;
 
-        public LiveRunnerServices(EngineController controller)
+        public LiveRunnerServices(DynamoModel dynamoModel, EngineController controller)
         {
-            this.controller = controller;
+            this.dynamoModel = dynamoModel;
+
             liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
         }
       
@@ -47,11 +50,10 @@ namespace Dynamo.DSEngine
         public RuntimeMirror GetMirror(string var)
         {
            
-
             var mirror = liveRunner.InspectNodeValue(var);
 
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
-                dynSettings.DynamoLogger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
+            if (dynamoModel.DebugSettings.VerboseLogging)
+                dynamoModel.Logger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
 
             return mirror;
 
@@ -63,9 +65,8 @@ namespace Dynamo.DSEngine
         /// <param name="graphData"></param>
         public void UpdateGraph(GraphSyncData graphData)
         {
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
-                dynSettings.DynamoLogger.Log("LRS.UpdateGraph: " + graphData);
-
+            if (dynamoModel.DebugSettings.VerboseLogging)
+                dynamoModel.Logger.Log("LRS.UpdateGraph: " + graphData);
 
             liveRunner.UpdateGraph(graphData);
         }

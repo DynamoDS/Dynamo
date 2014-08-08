@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double
     {
-        public DoubleSlider()
+        public DoubleSlider(WorkspaceModel workspace) : base(workspace)
         {
             Value = 0;
             Min = 0;
@@ -85,7 +85,7 @@ namespace Dynamo.Nodes
 
             tbSlider.PreviewMouseUp += delegate
             {
-                dynSettings.ReturnFocusToSearch();
+                nodeUI.ViewModel.DynamoViewModel.ReturnFocusToSearch();
             };
 
             // build grid for input and expander
@@ -292,7 +292,7 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class IntegerSlider : DSCoreNodesUI.Integer
     {
-        public IntegerSlider()
+        public IntegerSlider(WorkspaceModel workspace) : base(workspace)
         {
             RegisterAllPorts();
 
