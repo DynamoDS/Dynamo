@@ -104,7 +104,7 @@ namespace Dynamo.Applications
 
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
-            if(value == null)
+            if (Object.ReferenceEquals(value, null))
                 return new WatchViewModel(visualizationManager, "null", tag);
 
             return ProcessThing(value, tag, showRawData);
