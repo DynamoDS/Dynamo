@@ -2356,7 +2356,8 @@ y = Count(xHighFrequency);";
             thisTest.Verify("a", new Object[] { new Object[] { 4.0 }, new Object[] { 4.0 } });
         }
         [Test]
-        [Category("Replication"), Category("Failing")]
+        [Category("Replication")]
+        [Category("Failing")]
         public void T63_Defect_1467177_replication_in_imperative()
         {
             // need to move this to post R1 project
@@ -2901,7 +2902,8 @@ c=2 * {{1},{2}};";
             thisTest.Verify("y", new Object[] { 10, 2, 2, 2, 14, 15, n1, n1, n1, n1, 2 });
         }
         [Test]
-        [Category("Replication"), Category("Failing")]
+        [Category("Replication")]
+        [Category("Failing")]
         public void T73_Defect_1467069_2()
         {
             String code =
@@ -2941,7 +2943,8 @@ c=2 * {{1},{2}};";
             thisTest.Verify("y2", new Object[] { 10, 2, 2, 2, 14, 15, null, null, 0, 0, 0 });
         }
         [Test]
-        [Category("Replication"), Category("Failing")]
+        [Category("Replication")]
+        [Category("Failing")]
         public void T74_Defect_1463465()
         {
             String code =
