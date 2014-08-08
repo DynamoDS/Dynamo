@@ -39,9 +39,7 @@ namespace Dynamo.Services
         static InstrumentationLogger()
         {
             userID = GetUserID();
-
             StabilityTracking.GetInstance();
-            
         }
 
         //Service start

@@ -827,23 +827,18 @@ namespace Dynamo.Controls
         {
             var path = (string)((MenuItem)sender).Tag;
 
-            if (dynamoViewModel.IsUILocked)
-                dynamoViewModel.QueueLoad(path);
-            else
+            var workspace = dynamoViewModel.Model.HomeSpace;
+            if (workspace.HasUnsavedChanges)
             {
-                var workspace = dynamoViewModel.Model.HomeSpace;
-                if (workspace.HasUnsavedChanges)
-                {
-                    if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
-                        return; // User has not saved his/her work.
-                }
-
-                // KILLDYNSETTINGS - CanGoHome should live on the ViewModel
-                if (dynamoViewModel.Model.CanGoHome(null))
-                    dynamoViewModel.Model.Home(null);
-
-                dynamoViewModel.OpenCommand.Execute(path);
+                if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
+                    return; // User has not saved his/her work.
             }
+
+            // KILLDYNSETTINGS - CanGoHome should live on the ViewModel
+            if (dynamoViewModel.Model.CanGoHome(null))
+                dynamoViewModel.Model.Home(null);
+
+            dynamoViewModel.OpenCommand.Execute(path);
         }
 
         private void TabControlMenuItem_Click(object sender, RoutedEventArgs e)

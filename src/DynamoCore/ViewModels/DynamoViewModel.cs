@@ -59,17 +59,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool uiLocked = true;
-        public bool IsUILocked
-        {
-            get { return uiLocked; }
-            set
-            {
-                uiLocked = value;
-                RaisePropertyChanged("IsUILocked");
-            }
-        }
-
         public DynamoModel Model
         {
             get { return model; }
@@ -893,7 +882,7 @@ namespace Dynamo.ViewModels
             try
             {
                 string xmlFilePath = parameters as string;
-                ExecuteCommand(new DynCmd.OpenFileCommand(xmlFilePath));
+                ExecuteCommand(new OpenFileCommand(xmlFilePath));
             }
             catch (Exception e)
             {
@@ -1139,14 +1128,6 @@ namespace Dynamo.ViewModels
             var vm = this.Model.Workspaces.First(x => x == newWs);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
-        }
-
-        /// <summary>
-        ///     Sets the load path
-        /// </summary>
-        internal void QueueLoad(string path)
-        {
-            model.UnlockLoadPath = path;
         }
 
         internal void ShowElement(NodeModel e)

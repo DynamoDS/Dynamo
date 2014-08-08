@@ -131,9 +131,7 @@ namespace Dynamo.Models
 
         public HomeWorkspaceModel HomeSpace { get; protected set; }
 
-        // move to DynamoModel
         private ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
-
         public ObservableCollection<ModelBase> ClipBoard
         {
             get { return clipBoard; }
@@ -288,11 +286,7 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
             InitializeUpdateManager(updateManager);
-
-            //Start heartbeat reporting
-            //This needs to be done after the update manager has been initialised
-            //so that the version number can be reported
-            InstrumentationLogger.Start(this);
+            InitializeInstrumentationLogger();
 
             SearchModel = new SearchModel(this);
 
@@ -323,6 +317,11 @@ namespace Dynamo.Models
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             PackageManagerClient = new PackageManagerClient(this);
+        }
+
+        private void InitializeInstrumentationLogger()
+        {
+            InstrumentationLogger.Start(this);
         }
 
         private void InitializeUpdateManager(IUpdateManager updateManager)
@@ -503,22 +502,7 @@ namespace Dynamo.Models
             this.SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");
-
-            if (UnlockLoadPath != null && !OpenWorkspace(UnlockLoadPath))
-            {
-                Logger.Log("Workbench could not be opened.");
-
-                if (Logger != null)
-                {
-                    WriteToLog("Workbench could not be opened.");
-                    WriteToLog(UnlockLoadPath);
-                }
-            }
-
-            UnlockLoadPath = null;
-            //Controller.IsUILocked = false;
             HomeSpace.OnDisplayed();
-
         }
 
         internal bool CanDoPostUIActivation(object parameter)

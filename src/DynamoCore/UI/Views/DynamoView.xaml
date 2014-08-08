@@ -210,7 +210,7 @@
                                 <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl + Shift + S" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
+                        <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl + Shift + S">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>

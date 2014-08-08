@@ -85,15 +85,12 @@ namespace Dynamo.ViewModels
 
         private void OpenFileImpl(OpenFileCommand command)
         {
-            this.IsUILocked = true;
             this.VisualizationManager.Pause();
 
             string xmlFilePath = command.XmlFilePath;
             model.OpenInternal(xmlFilePath);
 
             this.AddToRecentFiles(xmlFilePath);
-
-            this.IsUILocked = false;
 
             //clear the clipboard to avoid copying between dyns
             model.ClipBoard.Clear();
