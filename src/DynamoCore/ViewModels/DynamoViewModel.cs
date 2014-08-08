@@ -663,7 +663,7 @@ namespace Dynamo.ViewModels
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
-            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
+            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
