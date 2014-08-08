@@ -29,6 +29,7 @@ namespace DSRevitNodesUI
             {
                 SelectedIndex = 0;
             }
+            this.ForceReExecuteOfNode = true;
         }
     }
 
@@ -45,7 +46,6 @@ namespace DSRevitNodesUI
         protected override void PopulateItems()
         {
             Items.Clear();
-            this.ForceReExecuteOfNode = true;
 
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 
