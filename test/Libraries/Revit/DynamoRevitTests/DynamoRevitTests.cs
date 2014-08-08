@@ -6,17 +6,13 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.Applications;
 using Dynamo.Applications.Models;
-using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoUnits;
-using Dynamo.UpdateManager;
 
 using DynamoUtilities;
 
 using NUnit.Framework;
 using ProtoCore.Mirror;
-using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
@@ -48,6 +44,7 @@ namespace Dynamo.Tests
 
             // Setup the core paths
             DynamoPathManager.Instance.InitializeCore(Path.GetFullPath(assDir + @"\.."));
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
             StartDynamo();
 
@@ -109,7 +106,8 @@ namespace Dynamo.Tests
                 var model = RevitDynamoModel.Start(
                     new RevitDynamoModel.StartConfiguration()
                     {
-                        StartInTestMode = true
+                        StartInTestMode = true,
+                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\")
                     });
 
                 this.ViewModel = DynamoViewModel.Start(
