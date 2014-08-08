@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
-using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 
 namespace Dynamo.Search
@@ -70,7 +62,11 @@ namespace Dynamo.Search
         /// The root elements for the browser
         /// </summary>
         private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
-        public ObservableCollection<BrowserRootElement> BrowserRootCategories { get { return _browserRootCategories; } set { _browserRootCategories = value; } }
+        public ObservableCollection<BrowserRootElement> BrowserRootCategories
+        {
+            get { return _browserRootCategories; } 
+            set { _browserRootCategories = value; }
+        }
 
         /// <summary>
         ///     SearchDictionary property
@@ -116,6 +112,17 @@ namespace Dynamo.Search
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             MaxNumSearchResults = 35;
+
+            // pre-populate the search categories
+            this.AddRootCategory(BuiltinNodeCategories.CORE);
+            this.AddRootCategory(LibraryServices.Categories.BuiltIns);
+            this.AddRootCategory(LibraryServices.Categories.Operators);
+            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.REVIT);
+            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            this.AddRootCategory("Units");
+            this.AddRootCategory("Office");
+            this.AddRootCategory("Migration");
         }
 
         #endregion

@@ -154,12 +154,6 @@ namespace Dynamo.ViewModels
             Visible = false;
             searchText = "";
 
-            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.IO);
-            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.ANALYZE);
-            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.REVIT);
-            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.GEOMETRY);
-            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.LOGIC);
-            this.Model.AddRootCategoryToStart(BuiltinNodeCategories.CORE);
             topResult = this.Model.AddRootCategoryToStart("Top Result");
             
             this.Model.RequestSync += ModelOnRequestSync;
@@ -212,6 +206,12 @@ namespace Dynamo.ViewModels
             {
                 lock (visibleSearchResults)
                 {
+                    // Remove old execute handler from old top result
+                    if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
+                    {
+                        var oldTopResult = topResult.Items.First() as NodeSearchElement;
+                        oldTopResult.Executed -= this.ExecuteElement;
+                    }
 
                     // deselect the last selected item
                     if (visibleSearchResults.Count > SelectedIndex)
@@ -253,6 +253,7 @@ namespace Dynamo.ViewModels
                         var firstRes = (t.Result.ElementAt(0) as NodeSearchElement);
 
                         var copy = firstRes.Copy();
+                        copy.Executed += this.ExecuteElement;
 
                         var catName = firstRes.FullCategoryName.Replace(".", " > ");
 
