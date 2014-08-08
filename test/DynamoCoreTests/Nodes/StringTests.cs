@@ -71,11 +71,15 @@ namespace Dynamo.Tests
         public void TestConcatStringInvalidInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, 
+                "TestConcatString_invalidInput.dyn");
 
-            RunModel(testFilePath); //later will add node and connector count verification.
+            RunModel(testFilePath);
 
-            Assert.Inconclusive("Need behavior confirmation");
+            var stringConcat = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSVarArgFunction>
+                ("eb4d8a34-5437-4064-ad52-db5c58a95451");
+            Assert.AreEqual(ElementState.Warning, stringConcat.State);
+
         }
 
         [Test]
@@ -228,8 +232,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestNumberToStringInvalidInput()
         {
-            Assert.Inconclusive("ToString node can accept a function object, and convert it to a string. "
-            +"This test case will fail because of this");
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_invalidInput.dyn");
 
@@ -237,8 +239,8 @@ namespace Dynamo.Tests
 
             // The input is a function object "String Length" unconnected to any input
             // To assert that the watch node is not displaying something such as "Pointer, opdata = 10, metaData = 58"
-            StringAssert.DoesNotContain("ointer", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-                "f8767579-f7c1-475f-980e-7cd6a42684c8").CachedValue.Data.ToString());
+            StringAssert.DoesNotContain("Pointer", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                "f8767579-f7c1-475f-980e-7cd6a42684c8").CachedValue.ToString());
         }
 
         [Test]
@@ -472,71 +474,58 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringCaseEmptyInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_emptyString.dyn");
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_emptyString.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "");
+            RunModel(testFilePath);
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "");
 
-            Assert.Inconclusive("String.StringCase node not migrated");
         }
 
         [Test]
         public void TestStringCaseFileInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFile.dyn");
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFile.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "RAINY DAY");
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            RunModel(testFilePath);
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "RAINY DAY");
         }
 
         [Test]
         public void TestStringCaseFunctionInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFunction.dyn");
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFunction.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "SUNNYDAY");
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            RunModel(testFilePath);
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "SUNNYDAY");
         }
 
         [Test]
         public void TestStringCaseInvalidInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_invalidInput.dyn");
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_invalidInput.dyn");
 
-            //RunModel(testFilePath);
+            RunModel(testFilePath);
 
-            //Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            //Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            //NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("294a2376-6751-43c3-a8b1-5492fa942dbe");
-            //Assert.AreEqual(ElementState.Warning, nodeModel.State);
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("294a2376-6751-43c3-a8b1-5492fa942dbe");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         [Test]
         public void TestStringCaseNormalInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_normal.dyn");
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_normal.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "RAINY DAY");
-            //AssertPreviewValue("77a8c84b-b5bb-46f1-a550-7b3d5441c0a1", "rainy day");
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            RunModel(testFilePath);
+            AssertPreviewValue("7805c2b9-d353-40c6-b9a6-bd430543cd33", "RAINY DAY");
+            AssertPreviewValue("c5b88685-0318-4db1-80b4-a1baf8724c83", "rainy day");
         }
 
         #endregion

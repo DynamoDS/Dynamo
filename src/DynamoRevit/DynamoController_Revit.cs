@@ -73,65 +73,11 @@ namespace Dynamo
                 if (!deleted.Any())
                     return;
 
-                var workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
-
-                ProtoCore.Core core = null;
-                if (dynSettings.Controller != null)
+                var nodes = dynRevitUtils.GetNodesFromElementIds(deleted);
+                foreach (var node in nodes)
                 {
-                    var engine = dynSettings.Controller.EngineController;
-                    if (engine != null && (engine.LiveRunnerCore != null))
-                        core = engine.LiveRunnerCore;
-                }
-
-
-                if (core == null) // No execution yet as of this point.
-                    return;
-
-                // Selecting all nodes that are either a DSFunction,
-                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids = workspace.Nodes.Where((n) =>
-                {
-                    return (n is DSFunction
-                            || (n is DSVarArgFunction)
-                            || (n is CodeBlockNodeModel));
-                }).Select((n) => n.GUID);
-
-                var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);// core.GetTraceDataForNodes(nodeGuids);
-
-                foreach (Guid guid in nodeTraceDataList.Keys)
-                {
-                    foreach (CallSite cs in nodeTraceDataList[guid])
-                    {
-                        foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
-                        {
-                            List<ISerializable> traceData = srtd.RecursiveGetNestedData();
-
-                            foreach (ISerializable thingy in traceData)
-                            {
-                                SerializableId sid = thingy as SerializableId;
-
-                                foreach (ElementId eid in deleted)
-                                {
-
-                                    if (sid != null)
-                                    {
-                                        if (sid.IntID == eid.IntegerValue)
-                                        {
-                                            NodeModel inm =
-                                                workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
-
-                                            Validity.Assert(inm != null, "The bound node has disappeared");
-
-                                            inm.RequiresRecalc = true;
-                                            inm.ForceReExecuteOfNode = true;
-
-                                            //FOUND IT!
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    node.RequiresRecalc = true;
+                    node.ForceReExecuteOfNode = true;
                 }
             }
         }
@@ -140,7 +86,6 @@ namespace Dynamo
         ///     A reference to the the SSONET assembly to prevent reloading.
         /// </summary>
         private Assembly singleSignOnAssembly;
-
 
         /// <summary>
         ///     Flag for syncing up document switches between Application.DocumentClosing and
@@ -192,8 +137,6 @@ namespace Dynamo
             SetupPython();
 
             Runner = new DynamoRunner_Revit(this);
-
-            reactor = Reactor.GetInstance();
         }
 
         private void SetupPython()
@@ -401,6 +344,10 @@ namespace Dynamo
                 MaterialsManager.Reset();
 
                 DynamoViewModel.RunEnabled = true;
+
+                //In the case that the current document is null, we also need to do
+                //a reset for the current document.
+                ResetForNewDocument();
             }
         }
 

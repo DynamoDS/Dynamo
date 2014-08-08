@@ -1,0 +1,12 @@
+<Workspace Version="0.7.1.22649" X="0" Y="0" zoom="1" Description="" Category="Misc" Name="watchtest" ID="fb724798-ad6c-4ba0-b329-9b6ad960c6cb">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="67be0e11-cc19-4940-85ad-7c3c51c0c187" nickname="Input" x="88" y="172.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="b93a43ac-e0ae-43f4-b83d-742b834234ca" nickname="Watch" x="251" y="172.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="67be0e11-cc19-4940-85ad-7c3c51c0c187" start_index="0" end="b93a43ac-e0ae-43f4-b83d-742b834234ca" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

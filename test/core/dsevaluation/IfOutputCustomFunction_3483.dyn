@@ -1,0 +1,32 @@
+<Workspace Version="0.7.1.17276" X="-1309.78479267152" Y="-670.491566559552" zoom="1.24207601799062" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCore.Map type="DSCore.Map" guid="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" nickname="List.Map" x="1674.95180357798" y="710.905045116136" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="dace0b8c-381e-4de5-824d-c1651ec94bc6" nickname="Watch" x="1838.92091141124" y="710.332216128976" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ac94e86e-7591-4e32-8830-9723de891878" nickname="Number" x="1505.90919180275" y="851.213818609502" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-2..2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e445066a-c275-4633-9160-b63f89072fff" nickname="Pass Nothing Below 1" x="1470.41056191794" y="710.924474129032" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f6533d2f-8a68-4957-865d-eeceda9da281" />
+      <Name value="Pass Nothing Below 1" />
+      <Description value="Takes inputs and only passes 1 or values above 1" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9bbe3ab2-0bd7-4cfe-9a4c-6e86854d4d3b" nickname="&lt;" x="1101.52514708616" y="627.65739956849" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="&lt;@," />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="53c10866-71b5-4ef5-a903-dcad137fe05b" nickname="Code Block" x="960.142453035377" y="502.425166403661" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" start_index="0" end="dace0b8c-381e-4de5-824d-c1651ec94bc6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac94e86e-7591-4e32-8830-9723de891878" start_index="0" end="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e445066a-c275-4633-9160-b63f89072fff" start_index="0" end="6ff4b0ad-3e3e-42a6-8c90-6ac5ae0e72dd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9bbe3ab2-0bd7-4cfe-9a4c-6e86854d4d3b" start_index="0" end="e445066a-c275-4633-9160-b63f89072fff" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53c10866-71b5-4ef5-a903-dcad137fe05b" start_index="0" end="9bbe3ab2-0bd7-4cfe-9a4c-6e86854d4d3b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Output here is a function object of &lt;" x="1421.94872145103" y="665.158151964981" />
+  </Notes>
+</Workspace>

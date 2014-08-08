@@ -70,7 +70,7 @@ namespace Revit.Elements
 
                 // if setting the plane fails, we delete the old Element
                 // in order to create a new one
-                DocumentManager.Instance.DeleteElement(oldEle.Id);
+                DocumentManager.Instance.DeleteElement(new ElementUUID(oldEle.UniqueId));
 
             }
 

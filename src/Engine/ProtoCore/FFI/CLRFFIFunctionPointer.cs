@@ -11,7 +11,7 @@ namespace ProtoFFI
     abstract class FFIMemberInfo
     {
         protected MemberInfo Info { get; private set; }
-        private AllowRankReductionAttribute mRankReducer = null;
+        private AllowRankReductionAttribute mRankReducer;
         private bool? mAllowRankReduction;
 
         protected FFIMemberInfo(MemberInfo info)
@@ -254,11 +254,6 @@ namespace ProtoFFI
 
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
-            int nParamCount = mArgTypes.Length;
-            int paramCount = mArgTypes.Length;
-            int envSize = IsDNI ? 2 : 0;
-            int totalParamCount = paramCount + envSize;
-
             List<Object> parameters = new List<object>();
             List<StackValue> s = dsi.runtime.rmem.Stack;
             Object thisObject = null;
@@ -472,7 +467,7 @@ namespace ProtoFFI
             bool isValidPointer = thisObject.IsPointer && thisObject.opdata != Constants.kInvalidIndex;
             if (isValidPointer && propValue.IsReferenceType)
             {
-                int classIndex = (int)thisObject.metaData.type;
+                int classIndex = thisObject.metaData.type;
                 if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     var core = dsi.runtime.Core;

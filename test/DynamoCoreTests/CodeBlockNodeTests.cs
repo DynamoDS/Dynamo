@@ -257,6 +257,38 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void Defect_MAGN_4024()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            // Create the initial code block node.
+            var codeBlockNodeOne = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "arr = 20 .. 29;");
+
+            // We should have one code block node by now.
+            Assert.AreEqual(1, model.Nodes.Count());
+
+            // Copy and paste the code block node.
+            model.AddToSelection(codeBlockNodeOne);
+            model.Copy(null); // Copy the selected node.
+            model.Paste(null); // Paste the copied node.
+
+            // After pasting, we should have two nodes.
+            Assert.AreEqual(2, model.Nodes.Count());
+
+            // Make sure we are able to get the second code block node.
+            var codeBlockNodeTwo = model.Nodes[1] as CodeBlockNodeModel;
+            Assert.IsNotNull(codeBlockNodeTwo);
+
+            // The preview identifier should be named as "arr_GUID" (the prefix 
+            // "arr" is derived from the named variable in the code block node).
+            // 
+            var guid = codeBlockNodeTwo.GUID.ToString();
+            var expectedIdentifier = "arr_" + guid.Replace("-", string.Empty);
+            Assert.AreEqual(expectedIdentifier, codeBlockNodeTwo.AstIdentifierBase);
+        }
+
+        [Test]
         public void Defect_MAGN_784()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");

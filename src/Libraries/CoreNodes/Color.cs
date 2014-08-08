@@ -76,7 +76,7 @@ namespace DSCore
 #endif
 
         /// <summary>
-        ///     Gets the birghtness value for this color.
+        ///     Gets the brightness value for this color.
         /// </summary>
         /// <returns name="val">Brightness value for the color.</returns>
         public static float Brightness(Color c)

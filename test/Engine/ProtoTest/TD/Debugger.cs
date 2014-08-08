@@ -14,7 +14,7 @@ namespace ProtoTest.TD
         readonly TestFrameWork thisTest = new TestFrameWork();
         ProtoCore.Core core;
         ProtoScript.Config.RunConfiguration runnerConfig;
-        string testCasePath = @"..\..\..\Scripts\TD\Debugger\";
+        string testCasePath = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
         [SetUp]
         public void SetUp()
@@ -74,9 +74,13 @@ namespace ProtoTest.TD
         }
 
         [Test]
+        [Category("Failing")]
         public void Defect_1467570_Crash_In_Debug_Mode()
         {
             string src = @" class Test {       IntArray : int[];         constructor FirstApproach(intArray : int[])     {         IntArray = intArray;     }         def Transform(adjust : int)     {         return = Test.FirstApproach(this.IntArray + adjust);     }         } myTest = Test.FirstApproach({ 1, 2 }); myNeTwst = myTest.Transform(1); ";
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3989
+            string defectID = "MAGN-3989 Inspection of 'this' pointer has issues in expression interpreter";
+
             fsr.PreStart(src, runnerConfig);
             DebugRunner.VMState vms = fsr.Step();   // myTest = Test.FirstApproach({ 1, 2 }); 
             ProtoCore.CodeModel.CodePoint cp = new ProtoCore.CodeModel.CodePoint
@@ -92,7 +96,7 @@ namespace ProtoTest.TD
             ExecutionMirror mirror = watchRunner.Execute(@"this");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
-            Assert.AreNotEqual(null, objExecVal.Payload);
+            Assert.AreNotEqual(null, objExecVal.Payload, defectID);
             Assert.AreEqual(mirror.GetType(objExecVal), "Test");
             vms = fsr.StepOver();
 
@@ -100,7 +104,7 @@ namespace ProtoTest.TD
             mirror = watchRunner.Execute(@"this");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
-            Assert.AreEqual(-1, (Int64)objExecVal.Payload);
+            Assert.AreEqual(-1, (Int64)objExecVal.Payload, defectID);
             Assert.AreEqual(mirror.GetType(objExecVal), "null");
         }
 
@@ -207,7 +211,6 @@ c = 1;";
         }
 
         [Test]
-        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ProtoGeometry")]
         public void T003_Defect_1467629_Debugging_InlineCondition_With_Multiple_Return_Types()
@@ -229,43 +232,37 @@ class FixitySymbol // this class is implicitly extended from var
         localWCS = CoordinateSystem.WCS;
         Symbol = isFixed ? // using an in-line conditional
             Cuboid.ByLengths(CoordinateSystem.ByOriginVectors(Origin, // if true 
-            localWCS.XAxis, localWCS.YAxis), Size, Size, Size) : { Sphere.ByCenterPointRadius(Origin, Size * 0.25),
-            Cone.ByCenterLineRadius(Line.ByStartPointDirectionLength(Origin, localWCS.ZAxis, -Size), Size * 0.01, Size * 0.5) };
+            Vector.ByCoordinates(1,0,0), Vector.ByCoordinates(0,1,0)), Size, Size, Size) : { Sphere.ByCenterPointRadius(Origin, Size * 0.25),
+            Cone.ByCenterLineRadius(Line.ByStartPointDirectionLength(Origin, Vector.ByCoordinates(0,0,1), -Size), Size * 0.01, Size * 0.5) };
     }
     def Move : FixitySymbol(x : double, y : double, z : double) // an instance method 
     {
         return = FixitySymbol.FromOriginSize(this.Origin.Translate(x, y, z), this.Size, this.IsFixed); // note: the use of 'this' key word to refer to the instance 
     }
-    // in general instances of DesignScript class are immutable, and cannot be changed 
-    // to give the illusion of change, this instance method actually calls a constructor 
-    // and creates a new instance, but using some of the properties of the previous instance 
-    def SetColor(color : Color)
-    {
-        this.Symbol = this.Symbol.SetColor(color); // call SetColor on constituent geometric properties 
-        return = null;
-    }
+    
 }
 origin1 = Point.ByCoordinates(5, 5, 0); // define some appropriate input arguments 
 origin2 = Point.ByCoordinates(0..10..5, 10, 0); // including a collection of points 
 firstFixitySymbol = FixitySymbol.FromOriginSize(origin1, 2, true); // initially constructed 
-firstFixitySymbol.SetColor(Color.Cyan); // set color 
 firstFixitySymbol = firstFixitySymbol.Move(0, -4, 0); // modified by the instance method";
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("Failing")]
         public void T004_Defect_IDE_963_Crash_On_Debugging()
         {
-            string src = @" import(""ProtoGeometry.dll"");a : Point = null;b : Line = null;[Associative]{    a = Point.ByCoordinates(10, 0, 0);    b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));    a = Point.ByCoordinates(15, 0, 0);}c = b;";
-            DebugTestFx.CompareDebugAndRunResults(src);
+            string defectID = "MAGN-4005 GC issue with globally declared objects used in update loop inside Associative language block";
+
+            string src = @" import(""FFITarget.dll"");
+a : DummyPoint = null;b : DummyLine = null;[Associative]{    a = DummyPoint.ByCoordinates(10, 0, 0);    b = DummyLine.ByStartPointEndPoint(a, DummyPoint.ByCoordinates(10, 5, 0));    a = DummyPoint.ByCoordinates(15, 0, 0);}c = b;";
+            DebugTestFx.CompareDebugAndRunResults(src, defectID);
         }
 
         [Test]
-        [Category("ProtoGeometry")]
         public void T005_Defect_IDE_963_Crash_On_Debugging()
         {
-            string src = @" import(""ProtoGeometry.dll"");a : Point = null;b : Line = null;[Imperative]{    a = Point.ByCoordinates(10, 0, 0);    b = Line.ByStartPointEndPoint(a, Point.ByCoordinates(10, 5, 0));    a = Point.ByCoordinates(15, 0, 0);}c = b;";
+            string src = @" import(""FFITarget.dll"");a : DummyPoint = null;b : DummyLine = null;[Imperative]{    a = DummyPoint.ByCoordinates(10, 0, 0);    b = DummyLine.ByStartPointEndPoint(a, DummyPoint.ByCoordinates(10, 5, 0));    a = DummyPoint.ByCoordinates(15, 0, 0);}c = b;";
             DebugTestFx.CompareDebugAndRunResults(src);
         }
     }

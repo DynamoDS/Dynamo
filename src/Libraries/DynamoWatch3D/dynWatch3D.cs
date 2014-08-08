@@ -1,17 +1,27 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ProtoCore.AST.AssociativeAST;
+
+using VMDataBridge;
+
+using Color = System.Windows.Media.Color;
 
 namespace Dynamo.Nodes
 {
@@ -31,7 +41,18 @@ namespace Dynamo.Nodes
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
+
+        public DelegateCommand ToggleCanNavigateBackgroundCommand
+        {
+            get
+            {
+                var dvm = dynSettings.Controller.DynamoViewModel;
+                return dvm.ToggleCanNavigateBackgroundCommand;
+            }
+        }
+
         public bool WatchIsResizable { get; set; }
+        public bool IsBackgroundPreview { get { return false; } }
 
         public Watch3DView View { get; private set; }
 
@@ -61,6 +82,32 @@ namespace Dynamo.Nodes
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             WatchIsResizable = true;
+        }
+
+        private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
+        {
+            if (data is IGraphicItem)
+                yield return data as IGraphicItem;
+            else if (data is IEnumerable)
+            {
+                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
+                foreach (var g in graphics)
+                    yield return g;
+            }
+        }
+
+        private static RenderPackage PackageRenderData(IGraphicItem gItem)
+        {
+            var renderPackage = new RenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
+            renderPackage.ItemsCount++;
+            return renderPackage;
+        }
+
+        private void RenderData(object data)
+        {
+            View.RenderDrawables(
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID.ToString(), -1));
         }
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
@@ -99,6 +146,14 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Children.Add(backgroundRect);
             nodeUI.PresentationGrid.Children.Add(View);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
+
+            DataBridge.Instance.RegisterCallback(
+                GUID.ToString(),
+                obj =>
+                    nodeUI.Dispatcher.Invoke(
+                        new Action<object>(RenderData),
+                        DispatcherPriority.Render,
+                        obj));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -175,6 +230,41 @@ namespace Dynamo.Nodes
         {
             //do nothing
             //a watch should not draw its outputs
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if (IsPartiallyApplied)
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionObject(
+                            new IdentifierListNode
+                            {
+                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
+                                RightNode = AstFactory.BuildIdentifier("BridgeData")
+                            },
+                            2,
+                            new[] { 0 },
+                            new List<AssociativeNode>
+                            {
+                                AstFactory.BuildStringNode(GUID.ToString()),
+                                AstFactory.BuildNullNode()
+                            }))
+                };
+            }
+
+            var resultAst = new[]
+            {
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
+            };
+
+            return resultAst;
         }
 
         #region IWatchViewModel interface

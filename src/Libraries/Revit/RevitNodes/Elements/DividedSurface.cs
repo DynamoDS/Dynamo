@@ -159,8 +159,7 @@ namespace Revit.Elements
         /// <summary>
         /// Method to set the grid rotation of the internal divided surface
         /// </summary>
-        /// <param name="uDivs"></param>
-        /// <param name="vDivs"></param>
+        /// <param name="rotation"></param>
         private void InternalSetRotation(double rotation)
         {
             TransactionManager.Instance.EnsureInTransaction(Document);

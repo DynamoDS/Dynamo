@@ -145,6 +145,13 @@ limitations under the License.
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
+    <Compile Include="Models\ScopedNodeModel.cs" />
+    <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
+    <Compile Include="Nodes\ZeroTouch\DSFunctionBase.cs" />
+    <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
+    <Compile Include="Nodes\FunctionCallNodeController.cs" />
+    <Compile Include="Nodes\FunctionCallBase.cs" />
+    <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
@@ -182,7 +189,7 @@ limitations under the License.
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Models\WorkspaceMigrations.cs" />
-    <Compile Include="Nodes\DSFunction.cs" />
+    <Compile Include="Nodes\ZeroTouch\DSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
@@ -346,7 +353,7 @@ limitations under the License.
     <Compile Include="Nodes\BaseTypes.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Files.cs" />
-    <Compile Include="Nodes\Function.cs" />
+    <Compile Include="Nodes\Custom Nodes\Function.cs" />
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Core\dynSettings.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
@@ -456,6 +463,11 @@ limitations under the License.
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>

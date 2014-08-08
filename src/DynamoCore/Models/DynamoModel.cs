@@ -717,6 +717,14 @@ namespace Dynamo.Models
                 return null;
             }
 
+            // Fix for: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4024
+            // Various derived classes of NodeModel like CodeBlockNode, build 
+            // their internal variables based on the node's GUID. In cases like 
+            // this, a node's GUID must be finalized before variable generation 
+            // logic kicks in.
+            // 
+            node.GUID = nodeId; // Set the node's GUID before anything else.
+
             if (useDefaultPos == false) // Position was specified.
             {
                 node.X = x;
@@ -728,9 +736,6 @@ namespace Dynamo.Models
 
             if (null != xmlNode)
                 node.Load(xmlNode);
-
-            // Override the guid so we can store for connection lookup
-            node.GUID = nodeId;
 
             DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = viewModel.CurrentSpaceViewModel;
@@ -1060,32 +1065,7 @@ namespace Dynamo.Models
         /// <returns> The newly instantiated dynNode</returns>
         public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            object createdNode = null;
-
-            if (elementType.IsAssignableFrom(typeof(DSVarArgFunction)))
-            {
-                // If we are looking at a 'DSVarArgFunction', we'd better had 
-                // 'signature' readily available, otherwise we have a problem.
-                if (string.IsNullOrEmpty(signature))
-                {
-                    var message = "Unknown function signature";
-                    throw new ArgumentException(message, "signature");
-                }
-
-                // Invoke the constructor that takes in a 'FunctionDescriptor'.
-                var engine = dynSettings.Controller.EngineController;
-                var functionDescriptor = engine.GetFunctionDescriptor(signature);
-
-                if (functionDescriptor == null)
-                    throw new UnresolvedFunctionException(signature);
-
-                createdNode = Activator.CreateInstance(elementType,
-                    new object[] { functionDescriptor });
-            }
-            else
-            {
-                createdNode = Activator.CreateInstance(elementType);
-            }
+            object createdNode =  Activator.CreateInstance(elementType);
 
             // The attempt to create node instance may fail due to "elementType"
             // being something else other than "NodeModel" derived object type. 
@@ -1620,13 +1600,14 @@ namespace Dynamo.Models
                 nodeLookup.Add(node.GUID, newGuid);
 
                 string nodeName = node.GetType().ToString();
+
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
 #if USE_DSENGINE
                 else if (node is DSFunction)
-                    nodeName = ((node as DSFunction).Definition.MangledName);
+                    nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
-                    nodeName = ((node as DSVarArgFunction).Definition.MangledName);
+                    nodeName = ((node as DSVarArgFunction).Controller.MangledName);
 #endif
 
                 var xmlDoc = new XmlDocument();
@@ -1634,7 +1615,14 @@ namespace Dynamo.Models
                 xmlDoc.AppendChild(dynEl);
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                createdModels.Add(CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl));
+                var newNode = CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl);
+                createdModels.Add(newNode);
+
+                newNode.ArgumentLacing = node.ArgumentLacing;
+                if (!string.IsNullOrEmpty(node.NickName))
+                {
+                    newNode.NickName = node.NickName;
+                }
             }
 
             OnRequestLayoutUpdate(this, EventArgs.Empty);

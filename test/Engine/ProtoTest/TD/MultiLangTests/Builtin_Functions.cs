@@ -722,7 +722,7 @@ result =
             thisTest.Verify("a2", v4, 0);
             thisTest.Verify("result", 1, 0);
         }
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void T021_CountTrue_ModifierStack()
         {
@@ -740,7 +740,7 @@ a = {
 	result = {a1,a2,a3,a4,a5};
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 2, 1, null, 2.56, 0 };
+            Object[] v1 = new Object[] { 0, 0, null, 2.56, 0 };
             thisTest.Verify("result", v1, 0);
         }
 
@@ -1040,7 +1040,7 @@ result =
             thisTest.Verify("a2", v4, 0);
             thisTest.Verify("result", 1, 0);
         }
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void T032_CountFalse_ModifierStack()
         {
@@ -1058,7 +1058,7 @@ a = {
 	result = {a1,a2,a3,a4,a5};
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 2, 1, null, 2.56, 0 };
+            Object[] v1 = new Object[] { 0, 0, null, 2.56, 0 };
             thisTest.Verify("result", v1, 0);
         }
 
@@ -3854,9 +3854,9 @@ t4 = Math.Pow( -2..2, -2..2 ) ;
             thisTest.Verify("a1", 4.0);
             thisTest.Verify("b1", 0.25);
             thisTest.Verify("c1", 0.160);
-            //thisTest.Verify("d1", Double.NaN);
+            TestFrameWork.AssertNan("d1");
             thisTest.Verify("t1", 1.0);
-            //thisTest.Verify("t2", Double.PositiveInfinity);
+            TestFrameWork.AssertInfinity("t2");
             thisTest.Verify("t4", new Object[] { 0.25, -1.0, 1.0, 1.0, 4.0 });
         }
 
