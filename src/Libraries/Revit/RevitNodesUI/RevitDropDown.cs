@@ -41,10 +41,11 @@ namespace DSRevitNodesUI
         private const string noFamilyTypes = "No family types available.";
 
         public FamilyTypes():base("Family Type"){ }
-        
+
         protected override void PopulateItems()
         {
             Items.Clear();
+            this.ForceReExecuteOfNode = true;
 
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 

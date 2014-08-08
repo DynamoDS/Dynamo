@@ -713,14 +713,16 @@ namespace Dynamo.Models
 
             if (OutPortData.Count == 1)
             {
-                return
-                    result.Concat(
-                        new[]
-                        {
-                            AstFactory.BuildAssignment(
-                                AstIdentifierForPreview,
-                                GetAstIdentifierForOutputIndex(0))
-                        });
+                var firstOuputIdent = GetAstIdentifierForOutputIndex(0);
+                if (!AstIdentifierForPreview.Equals(firstOuputIdent))
+                {
+                    result = result.Concat(
+                    new[]
+                    {
+                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOuputIdent)
+                    });
+                }
+                return result;
             }
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
