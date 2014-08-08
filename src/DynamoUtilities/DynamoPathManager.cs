@@ -181,8 +181,8 @@ namespace DynamoUtilities
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            sb.AppendLine(String.Format("Ui: {0}", LibG));
-            sb.AppendLine(String.Format("Asm: {0}", Ui));
+            sb.AppendLine(String.Format("Ui: {0}", Ui));
+            sb.AppendLine(String.Format("Asm: {0}", LibG));
             Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
             Debug.WriteLine(sb);
@@ -307,7 +307,8 @@ namespace DynamoUtilities
         /// <returns>True if it finds a directory, false if it can't find a directory</returns>
         public bool FindAndSetASMHostPath()
         {
-            string baseSearchDirectory = @"C:\Program Files\Autodesk";
+            string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Autodesk");
+
             DirectoryInfo root = null;
 
             try
@@ -321,8 +322,8 @@ namespace DynamoUtilities
                 return false;
             }
 
-            System.IO.FileInfo[] files = null;
-            System.IO.DirectoryInfo[] subDirs = null;
+            FileInfo[] files;
+            DirectoryInfo[] subDirs;
 
             try
             {
@@ -339,7 +340,7 @@ namespace DynamoUtilities
             if (subDirs.Length == 0)
                 return false;
 
-            foreach (System.IO.DirectoryInfo dirInfo in subDirs)
+            foreach (var dirInfo in subDirs)
             {
                 // AutoCAD directories don't seem to contain all the needed ASM DLLs
                 if (!dirInfo.Name.Contains("Revit") && !dirInfo.Name.Contains("Vasari"))
