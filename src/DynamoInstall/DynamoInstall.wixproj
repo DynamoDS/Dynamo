@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)/Config/Install.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -13,15 +16,14 @@
     <Name>DynamoInstall</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH)</DefineConstants>
     <WixVariables>
     </WixVariables>
   </PropertyGroup>
@@ -39,13 +41,12 @@
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
-    <PreBuildEvent>$(DYNAMO_REVIT_SIGN_TOOLS)\SignData.exe $(DYNAMO_BASE)\bin\AnyCPU\Release\Revit_2015\DynamoRevitDS.dll $(DYNAMO_REVIT_SIGN_TOOLS)\pair.dat INT
-robocopy $(TargetDir)..\..\..\..\bin\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int
+    <PreBuildEvent>$(DYNAMO_REVIT_SIGN_TOOLS)\SignData.exe $(DYNAMO_BASE_PATH)\bin\AnyCPU\Release\Revit_2015\DynamoRevitDS.dll $(DYNAMO_REVIT_SIGN_TOOLS)\pair.dat INT
+robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int
 
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var env.DYNAMO_HARVEST_PATH -out "$(ProjectDir)Release.wxs"
-
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "$(SolutionDir)..\doc\distrib\Samples" -cg SAMPLES -gg -scom -sreg -dr PROGDATA_07 -var env.DYNAMO_SAMPLES_PATH -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir "$(SolutionDir)..\doc\distrib\migration_nodes" -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA_07 -var env.DYNAMO_MIGRATION_NODES_PATH -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA_07 -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA_07 -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.

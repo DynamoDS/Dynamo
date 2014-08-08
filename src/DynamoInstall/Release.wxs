@@ -12,524 +12,524 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="RELEASE">
-            <Component Id="cmp3E2251A86474CE7FEE5AAED57F9711FA" Directory="DYNAMO_INSTALLDIR" Guid="{5B3B78AB-C596-4913-85F2-602725077209}">
-                <File Id="filF5C5F84A8BD5990F8544B36359C3769D" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\CSharpAnalytics.WinForms.dll" />
+            <Component Id="cmp3E2251A86474CE7FEE5AAED57F9711FA" Directory="DYNAMO_INSTALLDIR" Guid="{AC90E7D9-D117-4386-81EE-F0790FC1566D}">
+                <File Id="filF5C5F84A8BD5990F8544B36359C3769D" KeyPath="yes" Source="$(var.harvest)\CSharpAnalytics.WinForms.dll" />
             </Component>
-            <Component Id="cmp43D6D40B23F33FA34AE01B144CA66104" Directory="DYNAMO_INSTALLDIR" Guid="{23B67534-3D0A-44C8-B647-B1F5E93C87A3}">
-                <File Id="fil573E38282467926B0879C1DA8502E443" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSCoreNodes.dll" />
+            <Component Id="cmp43D6D40B23F33FA34AE01B144CA66104" Directory="DYNAMO_INSTALLDIR" Guid="{078FBE7F-D0CF-4788-B999-4CEA39C85AF8}">
+                <File Id="fil573E38282467926B0879C1DA8502E443" KeyPath="yes" Source="$(var.harvest)\DSCoreNodes.dll" />
             </Component>
-            <Component Id="cmp4085DFF8F58DCE6EDCA13D4C937A2EAC" Directory="DYNAMO_INSTALLDIR" Guid="{B22F1944-22D6-4040-8402-28AA9B539F91}">
-                <File Id="fil2F73F6526BDA70423E758B92917C9BC8" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSCoreNodes.xml" />
+            <Component Id="cmp4085DFF8F58DCE6EDCA13D4C937A2EAC" Directory="DYNAMO_INSTALLDIR" Guid="{BF059307-98EA-4933-B631-6EF0127CD4FD}">
+                <File Id="fil2F73F6526BDA70423E758B92917C9BC8" KeyPath="yes" Source="$(var.harvest)\DSCoreNodes.xml" />
             </Component>
-            <Component Id="cmp4CB65EEE800DB6C1111C1147CDA76100" Directory="DYNAMO_INSTALLDIR" Guid="{EB7D6A08-BD83-4769-9C3B-64B8E5D7A7E0}">
-                <File Id="fil93180DABF0527AA65B692B758E63CF28" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSCoreNodes_DynamoCustomization.xml" />
+            <Component Id="cmp4CB65EEE800DB6C1111C1147CDA76100" Directory="DYNAMO_INSTALLDIR" Guid="{DC68506B-739B-41FA-9A95-43CF962C6482}">
+                <File Id="fil93180DABF0527AA65B692B758E63CF28" KeyPath="yes" Source="$(var.harvest)\DSCoreNodes_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmpB85EA291976D8837817C09827F3BE669" Directory="DYNAMO_INSTALLDIR" Guid="{C5196BD0-1226-4214-9AD6-20A9BD9EAA84}">
-                <File Id="filE3779CCECCD36C31098EAA0FC51D4D9C" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSIronPython.dll" />
+            <Component Id="cmpB85EA291976D8837817C09827F3BE669" Directory="DYNAMO_INSTALLDIR" Guid="{FAA4E7EC-4078-468D-9F1A-81CF41B8F7B8}">
+                <File Id="filE3779CCECCD36C31098EAA0FC51D4D9C" KeyPath="yes" Source="$(var.harvest)\DSIronPython.dll" />
             </Component>
-            <Component Id="cmp685D22A49A3A54E2B630000C1DF75E8A" Directory="DYNAMO_INSTALLDIR" Guid="{CBEE8973-CB81-4131-897A-B3AEC89B25A8}">
-                <File Id="fil33621636D533479E7FEC0868843899F3" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSIronPython_DynamoCustomization.xml" />
+            <Component Id="cmp685D22A49A3A54E2B630000C1DF75E8A" Directory="DYNAMO_INSTALLDIR" Guid="{A6AB8C20-DA13-44CB-8CA2-AD00385293C7}">
+                <File Id="fil33621636D533479E7FEC0868843899F3" KeyPath="yes" Source="$(var.harvest)\DSIronPython_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmp0A5C13A52E1356883007539729F94096" Directory="DYNAMO_INSTALLDIR" Guid="{44D9FAD1-7E97-4E96-91BD-EF801B8961F8}">
-                <File Id="fil0B7D96E405588CF0714E5591E9AC0322" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSNodeServices.dll" />
+            <Component Id="cmp0A5C13A52E1356883007539729F94096" Directory="DYNAMO_INSTALLDIR" Guid="{DAF12231-C700-47AD-8286-A96010E2CD62}">
+                <File Id="fil0B7D96E405588CF0714E5591E9AC0322" KeyPath="yes" Source="$(var.harvest)\DSNodeServices.dll" />
             </Component>
-            <Component Id="cmp9A7039D02C3C5C3A528079E6064A7580" Directory="DYNAMO_INSTALLDIR" Guid="{972AB569-BBD9-482E-B568-2D7091C64162}">
-                <File Id="fil6F808D634A2D92A0915D539B4029AED0" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSNodeServicesTest.dll" />
+            <Component Id="cmp9A7039D02C3C5C3A528079E6064A7580" Directory="DYNAMO_INSTALLDIR" Guid="{147CA040-B046-4A1B-8B1E-EC3F874AE384}">
+                <File Id="fil6F808D634A2D92A0915D539B4029AED0" KeyPath="yes" Source="$(var.harvest)\DSNodeServicesTest.dll" />
             </Component>
-            <Component Id="cmp3ECBEF8BB16B0BEF6F50ABD288CBA6E6" Directory="DYNAMO_INSTALLDIR" Guid="{872D3631-3A4B-4EEF-89CB-5D51C3C00878}">
-                <File Id="fil9E8B31A2078A3F9637A40D1AE847CA75" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSOffice.dll" />
+            <Component Id="cmp3ECBEF8BB16B0BEF6F50ABD288CBA6E6" Directory="DYNAMO_INSTALLDIR" Guid="{7D7A557A-BC73-404A-B199-387BDBE398C9}">
+                <File Id="fil9E8B31A2078A3F9637A40D1AE847CA75" KeyPath="yes" Source="$(var.harvest)\DSOffice.dll" />
             </Component>
-            <Component Id="cmpA6070ACB20F2F9D8D55BDAF37EF342D8" Directory="DYNAMO_INSTALLDIR" Guid="{94193D0E-C505-44CC-A5B8-478EC62904CD}">
-                <File Id="fil7982CAE8C290E2B9E4033A737A59880A" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DSOffice_DynamoCustomization.xml" />
+            <Component Id="cmpA6070ACB20F2F9D8D55BDAF37EF342D8" Directory="DYNAMO_INSTALLDIR" Guid="{6311220D-97E4-4384-85EF-B363D99DE2DE}">
+                <File Id="fil7982CAE8C290E2B9E4033A737A59880A" KeyPath="yes" Source="$(var.harvest)\DSOffice_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmpADCBC3193256B15366F6E2F79B72495B" Directory="DYNAMO_INSTALLDIR" Guid="{A39F55EC-9E97-4C54-B832-E64A99ECDE12}">
-                <File Id="fil32FE90BB0EA1BC5BB1F16264A59EC3E2" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Dynamo.cer" />
+            <Component Id="cmpADCBC3193256B15366F6E2F79B72495B" Directory="DYNAMO_INSTALLDIR" Guid="{90D168FF-C001-4551-A69E-FB3CDF0B33CD}">
+                <File Id="fil32FE90BB0EA1BC5BB1F16264A59EC3E2" KeyPath="yes" Source="$(var.harvest)\Dynamo.cer" />
             </Component>
-            <Component Id="cmp63751B213DD772845142149EBBDD722E" Directory="DYNAMO_INSTALLDIR" Guid="{87CDE1F6-884B-48E6-ACA4-7AFF4B1545E6}">
-                <File Id="fil939AD32D5863C404DC806203090FE059" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoArduino.dll" />
+            <Component Id="cmp63751B213DD772845142149EBBDD722E" Directory="DYNAMO_INSTALLDIR" Guid="{DAF0D82C-FBF1-41E7-A963-6F79DBEE4155}">
+                <File Id="fil939AD32D5863C404DC806203090FE059" KeyPath="yes" Source="$(var.harvest)\DynamoArduino.dll" />
             </Component>
-            <Component Id="cmp98B8E8140CFEF4BF528F07286B1FCEED" Directory="DYNAMO_INSTALLDIR" Guid="{A5D71527-DBE3-4CFD-8294-759C00CB854A}">
-                <File Id="fil372C52E437899FA361986420412EDFA7" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoArduino.XML" />
+            <Component Id="cmp98B8E8140CFEF4BF528F07286B1FCEED" Directory="DYNAMO_INSTALLDIR" Guid="{7C46A016-29AF-4646-96B1-202597F71F61}">
+                <File Id="fil372C52E437899FA361986420412EDFA7" KeyPath="yes" Source="$(var.harvest)\DynamoArduino.XML" />
             </Component>
-            <Component Id="cmpCE27BF42E626182BDB8999BFDF380B1D" Directory="DYNAMO_INSTALLDIR" Guid="{BBE6C0F7-B166-4087-9CA2-18ECB51E3FEE}">
-                <File Id="fil065B7471CDA6BEF82C9E704BCFF26F09" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoCore.dll" />
+            <Component Id="cmpCE27BF42E626182BDB8999BFDF380B1D" Directory="DYNAMO_INSTALLDIR" Guid="{E78E8F4B-6F73-4352-A748-D2F23CCBC8D7}">
+                <File Id="fil065B7471CDA6BEF82C9E704BCFF26F09" KeyPath="yes" Source="$(var.harvest)\DynamoCore.dll" />
             </Component>
-            <Component Id="cmp89A93225DCA34DE098ABBD977551EA63" Directory="DYNAMO_INSTALLDIR" Guid="{2133E1D2-10DD-419B-881F-43992A0CC02A}">
-                <File Id="fil420F1CAA6F9F17D21B969D8FF61A810F" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoCrypto.dll" />
+            <Component Id="cmp89A93225DCA34DE098ABBD977551EA63" Directory="DYNAMO_INSTALLDIR" Guid="{36E93F87-428B-4ACF-8DBA-A7B1194D2272}">
+                <File Id="fil420F1CAA6F9F17D21B969D8FF61A810F" KeyPath="yes" Source="$(var.harvest)\DynamoCrypto.dll" />
             </Component>
-            <Component Id="cmp303CCF1A3A3EDB28DF960E9AF1CC29F3" Directory="DYNAMO_INSTALLDIR" Guid="{85746FC9-744A-4C3D-B586-4681FFEC93F2}">
-                <File Id="fil7FBBD5F3B7BA5965C7A39361DD93B486" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoMSOffice.dll" />
+            <Component Id="cmp303CCF1A3A3EDB28DF960E9AF1CC29F3" Directory="DYNAMO_INSTALLDIR" Guid="{E7120479-705D-43AE-9FC1-7CFCFD7552BE}">
+                <File Id="fil7FBBD5F3B7BA5965C7A39361DD93B486" KeyPath="yes" Source="$(var.harvest)\DynamoMSOffice.dll" />
             </Component>
-            <Component Id="cmp7AEC0601C98D78F427EA973846045D40" Directory="DYNAMO_INSTALLDIR" Guid="{F1376EEF-B4CF-41F3-8C39-81235228BE2A}">
-                <File Id="fil03F1F18324BDF4E3901183729F467072" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoPython.dll" />
+            <Component Id="cmp7AEC0601C98D78F427EA973846045D40" Directory="DYNAMO_INSTALLDIR" Guid="{BD20C63F-EFDE-44F5-B8C7-E21FB7DA2303}">
+                <File Id="fil03F1F18324BDF4E3901183729F467072" KeyPath="yes" Source="$(var.harvest)\DynamoPython.dll" />
             </Component>
-            <Component Id="cmp060C6F51B39BE61D171F7958C214F1DF" Directory="DYNAMO_INSTALLDIR" Guid="{905EF9B2-43C4-4AFB-B77A-058400786176}">
-                <File Id="filCE82F12CF5DEB87418E7F7763CFE57CF" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoPython.XML" />
+            <Component Id="cmp060C6F51B39BE61D171F7958C214F1DF" Directory="DYNAMO_INSTALLDIR" Guid="{5164241D-83CA-46E0-8C5F-200A69DE49CE}">
+                <File Id="filCE82F12CF5DEB87418E7F7763CFE57CF" KeyPath="yes" Source="$(var.harvest)\DynamoPython.XML" />
             </Component>
-            <Component Id="cmp7047767F654E84578A269DB2428AA30A" Directory="DYNAMO_INSTALLDIR" Guid="{D2CD2922-C1BB-443E-9773-9C65263C4744}">
-                <File Id="filB2F2BB30ADF6B505897C845E80669669" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoSandbox.exe" />
+            <Component Id="cmp7047767F654E84578A269DB2428AA30A" Directory="DYNAMO_INSTALLDIR" Guid="{728CFEBF-7D6C-4404-AD51-61AEF14D10BF}">
+                <File Id="filB2F2BB30ADF6B505897C845E80669669" KeyPath="yes" Source="$(var.harvest)\DynamoSandbox.exe" />
             </Component>
-            <Component Id="cmp922F23F912E6F762FB86E68BB1EF5698" Directory="DYNAMO_INSTALLDIR" Guid="{05282FB3-DF79-472F-B709-F90AB7CD13B8}">
-                <File Id="fil0A11922E6DA127AFE7B898FB5C7C6858" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoSandbox.exe.config" />
+            <Component Id="cmp922F23F912E6F762FB86E68BB1EF5698" Directory="DYNAMO_INSTALLDIR" Guid="{4B55161E-1C92-4426-BD08-69684F605D97}">
+                <File Id="fil0A11922E6DA127AFE7B898FB5C7C6858" KeyPath="yes" Source="$(var.harvest)\DynamoSandbox.exe.config" />
             </Component>
-            <Component Id="cmp63995FF502D8C686D1DEC2355B55E256" Directory="DYNAMO_INSTALLDIR" Guid="{8B4351DD-2B56-47E1-A156-25ABDE7E740E}">
-                <File Id="fil4829C9C20169C25925E88FF5E2C1C055" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoUnits.dll" />
+            <Component Id="cmp63995FF502D8C686D1DEC2355B55E256" Directory="DYNAMO_INSTALLDIR" Guid="{774A3951-5403-4537-9C64-37AF00D037EF}">
+                <File Id="fil4829C9C20169C25925E88FF5E2C1C055" KeyPath="yes" Source="$(var.harvest)\DynamoUnits.dll" />
             </Component>
-            <Component Id="cmp90F64E394623F65C6E595E78BAD71215" Directory="DYNAMO_INSTALLDIR" Guid="{FB1B3B66-8952-440E-9DCA-09093EAE49D2}">
-                <File Id="fil3CA4E8CA2F981C53B97B2E8D7D217651" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoUnits_DynamoCustomization.xml" />
+            <Component Id="cmp90F64E394623F65C6E595E78BAD71215" Directory="DYNAMO_INSTALLDIR" Guid="{3D0C8CEB-F098-41A1-B434-64A0F3F48C3C}">
+                <File Id="fil3CA4E8CA2F981C53B97B2E8D7D217651" KeyPath="yes" Source="$(var.harvest)\DynamoUnits_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmp98E5B7C9A6C2DBC7DFE86190FF975A3B" Directory="DYNAMO_INSTALLDIR" Guid="{68D58F29-9B73-4EB6-995D-0D3C6F54E60C}">
-                <File Id="filEF79D0B06A54A7ABD9E155DC515C1536" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\DynamoUtilities.dll" />
+            <Component Id="cmp98E5B7C9A6C2DBC7DFE86190FF975A3B" Directory="DYNAMO_INSTALLDIR" Guid="{7FB1BC7C-B88B-44EF-A067-B9C03CE99E95}">
+                <File Id="filEF79D0B06A54A7ABD9E155DC515C1536" KeyPath="yes" Source="$(var.harvest)\DynamoUtilities.dll" />
             </Component>
-            <Component Id="cmp05F05047E341374F96FF9DF190C0C835" Directory="DYNAMO_INSTALLDIR" Guid="{DA6883E1-0944-45A9-A84E-334DB6106F02}">
-                <File Id="fil050187C3B87B7C4AD2BDAD668481F7FD" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\FFITarget.dll" />
+            <Component Id="cmp05F05047E341374F96FF9DF190C0C835" Directory="DYNAMO_INSTALLDIR" Guid="{77991120-8DFC-4999-BB4A-1CC336502D56}">
+                <File Id="fil050187C3B87B7C4AD2BDAD668481F7FD" KeyPath="yes" Source="$(var.harvest)\FFITarget.dll" />
             </Component>
-            <Component Id="cmp390E968B42E5DFCB8A4CCF73EDAC2D4A" Directory="DYNAMO_INSTALLDIR" Guid="{3C836B3A-B796-49F6-A551-508B689DE3BF}">
-                <File Id="filBB21FAB95F0B2CC3EA8053121068FA06" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Flatten.ds" />
+            <Component Id="cmp390E968B42E5DFCB8A4CCF73EDAC2D4A" Directory="DYNAMO_INSTALLDIR" Guid="{A84348B7-EE93-4CA2-AEF3-48071704CA26}">
+                <File Id="filBB21FAB95F0B2CC3EA8053121068FA06" KeyPath="yes" Source="$(var.harvest)\Flatten.ds" />
             </Component>
-            <Component Id="cmp2000A6ADE8AFFB03372B54A8D7EDA4C7" Directory="DYNAMO_INSTALLDIR" Guid="{599F922E-58CE-46E5-9CB3-2CFC42E318DB}">
-                <File Id="fil2685B92CC909C0E9561F237855EAA29C" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\FunctionObject.ds" />
+            <Component Id="cmp2000A6ADE8AFFB03372B54A8D7EDA4C7" Directory="DYNAMO_INSTALLDIR" Guid="{780856E7-46F2-4C11-987F-D852F9DE9F08}">
+                <File Id="fil2685B92CC909C0E9561F237855EAA29C" KeyPath="yes" Source="$(var.harvest)\FunctionObject.ds" />
             </Component>
-            <Component Id="cmpE04787A54E65CECE6381F006702C90EA" Directory="DYNAMO_INSTALLDIR" Guid="{6CBB7FA8-D8C4-4222-84F7-A025E162C6A7}">
-                <File Id="fil007F8C37EFA591832495312FE9DA1C99" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\GraphLayout.dll" />
+            <Component Id="cmpE04787A54E65CECE6381F006702C90EA" Directory="DYNAMO_INSTALLDIR" Guid="{F089C924-037F-4D59-8EDC-561BAAA47B18}">
+                <File Id="fil007F8C37EFA591832495312FE9DA1C99" KeyPath="yes" Source="$(var.harvest)\GraphLayout.dll" />
             </Component>
-            <Component Id="cmpF60E29081F80ED0A7619FF0E96977855" Directory="DYNAMO_INSTALLDIR" Guid="{4E6065AB-D8D0-437C-8E86-7B71B0D56E1D}">
-                <File Id="fil7EA70DF8CC2C7D7CD8328757D89965F5" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\GraphToDSCompiler.dll" />
+            <Component Id="cmpF60E29081F80ED0A7619FF0E96977855" Directory="DYNAMO_INSTALLDIR" Guid="{5192A021-8FDF-4805-8957-A5A2FFA850CC}">
+                <File Id="fil7EA70DF8CC2C7D7CD8328757D89965F5" KeyPath="yes" Source="$(var.harvest)\GraphToDSCompiler.dll" />
             </Component>
-            <Component Id="cmp103730DBAE7295EC88981262AD99776B" Directory="DYNAMO_INSTALLDIR" Guid="{06224289-647E-4203-A268-597FB30D00FA}">
-                <File Id="fil3C3C40C93CEC4E6AE0506639AEE36841" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Greg.dll" />
+            <Component Id="cmp103730DBAE7295EC88981262AD99776B" Directory="DYNAMO_INSTALLDIR" Guid="{0B8C1112-C68D-4733-A755-32E6F1B11C90}">
+                <File Id="fil3C3C40C93CEC4E6AE0506639AEE36841" KeyPath="yes" Source="$(var.harvest)\Greg.dll" />
             </Component>
-            <Component Id="cmpB50730F9F464BE7AB067826E481B8FA1" Directory="DYNAMO_INSTALLDIR" Guid="{16B05CC1-7CAC-400B-80AF-0194BF2D0E2C}">
-                <File Id="fil646D0EA58EA32FC0ECB2495E3F7C79CD" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\HelixToolkit.Wpf.dll" />
+            <Component Id="cmpB50730F9F464BE7AB067826E481B8FA1" Directory="DYNAMO_INSTALLDIR" Guid="{67F2EB3C-0706-4AB5-A140-06BC6E0D3908}">
+                <File Id="fil646D0EA58EA32FC0ECB2495E3F7C79CD" KeyPath="yes" Source="$(var.harvest)\HelixToolkit.Wpf.dll" />
             </Component>
-            <Component Id="cmp861E3D3E720688085FD1D959875C0A2D" Directory="DYNAMO_INSTALLDIR" Guid="{D051F977-5FC3-43D4-8DF5-05B62AD03403}">
-                <File Id="fil0F19A08C3F4A92EAD2C73B7BF5193FEB" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\HelixToolkit.Wpf.xml" />
+            <Component Id="cmp861E3D3E720688085FD1D959875C0A2D" Directory="DYNAMO_INSTALLDIR" Guid="{642A296C-BBD0-4841-8753-8766BEC8EA40}">
+                <File Id="fil0F19A08C3F4A92EAD2C73B7BF5193FEB" KeyPath="yes" Source="$(var.harvest)\HelixToolkit.Wpf.xml" />
             </Component>
-            <Component Id="cmpA80DC4EAF8E15BF5AD40E73E333C84E1" Directory="DYNAMO_INSTALLDIR" Guid="{44282C3F-0C50-4ADD-BDA6-49A9A95B027E}">
-                <File Id="filD341196F3823E35B8673D91561BE2DB6" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ICSharpCode.AvalonEdit.dll" />
+            <Component Id="cmpA80DC4EAF8E15BF5AD40E73E333C84E1" Directory="DYNAMO_INSTALLDIR" Guid="{F899D77C-8E61-42C8-9475-0135530F2DF4}">
+                <File Id="filD341196F3823E35B8673D91561BE2DB6" KeyPath="yes" Source="$(var.harvest)\ICSharpCode.AvalonEdit.dll" />
             </Component>
-            <Component Id="cmp1A0261395E095712625356361ECA7BDE" Directory="DYNAMO_INSTALLDIR" Guid="{6CC6E8A6-606D-46F9-B755-0CD7F7C9499C}">
-                <File Id="filFAFCD2203152C8A3ED7411F4195ECFB2" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ICSharpCode.AvalonEdit.xml" />
+            <Component Id="cmp1A0261395E095712625356361ECA7BDE" Directory="DYNAMO_INSTALLDIR" Guid="{BD96CCB0-1B26-41D9-834C-48649827FF51}">
+                <File Id="filFAFCD2203152C8A3ED7411F4195ECFB2" KeyPath="yes" Source="$(var.harvest)\ICSharpCode.AvalonEdit.xml" />
             </Component>
-            <Component Id="cmp5D30722AA55EE631644CBAB4A8A743D6" Directory="DYNAMO_INSTALLDIR" Guid="{5620E8FC-CE82-4BEC-B8E3-6908FFA25011}">
-                <File Id="filE0F9134B470C253FF245E91ABF2F6E60" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\InstallASMForDynamo.exe" />
+            <Component Id="cmp5D30722AA55EE631644CBAB4A8A743D6" Directory="DYNAMO_INSTALLDIR" Guid="{0FE19EE0-7FEB-4083-88A9-BBED1AD0FC6E}">
+                <File Id="filE0F9134B470C253FF245E91ABF2F6E60" KeyPath="yes" Source="$(var.harvest)\InstallASMForDynamo.exe" />
             </Component>
-            <Component Id="cmp00AF085CF7FAC76E5978C1C425F388C7" Directory="DYNAMO_INSTALLDIR" Guid="{CBB990D6-AD67-4082-9A9A-9FEB29CB0A06}">
-                <File Id="fil9422735686AFFF4049543F4940EC83AE" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\InstallUpdate.exe" />
+            <Component Id="cmp00AF085CF7FAC76E5978C1C425F388C7" Directory="DYNAMO_INSTALLDIR" Guid="{AAA34D63-9868-47BE-8496-EB8435F6AB8A}">
+                <File Id="fil9422735686AFFF4049543F4940EC83AE" KeyPath="yes" Source="$(var.harvest)\InstallUpdate.exe" />
             </Component>
-            <Component Id="cmp521FDDE46007DEC89F77916B7224A315" Directory="DYNAMO_INSTALLDIR" Guid="{486CA3B6-D92E-4F6E-88F9-242EAF2B280B}">
-                <File Id="fil3FD5AC5CD3F47B43D2CA15B04D342ACA" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\InstallUpdate.exe.config" />
+            <Component Id="cmp521FDDE46007DEC89F77916B7224A315" Directory="DYNAMO_INSTALLDIR" Guid="{3D8D65C9-754B-46A2-AEB4-98FF3B1AF307}">
+                <File Id="fil3FD5AC5CD3F47B43D2CA15B04D342ACA" KeyPath="yes" Source="$(var.harvest)\InstallUpdate.exe.config" />
             </Component>
-            <Component Id="cmpD356E4AAF695E1FF651C600E94F1B9DE" Directory="DYNAMO_INSTALLDIR" Guid="{FE9D9141-927F-4126-9099-D82308EBAB00}">
-                <File Id="fil29B208171619B1BF039A8A8727159E15" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Ionic.Zip.dll" />
+            <Component Id="cmpD356E4AAF695E1FF651C600E94F1B9DE" Directory="DYNAMO_INSTALLDIR" Guid="{2E331F64-0CB3-434C-B015-336DE8E64167}">
+                <File Id="fil29B208171619B1BF039A8A8727159E15" KeyPath="yes" Source="$(var.harvest)\Ionic.Zip.dll" />
             </Component>
-            <Component Id="cmp9BFF98E5A6BEECE07ABBABF5C2A31E0A" Directory="DYNAMO_INSTALLDIR" Guid="{E0833A8A-A5A8-4DB4-BCD7-CBB6A568E77F}">
-                <File Id="fil7CF3EC76310FC62E560E6B36FE60B73C" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\IronPython.dll" />
+            <Component Id="cmp9BFF98E5A6BEECE07ABBABF5C2A31E0A" Directory="DYNAMO_INSTALLDIR" Guid="{B40C4C01-6E38-43FF-93B1-2D8F99300DA2}">
+                <File Id="fil7CF3EC76310FC62E560E6B36FE60B73C" KeyPath="yes" Source="$(var.harvest)\IronPython.dll" />
             </Component>
-            <Component Id="cmp266043D5797272AEE9CD1BA757FFBDB8" Directory="DYNAMO_INSTALLDIR" Guid="{C25D38DE-DC07-4EBA-87C8-4592217EC52C}">
-                <File Id="filB2C77B2929132CB5E0AFDD5651D1FE91" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\License.rtf" />
+            <Component Id="cmp266043D5797272AEE9CD1BA757FFBDB8" Directory="DYNAMO_INSTALLDIR" Guid="{A90E6D76-2E85-4E32-9222-9EEF1C490990}">
+                <File Id="filB2C77B2929132CB5E0AFDD5651D1FE91" KeyPath="yes" Source="$(var.harvest)\License.rtf" />
             </Component>
-            <Component Id="cmp7387EE5A6E340AA98E48DB6FFE1AF2EE" Directory="DYNAMO_INSTALLDIR" Guid="{11C838A6-3347-482D-AF76-D39A88F7B90B}">
-                <File Id="fil7C2A315E4002E269D6F952A6BB728937" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\MIConvexHullPlugin.dll" />
+            <Component Id="cmp7387EE5A6E340AA98E48DB6FFE1AF2EE" Directory="DYNAMO_INSTALLDIR" Guid="{BEEF6DE2-C753-44D4-9C02-00A42458CD78}">
+                <File Id="fil7C2A315E4002E269D6F952A6BB728937" KeyPath="yes" Source="$(var.harvest)\MIConvexHullPlugin.dll" />
             </Component>
-            <Component Id="cmpE6470387764717A2A466CAF1FC106F74" Directory="DYNAMO_INSTALLDIR" Guid="{FB8139DC-62C1-4345-818D-65839BCA0F25}">
-                <File Id="fil50B8B014CDE258113AF4D416BE40D942" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Microsoft.Dynamic.dll" />
+            <Component Id="cmpE6470387764717A2A466CAF1FC106F74" Directory="DYNAMO_INSTALLDIR" Guid="{24058ED3-C56E-4043-BF9D-E7C4C8CFD075}">
+                <File Id="fil50B8B014CDE258113AF4D416BE40D942" KeyPath="yes" Source="$(var.harvest)\Microsoft.Dynamic.dll" />
             </Component>
-            <Component Id="cmpD66385FCEB8FA34E04DAEB9D2D444BCD" Directory="DYNAMO_INSTALLDIR" Guid="{F8F5F8C6-F71B-4F52-9F47-DD9A65BD29F6}">
-                <File Id="filA2BA9E8387C575F12D8EF8931AFEEBA5" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Microsoft.Office.Interop.Excel.dll" />
+            <Component Id="cmpD66385FCEB8FA34E04DAEB9D2D444BCD" Directory="DYNAMO_INSTALLDIR" Guid="{7CE9B019-E932-4EE6-AD46-01A96E521C26}">
+                <File Id="filA2BA9E8387C575F12D8EF8931AFEEBA5" KeyPath="yes" Source="$(var.harvest)\Microsoft.Office.Interop.Excel.dll" />
             </Component>
-            <Component Id="cmp34F19253AC8B6B5F87F34D155DD61026" Directory="DYNAMO_INSTALLDIR" Guid="{A94474CD-BA9D-4982-8EC8-25E58CA2ECA2}">
-                <File Id="fil94C8EA398E724579E5EF0F3C9F092B61" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Microsoft.Practices.Prism.dll" />
+            <Component Id="cmp34F19253AC8B6B5F87F34D155DD61026" Directory="DYNAMO_INSTALLDIR" Guid="{08F81134-1C90-42A6-B5E3-99D393752F97}">
+                <File Id="fil94C8EA398E724579E5EF0F3C9F092B61" KeyPath="yes" Source="$(var.harvest)\Microsoft.Practices.Prism.dll" />
             </Component>
-            <Component Id="cmp5498536698138C9AA0E72E202DD8F98E" Directory="DYNAMO_INSTALLDIR" Guid="{BAF1CCE5-282D-4225-A634-86544ACEF85A}">
-                <File Id="fil324B477F8C4C5755FB9E1DFC9790DFC6" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Microsoft.Scripting.dll" />
+            <Component Id="cmp5498536698138C9AA0E72E202DD8F98E" Directory="DYNAMO_INSTALLDIR" Guid="{38BB2C35-2A71-42D2-8A15-93ECB6463AFC}">
+                <File Id="fil324B477F8C4C5755FB9E1DFC9790DFC6" KeyPath="yes" Source="$(var.harvest)\Microsoft.Scripting.dll" />
             </Component>
-            <Component Id="cmpC9C9A3CE813163D060B3A6EDF6233F33" Directory="DYNAMO_INSTALLDIR" Guid="{ECBA347F-8720-4754-968E-50958B4CBA84}">
-                <File Id="filC520061194199F04D7DDE13993713FFB" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Microsoft.Scripting.Metadata.dll" />
+            <Component Id="cmpC9C9A3CE813163D060B3A6EDF6233F33" Directory="DYNAMO_INSTALLDIR" Guid="{5EE36B39-30DA-4D24-956A-5F8840F520EB}">
+                <File Id="filC520061194199F04D7DDE13993713FFB" KeyPath="yes" Source="$(var.harvest)\Microsoft.Scripting.Metadata.dll" />
             </Component>
-            <Component Id="cmp2E2132C9D68B70B268B990AAB45D22B1" Directory="DYNAMO_INSTALLDIR" Guid="{9EB05DEE-86E4-44E7-8F93-61733256D363}">
-                <File Id="filBFE9E0C5374FDC00039E55F7DF459D24" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Microsoft.Vbe.Interop.dll" />
+            <Component Id="cmp2E2132C9D68B70B268B990AAB45D22B1" Directory="DYNAMO_INSTALLDIR" Guid="{E301B391-5C48-4DB3-820B-C044316082DA}">
+                <File Id="filBFE9E0C5374FDC00039E55F7DF459D24" KeyPath="yes" Source="$(var.harvest)\Microsoft.Vbe.Interop.dll" />
             </Component>
-            <Component Id="cmpB37B546B340BB9436C907DCB58A11E5D" Directory="DYNAMO_INSTALLDIR" Guid="{55571022-CF1A-4BCF-BE22-3DEEF7465D06}">
-                <File Id="fil21614F92A5D2F485F9590C1FB8F08C60" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Moq.dll" />
+            <Component Id="cmpB37B546B340BB9436C907DCB58A11E5D" Directory="DYNAMO_INSTALLDIR" Guid="{27865220-8FF5-463E-83C9-ECA0FCC6EE2C}">
+                <File Id="fil21614F92A5D2F485F9590C1FB8F08C60" KeyPath="yes" Source="$(var.harvest)\Moq.dll" />
             </Component>
-            <Component Id="cmpEF59DA263A9A4AD852F3E03035DD697E" Directory="DYNAMO_INSTALLDIR" Guid="{23BBA677-791C-458D-ADC1-9C8E5E28CB1E}">
-                <File Id="fil48D4BEEDE811A64B09115E680463AFB3" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Moq.xml" />
+            <Component Id="cmpEF59DA263A9A4AD852F3E03035DD697E" Directory="DYNAMO_INSTALLDIR" Guid="{2CA34ACB-8730-4A08-AB40-52A64A073CBC}">
+                <File Id="fil48D4BEEDE811A64B09115E680463AFB3" KeyPath="yes" Source="$(var.harvest)\Moq.xml" />
             </Component>
-            <Component Id="cmpC0B85AF8393D0F36D475BCB2690B65C5" Directory="DYNAMO_INSTALLDIR" Guid="{142A4BB3-85A8-4EA3-ADF1-9AF142E660AD}">
-                <File Id="fil6B4DBD999169F7B85DA70563A74970CB" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\NCalc.dll" />
+            <Component Id="cmpC0B85AF8393D0F36D475BCB2690B65C5" Directory="DYNAMO_INSTALLDIR" Guid="{52B07B05-83BA-45FE-8D75-C6726130DB58}">
+                <File Id="fil6B4DBD999169F7B85DA70563A74970CB" KeyPath="yes" Source="$(var.harvest)\NCalc.dll" />
             </Component>
-            <Component Id="cmpA95A4703DEB0DB34A2CE537CE8207990" Directory="DYNAMO_INSTALLDIR" Guid="{24F1FEA6-C89C-42A3-A8A4-28260E8714EC}">
-                <File Id="fil613B94566335C459F8DCA4CD36BA77C8" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Newtonsoft.Json.dll" />
+            <Component Id="cmpA95A4703DEB0DB34A2CE537CE8207990" Directory="DYNAMO_INSTALLDIR" Guid="{2AEADD8A-4457-479A-A612-D4CB01B70453}">
+                <File Id="fil613B94566335C459F8DCA4CD36BA77C8" KeyPath="yes" Source="$(var.harvest)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp1AF18A8319A6B20C230EABB4011ED86B" Directory="DYNAMO_INSTALLDIR" Guid="{98280BF3-BE46-4C1D-94CB-96CEE0794CE6}">
-                <File Id="fil5D8E06123CFBA5F91C453CAC5D1FEC96" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Newtonsoft.Json.xml" />
+            <Component Id="cmp1AF18A8319A6B20C230EABB4011ED86B" Directory="DYNAMO_INSTALLDIR" Guid="{506136A9-7F05-48A3-AFCE-EDCF23B1E99A}">
+                <File Id="fil5D8E06123CFBA5F91C453CAC5D1FEC96" KeyPath="yes" Source="$(var.harvest)\Newtonsoft.Json.xml" />
             </Component>
-            <Component Id="cmpB5506F7CE6E8A006E3F00E2871726411" Directory="DYNAMO_INSTALLDIR" Guid="{8C2DA435-1A6E-46A8-B9C1-0DB43DAE6D50}">
-                <File Id="filBA048D4F7B5CD4E2151C9CDDF0E2289A" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nunit.framework.dll" />
+            <Component Id="cmpB5506F7CE6E8A006E3F00E2871726411" Directory="DYNAMO_INSTALLDIR" Guid="{DA16D31A-360B-4915-B423-4EBE27E5D7CA}">
+                <File Id="filBA048D4F7B5CD4E2151C9CDDF0E2289A" KeyPath="yes" Source="$(var.harvest)\nunit.framework.dll" />
             </Component>
-            <Component Id="cmp22C416C692A37E38B5F368D77A9CC6DD" Directory="DYNAMO_INSTALLDIR" Guid="{C414B39A-7D9B-4EE3-869B-5F0C37678906}">
-                <File Id="filA18D3B2C5B22B121B1762268A87F3D0F" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nunit.framework.xml" />
+            <Component Id="cmp22C416C692A37E38B5F368D77A9CC6DD" Directory="DYNAMO_INSTALLDIR" Guid="{199D9BD1-6EAF-4883-BB00-DF10217EC5C1}">
+                <File Id="filA18D3B2C5B22B121B1762268A87F3D0F" KeyPath="yes" Source="$(var.harvest)\nunit.framework.xml" />
             </Component>
-            <Component Id="cmpF192544DD6A0F8E3B34E22D420C96A50" Directory="DYNAMO_INSTALLDIR" Guid="{C8CD1863-93F4-48C2-8ED5-37485693986A}">
-                <File Id="filED0D1369F0011FAB1738507BD1775AEC" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Office.dll" />
+            <Component Id="cmpF192544DD6A0F8E3B34E22D420C96A50" Directory="DYNAMO_INSTALLDIR" Guid="{E6959AE2-50B4-4A94-90EF-A139608D6BB0}">
+                <File Id="filED0D1369F0011FAB1738507BD1775AEC" KeyPath="yes" Source="$(var.harvest)\Office.dll" />
             </Component>
-            <Component Id="cmpB33FD20DB7F42CEA076EC02F7E69728C" Directory="DYNAMO_INSTALLDIR" Guid="{D8E6433C-9495-4483-A5E0-C9DB01708972}">
-                <File Id="fil9D2DD7EF1DE08C301811408A99160F73" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Optimize.ds" />
+            <Component Id="cmpB33FD20DB7F42CEA076EC02F7E69728C" Directory="DYNAMO_INSTALLDIR" Guid="{9E1AE39C-E1DC-4846-8746-EAD6EEA3791C}">
+                <File Id="fil9D2DD7EF1DE08C301811408A99160F73" KeyPath="yes" Source="$(var.harvest)\Optimize.ds" />
             </Component>
-            <Component Id="cmp2193ADBE1341D0C9A2ABF6C1BB8C8324" Directory="DYNAMO_INSTALLDIR" Guid="{4C048ADC-64CF-486A-92D3-3148F64F15C3}">
-                <File Id="fil1784AC2E3A914CDF8C22D4046B5F9EE8" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoAssociative.dll" />
+            <Component Id="cmp2193ADBE1341D0C9A2ABF6C1BB8C8324" Directory="DYNAMO_INSTALLDIR" Guid="{1283D151-E8BB-44DB-BD7D-81348F7EF202}">
+                <File Id="fil1784AC2E3A914CDF8C22D4046B5F9EE8" KeyPath="yes" Source="$(var.harvest)\ProtoAssociative.dll" />
             </Component>
-            <Component Id="cmpA1F4548A0A306D757AD84011F6EFC8CC" Directory="DYNAMO_INSTALLDIR" Guid="{DF2EF696-6D93-4B0D-84C5-51654FC6A6F9}">
-                <File Id="fil6B0D5392D6694DDBFF33C4D68B64E6DF" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoCore.dll" />
+            <Component Id="cmpA1F4548A0A306D757AD84011F6EFC8CC" Directory="DYNAMO_INSTALLDIR" Guid="{722DBCB4-AF64-4F02-AF0F-3885B76FC831}">
+                <File Id="fil6B0D5392D6694DDBFF33C4D68B64E6DF" KeyPath="yes" Source="$(var.harvest)\ProtoCore.dll" />
             </Component>
-            <Component Id="cmp73B79821F80BDBCAC28348E919E5C17A" Directory="DYNAMO_INSTALLDIR" Guid="{3DCB2DC3-999D-470C-90F5-DF21B9B514D2}">
-                <File Id="fil1939C680D1C6C0CF61E14CA4E2101146" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoGeometry.config" />
+            <Component Id="cmp73B79821F80BDBCAC28348E919E5C17A" Directory="DYNAMO_INSTALLDIR" Guid="{1E80DAC1-7A54-4A5C-82EE-1F8A6E77150B}">
+                <File Id="fil1939C680D1C6C0CF61E14CA4E2101146" KeyPath="yes" Source="$(var.harvest)\ProtoGeometry.config" />
             </Component>
-            <Component Id="cmpEAFBF517C968E89E79D5FC598A35D3E3" Directory="DYNAMO_INSTALLDIR" Guid="{C519DB4A-5F92-48B3-A0DC-13DFD711D933}">
-                <File Id="fil7387F49DEFD02C07847B553143ABFBE9" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoGeometry.dll" />
+            <Component Id="cmpEAFBF517C968E89E79D5FC598A35D3E3" Directory="DYNAMO_INSTALLDIR" Guid="{2AFD2D83-B5E6-4FE6-B5A7-DB61EA37A85F}">
+                <File Id="fil7387F49DEFD02C07847B553143ABFBE9" KeyPath="yes" Source="$(var.harvest)\ProtoGeometry.dll" />
             </Component>
-            <Component Id="cmp97EEDBE1421FC92320CFBA3966F2ACE4" Directory="DYNAMO_INSTALLDIR" Guid="{79EC5985-15E4-46DF-9117-D4377C79FEB5}">
-                <File Id="filA53714C0597F1035245B2DF46E7BEE1A" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoGeometry.XML" />
+            <Component Id="cmp97EEDBE1421FC92320CFBA3966F2ACE4" Directory="DYNAMO_INSTALLDIR" Guid="{D56C7D24-3C6F-440B-B0E4-1F274839166D}">
+                <File Id="filA53714C0597F1035245B2DF46E7BEE1A" KeyPath="yes" Source="$(var.harvest)\ProtoGeometry.XML" />
             </Component>
-            <Component Id="cmp58E7FDE9521D3DE186D51C2AAB1986EE" Directory="DYNAMO_INSTALLDIR" Guid="{D6337910-82A1-4260-A1D7-54758F4DAF77}">
-                <File Id="filF82A2164DC124C573E03ED32FABA4302" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoGeometry_DynamoCustomization.xml" />
+            <Component Id="cmp58E7FDE9521D3DE186D51C2AAB1986EE" Directory="DYNAMO_INSTALLDIR" Guid="{424DB7DC-5A96-4F47-82E9-DA0F097AD566}">
+                <File Id="filF82A2164DC124C573E03ED32FABA4302" KeyPath="yes" Source="$(var.harvest)\ProtoGeometry_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmp31783B5258B007D8DCF600FE4674394E" Directory="DYNAMO_INSTALLDIR" Guid="{7CCC172B-6045-4D6D-ADAD-59DF5EB3368E}">
-                <File Id="fil3FEF9F6FCD4119EFEEF9E3FD488B17AE" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoImperative.dll" />
+            <Component Id="cmp31783B5258B007D8DCF600FE4674394E" Directory="DYNAMO_INSTALLDIR" Guid="{181B1EE3-A805-46F4-88E6-8C74C073E3A9}">
+                <File Id="fil3FEF9F6FCD4119EFEEF9E3FD488B17AE" KeyPath="yes" Source="$(var.harvest)\ProtoImperative.dll" />
             </Component>
-            <Component Id="cmp524EB01E70F47EFA15F15764189D3EF8" Directory="DYNAMO_INSTALLDIR" Guid="{AE2A5CD4-83EE-40C2-9382-DA5B6A20B2DD}">
-                <File Id="fil3791F032505A758E06340E75122917BC" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoInterface.dll" />
+            <Component Id="cmp524EB01E70F47EFA15F15764189D3EF8" Directory="DYNAMO_INSTALLDIR" Guid="{E046459E-EF7C-4C10-9BD9-EEC5F66D627F}">
+                <File Id="fil3791F032505A758E06340E75122917BC" KeyPath="yes" Source="$(var.harvest)\ProtoInterface.dll" />
             </Component>
-            <Component Id="cmpD3D3438196F3C2E78D82CB974D66DD76" Directory="DYNAMO_INSTALLDIR" Guid="{F8E5CBB4-E25F-4E2C-BD56-942569195727}">
-                <File Id="fil7B655BB3E36757C9115F82FD926E3D5B" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoScript.dll" />
+            <Component Id="cmpD3D3438196F3C2E78D82CB974D66DD76" Directory="DYNAMO_INSTALLDIR" Guid="{9040AD8E-DE3A-4FB2-AFB9-D3215F5C5E9B}">
+                <File Id="fil7B655BB3E36757C9115F82FD926E3D5B" KeyPath="yes" Source="$(var.harvest)\ProtoScript.dll" />
             </Component>
-            <Component Id="cmp166A3577C094D76395D27856210B13F2" Directory="DYNAMO_INSTALLDIR" Guid="{FCDF2836-033E-473C-A377-7803F6E7A79F}">
-                <File Id="filFB59F5B7DBC2407598C85C5C5E98BD74" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoScript.dll.config" />
+            <Component Id="cmp166A3577C094D76395D27856210B13F2" Directory="DYNAMO_INSTALLDIR" Guid="{CFB5C6D1-F34B-43B4-92E3-19FBD5CADCB9}">
+                <File Id="filFB59F5B7DBC2407598C85C5C5E98BD74" KeyPath="yes" Source="$(var.harvest)\ProtoScript.dll.config" />
             </Component>
-            <Component Id="cmp89AE1DBCAC4708510E9E8391BE500B7E" Directory="DYNAMO_INSTALLDIR" Guid="{D20F3E41-7489-4741-8A19-B0A606FA328C}">
-                <File Id="fil94DB63953D7F7F700103B2B96AE82850" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoTest.dll" />
+            <Component Id="cmp89AE1DBCAC4708510E9E8391BE500B7E" Directory="DYNAMO_INSTALLDIR" Guid="{1F10BE16-70AE-4DE2-AFE0-69D031D1A06A}">
+                <File Id="fil94DB63953D7F7F700103B2B96AE82850" KeyPath="yes" Source="$(var.harvest)\ProtoTest.dll" />
             </Component>
-            <Component Id="cmpE4D109C4579800F285A3944B54DCC697" Directory="DYNAMO_INSTALLDIR" Guid="{8AD7433E-A2FF-43AF-BADD-157268801742}">
-                <File Id="fil26C2295755E230A6A4EAC309A7B3CB9D" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoTestConsoleRunner.exe" />
+            <Component Id="cmpE4D109C4579800F285A3944B54DCC697" Directory="DYNAMO_INSTALLDIR" Guid="{13F7A0CE-FC21-4482-94A2-8B618540543A}">
+                <File Id="fil26C2295755E230A6A4EAC309A7B3CB9D" KeyPath="yes" Source="$(var.harvest)\ProtoTestConsoleRunner.exe" />
             </Component>
-            <Component Id="cmp3C55666CB3D1BD7F4FACEF26A20A761D" Directory="DYNAMO_INSTALLDIR" Guid="{6A2CE242-8CD5-4272-8017-C89350EAC4FB}">
-                <File Id="filCBCEA35490EC8CC698B365F4449ED374" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\ProtoTestFx.dll" />
+            <Component Id="cmp3C55666CB3D1BD7F4FACEF26A20A761D" Directory="DYNAMO_INSTALLDIR" Guid="{71077471-DB42-4BBA-BB1F-F776B3FD77A1}">
+                <File Id="filCBCEA35490EC8CC698B365F4449ED374" KeyPath="yes" Source="$(var.harvest)\ProtoTestFx.dll" />
             </Component>
-            <Component Id="cmp8A18CB835575376CB407CA952079E45B" Directory="DYNAMO_INSTALLDIR" Guid="{A76BD7BC-9B90-457D-BCBF-61B35D1C2E9E}">
-                <File Id="fil151D455F61852A46E8B31A7AD9428595" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\RestSharp.dll" />
+            <Component Id="cmp8A18CB835575376CB407CA952079E45B" Directory="DYNAMO_INSTALLDIR" Guid="{A55FCD90-D315-4ABA-9895-4D3FD62904B7}">
+                <File Id="fil151D455F61852A46E8B31A7AD9428595" KeyPath="yes" Source="$(var.harvest)\RestSharp.dll" />
             </Component>
-            <Component Id="cmp31EA448D31F5021F1795D78DD30A7855" Directory="DYNAMO_INSTALLDIR" Guid="{EEC81CE1-6782-4F4B-859A-4667DCA0709A}">
-                <File Id="fil4A52A33C56AA8D1E06A266AB56C2FF5B" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\RestSharp.xml" />
+            <Component Id="cmp31EA448D31F5021F1795D78DD30A7855" Directory="DYNAMO_INSTALLDIR" Guid="{DE65AF3C-88F4-4233-B020-FCCBBD88AAFE}">
+                <File Id="fil4A52A33C56AA8D1E06A266AB56C2FF5B" KeyPath="yes" Source="$(var.harvest)\RestSharp.xml" />
             </Component>
-            <Component Id="cmp675474E27B1CCD17D689ACA1A8B4D206" Directory="DYNAMO_INSTALLDIR" Guid="{C04A6C9D-DD75-4370-B3E4-825EB66F5C73}">
-                <File Id="filD31B5E2AFB7A726EB71F2A0320223D5A" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\SimplexNoise.dll" />
+            <Component Id="cmp675474E27B1CCD17D689ACA1A8B4D206" Directory="DYNAMO_INSTALLDIR" Guid="{E33AE87F-80C6-42AB-94DE-C23B170499CB}">
+                <File Id="filD31B5E2AFB7A726EB71F2A0320223D5A" KeyPath="yes" Source="$(var.harvest)\SimplexNoise.dll" />
             </Component>
-            <Component Id="cmp7ABDC4A682744702E1D8017F58889206" Directory="DYNAMO_INSTALLDIR" Guid="{9B038151-C6AE-4C24-BE86-27CF82E8853C}">
-                <File Id="fil9B28DACF88A6BC1B3F4F548D6DAE4701" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\System.Net.Http.dll" />
+            <Component Id="cmp7ABDC4A682744702E1D8017F58889206" Directory="DYNAMO_INSTALLDIR" Guid="{0D9D59AC-4992-4EF1-AE13-32A826C1B365}">
+                <File Id="fil9B28DACF88A6BC1B3F4F548D6DAE4701" KeyPath="yes" Source="$(var.harvest)\System.Net.Http.dll" />
             </Component>
-            <Component Id="cmp0E43F8FF60B6BAA8058B977CA77FCC33" Directory="DYNAMO_INSTALLDIR" Guid="{3D6C6F06-C13A-40BB-A570-252EABF1E370}">
-                <File Id="filBD6FF4B330D786DB813093D7C1E56708" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\System.Windows.Interactivity.dll" />
+            <Component Id="cmp0E43F8FF60B6BAA8058B977CA77FCC33" Directory="DYNAMO_INSTALLDIR" Guid="{8366BFD3-D8AC-4B09-B25B-D5366DAFD48E}">
+                <File Id="filBD6FF4B330D786DB813093D7C1E56708" KeyPath="yes" Source="$(var.harvest)\System.Windows.Interactivity.dll" />
             </Component>
-            <Component Id="cmp9840BA1828D23947895C64470670AD3E" Directory="DYNAMO_INSTALLDIR" Guid="{AAEEC0D8-228E-4886-82BE-20D380A92F15}">
-                <File Id="fil18DAF3D928EF1BDF377B79A7A55442D2" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Tessellation.dll" />
+            <Component Id="cmp9840BA1828D23947895C64470670AD3E" Directory="DYNAMO_INSTALLDIR" Guid="{CE3C94F4-49C2-41F8-9BFF-D749A1522DC1}">
+                <File Id="fil18DAF3D928EF1BDF377B79A7A55442D2" KeyPath="yes" Source="$(var.harvest)\Tessellation.dll" />
             </Component>
-            <Component Id="cmp8D44BF7E9E56D72984C926934051C94E" Directory="DYNAMO_INSTALLDIR" Guid="{11B1F05A-10F9-4C71-B396-E60B692939DF}">
-                <File Id="filE4B49B42F71BA1862B1B7CBDD9F39264" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Tessellation_DynamoCustomization.xml" />
+            <Component Id="cmp8D44BF7E9E56D72984C926934051C94E" Directory="DYNAMO_INSTALLDIR" Guid="{88F4430D-08F3-4D03-83E7-9F4C6E05EBFE}">
+                <File Id="filE4B49B42F71BA1862B1B7CBDD9F39264" KeyPath="yes" Source="$(var.harvest)\Tessellation_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmpA7E0C1245A8885B18B948756D6B22D9A" Directory="DYNAMO_INSTALLDIR" Guid="{E5E51A40-E31A-4CEC-BA25-D9B8E9AC9AF1}">
-                <File Id="fil0CF724ABEBFCED9B757C1C578043E8B0" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\VMDataBridge.dll" />
+            <Component Id="cmpA7E0C1245A8885B18B948756D6B22D9A" Directory="DYNAMO_INSTALLDIR" Guid="{6E72D7AD-D377-4A4A-867E-0E03E47AB240}">
+                <File Id="fil0CF724ABEBFCED9B757C1C578043E8B0" KeyPath="yes" Source="$(var.harvest)\VMDataBridge.dll" />
             </Component>
-            <Component Id="cmpC91E1AA87373FE785C2ADBA6C16D3618" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{CDB9D94E-980D-402A-99BA-F9331A581D57}">
-                <File Id="filA94D015808D2D790D4483B94B55D8674" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\boost_chrono-vc100-mt-1_51.dll" />
+            <Component Id="cmpC91E1AA87373FE785C2ADBA6C16D3618" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{C6A4E109-1875-454F-9167-37E08FF9FF93}">
+                <File Id="filA94D015808D2D790D4483B94B55D8674" KeyPath="yes" Source="$(var.harvest)\libg_219\boost_chrono-vc100-mt-1_51.dll" />
             </Component>
-            <Component Id="cmpA0EAC25BE145D44A83264BE3035F06FC" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{DECA344C-8674-453E-B7A6-6E0865633419}">
-                <File Id="fil3FDFA385F276D36DB3B0AE0DDAB77B05" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\boost_regex-vc100-mt-1_51.dll" />
+            <Component Id="cmpA0EAC25BE145D44A83264BE3035F06FC" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{3584ADF7-29D8-4429-8CF2-5A2A1B6B241A}">
+                <File Id="fil3FDFA385F276D36DB3B0AE0DDAB77B05" KeyPath="yes" Source="$(var.harvest)\libg_219\boost_regex-vc100-mt-1_51.dll" />
             </Component>
-            <Component Id="cmp9DA30DB14B448D3C51CB53D4CE5D549E" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{213E779B-47EE-457A-BC66-8B6C1994E062}">
-                <File Id="filBF9A435565148BB84E9925773EBD9E51" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\boost_system-vc100-mt-1_51.dll" />
+            <Component Id="cmp9DA30DB14B448D3C51CB53D4CE5D549E" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{7FD55152-210B-48FA-9A15-017F2FB02C92}">
+                <File Id="filBF9A435565148BB84E9925773EBD9E51" KeyPath="yes" Source="$(var.harvest)\libg_219\boost_system-vc100-mt-1_51.dll" />
             </Component>
-            <Component Id="cmp5341A38236C1ECB514EF97134CC493DE" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{5577549D-BA3E-4336-8FEF-92214D90996A}">
-                <File Id="fil69855C7E6CF1FBE4CF90A549050B045B" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\boost_thread-vc100-mt-1_51.dll" />
+            <Component Id="cmp5341A38236C1ECB514EF97134CC493DE" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{B6180A58-F0DC-4563-9801-960DC38EB19B}">
+                <File Id="fil69855C7E6CF1FBE4CF90A549050B045B" KeyPath="yes" Source="$(var.harvest)\libg_219\boost_thread-vc100-mt-1_51.dll" />
             </Component>
-            <Component Id="cmp02B4FA335A365A5F3A14FEC3CF9B38EA" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{7E3A9A07-72DD-43ED-9E9B-F2135CDB9242}">
-                <File Id="fil0EC6B81C33DDB0CB0B00BB10C9258BA3" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\LibG.AsmPreloader.Managed.dll" />
+            <Component Id="cmp02B4FA335A365A5F3A14FEC3CF9B38EA" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{4073BC88-2CEA-4BDA-920B-E2A98B1D6ECD}">
+                <File Id="fil0EC6B81C33DDB0CB0B00BB10C9258BA3" KeyPath="yes" Source="$(var.harvest)\libg_219\LibG.AsmPreloader.Managed.dll" />
             </Component>
-            <Component Id="cmp2F91B4B65F5002CE263ACADBDF07C5E3" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{37993F06-379D-4921-AD03-186685B4F5CE}">
-                <File Id="fil535767EE70737CCAE5BC23EE70DBE0E2" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\LibG.AsmPreloader.Unmanaged.dll" />
+            <Component Id="cmp2F91B4B65F5002CE263ACADBDF07C5E3" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{BCD26146-CFA0-4672-B096-0BA10FD8D332}">
+                <File Id="fil535767EE70737CCAE5BC23EE70DBE0E2" KeyPath="yes" Source="$(var.harvest)\libg_219\LibG.AsmPreloader.Unmanaged.dll" />
             </Component>
-            <Component Id="cmp2600D03E8556383088032803E806F517" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{9CD4FE42-5370-42F5-9949-B316C5AB78A0}">
-                <File Id="fil64A8F318ADC4B22290EBD3C7658B6F8B" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\LibG.dll" />
+            <Component Id="cmp2600D03E8556383088032803E806F517" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{11473AD9-CA99-442D-A415-05B56F5B7698}">
+                <File Id="fil64A8F318ADC4B22290EBD3C7658B6F8B" KeyPath="yes" Source="$(var.harvest)\libg_219\LibG.dll" />
             </Component>
-            <Component Id="cmp4635024BA6248AD1B982FA9FBA00089B" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{237E572F-FDE4-4813-94AF-32EDACA898E1}">
-                <File Id="filA339FA3B4D27954C1EE0D405B1574411" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\LibG.Managed.dll" />
+            <Component Id="cmp4635024BA6248AD1B982FA9FBA00089B" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{8D7095A3-DFB0-4C52-9D2D-F9B23F0A070D}">
+                <File Id="filA339FA3B4D27954C1EE0D405B1574411" KeyPath="yes" Source="$(var.harvest)\libg_219\LibG.Managed.dll" />
             </Component>
-            <Component Id="cmp857336FFA77173D2391E5145A12C175D" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{CA8AF4C4-F2ED-4AC2-AB9E-6890C914EBE6}">
-                <File Id="fil658BFA2C44ED314C7A6F742A7DA2BC20" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\LibG.ProtoInterface.dll" />
+            <Component Id="cmp857336FFA77173D2391E5145A12C175D" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{81E2F953-E5EB-4F8D-93F1-0C434C5D518A}">
+                <File Id="fil658BFA2C44ED314C7A6F742A7DA2BC20" KeyPath="yes" Source="$(var.harvest)\libg_219\LibG.ProtoInterface.dll" />
             </Component>
-            <Component Id="cmpC0A583484595750AC2F1B0BBD63DEE87" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{2716614C-3056-427A-B123-FB663BC3255D}">
-                <File Id="fil272F7453AAD06B0EA5ABB1671B684A0C" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\LibGCore.dll" />
+            <Component Id="cmpC0A583484595750AC2F1B0BBD63DEE87" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{70B2969E-6F2A-4CAD-97A8-99883ED8B561}">
+                <File Id="fil272F7453AAD06B0EA5ABB1671B684A0C" KeyPath="yes" Source="$(var.harvest)\libg_219\LibGCore.dll" />
             </Component>
-            <Component Id="cmp2B15AFA97CF4809BB91E7EA3F618A08D" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{BFE33D56-EFBA-4D19-B2F6-33027635FAC5}">
-                <File Id="filC8D18E833337571B97EB8AE2A5D03597" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\msvcp100.dll" />
+            <Component Id="cmp2B15AFA97CF4809BB91E7EA3F618A08D" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{EA48A2DB-0B1D-4029-9CD7-28EDAE871C76}">
+                <File Id="filC8D18E833337571B97EB8AE2A5D03597" KeyPath="yes" Source="$(var.harvest)\libg_219\msvcp100.dll" />
             </Component>
-            <Component Id="cmp24A0A0A30DAFB5CB311D415188D9BCD6" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{6930C5DD-C3FE-458D-9DE9-7F159C98BC54}">
-                <File Id="fil5DC32C11B0DDE9CBE3EB7FF2321C04FC" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_219\msvcr100.dll" />
+            <Component Id="cmp24A0A0A30DAFB5CB311D415188D9BCD6" Directory="dir04DB6BCB40E05BE134EFE73CD26B8EDE" Guid="{CD301354-D9D7-49CD-8723-EE2D18DEB262}">
+                <File Id="fil5DC32C11B0DDE9CBE3EB7FF2321C04FC" KeyPath="yes" Source="$(var.harvest)\libg_219\msvcr100.dll" />
             </Component>
-            <Component Id="cmpBEF4E3AF34CA82AC816F70E4690E6436" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{3A8C9DDD-E14E-4DC0-B78C-CD6FED0C9881}">
-                <File Id="fil70EA76DC909F0F9ABE102A7E6EC4A690" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\boost_chrono-vc110-mt-1_51.dll" />
+            <Component Id="cmpBEF4E3AF34CA82AC816F70E4690E6436" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{C6027B6E-199F-4C18-9626-B7F338D95A78}">
+                <File Id="fil70EA76DC909F0F9ABE102A7E6EC4A690" KeyPath="yes" Source="$(var.harvest)\libg_220\boost_chrono-vc110-mt-1_51.dll" />
             </Component>
-            <Component Id="cmp4F491A29F9C08FAAAEB86B5308B4F131" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{D278FDD9-7F5F-4A9A-95EB-07C4DAB2E923}">
-                <File Id="fil1B9EFD6CB484C191EA1B3EA264351B5E" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\boost_regex-vc110-mt-1_51.dll" />
+            <Component Id="cmp4F491A29F9C08FAAAEB86B5308B4F131" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{8BD3D1AD-305B-43C0-8D17-F651ADD6AA0A}">
+                <File Id="fil1B9EFD6CB484C191EA1B3EA264351B5E" KeyPath="yes" Source="$(var.harvest)\libg_220\boost_regex-vc110-mt-1_51.dll" />
             </Component>
-            <Component Id="cmpCA068060FEE18A5CE978DC48608B98D9" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{B020FC33-7C46-47F3-8E90-C86C083B9F15}">
-                <File Id="fil071A0A3D999D81D754AB465F4F48BC4F" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\boost_system-vc110-mt-1_51.dll" />
+            <Component Id="cmpCA068060FEE18A5CE978DC48608B98D9" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{D703DBE4-DB76-4C11-8CC9-C4721EF245E8}">
+                <File Id="fil071A0A3D999D81D754AB465F4F48BC4F" KeyPath="yes" Source="$(var.harvest)\libg_220\boost_system-vc110-mt-1_51.dll" />
             </Component>
-            <Component Id="cmpBB670D017310009124722E3E3C16E456" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{B17B97BC-B647-4CA9-AB19-FF1F96E961B1}">
-                <File Id="filDA340D8904FC7708907728E4B95CDC38" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\boost_thread-vc110-mt-1_51.dll" />
+            <Component Id="cmpBB670D017310009124722E3E3C16E456" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{2C3BDAF3-6224-4CCF-8B3C-3ED276B049B9}">
+                <File Id="filDA340D8904FC7708907728E4B95CDC38" KeyPath="yes" Source="$(var.harvest)\libg_220\boost_thread-vc110-mt-1_51.dll" />
             </Component>
-            <Component Id="cmp823613ACB1787AC30AAD7746D9FD09B8" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{81E05E26-FA3A-4674-A086-7DBB1262D11E}">
-                <File Id="fil68AB9D5CD88183980CFA90FC2507F391" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\LibG.AsmPreloader.Managed.dll" />
+            <Component Id="cmp823613ACB1787AC30AAD7746D9FD09B8" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{C71288FB-3570-4B31-A179-0C61E8AE43CC}">
+                <File Id="fil68AB9D5CD88183980CFA90FC2507F391" KeyPath="yes" Source="$(var.harvest)\libg_220\LibG.AsmPreloader.Managed.dll" />
             </Component>
-            <Component Id="cmp63631DEF90FC822E1300966D2FF7F52E" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{FA6A0FB6-2D68-4157-B05E-38072E08EDA0}">
-                <File Id="fil8645D475CA5AABAB7785FC7488FFC809" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\LibG.AsmPreloader.Unmanaged.dll" />
+            <Component Id="cmp63631DEF90FC822E1300966D2FF7F52E" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{90ED7C14-510F-4987-96D5-8629A7833B08}">
+                <File Id="fil8645D475CA5AABAB7785FC7488FFC809" KeyPath="yes" Source="$(var.harvest)\libg_220\LibG.AsmPreloader.Unmanaged.dll" />
             </Component>
-            <Component Id="cmpDBBCF60DA2182E3360F37F95174D6C58" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{64B2C5FB-B2F1-445D-BD2B-67F55DF7F195}">
-                <File Id="fil77150DB06DE3457A86149294E33E70FE" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\LibG.dll" />
+            <Component Id="cmpDBBCF60DA2182E3360F37F95174D6C58" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{A7A598E5-FECF-49F4-9634-C81B7472D64A}">
+                <File Id="fil77150DB06DE3457A86149294E33E70FE" KeyPath="yes" Source="$(var.harvest)\libg_220\LibG.dll" />
             </Component>
-            <Component Id="cmp55FD91CA23DAB834C694982BF30FC37C" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{6DB23584-83C1-45C4-9376-B35FBB79E048}">
-                <File Id="filD3FD7C9E591AB1A4D3BE0CABCD2E0962" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\LibG.Managed.dll" />
+            <Component Id="cmp55FD91CA23DAB834C694982BF30FC37C" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{53BA3D01-BCBF-489D-BB00-1690EC5A6A39}">
+                <File Id="filD3FD7C9E591AB1A4D3BE0CABCD2E0962" KeyPath="yes" Source="$(var.harvest)\libg_220\LibG.Managed.dll" />
             </Component>
-            <Component Id="cmp6AD0A89D60385F0391899AF0364CDECD" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{64E9BB0A-3D0A-4E0B-B1FD-C9E9183833CB}">
-                <File Id="filCDE069F0BF68F985186FAED00C978074" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\LibG.ProtoInterface.dll" />
+            <Component Id="cmp6AD0A89D60385F0391899AF0364CDECD" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{4DB19C2C-C7AE-46E0-8EF9-986CCEAB0285}">
+                <File Id="filCDE069F0BF68F985186FAED00C978074" KeyPath="yes" Source="$(var.harvest)\libg_220\LibG.ProtoInterface.dll" />
             </Component>
-            <Component Id="cmpFC7C36005475C43521BD1C8510785207" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{8CBA2EA5-DDA7-4906-A550-8C70DE72B21B}">
-                <File Id="fil5F87C8D4D9EAA8B34F662B0AF3EFF7BF" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\LibGCore.dll" />
+            <Component Id="cmpFC7C36005475C43521BD1C8510785207" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{16C08B2E-BB77-4BEA-9B48-397BA2721897}">
+                <File Id="fil5F87C8D4D9EAA8B34F662B0AF3EFF7BF" KeyPath="yes" Source="$(var.harvest)\libg_220\LibGCore.dll" />
             </Component>
-            <Component Id="cmp0D2DC129EAA46D2E319ADA6EC5EF070F" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{59E61960-9487-4037-98FF-D71AD8539490}">
-                <File Id="filE4D5EEB6055847C34BD5B17EDED1E804" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\msvcp110.dll" />
+            <Component Id="cmp0D2DC129EAA46D2E319ADA6EC5EF070F" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{9A24D765-6EE4-46EC-9DD2-559422DA1312}">
+                <File Id="filE4D5EEB6055847C34BD5B17EDED1E804" KeyPath="yes" Source="$(var.harvest)\libg_220\msvcp110.dll" />
             </Component>
-            <Component Id="cmp543CCBA6F02D49682947C9D79BC6A8FE" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{670774CC-EEB6-49EB-A865-E999C9510507}">
-                <File Id="filA10320F65361574E8EFAD326002C4477" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\libg_220\msvcr110.dll" />
+            <Component Id="cmp543CCBA6F02D49682947C9D79BC6A8FE" Directory="dir9174EDB77262E5B4044B87DF3BEDFBA4" Guid="{B007FB7B-016F-437E-9B2C-3F106C893B59}">
+                <File Id="filA10320F65361574E8EFAD326002C4477" KeyPath="yes" Source="$(var.harvest)\libg_220\msvcr110.dll" />
             </Component>
-            <Component Id="cmpD3F7A8A639E89DDF71E159DA62008613" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{07E89657-4E8E-4C9A-B212-AF6DC7594CD9}">
-                <File Id="fil8F60FB8A0CBCF4007A61373EC0AAE396" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\DSCoreNodesUI.dll" />
+            <Component Id="cmpD3F7A8A639E89DDF71E159DA62008613" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{46073B07-9DE2-4381-B8A8-F1C7C0D6A2A6}">
+                <File Id="fil8F60FB8A0CBCF4007A61373EC0AAE396" KeyPath="yes" Source="$(var.harvest)\nodes\DSCoreNodesUI.dll" />
             </Component>
-            <Component Id="cmpE8DC650D925D1E3D7515A04522084E82" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{A536CE4A-0C92-4EA0-8266-7D0A049EFDD7}">
-                <File Id="fil6BE5D475837CB86AC8F87048FF408EA2" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\DSIronPythonNode.dll" />
+            <Component Id="cmpE8DC650D925D1E3D7515A04522084E82" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{D09DA405-E1B2-429D-B902-F1E11A7FB2CE}">
+                <File Id="fil6BE5D475837CB86AC8F87048FF408EA2" KeyPath="yes" Source="$(var.harvest)\nodes\DSIronPythonNode.dll" />
             </Component>
-            <Component Id="cmpC93D0280E12228422B675D4E96EDF679" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{A41F39F7-4C3D-400C-B277-D6F0F4358137}">
-                <File Id="filEB3A925C28C4636D47E84E8D70D71162" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\DynamoWatch3D.dll" />
+            <Component Id="cmpC93D0280E12228422B675D4E96EDF679" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{64041C33-ACE5-4C71-A850-C436ADF263C4}">
+                <File Id="filEB3A925C28C4636D47E84E8D70D71162" KeyPath="yes" Source="$(var.harvest)\nodes\DynamoWatch3D.dll" />
             </Component>
-            <Component Id="cmp9502D7CCAE404AB522B4280013FD0983" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{2EA721EB-5A5C-4AEB-BE81-D093D68A27BF}">
-                <File Id="fil545CC78E2B5482DC74A0A4C5FE703843" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\Migrations.dll" />
+            <Component Id="cmp9502D7CCAE404AB522B4280013FD0983" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{8A323197-13D9-44E4-A983-A663B38C491B}">
+                <File Id="fil545CC78E2B5482DC74A0A4C5FE703843" KeyPath="yes" Source="$(var.harvest)\nodes\Migrations.dll" />
             </Component>
-            <Component Id="cmpB128FDF67A841A27B5619715A0A34ADF" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{F42CD2FD-F2A0-4D86-8868-35B3F06E2E6D}">
-                <File Id="fil87C896D962D22B7F32D14788AE920AB3" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\ProtoCore.dll" />
+            <Component Id="cmpB128FDF67A841A27B5619715A0A34ADF" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{90268D5F-2D37-4E2A-8CA5-4737A0F2EF64}">
+                <File Id="fil87C896D962D22B7F32D14788AE920AB3" KeyPath="yes" Source="$(var.harvest)\nodes\ProtoCore.dll" />
             </Component>
-            <Component Id="cmp393796C6BC0A0CAFE179729333D9D122" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{868DB155-A41A-48FA-8816-7D430BA67666}">
-                <File Id="fil57C3ADF0311712D702444886FE4C0959" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\ProtoInterface.dll" />
+            <Component Id="cmp393796C6BC0A0CAFE179729333D9D122" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{7BDCB258-49A5-416E-99C9-3A588E5C3643}">
+                <File Id="fil57C3ADF0311712D702444886FE4C0959" KeyPath="yes" Source="$(var.harvest)\nodes\ProtoInterface.dll" />
             </Component>
-            <Component Id="cmp355A3A2612689DA5F3CABFE63A247DA7" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{E6E61DBB-7DF5-43B7-A09C-F43D527B2B1B}">
-                <File Id="fil60F0F60264956EF7AED1057C6A499AE7" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\SamplesLibraryUI.dll" />
+            <Component Id="cmp355A3A2612689DA5F3CABFE63A247DA7" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{4F4482A9-5D0D-4B1F-93E6-C63950696D09}">
+                <File Id="fil60F0F60264956EF7AED1057C6A499AE7" KeyPath="yes" Source="$(var.harvest)\nodes\SamplesLibraryUI.dll" />
             </Component>
-            <Component Id="cmpF99F3FE3F0839ABAC9483E42D892FFFA" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{4B736C9F-CE2C-45CD-B586-9E24C32CF071}">
-                <File Id="filCD1B7A12013157C01573C6619E399DA5" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\nodes\UnitsUI.dll" />
+            <Component Id="cmpF99F3FE3F0839ABAC9483E42D892FFFA" Directory="dirAE06B4D704DE901745ED8F345B11089E" Guid="{C4BCC92C-39C2-4B5B-8C13-15C24D11B777}">
+                <File Id="filCD1B7A12013157C01573C6619E399DA5" KeyPath="yes" Source="$(var.harvest)\nodes\UnitsUI.dll" />
             </Component>
-            <Component Id="cmp4914236A4F9907DAD369E1B4A7DF82B8" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{983726B3-9094-4EFF-81CF-D1A6FD8F319C}">
-                <File Id="fil5D960D84BCFF3DF71A1BE97CD2066703" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\DynamoRaaSHelper.dll" />
+            <Component Id="cmp4914236A4F9907DAD369E1B4A7DF82B8" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{2255EB72-6034-48CA-B664-C6EC5D561628}">
+                <File Id="fil5D960D84BCFF3DF71A1BE97CD2066703" KeyPath="yes" Source="$(var.harvest)\Revit_2014\DynamoRaaSHelper.dll" />
             </Component>
-            <Component Id="cmpE0F75F6893342BB796994FE0F2B60585" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{19D6EB6C-C5E9-4B6F-BD79-2CEFAEDBE6D3}">
-                <File Id="fil81A5EC4B07F3AC5B4C7087D6BF2CDBAD" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\DynamoRevitDS.dll" />
+            <Component Id="cmpE0F75F6893342BB796994FE0F2B60585" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{E3922B4F-1777-469E-9C3F-05CA10667B54}">
+                <File Id="fil81A5EC4B07F3AC5B4C7087D6BF2CDBAD" KeyPath="yes" Source="$(var.harvest)\Revit_2014\DynamoRevitDS.dll" />
             </Component>
-            <Component Id="cmp09BD85062F6680952F7F35E5CE49B2C8" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{86042AAF-20F1-46A8-9C51-30A276535C51}">
-                <File Id="filC4A970D3C46F10B5B691D8A3EC93AA7E" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\DynamoRevitDS.XML" />
+            <Component Id="cmp09BD85062F6680952F7F35E5CE49B2C8" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{17C13E31-7023-4D98-8486-F80E52B1BB6D}">
+                <File Id="filC4A970D3C46F10B5B691D8A3EC93AA7E" KeyPath="yes" Source="$(var.harvest)\Revit_2014\DynamoRevitDS.XML" />
             </Component>
-            <Component Id="cmp383B03B5BA92A90DF31F599315F37BC7" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{738DE072-4F7B-41EC-83BE-F10BD65BD6F7}">
-                <File Id="fil48799DA77DB9B70501E7C0E3B8A63A42" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\DynamoRevitTester.dll" />
+            <Component Id="cmp383B03B5BA92A90DF31F599315F37BC7" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{FB7F85AA-D4FE-42A3-B48B-1D0209AD6A38}">
+                <File Id="fil48799DA77DB9B70501E7C0E3B8A63A42" KeyPath="yes" Source="$(var.harvest)\Revit_2014\DynamoRevitTester.dll" />
             </Component>
-            <Component Id="cmpEAACE474CDE86D54FA5910FC8CF90257" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{E620E1A0-53A9-44C5-8F02-AC235BC91175}">
-                <File Id="fil6E022F11A8756EA6630EE1994A1969ED" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\DynamoRevitVersionSelector.dll" />
+            <Component Id="cmpEAACE474CDE86D54FA5910FC8CF90257" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{52BDDC57-034C-487F-93F2-F632017CE139}">
+                <File Id="fil6E022F11A8756EA6630EE1994A1969ED" KeyPath="yes" Source="$(var.harvest)\Revit_2014\DynamoRevitVersionSelector.dll" />
             </Component>
-            <Component Id="cmp8FDD666716BD83586B3ADFE05DDF3F0C" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{DFF3E14F-335B-49EB-A2A8-9AB6057224DA}">
-                <File Id="fil26A6EDDC0EE0EEE8ACF9C686CFFB2E6E" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\DynamoUtilities.dll" />
+            <Component Id="cmp8FDD666716BD83586B3ADFE05DDF3F0C" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{A7C41C64-D9F3-4C08-8BF6-A98FD46A41BC}">
+                <File Id="fil26A6EDDC0EE0EEE8ACF9C686CFFB2E6E" KeyPath="yes" Source="$(var.harvest)\Revit_2014\DynamoUtilities.dll" />
             </Component>
-            <Component Id="cmp5AA70644DF1925227EB1DD4D541B3A59" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{1A33C4E7-F04F-41CF-A33A-F351090E8AE8}">
-                <File Id="fil903154B821952220D539430A2D31073F" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\GregRevitAuth.dll" />
+            <Component Id="cmp5AA70644DF1925227EB1DD4D541B3A59" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{E81F8CD8-9301-488E-A9A5-D9FA0EB7468B}">
+                <File Id="fil903154B821952220D539430A2D31073F" KeyPath="yes" Source="$(var.harvest)\Revit_2014\GregRevitAuth.dll" />
             </Component>
-            <Component Id="cmpEC41CDF9C3E0600CF44B51E56769D8CE" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{2A9196EB-5DBA-4F8B-80F0-67899BF19439}">
-                <File Id="fil968E2D31351F5920568BB42C18849250" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\JobMonitor.dll" />
+            <Component Id="cmpEC41CDF9C3E0600CF44B51E56769D8CE" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{76B537F3-A1D5-4AF4-A944-52440BFFC0A1}">
+                <File Id="fil968E2D31351F5920568BB42C18849250" KeyPath="yes" Source="$(var.harvest)\Revit_2014\JobMonitor.dll" />
             </Component>
-            <Component Id="cmp7CE6FD54B01AD89E3C3B3EEFD6BD0DAD" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{B28E5C28-1C38-4671-A480-7EC2B45D791C}">
-                <File Id="fil729CC929E37CAE3E8C33E30E38249E5A" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\Microsoft.Dynamic.dll" />
+            <Component Id="cmp7CE6FD54B01AD89E3C3B3EEFD6BD0DAD" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{0B28E08F-4272-4DFE-AFB8-F9CBCDF1F7FE}">
+                <File Id="fil729CC929E37CAE3E8C33E30E38249E5A" KeyPath="yes" Source="$(var.harvest)\Revit_2014\Microsoft.Dynamic.dll" />
             </Component>
-            <Component Id="cmpF2F99DCE00771918A4112052291FF0EE" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{BB159053-A726-4460-80F7-DDE5463A3544}">
-                <File Id="fil095F1DACCB7F987B08361AD25A4DABE1" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\Microsoft.Scripting.dll" />
+            <Component Id="cmpF2F99DCE00771918A4112052291FF0EE" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{C8E3ED36-5AAF-4370-8E64-474BC993F9C1}">
+                <File Id="fil095F1DACCB7F987B08361AD25A4DABE1" KeyPath="yes" Source="$(var.harvest)\Revit_2014\Microsoft.Scripting.dll" />
             </Component>
-            <Component Id="cmpC66FFAF7F27D4866B0983305E042CAEB" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{01B42D6B-2B6C-407A-B5F5-454F9C929AA2}">
-                <File Id="fil03D21AEC0179ECC33B59C311913BB7BC" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\RevitNodes.dll" />
+            <Component Id="cmpC66FFAF7F27D4866B0983305E042CAEB" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{CACF0449-E513-4E30-A4F3-769DD59AFFD6}">
+                <File Id="fil03D21AEC0179ECC33B59C311913BB7BC" KeyPath="yes" Source="$(var.harvest)\Revit_2014\RevitNodes.dll" />
             </Component>
-            <Component Id="cmp50E78C9AC6A4DA016983D5A02A4ED601" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{ED9F9325-6E7B-40A8-B7BE-431209391C43}">
-                <File Id="fil4BD8ED4E1F5AB5B6E067A2CA493CEE38" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\RevitNodes.XML" />
+            <Component Id="cmp50E78C9AC6A4DA016983D5A02A4ED601" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{716C8D2E-EE06-488E-8426-11B6905B7374}">
+                <File Id="fil4BD8ED4E1F5AB5B6E067A2CA493CEE38" KeyPath="yes" Source="$(var.harvest)\Revit_2014\RevitNodes.XML" />
             </Component>
-            <Component Id="cmpB51599F88A823E6159504AD78254E2E2" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{BBF4784B-E570-442E-A986-C5EF28AA1672}">
-                <File Id="fil8C3AC25C4842A1DB79B2A13F1C1B9CE6" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\RevitNodes_DynamoCustomization.xml" />
+            <Component Id="cmpB51599F88A823E6159504AD78254E2E2" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{5B28D2AC-8AAD-41F8-9CC0-933499E5DC80}">
+                <File Id="fil8C3AC25C4842A1DB79B2A13F1C1B9CE6" KeyPath="yes" Source="$(var.harvest)\Revit_2014\RevitNodes_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmp8EA7A04E75786C4276EC38A9E2FC6242" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{79CBE69B-613A-47FC-868C-4376AAA46F7E}">
-                <File Id="filC0AA1641E05F5DECF1FEED11A0BEFBB6" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\RevitRaaS.dll" />
+            <Component Id="cmp8EA7A04E75786C4276EC38A9E2FC6242" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{EB806C86-4F7A-4676-9C20-3E57D68B1FBB}">
+                <File Id="filC0AA1641E05F5DECF1FEED11A0BEFBB6" KeyPath="yes" Source="$(var.harvest)\Revit_2014\RevitRaaS.dll" />
             </Component>
-            <Component Id="cmp6B399E2828C3535730CE5D05089FA073" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{A11DA38A-C348-45B2-AF1D-9B2070A73BFF}">
-                <File Id="fil2BBDB7EA62BFABEDD93C2F3B5002AFAA" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\RevitRaaS.dll.config" />
+            <Component Id="cmp6B399E2828C3535730CE5D05089FA073" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{DC054D2E-1411-4684-9813-A1462E252E0E}">
+                <File Id="fil2BBDB7EA62BFABEDD93C2F3B5002AFAA" KeyPath="yes" Source="$(var.harvest)\Revit_2014\RevitRaaS.dll.config" />
             </Component>
-            <Component Id="cmpA508550FB051B01B3334A36E4283DEED" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{F9FD2E15-7DA4-4BC8-B287-F9ED568C5AD2}">
-                <File Id="fil22AB1DB0F20014546E0ED44659F60C49" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\RevitServices.dll" />
+            <Component Id="cmpA508550FB051B01B3334A36E4283DEED" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{88DD78C8-B6CD-4EB7-A949-2ADFEF33CE56}">
+                <File Id="fil22AB1DB0F20014546E0ED44659F60C49" KeyPath="yes" Source="$(var.harvest)\Revit_2014\RevitServices.dll" />
             </Component>
-            <Component Id="cmp01B93FC6B2D40101CE3C9E13CAA0F510" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{C3FE0033-45BF-4076-8A93-034AF61FBEFE}">
-                <File Id="filB700FBA409649EB950CB6DFEEB664E95" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\RevitTestFrameworkTypes.dll" />
+            <Component Id="cmp01B93FC6B2D40101CE3C9E13CAA0F510" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{7E273C0C-D6D9-4DB6-B22F-1BDEC2901C09}">
+                <File Id="filB700FBA409649EB950CB6DFEEB664E95" KeyPath="yes" Source="$(var.harvest)\Revit_2014\RevitTestFrameworkTypes.dll" />
             </Component>
-            <Component Id="cmpAB89C9892CA2B25599E0D9FA63799BD9" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{8D773215-7E7E-4FCD-9597-345404C6A0FE}">
-                <File Id="fil883F7D87984EEF98D5B2CC404DECB7F7" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\SDF.dll" />
+            <Component Id="cmpAB89C9892CA2B25599E0D9FA63799BD9" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{3CF26C29-4642-4B10-BC58-599C8A92B588}">
+                <File Id="fil883F7D87984EEF98D5B2CC404DECB7F7" KeyPath="yes" Source="$(var.harvest)\Revit_2014\SDF.dll" />
             </Component>
-            <Component Id="cmp2C636C8CF1EB027FDC54D5BE4F8B2A4B" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{CF8E1D48-AE22-405A-B610-2925CDC04B4F}">
-                <File Id="filBD657D588907322C9916C6A25304B615" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\SimpleRaaS.dll" />
+            <Component Id="cmp2C636C8CF1EB027FDC54D5BE4F8B2A4B" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{9C0D1759-99E1-482A-B5A4-D87AFFFE8E3B}">
+                <File Id="filBD657D588907322C9916C6A25304B615" KeyPath="yes" Source="$(var.harvest)\Revit_2014\SimpleRaaS.dll" />
             </Component>
-            <Component Id="cmp88CF9037B30054EEFD5B925B3A2E6DF9" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{9B718264-1876-4714-9392-A9F6CD6217EA}">
-                <File Id="filC1A8671718BD5C5D1FBAF1C1374C9275" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\SimpleRaaS_DynamoCustomization.xml" />
+            <Component Id="cmp88CF9037B30054EEFD5B925B3A2E6DF9" Directory="dir0906B7B9C5B07477956688D4026559D4" Guid="{FF7DD57A-8B78-4ADC-B515-8FA30A9045A7}">
+                <File Id="filC1A8671718BD5C5D1FBAF1C1374C9275" KeyPath="yes" Source="$(var.harvest)\Revit_2014\SimpleRaaS_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmp629A4B4ADC15E54B499A9FA0DE19CC11" Directory="dirB122DE3CB8C0202AB6F55CEF25891189" Guid="{2D828DBF-7196-4966-8E16-6651CA718F88}">
-                <File Id="filFD30EDE959A90D2737EF0CD89CE9B0EF" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\nodes\DSRevitNodesUI.dll" />
+            <Component Id="cmp629A4B4ADC15E54B499A9FA0DE19CC11" Directory="dirB122DE3CB8C0202AB6F55CEF25891189" Guid="{444A5A0F-CAFB-4932-8E4D-A94A61FAFF76}">
+                <File Id="filFD30EDE959A90D2737EF0CD89CE9B0EF" KeyPath="yes" Source="$(var.harvest)\Revit_2014\nodes\DSRevitNodesUI.dll" />
             </Component>
-            <Component Id="cmp189060F946508D8A6998ADF3CF52ED0F" Directory="dirB122DE3CB8C0202AB6F55CEF25891189" Guid="{0CE5624A-0F1C-4EEF-952E-383F55C1475A}">
-                <File Id="fil1AC757A5EF412E324D50A65D857BD943" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2014\nodes\DynamoRaaS.dll" />
+            <Component Id="cmp189060F946508D8A6998ADF3CF52ED0F" Directory="dirB122DE3CB8C0202AB6F55CEF25891189" Guid="{F638C478-C6B2-42B5-8FFC-0B27CAAE1ED0}">
+                <File Id="fil1AC757A5EF412E324D50A65D857BD943" KeyPath="yes" Source="$(var.harvest)\Revit_2014\nodes\DynamoRaaS.dll" />
             </Component>
-            <Component Id="cmp0AB9AC1D678D4718AA3239E66CC18698" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{295E7201-9DF2-4837-9D86-05CBF323B7E8}">
-                <File Id="fil3BFF303A6001C4E8524AB7E20778F8BB" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoRaaSHelper.dll" />
+            <Component Id="cmp0AB9AC1D678D4718AA3239E66CC18698" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{A66EE628-6CFD-4D1F-9A53-7EF4B75FEB97}">
+                <File Id="fil3BFF303A6001C4E8524AB7E20778F8BB" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoRaaSHelper.dll" />
             </Component>
-            <Component Id="cmpDD170E7DF58744C03B186D3B8C8466C4" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{BEFFDC26-E563-4830-97BE-FBE7A9305E80}">
-                <File Id="fil3AE830770425ACBBB10D7A2E61643ADB" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoRevitDS.dll" />
+            <Component Id="cmpDD170E7DF58744C03B186D3B8C8466C4" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{2ED43828-3A8B-4B68-916B-19C5DADC0938}">
+                <File Id="fil3AE830770425ACBBB10D7A2E61643ADB" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoRevitDS.dll" />
             </Component>
-            <Component Id="cmp10DF5E5244B15EE748E2FE9050BC1944" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{78F0D45E-07FB-4799-BA97-536E805CA7E0}">
-                <File Id="fil0117F3B7285836A2C82FBD78CB61B7F6" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoRevitDS.hash" />
+            <Component Id="cmp10DF5E5244B15EE748E2FE9050BC1944" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{60FE68CE-DF30-4D40-86FB-B635B458C176}">
+                <File Id="fil0117F3B7285836A2C82FBD78CB61B7F6" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoRevitDS.hash" />
             </Component>
-            <Component Id="cmp740CEF7AE3CD14ABD3D87DF8EAC37671" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{E7884EE8-4B18-4967-9E15-74CDDED224B5}">
-                <File Id="filB4381860308F1C27D4ABA9E4AAABB570" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoRevitDS.sig" />
+            <Component Id="cmp740CEF7AE3CD14ABD3D87DF8EAC37671" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{A5580551-6125-4D4A-8034-99F69234B862}">
+                <File Id="filB4381860308F1C27D4ABA9E4AAABB570" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoRevitDS.sig" />
             </Component>
-            <Component Id="cmp546760D0F4A1D0EA5C64D858C1FD6847" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{22135DA7-7365-431B-9AE6-5A641151F13B}">
-                <File Id="fil61D031CFE0F24506ED9202689DB8F4AF" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoRevitDS.XML" />
+            <Component Id="cmp546760D0F4A1D0EA5C64D858C1FD6847" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{7C3D5C56-88E2-4770-BE62-951594C70233}">
+                <File Id="fil61D031CFE0F24506ED9202689DB8F4AF" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoRevitDS.XML" />
             </Component>
-            <Component Id="cmp20AD873215602301EB6CAA1EA29D159B" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{9118EA64-65DA-47AB-AF28-A0E5575F6FCE}">
-                <File Id="fil9A1FAB99B75C86ECCD10DEBAC356DEB8" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoRevitTester.dll" />
+            <Component Id="cmp20AD873215602301EB6CAA1EA29D159B" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{9E453A66-589F-43F1-99D2-0E373F19606B}">
+                <File Id="fil9A1FAB99B75C86ECCD10DEBAC356DEB8" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoRevitTester.dll" />
             </Component>
-            <Component Id="cmpF104FB27A56E1491E61EBFDBAC7AD788" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{B5695185-D97C-4643-9ABC-4579B1C476DB}">
-                <File Id="filA6409B0DFC8BFF7771C5A4F00D1FB81C" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoRevitVersionSelector.dll" />
+            <Component Id="cmpF104FB27A56E1491E61EBFDBAC7AD788" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{051C8B71-71C6-4ABE-BA11-FEA2E1666AF5}">
+                <File Id="filA6409B0DFC8BFF7771C5A4F00D1FB81C" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoRevitVersionSelector.dll" />
             </Component>
-            <Component Id="cmp1DAFF9DD3CB650C9C4AE733C2778D76B" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{8DFE8140-C819-4CA4-AA9E-84D62CF2220F}">
-                <File Id="filB4DC2629F7D6AA249F111F1D9D66F9DD" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\DynamoUtilities.dll" />
+            <Component Id="cmp1DAFF9DD3CB650C9C4AE733C2778D76B" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{FE3E99E0-F324-4BC5-BB70-8E153BD8442F}">
+                <File Id="filB4DC2629F7D6AA249F111F1D9D66F9DD" KeyPath="yes" Source="$(var.harvest)\Revit_2015\DynamoUtilities.dll" />
             </Component>
-            <Component Id="cmpF12F2518473E4ADC8B285D624255F97C" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{FD95EE0D-4BC3-4469-AAD2-0CA1E63BAC0E}">
-                <File Id="filE595B6037C856A3ACB8F038C7EA7F149" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\GregRevitAuth.dll" />
+            <Component Id="cmpF12F2518473E4ADC8B285D624255F97C" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{D057178D-043D-46FE-9DF0-D8257ACAF964}">
+                <File Id="filE595B6037C856A3ACB8F038C7EA7F149" KeyPath="yes" Source="$(var.harvest)\Revit_2015\GregRevitAuth.dll" />
             </Component>
-            <Component Id="cmpD53AB26302FD893C171EC931AC1F617B" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{F295A03E-8E6A-4845-8570-C375E16E92A8}">
-                <File Id="fil1EEA8F8FE0DE4ADF26F9C6B0DCB6E91F" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\JobMonitor.dll" />
+            <Component Id="cmpD53AB26302FD893C171EC931AC1F617B" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{F13B3F9D-721D-43C2-948C-DB81A77512EC}">
+                <File Id="fil1EEA8F8FE0DE4ADF26F9C6B0DCB6E91F" KeyPath="yes" Source="$(var.harvest)\Revit_2015\JobMonitor.dll" />
             </Component>
-            <Component Id="cmpC33C42325C486F92996627E5DD1A9717" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{F610AE5F-EE6D-4CDF-8D0C-7B0BCB1E8D23}">
-                <File Id="filBE55A2777AB5E8019574B865116A2133" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\Microsoft.Dynamic.dll" />
+            <Component Id="cmpC33C42325C486F92996627E5DD1A9717" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{C1DEF48A-9ECE-4460-9055-50AD53C104E8}">
+                <File Id="filBE55A2777AB5E8019574B865116A2133" KeyPath="yes" Source="$(var.harvest)\Revit_2015\Microsoft.Dynamic.dll" />
             </Component>
-            <Component Id="cmp172BE9B80ABB059AC144E6B855C63EBB" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{8ACD2C55-4AC0-47A4-B872-A8F93900E569}">
-                <File Id="fil3CE25455583E00195DA5022F71256F13" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\Microsoft.Scripting.dll" />
+            <Component Id="cmp172BE9B80ABB059AC144E6B855C63EBB" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{6F35A8D3-CF18-4281-AE82-8F3BFE1A195E}">
+                <File Id="fil3CE25455583E00195DA5022F71256F13" KeyPath="yes" Source="$(var.harvest)\Revit_2015\Microsoft.Scripting.dll" />
             </Component>
-            <Component Id="cmp40F25ECA101F3C817901C7F56D22C907" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{EBB36994-3844-4DE1-A762-F0C46D70C12A}">
-                <File Id="fil2C67C75F78C447114173FD300850ED4F" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\RevitNodes.dll" />
+            <Component Id="cmp40F25ECA101F3C817901C7F56D22C907" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{BD6624DA-7BE8-42F0-85ED-A7521D990FC4}">
+                <File Id="fil2C67C75F78C447114173FD300850ED4F" KeyPath="yes" Source="$(var.harvest)\Revit_2015\RevitNodes.dll" />
             </Component>
-            <Component Id="cmp2ACED1BDB499BFA09073E689ED4064C8" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{BF0FE79E-7905-4BB6-8B3F-4EEE9B57AF01}">
-                <File Id="fil2A7BC7560E067309154C64DD2FEF6713" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\RevitNodes.XML" />
+            <Component Id="cmp2ACED1BDB499BFA09073E689ED4064C8" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{356901A2-3DB2-468E-AFBE-72F9C690B11C}">
+                <File Id="fil2A7BC7560E067309154C64DD2FEF6713" KeyPath="yes" Source="$(var.harvest)\Revit_2015\RevitNodes.XML" />
             </Component>
-            <Component Id="cmp2CDF32F6A6860C2E5914F2F8E2C4FCA6" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{3A38EA55-E04A-48AB-8206-0ABDF8068394}">
-                <File Id="fil8128534795EB80DBD68D3B89530A8074" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\RevitNodes_DynamoCustomization.xml" />
+            <Component Id="cmp2CDF32F6A6860C2E5914F2F8E2C4FCA6" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{75FA68B7-AAB0-4125-A91A-11A7553628EE}">
+                <File Id="fil8128534795EB80DBD68D3B89530A8074" KeyPath="yes" Source="$(var.harvest)\Revit_2015\RevitNodes_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmp89492A8C7DB3D1E3B0C80A4CCBCBC0EA" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{4CBFFA0B-07EC-4971-9ED7-FFE5EAA8E662}">
-                <File Id="filA5DC70E5DCB215A91B2ACA50D694EA15" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\RevitRaaS.dll" />
+            <Component Id="cmp89492A8C7DB3D1E3B0C80A4CCBCBC0EA" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{292C40EA-3438-45E8-BF6A-600AF0340FCD}">
+                <File Id="filA5DC70E5DCB215A91B2ACA50D694EA15" KeyPath="yes" Source="$(var.harvest)\Revit_2015\RevitRaaS.dll" />
             </Component>
-            <Component Id="cmp92F28D6E2FB9A6F23D4FCEA3E8267FDD" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{96ECB487-6FE7-4C98-8E34-17B75EEBB98B}">
-                <File Id="fil2107288B30BC5F10E1780FE1073CB60B" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\RevitRaaS.dll.config" />
+            <Component Id="cmp92F28D6E2FB9A6F23D4FCEA3E8267FDD" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{6EB47223-B43F-451E-AB05-367323FBAEF0}">
+                <File Id="fil2107288B30BC5F10E1780FE1073CB60B" KeyPath="yes" Source="$(var.harvest)\Revit_2015\RevitRaaS.dll.config" />
             </Component>
-            <Component Id="cmpD133E1531AFAC15B681C42A1981BBBE0" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{014E1715-8645-4513-942C-0DE84E4B3B4F}">
-                <File Id="filD0CC17D43A10E35BDEEF41C47687F927" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\RevitServices.dll" />
+            <Component Id="cmpD133E1531AFAC15B681C42A1981BBBE0" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{00ABD81C-EE4E-4A88-9C5E-1516B66D36A0}">
+                <File Id="filD0CC17D43A10E35BDEEF41C47687F927" KeyPath="yes" Source="$(var.harvest)\Revit_2015\RevitServices.dll" />
             </Component>
-            <Component Id="cmp19056DF69B9CD2195024B45A4BB1CFD0" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{B01DD3C1-567C-44A5-AF88-DC84F4A15267}">
-                <File Id="filCA634A8A43F95D7562C4642C7941894E" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\RevitTestFrameworkTypes.dll" />
+            <Component Id="cmp19056DF69B9CD2195024B45A4BB1CFD0" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{D95C6CD8-7127-4892-9CEE-7287765D7177}">
+                <File Id="filCA634A8A43F95D7562C4642C7941894E" KeyPath="yes" Source="$(var.harvest)\Revit_2015\RevitTestFrameworkTypes.dll" />
             </Component>
-            <Component Id="cmp6AD476B54880BD1387F0B64781ABC085" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{07D22961-23CE-4AB2-86E4-53479B905A02}">
-                <File Id="fil3C6FD592B796C8A4D4AD981868C3CAE4" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\SDF.dll" />
+            <Component Id="cmp6AD476B54880BD1387F0B64781ABC085" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{8806E3D6-CCF4-41B9-BAF2-53C0CFAC794A}">
+                <File Id="fil3C6FD592B796C8A4D4AD981868C3CAE4" KeyPath="yes" Source="$(var.harvest)\Revit_2015\SDF.dll" />
             </Component>
-            <Component Id="cmpFB8DFB41C0942748D2172D84D0801BE3" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{A0AF679B-47EA-4D15-A775-D46162928BC2}">
-                <File Id="filF2DD7FD22A28DB430529193464D19DFD" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\SimpleRaaS.dll" />
+            <Component Id="cmpFB8DFB41C0942748D2172D84D0801BE3" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{074F2FA6-3C2A-47B8-9C36-4BA905B9E9C3}">
+                <File Id="filF2DD7FD22A28DB430529193464D19DFD" KeyPath="yes" Source="$(var.harvest)\Revit_2015\SimpleRaaS.dll" />
             </Component>
-            <Component Id="cmpDB02F654E9FF2789A456BE4F87159B64" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{C02501C0-9AB9-4DB0-B739-2D25D7361351}">
-                <File Id="fil7F81945CE6788F1270F4B3B611ECFC85" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\SimpleRaaS_DynamoCustomization.xml" />
+            <Component Id="cmpDB02F654E9FF2789A456BE4F87159B64" Directory="dir0294C2B061F71D34F96AE79FE53A15B3" Guid="{F76B98FE-7388-4C9E-90C4-0F063D4BC8CC}">
+                <File Id="fil7F81945CE6788F1270F4B3B611ECFC85" KeyPath="yes" Source="$(var.harvest)\Revit_2015\SimpleRaaS_DynamoCustomization.xml" />
             </Component>
-            <Component Id="cmpE6E990277927BCD636620D9DB7201C07" Directory="dir14C83E956013B5EF4BE50543A966E45A" Guid="{E3E3E3AD-898F-4E7E-8589-99636B170C5F}">
-                <File Id="fil3C49196F491DAEA63E990797AC592776" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\nodes\DSRevitNodesUI.dll" />
+            <Component Id="cmpE6E990277927BCD636620D9DB7201C07" Directory="dir14C83E956013B5EF4BE50543A966E45A" Guid="{1FBF1BFD-1E03-4747-9057-CAE7F15FB0A2}">
+                <File Id="fil3C49196F491DAEA63E990797AC592776" KeyPath="yes" Source="$(var.harvest)\Revit_2015\nodes\DSRevitNodesUI.dll" />
             </Component>
-            <Component Id="cmp5FE6C794076EECD61C65C10E4B9F3AA5" Directory="dir14C83E956013B5EF4BE50543A966E45A" Guid="{1BD99C5A-2274-4694-AD60-DB697C6294CD}">
-                <File Id="fil221211E500953A2A5EAB23D29A38F820" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\Revit_2015\nodes\DynamoRaaS.dll" />
+            <Component Id="cmp5FE6C794076EECD61C65C10E4B9F3AA5" Directory="dir14C83E956013B5EF4BE50543A966E45A" Guid="{9CC35B49-D1D0-4076-90BB-725F3AEDBF43}">
+                <File Id="fil221211E500953A2A5EAB23D29A38F820" KeyPath="yes" Source="$(var.harvest)\Revit_2015\nodes\DynamoRaaS.dll" />
             </Component>
-            <Component Id="cmp7982E16B3C4B8ECA2592AC21E9A88274" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{D2BA119E-A506-42E9-8259-96011F1C7715}">
-                <File Id="fil95C8AB1F1424A71404AB9A36ACDED10C" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-Bold.ttf" />
+            <Component Id="cmp7982E16B3C4B8ECA2592AC21E9A88274" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{A8BFD806-2C7C-4CB1-972F-AA68DDC291C5}">
+                <File Id="fil95C8AB1F1424A71404AB9A36ACDED10C" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-Bold.ttf" />
             </Component>
-            <Component Id="cmpD1238252B6310349E055C463EA747328" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{FEC5AB61-135B-4E27-B7B2-A9E1EBA626E4}">
-                <File Id="fil02BC5AD7D3BFE450B4440DAD654E71FF" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-BoldItalic.ttf" />
+            <Component Id="cmpD1238252B6310349E055C463EA747328" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{FFE686C9-F6E2-45D5-B4E1-822A9FBFC08C}">
+                <File Id="fil02BC5AD7D3BFE450B4440DAD654E71FF" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-BoldItalic.ttf" />
             </Component>
-            <Component Id="cmp8BE319FF3FE3A0552DD215372B676A7B" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{78D9BE3D-209F-480B-997D-A831C6614925}">
-                <File Id="filA8754574B53F1A0C9358CE27ADE5C589" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-ExtraBold.ttf" />
+            <Component Id="cmp8BE319FF3FE3A0552DD215372B676A7B" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{E73A77C9-523E-4A8D-B86A-2948F6B6F6B3}">
+                <File Id="filA8754574B53F1A0C9358CE27ADE5C589" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-ExtraBold.ttf" />
             </Component>
-            <Component Id="cmp23CEC236B623CBD1863B3E79B468FC39" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{9B92EFFD-4D28-4978-9BB8-24DB0F63F0DD}">
-                <File Id="filD52E7EC8B5165E1A971058AB770B5893" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-ExtraBoldItalic.ttf" />
+            <Component Id="cmp23CEC236B623CBD1863B3E79B468FC39" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{74F39FEA-939B-45C7-B49E-EC9BED1B40B5}">
+                <File Id="filD52E7EC8B5165E1A971058AB770B5893" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-ExtraBoldItalic.ttf" />
             </Component>
-            <Component Id="cmpDF940CCF689B79456B2CF1A30C96ED1E" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{91416B7F-60A0-41BE-8321-3EE4184C24B7}">
-                <File Id="filB30828C701BC9E3A7E2B1C18E0219BA6" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-Italic.ttf" />
+            <Component Id="cmpDF940CCF689B79456B2CF1A30C96ED1E" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{B06CCDD3-7AAF-4D04-A4CB-AB182B5DDEFA}">
+                <File Id="filB30828C701BC9E3A7E2B1C18E0219BA6" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-Italic.ttf" />
             </Component>
-            <Component Id="cmp0ECFEAE34F7B0FD184F15C755327D5F1" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{A5D20419-D442-4928-A857-F182FFDA63BA}">
-                <File Id="filF083FB328764393229F4F844C826B1AE" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-Light.ttf" />
+            <Component Id="cmp0ECFEAE34F7B0FD184F15C755327D5F1" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{A36656FF-3DC9-40EC-8547-82E4F4F9F1A6}">
+                <File Id="filF083FB328764393229F4F844C826B1AE" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-Light.ttf" />
             </Component>
-            <Component Id="cmp0F01E80A6D78DE7D7DC6E7A8AE3AA269" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{F4067DA1-ED67-4950-8432-A9CC2C9F840D}">
-                <File Id="fil8C8ECD5BF0D1B12812B2D9A14390644A" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-LightItalic.ttf" />
+            <Component Id="cmp0F01E80A6D78DE7D7DC6E7A8AE3AA269" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{1E685EF8-8F8B-43C7-9E38-BEBA46162B4B}">
+                <File Id="fil8C8ECD5BF0D1B12812B2D9A14390644A" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-LightItalic.ttf" />
             </Component>
-            <Component Id="cmpDCA4711E4389D5DD107A65DDA350CA96" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{3E96A84D-38B5-4CB7-9634-2FA0AF3AF629}">
-                <File Id="fil25AA288C3DBE6966DAFC149396895D57" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-Regular.ttf" />
+            <Component Id="cmpDCA4711E4389D5DD107A65DDA350CA96" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{9C1CC0CD-4D29-45EB-8F91-8916E47B9B05}">
+                <File Id="fil25AA288C3DBE6966DAFC149396895D57" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-Regular.ttf" />
             </Component>
-            <Component Id="cmp2188559259D3FF28CF67620BA2C0053F" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{C4EED391-2495-4E67-B890-4B15D17A9C6C}">
-                <File Id="fil221614DC8C5DFA6A8F29064B0797636F" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-Semibold.ttf" />
+            <Component Id="cmp2188559259D3FF28CF67620BA2C0053F" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{566A8A0A-2B52-45A8-B5C4-3F3C3E24A486}">
+                <File Id="fil221614DC8C5DFA6A8F29064B0797636F" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-Semibold.ttf" />
             </Component>
-            <Component Id="cmp6B08CB2BDAE09592E6AE04F9B2AE2E9E" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{E2FB651A-B131-4743-B7DB-B6D2F15CCE71}">
-                <File Id="fil1DBCFB2D8B7A631EC04851187A4CE753" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Fonts\OpenSans-SemiboldItalic.ttf" />
+            <Component Id="cmp6B08CB2BDAE09592E6AE04F9B2AE2E9E" Directory="dir1924A9C5CC44413D36ABCD3037F0A403" Guid="{FD77D63F-1C58-470E-9414-3F54912B45D4}">
+                <File Id="fil1DBCFB2D8B7A631EC04851187A4CE753" KeyPath="yes" Source="$(var.harvest)\UI\Fonts\OpenSans-SemiboldItalic.ttf" />
             </Component>
-            <Component Id="cmp79A1B8449F1E9569A7A7D8313031C91A" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{66E21886-7DAC-4DDA-9DA6-471880D8F956}">
-                <File Id="fil82AB1C0710C8D65B6C1C0A8BE69857A9" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\Connectors.xaml" />
+            <Component Id="cmp79A1B8449F1E9569A7A7D8313031C91A" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{67B930A3-D22A-4D5C-BDC2-EC8DEF616EF5}">
+                <File Id="fil82AB1C0710C8D65B6C1C0A8BE69857A9" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\Connectors.xaml" />
             </Component>
-            <Component Id="cmpE441C7F8A30ECC7B4FAAB2A84D587A56" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{428D62AB-76D3-49E9-B063-41742FB3002F}">
-                <File Id="fil4BC9D76F28D90968657FCBB8C54B8097" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\DataTemplates.xaml" />
+            <Component Id="cmpE441C7F8A30ECC7B4FAAB2A84D587A56" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{FB4A6746-A763-4B14-B34C-4A0BE5AAF31B}">
+                <File Id="fil4BC9D76F28D90968657FCBB8C54B8097" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\DataTemplates.xaml" />
             </Component>
-            <Component Id="cmp0B43EB616C1FD893E2153F3B5D5B6226" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{7D07ED14-A044-463D-A411-1F0ACA89AB02}">
-                <File Id="fil90520F756A43CA805F0838935606D4BD" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\DynamoColorsAndBrushes.xaml" />
+            <Component Id="cmp0B43EB616C1FD893E2153F3B5D5B6226" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{68F2DCFE-BAB8-4FDC-82E0-6E5B526955B8}">
+                <File Id="fil90520F756A43CA805F0838935606D4BD" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\DynamoColorsAndBrushes.xaml" />
             </Component>
-            <Component Id="cmp89450CEA0968FFC8297E02EBCA868207" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{2631F840-A432-4B0E-A0B1-E4804092ED15}">
-                <File Id="fil2CB5E3D6892D466DCDC15B9221B2028C" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\DynamoConverters.xaml" />
+            <Component Id="cmp89450CEA0968FFC8297E02EBCA868207" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{234FB282-172E-4659-9A83-D6DE004C408E}">
+                <File Id="fil2CB5E3D6892D466DCDC15B9221B2028C" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\DynamoConverters.xaml" />
             </Component>
-            <Component Id="cmp04171E36E78D12160718F8B71CB826B2" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{2B44ED14-8803-4E75-AB85-86A5C686FF86}">
-                <File Id="filFA708E37E262152ADFE5CF54725C6B35" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\DynamoModern.xaml" />
+            <Component Id="cmp04171E36E78D12160718F8B71CB826B2" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{AD51BF41-D8E9-45E5-9373-2D2C7B94C23F}">
+                <File Id="filFA708E37E262152ADFE5CF54725C6B35" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\DynamoModern.xaml" />
             </Component>
-            <Component Id="cmp09EB1CD42DED6AB1CECFEC33291B2DBB" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{B52AB04D-3610-4D2F-84C3-A679A4C356D8}">
-                <File Id="fil82D1008C4C44EA66B1816BFBF24D74AA" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\DynamoText.xaml" />
+            <Component Id="cmp09EB1CD42DED6AB1CECFEC33291B2DBB" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{F76A643B-BAB2-49CA-88D8-44BDE3DFB9E8}">
+                <File Id="fil82D1008C4C44EA66B1816BFBF24D74AA" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\DynamoText.xaml" />
             </Component>
-            <Component Id="cmp07A6146CA02D991B80412B6CF960F5C9" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{DA982655-C794-4410-B644-59EB558D182D}">
-                <File Id="filAE1A354DFC092C62257D36EBB598C89B" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\MenuStyleDictionary.xaml" />
+            <Component Id="cmp07A6146CA02D991B80412B6CF960F5C9" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{D477CE91-342B-4A03-9913-B411DC57E979}">
+                <File Id="filAE1A354DFC092C62257D36EBB598C89B" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\MenuStyleDictionary.xaml" />
             </Component>
-            <Component Id="cmp2B1ECA192BA48F7951DA9146B38FF336" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{5F41A915-C69B-429E-B61F-7CF8C37C0FF8}">
-                <File Id="fil1FF2F2495598226041041AF734C657F1" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\Ports.xaml" />
+            <Component Id="cmp2B1ECA192BA48F7951DA9146B38FF336" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{C5BA46B3-67C4-4FBC-BFF7-67C44DC3BDA7}">
+                <File Id="fil1FF2F2495598226041041AF734C657F1" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\Ports.xaml" />
             </Component>
-            <Component Id="cmp80BFFB96ACA0FA95D6589D2DF299FE14" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{4C329840-D0BC-4750-9077-929AB5405021}">
-                <File Id="fil5E9652CD8A02C63321A99F0E739FF99E" KeyPath="yes" Source="$(env.DYNAMO_HARVEST_PATH)\UI\Themes\Modern\ToolbarStyleDictionary.xaml" />
+            <Component Id="cmp80BFFB96ACA0FA95D6589D2DF299FE14" Directory="dir64DE7D5A6151DD3151BAEE26EA1EE4F0" Guid="{923A1742-23DB-42F4-8800-DF8C56CD0AAA}">
+                <File Id="fil5E9652CD8A02C63321A99F0E739FF99E" KeyPath="yes" Source="$(var.harvest)\UI\Themes\Modern\ToolbarStyleDictionary.xaml" />
             </Component>
         </ComponentGroup>
     </Fragment>

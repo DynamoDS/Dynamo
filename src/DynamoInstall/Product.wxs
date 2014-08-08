@@ -93,7 +93,7 @@
       <Condition Level="0">(REVIT_2015="" AND REVIT_ARCHITECTURE_2015="") OR INSTALL_FOR_REVIT_2015=0</Condition>
     </Feature>
 
-    <Icon Id="DynamoInstaller.ico" SourceFile="$(env.DYNAMO_BASE)\tools\install\Extra\DynamoInstaller.ico"/>
+    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
     <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
   
   </Product>
@@ -125,12 +125,12 @@
     
     <ComponentGroup Id="REVIT_2014" Directory="DYNAMO_INSTALLDIR">
       <Component Id="DynamoForRevit2015.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
-        <File Id="DynamoForRevit2015.addin" Source="$(env.DYNAMO_BASE)\tools\install\Extra\DynamoForRevit2014.addin"/>
+        <File Id="DynamoForRevit2015.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2014.addin"/>
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="REVIT_2015" Directory="DYNAMO_INSTALLDIR">
       <Component Id="DynamoForRevit2014.addin" Guid="fde9dc0b-4b8c-46d3-9950-42c9f66b5e60">
-        <File Id="DynamoForRevit2014.addin" Source="$(env.DYNAMO_BASE)\tools\install\Extra\DynamoForRevit2015.addin"></File>
+        <File Id="DynamoForRevit2014.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2015.addin"></File>
       </Component>
     </ComponentGroup>
   </Fragment>

@@ -7,101 +7,101 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="SAMPLES">
-            <Component Id="cmp6A642DAE7FC8767113BEB73810882F51" Directory="dirE10E3F9A86E60E6567ADBE6BA0596E9A" Guid="{D5EA434D-3043-426E-B850-629E32DBAC7D}">
-                <File Id="fil0749B296A4DF364A2D6F9D2C5B417A51" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Basics\Basics_Basic01.dyn" />
+            <Component Id="cmp6A642DAE7FC8767113BEB73810882F51" Directory="dirE10E3F9A86E60E6567ADBE6BA0596E9A" Guid="{EF46D4BB-8190-419D-A2BE-CA90A9EE49F5}">
+                <File Id="fil0749B296A4DF364A2D6F9D2C5B417A51" KeyPath="yes" Source="$(var.samples)\Basics\Basics_Basic01.dyn" />
             </Component>
-            <Component Id="cmp43BBC525DC0159FA543C4F852C37E0B7" Directory="dirE10E3F9A86E60E6567ADBE6BA0596E9A" Guid="{9C6FCA48-1B4E-4F01-A7F0-BFCC6740A498}">
-                <File Id="fil011B22C9DF3F1844ED9408F58DC9731B" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Basics\Basics_Basic02.dyn" />
+            <Component Id="cmp43BBC525DC0159FA543C4F852C37E0B7" Directory="dirE10E3F9A86E60E6567ADBE6BA0596E9A" Guid="{B06A863C-8D9C-4EC3-9B34-57B552051B3E}">
+                <File Id="fil011B22C9DF3F1844ED9408F58DC9731B" KeyPath="yes" Source="$(var.samples)\Basics\Basics_Basic02.dyn" />
             </Component>
-            <Component Id="cmp504E3A4FC19A27254526E75ADA19BD0B" Directory="dirE10E3F9A86E60E6567ADBE6BA0596E9A" Guid="{166C3859-013B-4099-9196-C31B433D4F43}">
-                <File Id="fil81C8A018227090A731069BF064C1649C" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Basics\Basics_Basic03.dyn" />
+            <Component Id="cmp504E3A4FC19A27254526E75ADA19BD0B" Directory="dirE10E3F9A86E60E6567ADBE6BA0596E9A" Guid="{B1578450-A8CF-40E0-9676-735DFAE27F57}">
+                <File Id="fil81C8A018227090A731069BF064C1649C" KeyPath="yes" Source="$(var.samples)\Basics\Basics_Basic03.dyn" />
             </Component>
-            <Component Id="cmp8046F7B96DA22869EFBC73B2359A2C54" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{323A59C1-421A-4456-80B5-8BFB03BFA8ED}">
-                <File Id="fil4A5971DE3E904BFFD965CDEB35FADA64" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_AttractorPoint.dyn" />
+            <Component Id="cmp8046F7B96DA22869EFBC73B2359A2C54" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{0FD0838C-9796-4F30-A928-6D8680B69C93}">
+                <File Id="fil4A5971DE3E904BFFD965CDEB35FADA64" KeyPath="yes" Source="$(var.samples)\Core\Core_AttractorPoint.dyn" />
             </Component>
-            <Component Id="cmpB52E36D13CD7252445781EB4F72B85CA" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{558CAF09-BB65-4818-BA9E-9B49F3AFD0A8}">
-                <File Id="fil6F573DDD5FFEE1609848DC1081B8562B" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_CodeBlocks.dyn" />
+            <Component Id="cmpB52E36D13CD7252445781EB4F72B85CA" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{30F45626-F9DF-43E2-9776-8C097E15F19D}">
+                <File Id="fil6F573DDD5FFEE1609848DC1081B8562B" KeyPath="yes" Source="$(var.samples)\Core\Core_CodeBlocks.dyn" />
             </Component>
-            <Component Id="cmp08B33B134E67309EB1E5C6603B75FAE0" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{9B656A42-EB58-4B6F-8E9F-142988EE29AC}">
-                <File Id="filCD1925781CCFE8348B676BAD3E057A95" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_ListLacing.dyn" />
+            <Component Id="cmp08B33B134E67309EB1E5C6603B75FAE0" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{53429460-36C5-41A6-8D96-2ECA3FAE8971}">
+                <File Id="filCD1925781CCFE8348B676BAD3E057A95" KeyPath="yes" Source="$(var.samples)\Core\Core_ListLacing.dyn" />
             </Component>
-            <Component Id="cmp6135DF1B8D662045A00F891A3B0491F7" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{5C68213D-C6E3-43D2-BA98-8259ABF733C0}">
-                <File Id="filB91E60C2207C3C2CD9AD2BF434660D4B" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_Math.dyn" />
+            <Component Id="cmp6135DF1B8D662045A00F891A3B0491F7" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{CD26953E-4798-48D4-81B9-FB1CD5A06FC5}">
+                <File Id="filB91E60C2207C3C2CD9AD2BF434660D4B" KeyPath="yes" Source="$(var.samples)\Core\Core_Math.dyn" />
             </Component>
-            <Component Id="cmpE58B6A01E85A86603C1A3630C84C8527" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{0D7BFF69-7A1B-4BB5-9B09-CF70E0EEEB60}">
-                <File Id="fil59BBBD7B013CCAE32D6C76FE86E04EDF" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_PassingFunctions.dyn" />
+            <Component Id="cmpE58B6A01E85A86603C1A3630C84C8527" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{E0477ED0-FFA6-438A-BD21-F8CA91252B94}">
+                <File Id="fil59BBBD7B013CCAE32D6C76FE86E04EDF" KeyPath="yes" Source="$(var.samples)\Core\Core_PassingFunctions.dyn" />
             </Component>
-            <Component Id="cmp04DD03CF8E4A232D77AB2148DB08FB33" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{489DD8FE-A631-4797-BA03-5A4817B332EB}">
-                <File Id="fil0C187826CEFEFE396E246AD8EC3324DB" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_Python.dyn" />
+            <Component Id="cmp04DD03CF8E4A232D77AB2148DB08FB33" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{1B9CCF20-2AF6-483B-A6F6-CBA01749B3C7}">
+                <File Id="fil0C187826CEFEFE396E246AD8EC3324DB" KeyPath="yes" Source="$(var.samples)\Core\Core_Python.dyn" />
             </Component>
-            <Component Id="cmpE5CAA5D84014FFFB7705C7C66349C89A" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{026CF4B5-8E47-43BF-85C8-3237FC0F4DFF}">
-                <File Id="fil7A2AF10F9A47D48C4B4E62CFCFAD3219" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_RangeSyntax.dyn" />
+            <Component Id="cmpE5CAA5D84014FFFB7705C7C66349C89A" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{4843A794-027B-4731-8B02-0696F391FD43}">
+                <File Id="fil7A2AF10F9A47D48C4B4E62CFCFAD3219" KeyPath="yes" Source="$(var.samples)\Core\Core_RangeSyntax.dyn" />
             </Component>
-            <Component Id="cmp4427119836AD2F670B290B39B2806799" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{74C8C96F-46DA-4AE9-9979-B4B787609953}">
-                <File Id="fil3825EFB5DBF86A42CCB110903187A6DD" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Core\Core_Strings.dyn" />
+            <Component Id="cmp4427119836AD2F670B290B39B2806799" Directory="dir2DA26D943A4CEB0685BFFA7E94D1B62A" Guid="{E717F236-B26C-41B4-A44C-A20CD14B1C16}">
+                <File Id="fil3825EFB5DBF86A42CCB110903187A6DD" KeyPath="yes" Source="$(var.samples)\Core\Core_Strings.dyn" />
             </Component>
-            <Component Id="cmp3EE7C447103851998572E5AC7DC36D83" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{2547EB7B-75D0-486A-8CBD-41800F544FD9}">
-                <File Id="fil33D61E01B947C6A11A4BCFAD9F691D29" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Geometry\Geometry_Curves.dyn" />
+            <Component Id="cmp3EE7C447103851998572E5AC7DC36D83" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{7A1B7D64-F4E0-43B3-903D-FF66FE999C85}">
+                <File Id="fil33D61E01B947C6A11A4BCFAD9F691D29" KeyPath="yes" Source="$(var.samples)\Geometry\Geometry_Curves.dyn" />
             </Component>
-            <Component Id="cmpB56D2264578D14D180CC8863D88F7B54" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{BEAC0D44-2914-4929-B07E-03578F2F4A44}">
-                <File Id="filCA790B92BDCE833EF8958C2B87901F64" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Geometry\Geometry_Points.dyn" />
+            <Component Id="cmpB56D2264578D14D180CC8863D88F7B54" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{C128CADC-36AF-47B1-835A-AB18FABA56D8}">
+                <File Id="filCA790B92BDCE833EF8958C2B87901F64" KeyPath="yes" Source="$(var.samples)\Geometry\Geometry_Points.dyn" />
             </Component>
-            <Component Id="cmpDC32E0A89A6EBEC863177BC50524B23E" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{110AAEC0-0146-44CA-8B3D-DA6D9B9F6152}">
-                <File Id="fil92EAD9DCAC13946729BF8D39F19FD1AF" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Geometry\Geometry_Solids.dyn" />
+            <Component Id="cmpDC32E0A89A6EBEC863177BC50524B23E" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{A0AE2637-5F38-465C-A73A-D5E1E8C42B31}">
+                <File Id="fil92EAD9DCAC13946729BF8D39F19FD1AF" KeyPath="yes" Source="$(var.samples)\Geometry\Geometry_Solids.dyn" />
             </Component>
-            <Component Id="cmpF5B1524DEF8042C0C3F49107C104EA63" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{6A3CDC12-83C6-4F0C-A554-40280F088B99}">
-                <File Id="fil5DA70A90F5960F793E1EAD64113C4C61" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Geometry\Geometry_Surfaces.dyn" />
+            <Component Id="cmpF5B1524DEF8042C0C3F49107C104EA63" Directory="dirE40332174A632405AD0CB03741D18651" Guid="{468ADE6E-0CEA-45FF-954A-5A4DB156589B}">
+                <File Id="fil5DA70A90F5960F793E1EAD64113C4C61" KeyPath="yes" Source="$(var.samples)\Geometry\Geometry_Surfaces.dyn" />
             </Component>
-            <Component Id="cmp1D0404814F0D40A218F0FCA1D4432679" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{909E8F6B-78AD-406E-B14B-D712642D293D}">
-                <File Id="filF5C77263AD649005B88E14E91FA35B3B" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\gradient.bmp" />
+            <Component Id="cmp1D0404814F0D40A218F0FCA1D4432679" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{7481C7B7-ABC3-478D-9046-E7CBB38B9F8F}">
+                <File Id="filF5C77263AD649005B88E14E91FA35B3B" KeyPath="yes" Source="$(var.samples)\ImportExport\gradient.bmp" />
             </Component>
-            <Component Id="cmpAB121746346F22AB8B77D8F81AA14371" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{ABF6E42B-D510-465B-AFD7-A67D201BC045}">
-                <File Id="filA8FEA0E4AB332421ECBEA23126B7A553" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\grayscale3.bmp" />
+            <Component Id="cmpAB121746346F22AB8B77D8F81AA14371" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{15CF1FE1-1B18-469C-A957-6C57A5D656E5}">
+                <File Id="filA8FEA0E4AB332421ECBEA23126B7A553" KeyPath="yes" Source="$(var.samples)\ImportExport\grayscale3.bmp" />
             </Component>
-            <Component Id="cmpB4CD23635D62FC6FE2007DC29278B807" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{8F7B006E-90C9-4211-8382-BFF96FC44299}">
-                <File Id="fil10CBB0D0C7C1CA177E4A74B21E5B410D" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\helix.csv" />
+            <Component Id="cmpB4CD23635D62FC6FE2007DC29278B807" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{33A4EAAD-227D-43A8-B26F-F4DC1A1DB0CE}">
+                <File Id="fil10CBB0D0C7C1CA177E4A74B21E5B410D" KeyPath="yes" Source="$(var.samples)\ImportExport\helix.csv" />
             </Component>
-            <Component Id="cmp02A958314F86E53AB9656AFB1087E886" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{6F1AC6C1-B9A7-4492-A3B6-564D672D6C76}">
-                <File Id="fil8A3EC6DE7E2C72E194C4810AF9A2F025" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\helix.xlsx" />
+            <Component Id="cmp02A958314F86E53AB9656AFB1087E886" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{B5981BED-D1E0-4387-9A73-2FE9F5C02CEA}">
+                <File Id="fil8A3EC6DE7E2C72E194C4810AF9A2F025" KeyPath="yes" Source="$(var.samples)\ImportExport\helix.xlsx" />
             </Component>
-            <Component Id="cmp2BAA8BF7E9DE35B391C7E13CC85FB8A0" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{62B2AB85-9525-4DBC-818D-1422924D28D7}">
-                <File Id="fil5AF103F99494F47E7B78D49F62080B81" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\helix_smaller.csv" />
+            <Component Id="cmp2BAA8BF7E9DE35B391C7E13CC85FB8A0" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{DC4BBA16-F7A0-404E-B836-AF22AEC0D41B}">
+                <File Id="fil5AF103F99494F47E7B78D49F62080B81" KeyPath="yes" Source="$(var.samples)\ImportExport\helix_smaller.csv" />
             </Component>
-            <Component Id="cmp758983929EB9012217EBE586343525FA" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{6D5DFC99-9E27-4C84-897C-E022734A4D4D}">
-                <File Id="fil47A40BB165F84530FBE78D4024D1943C" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\icosohedron_points.csv" />
+            <Component Id="cmp758983929EB9012217EBE586343525FA" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{2E841267-2DD1-42E6-BC3B-8666CCAC57EF}">
+                <File Id="fil47A40BB165F84530FBE78D4024D1943C" KeyPath="yes" Source="$(var.samples)\ImportExport\icosohedron_points.csv" />
             </Component>
-            <Component Id="cmp0F7D47875D18C8D289F37371B885D3CF" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{FAD33CD3-E132-4015-96DB-F74339B5E19F}">
-                <File Id="fil5711F23DCF86FFA06892155A6A67041D" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\ImportExport_CSV to Stuff.dyn" />
+            <Component Id="cmp0F7D47875D18C8D289F37371B885D3CF" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{4D3BAA9F-DCA1-4BFC-A5EC-14C2A17DF9D4}">
+                <File Id="fil5711F23DCF86FFA06892155A6A67041D" KeyPath="yes" Source="$(var.samples)\ImportExport\ImportExport_CSV to Stuff.dyn" />
             </Component>
-            <Component Id="cmp46A7DD4989A7A04681F2ED8CE4535F25" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{46B187FF-0A56-4545-9DED-09E289D9CF9F}">
-                <File Id="fil22F9D6763F74DD651C1D45CC5E2BDC2E" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\ImportExport_Data To Excel.dyn" />
+            <Component Id="cmp46A7DD4989A7A04681F2ED8CE4535F25" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{E2903916-3E6D-423D-9F9A-DAFEEFA016E9}">
+                <File Id="fil22F9D6763F74DD651C1D45CC5E2BDC2E" KeyPath="yes" Source="$(var.samples)\ImportExport\ImportExport_Data To Excel.dyn" />
             </Component>
-            <Component Id="cmpB862A92EB27AA61C82934B5B987C6C9C" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{05BCFB4E-697D-4541-97C9-76AD35FF6F13}">
-                <File Id="fil42E208C3F71FD61D4F70774C7994EB41" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\ImportExport_Excel to Dynamo.dyn" />
+            <Component Id="cmpB862A92EB27AA61C82934B5B987C6C9C" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{246AA1D8-DF7D-429F-92C0-14B4CE2A97D1}">
+                <File Id="fil42E208C3F71FD61D4F70774C7994EB41" KeyPath="yes" Source="$(var.samples)\ImportExport\ImportExport_Excel to Dynamo.dyn" />
             </Component>
-            <Component Id="cmpA6E2D07150BC66A2BFA7D049BEF5791A" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{C156B7A0-FC14-4675-9327-7C3DEA690AA4}">
-                <File Id="filFC29C51F482F8E076D9D135713126F35" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\ImportExport\sphere.csv" />
+            <Component Id="cmpA6E2D07150BC66A2BFA7D049BEF5791A" Directory="dirC512523A46D7E900F88970E8AAB44AD1" Guid="{1C6342CB-5434-47BC-90DC-EDA0A3483104}">
+                <File Id="filFC29C51F482F8E076D9D135713126F35" KeyPath="yes" Source="$(var.samples)\ImportExport\sphere.csv" />
             </Component>
-            <Component Id="cmp0BC197B4F358C8B68034109A37221FFE" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{FFB779BB-EB95-47B3-AC0F-7DEAEC1FB3EC}">
-                <File Id="fil2363283104245AA2687AC99FB4ACCD1A" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Revit\DynamoSample.rvt" />
+            <Component Id="cmp0BC197B4F358C8B68034109A37221FFE" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{8C3BA302-7FB3-42E1-929B-B45875ABF195}">
+                <File Id="fil2363283104245AA2687AC99FB4ACCD1A" KeyPath="yes" Source="$(var.samples)\Revit\DynamoSample.rvt" />
             </Component>
-            <Component Id="cmpF6350C7FEFD48B57BE9A309BE2613C82" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{9372B032-4C9F-4B89-A846-87C244D59F84}">
-                <File Id="fil6248702BB39AF612A0BCB651A7B01236" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Revit\Revit_Adaptive Component Placement.dyn" />
+            <Component Id="cmpF6350C7FEFD48B57BE9A309BE2613C82" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{CF0A826D-1E72-4271-94F0-75340C98F324}">
+                <File Id="fil6248702BB39AF612A0BCB651A7B01236" KeyPath="yes" Source="$(var.samples)\Revit\Revit_Adaptive Component Placement.dyn" />
             </Component>
-            <Component Id="cmp6E1226487DE1E2291366017565C68572" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{B69FF44F-98E3-47DF-A787-9D939E196701}">
-                <File Id="fil7C1F69FD97EEA5A649A52EF547801E98" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Revit\Revit_Color.dyn" />
+            <Component Id="cmp6E1226487DE1E2291366017565C68572" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{73C89252-DC9E-4717-90FC-5D0944DF91B5}">
+                <File Id="fil7C1F69FD97EEA5A649A52EF547801E98" KeyPath="yes" Source="$(var.samples)\Revit\Revit_Color.dyn" />
             </Component>
-            <Component Id="cmp346AE0CB0C0568707E0F932F69A43325" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{15E1A443-78C9-4E10-8DEE-318283EDF1AA}">
-                <File Id="fil7353C88E03FFDB3A14E18D0C5D023977" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Revit\Revit_Floors and Framing.dyn" />
+            <Component Id="cmp346AE0CB0C0568707E0F932F69A43325" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{081BBA49-FAC3-4FC9-9113-BFA1FC8D47AF}">
+                <File Id="fil7353C88E03FFDB3A14E18D0C5D023977" KeyPath="yes" Source="$(var.samples)\Revit\Revit_Floors and Framing.dyn" />
             </Component>
-            <Component Id="cmpBD1D25B89198AAF596DF9283B25FF6F1" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{1F97BDD9-8A9E-4318-A8CD-BFB2E9A12D02}">
-                <File Id="filEAD55EECCE7137ACD01EF571AE571CBA" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Revit\Revit_ImportSolid.dyn" />
+            <Component Id="cmpBD1D25B89198AAF596DF9283B25FF6F1" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{9DAD8800-9D43-4F3D-8E39-04F59E3C8EBB}">
+                <File Id="filEAD55EECCE7137ACD01EF571AE571CBA" KeyPath="yes" Source="$(var.samples)\Revit\Revit_ImportSolid.dyn" />
             </Component>
-            <Component Id="cmp10E903D4B793D4531B3AD37F32EE53BE" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{D2C312CD-2440-450F-8C5B-5E0D23598F00}">
-                <File Id="fil21F4D99B3C0605AE68BC00D2B89DDA6A" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Revit\Revit_PlaceFamiliesByLevel_Set Parameters.dyn" />
+            <Component Id="cmp10E903D4B793D4531B3AD37F32EE53BE" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{A7F5000F-F9BE-4ACB-BCC3-800309AF8F03}">
+                <File Id="fil21F4D99B3C0605AE68BC00D2B89DDA6A" KeyPath="yes" Source="$(var.samples)\Revit\Revit_PlaceFamiliesByLevel_Set Parameters.dyn" />
             </Component>
-            <Component Id="cmp24CA0F6E8178A1F55EC4F63850D86030" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{7D98D261-FCC9-4925-BA08-0F7524FD2DB8}">
-                <File Id="fil694ED5753472513194B0AB7FD9330655" KeyPath="yes" Source="$(env.DYNAMO_SAMPLES_PATH)\Revit\Revit_StructuralFraming.dyn" />
+            <Component Id="cmp24CA0F6E8178A1F55EC4F63850D86030" Directory="dirC80B050524970F6643CC8C232A49A166" Guid="{7DDD07BB-766A-4348-9339-112015C58F83}">
+                <File Id="fil694ED5753472513194B0AB7FD9330655" KeyPath="yes" Source="$(var.samples)\Revit\Revit_StructuralFraming.dyn" />
             </Component>
         </ComponentGroup>
     </Fragment>
