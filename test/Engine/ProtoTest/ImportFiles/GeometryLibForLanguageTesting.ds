@@ -119,7 +119,7 @@ class Line extends BSplineCurve
     
     def ExtrudeAsSurface( l1 : double, v1: Vector)
     {
-        return = BSplineSurface.ByPoints( { { StartPoint, Point.ByCartesianCoordinates(l1,l1,l1)}, {EndPoint, Point.ByCartesianCoordinates(v1.X,v1.Y,v1.Z) } } );
+        return = BSplineSurface.ByPoints( { { StartPoint, Point.ByCartesianCoordinates(l1,l1,l1)}, {EndPoint, Point.ByCartesianCoordinates(v1.X, v1.Y, v1.Z) } } );
     }
     
     

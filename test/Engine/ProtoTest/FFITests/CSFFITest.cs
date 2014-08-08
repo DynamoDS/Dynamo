@@ -1051,10 +1051,8 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestNamespacePartialResolution01()
         {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4034
             var mirror = thisTest.RunScriptSource(
             @"                import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);                x = p.Prop;            "

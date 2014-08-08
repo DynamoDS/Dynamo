@@ -13654,7 +13654,7 @@ a =
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_stepin_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13693,7 +13693,7 @@ x = a1.update(1); //line 28
 b1 = B.B(); //line 31
 n = 22;
 ", runnerConfig);
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.Step();
