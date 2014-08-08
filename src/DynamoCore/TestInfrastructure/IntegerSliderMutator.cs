@@ -38,17 +38,30 @@ namespace Dynamo.TestInfrastructure
 
             NodeModel node = nodes[Rand.Next(nodes.Count)];
 
-            string value = Rand.Next(100).ToString();
+            PropertyInfo propInfo = type.GetProperty("Min");
+            dynamic propertyMin = propInfo.GetValue(node, null);
+            propInfo = type.GetProperty("Max");
+            dynamic propertyMax = propInfo.GetValue(node, null);
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            int min = 0;
+            int max = 0;
+            int returnCode = 0;
+
+            if (Int32.TryParse(propertyMin.ToString(), out min) && Int32.TryParse(propertyMax.ToString(), out max))
             {
-                DynamoViewModel.UpdateModelValueCommand updateValue =
-                    new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", value);
-                DynamoViewModel.ExecuteCommand(updateValue);
-            }));
+                string value = (Rand.Next(min, max)).ToString();
 
-            return 1;
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                {
+                    DynamoViewModel.UpdateModelValueCommand updateValue =
+                        new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", value);
+                    DynamoViewModel.ExecuteCommand(updateValue);
+                }));
+
+                returnCode = 1;
+            }
+
+            return returnCode;
         }
     }
 }
-

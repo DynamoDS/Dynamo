@@ -7,7 +7,6 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using System.IO;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -21,14 +20,10 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate()
         {
-            string assemblyPath = Assembly.GetExecutingAssembly().Location;
-            string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
-            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-
-            List<NodeModel> nodes = new List<NodeModel>();
-
+            string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
+            Assembly assembly = Assembly.LoadFile(assemblyPass);
             Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
+            List<NodeModel> nodes = new List<NodeModel>();
             if (type != null)
             {
                 nodes = DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
@@ -40,16 +35,30 @@ namespace Dynamo.TestInfrastructure
 
             NodeModel node = nodes[Rand.Next(nodes.Count)];
 
-            string value = (Rand.NextDouble() * 100).ToString();
+            PropertyInfo propInfo = type.GetProperty("Min");
+            dynamic propertyMin = propInfo.GetValue(node, null);
+            propInfo = type.GetProperty("Max");
+            dynamic propertyMax = propInfo.GetValue(node, null);
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            double min = 0;
+            double max = 0;
+            int returnCode = 0;
+
+            if (double.TryParse(propertyMin.ToString(), out min) && double.TryParse(propertyMax.ToString(), out max))
             {
-                DynamoViewModel.UpdateModelValueCommand updateValue =
-                    new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", value);
-                DynamoViewModel.ExecuteCommand(updateValue);
-            }));
+                string value = (min + (max - min) * Rand.NextDouble()).ToString();
 
-            return 1;
+                dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                {
+                    DynamoViewModel.UpdateModelValueCommand updateValue =
+                        new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", value);
+                    DynamoViewModel.ExecuteCommand(updateValue);
+                }));
+
+                returnCode = 1;
+            }
+
+            return returnCode;
         }
     }
 }
