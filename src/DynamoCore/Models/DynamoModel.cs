@@ -68,7 +68,6 @@ namespace Dynamo.Models
         #region internal members
 
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
-        private ObservableCollection<WorkspaceModel> hiddenWorkspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
 
         #endregion
@@ -672,7 +671,6 @@ namespace Dynamo.Models
             this.CurrentWorkspace = workspaces[0];  // go home
             workspaces.Remove(workspace);
             OnWorkspaceHidden(workspace);
-            hiddenWorkspaces.Add(workspace);
         }
 
         /// <summary>
