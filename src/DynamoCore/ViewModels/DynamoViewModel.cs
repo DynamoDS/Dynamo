@@ -578,7 +578,7 @@ namespace Dynamo.ViewModels
 
         private void ModelWorkspaceSaved(WorkspaceModel model)
         {
-            this.RecentFiles.Add(model.FileName);
+            this.AddToRecentFiles(model.FileName);
         }
 
         private void ModelWorkspaceCleared(object sender, EventArgs e)
