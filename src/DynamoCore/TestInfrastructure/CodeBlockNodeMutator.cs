@@ -54,7 +54,7 @@ namespace Dynamo.TestInfrastructure
                         while (Rand.NextDouble() > 0.5)
                         {
                             int locat = Rand.Next(code.Length);
-                            const string junk = "<>:L/;'\\/[";
+                            const string junk = "<>:L/;'\\/[=+-";
 
                             replacement = code.Substring(0, locat) + junk[Rand.Next(junk.Length)] +
                                           code.Substring(locat);
