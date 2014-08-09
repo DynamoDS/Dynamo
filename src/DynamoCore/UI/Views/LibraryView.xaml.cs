@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Windows.Controls;
 using Dynamo.Models;
 
 namespace Dynamo.UI.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LibraryView.xaml
     /// </summary>
-    public partial class LibraryView : System.Windows.Window
+    public partial class LibraryView : UserControl
     {
         private readonly Random random = new Random();
         private readonly LibraryModel libraryData = new LibraryModel();

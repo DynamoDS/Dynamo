@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace Dynamo.Controls
 {
@@ -18,7 +18,7 @@ namespace Dynamo.Controls
         protected override void OnInitialized(EventArgs e)
         {
             // ListView should never be null.
-            var classListView = FindTypedParent<ListView>(this);
+            var classListView = WPF.FindUpVisualTree<ListView>(this);
             collection = classListView.ItemsSource as ObservableCollection<ClassObjectBase>;
             classListView.SelectionChanged += OnClassViewSelectionChanged;
 
@@ -69,22 +69,6 @@ namespace Dynamo.Controls
         protected override bool HasLogicalOrientation
         {
             get { return false; } // Arrange items in two dimension.
-        }
-
-        private static T FindTypedParent<T>(DependencyObject initial)
-            where T : DependencyObject
-        {
-            DependencyObject current = initial;
-
-            while (current != null)
-            {
-                if (current.GetType() == typeof(T))
-                    return current as T;
-
-                current = VisualTreeHelper.GetParent(current);
-            }
-
-            return null;
         }
 
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
