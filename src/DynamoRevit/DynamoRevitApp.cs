@@ -27,6 +27,8 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Dynamo.Applications
 {
+    
+
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic),
      Regeneration(RegenerationOption.Manual)]
     public class DynamoRevitApp : IExternalApplication
@@ -145,7 +147,8 @@ namespace Dynamo.Applications
             var versionInt = int.Parse(application.ControlledApplication.VersionNumber);
             if (versionInt > 2014)
             {
-                DynamoPathManager.Instance.SetLibGPath(Path.Combine(assDir, "libg_220"));
+                DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
+                DynamoPathManager.Instance.SetLibGPath(Path.Combine(DynamoPathManager.Instance.MainExecPath, "libg_220"));
             }
         }
     }

@@ -12,8 +12,11 @@ namespace DynamoUtilities
     /// </summary>
     public class DynamoPathManager
     {
+        public enum Asm{ Version219,Version220}
+
         private List<string> preloadLibaries = new List<string>();
         private List<string> addResolvePaths = new List<string>();
+        private Asm asmVersion = Asm.Version219;
         private static DynamoPathManager instance;
 
         /// <summary>
@@ -104,6 +107,12 @@ namespace DynamoUtilities
             set { addResolvePaths = value; }
         }
 
+        public Asm ASMVersion
+        {
+            get { return asmVersion; }
+            set { asmVersion = value; }
+        }
+
         public static DynamoPathManager Instance
         {
             get { return instance ?? (instance = new DynamoPathManager()); }
@@ -160,8 +169,19 @@ namespace DynamoUtilities
             {
                 Directory.CreateDirectory(CommonSamples);
             }
-            
-            SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
+
+            switch (asmVersion)
+            {
+                case Asm.Version219:
+                    SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
+                    break;
+                case Asm.Version220:
+                    SetLibGPath(Path.Combine(MainExecPath, "libg_220"));
+                    break;
+                default:
+                    SetLibGPath(Path.Combine(MainExecPath, "libg_219"));
+                    break;
+            }
 
             ASM219Host = null;
             ASM220Host = null;
