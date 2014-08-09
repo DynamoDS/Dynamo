@@ -9,7 +9,6 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoUtilities;
