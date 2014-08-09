@@ -33,14 +33,6 @@ namespace Dynamo.Controls
             base.OnRenderSizeChanged(sizeInfo);
         }
 
-        protected override Size MeasureOverride(Size availableSize)
-        {
-            foreach (UIElement child in this.Children)
-                child.Measure(availableSize);
-
-            return new Size(100, 100);
-        }
-
         protected override Size ArrangeOverride(Size finalSize)
         {
             if (this.Children == null || this.Children.Count == 0)
