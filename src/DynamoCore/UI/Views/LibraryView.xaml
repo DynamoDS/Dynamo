@@ -11,7 +11,7 @@
             <StackPanel Orientation="Vertical"
                         Width="86"
                         Height="92">
-                <Image Source="/LibraryTestBed;component/Resources/Icons/Saturation.png"
+                <Image Source="/DynamoCore;component/Resources/Icons/Saturation.png"
                        Width="40"
                        Height="40"
                        Margin="8"
@@ -41,8 +41,63 @@
     </Window.Resources>
 
     <Grid Name="LibraryGrid">
+        <!-- This is the outer list (showing categories) -->
+        <ListView Name="CategoryListView"
+                  ScrollViewer.CanContentScroll="False">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Expander Name="CategoryExpander"
+                              Foreground="Blue"
+                              Header="{Binding Path=Name}"
+                              Width="{Binding ElementName=CategoryListView, Path=ActualWidth}">
+                        <ListView Name="ClassListView"
+                                  ScrollViewer.CanContentScroll="False"
+                                  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                                  ItemsSource="{Binding Path=Classes}">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <controls:LibraryWrapPanel VerticalAlignment="Stretch"/>                                    
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </ListView>
+                    </Expander>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-        <ListView Name="ClassListView"
+
+            <!--
+            This affects the root-level items (i.e. the categories themselves).
+            -->
+            
+
+            <!--<ListBox Name="CategoryListBox"
+                 ItemsSource="{Binding Path=Categories}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                    <TextBlock Text="{Binding Path=Name}" />
+                        <ListBox Name="ClassListView"
+                              ScrollViewer.CanContentScroll="False"
+                              ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                              ItemsSource="{Binding Path=Classes}">
+                            <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <local:LibraryWrapPanel />
+                            </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </Grid>
+                </DataTemplate>
+                
+            </ListBox.ItemTemplate>
+            
+            
+        </ListBox>-->
+
+        <!-- This is the inner list (showing all the classes) -->
+
+        <!--<ListView Name="ClassListView"
                   ScrollViewer.CanContentScroll="False"
                   ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}">
             <ListView.ItemsPanel>
@@ -50,7 +105,7 @@
                     <controls:LibraryWrapPanel />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-        </ListView>
+        </ListView>-->
 
     </Grid>
 </Window>
