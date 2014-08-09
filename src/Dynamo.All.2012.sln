@@ -120,6 +120,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallUpdate", "Tools\InstallUpdate\InstallUpdate.csproj", "{0ED387BC-17B5-49B7-9C1D-BF58A4A5CC4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{398542E6-659A-48C8-86EB-33164D227C90}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBridgeTests", "..\test\Libraries\DataBridgeTests\DataBridgeTests.csproj", "{F0AF3C6E-0E59-4511-A057-79970EA9DC34}"
 EndProject
 Global
