@@ -7,6 +7,9 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
+using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
@@ -17,13 +20,17 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class BoolSelector : Bool
     {
-        public BoolSelector()
+        private DynamoViewModel dynamoViewModel;
+
+        public BoolSelector(WorkspaceModel workspace) : base(workspace)
         {
             Value = false;
         }
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+
             //add a text box to the input grid of the control
             var rbTrue = new RadioButton();
             var rbFalse = new RadioButton();
@@ -75,9 +82,9 @@ namespace DSCoreNodesUI
             return false; // Previews are not shown for this node type.
         }
 
-        private static void OnRadioButtonClicked(object sender, RoutedEventArgs e)
+        private void OnRadioButtonClicked(object sender, RoutedEventArgs e)
         {
-            dynSettings.ReturnFocusToSearch();
+            dynamoViewModel.ReturnFocusToSearch();
         }
     }
 }

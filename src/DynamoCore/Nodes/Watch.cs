@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -28,6 +29,7 @@ namespace Dynamo.Nodes
     {
         #region private members
 
+        private DynamoViewModel dynamoViewModel;
         private WatchTree watchTree;
         private WatchViewModel root;
 
@@ -68,7 +70,8 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public Watch()
+        public Watch(WorkspaceModel ws)
+            : base(ws)
         {
             InPortData.Add(new PortData("", "Node to evaluate."));
             OutPortData.Add(new PortData("", "Watch contents."));
@@ -101,7 +104,6 @@ namespace Dynamo.Nodes
             );
         }
 
-        
         /// <summary>
         /// Callback for port disconnection. Handles clearing the watch.
         /// </summary>
@@ -192,11 +194,11 @@ namespace Dynamo.Nodes
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
             
             return Root != null
-                ? dynSettings.Controller.WatchHandler.Process(CachedValue, inputVar, Root.ShowRawData)
-                : dynSettings.Controller.WatchHandler.Process(CachedValue, inputVar);
+                ? dynamoViewModel.WatchHandler.Process(CachedValue, inputVar, Root.ShowRawData)
+                : dynamoViewModel.WatchHandler.Process(CachedValue, inputVar);
         }
 
-        public override void UpdateRenderPackage()
+        public override void UpdateRenderPackage(int maxTessDivs)
         {
             //do nothing
             //a watch should not draw its outputs

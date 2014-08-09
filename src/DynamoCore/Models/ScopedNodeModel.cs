@@ -13,6 +13,8 @@ namespace Dynamo.Models
     /// </summary>
     public class ScopedNodeModel: NodeModel
     {
+        public ScopedNodeModel(WorkspaceModel workspaceModel) : base(workspaceModel) { }
+
         /// <summary>
         /// If all nodes that the node outputs to are in scopes list. I.e.,
         /// </summary>

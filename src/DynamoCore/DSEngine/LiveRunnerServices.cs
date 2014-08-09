@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
 
-using Dynamo.Core;
-using Dynamo.Utilities;
-using ProtoCore.AST.AssociativeAST;
+using Dynamo.Models;
+
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 
@@ -25,11 +21,11 @@ namespace Dynamo.DSEngine
     public class LiveRunnerServices : IDisposable
     {
         private ILiveRunner liveRunner;
-        private EngineController controller;
+        private readonly DynamoModel dynamoModel;
 
-        public LiveRunnerServices(EngineController controller, string geometryFactoryFileName)
+        public LiveRunnerServices(DynamoModel dynamoModel, EngineController controller, string geometryFactoryFileName)
         {
-            this.controller = controller;
+            this.dynamoModel = dynamoModel;
             liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
       
@@ -50,11 +46,10 @@ namespace Dynamo.DSEngine
         public RuntimeMirror GetMirror(string var)
         {
            
-
             var mirror = liveRunner.InspectNodeValue(var);
 
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
-                dynSettings.DynamoLogger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
+            if (dynamoModel.DebugSettings.VerboseLogging)
+                dynamoModel.Logger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
 
             return mirror;
 
@@ -66,9 +61,8 @@ namespace Dynamo.DSEngine
         /// <param name="graphData"></param>
         public void UpdateGraph(GraphSyncData graphData)
         {
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
-                dynSettings.DynamoLogger.Log("LRS.UpdateGraph: " + graphData);
-
+            if (dynamoModel.DebugSettings.VerboseLogging)
+                dynamoModel.Logger.Log("LRS.UpdateGraph: " + graphData);
 
             liveRunner.UpdateGraph(graphData);
         }

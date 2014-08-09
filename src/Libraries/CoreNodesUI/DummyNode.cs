@@ -23,7 +23,8 @@ namespace DSCoreNodesUI
             Deprecated, Unresolved
         }
 
-        public DummyNode()
+        public DummyNode(WorkspaceModel workspace)
+            : base(workspace)
         {
             this.LegacyNodeName = "DSCoreNodesUI.DummyNode";
             this.LegacyAssembly = string.Empty;

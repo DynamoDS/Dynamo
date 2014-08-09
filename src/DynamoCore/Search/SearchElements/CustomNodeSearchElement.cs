@@ -33,7 +33,6 @@ namespace Dynamo.Search.SearchElements
             this.FullCategoryName = info.Category;
             this.Guid = info.Guid;
             this._path = info.Path;
-            this.EditCommand = new DelegateCommand(Edit);
         }
 
         public override NodeSearchElement Copy()
@@ -41,29 +40,6 @@ namespace Dynamo.Search.SearchElements
             return
                 new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
                                                                this.Description, this.Path));
-        }
-
-        public void Edit(object _)
-        {
-            dynSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);
-        }
-
-        public override void Execute()
-        {
-            string name = this.Guid.ToString();
-
-            // create node
-            var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, name, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
         }
 
         public override bool Equals(object obj)
