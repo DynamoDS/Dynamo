@@ -121,6 +121,31 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallUpdate", "Tools\Inst
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBridgeTests", "..\test\Libraries\DataBridgeTests\DataBridgeTests.csproj", "{F0AF3C6E-0E59-4511-A057-79970EA9DC34}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{B35C6B5A-84AE-4885-99E8-3BABF64933CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DSCoreNodes", "DSCoreNodes", "{0BE58257-B0C8-477C-855C-072BBB776B0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{EB7D1F8E-705D-4D20-83E7-62B46AA092BF}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\DSCoreNodes\Icons\Core.Color.Alpha.Small.png = Resources\DSCoreNodes\Icons\Core.Color.Alpha.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.Blue.Small.png = Resources\DSCoreNodes\Icons\Core.Color.Blue.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.brightness.Small.png = Resources\DSCoreNodes\Icons\Core.Color.brightness.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.ByARGB.Small.png = Resources\DSCoreNodes\Icons\Core.Color.ByARGB.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.ColorRange.Small.png = Resources\DSCoreNodes\Icons\Core.Color.ColorRange.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.components.Small.png = Resources\DSCoreNodes\Icons\Core.Color.components.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.Green.Small.png = Resources\DSCoreNodes\Icons\Core.Color.Green.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.hue.Small.png = Resources\DSCoreNodes\Icons\Core.Color.hue.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.Red.Small.png = Resources\DSCoreNodes\Icons\Core.Color.Red.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.saturation.Small.png = Resources\DSCoreNodes\Icons\Core.Color.saturation.Small.png
+		Resources\DSCoreNodes\Icons\Core.Color.Small.png = Resources\DSCoreNodes\Icons\Core.Color.Small.png
+		Resources\DSCoreNodes\Icons\Core.File.ExportToCSV.Small.png = Resources\DSCoreNodes\Icons\Core.File.ExportToCSV.Small.png
+		Resources\DSCoreNodes\Icons\Core.File.LoadImageFromPath.Small.png = Resources\DSCoreNodes\Icons\Core.File.LoadImageFromPath.Small.png
+		Resources\DSCoreNodes\Icons\Core.File.ReadImage.Small.png = Resources\DSCoreNodes\Icons\Core.File.ReadImage.Small.png
+		Resources\DSCoreNodes\Icons\Core.File.ReadText.Small.png = Resources\DSCoreNodes\Icons\Core.File.ReadText.Small.png
+		Resources\DSCoreNodes\Icons\Core.File.WriteImage.Small.png = Resources\DSCoreNodes\Icons\Core.File.WriteImage.Small.png
+		Resources\DSCoreNodes\Icons\Core.File.WriteText.Small.png = Resources\DSCoreNodes\Icons\Core.File.WriteText.Small.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -381,5 +406,7 @@ Global
 		{1254D922-643B-4F0B-82BD-E9E02399B040} = {88A44558-9148-4F1C-876B-46472793F3D6}
 		{A84E15A2-6735-4575-A1DA-7C64AF7582B1} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
 		{0ED387BC-17B5-49B7-9C1D-BF58A4A5CC4D} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
+		{0BE58257-B0C8-477C-855C-072BBB776B0B} = {B35C6B5A-84AE-4885-99E8-3BABF64933CC}
+		{EB7D1F8E-705D-4D20-83E7-62B46AA092BF} = {0BE58257-B0C8-477C-855C-072BBB776B0B}
 	EndGlobalSection
 EndGlobal

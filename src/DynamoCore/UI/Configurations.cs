@@ -80,7 +80,7 @@ namespace Dynamo.UI
         public static double PreviewDefaultMaxWidth = 300;
         public static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 300;        
+        public static double PreviewCondensedMaxWidth = 300;
         public static double PreviewCondensedMaxHeight = 200;
         public static double PreviewCondensedMinWidth = 40;
         public static double PreviewCondensedMinHeight = 0;
@@ -184,6 +184,13 @@ namespace Dynamo.UI
         public static readonly double MaxCondensedPreviewHeight = 64.0;
         public static readonly double DefCondensedContentWidth = 33.0;
         public static readonly double DefCondensedContentHeight = 28.0;
+
+        #endregion
+
+        #region Icon Resources Strings
+
+        public const string SmallIconPostfix = ".Small";
+        public const string LargeIconPostfix = ".Large";
 
         #endregion
 

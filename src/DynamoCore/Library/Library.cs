@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Media.Imaging;
 
+using Dynamo.Utilities;
+using Dynamo.UI;
 using DynamoUtilities;
 
 using GraphToDSCompiler;
@@ -16,7 +19,6 @@ using ProtoCore.Utils;
 using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
-using Dynamo.Utilities;
 
 #endregion
 
@@ -111,7 +113,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         ///     Return keys for multi-output functions.
         /// </summary>
-        IEnumerable<string> ReturnKeys { get; } 
+        IEnumerable<string> ReturnKeys { get; }
     }
 
     /// <summary>
@@ -124,8 +126,10 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
+        private BitmapImage smallIcon;        
+
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
-            : this(null, null, name, parameters, null, type) 
+            : this(null, null, name, parameters, null, type)
         { }
 
         public FunctionDescriptor(
@@ -220,6 +224,11 @@ namespace Dynamo.DSEngine
             get { return summary ?? (summary = this.GetSummary()); }
         }
 
+        public BitmapImage SmallIcon
+        {
+            get { return smallIcon ?? (smallIcon = GetSmallIcon(this)); }
+        }
+
         /// <summary>
         ///     A comment describing the function along with the signature
         /// </summary>
@@ -296,7 +305,7 @@ namespace Dynamo.DSEngine
             {
                 var descBuf = new StringBuilder();
                 descBuf.Append(DisplayName);
-                
+
                 if (Parameters != null && Parameters.Any())
                 {
                     string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
@@ -417,6 +426,19 @@ namespace Dynamo.DSEngine
 
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
         }
+
+        private BitmapImage GetSmallIcon(FunctionDescriptor member)
+        {
+            if (string.IsNullOrEmpty(member.Assembly))
+                return null;
+
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
+
+            if (cust != null)
+                return cust.GetSmallIcon(member);
+            else
+                return null;            
+        }        
     }
 
     /// <summary>
