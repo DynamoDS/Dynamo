@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
+using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using System.Xml.XPath;
-
+using Dynamo.UI;
 using DynamoUtilities;
 
 namespace Dynamo.DSEngine
@@ -21,9 +28,12 @@ namespace Dynamo.DSEngine
             }
 
             var customizationPath = "";
-            if (ResolveForAssembly(assemblyPath, ref customizationPath))
+            var resourceAssemblyPath = "";
+            if (ResolveForAssembly(assemblyPath, ref customizationPath) &&
+                ResolveResourceAssembly(assemblyPath, ref resourceAssemblyPath))
             {
-                var c = new LibraryCustomization(XDocument.Load(customizationPath));
+                var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath),
+                    XDocument.Load(customizationPath));
                 triedPaths.Add(assemblyPath, true);
                 cache.Add(assemblyPath, c);
                 return c;
@@ -31,7 +41,6 @@ namespace Dynamo.DSEngine
 
             triedPaths.Add(assemblyPath, false);
             return null;
-            
         }
 
         public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)
@@ -51,15 +60,36 @@ namespace Dynamo.DSEngine
 
             return File.Exists(customizationPath);
         }
+
+        public static bool ResolveResourceAssembly(
+            string assemblyLocation,
+            ref string resourceAssemblyPath)
+        {
+            var qualifiedPath = Path.GetFullPath(assemblyLocation);
+            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+            var dir = Path.GetDirectoryName(qualifiedPath);
+
+            fn = fn + ".resources.dll";
+
+            resourceAssemblyPath = Path.Combine(dir, fn);
+
+            return File.Exists(resourceAssemblyPath);
+        }
     }
 
     public class LibraryCustomization
     {
+        private Assembly assembly;
         private XDocument XmlDocument;
 
-        internal LibraryCustomization(XDocument document)
+        private Dictionary<string, BitmapImage> cachedIcons;
+
+        internal LibraryCustomization(Assembly assembly, XDocument document)
         {
+            this.assembly = assembly;
             this.XmlDocument = document;
+
+            cachedIcons = new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
         }
 
         public string GetNamespaceCategory(string namespaceName)
@@ -77,7 +107,63 @@ namespace Dynamo.DSEngine
             //}
 
             //return nodes.ToString().Trim();
+        }
 
+        internal BitmapImage GetSmallIcon(FunctionDescriptor descriptor)
+        {
+            string iconKey = descriptor.QualifiedName + Configurations.SmallIconPostfix;
+            return LoadIconIntenral(iconKey);
+        }
+
+        internal BitmapImage GetLargeIcon(FunctionDescriptor descriptor)
+        {
+            string iconKey = descriptor.QualifiedName + Configurations.LargeIconPostfix;
+            return LoadIconIntenral(iconKey);
+        }
+
+        private BitmapImage LoadIconIntenral(string iconKey)
+        {
+            if (cachedIcons.ContainsKey(iconKey))
+                return cachedIcons[iconKey];
+
+            Stream stream =
+                assembly.GetManifestResourceStream(assembly.GetManifestResourceNames()[0]);
+
+            if (stream == null)
+                return null;
+
+            // resReader is a storage of our icons.
+            ResourceReader resReader = new ResourceReader(stream);
+
+            // Gets all images from resReader where they are saved as DictionaryEntries and
+            // choose one of them with correct key.
+            DictionaryEntry iconData = resReader
+                .OfType<DictionaryEntry>()
+                .Where(i => i.Key.ToString() == iconKey).FirstOrDefault();
+
+            if (iconData.Key == null)
+                return null;
+
+            MemoryStream memory = new MemoryStream();
+            Bitmap bitmap;
+            BitmapImage bitmapImage = new BitmapImage();
+            if (iconData.Value != null)
+            {
+                bitmap = iconData.Value as Bitmap;
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+            }
+
+            cachedIcons.Add(iconKey, bitmapImage);
+
+            if (cachedIcons.ContainsKey(iconKey))
+                return cachedIcons[iconKey];
+            else
+                return null;
         }
     }
 }

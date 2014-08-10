@@ -581,13 +581,15 @@
                             <Setter Property="ToolTip">
                                 <Setter.Value>
                                     <dynui:DynamoToolTip AttachmentSide="Right"
-                                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                                         Style="{DynamicResource SLightToolTip}">
                                         <Grid>
                                             <TextBlock TextWrapping="Wrap"
                                                        MaxWidth="320"
-                                                       Text="{Binding Path=Description}"></TextBlock>
-					                        <Image Name="tooltipImg"
-                                                   Source="{Binding Path=SmallIcon}" Height="96" Width="96"></Image>
+                                                       Text="{Binding Path=Description}" />
+                                            <Image Name="tooltipImg"
+                                                   Source="{Binding Path=SmallIcon}"
+                                                   Height="96"
+                                                   Width="96" />
                                         </Grid>
                                     </dynui:DynamoToolTip>
                                 </Setter.Value>

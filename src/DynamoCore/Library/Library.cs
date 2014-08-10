@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Media.Imaging;
 
+using Dynamo.Utilities;
+using Dynamo.UI;
 using DynamoUtilities;
 
 using GraphToDSCompiler;
@@ -16,14 +19,6 @@ using ProtoCore.Utils;
 using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
-using Dynamo.Utilities;
-using Dynamo.UI;
-using System.Windows.Media.Imaging;
-using System.Reflection;
-using System.Resources;
-using System.Collections;
-using System.Drawing;
-using System.Drawing.Imaging;
 
 #endregion
 
@@ -131,9 +126,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
-        private BitmapImage smallIcon;
-        private static Dictionary<string, BitmapImage> _cachedIcons =
-                new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+        private BitmapImage smallIcon;        
 
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
             : this(null, null, name, parameters, null, type)
@@ -436,77 +429,16 @@ namespace Dynamo.DSEngine
 
         private BitmapImage GetSmallIcon(FunctionDescriptor member)
         {
-            var resourceAssemblyPath = "";
-
-            if (_cachedIcons.ContainsKey(member.QualifiedName))
-                return _cachedIcons[member.QualifiedName];
-
             if (string.IsNullOrEmpty(member.Assembly))
                 return null;
 
-            if (!ResolveResourceAssembly(member.Assembly, ref resourceAssemblyPath))
-                return null;
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
 
-            Assembly resourcesAssembly = System.Reflection.Assembly.LoadFrom(resourceAssemblyPath);
-
-            System.IO.Stream stream =
-                resourcesAssembly.GetManifestResourceStream
-                (resourcesAssembly.GetManifestResourceNames()[0]);
-
-            if (stream == null)
-                return null;
-
-            // resReader is a storage of our icons.
-            ResourceReader resReader = new ResourceReader(stream);
-
-            // Gets all images from resReader where they saved as DictionaryEntries and
-            // populates them into Dictionary.
-            Dictionary<string, object> data = resReader
-                .OfType<DictionaryEntry>()
-                .Select(i => new { Key = i.Key.ToString(), value = i.Value })
-                .ToDictionary(i => i.Key, i => i.value);
-
-            // Filling Icons cache.
-            foreach (var item in data)
-            {
-                MemoryStream memory = new MemoryStream();
-                Bitmap bitmap;
-                BitmapImage bitmapImage = new BitmapImage();
-                if (item.Value != null)
-                {
-                    bitmap = item.Value as Bitmap;
-                    bitmap.Save(memory, ImageFormat.Png);
-                    memory.Position = 0;
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = memory;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-                }
-                if (!_cachedIcons.ContainsKey(item.Key))
-                    _cachedIcons.Add(item.Key, bitmapImage);
-            }
-
-            string iconKey = String.Concat(member.QualifiedName, Configurations.SmallIconPostfix);
-            if (_cachedIcons.ContainsKey(iconKey))
-                return _cachedIcons[iconKey];
+            if (cust != null)
+                return cust.GetSmallIcon(member);
             else
-                return null;
-        }
-
-        public static bool ResolveResourceAssembly(
-            string assemblyLocation,
-            ref string resourceAssemblyPath)
-        {
-            var qualifiedPath = Path.GetFullPath(assemblyLocation);
-            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
-            var dir = Path.GetDirectoryName(qualifiedPath);
-
-            fn = fn + ".resources.dll";
-
-            resourceAssemblyPath = Path.Combine(dir, fn);
-
-            return File.Exists(resourceAssemblyPath);
-        }
+                return null;            
+        }        
     }
 
     /// <summary>
