@@ -51,9 +51,10 @@ namespace Dynamo.UI.Prompts
             {
                 ModelBase model = GetBoundModel(expr.DataItem);
 
+                var ele = this.Owner as DynamoView;
+
                 string propName = expr.ParentBinding.Path.Path;
 
-                var ele = WPF.FindUpVisualTree<DynamoView>(this);
                 ele.dynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
                         model.GUID, propName, editText.Text));
