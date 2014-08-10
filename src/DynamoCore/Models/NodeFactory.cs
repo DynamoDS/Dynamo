@@ -133,9 +133,7 @@ namespace Dynamo.Models
         {
             try
             {
-                var newEl = (NodeModel)Activator.CreateInstance(type, this.workspaceModel);
-                newEl.DisableInteraction();
-                return newEl;
+                return (NodeModel)Activator.CreateInstance(type, this.workspaceModel);
             }
             catch (Exception ex)
             {
