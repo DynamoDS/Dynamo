@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class DSLibraryTest : DSEvaluationUnitTest
+    class DSLibraryTest : DSEvaluationViewModelUnitTest
     {
         [SetUp]
         public override void Init()
@@ -42,7 +42,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
             
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\MultiReturnTest.dll");
-            libraryServices.ImportLibrary(libraryPath);
+            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
             Assert.IsTrue(libraryLoaded);
 
             var functions = libraryServices.GetFunctionGroups(libraryPath);
@@ -60,7 +60,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath); 
 
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
-            libraryServices.ImportLibrary(libraryPath);
+            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
             Assert.IsTrue(libraryLoaded);
 
             var functions = libraryServices.GetFunctionGroups(libraryPath);
@@ -79,7 +79,7 @@ namespace Dynamo.Tests
 
             // library should be able to load
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Test.ds");
-            libraryServices.ImportLibrary(libraryPath);
+            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
             Assert.IsTrue(libraryLoaded);
 
             // open dyn file which uses node in that library

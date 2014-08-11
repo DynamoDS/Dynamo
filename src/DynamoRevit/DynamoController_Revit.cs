@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using System.Runtime.Serialization;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
@@ -16,6 +18,7 @@ using DSIronPython;
 using DSNodeServices;
 using Dynamo.Applications;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
@@ -23,8 +26,10 @@ using Dynamo.Utilities;
 using Dynamo.UpdateManager;
 using DynamoUtilities;
 using Greg;
+using ProtoCore;
 using Revit.Elements;
 using RevitServices.Elements;
+using RevitServices.Materials;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Element = Autodesk.Revit.DB.Element;
@@ -38,6 +43,45 @@ namespace Dynamo
 {
     public class DynamoController_Revit : DynamoController
     {
+        public class Reactor
+        {
+            private static Reactor reactor = null;
+
+            public static Reactor GetInstance()
+            {
+                lock (typeof(Reactor))
+                {
+                    if (reactor == null)
+                    {
+                        reactor = new Reactor();
+                    }
+                }
+
+                return reactor;
+            }
+
+            internal Reactor()
+            {
+                var u = dynRevitSettings.Controller.Updater;
+
+                u.ElementsDeleted += OnElementsDeleted;
+            }
+
+
+            private void OnElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+            {
+                if (!deleted.Any())
+                    return;
+
+                var nodes = dynRevitUtils.GetNodesFromElementIds(deleted);
+                foreach (var node in nodes)
+                {
+                    node.RequiresRecalc = true;
+                    node.ForceReExecuteOfNode = true;
+                }
+            }
+        }
+
         /// <summary>
         ///     A reference to the the SSONET assembly to prevent reloading.
         /// </summary>
@@ -48,6 +92,8 @@ namespace Dynamo
         ///     Application.DocumentClosed events.
         /// </summary>
         private bool updateCurrentUIDoc;
+
+        private Reactor reactor;
 
         public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager, string corePath)
             : base(
@@ -77,6 +123,9 @@ namespace Dynamo
                 dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
             }
 
+            // Reset the materials manager.
+            MaterialsManager.Reset();
+
             TransactionWrapper = TransactionManager.Instance.TransactionWrapper;
             TransactionWrapper.TransactionStarted += TransactionManager_TransactionCommitted;
             TransactionWrapper.TransactionCancelled += TransactionManager_TransactionCancelled;
@@ -85,6 +134,13 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
+            SetupPython();
+
+            Runner = new DynamoRunner_Revit(this);
+        }
+
+        private void SetupPython()
+        {
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
             //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((IList<Element> elements) => elements.Select(e=>e.ToDSType(true)));
@@ -99,12 +155,9 @@ namespace Dynamo
                 var marshaler = new DataMarshaler();
                 marshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
 
-                Func<WrappedElement, object> unwrap = marshaler.Marshal;
+                Func<object, object> unwrap = marshaler.Marshal;
                 scope.SetVariable("UnwrapElement", unwrap);
             };
-
-            Runner = new DynamoRunner_Revit(this);
-
         }
 
         public RevitServicesUpdater Updater { get; private set; }
@@ -260,7 +313,15 @@ namespace Dynamo
                     updateCurrentUIDoc = false;
                     DocumentManager.Instance.CurrentUIDocument = 
                         DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                    
+                    MaterialsManager.Reset();
                 }
+            }
+
+            var uiDoc = DocumentManager.Instance.CurrentUIDocument;
+            if (uiDoc != null)
+            {
+                DynamoRevit.SetRunEnabledBasedOnContext(uiDoc.ActiveView); 
             }
         }
 
@@ -279,12 +340,18 @@ namespace Dynamo
             {
                 DocumentManager.Instance.CurrentUIDocument =
                 DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                
+                MaterialsManager.Reset();
 
                 DynamoViewModel.RunEnabled = true;
+
+                //In the case that the current document is null, we also need to do
+                //a reset for the current document.
+                ResetForNewDocument();
             }
         }
 
-        private static string GetDocumentPointerMessage()
+        internal static string GetDocumentPointerMessage()
         {
             var docPath = DocumentManager.Instance.CurrentUIDocument.Document.PathName;
             var message = string.IsNullOrEmpty(docPath)

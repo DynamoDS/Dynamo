@@ -50,7 +50,7 @@ namespace Revit.GeometryReferences
             {
                 return TryGetFaceReference(curve);
             }
-            catch (RuntimeBinderException e)
+            catch (RuntimeBinderException)
             {
                 throw new ArgumentException(nodeTypeString +
                                             " requires a ElementFaceReference extracted from a Revit Element! ");

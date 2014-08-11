@@ -6,11 +6,12 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.Applications;
 using Dynamo.Utilities;
-using DynamoUnits;
+using Dynamo.Applications.Models;
+using Dynamo.ViewModels;
+
 using DynamoUtilities;
 using NUnit.Framework;
 using ProtoCore.Mirror;
-using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
@@ -30,7 +31,7 @@ namespace Dynamo.Tests
         protected string _defsPath;
         protected string _emptyModelPath1;
         protected string _emptyModelPath;
-        protected DynamoController Controller;
+        protected DynamoViewModel ViewModel;
 
         //Called before each test method
         
@@ -42,6 +43,7 @@ namespace Dynamo.Tests
 
             // Setup the core paths
             DynamoPathManager.Instance.InitializeCore(Path.GetFullPath(assDir + @"\.."));
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
             StartDynamo();
 
@@ -91,27 +93,27 @@ namespace Dynamo.Tests
 
         void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
         {
-            DynamoRevit.SetRunEnabledBasedOnContext(e);
+            ((RevitDynamoModel)this.ViewModel.Model).SetRunEnabledBasedOnContext(e.NewActiveView);
         }
 
         private void StartDynamo()
         {
             try
             {
-                var updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
-                updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-                updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
+                DynamoRevit.InitializeUnits();
 
-                SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-                SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-                SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+                var model = RevitDynamoModel.Start(
+                    new RevitDynamoModel.StartConfiguration()
+                    {
+                        StartInTestMode = true,
+                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\")
+                    });
 
-                var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-                dynSettings.DynamoLogger = logger;
-                var updateManager = new UpdateManager.UpdateManager(logger);
-
-                Controller = DynamoRevit.CreateDynamoRevitControllerAndViewModel(updater, logger, Context.NONE);
-                DynamoController.IsTestMode = true;
+                this.ViewModel = DynamoViewModel.Start(
+                    new DynamoViewModel.StartConfiguration()
+                    {
+                        DynamoModel = model
+                    });
 
                 // create the transaction manager object
                 TransactionManager.SetupManager(new AutomaticTransactionStrategy());
@@ -213,9 +215,9 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         #region Revit unit test helper methods
@@ -225,17 +227,17 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, relativeFilePath);
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
         }
 
         public void RunCurrentModel()
         {
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         public void AssertNoDummyNodes()
         {
-            var nodes = Controller.DynamoModel.Nodes;
+            var nodes = ViewModel.Model.Nodes;
 
             double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
             if (dummyNodesCount >= 1)
@@ -282,9 +284,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(classInfo.ClassName, className);
         }
 
+        protected static bool IsFuzzyEqual(double d0, double d1, double tol)
+        {
+            return System.Math.Abs(d0 - d1) < tol;
+        }
+
         private string GetVarName(string guid)
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
             return node.AstIdentifierBase;
@@ -293,7 +300,7 @@ namespace Dynamo.Tests
         private RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
+            Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
             return mirror;
         }
 

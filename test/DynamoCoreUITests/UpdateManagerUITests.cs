@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -22,7 +23,7 @@ using Moq;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class UpdateManagerUITests : DynamoTestUI
+    public class UpdateManagerUITests : DynamoTestUIBase
     {
         private void Init(IUpdateManager updateManager)
         {
@@ -31,17 +32,23 @@ namespace DynamoCoreUITests
             var corePath =
                     Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            Controller = new DynamoController("None", updateManager,
-                new DefaultWatchHandler(), new PreferenceSettings(), corePath);
-            DynamoController.IsTestMode = true;
-            Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
-            Controller.VisualizationManager = new VisualizationManager();
+            Model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true,
+                    UpdateManager = updateManager,
+                    DynamoCorePath = corePath
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
 
             //create the view
-            Ui = new DynamoView { DataContext = Controller.DynamoViewModel };
-            Vm = Controller.DynamoViewModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();                             
+            View = new DynamoView(ViewModel);
+            View.Show();                             
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
@@ -54,7 +61,7 @@ namespace DynamoCoreUITests
             }
             else
             {
-                DynamoTestUI.EmptyTempFolder(TempFolder);
+                DynamoTestUIBase.EmptyTempFolder(TempFolder);
             }
         }
 
@@ -68,16 +75,13 @@ namespace DynamoCoreUITests
         [Category("Failing")]
         public void UpdateButtonNotCollapsedIfNotUpToDate()
         {
-            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-            dynSettings.DynamoLogger = logger;
-
             var um_mock = new Mock<IUpdateManager>();
             um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
             um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("1.1.1.1"));
 
             Init(um_mock.Object);
 
-            var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
+            var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
             var updateControl = (GraphUpdateNotificationControl)sbgrid.FindName("UpdateControl");
             Assert.AreEqual(Visibility.Visible, updateControl.Visibility);
@@ -87,16 +91,13 @@ namespace DynamoCoreUITests
         [Category("Failing")]
         public void UpdateButtonCollapsedIfUpToDate()
         {
-            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-            dynSettings.DynamoLogger = logger;
-
             var um_mock = new Mock<IUpdateManager>();
             um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString("1.1.1.1"));
             um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
 
             Init(um_mock.Object);
 
-            var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
+            var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
             var updateControl = (GraphUpdateNotificationControl)sbgrid.FindName("UpdateControl");
             Assert.AreEqual(Visibility.Collapsed, updateControl.Visibility);
@@ -106,16 +107,13 @@ namespace DynamoCoreUITests
         [Category("Failing")]
         public void UpdateButtonCollapsedIfNotConnected()
         {
-            var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-            dynSettings.DynamoLogger = logger;
-
             var um_mock = new Mock<IUpdateManager>();
             um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString(""));
             um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
             
             Init(um_mock.Object);
 
-            var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
+            var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
             var updateControl = (GraphUpdateNotificationControl)sbgrid.FindName("UpdateControl");
             Assert.AreEqual(Visibility.Collapsed, updateControl.Visibility);

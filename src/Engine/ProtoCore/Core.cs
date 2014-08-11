@@ -492,21 +492,21 @@ namespace ProtoCore
                 }
                 else if (option == StackFrameFlagOptions.IsReplicating)
                 {
-                    if(debugFrame.IsReplicating == true)
+                    if(debugFrame.IsReplicating)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsExternalFunction)
                 {
-                    if (debugFrame.IsExternalFunction == true)
+                    if (debugFrame.IsExternalFunction)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsFunctionStepOver)
                 {
-                    if (debugFrame.FunctionStepOver == true)
+                    if (debugFrame.FunctionStepOver)
                     {
                         return true;
                     }
@@ -829,7 +829,7 @@ namespace ProtoCore
             InstructionStream istream;
 
             int pc = tempPC;
-            if (core.DebugProps.InlineConditionOptions.isInlineConditional == true)
+            if (core.DebugProps.InlineConditionOptions.isInlineConditional)
             {
                 tempPC = InlineConditionOptions.startPc;
                 limit = InlineConditionOptions.endPc;
@@ -1138,12 +1138,16 @@ namespace ProtoCore
             // Update the functiond definition in the codeblocks
             int hash = CoreUtils.GetFunctionHash(functionDef);
 
+            ProcedureNode procNode = null;
+
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
                 int index = block.procedureTable.IndexOfHash(hash);
                 if (Constants.kInvalidIndex == index)
                     continue;
+
+                procNode = block.procedureTable.procList[index];
 
                 block.procedureTable.SetInactive(index);
 
@@ -1167,6 +1171,15 @@ namespace ProtoCore
 
                 break;
             }
+
+            if (null != procNode)
+            {
+                foreach (int cbID in procNode.ChildCodeBlocks)
+                {
+                    CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
+                }
+            }
+
 
             // Update the function definition in global function tables
             foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in FunctionTable.GlobalFuncTable)
@@ -1267,6 +1280,13 @@ namespace ProtoCore
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
+
+            // The main codeblock never goes out of scope
+            // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
+            // As of the current requirements, there is only 1 main scope, the rest are nested within.
+            CodeBlockIndex = CodeBlockList.Count;
+            RuntimeTableIndex = CodeBlockIndex;
+
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             // Jun this is where the temp solutions starts for implementing language blocks in delta execution
@@ -1428,6 +1448,7 @@ namespace ProtoCore
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
+            cancellationPending = false;
         }
 
         #region Trace Data Serialization Methods/Members
@@ -1502,6 +1523,58 @@ namespace ProtoCore
             }
 
             return nodeDataPairs;
+        }
+
+        public Dictionary<Guid, List<CallSite>>
+        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids)
+        {
+            if (nodeGuids == null)
+                throw new ArgumentNullException("nodeGuids");
+
+            var nodeMap = new Dictionary<Guid, List<CallSite>>();
+
+            if (!nodeGuids.Any()) // Nothing to persist now.
+                return nodeMap;
+
+            // Attempt to get the list of graph node if one exists.
+            IEnumerable<GraphNode> graphNodes = null;
+            {
+                if (this.DSExecutable != null)
+                {
+                    var stream = this.DSExecutable.instrStreamList;
+                    if (stream != null && (stream.Length > 0))
+                    {
+                        var graph = stream[0].dependencyGraph;
+                        if (graph != null)
+                            graphNodes = graph.GraphList;
+                    }
+                }
+
+
+                if (graphNodes == null) // No execution has taken place.
+                    return nodeMap;
+            }
+
+            foreach (Guid nodeGuid in nodeGuids)
+            {
+                // Get a list of GraphNode objects that correspond to this node.
+                var matchingGraphNodes = graphNodes.
+                    Where(gn => gn.guid == nodeGuid);
+
+                if (!matchingGraphNodes.Any())
+                    continue;
+
+                // Get all callsites that match the graph node ids.
+                var matchingCallSites = (from cs in CallsiteCache
+                                         from gn in matchingGraphNodes
+                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
+                                         select cs.Value);
+
+                // Append each callsite element under node element.
+                nodeMap[nodeGuid] = matchingCallSites.ToList();
+            }
+
+            return nodeMap;
         }
 
         /// <summary>
@@ -1609,6 +1682,15 @@ namespace ProtoCore
 
         private int tempVarId = 0;
         private int tempLanguageId = 0;
+
+        private bool cancellationPending = false;
+        public bool CancellationPending
+        {
+            get
+            {
+                return cancellationPending;
+            }
+        }
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AST.AssociativeAST.AssociativeNode AssocNode { get; set; }
@@ -1958,7 +2040,7 @@ namespace ProtoCore
             {
                 if (DSASM.CodeBlockType.kLanguage == codeBlock.blockType || DSASM.CodeBlockType.kFunction == codeBlock.blockType)
                 {
-                    Validity.Assert(codeBlock.codeBlockId < CodeBlockIndex);
+                    Validity.Assert(codeBlock.codeBlockId < RuntimeTableIndex);
                     istreamList[codeBlock.codeBlockId] = codeBlock.instrStream;
                 }
 
@@ -2016,6 +2098,8 @@ namespace ProtoCore
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
+            RuntimeTableIndex = CompleteCodeBlockList.Count;
+
             // Build the runtime symbols
             DSExecutable.runtimeSymbols = new DSASM.SymbolTable[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
@@ -2031,7 +2115,7 @@ namespace ProtoCore
             }
 
             // Build the executable instruction streams
-            DSExecutable.instrStreamList = new DSASM.InstructionStream[CodeBlockIndex];
+            DSExecutable.instrStreamList = new DSASM.InstructionStream[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
@@ -2206,6 +2290,17 @@ namespace ProtoCore
         {
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
+        }
+
+        public void RequestCancellation()
+        {
+            if (this.cancellationPending)
+            {
+                var message = "Cancellation cannot be requested twice";
+                throw new InvalidOperationException(message);
+            }
+
+            this.cancellationPending = true;
         }
     }
 }

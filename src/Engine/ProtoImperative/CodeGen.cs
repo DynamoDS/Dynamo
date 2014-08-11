@@ -35,8 +35,9 @@ namespace ProtoImperative
 
         private NodeBuilder nodeBuilder;
 
-        public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
+        public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
         {
+            context = callContext;
             //  dumpbytecode is optionally enabled
             //
             astNodes = new List<ImperativeNode>();
@@ -115,6 +116,7 @@ namespace ProtoImperative
              * */
 
             ProtoCore.DSASM.CodeBlock cb = new ProtoCore.DSASM.CodeBlock(
+                context.guid,
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
                 ProtoCore.Language.kImperative,
                 core.CodeBlockIndex,
@@ -581,6 +583,8 @@ namespace ProtoImperative
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone, 
             ProtoCore.AST.Node bnode = null)
         {
+            Guid guid = graphNode == null ? default(Guid) : graphNode.guid;
+
             if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody())
             {
                 return null;
@@ -644,7 +648,7 @@ namespace ProtoImperative
                         {
                             type = lefttype = realType;
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, guid);
                             hasLogError = true;
                         }
                     }
@@ -652,7 +656,7 @@ namespace ProtoImperative
                     else if (refClassIndex != Constants.kInvalidIndex)
                     {
                         string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingNonStaticMethod, core.ClassTable.ClassNodes[refClassIndex].name, procName);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, funcCall.line, funcCall.col, guid);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
                         return null;
@@ -735,7 +739,7 @@ namespace ProtoImperative
                         if (!isAccessible)
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, guid);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
@@ -811,12 +815,12 @@ namespace ProtoImperative
                             if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyNotFound, property);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kPropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kPropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, guid);
                             }
                             else
                             {
                                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodNotFound, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, guid);
                             }
                         }
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -1016,6 +1020,8 @@ namespace ProtoImperative
 
         private void EmitIdentifierNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
+            Guid guid = graphNode == null ? default(Guid) : graphNode.guid;
+
             IdentifierNode t = node as IdentifierNode;
             if (t.Name.Equals(ProtoCore.DSDefinitions.Keyword.This))
             {
@@ -1024,14 +1030,14 @@ namespace ProtoImperative
                     if (localProcedure.isStatic)
                     {
                         string message = ProtoCore.BuildData.WarningMessage.kUsingThisInStaticFunction;
-                        core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col);
+                        core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, guid);
                         EmitPushNull();
                         return;
                     }
                     else if (localProcedure.classScope == Constants.kGlobalScope)
                     {
                         string message = ProtoCore.BuildData.WarningMessage.kInvalidThis;
-                        core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col);
+                        core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, guid);
                         EmitPushNull();
                         return;
                     }
@@ -1044,7 +1050,7 @@ namespace ProtoImperative
                 else
                 {
                     string message = ProtoCore.BuildData.WarningMessage.kInvalidThis;
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col);
+                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, guid);
                     EmitPushNull();
                     return;
                 }
@@ -1098,13 +1104,13 @@ namespace ProtoImperative
                     if (!isAccessible)
                     {
                         string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, t.Value);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, t.line, t.col);
+                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, t.line, t.col, guid);
                     }
                 }
                 else
                 {
                     string message = String.Format(ProtoCore.BuildData.WarningMessage.kUnboundIdentifierMsg, t.Value);
-                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col);
+                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col, guid);
                 }
 
                 inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeNull;
@@ -1213,6 +1219,12 @@ namespace ProtoImperative
                 }
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                // Save the guid of the current scope (which is stored in the current graphnodes) to the nested language block.
+                // This will be passed on to the nested language block that will be compiled
+                if (propogateUpdateGraphNode != null)
+                {
+                    context.guid = propogateUpdateGraphNode.guid;
+                }
 
                 int entry = 0;
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1286,6 +1298,8 @@ namespace ProtoImperative
 
         private void EmitFunctionDefinitionNode(ImperativeNode node, ref ProtoCore.Type inferedType)
         {
+            Guid guid = firstSSAGraphNode == null ? default(Guid) : firstSSAGraphNode.guid;
+
             bool parseGlobalFunctionSig = null == localProcedure && ProtoCore.DSASM.ImperativeCompilePass.kGlobalFuncSig == compilePass;
             bool parseGlobalFunctionBody = null == localProcedure && ProtoCore.DSASM.ImperativeCompilePass.kGlobalFuncBody == compilePass;
 
@@ -1308,7 +1322,7 @@ namespace ProtoImperative
                 if (localProcedure.returntype.UID == (int)PrimitiveType.kInvalidType)
                 {
                     string message = String.Format(ProtoCore.BuildData.WarningMessage.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
-                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col);
+                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col, guid);
                     localProcedure.returntype.UID = (int)PrimitiveType.kTypeVar;
                 }
                 localProcedure.returntype.rank = funcDef.ReturnType.rank;
@@ -1339,7 +1353,7 @@ namespace ProtoImperative
                             Validity.Assert(false, "Check generated AST");
                         }
 
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
                         int symbolIndex = AllocateArg(paramNode.Value, localProcedure.procId, argType);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
                         {
@@ -1374,7 +1388,7 @@ namespace ProtoImperative
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode);
+                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
                         argList.Add(argType);
                     }
                 }
@@ -1499,7 +1513,7 @@ namespace ProtoImperative
                     if (!core.Options.SuppressFunctionResolutionWarning)
                     {
                         string message = String.Format(ProtoCore.BuildData.WarningMessage.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
-                        core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMissingReturnStatement, message, core.CurrentDSFileName, funcDef.line, funcDef.col);
+                        core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMissingReturnStatement, message, core.CurrentDSFileName, funcDef.line, funcDef.col, guid);
                     }
 
                     EmitReturnNull();
@@ -1610,6 +1624,7 @@ namespace ProtoImperative
 
             
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                    context.guid,
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
                     Language.kInvalid,
                     core.CodeBlockIndex,
@@ -1698,6 +1713,7 @@ namespace ProtoImperative
                         // Set the new codeblock as a new child of the current codeblock
                         // Set the new codeblock as the current codeblock
                         localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                            context.guid,
                             ProtoCore.DSASM.CodeBlockType.kConstruct,
                             Language.kInvalid,
                             core.CodeBlockIndex++,
@@ -1766,6 +1782,7 @@ namespace ProtoImperative
                     // Set the new codeblock as a new child of the current codeblock
                     // Set the new codeblock as the current codeblock
                     localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
                         Language.kInvalid,
                         core.CodeBlockIndex++,
@@ -1877,6 +1894,7 @@ namespace ProtoImperative
                     // Set the new codeblock as a new child of the current codeblock
                     // Set the new codeblock as the current codeblock
                     ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
                         Language.kInvalid,
                         core.CodeBlockIndex++,
@@ -1884,7 +1902,6 @@ namespace ProtoImperative
                         null,
                         true,
                         core);
-
 
                     core.CodeBlockIndex++;
 
@@ -1933,11 +1950,11 @@ namespace ProtoImperative
             }
         }
 
-        private void EmitVarDeclNode(ImperativeNode node, ref ProtoCore.Type inferedType)
+        private void EmitVarDeclNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             VarDeclNode varNode = node as VarDeclNode;
 
-            ProtoCore.Type type = BuildArgumentTypeFromVarDeclNode(varNode);
+            ProtoCore.Type type = BuildArgumentTypeFromVarDeclNode(varNode, graphNode);
             type.rank = 0;
 
             // TODO Jun: Create a class table for holding the primitive and custom data types
@@ -2204,6 +2221,7 @@ namespace ProtoImperative
 
                     bool isAccessible = false;
                     bool isAllocated = false;
+                    bool isLocalDeclaration = t.IsLocal;
                     // if it's forloop, verify allocation with its original arrayname
                     if (t.ArrayName != null && !t.ArrayName.Equals(""))
                     {
@@ -2211,7 +2229,14 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        if (isLocalDeclaration)
+                        {
+                            isAllocated = VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        }
+                        else
+                        {
+                            isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        }
                     }
                    
                     int runtimeIndex = (!isAllocated) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
@@ -2282,7 +2307,8 @@ namespace ProtoImperative
                         if ((int)PrimitiveType.kInvalidType == castUID)
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kTypeUndefined, tident.datatype.Name);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, b.line, b.col);
+                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, b.line, b.col,
+                                graphNode == null ? default(Guid) : graphNode.guid);
                             castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
                             castType.Name = tident.datatype.Name;
                             castType.rank = tident.datatype.rank;
@@ -2807,7 +2833,8 @@ namespace ProtoImperative
                                            warningMsg,
                                            core.CurrentDSFileName,
                                            range.StepNode.line,
-                                           range.StepNode.col);
+                                           range.StepNode.col,
+                                           graphNode == null ? default(Guid) : graphNode.guid);
                     EmitNullNode(new NullNode(), ref inferedType);
                     return;
                 }
@@ -3360,7 +3387,7 @@ namespace ProtoImperative
             return functionSig.ToString();
         }
 
-        private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode)
+        private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             ProtoCore.Utils.Validity.Assert(argNode != null);
             if (argNode == null)
@@ -3372,7 +3399,8 @@ namespace ProtoImperative
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
                 string message = String.Format(ProtoCore.BuildData.WarningMessage.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
-                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, argNode.line, argNode.col);
+                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, argNode.line, argNode.col, 
+                    graphNode == null ? default(Guid) : graphNode.guid);
             }
 
             int rank = argNode.ArgumentType.rank;
@@ -3471,7 +3499,7 @@ namespace ProtoImperative
             }
             else if (node is VarDeclNode)
             {
-                EmitVarDeclNode(node, ref inferedType);
+                EmitVarDeclNode(node, ref inferedType, graphNode);
             }
             else if (node is ExprListNode)
             {

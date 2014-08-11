@@ -80,6 +80,9 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(InternalElement);
+
+            // otherwise the point value is invalid for downstream requests
+            DocumentManager.Regenerate();
         }
 
         /// <summary>
@@ -119,10 +122,8 @@ namespace Revit.Elements
         /// <summary>
         /// Internal constructor for the ReferencePoint
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        private ReferencePoint(double x, double y, double z)
+        /// <param name="xyz"></param>
+        private ReferencePoint(XYZ xyz)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldRefPt =
@@ -132,14 +133,14 @@ namespace Revit.Elements
             if (oldRefPt != null)
             {
                 InternalSetReferencePoint(oldRefPt);
-                InternalSetPosition(new XYZ(x, y, z));
+                InternalSetPosition(xyz);
                 return;
             }
 
             //Phase 2- There was no existing point, create one
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z)));
+            InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(xyz));
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -196,8 +197,7 @@ namespace Revit.Elements
         {
             get
             {
-                DocumentManager.Regenerate();
-                return InternalReferencePoint.Position.X;
+                return Point.X;
             }
             set { InternalSetPosition(new XYZ(value, Y, Z)); }
         }
@@ -207,8 +207,7 @@ namespace Revit.Elements
         {
             get
             {
-                DocumentManager.Regenerate();
-                return InternalReferencePoint.Position.Y;
+                return Point.Y;
             }
             set { InternalSetPosition(new XYZ(X, value, Z)); }
         }
@@ -218,8 +217,7 @@ namespace Revit.Elements
         {
             get
             {
-                DocumentManager.Regenerate();
-                return InternalReferencePoint.Position.Z;
+                return Point.Z;
             }
             set { InternalSetPosition(new XYZ(X, Y, value)); }
         }
@@ -262,12 +260,6 @@ namespace Revit.Elements
             }
         }
 
-        public String Id
-        {
-            get { return InternalElementId.ToString(); }
-        }
-
-
         #endregion
 
         #region Public static constructors
@@ -285,7 +277,7 @@ namespace Revit.Elements
             {
                 throw new Exception("ReferencePoint Elements can only be created in a Family Document");
             }
-            return new ReferencePoint(x, y, z);
+            return ByPoint(Point.ByCoordinates(x, y, z));
         }
 
         /// <summary>
@@ -305,7 +297,7 @@ namespace Revit.Elements
                 throw new Exception("ReferencePoint Elements can only be created in a Family Document");
             }
 
-            return new ReferencePoint(pt.X, pt.Y, pt.Z);
+            return new ReferencePoint(pt.ToXyz());
         }
 
         /// <summary>
@@ -332,9 +324,9 @@ namespace Revit.Elements
                 throw new ArgumentNullException("direction");
             }
 
-            var pt = basePoint.ToXyz() + direction.ToXyz() * distance;
+            var pt = (Point) basePoint.Translate(direction.Scale(distance));
 
-            return new ReferencePoint(pt.X, pt.Y, pt.Z);
+            return new ReferencePoint(pt.ToXyz());
 
         }
 
@@ -342,7 +334,7 @@ namespace Revit.Elements
         /// Create a Reference Point at a particular length along a curve
         /// </summary>
         /// <param name="elementCurveReference"></param>
-        /// <param name="length"></param>
+        /// <param name="length">Distance in meters along the curve</param>
         /// <returns></returns>
         public static ReferencePoint ByLengthOnCurveReference(object elementCurveReference, double length)
         {
@@ -357,7 +349,7 @@ namespace Revit.Elements
             }
 
             return new ReferencePoint(ElementCurveReference.TryGetCurveReference(elementCurveReference).InternalReference, 
-                length, PointOnCurveMeasurementType.SegmentLength, PointOnCurveMeasureFrom.Beginning);
+                UnitConverter.DynamoToHostFactor * length, PointOnCurveMeasurementType.SegmentLength, PointOnCurveMeasureFrom.Beginning);
         }
 
         /// <summary>
@@ -429,8 +421,7 @@ namespace Revit.Elements
         {
             try
             {
-                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X,
-                                    InternalReferencePoint.Position.Y, InternalReferencePoint.Position.Z);
+                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", X, Y, Z);
             }
             catch (Exception e)
             {
@@ -442,8 +433,8 @@ namespace Revit.Elements
         {
             try
             {
-                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X.ToString(format),
-                                    InternalReferencePoint.Position.Y.ToString(format), InternalReferencePoint.Position.Z.ToString(format));
+                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", X.ToString(format),
+                                    Y.ToString(format), Z.ToString(format));
             }
             catch (Exception e)
             {

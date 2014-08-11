@@ -17,7 +17,7 @@ using String = System.String;
 
 namespace Dynamo.Tests
 {
-    class StringTests : DSEvaluationUnitTest
+    class StringTests : DSEvaluationViewModelUnitTest
     {
         string localDynamoStringTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
 
@@ -26,7 +26,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestConcatStringNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_normal.dyn");
 
             RunModel(testFilePath);
@@ -37,7 +37,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestConcatStringEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -48,7 +48,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestConcatStringFileInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_fromFile.dyn");
 
             RunModel(testFilePath);
@@ -60,7 +60,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestConcatStringFunctionInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_fromFunction.dyn");
 
             RunModel(testFilePath);
@@ -70,18 +70,22 @@ namespace Dynamo.Tests
         [Test]
         public void TestConcatStringInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_invalidInput.dyn");
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, 
+                "TestConcatString_invalidInput.dyn");
 
-            RunModel(testFilePath); //later will add node and connector count verification.
+            RunModel(testFilePath);
 
-            Assert.Inconclusive("Need behavior confirmation");
+            var stringConcat = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSVarArgFunction>
+                ("eb4d8a34-5437-4064-ad52-db5c58a95451");
+            Assert.AreEqual(ElementState.Warning, stringConcat.State);
+
         }
 
         [Test]
         public void TestConcatStringMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_multipleInput.dyn");
 
             RunModel(testFilePath);
@@ -92,7 +96,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestConcatStringInListMap()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatStringInListMap.dyn");
 
             RunModel(testFilePath);
@@ -107,7 +111,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSubStringEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -118,7 +122,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSubStringFileInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_fromFile.dyn");
 
             RunModel(testFilePath);
@@ -129,7 +133,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSubStringFunctionInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_fromFunction.dyn");
 
             RunModel(testFilePath);
@@ -139,7 +143,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSubStringInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_invalidInput.dyn");
 
             RunModel(testFilePath);
@@ -154,7 +158,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSubStringNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_normal.dyn");
 
             RunModel(testFilePath);
@@ -169,7 +173,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestJoinStringEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -180,7 +184,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestJoinStringFileInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_fromFile.dyn");
 
             RunModel(testFilePath);
@@ -191,7 +195,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestJoinStringSingleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_singleInput.dyn");
 
             RunModel(testFilePath);
@@ -202,7 +206,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestJoinStringNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_normal.dyn");
 
             RunModel(testFilePath);
@@ -217,7 +221,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestNumberToStringFunctionInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_fromFunction.dyn");
 
             RunModel(testFilePath);
@@ -228,23 +232,21 @@ namespace Dynamo.Tests
         [Test]
         public void TestNumberToStringInvalidInput()
         {
-            Assert.Inconclusive("ToString node can accept a function object, and convert it to a string. "
-            +"This test case will fail because of this");
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_invalidInput.dyn");
 
             RunModel(testFilePath);
 
             // The input is a function object "String Length" unconnected to any input
             // To assert that the watch node is not displaying something such as "Pointer, opdata = 10, metaData = 58"
-            StringAssert.DoesNotContain("ointer", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-                "f8767579-f7c1-475f-980e-7cd6a42684c8").CachedValue.Data.ToString());
+            StringAssert.DoesNotContain("Pointer", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                "f8767579-f7c1-475f-980e-7cd6a42684c8").CachedValue.ToString());
         }
 
         [Test]
         public void TestNumberToStringNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_normal.dyn");
 
             RunModel(testFilePath);
@@ -262,7 +264,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSplitStringEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -273,7 +275,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSplitStringFileInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_fromFile.dyn");
 
             RunModel(testFilePath);
@@ -292,7 +294,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSplitStringFunctionInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_fromFunction.dyn");
 
             RunModel(testFilePath);
@@ -303,7 +305,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSplitStringInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_invalidInput.dyn");
 
             RunModel(testFilePath);
@@ -318,7 +320,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSplitStringNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_normal.dyn");
 
             RunModel(testFilePath);
@@ -328,7 +330,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSplitStringMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_multipleInput.dyn");
             RunModel(testFilePath);
             AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109",
@@ -346,7 +348,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringLengthEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -357,7 +359,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringLengthFileInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_fromFile.dyn");
 
             RunModel(testFilePath);
@@ -368,7 +370,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringLengthFunctionInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_fromFunction.dyn");
 
             RunModel(testFilePath);
@@ -379,7 +381,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringLengthMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_multipleInput.dyn");
 
             RunModel(testFilePath);
@@ -390,7 +392,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringLengthNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_normal.dyn");
 
             RunModel(testFilePath);
@@ -405,7 +407,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringToNumberEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_empltyString.dyn");
 
             RunModel(testFilePath);
@@ -420,7 +422,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringToNumberFileInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFile.dyn");
 
             RunModel(testFilePath);
@@ -430,7 +432,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringToNumberFunctionInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFunction.dyn");
 
             RunModel(testFilePath);
@@ -440,7 +442,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringToNumberInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_invalidInput.dyn");
 
             RunModel(testFilePath);
@@ -455,7 +457,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringToNumberNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_normal.dyn");
 
             RunModel(testFilePath);
@@ -472,71 +474,58 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringCaseEmptyInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_emptyString.dyn");
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_emptyString.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "");
+            RunModel(testFilePath);
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "");
 
-            Assert.Inconclusive("String.StringCase node not migrated");
         }
 
         [Test]
         public void TestStringCaseFileInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFile.dyn");
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFile.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "RAINY DAY");
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            RunModel(testFilePath);
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "RAINY DAY");
         }
 
         [Test]
         public void TestStringCaseFunctionInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFunction.dyn");
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFunction.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "SUNNYDAY");
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            RunModel(testFilePath);
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "SUNNYDAY");
         }
 
         [Test]
         public void TestStringCaseInvalidInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_invalidInput.dyn");
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_invalidInput.dyn");
 
-            //RunModel(testFilePath);
+            RunModel(testFilePath);
 
-            //Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            //Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            //NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("294a2376-6751-43c3-a8b1-5492fa942dbe");
-            //Assert.AreEqual(ElementState.Warning, nodeModel.State);
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("294a2376-6751-43c3-a8b1-5492fa942dbe");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         [Test]
         public void TestStringCaseNormalInput()
         {
-            //DynamoModel model = Controller.DynamoModel;
-            //string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_normal.dyn");
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_normal.dyn");
 
-            //RunModel(testFilePath);
-            //AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "RAINY DAY");
-            //AssertPreviewValue("77a8c84b-b5bb-46f1-a550-7b3d5441c0a1", "rainy day");
-
-            Assert.Inconclusive("String.StringCase node not migrated");
-
+            RunModel(testFilePath);
+            AssertPreviewValue("7805c2b9-d353-40c6-b9a6-bd430543cd33", "RAINY DAY");
+            AssertPreviewValue("c5b88685-0318-4db1-80b4-a1baf8724c83", "rainy day");
         }
 
         #endregion
@@ -546,7 +535,7 @@ namespace Dynamo.Tests
         [Ignore]
         public void TestToStringEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -557,7 +546,7 @@ namespace Dynamo.Tests
         [Ignore]
         public void TestToStringFileInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_fromFile.dyn");
 
             RunModel(testFilePath);
@@ -568,7 +557,7 @@ namespace Dynamo.Tests
         [Ignore]
         public void TestToStringFunctionInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_fromFunction.dyn");
 
             RunModel(testFilePath);
@@ -579,7 +568,7 @@ namespace Dynamo.Tests
         [Ignore]
         public void TestToStringNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_normal.dyn");
 
             RunModel(testFilePath);
@@ -593,7 +582,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringContainsNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_normal.dyn");
 
             RunModel(testFilePath);
@@ -607,7 +596,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringContainsMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_multipleInput.dyn");
 
             RunModel(testFilePath);
@@ -619,7 +608,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringContainsEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -631,7 +620,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringContainsInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_invalidInput.dyn");
 
             RunModel(testFilePath);
@@ -650,7 +639,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringStartsWithNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringStartsWith_normal.dyn");
 
             RunModel(testFilePath);
@@ -664,7 +653,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringEndsWithNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringEndsWith_normal.dyn");
 
             RunModel(testFilePath);
@@ -682,7 +671,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringIndexOfNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringIndexOf_normal.dyn");
 
             RunModel(testFilePath);
@@ -696,7 +685,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringIndexOfMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringIndexOf_multipleInput.dyn");
 
             RunModel(testFilePath);
@@ -711,7 +700,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringIndexOfEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringIndexOf_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -727,7 +716,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringInsertNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringInsert_normal.dyn");
 
             RunModel(testFilePath);
@@ -739,7 +728,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringInsertMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringInsert_multipleInput.dyn");
 
             RunModel(testFilePath);
@@ -758,7 +747,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringInsertInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringInsert_invalidInput.dyn");
 
             RunModel(testFilePath);
@@ -777,7 +766,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringReplaceNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_normal.dyn");
 
             RunModel(testFilePath);
@@ -789,7 +778,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringReplaceMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_multipleInput.dyn");
 
             RunModel(testFilePath);
@@ -810,7 +799,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringReplaceEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -822,7 +811,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringReplaceInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_invalidInput.dyn");
 
             RunModel(testFilePath);
@@ -841,7 +830,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestTrimWhitespaceNormalInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_normal.dyn");
 
             RunModel(testFilePath);
@@ -855,7 +844,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSTrimWhitespaceMultipleInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_multipleInput.dyn");
 
             RunModel(testFilePath);
@@ -872,7 +861,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestTrimWhitespaceEmptyInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_emptyString.dyn");
 
             RunModel(testFilePath);
@@ -886,7 +875,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestTrimWhitespaceInvalidInput()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_invalidInput.dyn");
 
             RunModel(testFilePath);

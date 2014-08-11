@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -14,29 +16,25 @@ namespace Dynamo.DSEngine
     {
         internal static ILiveRunner CreateLiveRunner(EngineController controller)
         {
-            LiveRunner.Options option = new LiveRunner.Options();
-            return new LiveRunner(option);
+            LiveRunner.Configuration configuration = new LiveRunner.Configuration();
+            return new LiveRunner(configuration);
         }
     }
 
     public class LiveRunnerServices : IDisposable
     {
         private ILiveRunner liveRunner;
-        private EngineController controller;
+        private readonly DynamoModel dynamoModel;
 
-        public LiveRunnerServices(EngineController controller)
+        public LiveRunnerServices(DynamoModel dynamoModel, EngineController controller)
         {
-            this.controller = controller;
-            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
+            this.dynamoModel = dynamoModel;
 
-            liveRunner.GraphUpdateReady += GraphUpdateReady;
-            liveRunner.NodeValueReady += NodeValueReady;
+            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
         }
       
         public void Dispose()
         {
-            liveRunner.GraphUpdateReady -= GraphUpdateReady;
-            liveRunner.NodeValueReady -= NodeValueReady;
             if (liveRunner is IDisposable)
                 (liveRunner as IDisposable).Dispose();
         }
@@ -52,11 +50,10 @@ namespace Dynamo.DSEngine
         public RuntimeMirror GetMirror(string var)
         {
            
-
             var mirror = liveRunner.InspectNodeValue(var);
 
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
-                dynSettings.DynamoLogger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
+            if (dynamoModel.DebugSettings.VerboseLogging)
+                dynamoModel.Logger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
 
             return mirror;
 
@@ -68,9 +65,8 @@ namespace Dynamo.DSEngine
         /// <param name="graphData"></param>
         public void UpdateGraph(GraphSyncData graphData)
         {
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
-                dynSettings.DynamoLogger.Log("LRS.UpdateGraph: " + graphData);
-
+            if (dynamoModel.DebugSettings.VerboseLogging)
+                dynamoModel.Logger.Log("LRS.UpdateGraph: " + graphData);
 
             liveRunner.UpdateGraph(graphData);
         }
@@ -79,9 +75,18 @@ namespace Dynamo.DSEngine
         /// Return runtime warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
         {
             return liveRunner.GetRuntimeWarnings();
+        }
+
+        /// <summary>
+        /// Return build warnings for this run.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
+        {
+            return liveRunner.GetBuildWarnings();
         }
 
         /// <summary>

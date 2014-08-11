@@ -1,4 +1,6 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System;
+
+using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using Revit.GeometryConversion;
 using NUnit.Framework;
@@ -7,8 +9,14 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Conversion
 {
     [TestFixture]
-    class BoundingBoxTests : GeometricRevitNodeTest
+    public class BoundingBoxTests : GeometricRevitNodeTest
     {
+
+        public static double BoundingBoxVolume(BoundingBox bb)
+        {
+            var val = bb.MaxPoint.Subtract(bb.MinPoint.AsVector());
+            return Math.Abs(val.X * val.Y * val.Z);
+        }
 
         [Test]
         [TestModel(@".\MassWithBoxAndCone.rfa")]
@@ -24,8 +32,8 @@ namespace DSRevitNodesTests.Conversion
             var max = bbox.MaxPoint;
             var min = bbox.MinPoint;
 
-            max.AssertShouldBeApproximately(Point.ByCoordinates(15, 16, 32).InDynamoUnits());
-            min.AssertShouldBeApproximately(Point.ByCoordinates(-15, -14, 2).InDynamoUnits());
+            max.ShouldBeApproximately(Point.ByCoordinates(15, 16, 32).InDynamoUnits());
+            min.ShouldBeApproximately(Point.ByCoordinates(-15, -14, 2).InDynamoUnits());
 
         }
 
@@ -41,8 +49,8 @@ namespace DSRevitNodesTests.Conversion
 
             var bbxyz = bbox.ToRevitType();
 
-            bbxyz.Max.AssertShouldBeApproximately(Point.ByCoordinates(15, 16, 32));
-            bbxyz.Min.AssertShouldBeApproximately(Point.ByCoordinates(-15, -14, 2));
+            bbxyz.Max.ShouldBeApproximately(Point.ByCoordinates(15, 16, 32));
+            bbxyz.Min.ShouldBeApproximately(Point.ByCoordinates(-15, -14, 2));
 
         }
     }

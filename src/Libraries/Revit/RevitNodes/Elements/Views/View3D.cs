@@ -287,7 +287,6 @@ namespace Revit.Elements.Views
         /// Utility method to create a filtered element collector which collects all elements in a view
         /// which Dynamo would like to view or on which Dynamo would like to operate.
         /// </summary>
-        /// <param name="doc"></param>
         /// <returns></returns>
         protected static FilteredElementCollector GetVisibleElementFilter()
         {

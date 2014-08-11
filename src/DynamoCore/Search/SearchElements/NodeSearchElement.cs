@@ -16,6 +16,8 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
+        internal readonly string FullName ;
+
         #region Properties
 
         /// <summary>
@@ -46,7 +48,6 @@ namespace Dynamo.Search.SearchElements
         public override string Description { get { return _description; } }
 
         private bool _searchable = true;
-
         public override bool Searchable { get { return _searchable; } }
 
         public void SetSearchable(bool s)
@@ -89,7 +90,8 @@ namespace Dynamo.Search.SearchElements
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="tags"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags)
+        /// <param name="fullName"></param>
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
         {
             this.Node = null;
             this._name = name;
@@ -97,11 +99,12 @@ namespace Dynamo.Search.SearchElements
             this.Keywords = String.Join(" ", tags);
             this._type = "Node";
             this._description = description;
+            this.FullName = fullName;
         }
 
         public virtual NodeSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>());
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this.FullName);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }
@@ -115,25 +118,6 @@ namespace Dynamo.Search.SearchElements
             else
             {
                 this.DescriptionVisibility = false;
-            }
-        }
-
-        /// <summary>
-        /// Executes the element in search, this is what happens when the user 
-        /// hits enter in the SearchView.</summary>
-        public override void Execute()
-        {
-            // create node
-            var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, this.Name, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
             }
         }
 

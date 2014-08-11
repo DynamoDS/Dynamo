@@ -17,11 +17,15 @@ namespace ProtoCore.AST.AssociativeAST
 
         public bool IsLiteral = false;
 
+        // The immediate scope of this AST is within a function 
+        public bool IsProcedureOwned = false;
+
         protected AssociativeNode() { }
 
         protected AssociativeNode(AssociativeNode rhs) : base(rhs)
         {
             IsModifier = rhs.IsModifier;
+            IsProcedureOwned = rhs.IsProcedureOwned;
         }
     }
 
@@ -378,6 +382,7 @@ namespace ProtoCore.AST.AssociativeAST
             };
 
             Value = rhs.Value;
+            IsLocal = false;
         }
 
         public Type datatype
@@ -392,13 +397,20 @@ namespace ProtoCore.AST.AssociativeAST
             set;
         }
 
+        public bool IsLocal
+        {
+            get;
+            set;
+        }
+
         public override bool Equals(object other)
         {
             var otherNode = other as IdentifierNode;
             if (null == otherNode)
                 return false;
 
-            return EqualityComparer<string>.Default.Equals(Value, otherNode.Value) && 
+            return IsLocal == otherNode.IsLocal &&
+                   EqualityComparer<string>.Default.Equals(Value, otherNode.Value) && 
                    datatype.Equals(otherNode.datatype) && 
                    base.Equals(otherNode);
         }
@@ -1096,6 +1108,21 @@ namespace ProtoCore.AST.AssociativeAST
                 (Body == null ? base.GetHashCode() : Body.GetHashCode());
 
             return bodyHashCode;
+        }
+
+        public override string ToString()
+        {
+            if (Body == null)
+            {
+                return string.Empty;
+            }
+
+            var buf = new StringBuilder();
+            for (int i = 0; i < Body.Count; ++i)
+            {
+                buf.Append(Body[i].ToString());
+            }
+            return buf.ToString();
         }
     }
 
@@ -2707,6 +2734,7 @@ namespace ProtoCore.AST.AssociativeAST
             return new IdentifierListNode
             {
                 LeftNode = new IdentifierNode(className),
+                Optr = Operator.dot,
                 RightNode = BuildFunctionCall(functionName, arguments)
             };
         }

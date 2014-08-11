@@ -162,8 +162,12 @@ namespace ProtoCore
 
             var warningMsg = string.Format(WarningMessage.kConsoleWarningMessage, 
                                            message, filename, line, col);
-            System.Console.WriteLine(warningMsg);
 
+            if (core.Options.Verbose)
+            {
+                System.Console.WriteLine(warningMsg);
+            }
+            
             if (WebMessageHandler != null)
             {
                 var outputMessage = new OutputMessage(warningMsg);
@@ -224,8 +228,8 @@ namespace ProtoCore
                 string strOp = Op.GetOpSymbol(op);
                 message = String.Format(WarningMessage.kMethodResolutionFailureForOperator,
                                         strOp,
-                                        core.TypeSystem.GetType((int)arguments[0].metaData.type),
-                                        core.TypeSystem.GetType((int)arguments[1].metaData.type));
+                                        core.TypeSystem.GetType(arguments[0].metaData.type),
+                                        core.TypeSystem.GetType(arguments[1].metaData.type));
             }
             else
             {

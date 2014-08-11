@@ -10,13 +10,61 @@ namespace DSCoreNodesTests
     [TestFixture]
     internal static class ListTests
     {
+        #region UniqueInList
+        private sealed class Point
+        {
+            private bool Equals(Point other)
+            {
+                return X == other.X && Y == other.Y;
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return (X*397) ^ Y;
+                }
+            }
+
+            public readonly int X;
+            public readonly int Y;
+
+            public Point(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+
+            public Point() { }
+
+            public override bool Equals(object obj)
+            {
+                return !ReferenceEquals(null, obj)
+                    && (ReferenceEquals(this, obj)
+                        || obj.GetType() == GetType() && Equals((Point)obj));
+            }
+        }
+
+        [Test]
+        public static void UniqueInListWithPoints()
+        {
+            var pt1 = new Point();
+            var pt2 = new Point(1, 0);
+            var pt3 = new Point(1, 0);
+
+            Assert.AreEqual(
+                new ArrayList { pt1, pt2 },
+                List.UniqueItems(new ArrayList { pt1, pt2, pt1, pt3 }));
+        }
+
         [Test]
         public static void UniqueInList()
         {
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3, 4, 5 },
-                List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4, 5, 4, 2, 1, 3 }));
+                List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4.0, 5, 4, 2, 1, 3 }));
         }
+        #endregion
 
         [Test]
         public static void ListContains()
@@ -45,15 +93,15 @@ namespace DSCoreNodesTests
         {
             var sorted = Enumerable.Range(1, 5).ToList();
 
-            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted)));
+            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted).Cast<object>()));
         }
 
         [Test]
         public static void SortMixedList1()
         {
             Assert.AreEqual(
-                new ArrayList { 1, 2, 3.5, 4.002, 5 },
-                List.Sort(new ArrayList { 2, 3.5, 5, 4.002, 1 }));
+                new List<object> { 1, 2, 3.5, 4.002, 5 },
+                List.Sort(new List<object> { 2, 3.5, 5, 4.002, 1 }));
         }
 
         [Test]
@@ -62,7 +110,7 @@ namespace DSCoreNodesTests
             var obj = new object();
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3.5, 4.002, 5, false, true, "aaa", "bb", obj },
-                List.Sort(new ArrayList { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
+                List.Sort(new List<object> { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
         }
 
         //[Test]
@@ -88,7 +136,13 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListMinimumValue()
         {
-            Assert.AreEqual(0, List.MinimumItem(new ArrayList { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(0, List.MinimumItem(new List<object> { 8, 4, 0, 66, 10 }));
+        }
+
+        [Test]
+        public static void ListMinimumValueMixed()
+        {
+            Assert.AreEqual(0, List.MinimumItem(new List<object> { 8.5, 4, 0, 6.6, 10.2 }));
         }
 
         //[Test]
@@ -100,7 +154,13 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListMaximumValue()
         {
-            Assert.AreEqual(66, List.MaximumItem(new List<int> { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(66, List.MaximumItem(new List<object> { 8, 4, 0, 66, 10 }));
+        }
+
+        [Test]
+        public static void ListMaximumValueMixed()
+        {
+            Assert.AreEqual(66, List.MaximumItem(new List<object> { 8.223, 4, 0.64, 66, 10.2 }));
         }
 
         [Test]

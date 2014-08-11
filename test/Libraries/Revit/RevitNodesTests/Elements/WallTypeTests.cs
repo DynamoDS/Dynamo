@@ -1,6 +1,7 @@
 ﻿using System;
 using Revit.Elements;
 using NUnit.Framework;
+using RTF.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
@@ -10,6 +11,7 @@ namespace DSRevitNodesTests.Elements
     {
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()
         {
             var wallTypeName = "Curtain Wall 1";

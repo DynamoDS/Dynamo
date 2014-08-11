@@ -13,8 +13,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
         private DelegateCommand _resetFitViewToggleCommand;
-        private DelegateCommand _togglePanCommand;
-        private DelegateCommand _toggleOrbitCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
@@ -42,19 +40,19 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private DelegateCommand _nodeToCodeCommand;
-        public DelegateCommand NodeToCodeCommand
-        {
-            get
-            {
-                if (_nodeToCodeCommand == null)
-                {
-                    _nodeToCodeCommand = new DelegateCommand(_model.NodeToCode, _model.CanNodeToCode);
-                }
-                return _nodeToCodeCommand;
-            }
-        }
-
+        // REVIVE ME!
+        //private DelegateCommand _nodeToCodeCommand;
+        //public DelegateCommand NodeToCodeCommand
+        //{
+        //    get
+        //    {
+        //        if (_nodeToCodeCommand == null)
+        //        {
+        //            _nodeToCodeCommand = new DelegateCommand(Model.NodeToCode, Model.CanNodeToCode);
+        //        }
+        //        return _nodeToCodeCommand;
+        //    }
+        //}
 
         public DelegateCommand HideCommand
         {

@@ -15,7 +15,7 @@ namespace ProtoTestFx
 {
     public class DebugTestFx
     {
-        public static void CompareDebugAndRunResults(string code)
+        public static void CompareDebugAndRunResults(string code, string defectID = "")
         {
             Core runCore = null;
 
@@ -32,16 +32,16 @@ namespace ProtoTestFx
 
             {
                 Core debugRunCore = DebugRunnerRunOnly(code);
-                CompareCores(runCore, debugRunCore);
+                CompareCores(runCore, debugRunCore, defectID);
             }
             {
                 Core stepOverCore = DebugRunnerStepOver(code);
-                CompareCores(runCore, stepOverCore);
+                CompareCores(runCore, stepOverCore, defectID);
             }
 
             {
                 Core stepInCore = DebugRunerStepIn(code);
-                CompareCores(runCore, stepInCore);
+                CompareCores(runCore, stepInCore, defectID);
             }
 
             
@@ -192,9 +192,9 @@ namespace ProtoTestFx
 
         }
 
-        internal static void CompareCores(Core c1, Core c2)
+        internal static void CompareCores(Core c1, Core c2, string defectID = "")
         {
-            Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length);
+            Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length, defectID);
 
 
             for (int symTableIndex = 0; symTableIndex < c1.DSExecutable.runtimeSymbols.Length; symTableIndex++)
@@ -216,7 +216,6 @@ namespace ProtoTestFx
                     try
                     {
                         runValue = runExecMirror.GetGlobalValue(symNode.name);
-                        Console.WriteLine(symNode.name + ": " + runValue);
                         lookupOk = true;
 
                     }
@@ -245,7 +244,7 @@ namespace ProtoTestFx
                         StackValue debugValue = debugExecMirror.GetGlobalValue(symNode.name);
                         if (!StackUtils.CompareStackValues(debugValue, runValue, c2, c1))
                         {
-                            Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\n", symNode.name));
+                            Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\nTracked by {1}", symNode.name, defectID));
                         }
                     }
                 }

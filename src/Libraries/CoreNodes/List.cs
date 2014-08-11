@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using Autodesk.DesignScript.Runtime;
@@ -125,9 +126,9 @@ namespace DSCore
         /// <param name="list">List to be sorted.</param>
         /// <returns name="list">Sorted list.</returns>
         /// <search>sort,order</search>
-        public static IList Sort(IList list)
+        public static IList Sort(IEnumerable<object> list)
         {
-            return list.Cast<object>().OrderBy(x => x, new ObjectComparer()).ToList();
+            return list.OrderBy(x => x, new ObjectComparer()).ToList();
         }
 
         /// <summary>
@@ -136,9 +137,9 @@ namespace DSCore
         /// <param name="list">List to take the minimum value from.</param>
         /// <returns name="min">Minimum value from the list.</returns>
         /// <search>least,smallest,find min</search>
-        public static object MinimumItem(IList list)
+        public static object MinimumItem(IEnumerable<object> list)
         {
-            return list.Cast<object>().Min();
+            return list.Min<object, object>(DoubleConverter);
         }
 
         /// <summary>
@@ -147,9 +148,19 @@ namespace DSCore
         /// <param name="list">List to take the maximum value from.</param>
         /// <returns name="max">Maximum value from the list.</returns>
         /// <search>greatest,largest,biggest,find max</search>
-        public static object MaximumItem(IList list)
+        public static object MaximumItem(IEnumerable<object> list)
         {
-            return list.Cast<object>().Max();
+            return list.Max<object, object>(DoubleConverter);
+        }
+
+        /// <summary>
+        /// Converts integer to double, else returns the input object.
+        /// </summary>
+        private static object DoubleConverter(object obj)
+        {
+            if (obj is int)
+                return Convert.ToDouble(obj);
+            return obj;
         }
 
         /// <summary>
@@ -842,14 +853,26 @@ namespace DSCore
                 return -1;
             }
 
-            private static bool Eq(double x, double y)
-            {
-                return x.Equals(y);
-            }
-
             private static bool Eq(IList x, IList y)
             {
                 return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
+            }
+
+            private static bool Eq(IConvertible x, IConvertible y)
+            {
+                try
+                {
+                    return Convert.ToDouble(x).Equals(Convert.ToDouble(y));
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            private static bool Eq(object x, object y)
+            {
+                return x.Equals(y);
             }
         }
         #endregion
@@ -1214,17 +1237,25 @@ namespace DSCore
             //Same type and are comparable, use it's own compareTo method.
             if (xType == yType && typeof(IComparable).IsAssignableFrom(xType))
                 return ((IComparable)x).CompareTo(y);
+
             //Both are value type, can be converted to Double, use double comparison
             if (xType.IsValueType && yType.IsValueType)
             {
                 //Bool is bigger than other value type.
                 if (xType == typeof(bool))
                     return 1;
+
                 //Other value type is smaller than bool
                 if (yType == typeof(bool))
                     return -1;
-                return Convert.ToDouble(x).CompareTo(Convert.ToDouble(y));
+
+                if (typeof(IConvertible).IsAssignableFrom(xType)
+                    && typeof(IConvertible).IsAssignableFrom(yType))
+                { 
+                    return Convert.ToDouble(x).CompareTo(Convert.ToDouble(y));
+                }
             }
+
             //Value Type object will be smaller, if x is value type it is smaller
             if (xType.IsValueType)
                 return -1;

@@ -142,21 +142,23 @@ namespace Revit.Elements
 
         #region Public properties
 
-        public Point Location
+        new public Autodesk.DesignScript.Geometry.Curve Location
         {
             get
             {
-                var pos = this.InternalFamilyInstance.Location as LocationPoint;
-                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+                var location = this.InternalFamilyInstance.Location;
+                var crv = location as LocationCurve;
+                if (null != crv && null != crv.Curve)
+                    return crv.Curve.ToProtoType();
+                throw new Exception("The location of the structural element is not a valid curve!");
             }
         }
 
-        public FamilySymbol Symbol
-        {
-            get
-            {
-                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
-            }
+        public new FamilySymbol Symbol
+        {    
+            // NOTE: Because AbstractFamilyInstance is not visible in the library
+            //       we redefine this method on FamilyInstance
+            get { return base.Symbol; }
         }
 
         #endregion
@@ -172,7 +174,8 @@ namespace Revit.Elements
         /// <param name="structuralType">The type of the structural element - a beam, column, etc</param>
         /// <param name="structuralFamilySymbol">The FamilySymbol representing the structural type</param>
         /// <returns></returns>
-        public static StructuralFraming ByCurveLevelUpVectorAndType(Autodesk.DesignScript.Geometry.Curve curve, Level level, Autodesk.DesignScript.Geometry.Vector upVector, StructuralType structuralType, FamilySymbol structuralFamilySymbol)
+        public static StructuralFraming ByCurveLevelUpVectorAndType(Autodesk.DesignScript.Geometry.Curve curve, Level level, 
+            Autodesk.DesignScript.Geometry.Vector upVector, StructuralType structuralType, FamilySymbol structuralFamilySymbol)
         {
             if (curve == null)
             {
