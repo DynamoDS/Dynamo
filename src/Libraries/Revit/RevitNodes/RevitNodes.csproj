@@ -111,6 +111,7 @@
     <Compile Include="GeometryConversion\EdgeLoopPartition.cs" />
     <Compile Include="GeometryConversion\EnumerableExtensions.cs" />
     <Compile Include="GeometryConversion\GeometryDebugging.cs" />
+    <Compile Include="GeometryConversion\CurveUtils.cs" />
     <Compile Include="GeometryConversion\HermiteToNurbs.cs" />
     <Compile Include="GeometryConversion\NurbsUtils.cs" />
     <Compile Include="GeometryConversion\PolygonContainment.cs" />
