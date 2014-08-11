@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
@@ -11,6 +12,8 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class CurveUtils
     {
+        public static readonly double Tolerance = 1e-6;
+
         public static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
         {
             //find the plane of the curve and generate a sketch plane
@@ -22,17 +25,18 @@ namespace Revit.GeometryConversion
 
             if (IsLineLike(c))
             {
-                var v1 = p1 - p0;
-                var v2 = p2 - p0;
                 XYZ norm = null;
 
                 //keep old plane computations
-                if (System.Math.Abs(p0.Z - p2.Z) < 0.0001)
+                if (System.Math.Abs(p0.Z - p2.Z) < Tolerance)
                 {
                     norm = XYZ.BasisZ;
                 }
                 else
                 {
+                    var v1 = p1 - p0;
+                    var v2 = p2 - p0;
+
                     var p3 = new XYZ(p2.X, p2.Y, p0.Z);
                     var v3 = p3 - p0;
                     norm = v1.CrossProduct(v3);
@@ -47,7 +51,7 @@ namespace Revit.GeometryConversion
 
             }
 
-            var cLoop = new Autodesk.Revit.DB.CurveLoop();
+            var cLoop = new CurveLoop();
             cLoop.Append(c.Clone());
             if (cLoop.HasPlane())
             {
@@ -101,8 +105,8 @@ namespace Revit.GeometryConversion
             var startTan = tangents.First().Normalize();
             var endTan = tangents.Last().Normalize();
 
-            return Math.Abs(startTan.DotProduct(endTan) - 1) < 1e-6 &&
-                Math.Abs(lineDir.DotProduct(endTan) - 1) < 1e-6;
+            return Math.Abs(startTan.DotProduct(endTan) - 1) < Tolerance &&
+                Math.Abs(lineDir.DotProduct(endTan) - 1) < Tolerance;
         }
 
         private static bool IsLineLikeInternal(IList<XYZ> points)
@@ -115,7 +119,7 @@ namespace Revit.GeometryConversion
 
             // Are any of the points distant from the line created by connecting the two
             // end points?
-            return !points.Any(x => x.ToPoint(false).DistanceTo(line) > 1e-6);
+            return !points.Any(x => x.ToPoint(false).DistanceTo(line) > Tolerance);
         }
 
         #endregion
