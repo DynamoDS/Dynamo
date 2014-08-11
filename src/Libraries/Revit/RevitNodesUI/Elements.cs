@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
+
+using Dynamo.Applications.Models;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using Revit.Elements.InternalUtilities;
 
 namespace DSRevitNodesUI
 {
-    public abstract class ElementsQueryBase : NodeModel
+    public abstract class ElementsQueryBase : RevitNodeModel
     {
-        protected ElementsQueryBase()
+        protected ElementsQueryBase(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
         {
-            var u = dynRevitSettings.Controller.Updater;
+            var u = this.RevitDynamoModel.RevitServicesUpdater;
             u.ElementsAdded += Updater_ElementsAdded;
             u.ElementsModified += Updater_ElementsModified;
             u.ElementsDeleted += Updater_ElementsDeleted;
@@ -23,7 +25,7 @@ namespace DSRevitNodesUI
         {
             base.Destroy();
 
-            var u = dynRevitSettings.Controller.Updater;
+            var u = this.RevitDynamoModel.RevitServicesUpdater;
             u.ElementsModified -= Updater_ElementsModified;
             u.ElementsDeleted -= Updater_ElementsDeleted;
         }
@@ -67,7 +69,8 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class ElementsOfFamilyType : ElementsQueryBase
     {
-        public ElementsOfFamilyType()
+        public ElementsOfFamilyType(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
         {
             InPortData.Add(new PortData("Family Type", "The Family Type."));
             OutPortData.Add(new PortData("Elements", "The list of elements matching the query."));
@@ -92,7 +95,8 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class ElementsOfType : ElementsQueryBase
     {
-        public ElementsOfType()
+        public ElementsOfType(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
         {
             InPortData.Add(new PortData("element type", "An element type."));
             OutPortData.Add(new PortData("elements", "All elements in the active document of a given type."));
@@ -116,7 +120,8 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class ElementsOfCategory : ElementsQueryBase
     {
-        public ElementsOfCategory()
+        public ElementsOfCategory(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
         {
             InPortData.Add(new PortData("Category", "The Category"));
             OutPortData.Add(new PortData("Elements", "The list of elements matching the query."));
@@ -140,7 +145,8 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class ElementsAtLevel : ElementsQueryBase
     {
-        public ElementsAtLevel()
+        public ElementsAtLevel(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
         {
             InPortData.Add(new PortData("Level", "A Level"));
             OutPortData.Add(new PortData("Elements", "Elements at the given level."));

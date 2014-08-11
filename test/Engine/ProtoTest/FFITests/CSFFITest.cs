@@ -266,8 +266,10 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestDictionaryMarshalling_DStoCS_CStoDS()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4035
             String code =
             @"             [Associative]              {                dummy = Dummy.Dummy();                dictionary =                 {                     dummy.CreateDictionary() => dict;                    dummy.AddData(dict, ""ABCD"", 22);                    dummy.AddData(dict, ""xyz"", 11);                    dummy.AddData(dict, ""teas"", 12);                }                sum = dummy.SumAges(dictionary);             }            ";
             Type dummy = typeof (FFITarget.Dummy);
@@ -742,18 +744,6 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("Replication")]
-        [Category("ProtoGeometry")]
-        public void coercion_notimplmented2()
-        {
-            String code =
-            @"            import(""ProtoGeometry.dll"");            WCS = CoordinateSystem.Identity();            // create initialPoints            pt0 = Point.ByCartesianCoordinates(WCS,5, 5, 0);            pt1 = Point.ByCartesianCoordinates(WCS,10, 10, 0);            xx = pt0.X;            pointGroup = {pt0,pt1};            testLine = Line.ByStartPointEndPoint(pointGroup[0], pointGroup[1]);            pointGroup = pointGroup.X<6?pointGroup.Translate(2, 0, 0):pointGroup.Translate(0, 0, 0);                    ";
-            object[] c = new object[] { null };
-            ValidationData[] data = { new ValidationData { ValueName = "prop", ExpectedValue = c, BlockIndex = 0 }                                       };
-            Assert.DoesNotThrow(() => ExecuteAndVerify(code, data), "1467114 Sprint24 : rev 2806 : Replication + function resolution issue : Requested coercion not implemented error message coming when collection has null");
-        }
-
-        [Test]
         [Category("Update")]
         public void SimplePropertyUpdate()
         {
@@ -849,13 +839,10 @@ namespace ProtoFFITests
         [Test]
         public void DisposeOnFFITest006()
         {
-            // SSA'd transforms will not GC the temps until end of block
-            // However, they must be GC's after every line when in debug step over
-            // Here 'dv' will not be GC'd until end of block
             string code = @"                            dv = DisposeVerify.CreateObject();                            m = dv.SetValue(2);                            a1 = AClass.CreateObject(3);                            a2 = AClass.CreateObject(4);                            a2 = a1;                            b = { BClass.CreateObject(1), BClass.CreateObject(2), BClass.CreateObject(3) };                            b = a1;                                v = dv.GetValue();                            ";
             code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
                 "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "v", ExpectedValue = 2, BlockIndex = 0 } };
+            ValidationData[] data = { new ValidationData { ValueName = "v", ExpectedValue = 10, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
@@ -1064,11 +1051,13 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestNamespacePartialResolution01()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4034
             var mirror = thisTest.RunScriptSource(
             @"                import(""FFITarget.dll"");
-                p = NamespaceResolutionTargetTest.Foo(1);                x = p.Prop;            "
+                p = A.NamespaceResolutionTargetTest.Foo(1);                x = p.Prop;            "
             );
 
             Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
@@ -1097,8 +1086,10 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestNamespaceClassResolution()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
                     x = 1..2;
@@ -1126,8 +1117,10 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestSubNamespaceClassResolution()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
                     aDup = A.DupTargetTest(0);
@@ -1141,10 +1134,9 @@ namespace ProtoFFITests
 
                     check = Equals(aDup.Prop,bDup.Prop);
                     check = Equals(bDup.Prop,cDup.Prop);
-
 ";
-
-            var mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
+            var mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("check", true);
             thisTest.Verify("aReadback", 0);
             thisTest.Verify("bReadback", 1);

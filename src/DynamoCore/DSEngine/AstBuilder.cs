@@ -32,10 +32,12 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class AstBuilder
     {
+        private readonly DynamoModel dynamoModel;
         private readonly IAstNodeContainer nodeContainer;
 
-        public AstBuilder(IAstNodeContainer nodeContainer)
+        public AstBuilder(DynamoModel dynamoModel, IAstNodeContainer nodeContainer)
         {
+            this.dynamoModel = dynamoModel;
             this.nodeContainer = nodeContainer;
         }
 
@@ -128,7 +130,7 @@ namespace Dynamo.DSEngine
 
             //TODO: This should do something more than just log a generic message. --SJE
             if (node.State == ElementState.Error)
-                dynSettings.DynamoLogger.Log("Error in Node. Not sent for building and compiling");
+                dynamoModel.Logger.Log("Error in Node. Not sent for building and compiling");
 
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
@@ -138,13 +140,22 @@ namespace Dynamo.DSEngine
                 "Shouldn't have null nodes in the AST list");
 #endif
 
-            IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
+            IEnumerable<AssociativeNode> astNodes = null;
+            var scopedNode = node as ScopedNodeModel;
+            if (scopedNode != null)
+            {
+                astNodes = scopedNode.BuildAstInScope(inputAstNodes);
+            }
+            else
+            {
+                astNodes = node.BuildAst(inputAstNodes);
+            }
             
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
+            if (dynamoModel.DebugSettings.VerboseLogging)
             {
                 foreach (var n in astNodes)
                 {
-                    dynSettings.DynamoLogger.Log(n.ToString());
+                    dynamoModel.Logger.Log(n.ToString());
                 }
             }
 
@@ -187,10 +198,25 @@ namespace Dynamo.DSEngine
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
-            IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
+            var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
+            var sortedNodes = TopologicalSort(topScopedNodes);
 
             if (isDeltaExecution)
             {
+                foreach (var node in sortedNodes)
+                {
+                    var scopedNode = node as ScopedNodeModel;
+                    if (scopedNode != null)
+                    {
+                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
+                        scopedNode.RequiresRecalc = dirtyInScopeNodes.Any();
+                        foreach (var dirtyNode in dirtyInScopeNodes)
+                        {
+                            dirtyNode.RequiresRecalc = false;
+                        }
+                    }
+                }
+
                 sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
             }
 

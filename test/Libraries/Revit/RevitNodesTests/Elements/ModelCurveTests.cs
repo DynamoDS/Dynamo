@@ -27,7 +27,8 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(curveRef);
 
             var curve = modelCurve.Curve;
-            curve.Length.ShouldBeApproximately(Math.Sqrt(3));
+
+            curve.Length.ShouldBeApproximately(Math.Sqrt(3.0));
         }
 
         [Test]
@@ -63,7 +64,8 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(curveRef);
 
             var curve = modelCurve.Curve;
-            curve.Length.ShouldBeApproximately(Math.Sqrt(3));
+
+            curve.Length.ShouldBeApproximately(Math.Sqrt(3.0));
         }
     }
 }

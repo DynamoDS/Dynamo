@@ -56,99 +56,26 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        private void OnExecute(object parameter)
-        {
-            //http://joshsmithonwpf.wordpress.com/2007/10/25/logging-routed-commands/
-
-            var msg = new StringBuilder();
-
-            string paramStr = "";
-
-            if (parameter == null)
-                paramStr = "null";
-            else if (parameter.GetType() == typeof(Dictionary<object, object>))
-                paramStr = JsonConvert.SerializeObject(parameter).ToString();
-            else
-                paramStr = parameter.ToString();
-            
-            msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
-
-            dynSettings.DynamoLogger.Log(msg.ToString(), LogLevel.File);
-        }
-    }
-
-    public static partial class DynamoCommands
-    {
-        private static readonly Queue<Tuple<object, object>> commandQueue = new Queue<Tuple<object, object>>();
-        private static bool isProcessingCommandQueue = false;
- 
-        public static bool IsProcessingCommandQueue
-        {
-            get { return isProcessingCommandQueue; }
-        }
-
-        public static Queue<Tuple<object, object>> CommandQueue
-        {
-            get { return commandQueue; }
-        }
-
-        #region CommandQueue
-
-        /// <summary>
-        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing null as the 
-        /// command arguments
-        /// </summary>
-        /// <param name="command">The command to run</param>
-        public static void RunCommand(DelegateCommand command)
-        {
-            RunCommand(command, null);
-        }
-
-        /// <summary>
-        /// Add a command to the CommandQueue and run ProcessCommandQueue(), providing the given
-        /// arguments to the command
-        /// </summary>
-        /// <param name="command">The command to run</param>
-        /// <param name="args">Parameters to give to the command</param>
-        public static void RunCommand(DelegateCommand command, object args)
-        {
-            var commandAndParams = Tuple.Create<object, object>(command, args);
-            CommandQueue.Enqueue(commandAndParams);
-            ProcessCommandQueue();
-        }
-
-        //private void Hooks_DispatcherInactive(object sender, EventArgs e)
+        // KILLDYNSETTINGS - this isn't used
+        //private void OnExecute(object parameter)
         //{
-        //    ProcessCommandQueue();
+        //    //http://joshsmithonwpf.wordpress.com/2007/10/25/logging-routed-commands/
+
+        //    var msg = new StringBuilder();
+
+        //    string paramStr = "";
+
+        //    if (parameter == null)
+        //        paramStr = "null";
+        //    else if (parameter.GetType() == typeof(Dictionary<object, object>))
+        //        paramStr = JsonConvert.SerializeObject(parameter).ToString();
+        //    else
+        //        paramStr = parameter.ToString();
+            
+        //    msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
+
+        //    dynamoModel.Logger.Log(msg.ToString(), LogLevel.File);
         //}
-
-        /// <summary>
-        ///     Run all of the commands in the CommandQueue
-        /// </summary>
-        public static void ProcessCommandQueue()
-        {
-            while (commandQueue.Count > 0)
-            {
-                var cmdData = commandQueue.Dequeue();
-                var cmd = cmdData.Item1 as DelegateCommand;
-                if (cmd != null)
-                {
-                    if (cmd.CanExecute(cmdData.Item2))
-                    {
-                        cmd.Execute(cmdData.Item2);
-                    }
-                }
-            }
-            commandQueue.Clear();
-
-            if (dynSettings.Controller.UIDispatcher != null)
-            {
-                dynSettings.DynamoLogger.Log(string.Format("dynSettings.Bench Thread : {0}",
-                                                       dynSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
-            }
-        }
-
-        #endregion
     }
 
 }

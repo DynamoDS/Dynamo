@@ -1563,20 +1563,24 @@ Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     Associative_ArithmeticExpression<out node>
     [
                                         (.  ProtoCore.AST.AssociativeAST.RangeExprNode rnode = new ProtoCore.AST.AssociativeAST.RangeExprNode(); 
-                                            rnode.FromNode = node; NodeUtils.CopyNodeLocation(rnode, node);
+                                            rnode.FromNode = node; NodeUtils.SetNodeStartLocation(rnode, node);
                                             bool hasRangeAmountOperator = false;
                                         .)
         rangeop
         [Associative_rangeAmountOperator<out hasRangeAmountOperator>]
                                         (. rnode.HasRangeAmountOperator = hasRangeAmountOperator; .)
         Associative_ArithmeticExpression<out node>  
-                                        (. rnode.ToNode = node; .)
+                                        (. rnode.ToNode = node; 
+                                            NodeUtils.SetNodeEndLocation(rnode, node);
+                                        .)
         [                               (. RangeStepOperator op; .)
             rangeop
             Associative_rangeStepOperator<out op>   
                                         (. rnode.stepoperator = op; .)
             Associative_ArithmeticExpression<out node> 
-                                        (. rnode.StepNode = node; .)
+                                        (. rnode.StepNode = node;
+                                           NodeUtils.SetNodeEndLocation(rnode, node);
+                                        .)
         ]
 
                                         (. node = rnode; .)

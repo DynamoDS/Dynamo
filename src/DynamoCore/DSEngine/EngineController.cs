@@ -30,7 +30,7 @@ namespace Dynamo.DSEngine
         private SyncDataManager syncDataManager;
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
-        private DynamoController controller;
+        private readonly DynamoModel dynamoModel;
 
         private Object MacroMutex = new Object();
 
@@ -39,26 +39,27 @@ namespace Dynamo.DSEngine
             get { return syncDataManager; }
         }
 
-        public EngineController(DynamoController controller)
+        public EngineController(DynamoModel dynamoModel)
         {
+            this.dynamoModel = dynamoModel;
+
             libraryServices = LibraryServices.GetInstance();
             libraryServices.LibraryLoading += this.LibraryLoading;
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
-            liveRunnerServices = new LiveRunnerServices(this);
+            liveRunnerServices = new LiveRunnerServices(dynamoModel, this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
-            astBuilder = new AstBuilder(this);
+            astBuilder = new AstBuilder(dynamoModel, this);
             syncDataManager = new SyncDataManager();
 
-            this.controller = controller;
-            this.controller.DynamoModel.NodeDeleted += NodeDeleted;
+            dynamoModel.NodeDeleted += NodeDeleted;
         }
 
         public void Dispose()
         {
-            this.controller.DynamoModel.NodeDeleted -= NodeDeleted;
+            dynamoModel.NodeDeleted -= NodeDeleted;
             liveRunnerServices.Dispose();
 
             libraryServices.LibraryLoading -= this.LibraryLoading;
@@ -83,7 +84,7 @@ namespace Dynamo.DSEngine
         /// <param name="library"></param>
         public void ImportLibrary(string library)
         {
-            libraryServices.ImportLibrary(library);
+            libraryServices.ImportLibrary(library, this.dynamoModel.Logger);
         }
 
         #endregion
@@ -122,7 +123,7 @@ namespace Dynamo.DSEngine
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.DynamoLogger.Log("Failed to get mirror for variable: " + variableName + "; reason: " +
+                    dynamoModel.Logger.Log("Failed to get mirror for variable: " + variableName + "; reason: " +
                                                  ex.Message);
                 }
 
@@ -228,7 +229,7 @@ namespace Dynamo.DSEngine
             GraphSyncData data = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
-            var reExecuteNodesIds = controller.DynamoViewModel.Model.HomeSpace.Nodes
+            var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes
                                                                     .Where(n => n.ForceReExecuteOfNode)
                                                                     .Select(n => n.GUID);
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
@@ -301,7 +302,7 @@ namespace Dynamo.DSEngine
                             if (fatalException == null)
                                 fatalException = e;
 
-                            dynSettings.DynamoLogger.Log("Update graph failed: " + e.Message);
+                            dynamoModel.Logger.Log("Update graph failed: " + e.Message);
                         }
                     }
                 }
@@ -318,7 +319,7 @@ namespace Dynamo.DSEngine
 
         private void ClearWarnings()
         {
-            var warningNodes = controller.DynamoViewModel.Model.HomeSpace.Nodes.Where(n => n.State == ElementState.Warning);
+            var warningNodes = dynamoModel.HomeSpace.Nodes.Where(n => n.State == ElementState.Warning);
 
             foreach (var node in warningNodes)
             {
@@ -333,7 +334,7 @@ namespace Dynamo.DSEngine
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
-                var node = controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                var node = dynamoModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
                     string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
@@ -349,7 +350,7 @@ namespace Dynamo.DSEngine
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
-                var node = controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                var node = dynamoModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
                     string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
@@ -409,14 +410,14 @@ namespace Dynamo.DSEngine
             string newLibrary = e.LibraryPath;
 
             // Load all functions defined in that library.
-            dynSettings.Controller.SearchViewModel.Add(libraryServices.GetFunctionGroups(newLibrary));
+            dynamoModel.SearchModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            foreach (var node in dynSettings.Controller.DynamoModel.HomeSpace.Nodes)
+            foreach (var node in dynamoModel.HomeSpace.Nodes)
             {
                 node.RequiresRecalc = true;
             }
@@ -438,9 +439,9 @@ namespace Dynamo.DSEngine
 
             if (AstBuilt != null)
             {
-                if (controller.DynamoModel.NodeMap.ContainsKey(nodeGuid))
+                if (dynamoModel.NodeMap.ContainsKey(nodeGuid))
                 {
-                    AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(controller.DynamoModel.NodeMap[nodeGuid], astNodes));
+                    AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(dynamoModel.NodeMap[nodeGuid], astNodes));
                 }
             }
         }
@@ -467,7 +468,7 @@ namespace Dynamo.DSEngine
             if (!nodes.Any())
                 return string.Empty;
 
-            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
+            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(this.dynamoModel, nodes);
             if (string.IsNullOrEmpty(code))
                 return code;
 

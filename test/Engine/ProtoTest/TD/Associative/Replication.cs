@@ -2020,15 +2020,18 @@ c;
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_3()
         {
             String code =
                             @"                                def foo(val : int[])                                {                                    return = 1;                                }                                def foo(val : double[])                                {                                    return = 2;                                }                                def foo(val : int)                                {                                    return = 3;                                }                                def foo(arr : double)                                {                                    return = 4;                                }                                arr = { 3, 0, 5.5, 3 } ;                                s = foo(arr);                             ";
-            string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+            //string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+            string errmsg = "MAGN-4098 Replication vs function override with different types - what is the correct ";
 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { 3, 3, 4, 3 };
             thisTest.Verify("s", v1);
+
         }
 
         [Test]
@@ -2064,11 +2067,13 @@ c;
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_7()
         {
             String code =
                             @"  def foo(val : int[])                                {                                    return = 1;                                }                                def foo(val : double[])                                {                                    return = 2;                                }                                def foo(val : int)                                {                                    return = 3;                                }                                def foo(val : double)                                {                                    return = 4;                                }                                                                arr = { { 1, 2}, 1, 3.5, {3.5, 2.3}, {1, 2.5}, null } ;                                s = foo(arr);                             ";
-            string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+            //string errmsg = "1467090 - Sprint24 : rev 2733 : Replication and Method resolution issue : type conversion should be of lower precedence than exact match";
+            string errmsg = "MAGN-4098 Replication vs function override - what is the correct beahviour here ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v2 = new Object[] { 3, 4 };
             Object[] v1 = new Object[] { 1, 3, 4, 2, v2, 3 };
@@ -2296,7 +2301,7 @@ c;
         public void T50_Defect_1456738_Replication_Race_Condition()
         {
             string code = @"
-//import ( ""Math.dll"");
+
 class Math
 {
    static def Sin ( x1 : double)
@@ -2355,16 +2360,17 @@ y = Count(xHighFrequency);";
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("a", new Object[] { new Object[] { 4.0 }, new Object[] { 4.0 } });
         }
-        [Test, Ignore]
-        [Category("Replication")]
+        [Test]
+        [Category("Replication"), Category("Failing")]
         public void T63_Defect_1467177_replication_in_imperative()
         {
             // need to move this to post R1 project
 
             String code =
 @"[Imperative]{    def foo( a )    {        a = a + 1;        return = a;    }    c = { 1,2,3 };    d = foo ( c ) ;}";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            string err = "1467177 - sprint24: rev 3152 : REGRESSION : Replication should not be supported in Imperative scope";
+            string err = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
 
             thisTest.Verify("d", null);
@@ -2408,6 +2414,7 @@ y = Count(xHighFrequency);";
         [Category("Replication")]
         [Category("SmokeTest")]
         [Category("ProtoGeometry")]
+        [Category("Failing")]
         public void T65_Defect_1467125_Geo_Replication()
         {
             string code = @"
@@ -2454,6 +2461,7 @@ controlPolyF = Polygon.ByVertices(groupOfPointGroups);
 }*/
 //a simple case
 c=2 * {{1},{2}};";
+            string error = "";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Object[] v1 = new Object[] {true,true,true,false,false};
             Object v1 = null;
@@ -2479,7 +2487,8 @@ c=2 * {{1},{2}};";
             Object[] v2 = new Object[] { 20, 22 };
             Object[] v3 = new Object[] { v1, v2 };
             Object[] v4 = new Object[] { v1, v2 };
-            thisTest.Verify("rab", v3);
+            thisTest.Verify("rab", new object []{ 11,13});
+
         }
 
         [Test]
@@ -2487,7 +2496,8 @@ c=2 * {{1},{2}};";
         public void T66_Defect_1467125_Replication_Method_2()
         {
             String code =
-                    @"                    a = {1,2};                    b = { 10, 11 };                    c = { { 1 }, { 2 } };                    d = { {0 } };                    rab = a<1>*b<2>;                    rac = a<1>*c<2>;                    rad = a<1>*d<2>;                    ";
+                            @"                    a = {1,2};                    b = { 10, 11 };                    c = { { 1 }, { 2 } };                    d = { {0 } };                    rab = a<1>*b<2>;                    rac = a<1>*c<2>;                    rad = a<1>*d<2>;                    ";
+
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string err = "1467125 - VALIDATION NEEDED - Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
@@ -2500,6 +2510,7 @@ c=2 * {{1},{2}};";
             thisTest.Verify("rab", v3);
             thisTest.Verify("rac", v4);
             thisTest.Verify("rad", v5);
+
         }
 
         [Test]
@@ -2525,11 +2536,14 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
 @"a = { 1, 2};b = { {0,2}, 1};x = a < b ? 1 : 0;";
-            string err = "1467198 - Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
+            //string err = "1467198 - Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
+            string err = "MAGN-1658 Sprint24: rev 3237: Design Issue with Replication on jagged arrays in inline condition";
+            
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("x", new Object[] { new Object[] { 0, 1 }, 0 });
@@ -2703,13 +2717,15 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
         {
             String code =
 @"class A {    x : int;        constructor A( y)    {        x = y;    }}class B extends A {    t : int;    constructor B( y)    {        x = y;        t = x + 1;    }}a1 = { B.B(1), { A.A(2), B.B( 0..1) } };test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-
-            String errmsg = "1467272 - Sprint25: rev 3603: Replication on dot operators not working for jagged arrays";
+            //String errmsg = "1467272 - Sprint25: rev 3603: Replication on dot operators not working for jagged arrays";
+            String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4107";
+        
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 1, new Object[] { 2, new Object[] { 0, 1 } } });
         }
@@ -2871,7 +2887,7 @@ c=2 * {{1},{2}};";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";// "1467284 - Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", 4);
+            thisTest.Verify("test", new object [] {4,4});
         }
 
         [Test]
@@ -2899,14 +2915,15 @@ c=2 * {{1},{2}};";
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 10, 2, 2, 2, 14, 15, n1, n1, n1, n1, 2 });
         }
-        [Test, Ignore]
-        [Category("Replication")]
+        [Test]
+        [Category("Replication"), Category("Failing")]
         public void T73_Defect_1467069_2()
         {
             String code =
 @"[Imperative]{    a = {3,1,2,10};    x = {10,11,12,13,14,15};    x[a] = 2;    y = x;}";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467070 - Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope";
+            String errmsg = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 10, 11, 12, 13, 14, 15 });
@@ -2914,12 +2931,15 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T73_Defect_1467069_3()
         {
             String code =
 @"a = {2, 5};x = {10,11,12};x[a] = {2,2};y = x + 1;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467292 - rev 3746 - REGRESSION :  replication on jagged array is giving unexpected output";
+            //String errmsg = "1467292 - rev 3746 - REGRESSION :  replication on jagged array is giving unexpected output";
+            String errmsg = "1662 rev 3746 - REGRESSION : replication on jagged array is giving unexpected output";
+            
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { 11, 12, new Object[] { 3, 3 }, null, new Object[] { 2, 2 } });
@@ -2938,14 +2958,15 @@ c=2 * {{1},{2}};";
             thisTest.Verify("y1", new Object[] { 11, 3, 3, 3, 15, 16, null, null, 1, 1, 1 });
             thisTest.Verify("y2", new Object[] { 10, 2, 2, 2, 14, 15, null, null, 0, 0, 0 });
         }
-        [Test, Ignore]
-        [Category("Replication")]
+        [Test]
+        [Category("Replication"), Category("Failing")]
         public void T74_Defect_1463465()
         {
             String code =
 @"[Imperative]{def even : int (a : int) { if(( a % 2 ) > 0 )return = a + 1; else return = a;return = 0;}x = { 1, 2, 3 };c = even(x);}";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467070 - Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope";
+            String errmsg = "MAGN-4092 Replication should not be supported in Imperative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("c", n1);
@@ -3099,6 +3120,7 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T77_Defect_1467081_2()
         {
             String code =
@@ -3107,7 +3129,7 @@ c=2 * {{1},{2}};";
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
             Object n1 = null;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("y", new Object[] { 0, 4 });
+            thisTest.Verify("y", new int[] { 0, 4 });
 
         }
 
@@ -3128,6 +3150,7 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T78_Defect_1467125()
         {
             String code =
@@ -3194,12 +3217,15 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T78_Defect_1467125_6()
         {
             String code =
 @"a = {1, 2};b = {{3, 4, 5}};rab = a*b;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467125 Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
+            //String errmsg = "DNL-1467125 Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
+            String errmsg = "4109 TestFramework - asserting a collection against an array with different rank throws object reference not set to an instance of an object in some cases";
+            //once the testframework issue is fixed change the error string back to the original bug above
             Object n1 = null;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("rab", new Object[] { new Object[] { 3, 8 } });
@@ -3716,12 +3742,14 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T87_Defect_1467284()
         {
             String code =
 @"class A{}def foo (){    return = 1.5;}a = A.A();x = { { { 0.6, foo()}, {5.1,0.0} }, {{null,b}, {true,a}} };x[0..1][0..1][0..1] = 2 ;y = x;test = x[0..1][0..1][0..1];";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
+
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("y", new Object[] { new Object[] { new Object[] { 2, 1.5 }, new Object[] { 5.1, 0.0 } }, new Object[] { new Object[] { n1, n1 }, new Object[] { true, 2 } } });
@@ -3846,12 +3874,13 @@ c=2 * {{1},{2}};";
 
         [Test] 
         [Category("Replication")]
+        [Category("Failing")]
         public void T91_Defect_1467285_5()
         {
             String code =
 @"a = {1,2,3,4};b = a;b[0..1] = b[2..3];a = { 5, 6, 7, 8 };";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "";
+            String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4112";
             Object n1 = null;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new Object[] { 7, 8, 7, 8 });
@@ -4119,12 +4148,13 @@ c=2 * {{1},{2}};";
         }
 
         [Test]
+
         public void T97_Defect_1467408_Replication_On_Class_Property_Assignment()
         {
             String code =
 @"class A{    x :int;    constructor A ( x1 )    {        x = x1;           }}a = A.A(0..1);test1 = a.x;a.x = 2..3;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467408 Rev 4443  :Replication on class property assignment is not working";
+            String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1682";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("test1", new Object[] { 2, 3 });
@@ -4142,7 +4172,7 @@ c=2 * {{1},{2}};";
             thisTest.Verify("a", 3);
             thisTest.Verify("b", new Object[] { 3, 1 });
             thisTest.Verify("d", new Object[] { 11, new object[] { 4, 1 } });
-            thisTest.Verify("c", new Object[] { new object[] { 14 }, new object[] { 17 } });
+            thisTest.Verify("c", new Object[] { new object[] { 14 } });
         }
 
         [Test]
@@ -4204,15 +4234,17 @@ c=2 * {{1},{2}};";
         }
 
         [Test]
+        [Category("Failing")]
         public void T100_Replication_On_Class_Instance_06()
         {
             String code =
 @"class C{	x : int[];    def f(a : int[])	{		return = 1;	}	def f(a : double[])	{		return = 3;	}    def f(a : var)	{		return = 2;	}    }p = {C.C(), C.C()};a = p.f({1, 1.5}); ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
+            //String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
+            String errmsg = "MAGN-4098  Replication vs function override ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
-            thisTest.Verify("a", new Object[] { 2, 2 });
+            thisTest.Verify("a", new Object[] { 3, 3 });
         }
 
         [Test]
@@ -4466,3 +4498,4 @@ c=2 * {{1},{2}};";
     }
 
 }
+

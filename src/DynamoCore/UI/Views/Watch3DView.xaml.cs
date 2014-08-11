@@ -207,10 +207,11 @@ namespace Dynamo.Controls
             Debug.WriteLine("Watch 3D view unloaded.");
 
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
         }
 
@@ -221,16 +222,12 @@ namespace Dynamo.Controls
             MouseRightButtonUp += new MouseButtonEventHandler(view_MouseRightButtonUp);
             PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
-            var mi = new MenuItem { Header = "Zoom to Fit" };
-            mi.Click += new RoutedEventHandler(mi_Click);
-
-            MainContextMenu.Items.Add(mi);
-
             //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
+            if (DataContext is DynamoViewModel)
             {
-                dynSettings.Controller.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+                var vm = DataContext as DynamoViewModel;
+                vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+                vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
             DrawGrid();
@@ -243,8 +240,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
-            //Dispatcher.Invoke(new Action<VisualizationEventArgs>(RenderDrawables), DispatcherPriority.Render,
-            //                    new object[] {e});
             RenderDrawables(e);
         }
 
@@ -257,11 +252,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-            if (dynSettings.Controller == null)
-            {
-                return;
-            }
-
             Dispatcher.Invoke(new Action(delegate
             {
                 var vm = (IWatchViewModel) DataContext;
@@ -319,13 +309,9 @@ namespace Dynamo.Controls
             }
         }
 
-        protected void mi_Click(object sender, RoutedEventArgs e)
+        protected void OnZoomToFitClicked(object sender, RoutedEventArgs e)
         {
             watch_view.ZoomExtents();
-        }
-
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
         }
 
         void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
@@ -392,7 +378,7 @@ namespace Dynamo.Controls
         /// the associated node. Visualizations for the background preview will return an empty id.
         /// </summary>
         /// <param name="e"></param>
-        private void RenderDrawables(VisualizationEventArgs e)
+        public void RenderDrawables(VisualizationEventArgs e)
         {
             //check the id, if the id is meant for another watch,
             //then ignore it

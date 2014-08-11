@@ -228,8 +228,8 @@ namespace ProtoCore
                 string strOp = Op.GetOpSymbol(op);
                 message = String.Format(WarningMessage.kMethodResolutionFailureForOperator,
                                         strOp,
-                                        core.TypeSystem.GetType((int)arguments[0].metaData.type),
-                                        core.TypeSystem.GetType((int)arguments[1].metaData.type));
+                                        core.TypeSystem.GetType(arguments[0].metaData.type),
+                                        core.TypeSystem.GetType(arguments[1].metaData.type));
             }
             else
             {

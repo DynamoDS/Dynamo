@@ -81,6 +81,7 @@
     <Compile Include="AnalysisDisplayTests.cs" />
     <Compile Include="DividedCurveTests.cs" />
     <Compile Include="DocumentTests.cs" />
+    <Compile Include="ElementBindingTests.cs" />
     <Compile Include="MaterialTests.cs" />
     <Compile Include="MigrationTest.cs" />
     <Compile Include="ModelCurveTests.cs" />
@@ -161,6 +162,10 @@
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitNodesTests\RevitNodesTests.csproj">
+      <Project>{9e79dc8d-25b1-491f-b094-ea39de1bbc66}</Project>
+      <Name>RevitNodesTests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
