@@ -37,7 +37,7 @@ namespace Revit.GeometryConversion
             {
                 var edgeLoop = tesselatedEdgeLoops[i];
 
-                var isOuter = tesselatedEdgeLoops.Where((t, j) => i != j)
+                var isOuter = tesselatedEdgeLoops.Where((_, j) => i != j)
                     .All(bound => !edgeLoop.Item2.IsContainedIn(bound.Item2));
 
                 if (isOuter)
@@ -73,7 +73,7 @@ namespace Revit.GeometryConversion
                 }
 
                 // remove innerEdge loops that have already been added to a partition
-                innerEdgeLoops = innerEdgeLoops.Where((t, j) => mask[j]).ToList();
+                innerEdgeLoops = innerEdgeLoops.Where((_, j) => mask[j]).ToList();
 
                 // add the new partition
                 partitionedLoops.Add(comp);
@@ -96,8 +96,7 @@ namespace Revit.GeometryConversion
 
         private static bool IsContainedIn(this IEnumerable<UV> edgeLoop, List<UV> poly)
         {
-            // if any point is inside of the edge loop, it is contained within
-            return edgeLoop.First().IsContainedIn(poly);
+            return edgeLoop.All(x => x.IsContainedIn(poly));
         }
 
         private static bool IsContainedIn(this UV edgeVertex, List<UV> poly)
