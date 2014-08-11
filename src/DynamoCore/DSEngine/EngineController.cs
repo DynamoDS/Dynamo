@@ -39,7 +39,7 @@ namespace Dynamo.DSEngine
             get { return syncDataManager; }
         }
 
-        public EngineController(DynamoModel dynamoModel)
+        public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
             this.dynamoModel = dynamoModel;
 
@@ -48,7 +48,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
-            liveRunnerServices = new LiveRunnerServices(dynamoModel, this);
+            liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(dynamoModel, this);
