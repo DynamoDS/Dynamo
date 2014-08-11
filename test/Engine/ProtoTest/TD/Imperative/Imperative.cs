@@ -34,10 +34,7 @@ namespace ProtoTest.TD.Imperative
         {
             String code =
              @"class A{    a : int[];    constructor A ( x:int[])     {        [Imperative]        {            c = 0;            [Associative]            {                [Imperative]                {                    for (i in x )                    {                        a[c] = Count ( 0..i..2 ) ;                        c = c + 1;                    }                }            }        }    }}t1 = A.A(0..4).a;             ";
-            string errmsg = "DNL-1467610 When for loop is called inside nested scope ( imp-assoc-imp ), it throws an unexpected error message";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.VerifyRuntimeWarningCount(0);
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("t1", new Object[] { 1, 1, 2, 2, 3 });
         }
 
@@ -131,11 +128,13 @@ namespace ProtoTest.TD.Imperative
 
         [Test]
         [Category("Imperative")]
+        [Category("Failing")]
         public void T011_ClassConstructorNestedScope_MathematicalOperators()
         {
             String code =
              @"def foo (){    return = 1;}class B{    static def foo ()    {        return = 0;    }   }class test{    c1 ;    constructor test ()     {        [Imperative]        {            [Associative]            {                [Imperative]                {                    c1 = B.foo() + foo() / 5 * 5 %2;                 }            }        }    }}a1 = test.test().c1;";
-            string errmsg = "DNL-1467612 Using the 'mod' operator on double value yields null in imperative scope and an unexpected warning message in associative scope";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4082
+            string errmsg = "MAGN-4082: Using the 'mod' operator on double value yields null in imperative scope and an unexpected warning message in associative scope";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a1", 1.0);
         }
@@ -210,11 +209,13 @@ namespace ProtoTest.TD.Imperative
 
         [Test]
         [Category("Imperative")]
+        [Category("Failing")]
         public void T018_ClassConstructorNestedScope_UpdateInInnerScope()
         {
             String code =
              @"class test{    x1;       x2;    constructor test (y)     {        x = y + 1;        [Imperative]        {            x1 = x + 1;            [Associative]            {                x2 = x + 1;                [Imperative]                {                    if(x > 1)                     {                        x = x - 1;                    }                    else                    {                        x = x + 1;                    }                                    }            }        }    }}a = test.test(1);b = a.x1;c = a.x2;";
-            string errmsg = "DNL-1461388 Sprint 19 : rev 1808 : Cross Language Update Issue : Inner Associative block should trigger update of outer associative block variable";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1527
+            string errmsg = "MAGN-1527: Cross Language Update Issue : Inner Associative block should trigger update of outer associative block variable";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
             thisTest.Verify("c", 2);

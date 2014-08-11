@@ -492,21 +492,21 @@ namespace ProtoCore
                 }
                 else if (option == StackFrameFlagOptions.IsReplicating)
                 {
-                    if(debugFrame.IsReplicating == true)
+                    if(debugFrame.IsReplicating)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsExternalFunction)
                 {
-                    if (debugFrame.IsExternalFunction == true)
+                    if (debugFrame.IsExternalFunction)
                     {
                         return true;
                     }
                 }
                 else if (option == StackFrameFlagOptions.IsFunctionStepOver)
                 {
-                    if (debugFrame.FunctionStepOver == true)
+                    if (debugFrame.FunctionStepOver)
                     {
                         return true;
                     }
@@ -829,7 +829,7 @@ namespace ProtoCore
             InstructionStream istream;
 
             int pc = tempPC;
-            if (core.DebugProps.InlineConditionOptions.isInlineConditional == true)
+            if (core.DebugProps.InlineConditionOptions.isInlineConditional)
             {
                 tempPC = InlineConditionOptions.startPc;
                 limit = InlineConditionOptions.endPc;
@@ -1523,6 +1523,58 @@ namespace ProtoCore
             }
 
             return nodeDataPairs;
+        }
+
+        public Dictionary<Guid, List<CallSite>>
+        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids)
+        {
+            if (nodeGuids == null)
+                throw new ArgumentNullException("nodeGuids");
+
+            var nodeMap = new Dictionary<Guid, List<CallSite>>();
+
+            if (!nodeGuids.Any()) // Nothing to persist now.
+                return nodeMap;
+
+            // Attempt to get the list of graph node if one exists.
+            IEnumerable<GraphNode> graphNodes = null;
+            {
+                if (this.DSExecutable != null)
+                {
+                    var stream = this.DSExecutable.instrStreamList;
+                    if (stream != null && (stream.Length > 0))
+                    {
+                        var graph = stream[0].dependencyGraph;
+                        if (graph != null)
+                            graphNodes = graph.GraphList;
+                    }
+                }
+
+
+                if (graphNodes == null) // No execution has taken place.
+                    return nodeMap;
+            }
+
+            foreach (Guid nodeGuid in nodeGuids)
+            {
+                // Get a list of GraphNode objects that correspond to this node.
+                var matchingGraphNodes = graphNodes.
+                    Where(gn => gn.guid == nodeGuid);
+
+                if (!matchingGraphNodes.Any())
+                    continue;
+
+                // Get all callsites that match the graph node ids.
+                var matchingCallSites = (from cs in CallsiteCache
+                                         from gn in matchingGraphNodes
+                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
+                                         select cs.Value);
+
+                // Append each callsite element under node element.
+                nodeMap[nodeGuid] = matchingCallSites.ToList();
+            }
+
+            return nodeMap;
         }
 
         /// <summary>

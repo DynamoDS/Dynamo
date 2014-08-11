@@ -15,13 +15,15 @@ namespace Dynamo.Services
     /// <summary>
     /// Class to automatically report various metrics of the application usage
     /// </summary>
-    public class Heartbeat
+    internal class Heartbeat
     {
+
         private static Heartbeat instance;
         private const int WARMUP_DELAY_MS = 5000;
         private const int HEARTBEAT_INTERVAL_MS = 60 * 1000;
-        private DateTime startTime;
+        private readonly DateTime startTime;
         private Thread heartbeatThread;
+        private readonly DynamoModel dynamoModel;
 
         // We need to play nicely with the background thread and ask politely 
         // when the application is shutting down. Whenever this event is raised,
@@ -31,8 +33,12 @@ namespace Dynamo.Services
         // 
         private AutoResetEvent shutdownEvent = new AutoResetEvent(false);
 
-        private Heartbeat()
+        private Heartbeat(DynamoModel dynamoModel)
         {
+            // KILLDYNSETTINGS - this is provisional - but we need to enforce that Hearbeat is 
+            // not referencing multiple DynamoModels
+            this.dynamoModel = dynamoModel;
+
             startTime = DateTime.Now;
             heartbeatThread = new Thread(this.ExecThread);
             heartbeatThread.IsBackground = true;
@@ -46,12 +52,12 @@ namespace Dynamo.Services
             heartbeatThread = null;
         }
 
-        public static Heartbeat GetInstance()
+        public static Heartbeat GetInstance(DynamoModel dynModel)
         {
             lock (typeof(Heartbeat))
             {
                 if (instance == null)
-                    instance = new Heartbeat();
+                    instance = new Heartbeat(dynModel);
             }
 
             return instance;
@@ -86,7 +92,7 @@ namespace Dynamo.Services
                     InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
 
                     string workspace =
-                        dynSettings.Controller.DynamoModel.CurrentWorkspace
+                        dynamoModel.CurrentWorkspace
                                    .GetStringRepOfWorkspaceSync();
 
                     InstrumentationLogger.LogPiiInfo("Workspace", workspace);
@@ -154,11 +160,11 @@ namespace Dynamo.Services
 
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
-                dynSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynamoModel == null ||
+                dynamoModel.AllNodes == null)
                 return ret;
 
-            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynamoModel.AllNodes)
             {
                 string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
@@ -175,11 +181,11 @@ namespace Dynamo.Services
         {
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
-                dynSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynamoModel == null ||
+                dynamoModel.AllNodes == null)
                 return ret;
 
-            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynamoModel.AllNodes)
             {
                 if (node.State != ElementState.Error)
                     continue;

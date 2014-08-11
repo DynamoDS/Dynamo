@@ -6,6 +6,7 @@ using RTF.Framework;
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using Dynamo.Nodes;
+using DSRevitNodesTests;
 
 namespace Dynamo.Tests
 {
@@ -21,11 +22,11 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_66.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
@@ -34,12 +35,12 @@ namespace Dynamo.Tests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-102
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_102_projectPointsToFace_selfContained.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -47,7 +48,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
@@ -55,12 +56,12 @@ namespace Dynamo.Tests
         public void MAGN_122()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-122
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_122_wallsAndFloorsAndLevels.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -68,7 +69,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(20, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(23, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // Check for Walls Creation
             var walls = "b7392d1d-6333-4bed-b10d-7b83520d2c3e";
@@ -95,12 +96,12 @@ namespace Dynamo.Tests
         public void MAGN_438()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-438
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN-438_structuralFraming_simple.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -108,7 +109,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
@@ -116,13 +117,13 @@ namespace Dynamo.Tests
         public void MAGN_2576()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2576
-            var model = dynSettings.Controller.DynamoModel;
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var model = ViewModel.Model;
+            var workspace = ViewModel.Model.CurrentWorkspace;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\Defect_MAGN_2576.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -130,7 +131,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            dynSettings.Controller.RunExpression();
+            ViewModel.Model.RunExpression();
 
             // there should not be any crash on running this graph.
             // below node should have an error because there is no selection for Floor Type.
@@ -145,12 +146,12 @@ namespace Dynamo.Tests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3620
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN-3620_Elementgeometry.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -178,17 +179,17 @@ namespace Dynamo.Tests
 
         [Test]
         [TestModel(@".\empty.rfa")]
-        public void Defect_MAGN_3784()
+        public void MAGN_3784()
         {
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3784
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_3784.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -213,7 +214,7 @@ namespace Dynamo.Tests
 
             refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
             Assert.IsNotNull(refPt);
-            Assert.AreEqual(10, refPt.X);
+            (10.0).ShouldBeApproximately(refPt.X);
 
             RunCurrentModel();
 
@@ -223,7 +224,7 @@ namespace Dynamo.Tests
             AssertPreviewCount(selectElementType, 1);
 
             Assert.IsNotNull(refPt1);
-            Assert.AreEqual(10, refPt1.X);
+            (10.0).ShouldBeApproximately(refPt1.X, 1.0e-6);
 
         }
     }

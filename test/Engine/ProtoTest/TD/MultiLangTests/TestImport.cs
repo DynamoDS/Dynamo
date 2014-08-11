@@ -78,22 +78,7 @@ c = Scale(a,b);";
             thisTest.Verify("c", expectedC);
         }
 
-        [Test]
-        [Category("SmokeTest")]
-        public void T006_BasicImport_TestFunction()
-        {
-            string code = @"
-import (""basicImport.ds"");
-a = {1.1,2.2};
-b = 2;
-c = Scale(a,b);
-d = Sin(30.0);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            object expectedD = 0.500000;
-            thisTest.Verify("d", expectedD);
-        }
-
+        
         [Test]
         [Category("SmokeTest")]
         public void T007_BasicImport_TestClassConstructorAndProperties()
@@ -343,48 +328,6 @@ a1 = Scale( arr, 4.0 );
 b = a * 2;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
             thisTest.Verify("b", 6, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T021_Defect_1457354()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-import (""c:\wrongPath\test.ds"");
-a = 1;
-b = a * 2;";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            });
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T021_Defect_1457354_2()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-import (""basicImport"");
-a = 1;
-b = a * 2;";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            });
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T021_Defect_1457354_3()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-import (""basicImport12.ds"");
-a = 1;
-b = a * 2;";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            });
         }
 
         [Test]

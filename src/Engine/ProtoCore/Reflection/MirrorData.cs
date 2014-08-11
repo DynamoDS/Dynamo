@@ -26,7 +26,7 @@ namespace ProtoCore
             //      1. Move the MirrorData properties in the RuntimeMirror class or ...
             //      2. Do the data analysis of the MirrorData in the MirrorData class itself
             //
-            private ProtoCore.Core core = null;
+            private ProtoCore.Core core;
 
             /// <summary>
             /// 
@@ -216,13 +216,24 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets if this data points to a collection.
+            /// Determines if this data points to a collection.
             /// </summary>
             public bool IsCollection
             {
                 get
                 {
                     return svData.IsArray;
+                }
+            }
+
+            /// <summary>
+            /// Determines if this data is a pointer
+            /// </summary>
+            public bool IsPointer
+            {
+                get
+                {
+                    return svData.IsPointer;
                 }
             }
 

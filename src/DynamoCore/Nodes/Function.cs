@@ -22,14 +22,16 @@ namespace Dynamo.Nodes
     [IsMetaNode]
     public partial class Function : NodeModel
     {
-        protected internal Function(CustomNodeDefinition def)
+        protected internal Function(WorkspaceModel ws, CustomNodeDefinition def) : this(ws)
         {
             Definition = def;
             ResyncWithDefinition();
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public Function() { }
+        public Function(WorkspaceModel ws)
+            : base(ws)
+        {}
 
         public new string Name
         {
@@ -61,8 +63,8 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
-                    ? dynSettings.Controller.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
+                return Workspace.DynamoModel.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
+                    ? Workspace.DynamoModel.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
                     : "Custom Nodes";
             }
         }
@@ -236,7 +238,7 @@ namespace Dynamo.Nodes
                 {
                     LoadProxyCustomNode(funcId);
                 }
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+                Definition = Workspace.DynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
 
                 if (Definition.IsProxy)
                 {
@@ -326,10 +328,10 @@ namespace Dynamo.Nodes
                 return false;
 
             // if the dyf does not exist on the search path...
-            if (dynSettings.Controller.CustomNodeManager.Contains(funcId))
+            if (Workspace.DynamoModel.CustomNodeManager.Contains(funcId))
                 return true;
 
-            CustomNodeManager manager = dynSettings.Controller.CustomNodeManager;
+            CustomNodeManager manager = Workspace.DynamoModel.CustomNodeManager;
 
             // if there is a node with this name, use it instead
             if (manager.Contains(NickName))
@@ -345,16 +347,16 @@ namespace Dynamo.Nodes
         {
             var proxyDef = new CustomNodeDefinition(funcId)
             {
-                WorkspaceModel = new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null }
+                WorkspaceModel = new CustomNodeWorkspaceModel(this.Workspace.DynamoModel, NickName, "Custom Nodes") { FileName = null }
             };
             proxyDef.IsProxy = true;
 
             string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
 
-            dynSettings.DynamoLogger.Log(userMsg);
+            Workspace.DynamoModel.Logger.Log(userMsg);
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+            Workspace.DynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
         }
 
         //public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
@@ -494,7 +496,7 @@ namespace Dynamo.Nodes
                     return;
                 }
 
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+                Definition = Workspace.DynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
 
                 XmlNodeList inNodes = element.SelectNodes("functionInput");
                 XmlNodeList outNodes = element.SelectNodes("functionOutput");
@@ -567,12 +569,14 @@ namespace Dynamo.Nodes
     [NodeDescription("A function parameter, use with custom nodes")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
+    [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     public partial class Symbol : NodeModel
     {
         private string inputSymbol = "";
 
-        public Symbol()
+        public Symbol(WorkspaceModel ws)
+            : base(ws)
         {
             OutPortData.Add(new PortData("", "Symbol"));
 
@@ -650,12 +654,14 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("A function output, use with custom nodes")]
     [IsInteractive(false)]
+    [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     public partial class Output : NodeModel
     {
         private string symbol = "";
 
-        public Output()
+        public Output(WorkspaceModel ws)
+            : base(ws)
         {
             InPortData.Add(new PortData("", ""));
 

@@ -155,6 +155,28 @@ namespace ProtoCore
         }
 
 
+        private ProcedureNode GetProcedureNode(int classIndex, int functionIndex)
+        {
+            if (Constants.kGlobalScope != classIndex)
+            {
+                return core.ClassTable.ClassNodes[classIndex].vtable.procList[functionIndex];
+            }
+            return codeBlock.procedureTable.procList[functionIndex];
+        }
+
+        /// <summary>
+        /// Append the graphnode to the instruction stream and procedure nodes
+        /// </summary>
+        /// <param name="graphnode"></param>
+        protected void PushGraphNode(AssociativeGraph.GraphNode graphnode)
+        {
+            codeBlock.instrStream.dependencyGraph.Push(graphnode);
+            if (globalProcIndex != Constants.kGlobalScope)
+            {
+                localProcedure.GraphNodeList.Add(graphnode);
+            }
+        }
+
         /// <summary>
         /// Generates unique identifier for the callsite associated with the graphnode
         /// </summary>
@@ -275,18 +297,8 @@ namespace ProtoCore
                 return;
             }
 
-            bool isLanguageBlock = CodeBlockType.kLanguage == codeBlock.blockType;
             int langblockOffset = 0;
             bool isGlobal = null == localProcedure;
-
-            /*
-            // Remove this check once the global stackframe push is implemented
-            if (isLanguageBlock && 0 != codeBlock.codeBlockId && !isGlobal)
-            {
-                langblockOffset = ProtoCore.DSASM.StackFrame.kStackFrameSize;
-            }
-            
-             * */
 
             if (ProtoCore.DSASM.Constants.kGlobalScope != globalClassIndex)
             {
@@ -606,7 +618,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -737,7 +748,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -1152,6 +1162,51 @@ namespace ProtoCore
             return false;
         }
 #else
+
+        /// <summary>
+        /// Verifies the allocation of a variable in the given symbol table
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="classScope"></param>
+        /// <param name="functionScope"></param>
+        /// <param name="symbolTable"></param>
+        /// <param name="symbol"></param>
+        /// <param name="isAccessible"></param>
+        /// <returns></returns>
+        protected bool VerifyAllocationInScope(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
+        {
+            SymbolTable symbolTable = null;
+            if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
+            {
+                symbolTable = codeBlock.symbolTable;
+            }
+            else
+            {
+                symbolTable = core.ClassTable.ClassNodes[classScope].symbols;
+            }
+
+            symbol = null;
+            isAccessible = false;
+            //int symbolIndex = symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+            int symbolIndex = symbolTable.IndexOf(name, classScope, functionScope);
+            if (symbolIndex != Constants.kInvalidIndex)
+            {
+                symbol = symbolTable.symbolList[symbolIndex];
+                isAccessible = true;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Verify the allocation of a variable in the current scope and parent scopes
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="classScope"></param>
+        /// <param name="functionScope"></param>
+        /// <param name="symbol"></param>
+        /// <param name="isAccessible"></param>
+        /// <returns></returns>
         protected bool VerifyAllocation(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
         {
             int symbolIndex = Constants.kInvalidIndex;
@@ -2620,8 +2675,6 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
-	        AssociativeGraph.GraphNode dependent = new AssociativeGraph.GraphNode();
-
             // Push all dependent pointers
             ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerList);
 

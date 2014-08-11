@@ -218,7 +218,7 @@ namespace Dynamo.Models
             while (Connectors.Any())
             {
                 ConnectorModel connector = Connectors[0];
-                Owner.WorkSpace.Connectors.Remove(connector);
+                Owner.Workspace.Connectors.Remove(connector);
                 connector.NotifyConnectedPortsOfDeletion();
             }
         }
@@ -242,7 +242,7 @@ namespace Dynamo.Models
             OnPortDisconnected(EventArgs.Empty);
 
             //also trigger the model's connector deletion
-            dynSettings.Controller.DynamoModel.OnConnectorDeleted(connector);
+            owner.Workspace.DynamoModel.OnConnectorDeleted(connector);
 
             connectors.Remove(connector);
             

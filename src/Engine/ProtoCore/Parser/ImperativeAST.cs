@@ -18,11 +18,6 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode(ImperativeNode rhs) : base(rhs)
         {
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 
     public class LanguageBlockNode : ImperativeNode
@@ -43,6 +38,7 @@ namespace ProtoCore.AST.ImperativeAST
                 ImperativeNode newNode = ProtoCore.Utils.NodeUtils.Clone(aNode);
                 Attributes.Add(newNode);
             }
+            CodeBlockNode = NodeUtils.Clone(rhs.CodeBlockNode);
         }
 
         public List<ImperativeNode> Attributes { get; set; }
@@ -181,11 +177,13 @@ namespace ProtoCore.AST.ImperativeAST
             };
 
             Value = rhs.Value;
+            IsLocal = false;
         }
 
         public ProtoCore.Type datatype { get; set; }
         public string Value { get; set; }
         public string ArrayName { get; set; }
+        public bool IsLocal { get; set; }
 
         public override bool Equals(object other)
         {
@@ -193,9 +191,10 @@ namespace ProtoCore.AST.ImperativeAST
             if (null == otherNode)
                 return false;
 
-            return EqualityComparer<string>.Default.Equals(Value, otherNode.Value) &&
-                   datatype.Equals(otherNode.datatype) &&
-                   base.Equals(otherNode);
+            return  IsLocal == otherNode.IsLocal &&
+                    EqualityComparer<string>.Default.Equals(Value, otherNode.Value) &&
+                    datatype.Equals(otherNode.datatype) &&
+                    base.Equals(otherNode);
         }
 
         public override string ToString()
@@ -939,7 +938,7 @@ namespace ProtoCore.AST.ImperativeAST
             IfBody = new List<ImperativeNode>();
             foreach (ImperativeNode stmt in rhs.IfBody)
             {
-                ImperativeNode body = ProtoCore.Utils.NodeUtils.Clone(stmt as ImperativeNode);
+                ImperativeNode body = ProtoCore.Utils.NodeUtils.Clone(stmt);
                 IfBody.Add(body);
             }
 
@@ -950,7 +949,7 @@ namespace ProtoCore.AST.ImperativeAST
             ElseIfList = new List<ElseIfBlock>();
             foreach (ElseIfBlock elseBlock in rhs.ElseIfList)
             {
-                ImperativeNode elseNode = ProtoCore.Utils.NodeUtils.Clone(elseBlock as ImperativeNode);
+                ImperativeNode elseNode = ProtoCore.Utils.NodeUtils.Clone(elseBlock);
                 ElseIfList.Add(elseNode as ElseIfBlock);
             }
 

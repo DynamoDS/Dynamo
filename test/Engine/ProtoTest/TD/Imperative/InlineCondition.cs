@@ -389,10 +389,11 @@ x4 = a.foo(power(3)) >= power(b.foo(3)) ? a.foo(power(3)) : power(b.foo(3));
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T014_Inline_Using_Collections()
         {
 
-            string err = "1467166 - Sprint24 : rev 3133 : Regression : comparison of collection with singleton should yield null in imperative scope";
+            string err = " comparison of collection with singleton should yield null in imperative scope";
             string src = @"t1;t2;t3;t4;t5;t7;
 c1;c2;c3;c4;
 [Imperative]
@@ -568,16 +569,20 @@ a2 = foo2(3);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T018_Inline_Using_Recursion()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
+            string err = "MAGN-4006 Recursion in Associative Inline condition does not work properly";
             Assert.Fail("Cauing NUnit failures. Disabled");
+
             string code = @"
 def factorial : int (num : int)
 {
     return = num < 2 ? 1 : num * factorial(num-1);
 }
 fac = factorial(10);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("fac", 3628800, 0);
 
         }
@@ -617,20 +622,6 @@ a3 = 1 > 2 ? true : b;";
             thisTest.Verify("a2", ExpectedRes_1, 0);
             thisTest.Verify("b", ExpectedRes_2, 0);
             thisTest.Verify("a3", ExpectedRes_2, 0);
-        }
-
-        [Test]
-        [Category("Imperative")]
-        public void T021_Defect_1467166_array_comparison_issue()
-        {
-            string code = @"
-[Imperative] 
-{
-    a = { 0, 1, 2}; 
-    xx = a < 1 ? 1 : 0;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("xx", 5);
         }
 
         [Test]

@@ -4,9 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-using Dynamo.Utilities;
+using Dynamo.Models;
 using DynamoUtilities;
-
 
 namespace Dynamo.PackageManager
 {
@@ -14,12 +13,16 @@ namespace Dynamo.PackageManager
     {
         public string RootPackagesDirectory { get; private set; }
 
-        public PackageLoader() : this( Path.Combine (DynamoLoader.GetDynamoDirectory(), DynamoPathManager.Instance.Packages) )
+        private readonly DynamoModel dynamoModel;
+
+        public PackageLoader(DynamoModel dynamoModel) : this( dynamoModel, Path.Combine (DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages) )
         {
         }
 
-        public PackageLoader(string overridePackageDirectory)
+        public PackageLoader(DynamoModel dynamoModel, string overridePackageDirectory)
         {
+            this.dynamoModel = dynamoModel;
+
             this.RootPackagesDirectory = overridePackageDirectory;
             if (!Directory.Exists(this.RootPackagesDirectory))
             {
@@ -58,7 +61,7 @@ namespace Dynamo.PackageManager
                 // get the package name and the installed version
                 if (File.Exists(headerPath))
                 {
-                    discoveredPkg = Package.FromJson(headerPath);
+                    discoveredPkg = Package.FromJson(headerPath, this.dynamoModel);
                     if (discoveredPkg == null)
                         throw new Exception(headerPath + " contains a package with a malformed header.  Ignoring it.");
                 }
@@ -81,8 +84,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
-                dynSettings.DynamoLogger.Log(e.GetType() + ": " + e.Message);
+                dynamoModel.Logger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
+                dynamoModel.Logger.Log(e.GetType() + ": " + e.Message);
             }
 
             return null;

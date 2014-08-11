@@ -14,7 +14,7 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
-        public Map()
+        public Map(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("list", "The list to map over."));
             InPortData.Add(new PortData("f(x)", "The procedure used to map elements"));
@@ -34,7 +34,7 @@ namespace DSCore
                         ? AstFactory.BuildFunctionObject(
                             "__Map",
                             2,
-                            new[] { 0, 1 }.Where(HasConnectedInput),
+                            new[] { 0, 1 }.Where(HasConnectedInput).Select(x => 1 - x),
                             Enumerable.Reverse(inputAstNodes).ToList())
                         : AstFactory.BuildFunctionCall("__Map", Enumerable.Reverse(inputAstNodes).ToList()))
             };
@@ -45,7 +45,7 @@ namespace DSCore
     {
         private readonly int minPorts;
 
-        protected CombinatorNode() : this(3)
+        protected CombinatorNode(WorkspaceModel workspace) : this(workspace, 3)
         {
             InPortData.Add(new PortData("comb", "Combinator"));
             InPortData.Add(new PortData("list1", "List #1"));
@@ -56,7 +56,7 @@ namespace DSCore
             RegisterAllPorts();
         }
 
-        protected CombinatorNode(int minPorts)
+        protected CombinatorNode(WorkspaceModel workspace, int minPorts) : base(workspace)
         {
             this.minPorts = minPorts;
         }
@@ -84,6 +84,8 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Combine : CombinatorNode
     {
+        public Combine(WorkspaceModel workspace) : base(workspace) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -108,7 +110,7 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
-        public ForEach() : base(2) { }
+        public ForEach(WorkspaceModel workspace) : base(workspace, 2) { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -134,6 +136,8 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class LaceShortest : CombinatorNode
     {
+        public LaceShortest(WorkspaceModel workspace) : base(workspace) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -158,6 +162,8 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class LaceLongest : CombinatorNode
     {
+        public LaceLongest(WorkspaceModel workspace) : base(workspace) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -183,6 +189,8 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
+        public CartesianProduct(WorkspaceModel workspace) : base(workspace) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -270,7 +278,7 @@ namespace DSCore
     {
         private readonly PortData reductorPort;
 
-        public Reduce()
+        public Reduce(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             reductorPort = new PortData(
                 "reductor",
@@ -361,7 +369,7 @@ namespace DSCore
     {
         private readonly PortData reductorPort;
 
-        public ScanList()
+        public ScanList(WorkspaceModel workspace) : base(workspace)
         {
             reductorPort = new PortData(
                 "reductor",
@@ -450,7 +458,7 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
-        public Filter()
+        public Filter(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("list", "List to filter"));
             InPortData.Add(new PortData("condition", "Predicate used to determine if an element is filtered in or out."));
@@ -494,7 +502,7 @@ namespace DSCore
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {
-        public Replace()
+        public Replace(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("item", "Item to potentially be replaced"));
             InPortData.Add(new PortData("replaceWith", "Object to replace with"));

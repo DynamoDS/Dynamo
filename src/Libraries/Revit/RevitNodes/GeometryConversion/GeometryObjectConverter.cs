@@ -30,7 +30,7 @@ namespace Revit.GeometryConversion
             {
                 return Tag( InternalConvert(dynGeom), reference);
             }
-            catch (RuntimeBinderException e)
+            catch (RuntimeBinderException)
             {
                 return null; 
             }

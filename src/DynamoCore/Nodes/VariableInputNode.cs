@@ -13,15 +13,143 @@ namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
-        private int inputAmtLastBuild;
-        private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>(); 
+
+        protected VariableInputNode(WorkspaceModel workspace) : base(workspace)
+        {
+            VariableInputController = new BasicVariableInputNodeController(this);
+        }
 
         public virtual void SetupCustomUIElements(dynNodeView view)
         {
-            var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
+            VariableInputController.SetupNodeUI(view);
+        }
+
+        private BasicVariableInputNodeController VariableInputController { get; set; }
+
+        private sealed class BasicVariableInputNodeController : VariableInputNodeController
+        {
+            private readonly VariableInputNode model;
+
+            public BasicVariableInputNodeController(VariableInputNode node) : base(node)
+            {
+                model = node;
+            }
+
+            protected override string GetInputName(int index)
+            {
+                return model.GetInputName(index);
+            }
+
+            protected override string GetInputTooltip(int index)
+            {
+                return model.GetInputTooltip(index);
+            }
+
+            public void RemoveInputBase()
+            {
+                base.RemoveInputFromModel();
+            }
+
+            public void AddInputBase()
+            {
+                base.AddInputToModel();
+            }
+
+            public int GetInputIndexBase()
+            {
+                return base.GetInputIndexFromModel();
+            }
+
+            public override void AddInputToModel()
+            {
+                model.AddInput();
+            }
+
+            public override void RemoveInputFromModel()
+            {
+                model.RemoveInput();
+            }
+
+            public override int GetInputIndexFromModel()
+            {
+                return model.GetInputIndex();
+            }
+        }
+
+        protected abstract string GetInputTooltip(int index);
+        protected abstract string GetInputName(int index);
+
+        protected virtual void RemoveInput()
+        {
+            VariableInputController.RemoveInputBase();
+        }
+
+        protected virtual void AddInput()
+        {
+            VariableInputController.AddInputBase();
+        }
+
+        protected virtual int GetInputIndex()
+        {
+            return VariableInputController.GetInputIndexBase();
+        }
+
+        protected override void OnBuilt()
+        {
+            VariableInputController.OnBuilt();
+        }
+
+        protected override void SaveNode(
+            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            base.SaveNode(xmlDoc, nodeElement, context);
+            VariableInputController.SaveNode(xmlDoc, nodeElement, context);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            base.LoadNode(nodeElement);
+            VariableInputController.LoadNode(nodeElement);
+        }
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            VariableInputController.SerializeCore(element, context);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            VariableInputController.DeserializeCore(element, context);
+        }
+
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            return VariableInputController.HandleModelEventCore(eventName)
+                || base.HandleModelEventCore(eventName);
+        }
+    }
+
+    public abstract class VariableInputNodeController
+    {
+        private readonly NodeModel model;
+
+
+        private int inputAmtLastBuild;
+        private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>();
+
+        protected VariableInputNodeController(NodeModel model)
+        {
+            this.model = model;
+        }
+
+        public void SetupNodeUI(dynNodeView view)
+        {
+            var addButton = new DynamoNodeButton(model, "AddInPort") { Content = "+", Width = 20 };
             //addButton.Height = 20;
 
-            var subButton = new DynamoNodeButton(this, "RemoveInPort") { Content = "-", Width = 20 };
+            var subButton = new DynamoNodeButton(model, "RemoveInPort") { Content = "-", Width = 20 };
             //subButton.Height = 20;
 
             var wp = new WrapPanel
@@ -39,41 +167,41 @@ namespace Dynamo.Nodes
         protected abstract string GetInputTooltip(int index);
 
         /// <summary>
-        /// Fetches the index number to use for the next port.
+        ///     Fetches the index number to use for the next port.
         /// </summary>
-        protected virtual int GetInputIndex()
+        public virtual int GetInputIndexFromModel()
         {
-            return InPortData.Count;
+            return model.InPortData.Count;
         }
 
         /// <summary>
         /// Removes an input from this node. Called when the '-' button is clicked.
         /// </summary>
-        protected virtual void RemoveInput()
+        public virtual void RemoveInputFromModel()
         {
-            var count = InPortData.Count;
+            var count = model.InPortData.Count;
             if (count > 0)
-                InPortData.RemoveAt(count - 1);
+                model.InPortData.RemoveAt(count - 1);
             UpdateRecalcState();
         }
 
         /// <summary>
         /// Adds an input to this node. Called when the '+' button is clicked.
         /// </summary>
-        protected virtual void AddInput()
+        public virtual void AddInputToModel()
         {
-            var idx = GetInputIndex();
-            InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
+            var idx = GetInputIndexFromModel();
+            model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
             UpdateRecalcState();
         }
 
         private void UpdateRecalcState()
         {
-            var dirty = InPortData.Count != inputAmtLastBuild
-                || Enumerable.Range(0, InPortData.Count).Any(idx => connectedLastBuild[idx] == HasInput(idx));
+            var dirty = model.InPortData.Count != inputAmtLastBuild
+                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
 
             if (dirty)
-                RequiresRecalc = true;
+                model.RequiresRecalc = true;
         }
 
         /// <summary>
@@ -82,36 +210,36 @@ namespace Dynamo.Nodes
         /// <param name="numInputs"></param>
         public void SetNumInputs(int numInputs)
         {
-            while (InPortData.Count < numInputs)
-                AddInput();
+            while (model.InPortData.Count < numInputs)
+                AddInputToModel();
 
-            while (InPortData.Count > numInputs)
-                RemoveInput();
+            while (model.InPortData.Count > numInputs)
+                RemoveInputFromModel();
         }
 
-        protected override void OnBuilt()
+        public void OnBuilt()
         {
-            inputAmtLastBuild = InPortData.Count;
+            inputAmtLastBuild = model.InPortData.Count;
 
-            foreach (var idx in Enumerable.Range(0, InPortData.Count))
-                connectedLastBuild[idx] = HasInput(idx);
+            foreach (var idx in Enumerable.Range(0, model.InPortData.Count))
+                connectedLastBuild[idx] = model.HasInput(idx);
         }
 
         #region Load/Save
 
-        protected override void SaveNode(
+        public void SaveNode(
             XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("inputcount", InPortData.Count.ToString());
+            nodeElement.SetAttribute("inputcount", model.InPortData.Count.ToString());
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        public void LoadNode(XmlNode nodeElement)
         {
             if (nodeElement.Attributes != null) 
             {
                 int amt = Convert.ToInt32(nodeElement.Attributes["inputcount"].Value);
                 SetNumInputs(amt);
-                RegisterAllPorts();
+                model.RegisterAllPorts();
             }
         }
 
@@ -119,11 +247,11 @@ namespace Dynamo.Nodes
 
         #region Serialization/Deserialization Methods
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        public void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.SerializeCore(element, context); //Base implementation must be called
+            //base.SerializeCore(element, context); //Base implementation must be called
             XmlDocument xmlDoc = element.OwnerDocument;
-            foreach (var inport in InPortData)
+            foreach (var inport in model.InPortData)
             {
                 XmlElement input = xmlDoc.CreateElement("Input");
                 input.SetAttribute("name", inport.NickName);
@@ -131,9 +259,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        public void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.DeserializeCore(element, context); //Base implementation must be called
+            //base.DeserializeCore(element, context); //Base implementation must be called
 
             if (context == SaveContext.Undo)
             {
@@ -143,7 +271,7 @@ namespace Dynamo.Nodes
                 XmlNodeList inNodes = element.SelectNodes("Input");
                 int nextLength = inNodes.Count;
                 SetNumInputs(nextLength);
-                RegisterAllPorts();
+                model.RegisterAllPorts();
             }
         }
 
@@ -153,10 +281,10 @@ namespace Dynamo.Nodes
 
         private void RecordModels()
         {
-            if (InPorts.Count == 0)
+            if (model.InPorts.Count == 0)
                 return;
 
-            var connectors = InPorts[InPorts.Count - 1].Connectors;
+            var connectors = model.InPorts.Last().Connectors;
             if (connectors.Count != 0)
             {
                 if (connectors.Count != 1)
@@ -167,20 +295,20 @@ namespace Dynamo.Nodes
                 var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>
                 {
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
-                    { this, UndoRedoRecorder.UserAction.Modification }
+                    { model, UndoRedoRecorder.UserAction.Modification }
                 };
-                WorkSpace.RecordModelsForUndo(models);
+                model.Workspace.RecordModelsForUndo(models);
             }
             else
-                WorkSpace.RecordModelForModification(this);
+                model.Workspace.RecordModelForModification(model);
         }
 
-        protected override bool HandleModelEventCore(string eventName)
+        public bool HandleModelEventCore(string eventName)
         {
             if (eventName == "AddInPort")
             {
-                AddInput();
-                RegisterAllPorts();
+                AddInputToModel();
+                model.RegisterAllPorts();
                 return true; // Handled here.
             }
 
@@ -194,15 +322,15 @@ namespace Dynamo.Nodes
                 // For that reason, that entry on the undo-stack needs to be 
                 // popped (the node modification will be recorded here instead).
                 // 
-                WorkSpace.UndoRecorder.PopFromUndoGroup();
+                model.Workspace.UndoRecorder.PopFromUndoGroup();
 
                 RecordModels();
-                RemoveInput();
-                RegisterAllPorts();
+                RemoveInputFromModel();
+                model.RegisterAllPorts();
                 return true; // Handled here.
             }
 
-            return base.HandleModelEventCore(eventName);
+            return false; // base.HandleModelEventCore(eventName);
         }
 
         #endregion
