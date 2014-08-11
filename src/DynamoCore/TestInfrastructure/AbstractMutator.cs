@@ -13,16 +13,14 @@ namespace Dynamo.TestInfrastructure
 
         //Convienence state, the presence of this state cache means that
         //usage of this mutator should be short lived
-        protected DynamoController Controller;
         protected DynamoViewModel DynamoViewModel;
         protected DynamoModel DynamoModel;
 
-        protected AbstractMutator(Random rand)
+        protected AbstractMutator(DynamoViewModel dynamoViewModel, Random rand)
         {
             this.Rand = rand;
-            this.Controller = dynSettings.Controller;
-            this.DynamoViewModel = Controller.DynamoViewModel;
-            this.DynamoModel = Controller.DynamoModel;
+            this.DynamoViewModel = dynamoViewModel;
+            this.DynamoModel = dynamoViewModel.Model;
         }
 
         /// <summary>

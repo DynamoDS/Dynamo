@@ -17,13 +17,13 @@ namespace Dynamo.Tests
         [TestModel(@".\DividedSurface\DividedSurface.rfa")]
         public void DividedSurface()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\DividedSurface\DividedSurface.dyn");
             string testPath = Path.GetFullPath(samplePath);
             
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            dynSettings.Controller.RunExpression(true);
+            ViewModel.OpenCommand.Execute(testPath);
+            ViewModel.Model.RunExpression();
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(DividedSurface));
@@ -36,9 +36,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, ds.VSpacingRule.Number);
 
             //can we change the number of divisions
-            var numNode = dynSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
+            var numNode = ViewModel.Model.Nodes.OfType<DoubleInput>().First();
             numNode.Value = "10";
-            dynSettings.Controller.RunExpression(true);
+            ViewModel.Model.RunExpression();
 
             //did it create a divided surface?
             Assert.AreEqual(10, ds.USpacingRule.Number);
@@ -46,8 +46,8 @@ namespace Dynamo.Tests
 
             //ensure there is a warning when we try to set a negative number of divisions
             numNode.Value = "-5";
-            dynSettings.Controller.RunExpression(true);
-            Assert.Greater(dynSettings.Controller.EngineController.LiveRunnerCore.RuntimeStatus.WarningCount, 0);
+            ViewModel.Model.RunExpression();
+            Assert.Greater(ViewModel.Model.EngineController.LiveRunnerCore.RuntimeStatus.WarningCount, 0);
         }
     }
 }

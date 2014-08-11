@@ -14,7 +14,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Tests
 {
-    public class WorkspaceSaving : DynamoUnitTest
+    public class WorkspaceSaving : DynamoViewModelUnitTest
     {
 
         [Test]
@@ -24,12 +24,12 @@ namespace Dynamo.Tests
             // save as
             // file exists  
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull( dynamoModel.CurrentWorkspace );
             Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace );
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -38,7 +38,7 @@ namespace Dynamo.Tests
         [Test]
         public void CleanWorkbenchClearsUndoStack()
         {
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
 
             var workspace = dynamoModel.CurrentWorkspace;
@@ -50,7 +50,7 @@ namespace Dynamo.Tests
                 Guid.NewGuid(), "Add", 0, 0, false, false);
 
             // Create a new node in the empty workspace.
-            Controller.DynamoViewModel.ExecuteCommand(createNodeCommand);
+            ViewModel.ExecuteCommand(createNodeCommand);
             Assert.AreEqual(1, workspace.Nodes.Count);
 
             Assert.AreEqual(true, workspace.CanUndo);
@@ -69,7 +69,7 @@ namespace Dynamo.Tests
             // save as
             // file exists
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -91,10 +91,10 @@ namespace Dynamo.Tests
             // file exists
 
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math", "Add.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -107,9 +107,9 @@ namespace Dynamo.Tests
             // save as
             // file exists
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
 
@@ -130,9 +130,9 @@ namespace Dynamo.Tests
             // file exists
 
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math", "Add.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
-            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs("");
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs("");
 
             Assert.IsFalse(res);
         }
@@ -144,7 +144,7 @@ namespace Dynamo.Tests
             // save as
             // file exists
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -161,11 +161,11 @@ namespace Dynamo.Tests
             // new file
             // save fails
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
-            var res = Controller.DynamoModel.CurrentWorkspace.Save();
+            var res = ViewModel.Model.CurrentWorkspace.Save();
 
             Assert.IsFalse(res);
         }
@@ -176,7 +176,7 @@ namespace Dynamo.Tests
             // new file
             // save fails
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -194,16 +194,16 @@ namespace Dynamo.Tests
             // save as
             // FileName is updated
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
-            Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
+            Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
         }
 
         [Test]
@@ -213,7 +213,7 @@ namespace Dynamo.Tests
             // save as
             // FileName is updated
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -236,18 +236,18 @@ namespace Dynamo.Tests
             // save as
             // file exists, filepath updated
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             foreach (var i in Enumerable.Range(0, 10))
             {
                 var newPath = this.GetNewFileNameOnTempPath("dyn");
-                var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+                var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath);
 
                 Assert.IsTrue(res);
                 Assert.IsTrue(File.Exists(newPath));
-                Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
+                Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
             }
            
         }
@@ -260,7 +260,7 @@ namespace Dynamo.Tests
             // save as
             // file exists, filepath updated 
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -287,24 +287,24 @@ namespace Dynamo.Tests
             // save
             // file is updated
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
-            Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
+            Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
             var saveAsTime = File.GetLastWriteTime(newPath);
 
             Thread.Sleep(1);
-            var resSave = Controller.DynamoModel.CurrentWorkspace.Save();
+            var resSave = ViewModel.Model.CurrentWorkspace.Save();
 
             Assert.IsTrue(resSave);
             Assert.IsTrue(File.Exists(newPath));
-            Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
+            Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
             var saveTime = File.GetLastWriteTime(newPath);
 
             // assert the file has new update
@@ -321,7 +321,7 @@ namespace Dynamo.Tests
             // save
             // file is updated
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -340,7 +340,7 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(resSave);
             Assert.IsTrue(File.Exists(newPath));
-            Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
+            Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
             var saveTime = File.GetLastWriteTime(newPath);
 
             // assert the file has new update
@@ -356,26 +356,26 @@ namespace Dynamo.Tests
             // save
             // file is updated
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
-            Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
+            Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
             var lastSaveTime = File.GetLastWriteTime(newPath);
 
             foreach (var i in Enumerable.Range(0, 10))
             {
                 Thread.Sleep(1);
-                var resSave = Controller.DynamoModel.CurrentWorkspace.Save();
+                var resSave = ViewModel.Model.CurrentWorkspace.Save();
 
                 Assert.IsTrue(resSave);
                 Assert.IsTrue(File.Exists(newPath));
-                Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
+                Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
                 var saveTime = File.GetLastWriteTime(newPath);
 
                 // assert the file has new update
@@ -392,7 +392,7 @@ namespace Dynamo.Tests
             // save
             // file is updated
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -431,21 +431,21 @@ namespace Dynamo.Tests
             // SavedProperty is true, filePath set, file exists
 
             // get empty workspace
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             // make change
-            dynamoModel.CreateNode(0.0, 0.0, "Add");
-            Assert.IsTrue(Controller.DynamoModel.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
+            dynamoModel.CurrentWorkspace.AddNode(0.0, 0.0, "Add");
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
 
             // save
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+            ViewModel.Model.CurrentWorkspace.SaveAs(newPath);
 
             // check expected
-            Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsFalse(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
 
         }
 
@@ -457,14 +457,14 @@ namespace Dynamo.Tests
             // saveAs
             // SavedProperty is true, filePath set, file exists
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
             Assert.IsFalse(def.WorkspaceModel.HasUnsavedChanges);
 
-            dynamoModel.CreateNode(0.0, 0.0, "Add");
+            dynamoModel.CurrentWorkspace.AddNode(0.0, 0.0, "Add");
             Assert.IsTrue(def.WorkspaceModel.HasUnsavedChanges);
             Assert.AreEqual(1, def.WorkspaceModel.Nodes.Count );
             
@@ -485,7 +485,7 @@ namespace Dynamo.Tests
             // custom node instance has new function id
             // custom node instance is in environment
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -512,9 +512,9 @@ namespace Dynamo.Tests
             // custom node instance has new function id
             // custom node instance is in environment
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -543,9 +543,9 @@ namespace Dynamo.Tests
             // new node with new function id in custom node manager with save name
             // can get instance of that node
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -561,8 +561,8 @@ namespace Dynamo.Tests
 
             // workspace now has different function id
             var newDef = nodeWorkspace.CustomNodeDefinition;
-            Assert.IsTrue(Controller.CustomNodeManager.IsInitialized(newDef.FunctionId));
-            Assert.IsTrue(Controller.CustomNodeManager.IsInitialized(oldId));
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.IsInitialized(newDef.FunctionId));
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.IsInitialized(oldId));
         }
 
         [Test]
@@ -573,9 +573,9 @@ namespace Dynamo.Tests
             // custom node instance has new function id
             // function id is in environment
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -596,9 +596,9 @@ namespace Dynamo.Tests
             // SaveAs
             // place custom node with new id, run expression and result is correct.
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
 
             var nodeWorkspace =
@@ -617,13 +617,13 @@ namespace Dynamo.Tests
 
             // put in workspace
             model.Home(null);
-            model.CreateNode(0.0, 0.0, newDef.FunctionId.ToString());
+            model.CurrentWorkspace.AddNode(0.0, 0.0, newDef.FunctionId.ToString());
 
             // run expression
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
 
             // run expression is correct
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             var evaluatedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
@@ -637,9 +637,9 @@ namespace Dynamo.Tests
             // SaveAs
             // two nodes are returned in search on custom node name, difer 
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -648,18 +648,18 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = Path.Combine(TempFolder, "Constant2.dyf");
-            var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
+            var originalNumElements = ViewModel.Model.SearchModel.SearchDictionary.NumElements;
             nodeWorkspace.SaveAs(newPath); // introduces new function id
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
-            
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
-            Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
 
-            Assert.AreEqual(2, Controller.SearchViewModel.SearchResults.Count);
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+            Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
-            var res1 = Controller.SearchViewModel.SearchResults[0];
-            var res2 = Controller.SearchViewModel.SearchResults[1];
+            Assert.AreEqual(2, ViewModel.SearchViewModel.SearchResults.Count);
+
+            var res1 = ViewModel.SearchViewModel.SearchResults[0];
+            var res2 = ViewModel.SearchViewModel.SearchResults[1];
 
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
@@ -681,9 +681,9 @@ namespace Dynamo.Tests
             // can get instances of original custom node
 
             // open custom node
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -695,7 +695,7 @@ namespace Dynamo.Tests
             var homeWorkspace = model.Workspaces.OfType<HomeWorkspaceModel>().First();
             model.CurrentWorkspace = homeWorkspace;
             foreach (var i in Enumerable.Range(0, 10))
-                model.CreateNode(0.0, 0.0, oldId.ToString());
+                model.CurrentWorkspace.AddNode(0.0, 0.0, oldId.ToString());
             
             // SaveAs
             var newPath = this.GetNewFileNameOnTempPath("dyf");
@@ -721,9 +721,9 @@ namespace Dynamo.Tests
             // SaveAs
             // two nodes are returned in search on custom node name, difer 
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -732,7 +732,7 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
-            var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
+            var originalNumElements = ViewModel.Model.SearchModel.SearchDictionary.NumElements;
 
             // save as
             nodeWorkspace.SaveAs(newPath); // introduces new function id
@@ -745,25 +745,25 @@ namespace Dynamo.Tests
             var catName = "TheCat";
             var descr = "TheCat";
             var dummyInfo1 = new CustomNodeInfo(newId, nodeName, catName, descr, "");
-            Controller.CustomNodeManager.Refactor(dummyInfo1);
+            ViewModel.Model.CustomNodeManager.Refactor(dummyInfo1);
 
             // num elements is unchanged by refactor
-            Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
+            Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             // search for refactored node
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("TheNoodle");
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("TheNoodle");
 
             // results are correct
-            Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);
-            var node3 = Controller.SearchViewModel.SearchResults[0] as CustomNodeSearchElement;
+            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
+            var node3 = ViewModel.SearchViewModel.SearchResults[0] as CustomNodeSearchElement;
             Assert.AreEqual(newId, node3.Guid);
 
             // search for un-refactored node
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
 
             // results are correct
-            Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);
-            var node4 = Controller.SearchViewModel.SearchResults[0] as CustomNodeSearchElement;
+            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
+            var node4 = ViewModel.SearchViewModel.SearchResults[0] as CustomNodeSearchElement;
             Assert.AreEqual(oldId, node4.Guid);
 
         }
@@ -775,9 +775,9 @@ namespace Dynamo.Tests
             // SaveAs
             // two nodes are returned in search on custom node name, difer 
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
-            Controller.DynamoViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -786,7 +786,7 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
-            var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
+            var originalNumElements = ViewModel.Model.SearchModel.SearchDictionary.NumElements;
 
             // save as
             nodeWorkspace.SaveAs(newPath); // introduces new function id
@@ -799,19 +799,19 @@ namespace Dynamo.Tests
             var catName = "TheCat";
             var descr = "TheCat";
             var dummyInfo1 = new CustomNodeInfo(newId, nodeName, catName, descr, "");
-            Controller.CustomNodeManager.Refactor(dummyInfo1);
+            ViewModel.Model.CustomNodeManager.Refactor(dummyInfo1);
 
             // num elements is unchanged by refactor
-            Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
+            Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             // search common base name
-            Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
 
             // results are correct
-            Assert.AreEqual(2, Controller.SearchViewModel.SearchResults.Count);
+            Assert.AreEqual(2, ViewModel.SearchViewModel.SearchResults.Count);
 
-            var res1 = Controller.SearchViewModel.SearchResults[0];
-            var res2 = Controller.SearchViewModel.SearchResults[1];
+            var res1 = ViewModel.SearchViewModel.SearchResults[0];
+            var res2 = ViewModel.SearchViewModel.SearchResults[1];
 
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
@@ -827,7 +827,7 @@ namespace Dynamo.Tests
         public void MultipleCustomNodeSaveAsOperationsAddsMultipleValidFunctionIdsToCustomNodeManager()
         {
 
-            var dynamoModel = Controller.DynamoModel;
+            var dynamoModel = ViewModel.Model;
             var nodeName = "Cool node";
             var catName = "Custom Nodes";
 
@@ -848,8 +848,8 @@ namespace Dynamo.Tests
                 listGuids.Add(newId);
                 listNames.Add(newName);
 
-                listGuids.ForEach( x => Assert.IsTrue( Controller.CustomNodeManager.NodeInfos.ContainsKey(x) ));
-                listNames.ForEach( x => Assert.IsTrue( Controller.CustomNodeManager.Contains(x) ));
+                listGuids.ForEach( x => Assert.IsTrue( ViewModel.Model.CustomNodeManager.NodeInfos.ContainsKey(x) ));
+                listNames.ForEach( x => Assert.IsTrue( ViewModel.Model.CustomNodeManager.Contains(x) ));
             }
         }
 

@@ -1,57 +1,51 @@
-﻿using Dynamo.Utilities;
+﻿using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
-namespace Dynamo.UI.Commands
+namespace Dynamo.ViewModels
 {
-    public static partial class DynamoCommands
+    partial class SearchViewModel
     {
-        private static SearchViewModel _vm_search =
-            dynSettings.Controller.SearchViewModel;
-
-        private static DelegateCommand focusSearch;
-
-        public static DelegateCommand FocusSearchCommand
+        private DelegateCommand focusSearch;
+        public DelegateCommand FocusSearchCommand
         {
             get
             {
                 if (focusSearch == null)
-                    focusSearch = new DelegateCommand(_vm_search.FocusSearch, _vm_search.CanFocusSearch);
+                    focusSearch = new DelegateCommand(this.FocusSearch, this.CanFocusSearch);
                 return focusSearch;
             }
         }
 
-        private static DelegateCommand search;
-
-        public static DelegateCommand SearchCommand
+        private DelegateCommand search;
+        public DelegateCommand SearchCommand
         {
             get
             {
                 if (search == null)
-                    search = new DelegateCommand(_vm_search.Search, _vm_search.CanSearch);
+                    search = new DelegateCommand(this.Search, this.CanSearch);
                 return search;
             }
         }
 
-        private static DelegateCommand showSearch;
-
-        public static DelegateCommand ShowSearchCommand
+        private DelegateCommand showSearch;
+        public DelegateCommand ShowSearchCommand
         {
             get
             {
                 if (showSearch == null)
-                    showSearch = new DelegateCommand(_vm_search.ShowSearch, _vm_search.CanShowSearch);
+                    showSearch = new DelegateCommand(this.ShowSearch, this.CanShowSearch);
                 return showSearch;
             }
         }
 
-        private static DelegateCommand hideSearch;
-
-        public static DelegateCommand HideSearchCommand
+        private DelegateCommand hideSearch;
+        public DelegateCommand HideSearchCommand
         {
             get
             {
                 if (hideSearch == null)
-                    hideSearch = new DelegateCommand(_vm_search.HideSearch, _vm_search.CanHideSearch);
+                    hideSearch = new DelegateCommand(this.HideSearch, this.CanHideSearch);
                 return hideSearch;
             }
         }

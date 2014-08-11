@@ -9,7 +9,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 // TODO(LC)
-// Use TSO ordering for Render manager
+// Use TSO ordering for Render vizManager
 // Add render latency estimation metric
 // Cleanup the RenderExce method
 
@@ -39,11 +39,15 @@ namespace Dynamo
 
     internal class RenderManager
     {
-        private readonly DynamoController controller;
+        private readonly DynamoModel dynamoModel;
+        private readonly VisualizationManager visualizationManager;
         private readonly Thread controllerThread;
-        public RenderManager(DynamoController controller)
+
+        public RenderManager(VisualizationManager vizManager, DynamoModel dynamoModel)
         {
-            this.controller = controller;
+            this.visualizationManager = vizManager;
+            this.dynamoModel = dynamoModel;
+
             controllerThread = new Thread(RenderLoopController);
             controllerThread.Name = "RenderManager controller thread";
             controllerThread.IsBackground = true;
@@ -136,10 +140,10 @@ namespace Dynamo
         /// </summary>
         private void Render(long taskID, IEnumerable<NodeModel> toUpdate = null, bool incrementId = true)
         {
-            if (controller == null)
+            if (dynamoModel == null)
                 return;
 
-            if (DynamoController.IsTestMode)
+            if (DynamoModel.IsTestMode)
                 RenderExec(toUpdate, incrementId, taskID);
             else
             {
@@ -162,14 +166,14 @@ namespace Dynamo
                 //that are marked for updating.
 
                 var toUpdate = nodes ??
-                               controller.DynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
+                               dynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
 
                 var nodeModels = toUpdate as IList<NodeModel> ?? toUpdate.ToList();
                 if (!nodeModels.Any())
                     return;
 
                 //TODO(Luke): Parrallel for once we're stable
-                nodeModels.ToList().ForEach(RenderSpecificNodeSync);
+                nodeModels.ToList().ForEach(x => RenderSpecificNodeSync(x, visualizationManager.MaxTesselationDivisions ));
 
                 sw.Stop();
                 Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating render packages.", sw.Elapsed));
@@ -181,7 +185,7 @@ namespace Dynamo
             {
                 OnRenderFailed(this, new RenderFailedEventArgs(taskID));
 
-                dynSettings.DynamoLogger.Log(ex);
+                dynamoModel.Logger.Log(ex);
             }
         }
 
@@ -190,9 +194,9 @@ namespace Dynamo
         /// Internal method that synchronously updates a specific node
         /// </summary>
         /// <param name="node"></param>
-        private void RenderSpecificNodeSync(NodeModel node)
+        private void RenderSpecificNodeSync(NodeModel node, int maxTesselationDivs)
         {
-            node.UpdateRenderPackage();
+            node.UpdateRenderPackage(maxTesselationDivs);
         }
 
     }

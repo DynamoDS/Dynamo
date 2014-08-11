@@ -11,8 +11,8 @@ namespace Dynamo.TestInfrastructure
 {
     class CodeBlockNodeMutator : AbstractMutator
     {
-        public CodeBlockNodeMutator(Random rand)
-            : base(rand)
+        public CodeBlockNodeMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
             
         }
@@ -28,7 +28,7 @@ namespace Dynamo.TestInfrastructure
 
             NodeModel node = nodes[Rand.Next(nodes.Count)];
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            this.DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     string code = ((CodeBlockNodeModel) node).Code;
 
@@ -62,11 +62,9 @@ namespace Dynamo.TestInfrastructure
 
                     }
 
-                DynamoViewModel.UpdateModelValueCommand cmd =
-                    new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Code", replacement);
+                var cmd = new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Code", replacement);
                 
-
-                DynamoViewModel.ExecuteCommand(cmd);
+                this.DynamoViewModel.ExecuteCommand(cmd);
 
             }));
 
