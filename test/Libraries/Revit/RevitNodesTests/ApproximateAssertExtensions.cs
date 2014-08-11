@@ -68,6 +68,11 @@ namespace DSRevitNodesTests
 
         public static void ShouldDifferByLessThanPercentage(this Double d0, Double d1, double factor)
         {
+            if (Math.Abs(d0) < 1e-6)
+            {
+                Assert.Fail("Cannot compare 0 by percentage");
+            }
+
             Assert.Less(100 * Math.Abs((d0 - d1) / d0), factor);
         }
 
