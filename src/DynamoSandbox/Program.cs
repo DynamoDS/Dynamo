@@ -25,7 +25,10 @@ namespace DynamoSandbox
             if (DynamoPathManager.Instance.FindAndSetASMHostPath())
             {
                 if (DynamoPathManager.Instance.ASM219Host == null)
+                {
                     DynamoPathManager.Instance.SetLibGPath("libg_220");
+                    DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
+                }
 
                 var libG = Assembly.LoadFrom(DynamoPathManager.Instance.AsmPreloader);
 
