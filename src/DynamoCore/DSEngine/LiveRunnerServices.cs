@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using Dynamo.Core;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
-using ProtoCore.AST.AssociativeAST;
+
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 
@@ -14,9 +10,10 @@ namespace Dynamo.DSEngine
 {
     internal class LiveRunnerFactory
     {
-        internal static ILiveRunner CreateLiveRunner(EngineController controller)
+        internal static ILiveRunner CreateLiveRunner(EngineController controller, string geometryFactoryFileName)
         {
             LiveRunner.Configuration configuration = new LiveRunner.Configuration();
+            configuration.PassThroughConfiguration.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, geometryFactoryFileName);
             return new LiveRunner(configuration);
         }
     }
@@ -26,11 +23,10 @@ namespace Dynamo.DSEngine
         private ILiveRunner liveRunner;
         private readonly DynamoModel dynamoModel;
 
-        public LiveRunnerServices(DynamoModel dynamoModel, EngineController controller)
+        public LiveRunnerServices(DynamoModel dynamoModel, EngineController controller, string geometryFactoryFileName)
         {
             this.dynamoModel = dynamoModel;
-
-            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
+            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
       
         public void Dispose()
