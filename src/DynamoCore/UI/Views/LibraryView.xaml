@@ -4,17 +4,18 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
 			 mc:Ignorable="d"
 			 d:DesignHeight="525"
 			 d:DesignWidth="350">
 	<UserControl.Resources>
 		<DataTemplate x:Key="ClassObjectDataTemplate">
 			<StackPanel Orientation="Vertical"
-						Width="86"
-						Height="92">
-				<Image Source="..\..\Resources\Icons\Saturation.png"
-					   Width="40"
-					   Height="40"
+						Width="66"
+						Height="66">
+				<Image Source="{Binding Path=SmallIcon}"
+					   Width="29"
+					   Height="29"
 					   Margin="8"
 					   HorizontalAlignment="Center" />
 				<TextBlock Text="{Binding Path=Name}"
@@ -23,8 +24,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ClassDetailsDataTemplate">
-			<Grid Background="CornflowerBlue"
-				  Height="128">
+            <Grid Background="CornflowerBlue">
 				<Grid.Width>
 					<Binding Path="ActualWidth"
 							 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
@@ -32,14 +32,15 @@
 				<Grid.Visibility>
 					<Binding Path="ClassDetailsVisibility" />
 				</Grid.Visibility>
+                <uicontrols:StandardPanel/>                
 			</Grid>
-		</DataTemplate>
+        </DataTemplate>
 
 		<controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
 											  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
 											  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
 		<controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
-	</UserControl.Resources>
+    </UserControl.Resources>
 	<Grid Name="LibraryGrid">
 
 		<!-- This is the outer list (showing categories) -->
@@ -64,12 +65,28 @@
 										Converter={StaticResource LibraryWrapPanelWidthConverter}}" />
 								</ItemsPanelTemplate>
 							</ListView.ItemsPanel>
-						</ListView>
+                            <!--<ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Style.Triggers>
+                                        <Trigger Property="DataContext"
+                                                 Value="">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListViewItem">
+                                                        <ContentPresenter />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>-->
 
+                        </ListView>
 					</Expander>
 				</DataTemplate>
 			</ListView.ItemTemplate>
-		</ListView>
+        </ListView>
 
 	</Grid>
 </UserControl>

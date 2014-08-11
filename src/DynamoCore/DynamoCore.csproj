@@ -817,6 +817,11 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="Resources\Icons\Saturation.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Hue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"

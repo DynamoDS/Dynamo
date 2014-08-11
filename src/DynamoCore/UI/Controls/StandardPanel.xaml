@@ -13,11 +13,60 @@
             <RowDefinition Height="24"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock>Create</TextBlock>
+        <TextBlock>CREATE</TextBlock>
         <ListBox x:Name="creationMethods"
-                 Grid.Row="1" />
-        <TextBlock Grid.Row="2">Query . Actions</TextBlock>
+                 Grid.Row="1"
+                 ItemsSource="{Binding Path=CreateMembers}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                    <Image HorizontalAlignment="Left"
+                           Height="29"
+                           Margin="5,5,0,0"
+                           VerticalAlignment="Top"
+                           Width="29"
+                           Source="{Binding SmallIcon}" />
+                    <TextBlock HorizontalAlignment="Left"
+                               TextWrapping="Wrap"
+                               Text="{Binding Name}"
+                               VerticalAlignment="Top"
+                               Width="111"
+                               Margin="5,10,0,0"/>
+                </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2">
+        <TextBlock Name="query"
+                   PreviewMouseLeftButtonDown="QueryMouseLeftButtonDown"
+                   FontWeight="UltraBold">QUERY</TextBlock>
+        <TextBlock Name="action"
+                   Margin="10,0,0,0"
+                   PreviewMouseLeftButtonDown="ActionMouseLeftButtonDown">ACTION</TextBlock>
+        </StackPanel>
         <ListBox x:Name="queryActionMethods"
-                 Grid.Row="3" />
+                 Grid.Row="3"
+                 Grid.ColumnSpan="2"
+                 DataContextChanged="queryActionMethods_DataContextChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image HorizontalAlignment="Left"
+                               Height="29"
+                               Margin="5,5,0,0"
+                               VerticalAlignment="Top"
+                               Width="29"
+                               Source="{Binding SmallIcon}" />
+                        <TextBlock HorizontalAlignment="Left"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Name}"
+                                   VerticalAlignment="Top"
+                                   Width="111"
+                                   Margin="5,10,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

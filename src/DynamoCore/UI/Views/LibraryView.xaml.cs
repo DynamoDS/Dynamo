@@ -35,9 +35,21 @@ namespace Dynamo.UI.Views
                     category.Add(classObject);
 
                     // Generate some data members.
-                    var members = random.Next(10, 20);
+                    var members = random.Next(1, 6);
                     for (int m = 0; m < members; m++)
-                        classObject.Add(new ClassMember(string.Format("Member #{0}", m)));
+                    {
+                        classObject.CreateMembers.Add(new ClassMember(string.Format("CMember #{0}", m)));
+                    }
+                    members = random.Next(1, 6);
+                    for (int m = 0; m < members; m++)
+                    {
+                        classObject.ActionMembers.Add(new ClassMember(string.Format("AMember #{0}", m)));
+                    }
+                    members = random.Next(1, 6);
+                    for (int m = 0; m < members; m++)
+                    {
+                        classObject.QueryMembers.Add(new ClassMember(string.Format("QMember #{0}", m)));
+                    }
                 }
             }
         }
