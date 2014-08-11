@@ -3739,6 +3739,118 @@ z=Point.ByCoordinates(y,a,a);
             AssertValue("x", 10);
         }
 
+        [Test]
+        [Ignore] // For testing re-exec. Test result to follow
+        public void TestForceExecution01()
+        {
+            List<string> codes = new List<string>() 
+            { 
+            @"import(""DSCoreNodes.dll"");",// guid1
+
+            "a = true; a1 = a;", // guid2
+
+            "b = true; b1 = b;", // guid3
+
+            "c = true;c1 = c;", // guid4
+
+            "d = {a, b, c}; d1 = d;", // guid5
+
+            "e = DSCore.Debug.WriteOut(d);", // guid6
+
+            "a = false;a1 = a;" 
+
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+            Guid guid5 = System.Guid.NewGuid();
+            Guid guid6 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(CreateSubTreeFromCode(guid5, codes[4]));
+            added.Add(CreateSubTreeFromCode(guid6, codes[5]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // Modify 1st boolean to false
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[6]));
+            
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+        }
+
+
+        [Test]
+        [Ignore] // For testing re-exec. Test result to follow
+        public void TestForceExecution02()
+        {
+            List<string> codes = new List<string>() 
+            { 
+            @"import(""DSCoreNodes.dll"");",// guid1
+
+            "a = true; a1 = a;", // guid2
+
+            "b = true; b1 = b;", // guid3
+
+            "c = true;c1 = c;", // guid4
+
+            "d = {a, b, c}; d1 = d;", // guid5
+
+            "e = DSCore.Debug.WriteOut(d);", // guid6
+
+            "a = false;a1 = a;" 
+
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+            Guid guid5 = System.Guid.NewGuid();
+            Guid guid6 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(CreateSubTreeFromCode(guid5, codes[4]));
+            added.Add(CreateSubTreeFromCode(guid6, codes[5]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            List<Subtree> modified = new List<Subtree>();
+
+            // Modify 1st boolean to false
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[6]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            // Resend 2nd boolean as forceexec
+            subtree = CreateSubTreeFromCode(guid3, codes[2]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            // Resend 2nd boolean as forceexec
+            subtree = CreateSubTreeFromCode(guid4, codes[3]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+        }
+
        
 
         [Test]

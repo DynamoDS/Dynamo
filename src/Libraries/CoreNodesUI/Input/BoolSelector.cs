@@ -27,6 +27,11 @@ namespace DSCoreNodesUI
             Value = false;
         }
 
+        public override bool ForceReExecuteOfNode
+        {
+            get { return true; }
+        }
+
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
