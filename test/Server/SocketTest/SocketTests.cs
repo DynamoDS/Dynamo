@@ -2,6 +2,7 @@
 using System.Linq;
 using Dynamo.Nodes;
 using DynamoWebServer;
+using DynamoWebServer.Interfaces;
 using DynamoWebServer.Messages;
 
 using Moq;
@@ -17,6 +18,7 @@ namespace Dynamo.Tests
         private const string GUID = "b43c1f0e-d88f-bfd7-8dd8-dc5536c18390";
         private WebServer webServer;
         private Mock<IWebSocket> mock;
+        private Mock<ISessionManager> sessionManager;
 
         [SetUp]
         public override void Init()
@@ -27,7 +29,9 @@ namespace Dynamo.Tests
             mock.Setup(ws => ws.Setup(It.IsAny<IRootConfig>(), It.IsAny<IServerConfig>())).Returns(true);
             mock.Setup(ws => ws.Start()).Returns(true);
 
-            webServer = new WebServer(mock.Object);
+            sessionManager = new Mock<ISessionManager>();
+
+            webServer = new WebServer(mock.Object, sessionManager.Object);
             webServer.Start();
         }
 
@@ -36,12 +40,13 @@ namespace Dynamo.Tests
         {
             var testDir = Path.Combine(GetTestDirectory(), @"core\commands");
             var commandPaths = Directory.GetFiles(testDir, "*.txt");
+            var messageHandler = new MessageHandler();
             Assert.NotNull(commandPaths);
             Assert.Greater(commandPaths.Length, 0);
             foreach (var path in commandPaths)
             {
                 var text = File.ReadAllText(path);
-                var message = MessageHandler.DeserializeMessage(text);
+                var message = messageHandler.DeserializeMessage(text);
                 Assert.NotNull(message);
             }
         }

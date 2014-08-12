@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -17,36 +16,26 @@ namespace DynamoWebServer.Messages
 {
     public class MessageHandler
     {
-        static readonly JsonSerializerSettings JsonSettings;
+        private readonly JsonSerializerSettings jsonSettings;
 
-        public string SessionId { get; private set; }
         public event ResultReadyEventHandler ResultReady;
 
-        private Message message;
-        private DynamoViewModel dynamoViewModel;
-
-        static MessageHandler()
+        public MessageHandler()
         {
-            JsonSettings = new JsonSerializerSettings
+            jsonSettings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Objects,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
         }
 
-        public MessageHandler(Message msg, string sessionId)
-        {
-            this.message = msg;
-            this.SessionId = sessionId;
-        }
-
         /// <summary>
         /// This method serializes the Message object in the json form. 
         /// </summary>
         /// <returns>The string can be used for reconstructing Message using Deserialize method</returns>
-        internal string Serialize()
+        internal string Serialize(Message message)
         {
-            return message == null ? null : JsonConvert.SerializeObject(message, JsonSettings);
+            return message == null ? null : JsonConvert.SerializeObject(message, jsonSettings);
         }
 
         /// <summary>
@@ -54,11 +43,11 @@ namespace DynamoWebServer.Messages
         /// </summary>
         /// <param name="jsonString">Json string that contains all its arguments.</param>
         /// <returns>Reconstructed Message</returns>
-        internal static Message DeserializeMessage(string jsonString)
+        internal Message DeserializeMessage(string jsonString)
         {
             try
             {
-                return JsonConvert.DeserializeObject(jsonString, JsonSettings) as Message;
+                return JsonConvert.DeserializeObject(jsonString, jsonSettings) as Message;
             }
             catch
             {
@@ -66,12 +55,11 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        internal void Execute(DynamoViewModel dynamoViewModel)
+        internal void Execute(DynamoViewModel dynamo, Message message)
         {
-            this.dynamoViewModel = dynamoViewModel;
             if (message is RecordableCommandsMessage)
             {
-                ExecuteCommands();
+                ExecuteCommands(dynamo, message);
             }
             else if (message is LibraryItemsListMessage)
             {
@@ -85,39 +73,40 @@ namespace DynamoWebServer.Messages
         /// <summary>
         /// Send the results of the execution
         /// </summary>
-        protected void OnResultReady(object sender, ResultReadyEventArgs e)
+        private void OnResultReady(object sender, ResultReadyEventArgs e)
         {
             if (ResultReady != null)
             {
-                e.SessionID = SessionId;
                 ResultReady(sender, e);
             }
         }
 
         #region Private Class Helper Methods
 
-        private void ExecuteCommands()
+        private void ExecuteCommands(DynamoViewModel dynamo, Message message)
         {
             var recordableCommandMsg = (RecordableCommandsMessage)message;
 
             var manager = dynSettings.Controller.VisualizationManager;
-            SelectTabByGuid(dynamoViewModel, recordableCommandMsg.WorkspaceGuid);
+            SelectTabByGuid(dynamo, recordableCommandMsg.WorkspaceGuid);
+
             foreach (var command in recordableCommandMsg.Commands)
             {
                 if (command is DynamoViewModel.RunCancelCommand)
                 {
                     manager.RenderComplete += ModifiedNodesData;
                 }
-                dynamoViewModel.ExecuteCommand(command);
+
+                dynamo.ExecuteCommand(command);
             }
         }
 
-        private void SelectTabByGuid(DynamoViewModel dynamoViewModel, Guid guid)
+        private void SelectTabByGuid(DynamoViewModel dynamo, Guid guid)
         {
             // If guid is Empty - switch to HomeWorkspace
-            if (guid.Equals(Guid.Empty) && !dynamoViewModel.ViewingHomespace)
+            if (guid.Equals(Guid.Empty) && !dynamo.ViewingHomespace)
             {
-                dynamoViewModel.CurrentWorkspaceIndex = 0;
+                dynamo.CurrentWorkspaceIndex = 0;
             }
 
             if (!guid.Equals(Guid.Empty))
@@ -126,10 +115,10 @@ namespace DynamoWebServer.Messages
                 {
                     var name = dynSettings.Controller.CustomNodeManager.LoadedCustomNodes[guid]
                         .WorkspaceModel.Name;
-                    var workspace = dynamoViewModel.Workspaces.First(elem => elem.Name == name);
-                    var index = dynamoViewModel.Workspaces.IndexOf(workspace);
+                    var workspace = dynamo.Workspaces.First(elem => elem.Name == name);
+                    var index = dynamo.Workspaces.IndexOf(workspace);
 
-                    dynamoViewModel.CurrentWorkspaceIndex = index;
+                    dynamo.CurrentWorkspaceIndex = index;
                 }
             }
         }
@@ -175,8 +164,8 @@ namespace DynamoWebServer.Messages
                                 data = item.Value.CachedValue.Data.ToString();
                             }
                         }
-                    }                
-			    }
+                    }
+                }
 
                 var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.RenderPackages);
                 nodes.Add(execNode);
@@ -186,6 +175,7 @@ namespace DynamoWebServer.Messages
             {
                 Nodes = nodes
             }));
+
             dynSettings.Controller.VisualizationManager.RenderComplete -= ModifiedNodesData;
         }
 

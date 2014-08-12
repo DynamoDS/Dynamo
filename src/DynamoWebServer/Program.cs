@@ -8,8 +8,8 @@ namespace DynamoWebServer
         [STAThread]
         public static void Main(string[] args)
         {
-            var WebSocketServer = new WebServer(new WebSocket());
-            WebSocketServer.Start();
+            var webSocketServer = new WebServer(new WebSocket(), new SessionManager());
+            webSocketServer.Start();
             
             DynamoView.MakeSandboxAndRun(null);
         }
