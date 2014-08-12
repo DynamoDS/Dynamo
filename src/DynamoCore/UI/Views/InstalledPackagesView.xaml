@@ -2,7 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        Title="Installed Packages" Height="450" Width="550" Background="#555" MinWidth="550" MaxWidth="550" >
+        Title="Installed Packages" Height="450" Width="550" Background="#555" MinWidth="550" MaxWidth="550" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}">
 
         <Window.Resources>
             <ResourceDictionary>
@@ -21,15 +26,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
-        <!--<Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" BorderBrush="#333" BorderThickness="0,0,0,1" Height="30" Background="#444">
-        </Border>
-
-        <Grid FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
-            <StackPanel Margin="0,5,0,0" Name="titleBarButtonsGrid" FlowDirection="LeftToRight" shell:WindowChrome.IsHitTestVisibleInChrome="True">
-            </StackPanel>
-        </Grid>-->
-
+        
         <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="ScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" >
 
@@ -57,8 +54,8 @@
                                     <DockPanel >
                                         
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,5,5,7">
-                                            <TextBlock Text="{Binding Path=Name}" FontSize="12" MinWidth="200" Margin="10,0,10,0" Foreground="WhiteSmoke"></TextBlock>
-                                            <TextBlock Text="{Binding Path=VersionName}" FontSize="11" Foreground="#CCC"></TextBlock>
+                                            <TextBlock Text="{Binding Path=Model.Name}" FontSize="12" MinWidth="200" Margin="10,0,10,0" Foreground="WhiteSmoke"></TextBlock>
+                                            <TextBlock Text="{Binding Path=Model.VersionName}" FontSize="11" Foreground="#CCC"></TextBlock>
                                         </StackPanel>
 
                                         <Button Name="MoreButton" HorizontalAlignment="Right" Content="+" Width="40" IsEnabled="True" Style="{DynamicResource ResourceKey=SBadgeButton}" Click="MoreButton_OnClick">
@@ -86,12 +83,12 @@
                                     </DockPanel>
                                     
      
-                                <Border BorderThickness="0,1,0,0" BorderBrush="#111" Visibility="{Binding Path=TypesVisibleInManager, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Border BorderThickness="0,1,0,0" BorderBrush="#111" Visibility="{Binding Path=Model.TypesVisibleInManager, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                         
                                         <StackPanel Margin="10,5,5,10" >
 
                                             <Label Content="Loaded Custom Nodes" FontWeight="Bold" Foreground="Gray"></Label>
-                                            <ListBox Name="LoadedCustomNodes" ItemsSource="{Binding Path=LoadedCustomNodes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+                                            <ListBox Name="LoadedCustomNodes" ItemsSource="{Binding Path=Model.LoadedCustomNodes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
 
                                                 <ListBox.ItemContainerStyle>
                                                     <Style TargetType="ListBoxItem">

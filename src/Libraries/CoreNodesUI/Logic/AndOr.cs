@@ -18,7 +18,7 @@ namespace DSCore.Logic
     {
         private readonly Operator _op;
 
-        protected BinaryLogic(string symbol, Operator op)
+        protected BinaryLogic(WorkspaceModel workspaceModel, string symbol, Operator op) : base(workspaceModel)
         {
             _op = op;
 
@@ -69,7 +69,7 @@ namespace DSCore.Logic
     [IsDesignScriptCompatible]
     public class And : BinaryLogic
     {
-        public And() : base("∧", Operator.and) { }
+        public And(WorkspaceModel workspaceModel) : base(workspaceModel, "∧", Operator.and) { }
     }
 
     /// <summary>
@@ -81,6 +81,6 @@ namespace DSCore.Logic
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {
-        public Or() : base("∨", Operator.or) { }
+        public Or(WorkspaceModel workspaceModel) : base(workspaceModel, "∨", Operator.or) { }
     }
 }

@@ -14,6 +14,8 @@ namespace Dynamo.Models
 
         #region properties
 
+        private readonly WorkspaceModel workspaceModel;
+
         public event ConnectorConnectedHandler Connected;
 
         protected virtual void OnConnected(EventArgs e)
@@ -44,7 +46,6 @@ namespace Dynamo.Models
 
         #region constructors
         
-
         /// <summary>
         /// Factory method to create a connector.  Checks to make sure that the start and end ports are valid, 
         /// otherwise returns null.
@@ -55,21 +56,21 @@ namespace Dynamo.Models
         /// <param name="endIndex"></param>
         /// <param name="portType"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
-        public static ConnectorModel Make(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        internal static ConnectorModel Make(WorkspaceModel workspaceModel, NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
         {
-            if (start != null && end != null && start != end && startIndex >= 0
+            if (workspaceModel != null && start != null && end != null && start != end && startIndex >= 0
                 && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
             {
-                return new ConnectorModel(start, end, startIndex, endIndex, portType);
+                return new ConnectorModel(workspaceModel, start, end, startIndex, endIndex, portType);
             }
             
             return null;
         }
 
-        private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        private ConnectorModel(WorkspaceModel workspaceModel, NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
         {
-            //Stopwatch sw = new Stopwatch();
-            //sw.Start();
+            this.workspaceModel = workspaceModel;
+
             pStart = start.OutPorts[startIndex];
 
             PortModel endPort = null;
@@ -79,17 +80,16 @@ namespace Dynamo.Models
 
             pStart.Connect(this);
             this.Connect(endPort);
-            //sw.Stop();
-            //Debug.WriteLine(string.Format("{0} elapsed for constructing connector.", sw.Elapsed));
         }
 
-        public static ConnectorModel Make()
+        public static ConnectorModel Make(WorkspaceModel workspace)
         {
-            return new ConnectorModel();
+            return new ConnectorModel(workspace);
         }
 
-        private ConnectorModel()
+        private ConnectorModel(WorkspaceModel workspace)
         {
+            this.workspaceModel = workspace;
         }
 
         #endregion
@@ -182,9 +182,8 @@ namespace Dynamo.Models
             PortType portType = ((PortType)helper.ReadInteger("portType"));
 
             // Get to the start and end nodes that this connector connects to.
-            WorkspaceModel workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
-            NodeModel startNode = workspace.GetModelInternal(startNodeId) as NodeModel;
-            NodeModel endNode = workspace.GetModelInternal(endNodeId) as NodeModel;
+            NodeModel startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
+            NodeModel endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
 
             pStart = startNode.OutPorts[startIndex];
             PortModel endPort = null;

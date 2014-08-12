@@ -26,7 +26,7 @@ namespace ProtoCore
             //      1. Move the MirrorData properties in the RuntimeMirror class or ...
             //      2. Do the data analysis of the MirrorData in the MirrorData class itself
             //
-            private ProtoCore.Core core = null;
+            private ProtoCore.Core core;
 
             /// <summary>
             /// 

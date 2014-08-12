@@ -7,12 +7,12 @@ using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.Tests
 {
-    class DynamoSamples : DSEvaluationUnitTest
+    class DynamoSamples : DSEvaluationViewModelUnitTest
     {
         [Test, Category("Sample")]
         public void Basics_Basic03()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Basics\Basics_Basic03.dyn");
 
             // check all the nodes and connectors are loaded
@@ -30,7 +30,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_AttractorPoint()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_AttractorPoint.dyn");
 
             // check all the nodes and connectors are loaded
@@ -53,7 +53,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_CodeBlocks_01()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
@@ -103,7 +103,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_CodeBlocks_02()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
@@ -137,7 +137,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_CodeBlocks_04()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
@@ -168,7 +168,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_CodeBlocks_05()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
@@ -206,7 +206,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_ListLacing()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_ListLacing.dyn");
 
             // check all the nodes and connectors are loaded
@@ -247,7 +247,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_Math_01()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
@@ -274,7 +274,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_Math_02()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
@@ -303,7 +303,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_Math_03()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
@@ -330,7 +330,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_Math_04()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
@@ -375,7 +375,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_PassingFunctions()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_PassingFunctions.dyn");
 
             // check all the nodes and connectors are loaded
@@ -396,7 +396,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_Python()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_Python.dyn");
 
             // check all the nodes and connectors are loaded
@@ -434,7 +434,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_RangeSyntax()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_RangeSyntax.dyn");
 
             // check all the nodes and connectors are loaded
@@ -459,7 +459,7 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void Core_Strings()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"Core\Core_Strings.dyn");
 
             // check all the nodes and connectors are loaded
@@ -485,14 +485,14 @@ namespace Dynamo.Tests
         [Test, Category("Sample")]
         public void ImportExport_CSV_to_Stuff()
         {
-            DynamoModel model = Controller.DynamoModel;
+            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"ImportExport\ImportExport_CSV to Stuff.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = (DSCore.File.Filename)ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = GetSampleDirectory() + "ImportExport\\helix.csv";
             // Although old path is a hard coded but that is not going to change 

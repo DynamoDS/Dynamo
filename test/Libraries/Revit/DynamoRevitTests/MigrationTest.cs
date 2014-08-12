@@ -17,11 +17,11 @@ namespace Dynamo.Tests
         {
             string testPath = Path.Combine(_testPath, filename);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
 
-            var nodes = Controller.DynamoModel.Nodes;
+            var nodes = ViewModel.Model.Nodes;
             int unresolvedNodeCount = 0;
             string str = "\n";
 

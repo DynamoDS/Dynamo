@@ -121,6 +121,7 @@ namespace Dynamo
             WindowW = 1024;
             WindowY = 0.0;
             WindowX = 0.0;
+
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;

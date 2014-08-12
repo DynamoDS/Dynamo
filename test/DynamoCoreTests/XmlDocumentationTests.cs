@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 
 using Dynamo.DSEngine;
+using Dynamo.Library;
 
 using NUnit.Framework;
 

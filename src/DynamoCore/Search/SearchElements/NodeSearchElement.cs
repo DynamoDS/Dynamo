@@ -16,7 +16,7 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
-        private string _fullName ;
+        internal readonly string FullName ;
 
         #region Properties
 
@@ -99,12 +99,12 @@ namespace Dynamo.Search.SearchElements
             this.Keywords = String.Join(" ", tags);
             this._type = "Node";
             this._description = description;
-            this._fullName = fullName;
+            this.FullName = fullName;
         }
 
         public virtual NodeSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._fullName);
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this.FullName);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }
@@ -118,25 +118,6 @@ namespace Dynamo.Search.SearchElements
             else
             {
                 this.DescriptionVisibility = false;
-            }
-        }
-
-        /// <summary>
-        /// Executes the element in search, this is what happens when the user 
-        /// hits enter in the SearchView.</summary>
-        public override void Execute()
-        {
-            // create node
-            var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, this._fullName, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
             }
         }
 
