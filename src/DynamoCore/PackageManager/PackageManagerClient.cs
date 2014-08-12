@@ -40,8 +40,8 @@ namespace Dynamo.PackageManager
 
         #region Events
 
-        internal delegate void RequestAuthenticationHandler();
-        internal event RequestAuthenticationHandler RequestAuthentication;
+        public delegate void RequestAuthenticationHandler();
+        public event RequestAuthenticationHandler RequestAuthentication;
         private void OnRequestAuthentication()
         {
             if (RequestAuthentication != null)

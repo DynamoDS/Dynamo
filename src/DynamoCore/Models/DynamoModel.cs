@@ -34,7 +34,6 @@ using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 
-using Dynamo.ViewModels;
 using Dynamo.DSEngine;
 
 using Double = System.Double;
@@ -270,7 +269,6 @@ namespace Dynamo.Models
         protected DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, IUpdateManager updateManager, bool isTestMode)
         {
             DynamoPathManager.Instance.InitializeCore(corePath);
-            UsageReportingManager.Instance.InitializeCore(this);
 
             Runner = runner;
             Context = context;

@@ -20,11 +20,9 @@ using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
-    public delegate void PointEventHandler(object sender, EventArgs e);
-    public delegate void NodeEventHandler(object sender, EventArgs e);
+
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
-    public delegate void ZoomEventHandler(object sender, EventArgs e);
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);

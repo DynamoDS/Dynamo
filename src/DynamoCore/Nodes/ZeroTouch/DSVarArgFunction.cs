@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
             }
         }
         #endregion
-        
+
         public void SetupCustomUIElements(dynNodeView view)
         {
             VarInputController.SetupNodeUI(view);
@@ -94,8 +94,9 @@ namespace Dynamo.Nodes
     /// </summary>
     public class ZeroTouchVarArgNodeController : ZeroTouchNodeController
     {
-        public ZeroTouchVarArgNodeController(EngineController engineController, 
-            FunctionDescriptor zeroTouchDef) : base(engineController, zeroTouchDef) { }
+        public ZeroTouchVarArgNodeController(EngineController engineController,
+            FunctionDescriptor zeroTouchDef)
+            : base(engineController, zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {

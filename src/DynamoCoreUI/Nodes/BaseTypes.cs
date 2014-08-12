@@ -9,6 +9,8 @@ using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Globalization;
 
+using Dynamo.ViewModels;
+
 using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -513,7 +515,7 @@ namespace Dynamo.Nodes
                 "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
 
@@ -554,7 +556,7 @@ namespace Dynamo.Nodes
             }
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
@@ -598,7 +600,7 @@ namespace Dynamo.Nodes
                 "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_future_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
             args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;

@@ -1,0 +1,901 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DynamoCoreUI</RootNamespace>
+    <AssemblyName>DynamoCoreUI</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Greg">
+      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Interfaces\IViewModelView.cs" />
+    <Compile Include="Interfaces\IVisualizationManager.cs" />
+    <Compile Include="Interfaces\IWatchHandler.cs" />
+    <Compile Include="Interfaces\IWpfNode.cs" />
+    <Compile Include="Nodes\BaseTypes.cs" />
+    <Compile Include="Nodes\CodeBlockNode.cs" />
+    <Compile Include="Nodes\Files.cs" />
+    <Compile Include="Nodes\FunctionCallBase.cs" />
+    <Compile Include="Nodes\FunctionCallNodeController.cs" />
+    <Compile Include="Nodes\VariableInputNode.cs" />
+    <Compile Include="Nodes\Watch.cs" />
+    <Compile Include="Nodes\WatchImage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\UsageReportingManager.cs" />
+    <Compile Include="TestInfrastructure\AbstractMutator.cs" />
+    <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="UI\Commands\AutomationSettings.cs" />
+    <Compile Include="UI\Commands\ConnectorCommands.cs" />
+    <Compile Include="UI\Commands\DynamoCommands.cs" />
+    <Compile Include="UI\Commands\InfoBubbleCommand.cs" />
+    <Compile Include="UI\Commands\NodeCommands.cs" />
+    <Compile Include="UI\Commands\NodeSearchElementCommands.cs" />
+    <Compile Include="UI\Commands\NoteCommands.cs" />
+    <Compile Include="UI\Commands\PortCommands.cs" />
+    <Compile Include="UI\Commands\RecordableCommands.cs" />
+    <Compile Include="UI\Commands\SearchCommands.cs" />
+    <Compile Include="UI\Commands\WorkspaceCommands.cs" />
+    <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
+      <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\ImageBasedControls.cs" />
+    <Compile Include="UI\Controls\ShortcutToolbar.xaml.cs">
+      <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\StartPage.xaml.cs">
+      <DependentUpon>StartPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Converters.cs" />
+    <Compile Include="UI\DragCanvas.cs" />
+    <Compile Include="UI\DynamoTextBox.cs" />
+    <Compile Include="UI\HandlingEventTrigger.cs" />
+    <Compile Include="UI\MouseClickManager.cs" />
+    <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
+      <DependentUpon>CrashPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\EditWindow.xaml.cs">
+      <DependentUpon>EditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\FunctionNamePrompt.xaml.cs">
+      <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
+      <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\NodeHelpPrompt.xaml.cs">
+      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
+      <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SharedResourceDictionary.cs" />
+    <Compile Include="UI\StateMachine.cs" />
+    <Compile Include="UI\UIPartials.cs" />
+    <Compile Include="UI\Views\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\DynamoView.xaml.cs">
+      <DependentUpon>DynamoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
+      <DependentUpon>InfoBubbleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\InstalledPackagesView.xaml.cs">
+      <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\NodeView.xaml.cs">
+      <DependentUpon>NodeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\NoteView.xaml.cs">
+      <DependentUpon>NoteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
+      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\PackageManagerSearchView.xaml.cs">
+      <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\PreviewControl.xaml.cs">
+      <DependentUpon>PreviewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\Watch3DView.xaml.cs">
+      <DependentUpon>Watch3DView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\WatchTree.xaml.cs">
+      <DependentUpon>WatchTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\WorkspaceView.xaml.cs">
+      <DependentUpon>WorkspaceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WebBrowserUtility.cs" />
+    <Compile Include="UI\WPF.cs" />
+    <Compile Include="UI\ZoomBorder.cs" />
+    <Compile Include="Utilities\CursorLibrary.cs" />
+    <Compile Include="ViewModels\ConnectorViewModel.cs" />
+    <Compile Include="ViewModels\DynamoViewModel.cs" />
+    <Compile Include="ViewModels\DynamoViewModelDelegateCommands.cs" />
+    <Compile Include="ViewModels\DynamoViewModelDelegates.cs" />
+    <Compile Include="ViewModels\DynamoViewModelEventArgs.cs" />
+    <Compile Include="ViewModels\DynamoViewModelEvents.cs" />
+    <Compile Include="ViewModels\EndlessGridViewModel.cs" />
+    <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
+    <Compile Include="ViewModels\InstalledPackagesViewModel.cs" />
+    <Compile Include="ViewModels\IWatchViewModel.cs" />
+    <Compile Include="ViewModels\NodeViewModel.cs" />
+    <Compile Include="ViewModels\NoteViewModel.cs" />
+    <Compile Include="ViewModels\PackageItemInternalViewModel.cs" />
+    <Compile Include="ViewModels\PackageItemLeafViewModel.cs" />
+    <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
+    <Compile Include="ViewModels\PackageItemViewModel.cs" />
+    <Compile Include="ViewModels\PackageManagerClientViewModel.cs" />
+    <Compile Include="ViewModels\PackageManagerSearchViewModel.cs" />
+    <Compile Include="ViewModels\PackageViewModel.cs" />
+    <Compile Include="ViewModels\PortViewModel.cs" />
+    <Compile Include="ViewModels\PublishPackageViewModel.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="ViewModels\WatchViewModel.cs" />
+    <Compile Include="ViewModels\WorkspaceViewModel.cs" />
+    <Compile Include="VisualizationManager\octree\FastSerialization.cs" />
+    <Compile Include="VisualizationManager\octree\IOctree.cs" />
+    <Compile Include="VisualizationManager\octree\Octree.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeBox.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeDistance.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeLeaf.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeNode.cs" />
+    <Compile Include="VisualizationManager\octree\Point3d.cs" />
+    <Compile Include="VisualizationManager\octree\Point3f.cs" />
+    <Compile Include="VisualizationManager\octree\Vector3d.cs" />
+    <Compile Include="VisualizationManager\octree\Vector3f.cs" />
+    <Compile Include="VisualizationManager\RenderDescription.cs" />
+    <Compile Include="VisualizationManager\RenderManager.cs" />
+    <Compile Include="VisualizationManager\STLExport.cs" />
+    <Compile Include="VisualizationManager\Visualization.cs" />
+    <Compile Include="VisualizationManager\VisualizationManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Controls\GraphUpdateNotificationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Controls\ShortcutToolbar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Controls\StartPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Fonts\OpenSans-Bold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-BoldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-ExtraBold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-ExtraBoldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Italic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Light.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-LightItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Semibold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Images\cursors.psd" />
+    <None Include="UI\Images\cursors1.psd" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\aboutback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\autodeskLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\background_texture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\close_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\close_inactive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\dynamo_logo_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\AboutWindow\logo_about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\add_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\add_32_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon_white_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon_white_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arc_add.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arc_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arc_remove.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arc_remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arc_select.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arc_select.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arrow-left-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arrow-left-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arrow-right-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\arrow-right-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\back_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\back_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-geom-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-geom-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-node-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-node-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-orbit-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-orbit-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-pan-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-pan-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-zoom-out-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\click_background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\closetab_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\closetab_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\closewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\closewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\cloud_download_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\cloud_download_arrow_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\cloud_download_arrow_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\collapse_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\collapse_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\collapsestate_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\collapsestate_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\condense.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\condense.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\consent_form_image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\DocumentHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\expand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\expand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\expand_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\expand_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\expandstate_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\expandstate_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand_drag.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand_drag.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand_pan.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand_pan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand_pan_active.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\hand_pan_active.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\HomeHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\librarycollapse_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\librarycollapse_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\maximizewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\maximizewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\minimizewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\minimizewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\move.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\new_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\new_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\new_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\open_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\open_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\open_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\openHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\OpenSelectedItemHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\padlock-closed-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\padlock-closed-black24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\pause_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\pause_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\pause_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\pointer.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\pointer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\pointer_add.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\pointer_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\rectangular_selection.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\rectangular_selection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\redo_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\redo_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\redo_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\resize_diagonal.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\resize_diagonal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\resize_horizontal.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\resize_horizontal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\resize_vertical.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\resize_vertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\restorewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\restorewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\run_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\run_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\run_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\save_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\save_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\save_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\saveHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\screenshot_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\screenshot_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\screenshot_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\search_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\search_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\search_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\searchcancel_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\searchcancel_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\sendfeedback_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\sendfeedback_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\sendfeedback_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\dynamo-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-discussion.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-dynamobim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-email.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-github.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-issues.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-reference.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\StartPage\icons-more-samples.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\tabs_button_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\tabs_button_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\task_dialog_crash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\task_dialog_future_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\task_dialog_obsolete_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\tick_selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\undo_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\undo_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\undo_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Update\clickbox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Update\download_ani.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Update\DownloadAnimation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Update\DownloadIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Update\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="UI\Images\Update\update_static.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Prompts\CrashPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Prompts\EditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Prompts\FunctionNamePrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Prompts\GenericTaskDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Prompts\NodeHelpPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\Connectors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DataTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoConverters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoModern.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoText.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\MenuStyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\Ports.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\ToolbarStyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\AboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\DynamoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\InfoBubbleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\InstalledPackagesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\NodeView.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\NoteView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\PackageManagerPublishView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\PackageManagerSearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\PreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\SearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\Watch3DView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\WatchTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UI\Views\WorkspaceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

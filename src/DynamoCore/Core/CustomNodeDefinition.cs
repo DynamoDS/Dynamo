@@ -6,7 +6,6 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using ProtoCore.AST.AssociativeAST;
 

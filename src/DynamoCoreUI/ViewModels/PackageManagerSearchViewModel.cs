@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
+using Greg.Responses;
 
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -284,7 +289,6 @@ namespace Dynamo.PackageManager
             return true;
         }
 
-
         /// <summary>
         /// Set the key for search.  Used by the associated command.
         /// </summary>
@@ -361,10 +365,8 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         public List<PackageManagerSearchElement> RefreshAndSearch()
         {
-
             Refresh();
             return Search(SearchText);
-
         }
 
         public void RefreshAndSearchAsync()
@@ -386,6 +388,120 @@ namespace Dynamo.PackageManager
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
 
+        }
+
+        private void AddToSearchResults(SearchElementBase element)
+        {
+            element.Executed += this.PackageOnExecuted;
+        }
+
+        private void ClearSearchResults()
+        {
+            
+        }
+
+        private void PackageOnExecuted( SearchElementBase searchElement )
+        {
+            var element = searchElement as PackageManagerSearchElement;
+
+            var version = element.VersionNumberToDownload ?? element.Header.versions.Last();
+
+            string message = "Are you sure you want to install " + element.Name + " " + version.version + "?";
+
+            var result = MessageBox.Show(message, "Package Download Confirmation",
+                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+            var dynamoViewModel = this.PackageManagerClientViewModel.DynamoViewModel;
+
+            if (result == MessageBoxResult.OK)
+            {
+                // get all of the headers
+                var headers = version.full_dependency_ids.Select(dep => dep._id).Select((id) =>
+                {
+                    PackageHeader pkgHeader;
+                    var res = dynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+
+                    if (!res.Success)
+                        MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    return pkgHeader;
+                }).ToList();
+
+                // if any header download fails, abort
+                if (headers.Any(x => x == null))
+                {
+                    return;
+                }
+
+                var allPackageVersions = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version);
+
+                // Determine if there are any dependencies that are made with a newer version
+                // of Dynamo (this includes the root package)
+                var dynamoVersion = dynamoViewModel.Model.Version;
+                var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
+                var futureDeps = allPackageVersions.FilterFuturePackages(dynamoVersionParsed);
+
+                // If any of the required packages use a newer version of Dynamo, show a dialog to the user
+                // allowing them to cancel the package download
+                if (futureDeps.Any())
+                {
+                    var sb = new StringBuilder();
+
+                    sb.AppendLine(
+                        "The following packages use a newer version of Dynamo than you are currently using: ");
+                    sb.AppendLine();
+
+                    foreach (var elem in futureDeps)
+                    {
+                        sb.AppendLine(elem.Item1.name + " " + elem.Item2);
+                    }
+
+                    sb.AppendLine();
+                    sb.AppendLine("Do you want to continue?");
+
+                    // If the user
+                    if (MessageBox.Show(
+                        sb.ToString(),
+                        "Package Uses Newer Version of Dynamo!",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+
+                var localPkgs = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
+
+                // if a package is already installed we need to uninstall it, allowing
+                // the user to cancel if they do not want to uninstall the package
+                foreach (var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)))
+                {
+                    if (localPkg == null) continue;
+                    string msg;
+
+                    // if the package is in use, we will not be able to uninstall it.  
+                    if (!localPkg.InUse())
+                    {
+                        msg = "Dynamo needs to uninstall " + element.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
+                        MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                        MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
+                    msg = "Dynamo has already installed " + element.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
+                    if (MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                        return;
+                }
+
+                // form header version pairs and download and install all packages
+                allPackageVersions
+                        .Select(x => new PackageDownloadHandle(x.Item1, x.Item2))
+                        .ToList()
+                        .ForEach(x =>  dynamoViewModel.PackageManagerClientViewModel.DownloadAndInstall(x));
+            }
+            
         }
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)

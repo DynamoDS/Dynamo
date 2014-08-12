@@ -12,11 +12,9 @@ using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Utils = Dynamo.Nodes.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
@@ -54,20 +52,21 @@ namespace Dynamo.Models
 
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
 
-        public event NodeEventHandler RequestNodeCentered;
+        public event DynamoModel.NodeEventHandler RequestNodeCentered;
         public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
 
-        public event ZoomEventHandler ZoomChanged;
+        public event DynamoModel.ZoomEventHandler ZoomChanged;
+
         /// <summary>
         /// Used during open and workspace changes to set the zoom of the workspace
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
+        public virtual void OnZoomChanged(object sender, DynamoModel.ZoomEventArgs e)
         {
             if (ZoomChanged != null)
             {
@@ -76,7 +75,8 @@ namespace Dynamo.Models
             }
         }
 
-        public event PointEventHandler CurrentOffsetChanged;
+        public event DynamoModel.PointEventHandler CurrentOffsetChanged;
+
         /// <summary>
         /// Used during open and workspace changes to set the location of the workspace
         /// </summary>
@@ -783,9 +783,8 @@ namespace Dynamo.Models
                 // a DSVarArgFunction or a CodeBlockNodeModel into a list.
                 var nodeGuids = this.Nodes.Where((n) =>
                 {
-                    return (n is DSFunction
-                        || (n is DSVarArgFunction)
-                        || (n is CodeBlockNodeModel));
+                    return (n is DSFunctionBase)
+                        || (n is CodeBlockNodeModel);
 
                 }).Select((n) => n.GUID);
 

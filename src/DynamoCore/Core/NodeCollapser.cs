@@ -4,8 +4,6 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
-
 using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
@@ -21,7 +19,7 @@ namespace Dynamo.Utilities
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="args"></param>
-        public static void Collapse(DynamoViewModel dynamoViewModel, IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args=null)
+        public static void Collapse(DynamoModel dynamoModel, IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args=null)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
 
@@ -29,7 +27,7 @@ namespace Dynamo.Utilities
             {
                 args = new FunctionNamePromptEventArgs();
 
-                dynamoViewModel.Model.OnRequestsFunctionNamePrompt(null, args);
+                dynamoModel.OnRequestsFunctionNamePrompt(null, args);
 
                 if (!args.Success)
                 {
@@ -52,7 +50,7 @@ namespace Dynamo.Utilities
             UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
             undoRecorder.BeginActionGroup();
 
-            var newNodeWorkspace = new CustomNodeWorkspaceModel(dynamoViewModel.Model, args.Name, args.Category, args.Description, 0, 0)
+            var newNodeWorkspace = new CustomNodeWorkspaceModel(dynamoModel, args.Name, args.Category, args.Description, 0, 0)
             {
                 WatchChanges = false,
                 HasUnsavedChanges = true
@@ -486,13 +484,13 @@ namespace Dynamo.Utilities
             #endregion
 
             // save and load the definition from file
-            newNodeDefinition.SyncWithWorkspace(dynamoViewModel.Model, true, true);
-            dynamoViewModel.Model.Workspaces.Add(newNodeWorkspace);
+            newNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
+            dynamoModel.Workspaces.Add(newNodeWorkspace);
 
             string name = newNodeDefinition.FunctionId.ToString();
 
             // KILLDYNSETTINGS - What does this expect?
-            var collapsedNode = dynamoViewModel.Model.CurrentWorkspace.AddNode(avgX, avgY, name);
+            var collapsedNode = dynamoModel.CurrentWorkspace.AddNode(avgX, avgY, name);
             undoRecorder.RecordCreationForUndo(collapsedNode);
 
             // place the node as intended, not centered

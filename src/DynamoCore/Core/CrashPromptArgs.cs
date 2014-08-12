@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Dynamo.ViewModels;
-
 namespace Dynamo.Core
 {
     public class CrashPromptArgs : EventArgs

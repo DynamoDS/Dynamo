@@ -10,7 +10,6 @@ using System.Windows;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
@@ -21,18 +20,18 @@ namespace Dynamo.PackageManager
     /// A search element representing an element from the package manager </summary>
     public class PackageManagerSearchElement : SearchElementBase
     {
-        private readonly DynamoViewModel dynamoViewModel;
-
         public DelegateCommand DownloadLatest { get; set; }
         public DelegateCommand UpvoteCommand { get; set; }
         public DelegateCommand DownvoteCommand { get; set; }
 
+        private readonly PackageManagerClient client;
+
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header)
+        public PackageManagerSearchElement(PackageManagerClient client, Greg.Responses.PackageHeader header)
         {
-            this.dynamoViewModel = dynamoViewModel;
+            this.client = client;
 
             this.Header = header;
             this.Weight = header.deprecated ? 0.1 : 1;
@@ -54,7 +53,7 @@ namespace Dynamo.PackageManager
 
         public void Upvote()
         {
-            Task<bool>.Factory.StartNew(() => dynamoViewModel.Model.PackageManagerClient.Upvote(this.Id))
+            Task<bool>.Factory.StartNew(() => client.Upvote(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
@@ -68,7 +67,7 @@ namespace Dynamo.PackageManager
 
         public void Downvote()
         {
-            Task<bool>.Factory.StartNew(() => dynamoViewModel.Model.PackageManagerClient.Downvote(this.Id))
+            Task<bool>.Factory.StartNew(() => client.Downvote(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
@@ -78,10 +77,9 @@ namespace Dynamo.PackageManager
                 } , TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
-        private static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
+        public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
             IEnumerable<PackageHeader> headers, PackageVersion version)
         {
-  
             return headers.Zip(
                 version.full_dependency_versions,
                 (header, v) => new Tuple<PackageHeader, string>(header, v))
@@ -92,110 +90,9 @@ namespace Dynamo.PackageManager
                         pair.Item1.versions.First(x => x.version == pair.Item2)));
         } 
 
-        public override void Execute()
-        {
-            var version = versionNumberToDownload ?? this.Header.versions.Last();
-
-            string message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
-
-            var result = MessageBox.Show(message, "Package Download Confirmation",
-                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.OK)
-            {
-                // get all of the headers
-                var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
-                    {
-                        PackageHeader pkgHeader;
-                        var res = dynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
-                        
-                        if (!res.Success)
-                            MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
-                                MessageBoxButton.OK, MessageBoxImage.Error);
-
-                        return pkgHeader;
-                    }).ToList();
-
-                // if any header download fails, abort
-                if (headers.Any(x => x == null))
-                {
-                    return;
-                }
-
-                var allPackageVersions = ListRequiredPackageVersions(headers, version);
-
-                // Determine if there are any dependencies that are made with a newer version
-                // of Dynamo (this includes the root package)
-                var dynamoVersion = dynamoViewModel.Model.Version;
-                var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
-                var futureDeps = allPackageVersions.FilterFuturePackages(dynamoVersionParsed);
-
-                // If any of the required packages use a newer version of Dynamo, show a dialog to the user
-                // allowing them to cancel the package download
-                if (futureDeps.Any())
-                {
-                    var sb = new StringBuilder();
-
-                    sb.AppendLine(
-                        "The following packages use a newer version of Dynamo than you are currently using: ");
-                    sb.AppendLine();
-
-                    foreach (var elem in futureDeps)
-                    {
-                        sb.AppendLine(elem.Item1.name + " " + elem.Item2);
-                    }
-
-                    sb.AppendLine();
-                    sb.AppendLine("Do you want to continue?");
-
-                    // If the user
-                    if (MessageBox.Show(
-                        sb.ToString(),
-                        "Package Uses Newer Version of Dynamo!",
-                        MessageBoxButton.OKCancel,
-                        MessageBoxImage.Warning) == MessageBoxResult.Cancel)
-                    {
-                        return;
-                    }
-                }
-
-                var localPkgs = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
-
-                // if a package is already installed we need to uninstall it, allowing
-                // the user to cancel if they do not want to uninstall the package
-                foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
-                {
-                    if (localPkg == null) continue;
-                    string msg;
-
-                    // if the package is in use, we will not be able to uninstall it.  
-                    if (!localPkg.InUse())
-                    {
-                        msg = "Dynamo needs to uninstall " + this.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
-                        MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
-                                        MessageBoxImage.Error);
-                        return;
-                    }
-
-                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    msg = "Dynamo has already installed " + this.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
-                    if ( MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
-                        return;
-                }
-
-                // form header version pairs and download and install all packages
-                allPackageVersions
-                        .Select( x => new PackageDownloadHandle(this.dynamoViewModel, x.Item1, x.Item2))
-                        .ToList()
-                        .ForEach(x=>x.Start());
-
-            }
-
-        }
-
         #region Properties 
 
-            private PackageVersion versionNumberToDownload = null;
+            public PackageVersion VersionNumberToDownload = null;
 
             public List<Tuple<PackageVersion, DelegateCommand>> Versions
             {
@@ -205,7 +102,7 @@ namespace Dynamo.PackageManager
                         Header.versions.Select(
                             x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
                                 {
-                                    this.versionNumberToDownload = x;
+                                    this.VersionNumberToDownload = x;
                                     this.Execute();
                                 }, () => true))).ToList();
                 } 

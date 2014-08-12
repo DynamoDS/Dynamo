@@ -46,7 +46,7 @@ namespace Dynamo.Search.SearchElements
         }
 
         public delegate void SearchElementHandler(SearchElementBase ele);
-        internal event SearchElementHandler Executed;
+        public event SearchElementHandler Executed;
         protected void OnExecuted()
         {
             if (Executed != null)

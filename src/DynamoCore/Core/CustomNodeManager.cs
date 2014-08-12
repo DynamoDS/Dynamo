@@ -7,13 +7,11 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
-using Dynamo.ViewModels;
 
 using DynamoUtilities;
 
 using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities

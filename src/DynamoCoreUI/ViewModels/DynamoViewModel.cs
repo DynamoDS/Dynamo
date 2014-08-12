@@ -438,8 +438,12 @@ namespace Dynamo.ViewModels
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
             IVisualizationManager vizManager, string commandFilePath)
         {
+            
             // initialize core data structures
             this.model = dynamoModel;
+
+            UsageReportingManager.Instance.InitializeCore(this.model);
+
             this.WatchHandler = watchHandler;
             this.VisualizationManager = vizManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Windows.Input;
-using Newtonsoft.Json;
 using Dynamo.Utilities;
 
 namespace Dynamo.UI.Commands
@@ -56,26 +55,6 @@ namespace Dynamo.UI.Commands
             }
         }
 
-        // KILLDYNSETTINGS - this isn't used
-        //private void OnExecute(object parameter)
-        //{
-        //    //http://joshsmithonwpf.wordpress.com/2007/10/25/logging-routed-commands/
-
-        //    var msg = new StringBuilder();
-
-        //    string paramStr = "";
-
-        //    if (parameter == null)
-        //        paramStr = "null";
-        //    else if (parameter.GetType() == typeof(Dictionary<object, object>))
-        //        paramStr = JsonConvert.SerializeObject(parameter).ToString();
-        //    else
-        //        paramStr = parameter.ToString();
-            
-        //    msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
-
-        //    dynamoModel.Logger.Log(msg.ToString(), LogLevel.File);
-        //}
     }
 
 }

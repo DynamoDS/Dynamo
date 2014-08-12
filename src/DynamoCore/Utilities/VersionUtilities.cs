@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Dynamo.Utilities
 {
-    internal static class VersionUtilities
+    public static class VersionUtilities
     {
         /// <summary>
         /// Parse the first n fields of a version string.  Delegates to
         /// Version.Parse.
         /// </summary>
-        internal static Version PartialParse(string versionString, int numberOfFields = 3)
+        public static Version PartialParse(string versionString, int numberOfFields = 3)
         {
             var splitVersion = versionString.Split('.');
             if (splitVersion.Length < numberOfFields)
