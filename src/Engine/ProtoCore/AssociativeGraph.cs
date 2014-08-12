@@ -124,6 +124,7 @@ namespace ProtoCore.AssociativeGraph
         public List<ProtoCore.AssociativeGraph.UpdateNode> dimensionNodeList { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNodeRef> updateNodeRefList { get; set; }
         public bool isDirty { get; set; }
+        public bool isDeferred { get; set; }
         public bool isReturn { get; set; }
         public int procIndex { get; set; }              // Function that this graph resides in
         public int classIndex { get; set; }             // Class index that this graph resides in
@@ -193,6 +194,7 @@ namespace ProtoCore.AssociativeGraph
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
             isDirty = true;
+            isDeferred = false;
             isReturn = false;
             procIndex = ProtoCore.DSASM.Constants.kGlobalScope;
             classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;

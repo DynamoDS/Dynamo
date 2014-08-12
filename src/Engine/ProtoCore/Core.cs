@@ -146,6 +146,7 @@ namespace ProtoCore
     {
         public Options()
         {
+            ApplyUpdate = false;
 
             DumpByteCode = false;
             Verbose = false;
@@ -197,6 +198,8 @@ namespace ProtoCore
 
         }
 
+        public bool ApplyUpdate { get; set; }
+        public int DeferredUpdates { get; set; }
         public bool DumpByteCode { get; set; }
         public bool DumpIL { get; private set; }
         public bool GenerateSSA { get; set; }

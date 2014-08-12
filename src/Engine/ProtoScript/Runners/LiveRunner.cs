@@ -1554,6 +1554,12 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
+        private bool ApplyUpdate()
+        {
+            Execute();
+            return true;
+        }
+
         /// <summary>
         /// Resets few states in the core to prepare the core for a new
         /// delta code compilation and execution
@@ -1596,7 +1602,16 @@ namespace ProtoScript.Runners
             }
 
             ResetForDeltaExecution();
+            runnerCore.Options.ApplyUpdate = false;
+            runnerCore.Options.DeferredUpdates = 0;
             CompileAndExecute(dispatchASTList);
+
+            if (runnerCore.Options.DeferredUpdates > 0)
+            {
+                ResetForDeltaExecution();
+                runnerCore.Options.ApplyUpdate = true;
+                ApplyUpdate();
+            }
         }
 
 

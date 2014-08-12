@@ -1365,6 +1365,45 @@ namespace ProtoCore.DSASM
             return arrayelements.ToString();
         }
 
+        private void SetupNextDeferredExecutableGraph(int function, int classscope)
+        {
+            Validity.Assert(istream != null);
+            if (istream.language != Language.kAssociative)
+            {
+                return;
+            }
+
+            bool isUpdated = false;
+            List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
+            if (graphNodes != null)
+            {
+                foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodes)
+                {
+                    if (!graphNode.isDeferred || !graphNode.isActive)
+                    {
+                        continue;
+                    }
+                    // Is return node or is updatable
+                    if (graphNode.isReturn || graphNode.updateNodeRefList[0].nodeList.Count > 0)
+                    {
+                        graphNode.isDeferred = false;
+
+                        graphNode.isDirty = true;
+
+                        break;
+                    }
+                }
+            }
+
+            if (!isUpdated)
+            {
+                // There were no updates, this is the end of this associative block
+                pc = Constants.kInvalidPC;
+            }
+        }
+
+        
+
         //proc SetupNextExecutableGraph
         //    Find the first dirty node and execute it
         //    foreach node in graphNodeList
@@ -1392,6 +1431,7 @@ namespace ProtoCore.DSASM
                     {
                         continue;
                     }
+
                     // Is return node or is updatable
                     if (graphNode.isReturn || graphNode.updateNodeRefList[0].nodeList.Count > 0)
                     {
@@ -1471,13 +1511,27 @@ namespace ProtoCore.DSASM
                     // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
                     bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
 
-                    if (graphNode.isDirty && inStartRange)
+                    if (core.Options.ApplyUpdate)
                     {
-                        pc = graphNode.updateBlock.startpc;
-                        graphNode.isDirty = false;
-                        Properties.executingGraphNode = graphNode;
-                        core.RuntimeExpressionUID = graphNode.exprUID;
-                        break;
+                        if (graphNode.isDeferred && inStartRange)
+                        {
+                            pc = graphNode.updateBlock.startpc;
+                            graphNode.isDirty = false;
+                            Properties.executingGraphNode = graphNode;
+                            core.RuntimeExpressionUID = graphNode.exprUID;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (graphNode.isDirty && inStartRange)
+                        {
+                            pc = graphNode.updateBlock.startpc;
+                            graphNode.isDirty = false;
+                            Properties.executingGraphNode = graphNode;
+                            core.RuntimeExpressionUID = graphNode.exprUID;
+                            break;
+                        }
                     }
                 }
                 else if (graphNode.updateBlock.startpc == entrypoint)
@@ -1697,6 +1751,70 @@ namespace ProtoCore.DSASM
                 }
             }
             return propertyChanged;
+        }
+
+        private void UpdateGraphDeferred(int exprUID, int modBlkId, bool isSSAAssign)
+        {
+            //UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
+
+            ProtoCore.AssociativeGraph.GraphNode executingGraphNode = Properties.executingGraphNode;
+            if (executingGraphNode == null)
+            {
+                return;// nodesMarkedDirty;
+            }
+
+            int classIndex = executingGraphNode.classIndex;
+            int procIndex = executingGraphNode.procIndex;
+
+            var graph = istream.dependencyGraph;
+            var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
+            if (graphNodes == null)
+            {
+                return;// nodesMarkedDirty;
+            }
+
+            //foreach (var graphNode in graphNodes)
+            for (int i = 0; i < graphNodes.Count; ++i)
+            {
+                var graphNode = graphNodes[i];
+
+                // If the graphnode is inactive then it is no longer executed
+                if (!graphNode.isActive)
+                {
+                    continue;
+                }
+                //
+                // Comment Jun: 
+                //      This is clarifying the intention that if the graphnode is within the same SSA expression, we still allow update
+                //
+                bool allowUpdateWithinSSA = false;
+                if (core.Options.ExecuteSSA)
+                {
+                    allowUpdateWithinSSA = true;
+                    isSSAAssign = false; // Remove references to this when ssa flag is removed
+                }
+                else
+                {
+                    // TODO Jun: Remove this code immediatley after enabling SSA
+                    bool withinSSAStatement = graphNode.UID == executingGraphNode.UID;
+                    allowUpdateWithinSSA = !withinSSAStatement;
+                }
+
+                foreach (var noderef in executingGraphNode.updateNodeRefList)
+                {
+                    ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
+                    if (!graphNode.DependsOn(noderef, ref matchingNode))
+                    {
+                        continue;
+                    }
+
+                    if (!graphNode.isDirty)
+                    {
+                        graphNode.isDeferred = true;
+                        core.Options.DeferredUpdates++;
+                    }
+                }
+            }
         }
 
         private void UpdateGraph(int exprUID, int modBlkId, bool isSSAAssign)
@@ -2108,68 +2226,45 @@ namespace ProtoCore.DSASM
                                 graphNode.cyclePoint.isCyclic = true;
                             }
                         }
-                        else if (!graphNode.isDirty)
+                        else
                         {
-                            // If the graphnode is not cyclic, then it can be safely marked as dirty, in preparation of its execution
-                            if (core.Options.EnableVariableAccumulator
-                                && !isSSAAssign
-                                && graphNode.IsSSANode())
+                            if (graphNode.isDirty)
                             {
-                                //
-                                // Comment Jun: Backtrack and firt the first graphnode of this SSA transform and mark it dirty. 
-                                //              We want to execute the entire statement, not just the partial SSA nodes
-                                //
-
-                                // TODO Jun: Optimization - Statically determine the index of the starting graphnode of this SSA expression
-
-                                // Looks we should partially execuate graph
-                                // nodes otherwise we will get accumulative
-                                // update. - Yu Ke 
-
-                                /*
-                                int graphNodeIndex = 0;
-                                for (; graphNodeIndex < graph.GraphList.Count; graphNodeIndex++)
+                            }
+                            else
+                            {
+                                if (core.Options.ElementBasedArrayUpdate)
                                 {
-                                    if (graph.GraphList[graphNodeIndex].UID == graphNode.UID)
-                                        break;
+                                    UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
                                 }
-                                var firstGraphNode = GetFirstSSAGraphnode(graphNodeIndex - 1, graphNode.exprUID);
-                                firstGraphNode.isDirty = true;
-                                */
-                            }
+                                graphNode.isDirty = true;
+                                graphNode.forPropertyChanged = propertyChanged;
+                                nodesMarkedDirty++;
 
-                            if (core.Options.ElementBasedArrayUpdate)
-                            {
-                                UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
-                            }
-                            graphNode.isDirty = true;
-                            graphNode.forPropertyChanged = propertyChanged;
-                            nodesMarkedDirty++;
-                            
-                            // On debug mode:
-                            //      we want to mark all ssa statements dirty for an if the lhs pointer is a new instance.
-                            //      In this case, the entire line must be re-executed
-                            //      
-                            //  Given:
-                            //      x = 1
-                            //      p = p.f(x) 
-                            //      x = 2
-                            //
-                            //  To SSA:
-                            //
-                            //      x = 1
-                            //      t0 = p -> we want to execute from here of member function 'f' returned a new instance of 'p'
-                            //      t1 = x
-                            //      t2 = t0.f(t1)
-                            //      p = t2
-                            //      x = 2
-                            if (null != executingGraphNode.lastGraphNode && executingGraphNode.lastGraphNode.reExecuteExpression)
-                            {
-                                executingGraphNode.lastGraphNode.reExecuteExpression = false;
-                                //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
+                                // On debug mode:
+                                //      we want to mark all ssa statements dirty for an if the lhs pointer is a new instance.
+                                //      In this case, the entire line must be re-executed
+                                //      
+                                //  Given:
+                                //      x = 1
+                                //      p = p.f(x) 
+                                //      x = 2
+                                //
+                                //  To SSA:
+                                //
+                                //      x = 1
+                                //      t0 = p -> we want to execute from here of member function 'f' returned a new instance of 'p'
+                                //      t1 = x
+                                //      t2 = t0.f(t1)
+                                //      p = t2
+                                //      x = 2
+                                if (null != executingGraphNode.lastGraphNode && executingGraphNode.lastGraphNode.reExecuteExpression)
                                 {
+                                    executingGraphNode.lastGraphNode.reExecuteExpression = false;
+                                    
                                     var firstGraphNode = GetFirstSSAGraphnode(i - 1, graphNode.exprUID);
                                     firstGraphNode.isDirty = true;
+                                    
                                 }
                             }
                         }
@@ -7793,10 +7888,25 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
-            UpdateGraph(exprID, modBlkID, isSSA);
+
+            //UpdateGraph(exprID, modBlkID, isSSA);
+            //SetupNextExecutableGraph(fi, ci);
 
             // Get the next graph to be executed
-            SetupNextExecutableGraph(fi, ci);
+            if (core.Options.ApplyUpdate)
+            {
+                // Execute only the dirty nodes
+                // No graphupdate allowed
+                SetupNextDeferredExecutableGraph(fi, ci);
+                UpdateGraph(exprID, modBlkID, isSSA);
+                SetupNextExecutableGraph(fi, ci);
+            }
+            else
+            {
+                // Mark dependent graphnodes as dirty
+                UpdateGraphDeferred(exprID, modBlkID, isSSA);
+                SetupNextExecutableGraph(fi, ci);
+            }
 
 
             return;
