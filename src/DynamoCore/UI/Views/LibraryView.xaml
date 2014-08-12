@@ -10,7 +10,7 @@
 			 d:DesignWidth="350">
 	<UserControl.Resources>
         <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
-        <controls:VisibilityToHeigthConverter x:Key="VisibilityToHeigthConverter" />
+        <controls:VisibilityToHeightConverter x:Key="VisibilityToHeightConverter" />
         <DataTemplate x:Key="ClassObjectDataTemplate">
 			<StackPanel Orientation="Vertical"
 						Width="66"
@@ -33,7 +33,7 @@
 				</Grid.Width>
                 <Grid.Height>
                     <Binding Path="ClassDetailsVisibility"
-                             Converter="{StaticResource VisibilityToHeigthConverter}"/>
+                             Converter="{StaticResource VisibilityToHeightConverter}"/>
                 </Grid.Height>
                 <Grid.Visibility>
 					<Binding Path="ClassDetailsVisibility" />
