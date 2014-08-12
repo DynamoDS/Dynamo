@@ -561,20 +561,30 @@ namespace Dynamo.Tests
         [Test]
         public void ProcessNodeCategoryTests()
         {
+            string group = null;
             string category = null;
-            Assert.AreEqual(null, _search.ProcessNodeCategory(category));
+            Assert.AreEqual(null, _search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(null, group);
 
+            group = null;
             category = "";
-            Assert.AreEqual("", _search.ProcessNodeCategory(category));
+            Assert.AreEqual("", _search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(null, group);
 
+            group = null;
             category = "Builtin Functions";
-            Assert.AreEqual("Builtin Functions.Actions", _search.ProcessNodeCategory(category));
+            Assert.AreEqual("Builtin Functions", _search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual("Actions", group);
 
+            group = null;
             category = "Core.Evaluate";
-            Assert.AreEqual("Core.Evaluate.Actions", _search.ProcessNodeCategory(category));
+            Assert.AreEqual("Core.Evaluate", _search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual("Actions", group);
 
+            group = null;
             category = "Core.List.Create";
-            Assert.AreEqual("Core.List.Create", _search.ProcessNodeCategory(category));
+            Assert.AreEqual("Core.List", _search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual("Create", group);
         }
 		
         #endregion

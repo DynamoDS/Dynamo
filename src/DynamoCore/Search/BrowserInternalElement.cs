@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Dynamo.Search;
+using Dynamo.DSEngine;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Nodes.Search
 {
-
     public class BrowserRootElement : BrowserItem
     {
 
@@ -45,7 +45,6 @@ namespace Dynamo.Nodes.Search
             this.Siblings = null;
             this._name = name;
         }
-
     }
 
     public class BrowserInternalElement : BrowserItem
@@ -108,8 +107,68 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
-
         public string FullCategoryName { get; set; }
     }
-}
 
+    public class BrowserClassElement : BrowserInternalElement
+    {
+        private ObservableCollection<BrowserInternalElement> createMembers;
+        private ObservableCollection<BrowserInternalElement> actionMembers;
+        private ObservableCollection<BrowserInternalElement> queryMembers;
+
+        internal BrowserClassElement(string name, BrowserItem parent)
+            : base(name, parent)
+        {
+            this.createMembers = new ObservableCollection<BrowserInternalElement>();
+            this.actionMembers = new ObservableCollection<BrowserInternalElement>();
+            this.queryMembers = new ObservableCollection<BrowserInternalElement>();
+        }
+
+        public ObservableCollection<BrowserInternalElement> CreateMembers
+        {
+            get { return this.createMembers; }
+        }
+
+        public ObservableCollection<BrowserInternalElement> ActionMembers
+        {
+            get { return this.actionMembers; }
+        }
+
+        public ObservableCollection<BrowserInternalElement> QueryMembers
+        {
+            get { return this.queryMembers; }
+        }
+
+        internal override void AddChild(BrowserInternalElement elem)
+        {
+            switch ((elem as NodeSearchElement).Group)
+            {
+                case LibraryServices.Categories.Constructors:
+                    CreateMembers.Add(elem);
+                    break;
+                case LibraryServices.Categories.MemberFunctions:
+                    ActionMembers.Add(elem);
+                    break;
+                case LibraryServices.Categories.Properties:
+                    QueryMembers.Add(elem);
+                    break;
+            }
+        }
+    }
+
+    public class BrowserDetailsElement : BrowserInternalElement
+    {
+        internal BrowserDetailsElement()
+            : base()
+        {
+            // Class details is by default hidden.
+            StandardPanelVisibility = System.Windows.Visibility.Collapsed;
+        }
+
+        public Visibility StandardPanelVisibility { get; set; }
+
+        public ObservableCollection<BrowserInternalElement> CreateMembers { get; set; }
+        public ObservableCollection<BrowserInternalElement> ActionMembers { get; set; }
+        public ObservableCollection<BrowserInternalElement> QueryMembers { get; set; }
+    }
+}

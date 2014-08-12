@@ -17,16 +17,16 @@ namespace Dynamo.Search.SearchElements
         private FunctionDescriptor _functionItem;
         private string _displayString;
 
-        public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem) :
-            base(displayString, functionItem.Description, new List<string> { })
+        public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, string group) :
+            base(displayString, functionItem.Description, new List<string> { }, group)
         {
             _displayString = displayString;
-            _functionItem = functionItem;
+            _functionItem = functionItem;            
         }
 
         public override NodeSearchElement Copy()
         {
-            return new DSFunctionNodeSearchElement(_displayString, _functionItem);
+            return new DSFunctionNodeSearchElement(_displayString, _functionItem, Group);
         }
 
         /// <summary>

@@ -69,9 +69,8 @@ namespace Dynamo.Nodes.Search
         ///     Adds an element as a child of this one, while updating its parent and oldparent field
         /// </summary>
         /// <param name="elem">The element in question</param>
-        internal void AddChild(BrowserInternalElement elem)
-        {
-
+        internal virtual void AddChild(BrowserInternalElement elem)
+        {            
             elem.OldParent = elem.Parent;
             if (elem.Parent != null)
                 elem.Parent.Items.Remove(elem);

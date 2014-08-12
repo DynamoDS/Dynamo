@@ -313,7 +313,8 @@ namespace Dynamo.Controls
             #region Search initialization
 
             // Changed to show design prototype.
-            var search = new LibraryView(); //new SearchView { DataContext = dynSettings.Controller.SearchViewModel };            
+            var search = new LibraryView { DataContext = dynSettings.Controller.SearchViewModel };
+                //new SearchView { DataContext = dynSettings.Controller.SearchViewModel };            
             sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = true;
 

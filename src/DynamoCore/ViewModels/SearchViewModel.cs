@@ -654,13 +654,14 @@ namespace Dynamo.ViewModels
             // attempt to add root category
             var currentCat = TryAddRootCategory(splitCat[0]);    
 
-            for (var i = 1; i < splitCat.Count; i++)
+            for (var i = 1; i < splitCat.Count - 1; i++)
             {
                 currentCat = TryAddChildCategory(currentCat, splitCat[i]);
             }
 
-            return currentCat;
+            currentCat = TryAddChildCategory(currentCat, splitCat[splitCat.Count - 1], splitCat.Count > 1);
 
+            return currentCat;
         }
 
         /// <summary>
@@ -668,8 +669,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="parent">The parent category </param>
         /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
+        /// <param name="isLastCategory">Points if category is last chunk in chain of categories</param>
         /// <returns>The newly created category</returns>
-        public BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
+        public BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName, bool isLastCategory = false)
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
 
@@ -690,7 +692,11 @@ namespace Dynamo.ViewModels
                 return GetCategoryByName(newCategoryName);
             }
 
-            var tempCat = new BrowserInternalElement(childCategoryName, parent);
+            BrowserInternalElement tempCat;
+            if (!isLastCategory)
+                tempCat = new BrowserInternalElement(childCategoryName, parent);
+            else
+                tempCat = new BrowserClassElement(childCategoryName, parent);
             parent.AddChild(tempCat);
 
             return tempCat;
@@ -871,7 +877,7 @@ namespace Dynamo.ViewModels
         ///     "Core.List.Create" will remain as "Core.List.Create"
         /// 
         /// </summary>
-        public string ProcessNodeCategory(string category)
+        public string ProcessNodeCategory(string category, ref string group)
         {
             if (string.IsNullOrEmpty(category))
                 return category;
@@ -879,17 +885,17 @@ namespace Dynamo.ViewModels
             int index = category.LastIndexOf(CATEGORY_DELIMITER);
 
             // If "index" is "-1", then the whole "category" will be used as-is.
-            switch (category.Substring(index + 1))
+            string groupCandidate = category.Substring(index + 1);
+            switch (groupCandidate)
             {
                 case CATEGORY_GROUP_ACTIONS:
                 case CATEGORY_GROUP_CREATE:
                 case CATEGORY_GROUP_QUERY:
-                    // Group name is already known.
-                    return category; 
-
+                    group = groupCandidate;
+                    return category.Substring(0, index);
                 default:
-                    // Defaulting to "CATEGORY_GROUP_ACTIONS" group if not defined.
-                    return category + CATEGORY_DELIMITER + CATEGORY_GROUP_ACTIONS;
+                    group = CATEGORY_GROUP_ACTIONS;
+                    return category;
             }
         }
 
@@ -926,7 +932,8 @@ namespace Dynamo.ViewModels
                     //      | nValue: int    |
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
-                    var category = ProcessNodeCategory(function.Category);
+                    string group = null;
+                    var category = ProcessNodeCategory(function.Category, ref group);
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -942,7 +949,7 @@ namespace Dynamo.ViewModels
                             displayString = displayString + "(" + args + ")";
                     }
 
-                    var searchElement = new DSFunctionNodeSearchElement(displayString, function);
+                    var searchElement = new DSFunctionNodeSearchElement(displayString, function, group);
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
                     
@@ -976,11 +983,12 @@ namespace Dynamo.ViewModels
             }
 
             attribs = t.GetCustomAttributes(typeof (NodeCategoryAttribute), false);
+            string group = null;
             var cat = "";
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                cat = ProcessNodeCategory(cat);
+                cat = ProcessNodeCategory(cat, ref group);
             }
 
             attribs = t.GetCustomAttributes(typeof (NodeSearchTagsAttribute), false);
@@ -1113,7 +1121,9 @@ namespace Dynamo.ViewModels
 
         public bool Add(CustomNodeInfo nodeInfo)
         {
-            var nodeEle = new CustomNodeSearchElement(nodeInfo);
+            string group = null;
+            string category = ProcessNodeCategory(nodeInfo.Category, ref group);
+            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
 
             if (SearchDictionary.Contains(nodeEle))
             {

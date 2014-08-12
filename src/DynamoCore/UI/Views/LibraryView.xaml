@@ -1,70 +1,71 @@
 ﻿<UserControl x:Class="Dynamo.UI.Views.LibraryView"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-			 mc:Ignorable="d"
-			 d:DesignHeight="525"
-			 d:DesignWidth="350">
-	<UserControl.Resources>
-		<DataTemplate x:Key="ClassObjectDataTemplate">
-			<StackPanel Orientation="Vertical"
-						Width="66"
-						Height="66">
-				<Image Source="{Binding Path=SmallIcon}"
-					   Width="29"
-					   Height="29"
-					   Margin="8"
-					   HorizontalAlignment="Center" />
-				<TextBlock Text="{Binding Path=Name}"
-						   HorizontalAlignment="Center" />
-			</StackPanel>
-		</DataTemplate>
-
-		<DataTemplate x:Key="ClassDetailsDataTemplate">
-            <Grid Background="CornflowerBlue">
-				<Grid.Width>
-					<Binding Path="ActualWidth"
-							 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
-				</Grid.Width>
-				<Grid.Visibility>
-					<Binding Path="ClassDetailsVisibility" />
-				</Grid.Visibility>
-                <uicontrols:StandardPanel/>                
-			</Grid>
+             mc:Ignorable="d"
+             d:DesignHeight="525"
+             d:DesignWidth="350">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ClassObjectDataTemplate">
+            <StackPanel Orientation="Vertical"
+                        Width="66"
+                        Height="80">
+                <Image Source="{Binding Path=SmallIcon}"
+                       Width="29"
+                       Height="29"
+                       Margin="8"
+                       HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding Path=Name}"
+                           HorizontalAlignment="Center"
+                           TextWrapping="Wrap" />
+            </StackPanel>
         </DataTemplate>
 
-		<controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
-											  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
-											  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-		<controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+        <DataTemplate x:Key="ClassDetailsDataTemplate">
+            <Grid Background="CornflowerBlue">
+                <Grid.Width>
+                    <Binding Path="ActualWidth"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
+                </Grid.Width>
+                <Grid.Visibility>
+                    <Binding Path="StandardPanelVisibility" />
+                </Grid.Visibility>
+                <uicontrols:StandardPanel DataContext="{Binding}" />
+            </Grid>
+        </DataTemplate>
+
+        <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
+                                              ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
+                                              ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
+        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
     </UserControl.Resources>
-	<Grid Name="LibraryGrid">
+    <Grid Name="LibraryGrid">
 
-		<!-- This is the outer list (showing categories) -->
-		<ListView Name="CategoryListView"
-				  ScrollViewer.CanContentScroll="False"
-				  ItemsSource="{Binding}">
-			<ListView.ItemTemplate>
-				<DataTemplate>
+        <!-- This is the outer list (showing categories) -->
+        <ListView Name="CategoryListView"
+                  ScrollViewer.CanContentScroll="False"
+                  ItemsSource="{Binding BrowserRootCategories}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
 
-					<Expander Foreground="Blue"
-							  Header="{Binding Path=Name}"
-							  Width="{Binding ElementName=CategoryListView, Path=ActualWidth}">
+                    <Expander Foreground="Blue"
+                              Header="{Binding Path=Name}"
+                              Width="{Binding ElementName=CategoryListView, Path=ActualWidth}">
 
-						<!-- This is inner list (showing subcategories) -->
-						<ListView ScrollViewer.CanContentScroll="False"
-								  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-								  ItemsSource="{Binding Path=Classes}">
-							<ListView.ItemsPanel>
-								<ItemsPanelTemplate>
-									<controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
+                        <!-- This is inner list (showing subcategories) -->
+                        <ListView ScrollViewer.CanContentScroll="False"
+                                  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                                  ItemsSource="{Binding Path=Items}">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
 										ElementName=CategoryListView, 
 										Converter={StaticResource LibraryWrapPanelWidthConverter}}" />
-								</ItemsPanelTemplate>
-							</ListView.ItemsPanel>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
                             <!--<ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <Style.Triggers>
@@ -83,10 +84,10 @@
                             </ListView.ItemContainerStyle>-->
 
                         </ListView>
-					</Expander>
-				</DataTemplate>
-			</ListView.ItemTemplate>
+                    </Expander>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
 
-	</Grid>
+    </Grid>
 </UserControl>

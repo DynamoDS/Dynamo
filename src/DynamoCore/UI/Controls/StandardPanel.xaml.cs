@@ -1,9 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows;
-
-using Dynamo.Models;
-
+using Dynamo.Nodes.Search;
 
 namespace Dynamo.UI.Controls
 {
@@ -18,21 +16,21 @@ namespace Dynamo.UI.Controls
         }
         private void ActionMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            queryActionMethods.ItemsSource = (this.DataContext as ClassDetails).ActionMembers;
+            queryActionMethods.ItemsSource = (this.DataContext as BrowserDetailsElement).ActionMembers;
             action.FontWeight = FontWeights.UltraBold;
             query.FontWeight = FontWeights.Normal;
         }
 
         private void QueryMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            queryActionMethods.ItemsSource = (this.DataContext as ClassDetails).QueryMembers;
+            queryActionMethods.ItemsSource = (this.DataContext as BrowserDetailsElement).QueryMembers;
             action.FontWeight = FontWeights.Normal;
             query.FontWeight = FontWeights.UltraBold;
         }
 
         private void queryActionMethods_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            queryActionMethods.ItemsSource = (this.DataContext as ClassDetails).QueryMembers;
+            queryActionMethods.ItemsSource = (this.DataContext as BrowserDetailsElement).QueryMembers;
         }
     }
 }

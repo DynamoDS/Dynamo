@@ -29,8 +29,7 @@
                     <TextBlock HorizontalAlignment="Left"
                                TextWrapping="Wrap"
                                Text="{Binding Name}"
-                               VerticalAlignment="Top"
-                               Width="111"
+                               VerticalAlignment="Top"                               
                                Margin="5,10,0,0"/>
                 </StackPanel>
                 </DataTemplate>
@@ -47,7 +46,7 @@
         </StackPanel>
         <ListBox x:Name="queryActionMethods"
                  Grid.Row="3"
-                 Grid.ColumnSpan="2"
+                 Grid.ColumnSpan="2"                 
                  DataContextChanged="queryActionMethods_DataContextChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -61,8 +60,7 @@
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
-                                   VerticalAlignment="Top"
-                                   Width="111"
+                                   VerticalAlignment="Top"                                   
                                    Margin="5,10,0,0"/>
                     </StackPanel>
                 </DataTemplate>
