@@ -96,7 +96,7 @@ namespace Dynamo.Models
         internal ClassDetails()
         {
             // Class details is by default hidden.
-            ClassDetailsVisibility = Visibility.Collapsed;
+            ClassDetailsVisibility = Visibility.Hidden;
         }
 
         // TODO: Add a method to set the list of "ClassMember" here so the 
