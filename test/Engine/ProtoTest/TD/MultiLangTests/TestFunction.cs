@@ -4288,6 +4288,7 @@ def recursion : int(a : int)
     return = loc;
 }
 a = 10;
+x;
 [Imperative]
 {
 	x = recursion(a); 
