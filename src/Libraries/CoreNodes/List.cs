@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using Autodesk.DesignScript.Runtime;
@@ -852,14 +853,26 @@ namespace DSCore
                 return -1;
             }
 
-            private static bool Eq(double x, double y)
-            {
-                return x.Equals(y);
-            }
-
             private static bool Eq(IList x, IList y)
             {
                 return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
+            }
+
+            private static bool Eq(IConvertible x, IConvertible y)
+            {
+                try
+                {
+                    return Convert.ToDouble(x).Equals(Convert.ToDouble(y));
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            private static bool Eq(object x, object y)
+            {
+                return x.Equals(y);
             }
         }
         #endregion
@@ -1224,17 +1237,25 @@ namespace DSCore
             //Same type and are comparable, use it's own compareTo method.
             if (xType == yType && typeof(IComparable).IsAssignableFrom(xType))
                 return ((IComparable)x).CompareTo(y);
+
             //Both are value type, can be converted to Double, use double comparison
             if (xType.IsValueType && yType.IsValueType)
             {
                 //Bool is bigger than other value type.
                 if (xType == typeof(bool))
                     return 1;
+
                 //Other value type is smaller than bool
                 if (yType == typeof(bool))
                     return -1;
-                return Convert.ToDouble(x).CompareTo(Convert.ToDouble(y));
+
+                if (typeof(IConvertible).IsAssignableFrom(xType)
+                    && typeof(IConvertible).IsAssignableFrom(yType))
+                { 
+                    return Convert.ToDouble(x).CompareTo(Convert.ToDouble(y));
+                }
             }
+
             //Value Type object will be smaller, if x is value type it is smaller
             if (xType.IsValueType)
                 return -1;

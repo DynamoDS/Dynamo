@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Autodesk.DesignScript.Geometry;
 
+using Dynamo.Library;
+
 namespace Dynamo.DSEngine
 {
     /// <summary>

@@ -58,10 +58,10 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { this, UndoRedoRecorder.UserAction.Modification }
                 };
-                WorkSpace.RecordModelsForUndo(models);
+                Workspace.RecordModelsForUndo(models);
             }
             else
-                WorkSpace.RecordModelForModification(this);
+                Workspace.RecordModelForModification(this);
         }
 
         protected override bool HandleModelEventCore(string eventName)
@@ -73,7 +73,7 @@ namespace Dynamo.Nodes
                     RegisterAllPorts();
                     return true; // Handled here.
                 case "RemoveInPort":
-                    WorkSpace.UndoRecorder.PopFromUndoGroup();
+                    Workspace.UndoRecorder.PopFromUndoGroup();
                     RecordModels();
                     RemoveInput();
                     RegisterAllPorts();
@@ -131,14 +131,15 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { this, UndoRedoRecorder.UserAction.Modification }
                 };
-                WorkSpace.RecordModelsForUndo(models);
+                Workspace.RecordModelsForUndo(models);
             }
             else
-                WorkSpace.RecordModelForModification(this);
+                Workspace.RecordModelForModification(this);
         }
 
         protected override bool HandleModelEventCore(string eventName)
         {
+
             switch (eventName)
             {
                 case "AddInPort":
@@ -146,11 +147,12 @@ namespace Dynamo.Nodes
                     RegisterAllPorts();
                     return true; // Handled here.
                 case "RemoveInPort":
-                    WorkSpace.UndoRecorder.PopFromUndoGroup();
+                    Workspace.UndoRecorder.PopFromUndoGroup();
                     RecordModels();
                     RemoveInput();
                     RegisterAllPorts();
                     return true; // Handled here.
+
             }
 
             return base.HandleModelEventCore(eventName);
@@ -249,7 +251,7 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
+            Workspace.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
         void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -313,9 +315,10 @@ namespace Dynamo.Nodes
             publishCustomNodeItem.Click += (sender, args) =>
             {
                 GoToWorkspace(nodeUI.ViewModel);
-                if (dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
+
+                if (nodeUI.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
                 {
-                    dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
+                    nodeUI.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
                 } 
             };
 
@@ -339,14 +342,14 @@ namespace Dynamo.Nodes
                 CanEditName = false
             };
 
-            dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
+            Workspace.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
-                    var def = workspace.CustomNodeDefinition;
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
+                    this.Workspace.DynamoModel.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
 
                 if (args.CanEditName) workspace.Name = args.Name;
@@ -441,12 +444,11 @@ namespace Dynamo.Nodes
                 TextWrapping = TextWrapping.Wrap
             };
 
-
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
+            tb.DataContext = nodeUI.ViewModel;
             tb.BindToProperty(
                 new Binding("Code")
                 {
@@ -471,6 +473,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(Symbol)
             {
+                DataContext = nodeUI.ViewModel,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background =
@@ -481,7 +484,6 @@ namespace Dynamo.Nodes
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = this;
             tb.BindToProperty(
                 new Binding("Symbol")
                 {
@@ -544,6 +546,7 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
             watchTree = new WatchTree();
 
             // MAGN-2446: Fixes the maximum width/height of watch node so it won't 
@@ -556,7 +559,8 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
             if (Root == null)
-                Root = new WatchViewModel();
+                Root = new WatchViewModel(this.dynamoViewModel.VisualizationManager);
+            
             watchTree.DataContext = Root;
 
             RequestBindingUnhook += delegate
@@ -589,7 +593,7 @@ namespace Dynamo.Nodes
 
             nodeUI.MainContextMenu.Items.Add(rawDataMenuItem);
 
-            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)this.Workspace.DynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
         }
@@ -724,8 +728,21 @@ namespace Dynamo.Nodes
 
     public class DynamoNodeButton : Button
     {
-        private readonly string eventName = string.Empty;
-        private readonly ModelBase model;
+        private string eventName = string.Empty;
+        private ModelBase model = null;
+        private DynamoViewModel dynamoViewModel;
+        private DynamoViewModel DynamoViewModel
+        {
+            get
+            {
+                if (this.dynamoViewModel != null) return this.dynamoViewModel;
+
+                var f = WPF.FindUpVisualTree<dynNodeView>(this);
+                if (f != null) this.dynamoViewModel = f.ViewModel.DynamoViewModel;
+
+                return this.dynamoViewModel;
+            }
+        }
 
         public DynamoNodeButton()
         {
@@ -748,10 +765,12 @@ namespace Dynamo.Nodes
             // needs the "DynCmd.ModelEventCommand" to be sent when user clicks
             // on the button.
             // 
-            if (null == model || (string.IsNullOrEmpty(eventName))) return;
-
-            var command = new DynamoViewModel.ModelEventCommand(model.GUID, eventName);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+            if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
+            {
+                var command = new DynamoViewModel.ModelEventCommand(model.GUID, eventName);
+                this.DynamoViewModel.ExecuteCommand(command);
+            }
         }
     }
 }
+

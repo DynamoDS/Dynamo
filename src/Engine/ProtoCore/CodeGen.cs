@@ -297,18 +297,8 @@ namespace ProtoCore
                 return;
             }
 
-            bool isLanguageBlock = CodeBlockType.kLanguage == codeBlock.blockType;
             int langblockOffset = 0;
             bool isGlobal = null == localProcedure;
-
-            /*
-            // Remove this check once the global stackframe push is implemented
-            if (isLanguageBlock && 0 != codeBlock.codeBlockId && !isGlobal)
-            {
-                langblockOffset = ProtoCore.DSASM.StackFrame.kStackFrameSize;
-            }
-            
-             * */
 
             if (ProtoCore.DSASM.Constants.kGlobalScope != globalClassIndex)
             {
@@ -628,7 +618,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -759,7 +748,6 @@ namespace ProtoCore
                     {
                         functionName = property;
                     }
-                    dynamic identnode = node;
                     ProtoCore.DSASM.SymbolNode symbolnode = null;
 
 
@@ -2687,8 +2675,6 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
-	        AssociativeGraph.GraphNode dependent = new AssociativeGraph.GraphNode();
-
             // Push all dependent pointers
             ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerList);
 

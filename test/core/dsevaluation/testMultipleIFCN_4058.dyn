@@ -1,0 +1,22 @@
+<Workspace Version="0.7.1.17276" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="09d2ff44-b60c-4930-b56b-8acc1f317df0" nickname="testMultipleIFCN" x="331" y="246.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="b64adfac-b83a-4a0f-9585-fd162f5c3993" />
+      <Name value="testMultipleIFCN" />
+      <Description value="" />
+      <Inputs>
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="b" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="c565b87f-b440-4747-81e4-600a06840a5c" nickname="Code Block" x="149" y="268" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="201866a4-e368-41e9-8264-bf4d8fb65ed1" nickname="Watch" x="511" y="266.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="09d2ff44-b60c-4930-b56b-8acc1f317df0" start_index="0" end="201866a4-e368-41e9-8264-bf4d8fb65ed1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c565b87f-b440-4747-81e4-600a06840a5c" start_index="0" end="09d2ff44-b60c-4930-b56b-8acc1f317df0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

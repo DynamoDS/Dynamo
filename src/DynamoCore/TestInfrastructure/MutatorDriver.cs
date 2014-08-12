@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using DSNodeServices;
+
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -15,11 +17,11 @@ namespace Dynamo.TestInfrastructure
     /// </summary>
     public class MutatorDriver
     {
-        private DynamoController dynamoController;
+        private readonly DynamoViewModel dynamoViewModel;
 
-        public MutatorDriver(DynamoController dynamoController)
+        public MutatorDriver(DynamoViewModel dynamoViewModel)
         {
-            this.dynamoController = dynamoController;
+            this.dynamoViewModel = dynamoViewModel;
         }
 
         internal void RunMutationTests()
@@ -27,7 +29,7 @@ namespace Dynamo.TestInfrastructure
             Random rand = new Random(1);
             //DebugSettings.VerboseLogging = true;
 
-            String logTarget = dynSettings.DynamoLogger.LogPath + "MutationLog.log";
+            String logTarget = dynamoViewModel.Model.Logger.LogPath + "MutationLog.log";
 
             StreamWriter writer = new StreamWriter(logTarget);
 
@@ -46,20 +48,20 @@ namespace Dynamo.TestInfrastructure
                         {
                             writer.WriteLine("##### - Beginning run: " + i);
 
-                            var nodes = dynamoController.DynamoModel.Nodes;
+                            var nodes = dynamoViewModel.Model.Nodes;
 
                             writer.WriteLine("### - Beginning eval");
 
 
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                                 {
                                     DynamoViewModel.RunCancelCommand runCancel =
                                         new DynamoViewModel.RunCancelCommand(false, false);
-                                    dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                    dynamoViewModel.ExecuteCommand(runCancel);
 
                                 }));
 
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                            while (dynamoViewModel.Model.Runner.Running)
                             {
                                 Thread.Sleep(10);
                             }
@@ -94,7 +96,7 @@ namespace Dynamo.TestInfrastructure
 
                             List<AbstractMutator> mutators = new List<AbstractMutator>()
                                 {
-                                    new CodeBlockNodeMutator(rand), new DeleteNodeMutator(rand)
+                                    new CodeBlockNodeMutator(dynamoViewModel, rand), new DeleteNodeMutator(dynamoViewModel, rand)
                                 };
 
 
@@ -110,11 +112,11 @@ namespace Dynamo.TestInfrastructure
                             writer.WriteLine("### - Beginning re-exec");
 
 
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                                 {
                                     DynamoViewModel.RunCancelCommand runCancel =
                                         new DynamoViewModel.RunCancelCommand(false, false);
-                                    dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                    dynamoViewModel.ExecuteCommand(runCancel);
 
                                 }));
 
@@ -127,12 +129,12 @@ namespace Dynamo.TestInfrastructure
 
                             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                             {
-                                dynamoController.UIDispatcher.Invoke(new Action(() =>
+                                dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                                     {
                                         DynamoViewModel.UndoRedoCommand undoCommand =
                                             new DynamoViewModel.UndoRedoCommand(
                                                 DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                        dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                        dynamoViewModel.ExecuteCommand(undoCommand);
 
                                     }));
 
@@ -145,17 +147,17 @@ namespace Dynamo.TestInfrastructure
                             writer.Flush();
                             writer.WriteLine("### - Beginning re-exec");
 
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                                 {
                                     DynamoViewModel.RunCancelCommand runCancel =
                                         new DynamoViewModel.RunCancelCommand(false, false);
 
-                                    dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                    dynamoViewModel.ExecuteCommand(runCancel);
 
                                 }));
                             Thread.Sleep(10);
 
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                            while (dynamoViewModel.Model.Runner.Running)
                             {
                                 Thread.Sleep(10);
                             }
@@ -244,7 +246,7 @@ namespace Dynamo.TestInfrastructure
                     }
                     finally
                     {
-                        dynSettings.DynamoLogger.Log("Fuzz testing: " + (passed ? "pass" : "FAIL"));
+                        dynamoViewModel.Model.Logger.Log("Fuzz testing: " + (passed ? "pass" : "FAIL"));
 
                         writer.Flush();
                         writer.Close();

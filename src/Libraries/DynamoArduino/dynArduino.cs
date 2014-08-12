@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
         SerialPort port;
         MenuItem comItem;
 
-        public Arduino()
+        public Arduino(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("exec", "Execution Interval"));
             OutPortData.Add(new PortData("arduino", "Serial port for later read/write"));
@@ -142,7 +142,8 @@ namespace Dynamo.Nodes
     {
         SerialPort port;
 
-        public ArduinoRead()
+        public ArduinoRead(WorkspaceModel workspace)
+            : base(workspace)
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection"));
             InPortData.Add(new PortData("delimiter", "The delimeter in your data coming from the Arduino."));
@@ -201,7 +202,8 @@ namespace Dynamo.Nodes
     {
         SerialPort port;
 
-        public ArduinoWrite()
+        public ArduinoWrite(WorkspaceModel workspace)
+            : base(workspace)
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection"));
             InPortData.Add(new PortData("text", "Text to be written"));
