@@ -740,7 +740,7 @@ namespace ProtoFFITests
             @"               import (""ProtoGeometry.dll"");           vec =  Vector.ByCoordinates(1,0,0);           newVec=vec.Scale({1,null});//array           prop = VecGuarantedProperties(newVec);           def VecGuarantedProperties(vec :Vector)           {              return = {vec.Length };            }                    ";
             object[] c = new object[] { new object[] { 1.0 }, new object[] { null } };
             ValidationData[] data = { new ValidationData { ValueName = "prop", ExpectedValue = c, BlockIndex = 0 }                                       };
-            Assert.DoesNotThrow(() => ExecuteAndVerify(code, data), "1467114 Sprint24 : rev 2806 : Replication + function resolution issue : Requested coercion not implemented error message coming when collection has null");
+            
         }
 
         [Test]
