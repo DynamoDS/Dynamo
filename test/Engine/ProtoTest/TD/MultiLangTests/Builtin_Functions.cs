@@ -722,7 +722,7 @@ result =
             thisTest.Verify("a2", v4, 0);
             thisTest.Verify("result", 1, 0);
         }
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void T021_CountTrue_ModifierStack()
         {
@@ -740,7 +740,7 @@ a = {
 	result = {a1,a2,a3,a4,a5};
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 2, 1, null, 2.56, 0 };
+            Object[] v1 = new Object[] { 0, 0, null, 2.56, 0 };
             thisTest.Verify("result", v1, 0);
         }
 
@@ -1040,7 +1040,7 @@ result =
             thisTest.Verify("a2", v4, 0);
             thisTest.Verify("result", 1, 0);
         }
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void T032_CountFalse_ModifierStack()
         {
@@ -1058,7 +1058,7 @@ a = {
 	result = {a1,a2,a3,a4,a5};
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 2, 1, null, 2.56, 0 };
+            Object[] v1 = new Object[] { 0, 0, null, 2.56, 0 };
             thisTest.Verify("result", v1, 0);
         }
 

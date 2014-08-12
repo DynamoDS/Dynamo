@@ -9,8 +9,11 @@
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
         xmlns:commands="clr-namespace:Dynamo.UI.Commands"
         xmlns:service="clr-namespace:Dynamo.Services"
-        xmlns:dynamo="clr-namespace:Dynamo"
-        xmlns:core="clr-namespace:Dynamo.Core"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        d:DataContext="{d:DesignInstance ViewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
+        mc:Ignorable="d" 
         xmlns:ui="clr-namespace:Dynamo.UI"
         x:Name="_this"
         Height="768" 
@@ -207,7 +210,7 @@
                                 <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl + Shift + S" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
+                        <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl + Shift + S">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
@@ -287,9 +290,9 @@
                         <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
                                   Name="showGeometryInAlternateContextMenu" 
                                   Focusable="False" 
-                                  Visibility="{Binding Path=Controller.VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
+                                  Visibility="{Binding Path=VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
                                   IsCheckable="True"
-                                  IsChecked="{Binding Path=Controller.VisualizationManager.DrawToAlternateContext}">
+                                  IsChecked="{Binding Path=VisualizationManager.DrawToAlternateContext}">
                         </MenuItem>
                         <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
                             <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" 
@@ -331,34 +334,34 @@
                                   Focusable="False"/>
                         
                         <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
-                            <MenuItem Focusable="False" Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
-                            <MenuItem Focusable="False" Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
-                            <MenuItem Focusable="False" Name="units_foot_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalFoot" Header="Decimal Foot"/>
-                            <MenuItem Focusable="False" Name="units_foot_2" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalFoot" Header="Fractional Foot"/>
-                            <MenuItem Focusable="False" Name="units_mm" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Millimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Millimeter" Header="Millimeter"/>
-                            <MenuItem Focusable="False" Name="units_cm" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Centimeter" Header="Centimeter"/>
-                            <MenuItem Focusable="False" Name="units_m" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Meter" Header="Meter"/>
+                            <MenuItem Focusable="False" Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
+                            <MenuItem Focusable="False" Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
+                            <MenuItem Focusable="False" Name="units_foot_1" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalFoot" Header="Decimal Foot"/>
+                            <MenuItem Focusable="False" Name="units_foot_2" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalFoot" Header="Fractional Foot"/>
+                            <MenuItem Focusable="False" Name="units_mm" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Millimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Millimeter" Header="Millimeter"/>
+                            <MenuItem Focusable="False" Name="units_cm" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Centimeter" Header="Centimeter"/>
+                            <MenuItem Focusable="False" Name="units_m" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Meter" Header="Meter"/>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="Area Display Units" Name="AreaUnitsMenu">
-                            <MenuItem Focusable="False" Name="units_area_inch" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareInch, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareInch" Header="Square Inch"/>
-                            <MenuItem Focusable="False" Name="units_area_foot" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareFoot, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareFoot" Header="Square Foot"/>
-                            <MenuItem Focusable="False" Name="units_area_millimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMillimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMillimeter" Header="Square Millimeter"/>
-                            <MenuItem Focusable="False" Name="units_area_centimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareCentimeter" Header="Square Centimeter"/>
-                            <MenuItem Focusable="False" Name="units_area_meter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMeter" Header="Square Meter"/>
+                            <MenuItem Focusable="False" Name="units_area_inch" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareInch, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareInch" Header="Square Inch"/>
+                            <MenuItem Focusable="False" Name="units_area_foot" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareFoot, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareFoot" Header="Square Foot"/>
+                            <MenuItem Focusable="False" Name="units_area_millimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMillimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMillimeter" Header="Square Millimeter"/>
+                            <MenuItem Focusable="False" Name="units_area_centimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareCentimeter" Header="Square Centimeter"/>
+                            <MenuItem Focusable="False" Name="units_area_meter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMeter" Header="Square Meter"/>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="Volume Display Units" Name="VolumeUnitsMenu">
-                            <MenuItem Focusable="False" Name="units_volume_inch" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicInch, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicInch" Header="Cubic Inch"/>
-                            <MenuItem Focusable="False" Name="units_volume_foot" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicFoot, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicFoot" Header="Cubic Foot"/>
-                            <MenuItem Focusable="False" Name="units_volume_millimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicMillimeter" Header="Cubic Millimeter"/>
-                            <MenuItem Focusable="False" Name="units_volume_centimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicCentimeter" Header="Cubic Centimeter"/>
-                            <MenuItem Focusable="False" Name="units_volume_meter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="SquareMeter" Header="Cubic Meter"/>
+                            <MenuItem Focusable="False" Name="units_volume_inch" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicInch, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicInch" Header="Cubic Inch"/>
+                            <MenuItem Focusable="False" Name="units_volume_foot" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicFoot, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicFoot" Header="Cubic Foot"/>
+                            <MenuItem Focusable="False" Name="units_volume_millimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicMillimeter" Header="Cubic Millimeter"/>
+                            <MenuItem Focusable="False" Name="units_volume_centimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicCentimeter" Header="Cubic Centimeter"/>
+                            <MenuItem Focusable="False" Name="units_volume_meter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="SquareMeter" Header="Cubic Meter"/>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="Number Format" Name="NumberFormat">
-                            <MenuItem Focusable="False" Header="0" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f0, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f0"/>
-                            <MenuItem Focusable="False" Header="0.0" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f1, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f1"/>
-                            <MenuItem Focusable="False" Header="0.00" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f2, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f2"/>
-                            <MenuItem Focusable="False" Header="0.000" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f3, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f3"/>
-                            <MenuItem Focusable="False" Header="0.0000" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f4, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f4"/>
+                            <MenuItem Focusable="False" Header="0" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f0, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f0"/>
+                            <MenuItem Focusable="False" Header="0.0" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f1, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f1"/>
+                            <MenuItem Focusable="False" Header="0.00" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f2, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f2"/>
+                            <MenuItem Focusable="False" Header="0.000" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f3, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f3"/>
+                            <MenuItem Focusable="False" Header="0.0000" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f4, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f4"/>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="Render Precision">
                             <StackPanel Orientation="Horizontal" Width="Auto">
@@ -393,9 +396,9 @@
                                     Command="{Binding MutateTestDelegateCommand}"
                                     CommandParameter="{Binding Path=RunInDebug}"
                                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
+                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Path=Model}"
                                   IsCheckable="True" IsChecked="{Binding Path=UpdateManager.CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static utilities:dynSettings.Controller}}"
+                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Path=Model}"
                                       IsCheckable="True" IsChecked="{Binding Path=UpdateManager.ForceUpdate, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
@@ -1166,9 +1169,9 @@
                       Content="Debug" VerticalContentAlignment="Center"/-->
 
                 </WrapPanel>
-                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
+                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Path=Model.Logger.Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
                        VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="10"
-                       Foreground="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
+                       Foreground="{Binding Path=Model.Logger.WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
                     <TextBlock.Triggers>
                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                 <BeginStoryboard>

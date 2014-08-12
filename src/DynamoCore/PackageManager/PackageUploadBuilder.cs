@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Greg.Requests;
 using RestSharp.Serializers;
@@ -22,32 +24,32 @@ namespace Dynamo.PackageManager
                                                          engineVersion, engineMetadata, l.Group, l.Dependencies );
         }
 
-        public static PackageUpload NewPackage(Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageUpload NewPackage(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
-            var zipPath = DoPackageFileOperationsAndZip(pkg, files, uploadHandle);
+            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
             return BuildPackageUpload(pkg.Header, zipPath);
         }
 
-        public static PackageVersionUpload NewPackageVersion(Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageVersionUpload NewPackageVersion(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
-            var zipPath = DoPackageFileOperationsAndZip(pkg, files, uploadHandle);
+            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
             return BuildPackageVersionUpload(pkg.Header, zipPath);
         }
 
 
     #region Utility methods
 
-        private static string DoPackageFileOperationsAndZip(Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        private static string DoPackageFileOperationsAndZip(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 
             DirectoryInfo rootDir, dyfDir, binDir, extraDir;
-            FormPackageDirectory(dynSettings.PackageLoader.RootPackagesDirectory, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
+            FormPackageDirectory(dynamoModel.Loader.PackageLoader.RootPackagesDirectory, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
             pkg.RootDirectory = rootDir.FullName;
             WritePackageHeader(pkg.Header, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
             RemoveDyfFiles(files, dyfDir); 
-            RemapCustomNodeFilePaths(files, dyfDir.FullName);
+            RemapCustomNodeFilePaths(dynamoModel.CustomNodeManager, files, dyfDir.FullName);
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
@@ -88,20 +90,20 @@ namespace Dynamo.PackageManager
                                         pkgHeader.dependencies);
         }
 
-        private static void RemapCustomNodeFilePaths( IEnumerable<string> filePaths, string dyfRoot )
+        private static void RemapCustomNodeFilePaths( CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot )
         {
 
             var defList= filePaths
                 .Where(x => x.EndsWith(".dyf"))
-                .Select( path => dynSettings.CustomNodeManager.GuidFromPath(path))
-                .Select( guid => dynSettings.CustomNodeManager.GetFunctionDefinition(guid) )
+                .Select(customNodeManager.GuidFromPath)
+                .Select(customNodeManager.GetFunctionDefinition)
                 .ToList();
                 
             defList.ForEach( func =>
                     {
                         var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.WorkspaceModel.FileName));
                         func.WorkspaceModel.FileName = newPath;
-                        dynSettings.CustomNodeManager.SetNodePath(func.FunctionId, newPath);
+                        customNodeManager.SetNodePath(func.FunctionId, newPath);
                     });
         }
 

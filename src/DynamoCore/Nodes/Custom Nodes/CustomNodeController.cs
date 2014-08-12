@@ -16,7 +16,12 @@ namespace Dynamo.Nodes
     /// </summary>
     public class CustomNodeController : FunctionCallNodeController
     {
-        public CustomNodeController(CustomNodeDefinition def) : base(def) { }
+        private readonly DynamoModel dynamoModel;
+
+        public CustomNodeController(DynamoModel dynamoModel, CustomNodeDefinition def) : base(def)
+        {
+            this.dynamoModel = dynamoModel;
+        }
 
         /// <summary>
         ///     Definition of a custom node.
@@ -137,7 +142,7 @@ namespace Dynamo.Nodes
             if (!VerifyFuncId(ref funcId, nickname))
                 LoadProxyCustomNode(funcId, nickname);
             
-            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+            Definition = this.dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
         }
 
         public override void DeserializeCore(XmlElement element, SaveContext context)
@@ -157,7 +162,7 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+            Definition = this.dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
         }
 
         /// <summary>
@@ -178,15 +183,15 @@ namespace Dynamo.Nodes
                                 model.OutPortData.Select(p => p.NickName))));
         }
 
-        private static bool VerifyFuncId(ref Guid funcId, string nickname)
+        private bool VerifyFuncId(ref Guid funcId, string nickname)
         {
             if (funcId == null) return false;
 
             // if the dyf does not exist on the search path...
-            if (dynSettings.Controller.CustomNodeManager.Contains(funcId))
+            if (this.dynamoModel.CustomNodeManager.Contains(funcId))
                 return true;
 
-            CustomNodeManager manager = dynSettings.Controller.CustomNodeManager;
+            CustomNodeManager manager = this.dynamoModel.CustomNodeManager;
 
             // if there is a node with this name, use it instead
             if (!manager.Contains(nickname)) return false;
@@ -195,21 +200,21 @@ namespace Dynamo.Nodes
             return true;
         }
 
-        private static void LoadProxyCustomNode(Guid funcId, string nickname)
+        private void LoadProxyCustomNode(Guid funcId, string nickname)
         {
             var proxyDef = new CustomNodeDefinition(funcId)
             {
                 WorkspaceModel =
-                    new CustomNodeWorkspaceModel(nickname, "Custom Nodes") { FileName = null },
+                    new CustomNodeWorkspaceModel(this.dynamoModel, nickname, "Custom Nodes") { FileName = null },
                 IsProxy = true
             };
 
             string userMsg = "Failed to load custom node: " + nickname + ".  Replacing with proxy custom node.";
 
-            dynSettings.DynamoLogger.Log(userMsg);
+            this.dynamoModel.Logger.Log(userMsg);
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+            this.dynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
         }
     }
 }

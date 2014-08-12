@@ -1,21 +1,22 @@
 ﻿<UserControl x:Class="Dynamo.Search.SearchView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:search="clr-namespace:Dynamo.Nodes.Search"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
-             xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
-             xmlns:dynamo="clr-namespace:Dynamo"
+             xmlns:controls="clr-namespace:Dynamo.Controls" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
              d:DesignHeight="300"  
              x:Name="SearchControl" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}"
-             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}">
+             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}" >
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -100,7 +101,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-                                        <Image x:Name="SearchIcon"
+            <Image x:Name="SearchIcon"
                    Grid.Column="0"
                    Source="/DynamoCore;component/UI/Images/search_normal.png"
                    Width="25"
@@ -438,7 +439,7 @@
                     </Setter>
                 </Style>
 
-                <Style TargetType="{x:Type TreeViewItem}">
+                <Style TargetType="{x:Type TreeViewItem}" d:DataContext="{d:DesignInstance search:BrowserItem }">
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneWay}"></Setter>
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
@@ -575,7 +576,7 @@
 
             <!--CATEGORIES-->
 
-            <TreeView Name="SearchTreeView" Background="Blue" ItemsSource="{Binding Path=BrowserRootCategories}" 
+            <TreeView Name="SearchTreeView" Background="Blue" ItemsSource="{Binding Path=Model.BrowserRootCategories}" 
                       Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" 
                       VirtualizingStackPanel.IsVirtualizing="True"
                         VirtualizingStackPanel.VirtualizationMode="Recycling">

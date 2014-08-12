@@ -6,6 +6,7 @@ using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Controls;
 using Dynamo.DSEngine;
+using Dynamo.Library;
 using Dynamo.Models;
 using Dynamo.UI;
 
@@ -21,13 +22,13 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSVarArgFunction : DSFunctionBase, IWpfNode
     {
-        public DSVarArgFunction(FunctionDescriptor descriptor)
-            : base(new ZeroTouchVarArgNodeController(descriptor))
+        public DSVarArgFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+
+        public DSVarArgFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
+            : base(workspaceModel, new ZeroTouchVarArgNodeController(workspaceModel.DynamoModel.EngineController, descriptor))
         {
             VarInputController = new ZeroTouchVarInputController(this);
         }
-
-        public DSVarArgFunction() : this(null) { }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -93,7 +94,8 @@ namespace Dynamo.Nodes
     /// </summary>
     public class ZeroTouchVarArgNodeController : ZeroTouchNodeController
     {
-        public ZeroTouchVarArgNodeController(FunctionDescriptor zeroTouchDef) : base(zeroTouchDef) { }
+        public ZeroTouchVarArgNodeController(EngineController engineController, 
+            FunctionDescriptor zeroTouchDef) : base(engineController, zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {

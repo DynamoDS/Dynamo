@@ -25,6 +25,7 @@ using DynamoUnits;
 using DynamoUtilities;
 using Microsoft.Practices.Prism.ViewModel;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using RestSharp;
 using String = System.String;
 
 namespace Dynamo
@@ -210,6 +211,28 @@ namespace Dynamo
 
             DynamoPathManager.Instance.InitializeCore(corePath);
 
+            if (DynamoPathManager.Instance.FindAndSetASMHostPath())
+            {
+                if (DynamoPathManager.Instance.ASM219Host == null)
+                    DynamoPathManager.Instance.SetLibGPath("libg_220");
+
+                var libG = Assembly.LoadFrom(DynamoPathManager.Instance.AsmPreloader);
+
+                Type preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
+
+                MethodInfo preloadMethod = preloadType.GetMethod("PreloadAsmLibraries", 
+                    BindingFlags.Public | BindingFlags.Static);
+
+                object[] methodParams = new object[1];
+
+                if (DynamoPathManager.Instance.ASM219Host == null)
+                    methodParams[0] = DynamoPathManager.Instance.ASM220Host;
+                else
+                    methodParams[0] = DynamoPathManager.Instance.ASM219Host;
+
+                preloadMethod.Invoke(null, methodParams);
+            }
+
             DynamoController controller;
             var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
             dynSettings.DynamoLogger = logger;
@@ -304,7 +327,7 @@ namespace Dynamo
 
             DisposeLogic.IsShuttingDown = false;
 
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
 
             //This is necessary to avoid a race condition by causing a thread join
@@ -375,7 +398,7 @@ namespace Dynamo
                 EngineController = null;
             }
 
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 

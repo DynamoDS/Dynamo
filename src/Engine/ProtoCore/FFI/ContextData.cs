@@ -9,7 +9,7 @@ namespace ProtoFFI
 {
     class ContextData : IContextData
     {
-        private IContextDataProvider mContextDataProvider = null;
+        private IContextDataProvider mContextDataProvider;
 
         public ContextData(string name, Object data, IContextDataProvider provider)
         {

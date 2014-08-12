@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
+
 using Revit.Elements;
 using NUnit.Framework;
 
@@ -9,7 +11,7 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelCurveTests : RevitNodeTestBase
+    public class ModelCurveTests : GeometricRevitNodeTest
     {
         [Test]
         [TestModel(@".\empty.rfa")]
@@ -25,7 +27,27 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(curveRef);
 
             var curve = modelCurve.Curve;
+
             curve.Length.ShouldBeApproximately(Math.Sqrt(3.0));
+        }
+
+        [Test]
+        [TestModel(@".\empty.rfa")]
+        public void ByCurve_Curve_AcceptsStraightDegree3NurbsCurve()
+        {
+            var points =
+                Enumerable.Range(0, 10)
+                    .Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, 0));
+
+            var nurbsCurve = NurbsCurve.ByPoints(points, 3);
+
+            var modelCurve = ModelCurve.ByCurve(nurbsCurve);
+            Assert.NotNull(nurbsCurve);
+
+            modelCurve.Curve.Length.ShouldBeApproximately(10);
+            modelCurve.Curve.StartPoint.ShouldBeApproximately(Point.Origin());
+            modelCurve.Curve.StartPoint.ShouldBeApproximately(Point.ByCoordinates(10,0,0));
+
         }
 
         [Test]
@@ -42,6 +64,7 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(curveRef);
 
             var curve = modelCurve.Curve;
+
             curve.Length.ShouldBeApproximately(Math.Sqrt(3.0));
         }
     }

@@ -71,7 +71,7 @@ namespace Revit.GeometryConversion
             return (Autodesk.DesignScript.Geometry.Curve) geom.AsCurve().Convert();
         }
 
-        private static Autodesk.DesignScript.Geometry.Surface InternalConvert(Autodesk.Revit.DB.Face geom)
+        private static IEnumerable<Autodesk.DesignScript.Geometry.Surface> InternalConvert(Autodesk.Revit.DB.Face geom)
         {
             return geom.ToProtoType();
         }

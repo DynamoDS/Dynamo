@@ -125,8 +125,9 @@ namespace ProtoCore.AssociativeGraph
         public List<ProtoCore.AssociativeGraph.UpdateNodeRef> updateNodeRefList { get; set; }
         public bool isDirty { get; set; }
         public bool isReturn { get; set; }
-        public int procIndex { get; set; }      // Function that this graph resides in
-        public int classIndex { get; set; }     // Class index that this graph resides in
+        public int procIndex { get; set; }              // Function that this graph resides in
+        public int classIndex { get; set; }             // Class index that this graph resides in
+        public bool ProcedureOwned { get; set; }       // This graphnode's immediate scope is within a function (as opposed to languageblock or construct)
         public UpdateBlock updateBlock { get; set; }
         public List<GraphNode> dependentList { get; set; }
         public bool allowDependents { get; set; }

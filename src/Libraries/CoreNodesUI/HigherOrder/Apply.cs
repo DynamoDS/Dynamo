@@ -14,7 +14,7 @@ namespace DSCoreNodesUI.HigherOrder
     [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
-        public ApplyFunction()
+        public ApplyFunction(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             InPortData.Add(new PortData("func", "Function to apply."));
             OutPortData.Add(new PortData("func(args)", "Result of application."));
@@ -70,7 +70,8 @@ namespace DSCoreNodesUI.HigherOrder
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {
-        public ComposeFunctions()
+        public ComposeFunctions(WorkspaceModel workspaceModel)
+            : base(workspaceModel)
         {
             InPortData.Add(new PortData("func0", "Function #0"));
             InPortData.Add(new PortData("func1", "Function #1"));

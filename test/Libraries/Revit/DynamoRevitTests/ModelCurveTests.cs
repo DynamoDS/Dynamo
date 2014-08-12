@@ -17,13 +17,13 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void ModelCurve()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\ModelCurve\ModelCurve.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //dynSettings.Controller.RunExpression(true);
+            //ViewModel.Model.RunExpression();
 
             //var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             //fec.OfClass(typeof(CurveElement));
@@ -37,13 +37,13 @@ namespace Dynamo.Tests
 
             ////update any number node and verify 
             ////that the element gets updated not recreated
-            //var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
+            //var doubleNodes = ViewModel.Model.Nodes.Where(x => x is DoubleInput);
             //var node = doubleNodes.First() as DoubleInput;
 
             //Assert.IsNotNull(node);
 
             //node.Value = node.Value + .1;
-            //dynSettings.Controller.RunExpression(true);
+            //ViewModel.Model.RunExpression();
             //Assert.AreEqual(5, fec.ToElements().Count);
 
             Assert.Inconclusive("Porting : DoubleInput");

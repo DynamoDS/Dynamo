@@ -13,7 +13,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -24,12 +23,16 @@ namespace Dynamo.Search
     /// </summary>
     public partial class SearchView : UserControl
     {
-        private SearchViewModel _viewModel;
+        private readonly SearchViewModel viewModel;
+        private readonly DynamoViewModel dynamoViewModel;
 
         readonly DispatcherTimer searchTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 100), IsEnabled = false };
 
-        public SearchView()
+        public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
+            this.viewModel = searchViewModel;
+            this.dynamoViewModel = dynamoViewModel;
+
             InitializeComponent();
             Loaded += SearchView_Loaded;
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
@@ -38,7 +41,7 @@ namespace Dynamo.Search
             {
                 if (SearchTextBox.IsVisible)
                 {
-                    DynamoCommands.SearchCommand.Execute(null);
+                    this.viewModel.SearchCommand.Execute(null);
                     Keyboard.Focus(this.SearchTextBox);
                     var view = WPF.FindUpVisualTree<DynamoView>(this);
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
@@ -50,18 +53,13 @@ namespace Dynamo.Search
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
         {
-            Debug.WriteLine("Note view unloaded.");
-
-            if (dynSettings.Controller != null)
-            {
-                dynSettings.Controller.SearchViewModel.RequestFocusSearch -= SearchViewModel_RequestFocusSearch;
-                dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch -= SearchViewModel_RequestReturnFocusToSearch;
-            }
+            this.viewModel.RequestFocusSearch -= SearchViewModel_RequestFocusSearch;
+            this.viewModel.RequestReturnFocusToSearch -= SearchViewModel_RequestReturnFocusToSearch;
         }
 
         void SearchView_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
+            DataContext = this.viewModel;
 
             this.MouseEnter += SearchView_MouseEnter;
             this.MouseLeave += SearchView_MouseLeave;
@@ -70,19 +68,19 @@ namespace Dynamo.Search
             this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
             this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
 
-            dynSettings.Controller.SearchViewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
-            dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
+            this.viewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
+            this.viewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
 
         }
 
         void SearchView_MouseLeave(object sender, MouseEventArgs e)
         {
-            _viewModel.SearchScrollBarVisibility = false;
+            viewModel.SearchScrollBarVisibility = false;
         }
 
         void SearchView_MouseEnter(object sender, MouseEventArgs e)
         {
-            _viewModel.SearchScrollBarVisibility = true;
+            viewModel.SearchScrollBarVisibility = true;
         }
 
         void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
@@ -133,14 +131,14 @@ namespace Dynamo.Search
             switch (e.Key)
             {
                 case Key.Return:
-                    _viewModel.ExecuteSelected();
+                    viewModel.Execute();
                     break;
 
                 case Key.Delete:
                     if (DynamoSelection.Instance.Selection.Count > 0)
                     {
                         e.Handled = true;
-                        dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
+                        this.dynamoViewModel.DeleteCommand.Execute(null);
                     }
 
                     //if there are no nodes being selected, the delete key should 
@@ -188,15 +186,15 @@ namespace Dynamo.Search
                     break;
 
                 case Key.Tab:
-                    _viewModel.PopulateSearchTextWithSelectedResult();
+                    viewModel.PopulateSearchTextWithSelectedResult();
                     break;
 
                 case Key.Down:
-                    _viewModel.SelectNext();
+                    viewModel.SelectNext();
                     break;
 
                 case Key.Up:
-                    _viewModel.SelectPrevious();
+                    viewModel.SelectPrevious();
                     break;
             }
         }
@@ -242,12 +240,12 @@ namespace Dynamo.Search
             Debug.WriteLine("Updating search results...");
             // end of timer processing
             // Execute command to pop search stack
-            DynamoCommands.SearchCommand.Execute(null);
+            this.viewModel.SearchCommand.Execute(null);
         }
 
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ((SearchViewModel) DataContext).ExecuteSelected();
+            ((SearchViewModel) DataContext).Execute();
         }
 
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
@@ -282,10 +280,10 @@ namespace Dynamo.Search
             //    this.Visibility = Visibility.Visible;
             //else
             //{
-            //    dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            //    dynamoModel.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
             //   this.Visibility = Visibility.Collapsed;
             //}
-            dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            this.dynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
