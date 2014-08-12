@@ -40,19 +40,6 @@ namespace DynamoWebServer.Messages
             this.SessionId = sessionId;
         }
 
-        #region Class Data Members
-
-        protected void OnResultReady(object sender, ResultReadyEventArgs e)
-        {
-            if (ResultReady != null)
-            {
-                e.SessionID = SessionId;
-                ResultReady(sender, e);
-            }
-        }
-
-        #endregion
-
         #region Public Class Operational Methods
 
         /// <summary>
@@ -125,7 +112,7 @@ namespace DynamoWebServer.Messages
             {
                 if (command is DynamoViewModel.RunCancelCommand)
                 {
-                    manager.RenderComplete += ModifiedNodesData;
+                    manager.RenderComplete += NodesDataModified;
                 }
                 command.Execute(dynamoViewModel);
             }
@@ -160,13 +147,12 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void ModifiedNodesData(object sender, RenderCompletionEventArgs e)
+        private void NodesDataModified(object sender, RenderCompletionEventArgs e)
         {
             var nodes = new List<ExecutedNode>();
-            foreach (var item in dynSettings.Controller.DynamoModel.NodeMap)
+            foreach (var node in dynamoViewModel.Model.CurrentWorkspace.Nodes)
             {
                 string data;
-                NodeModel node = item.Value;
                 var codeBlock = node as CodeBlockNodeModel;
                 if (codeBlock != null)
                 {
@@ -198,7 +184,7 @@ namespace DynamoWebServer.Messages
                         {
                             if (node.CachedValue.Data != null)
                             {
-                                data = item.Value.CachedValue.Data.ToString();
+                                data = node.CachedValue.Data.ToString();
                             }
                         }
                     }                
@@ -207,7 +193,7 @@ namespace DynamoWebServer.Messages
                 // send only updated nodes back
                 if (node.IsUpdated)
                 {
-                    var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.IsGraphic);
+                    var execNode = new ExecutedNode(node.GUID.ToString(), node.State.ToString(), node.ToolTipText, data, node.ContainsGeometryData);
                     nodes.Add(execNode);
                 }
             }
@@ -216,7 +202,7 @@ namespace DynamoWebServer.Messages
             {
                 Nodes = nodes
             }));
-            dynSettings.Controller.VisualizationManager.RenderComplete -= ModifiedNodesData;
+            dynSettings.Controller.VisualizationManager.RenderComplete -= NodesDataModified;
         }
 
         private void RetrieveGeometry(string nodeId)
@@ -224,7 +210,7 @@ namespace DynamoWebServer.Messages
             Guid guid;
             if (Guid.TryParse(nodeId, out guid))
             {
-                NodeModel model = dynSettings.Controller.DynamoModel.NodeMap[guid];
+                NodeModel model = dynamoViewModel.Model.CurrentWorkspace.Nodes.First(node => node.GUID == guid);
 
                 OnResultReady(this, new ResultReadyEventArgs(new GeometryDataResponse
                 {

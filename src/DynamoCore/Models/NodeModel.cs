@@ -1683,7 +1683,20 @@ namespace Dynamo.Models
         /// <summary>
         /// Indicates whether the node should be drawn
         /// </summary>
-        public bool IsGraphic { get { return GetDrawableIds().Count() > 0; } }
+        public bool ContainsGeometryData {
+            get
+            {
+                foreach (var varName in GetDrawableIds())
+                {
+                    var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+
+                    if (graphItems != null)
+                        return true;
+                }
+
+                return false;
+            }
+        }
 
         /// <summary>
         /// Gets the drawable Id as registered with visualization manager for

@@ -42,16 +42,16 @@ namespace DynamoWebServer.Messages
         /// Indicates whether the result object should be drawn on the canvas
         /// </summary>
         [DataMember]
-        public bool IsGraphic { get; private set; }
+        public bool ContainsGeometryData { get; private set; }
 
         public ExecutedNode(string id, string state, string stateMessage,
-            string data, bool isGraphic)
+            string data, bool containsGeometryData)
         {
             this.NodeID = id;
             this.State = state;
             this.StateMessage = stateMessage;
             this.Data = data;
-            this.IsGraphic = IsGraphic;
+            this.ContainsGeometryData = containsGeometryData;
         }
 
         

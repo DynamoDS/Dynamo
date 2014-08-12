@@ -31,53 +31,44 @@ namespace DynamoWebServer.Messages
 
         private void GeneratePrimitives(List<IRenderPackage> packages)
         {
-            if (packages != null && packages.Any())
-            {
-                string pointVertices = encodeNumbers(packages, packageObj => packageObj.PointVertices);
-                string lineStripVertices = encodeNumbers(packages, packageObj => packageObj.LineStripVertices);
-                string triangleVertices = encodeNumbers(packages, packageObj => packageObj.TriangleVertices);
-                string triangleNormals = encodeNumbers(packages, packageObj => packageObj.TriangleNormals);
-                string lineStripCounts = encodeNumbers(packages, packageObj => packageObj.LineStripVertexCounts);
-                string lineStripColors = encodeNumbers(packages, packageObj => packageObj.LineStripVertexColors);
-                GraphicPrimitivesData = new GraphicPrimitives(pointVertices, lineStripVertices, triangleVertices, triangleNormals,
-                    lineStripCounts, lineStripColors);
-            }
+            if (packages == null || !packages.Any())
+                return;
 
+            string pointVertices = EncodeNumbers(packages, packageObj => packageObj.PointVertices);
+            string lineStripVertices = EncodeNumbers(packages, packageObj => packageObj.LineStripVertices);
+            string triangleVertices = EncodeNumbers(packages, packageObj => packageObj.TriangleVertices);
+            string triangleNormals = EncodeNumbers(packages, packageObj => packageObj.TriangleNormals);
+            string lineStripCounts = EncodeNumbers(packages, packageObj => packageObj.LineStripVertexCounts);
+            string lineStripColors = EncodeNumbers(packages, packageObj => packageObj.LineStripVertexColors);
+            GraphicPrimitivesData = new GraphicPrimitives(pointVertices, lineStripVertices, triangleVertices, triangleNormals,
+                                                          lineStripCounts, lineStripColors);
         }
 
-        private string encodeNumbers<T>(List<IRenderPackage> packages, Func<IRenderPackage, List<T>> getter)
+        private static string EncodeNumbers<T>(IEnumerable<IRenderPackage> packages,Func<IRenderPackage, List<T>> getter)
         {
-            MemoryStream stream = new MemoryStream();
-            using (BinaryWriter writer = new BinaryWriter(stream))
+            var stream = new MemoryStream();
+            using (var writer = new BinaryWriter(stream))
             {
-                foreach (var package in packages)
+                if (typeof(T) == typeof(double))
                 {
-                    List<T> coordinates = getter(package);
-                    foreach (T value in coordinates)
+                    foreach (var package in packages)
                     {
-                        // we only need to handle doubles specifically
-                        if (value is double)
-                        {
+                        List<T> coordinates = getter(package);
+                        foreach (T value in coordinates)
                             writer.Write(Convert.ToSingle(value));
-                        }
-                        else {
-                            if (value is int)
-                            {
-                                writer.Write(Convert.ToInt32(value));
-                            }
-                            else
-                            {
-                                // colors
-                                if (value is byte)
-                                {
-                                    writer.Write(Convert.ToByte(value));
-                                }
-                            }
-                        }
                     }
                 }
-
+                else
+                {
+                    foreach (var package in packages)
+                    {
+                        List<T> coordinates = getter(package);
+                        foreach (T value in coordinates)
+                            writer.Write(value as dynamic);
+                    }
+                }
             }
+
             return Convert.ToBase64String(stream.ToArray());
         }
 
