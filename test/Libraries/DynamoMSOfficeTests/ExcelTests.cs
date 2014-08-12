@@ -3,23 +3,21 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Dynamo;
+
+using DSOffice;
+
 using Dynamo.Nodes;
-using Dynamo.Tests;
-using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    public class ExcelTests : DynamoUnitTest
+    public class ExcelTests : DynamoViewModelUnitTest
     {
         [SetUp]
         public override void Init()
         {
             base.Init();
-            // hide the excel window for tests
-            ExcelInterop.ShowOnStartup = false;
 
             // In unit-test scenario we are redirecting 'PreferenceSettings' to 
             // load from a non-existing preference XML file. That way each test 
@@ -36,9 +34,9 @@ namespace Dynamo.Tests
         {
             try
             {
-                EventArgs args = new Dynamo.Nodes.ExcelCloseEventArgs(false);
-                Controller.ShutDown(false, args);
-                this.Controller = null;
+                EventArgs args = new ExcelCloseEventArgs(false);
+                ViewModel.Model.ShutDown(false, args);
+                this.ViewModel = null;
             }
             catch (Exception ex)
             {
@@ -61,7 +59,7 @@ namespace Dynamo.Tests
             //var app = ExcelInterop.ExcelApp;
             //Assert.IsTrue(ExcelInterop.IsExcelProcessRunning);
             //Assert.IsTrue(ExcelInterop.HasExcelReference);
-            //Controller.DynamoModel.OnCleanup(null);
+            //ViewModel.Model.OnCleanup(null);
             //Thread.Sleep(100); 
             //Assert.IsFalse( ExcelInterop.IsExcelProcessRunning );
             //Assert.IsFalse(ExcelInterop.HasExcelReference);
@@ -76,18 +74,18 @@ namespace Dynamo.Tests
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\HammersmithExcelFile_Open.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
                         
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
             var timer = new Stopwatch();
             timer.Start();
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
             timer.Stop();
             Assert.Less(timer.Elapsed.Milliseconds, 1000); // open in less than 1s
 
@@ -99,18 +97,18 @@ namespace Dynamo.Tests
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetsFromFile.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(4, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(4, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = watch.CachedValue as ICollection;
@@ -124,18 +122,18 @@ namespace Dynamo.Tests
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_ValidInput.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsNotNull(watch.CachedValue);
         }
@@ -144,22 +142,22 @@ namespace Dynamo.Tests
         public void ThrowExceptionOnGetWorksheetByNameWithInvalidInput()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_InvalidInput.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var getWorksheet = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(node => node is DSFunction && 
+            var getWorksheet = ViewModel.Model.CurrentWorkspace.Nodes.Where(node => node is DSFunction && 
                 node.NickName == "Excel.GetExcelWorksheetByName").FirstOrDefault();
-            var readFile = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
+            var readFile = ViewModel.Model.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
                 node.NickName == "Excel.ReadExcelFile").FirstOrDefault();
 
             //Assert.Throws<AssertionException>(() => Controller.RunExpression(null));
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(readFile.CachedValue.Class.ClassName == "DSOffice.WorkBook");
             Assert.IsNull(getWorksheet.CachedValue.Data);
@@ -170,18 +168,18 @@ namespace Dynamo.Tests
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_ascending.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
@@ -205,18 +203,18 @@ namespace Dynamo.Tests
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_2Dimensional.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
@@ -242,18 +240,18 @@ namespace Dynamo.Tests
         public void CanReadWorksheetWithEmptyCellInUsedRange()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_missingCell.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
@@ -283,18 +281,18 @@ namespace Dynamo.Tests
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_mixedNumbersAndStrings.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
@@ -329,27 +327,27 @@ namespace Dynamo.Tests
         {
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\ReadAndWriteExcel.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
             var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
-            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
             // watch displays the data from the Read node
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
             // writeNode should have the same data contained in watch
-            var writeNode = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
+            var writeNode = ViewModel.Model.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
                 x.NickName == "Excel.Write").FirstOrDefault();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(File.Exists(filePath));
 
@@ -413,10 +411,10 @@ namespace Dynamo.Tests
         public void CanWrite1DDataOfMixedTypesToExcelWorksheet()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddMixed1DData.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(13, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            Controller.RunExpression(null);
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(13, ViewModel.CurrentSpace.Nodes.Count);
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
@@ -451,12 +449,12 @@ namespace Dynamo.Tests
         public void CanCreateNewWorksheetInNewWorkbook()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddWorksheet.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            var getWorksheet = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
-                node.NickName == "Excel.GetExcelWorksheetByName").FirstOrDefault();
-            Controller.RunExpression(null);
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var getWorksheet = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node is DSFunction &&
+                node.NickName == "Excel.GetExcelWorksheetByName");
+            ViewModel.Model.RunExpression();
             Assert.IsNull(getWorksheet.CachedValue.Data);
         }
 
@@ -464,10 +462,11 @@ namespace Dynamo.Tests
         public void CanAddSingleItemToExcelWorksheet()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddSingleItemData.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            Controller.RunExpression(null);
+
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            ViewModel.Model.RunExpression();
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
@@ -484,10 +483,11 @@ namespace Dynamo.Tests
         public void CanAdd1DListToExcelWorksheet()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add1DListData.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            Controller.RunExpression(null);
+
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            ViewModel.Model.RunExpression();
             Assert.IsTrue(watch.CachedValue is ICollection);
             var list = (watch.CachedValue as ICollection).Cast<object>().ToList();
 
@@ -510,12 +510,12 @@ namespace Dynamo.Tests
         public void CanAdd2DListToExcelWorksheet()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add2DListData.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(11, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-            var watch = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(11, ViewModel.CurrentSpace.Nodes.Count);
+            var watch = ViewModel.Model.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
                 x.NickName == "Excel.GetDataFromExcelWorksheet").FirstOrDefault();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -538,29 +538,19 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanCreateNewWorkbook()
-        {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(2, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            Controller.RunExpression(null);
-        }
-
-        [Test]
         public void CanWriteToExcelAndUpdateData()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WriteNodeAndUpdateData.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
-            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
+            var writeNode = ViewModel.Model.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
                 x.NickName == "Excel.Write").FirstOrDefault();
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(File.Exists(filePath));
 
@@ -575,11 +565,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, rowList.Count());
             Assert.AreEqual("BBB", rowList[0].Data);
 
-            var stringNodes = Controller.DynamoModel.CurrentWorkspace.Nodes.OfType<Dynamo.Nodes.StringInput>();
+            var stringNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Dynamo.Nodes.StringInput>();
             var inputStringNode = stringNodes.Where(x => x.Value == "BBB").FirstOrDefault();
             inputStringNode.Value = "AAA";
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
             list = writeNode.CachedValue.GetElements();
@@ -603,14 +593,14 @@ namespace Dynamo.Tests
         public void CanSaveAsWorksheet()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_SaveAs.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
             var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
-            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
 
             stringNode.Value = filePath;
 
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
 
             Assert.IsTrue(File.Exists(filePath));
         }
@@ -633,16 +623,16 @@ namespace Dynamo.Tests
         {
             string testDir = GetTestDirectory();
             string openPath = Path.Combine(testDir, @"core\excel\Defect_MAGN_883.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
 
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var filename = workspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
-            Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
             Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
         }
 

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.TestInfrastructure
@@ -11,7 +12,7 @@ namespace Dynamo.TestInfrastructure
     /// </summary>
     class DeleteNodeMutator : AbstractMutator
     {
-        public DeleteNodeMutator(Random rand) : base(rand)
+        public DeleteNodeMutator(DynamoViewModel dynamoViewModel, Random rand) : base(dynamoViewModel, rand)
         {
         }
 
@@ -20,7 +21,7 @@ namespace Dynamo.TestInfrastructure
             List<NodeModel> nodes = DynamoModel.Nodes;
             NodeModel node = nodes[Rand.Next(nodes.Count)];
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            this.DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoViewModel.DeleteModelCommand delCommand =
                         new DynamoViewModel.DeleteModelCommand(node.GUID);

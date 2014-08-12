@@ -8,6 +8,8 @@ using System.Windows.Input;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -133,7 +135,7 @@ namespace Dynamo.PackageManager
 
         public bool HasDownloads
         {
-            get { return dynSettings.PackageManagerClient.Downloads.Count > 0; }
+            get { return PackageManagerClientViewModel.Downloads.Count > 0; }
         }
 
         public bool HasNoResults
@@ -161,7 +163,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     A handle on the package manager client object 
         /// </value>
-        public PackageManagerClient PackageManagerClient { get; private set; }
+        public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
         private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
 
@@ -190,7 +192,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
-            get { return PackageManagerClient.Downloads; }
+            get { return PackageManagerClientViewModel.Downloads; }
         }
 
 #endregion Properties & Fields
@@ -198,10 +200,10 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     The class constructor.
         /// </summary>
-        /// <param name="bench"> Reference to dynBench object for logging </param>
-        public PackageManagerSearchViewModel(PackageManagerClient client)
+        public PackageManagerSearchViewModel(PackageManagerClientViewModel client)
         {
-            PackageManagerClient = client;
+            this.PackageManagerClientViewModel = client;
+
             SearchResults = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 12;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
@@ -209,7 +211,7 @@ namespace Dynamo.PackageManager
             SortCommand = new DelegateCommand(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
-            PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
             SortingKey = PackageSortingKey.LAST_UPDATE;
@@ -337,7 +339,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Refresh()
         {
-            var pkgs = PackageManagerClient.ListAll();
+            var pkgs = PackageManagerClientViewModel.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
             LastSync = pkgs;
@@ -397,7 +399,7 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            if (PackageManagerClient.Downloads.Count == 0)
+            if (PackageManagerClientViewModel.Downloads.Count == 0)
             {
                 this.ClearCompletedCommand.RaiseCanExecuteChanged();
             }
@@ -413,12 +415,12 @@ namespace Dynamo.PackageManager
 
         public void ClearCompleted()
         {
-            PackageManagerClient.ClearCompletedDownloads();
+            PackageManagerClientViewModel.ClearCompletedDownloads();
         }
 
         public bool CanClearCompleted()
         {
-            return PackageManagerClient.Downloads
+            return PackageManagerClientViewModel.Downloads
                                        .Any(x => x.DownloadState == PackageDownloadHandle.State.Installed 
                                            || x.DownloadState == PackageDownloadHandle.State.Error);
         }
@@ -521,7 +523,7 @@ namespace Dynamo.PackageManager
                 search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
             }
 
-            var results = PackageManagerClient.Search(search, MaxNumSearchResults);
+            var results = PackageManagerClientViewModel.Search(search, MaxNumSearchResults);
 
             if (emptySearch)
             {
@@ -537,7 +539,6 @@ namespace Dynamo.PackageManager
         /// <param name="results"></param>
         private static void Sort(List<PackageManagerSearchElement> results, PackageSortingKey key)
         {
-
             switch (key)
             {
                 case PackageSortingKey.NAME:
@@ -556,7 +557,6 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Maintainers.ToLower().CompareTo(e2.Maintainers.ToLower()));
                     break;
             }
-            
         }
 
         /// <summary>
@@ -586,7 +586,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void ExecuteSelected()
         {
-
             // none of the elems are selected, return 
             if (SelectedIndex == -1)
                 return;
@@ -595,9 +594,7 @@ namespace Dynamo.PackageManager
                 return;
 
             SearchResults[SelectedIndex].Execute();
-
         }
-
         
     }
 }

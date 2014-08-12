@@ -72,6 +72,10 @@
       <Name>CoreNodesUI</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
+      <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
+      <Name>DSOffice</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
       <Name>DynamoCoreTests</Name>

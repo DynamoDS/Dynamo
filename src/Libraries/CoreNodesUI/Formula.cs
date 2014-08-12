@@ -47,8 +47,8 @@ namespace DSCoreNodesUI
                             RaisePropertyChanged("FormulaString");
                             RequiresRecalc = true;
                             EnableReporting();
-                            if (WorkSpace != null)
-                                WorkSpace.Modified();
+                            if (Workspace != null)
+                                Workspace.Modified();
                         }
 
                         if (oldState != State)
@@ -58,7 +58,8 @@ namespace DSCoreNodesUI
             }
         }
 
-        public Formula()
+        public Formula(WorkspaceModel workspace)
+            : base(workspace)
         {
             ArgumentLacing = LacingStrategy.Shortest;
             OutPortData.Add(new PortData("", "Result of math computation"));

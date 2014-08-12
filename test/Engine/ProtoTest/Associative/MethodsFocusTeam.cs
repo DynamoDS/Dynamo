@@ -1481,16 +1481,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("r1", v1);
             thisTest.Verify("r2", v2);
         }
-        [Test, Ignore]
-        public void T055_ReplicationWithDiffTypesInArr_UserDefined()
-        {
-            String code =
-@"class A{def foo(a:A){    return = 1;}}class B{def foo(b:B){    return = 2;}}m = {A.A(),B.B(),A.A()};r1 = m.foo(m);r2 = m.foo(m);";
-            thisTest.RunScriptSource(code);
-            Assert.Fail("No validation");
-
-        }
-
+        
         [Test]
         public void T055_ReplicationWithDiffTypesInArr_UserDefined_Simpler()
         {

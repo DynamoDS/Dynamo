@@ -85,9 +85,9 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="guid">the node guid</param>
         /// <returns>the element id</returns>
-        private static ElementId GetBindingElementIdForNode(Guid guid)
+        private ElementId GetBindingElementIdForNode(Guid guid)
         {
-            ProtoCore.Core core = dynSettings.Controller.EngineController.LiveRunnerCore;
+            ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
             var guidToCallSites = core.GetCallsitesForNodes(new []{guid});
             var callSites = guidToCallSites[guid];
             if (!callSites.Any())
@@ -112,9 +112,9 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateInDynamo.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => Controller.RunExpression());
-            var model = Controller.DynamoModel;
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
+            var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => string.Equals(x.GUID.ToString(), "6a79717b-7438-458a-a725-587be0ba84fd"));
             Assert.IsTrue(selNodes.Any());
             var node = selNodes.First();
@@ -133,7 +133,7 @@ namespace Dynamo.Tests
             }
 
             //Run the graph again
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id2 = GetBindingElementIdForNode(node.GUID);
 
             //Check the number of reference points
@@ -153,8 +153,8 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateInDynamo.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Undo the creation of a reference point in Revit
             Assert.Inconclusive("TO DO");
@@ -168,8 +168,8 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateWallInDynamo.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Modify the wall in Revit
             using (var trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document, "DeleteInRevit"))
@@ -195,16 +195,16 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\BindingCloseReopen.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Select one of the walls
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is DSElementSelection);
             var selNode = selNodes.First() as DSElementSelection;
             selNode.SelectedElement = new ElementId(184273);
 
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Ensure the running result is correct
             Assert.AreEqual(true, GetPreviewValue("6e4abc3b-83fd-44fe-821b-447f1ec0a56c"));
@@ -243,14 +243,14 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\SelectInDynamo.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is DSElementSelection);
             var selNode = selNodes.First() as DSElementSelection;
             selNode.SelectedElement = rpID;
 
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Undo the creation of a reference point in Revit
             Assert.Inconclusive("TO DO");
@@ -281,18 +281,18 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\SelectInDynamo.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => x is DSElementSelection);
             var selNode = selNodes.First() as DSElementSelection;
             selNode.SelectedElement = rpID1;
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id1 = selNode.SelectedElement;
 
             //Select the second reference point in Dynamo
             selNode.SelectedElement = rpID2;
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
             var id2 = selNode.SelectedElement;
 
             //Ensure the element binding is not the same
@@ -309,14 +309,14 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateDifferentNumberOfPoints.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Check the number of the refrence points
             var points = GetAllReferencePointElements(true);
             Assert.AreEqual(8, points.Count);
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => string.Equals(x.GUID.ToString(), "a52bee11-4382-4c42-a676-443f9d7eedf2"));
             Assert.IsTrue(selNodes.Any());
             var node = selNodes.First();
@@ -326,7 +326,7 @@ namespace Dynamo.Tests
             slider.Value = 3;
 
             //Run the graph again
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Check the number of the refrence points
             points = GetAllReferencePointElements(true);
@@ -346,14 +346,14 @@ namespace Dynamo.Tests
             string dynFilePath = Path.Combine(_testPath, @".\ElementBinding\CreateDifferentNumberOfPoints.dyn");
             string testPath = Path.GetFullPath(dynFilePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() =>ViewModel.Model.RunExpression());
 
             //Check the number of the refrence points
             var points = GetAllReferencePointElements(true);
             Assert.AreEqual(8, points.Count);
 
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var selNodes = model.AllNodes.Where(x => string.Equals(x.NickName, "ReferencePoint.ByCoordinates"));
             Assert.IsTrue(selNodes.Any());
             var node = selNodes.First() as DSFunction;
@@ -365,7 +365,7 @@ namespace Dynamo.Tests
             node.ArgumentLacing = Models.LacingStrategy.Longest;
 
             //Run the graph again
-            Controller.RunExpression();
+           ViewModel.Model.RunExpression();
 
             //Check the number of the refrence points
             points = GetAllReferencePointElements(true);

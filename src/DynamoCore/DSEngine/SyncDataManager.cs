@@ -37,7 +37,7 @@ namespace Dynamo.DSEngine
         public void ResetStates()
         {
             // Remove all thoses deleted nodes, so if a node is deleted and undo,
-            // its state is "Added" instead of "Modified".
+            // its state is "Added" instead of "RequestSync".
             var deletedKeys = states.Keys.Where(k => states[k] == State.Deleted).ToList();
             foreach (var key in deletedKeys)
             {

@@ -10,11 +10,11 @@ namespace ProtoFFI
 {
     public class ContextDataManager
     {
-        private ProtoCore.Core mCoreObject = null;
+        private ProtoCore.Core mCoreObject;
 
         private Dictionary<string, IContextData> mData = new Dictionary<string, IContextData>();
-        private static Dictionary<string, IContextDataProvider> mDataProviders = null;
-        private CoreDataProvider mCoreDataProvider = null;
+        private static Dictionary<string, IContextDataProvider> mDataProviders;
+        private CoreDataProvider mCoreDataProvider;
 
         private ContextDataManager(ProtoCore.Core core)
         {
@@ -120,7 +120,6 @@ namespace ProtoFFI
         internal ImportNode Compile(ImportModuleHandler importer)
         {
             ImportNode impNode = null;
-            ProtoCore.AST.AssociativeAST.CodeBlockNode code = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
             foreach (var item in mData)
             {
                 SortedSet<Type> types = GetTypesForImport(item.Value.Data);
