@@ -4,7 +4,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
+using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Utilities;
+
 using DynamoUtilities;
 
 namespace Dynamo.PackageManager
@@ -13,15 +17,18 @@ namespace Dynamo.PackageManager
     {
         public string RootPackagesDirectory { get; private set; }
 
-        private readonly DynamoModel dynamoModel;
+        private readonly ILogger logger;
+        private readonly DynamoLoader loader;
 
-        public PackageLoader(DynamoModel dynamoModel) : this( dynamoModel, Path.Combine (DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages) )
+        public PackageLoader(DynamoLoader dynamoLoader, ILogger logger)
+            : this(dynamoLoader, logger, Path.Combine(DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages))
         {
         }
 
-        public PackageLoader(DynamoModel dynamoModel, string overridePackageDirectory)
+        public PackageLoader(DynamoLoader dynamoLoader, ILogger logger, string overridePackageDirectory)
         {
-            this.dynamoModel = dynamoModel;
+            this.loader = dynamoLoader;
+            this.logger = logger;
 
             this.RootPackagesDirectory = overridePackageDirectory;
             if (!Directory.Exists(this.RootPackagesDirectory))
@@ -39,7 +46,7 @@ namespace Dynamo.PackageManager
         public void LoadPackages()
         {
             this.ScanAllPackageDirectories();
-            LocalPackages.ToList().ForEach( (pkg) => pkg.Load() );
+            LocalPackages.ToList().ForEach( (pkg) => pkg.Load(loader, logger) );
         }
 
         private List<Package> ScanAllPackageDirectories()
@@ -61,7 +68,7 @@ namespace Dynamo.PackageManager
                 // get the package name and the installed version
                 if (File.Exists(headerPath))
                 {
-                    discoveredPkg = Package.FromJson(headerPath, this.dynamoModel);
+                    discoveredPkg = Package.FromJson(headerPath, this.logger);
                     if (discoveredPkg == null)
                         throw new Exception(headerPath + " contains a package with a malformed header.  Ignoring it.");
                 }
@@ -84,8 +91,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
-                dynamoModel.Logger.Log(e.GetType() + ": " + e.Message);
+                this.logger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
+                this.logger.Log(e.GetType() + ": " + e.Message);
             }
 
             return null;

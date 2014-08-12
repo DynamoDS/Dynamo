@@ -41,7 +41,7 @@ namespace Dynamo.Utilities
         public DynamoLoader(DynamoModel model)
         {
             this.dynamoModel = model;
-            this.PackageLoader = new PackageLoader(dynamoModel);
+            this.PackageLoader = new PackageLoader(this, dynamoModel.Logger);
         }
 
         #region Methods
@@ -139,6 +139,11 @@ namespace Dynamo.Utilities
                    t.IsSubclassOf(typeof(NodeModel));
         }
 
+        internal bool ContainsNodeModelSubType(Assembly assem)
+        {
+            return assem.GetTypes().Any(IsNodeSubType);
+        }
+
         /// <summary>
         ///     Enumerate the types in an assembly and add them to DynamoController's
         ///     dictionaries and the search view model.  Internally catches exceptions and sends the error 
@@ -182,43 +187,6 @@ namespace Dynamo.Utilities
 
                         if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                             continue;
-
-                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                        //if available, to discern whether we should load this type
-                        if (!dynamoModel.Context.Equals(Context.NONE))
-                        {
-
-                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
-                            if (platformExclusionAttribs.Length > 0)
-                            {
-                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-
-                                //if the attribute's values contain the context stored on the controller
-                                //then skip loading this type.
-
-                                if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
-                                    continue;
-
-                                //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
-                                if (t.Name.Equals("dynSkinCurveLoops"))
-                                {
-                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
-                                    const string nameOfMethodCreate = "noSkinSolidMethod";
-                                    bool exclude = true;
-                                    foreach (MethodInfo m in specialTypeStaticMethods)
-                                    {
-                                        if (m.Name == nameOfMethodCreate)
-                                        {
-                                            var argsM = new object[0];
-                                            exclude = (bool)m.Invoke(null, argsM);
-                                            break;
-                                        }
-                                    }
-                                    if (exclude)
-                                        continue;
-                                }
-                            }
-                        }
 
                         string typeName;
 
@@ -323,5 +291,6 @@ namespace Dynamo.Utilities
         }
 
         #endregion
+
     }
 }

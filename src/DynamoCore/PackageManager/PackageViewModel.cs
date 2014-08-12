@@ -50,7 +50,8 @@ namespace Dynamo.ViewModels
 
             try
             {
-                Model.UninstallCore();
+                var dynModel = this.dynamoViewModel.Model;
+                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.Logger);
             }
             catch (Exception e)
             {
@@ -60,7 +61,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUninstall()
         {
-            return !Model.InUse();
+            return !Model.InUse(this.dynamoViewModel.Model);
         }
 
         private void Deprecate()
@@ -91,7 +92,7 @@ namespace Dynamo.ViewModels
 
         private void PublishNewPackageVersion()
         {
-            this.Model.RefreshCustomNodesFromDirectory();
+            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
             vm.IsNewVersion = true;
 
@@ -105,7 +106,7 @@ namespace Dynamo.ViewModels
 
         private void PublishNewPackage()
         {
-            this.Model.RefreshCustomNodesFromDirectory();
+            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
             vm.IsNewVersion = false;
 

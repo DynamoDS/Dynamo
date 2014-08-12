@@ -639,7 +639,7 @@ namespace Dynamo.PackageManager
             {
                 var newpkg = Package == null;
 
-                Package = Package ?? new Package(this.dynamoViewModel.Model, "", this.Name, this.FullVersion);
+                Package = Package ?? new Package("", this.Name, this.FullVersion);
 
                 Package.VersionName = FullVersion;
                 Package.Description = Description;

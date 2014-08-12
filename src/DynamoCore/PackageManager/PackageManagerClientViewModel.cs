@@ -186,7 +186,8 @@ namespace Dynamo.ViewModels
                             var firstOrDefault = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                             if (firstOrDefault != null)
                             {
-                                try { firstOrDefault.UninstallCore(); }
+                                var dynModel = this.dynamoViewModel.Model;
+                                try { firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.Logger); }
                                 catch
                                 {
                                     MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name +
@@ -196,8 +197,8 @@ namespace Dynamo.ViewModels
 
                             if (packageDownloadHandle.Extract(out dynPkg))
                             {
-                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model);
-                                downloadPkg.Load();
+                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model.Logger);
+                                downloadPkg.Load(this.dynamoViewModel.Model.Loader, this.dynamoViewModel.Model.Logger);
                                 dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                             }

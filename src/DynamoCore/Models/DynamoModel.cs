@@ -275,6 +275,9 @@ namespace Dynamo.Models
             Runner = runner;
             Context = context;
             IsTestMode = isTestMode;
+            DisposeLogic.IsShuttingDown = false;
+            this.EngineController = new EngineController(this);
+
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             DebugSettings = new DebugSettings();
 
@@ -298,9 +301,6 @@ namespace Dynamo.Models
             this.Loader.PackageLoader.DoCachedPackageUninstalls();
             this.Loader.PackageLoader.LoadPackages();
 
-            DisposeLogic.IsShuttingDown = false;
-
-            this.EngineController = new EngineController(this);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
             //This is necessary to avoid a race condition by causing a thread join

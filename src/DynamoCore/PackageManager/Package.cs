@@ -4,13 +4,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 
+using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using String = System.String;
@@ -20,6 +20,9 @@ namespace Dynamo.PackageManager
 
     public class Package : NotificationObject
     {
+
+        #region Properties/Fields
+
         public string Name { get; set; }
 
         public string CustomNodeDirectory
@@ -72,11 +75,10 @@ namespace Dynamo.PackageManager
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
         public ObservableCollection<PackageDependency> Dependencies { get; set; }
 
-        private readonly DynamoModel dynamoModel;
+        #endregion
 
-        public Package(DynamoModel dynamoModel, string directory, string name, string versionName)
+        public Package(string directory, string name, string versionName)
         {
-            this.dynamoModel = dynamoModel;
             this.Loaded = false;
             this.RootDirectory = directory;
             this.Name = name;
@@ -86,12 +88,12 @@ namespace Dynamo.PackageManager
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
         }
 
-        public static Package FromDirectory(string rootPath, DynamoModel dynamoModel)
+        public static Package FromDirectory(string rootPath, ILogger logger)
         {
-            return Package.FromJson(Path.Combine(rootPath, "pkg.json"), dynamoModel);
+            return Package.FromJson(Path.Combine(rootPath, "pkg.json"), logger);
         }
 
-        public static Package FromJson(string headerPath, DynamoModel dynamoModel)
+        public static Package FromJson(string headerPath, ILogger logger)
         {
             try
             {
@@ -103,7 +105,7 @@ namespace Dynamo.PackageManager
                     throw new Exception("The header is missing a name or version field.");
                 }
 
-                var pkg = new Package(dynamoModel, Path.GetDirectoryName(headerPath), body.name, body.version);
+                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version);
                 pkg.Group = body.group;
                 pkg.Description = body.description;
                 pkg.Keywords = body.keywords;
@@ -117,28 +119,67 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log("Failed to form package from json header.");
-                dynamoModel.Logger.Log(e.GetType() + ": " + e.Message);
+                logger.Log("Failed to form package from json header.");
+                logger.Log(e.GetType() + ": " + e.Message);
                 return null;
             }
 
         }
 
-        public void Load()
+        public void Load( DynamoLoader loader, ILogger logger )
         {
             try
             {
-                GetAssemblies().Select(dynamoModel.Loader.LoadNodesFromAssembly).SelectMany(x => x).ToList().ForEach(x => LoadedTypes.Add(x));
-                dynamoModel.Loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
-
+                this.LoadAssemblies( loader, logger );
+                this.LoadCustomNodes( loader );
+                
                 Loaded = true;
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
-                dynamoModel.Logger.Log(e.GetType() + ": " + e.Message);
+                logger.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
+                logger.Log(e.GetType() + ": " + e.Message);
             }
 
+        }
+
+        private void LoadCustomNodes( DynamoLoader loader)
+        {
+            loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
+        }
+
+        private void LoadAssemblies( DynamoLoader loader, ILogger logger)
+        {
+            var assemblies = GetAssemblies();
+
+            // filter the assemblies
+            var zeroTouchAssemblies = new List<Assembly>();
+            var nodeModelAssemblies = new List<Assembly>();
+
+            foreach (var assem in assemblies)
+            {
+                if (loader.ContainsNodeModelSubType(assem))
+                {
+                    nodeModelAssemblies.Add(assem);
+                }
+                else
+                {
+                    zeroTouchAssemblies.Add(assem);
+                }
+            }
+
+            // load the zero touch assemblies
+            foreach (var zeroTouchAssem in zeroTouchAssemblies)
+            {
+                LibraryServices.GetInstance().ImportLibrary( zeroTouchAssem.Location, logger );
+            }
+
+            // load the node model assemblies
+            foreach (var nodeModelAssem in nodeModelAssemblies)
+            {
+                var nodes = loader.LoadNodesFromAssembly(nodeModelAssem);
+                nodes.ForEach(x => LoadedTypes.Add(x));
+            }
         }
 
         internal List<Assembly> GetAssemblies()
@@ -158,12 +199,12 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
-        internal bool InUse()
+        internal bool InUse( DynamoModel dynamoModel )
         {
-            return (LoadedTypes.Any() || WorkspaceOpen() || CustomNodeInWorkspace() ) && Loaded;
+            return (LoadedTypes.Any() || WorkspaceOpen(dynamoModel) || CustomNodeInWorkspace(dynamoModel)) && Loaded;
         }
 
-        private bool CustomNodeInWorkspace()
+        private bool CustomNodeInWorkspace(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
@@ -175,7 +216,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        private bool WorkspaceOpen()
+        private bool WorkspaceOpen(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
@@ -189,31 +230,31 @@ namespace Dynamo.PackageManager
                         });
         }
 
-        internal void UninstallCore()
+        internal void UninstallCore( CustomNodeManager customNodeManager, PackageLoader packageLoader, ILogger logger )
         {
             try
             {
-                LoadedCustomNodes.ToList().ForEach(x => dynamoModel.CustomNodeManager.RemoveFromDynamo(x.Guid));
-                dynamoModel.Loader.PackageLoader.LocalPackages.Remove(this);
+                LoadedCustomNodes.ToList().ForEach(x => customNodeManager.RemoveFromDynamo(x.Guid));
+                packageLoader.LocalPackages.Remove(this);
+                //packageLoader.AssembliesToUnload.Add()
                 Directory.Delete(this.RootDirectory, true);
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
-                dynamoModel.Logger.Log(e.GetType() + ": " + e.Message);
+                logger.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
+                logger.Log(e.GetType() + ": " + e.Message);
                 throw e;
             }
         }
 
-        internal void RefreshCustomNodesFromDirectory()
+        internal void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager)
         {
             this.LoadedCustomNodes.Clear();
-            dynamoModel.CustomNodeManager
+            customNodeManager
                         .GetInfosFromFolder(this.CustomNodeDirectory)
                         .ToList()
                         .ForEach(x => this.LoadedCustomNodes.Add(x));
         }
 
-        
     }
 }

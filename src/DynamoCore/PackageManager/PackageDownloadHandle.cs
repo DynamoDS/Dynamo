@@ -103,7 +103,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(dynamoViewModel.Model, installedPath, Header.name, VersionName);
+            pkg = new Package(installedPath, Header.name, VersionName);
 
             return true;
         }

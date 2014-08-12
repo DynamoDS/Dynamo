@@ -169,7 +169,7 @@ namespace Dynamo.PackageManager
                     string msg;
 
                     // if the package is in use, we will not be able to uninstall it.  
-                    if (!localPkg.InUse())
+                    if (!localPkg.InUse(dynamoViewModel.Model))
                     {
                         msg = "Dynamo needs to uninstall " + this.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
                         MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
