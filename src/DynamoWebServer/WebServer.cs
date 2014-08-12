@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 using DynamoWebServer.Interfaces;
 using DynamoWebServer.Messages;
@@ -22,17 +23,19 @@ namespace DynamoWebServer
 {
     public class WebServer : IWebServer
     {
+        private readonly DynamoViewModel dynamoViewModel;
         private readonly JsonSerializerSettings jsonSettings;
         private readonly IWebSocket webSocket;
         private readonly ISessionManager sessionManager;
 
         private readonly MessageHandler messageHandler;
 
-        public WebServer(IWebSocket socket, ISessionManager manager)
+        public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket, ISessionManager manager)
         {
             webSocket = socket;
             sessionManager = manager;
-            messageHandler = new MessageHandler();
+            this.dynamoViewModel = dynamoViewModel;
+            messageHandler = new MessageHandler(dynamoViewModel);
             messageHandler.ResultReady += SendAnswerToWebSocket;
 
             jsonSettings = new JsonSerializerSettings
@@ -154,7 +157,7 @@ namespace DynamoWebServer
 
         void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
         {
-            SendResponse(e.Response, sessionManager.GetSession(dynSettings.Controller.DynamoViewModel));
+            SendResponse(e.Response, sessionManager.GetSession(dynamoViewModel));
         }
 
         void BindEvents()
@@ -174,13 +177,13 @@ namespace DynamoWebServer
         void ExecuteMessageFromSocket(Message message)
         {
             (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
-                .Invoke(new Action(() => messageHandler.Execute(dynSettings.Controller.DynamoViewModel, message)));
+                .Invoke(new Action(() => messageHandler.Execute(dynamoViewModel, message)));
         }
 
         void LogInfo(string info)
         {
-            if (dynSettings.DynamoLogger != null)
-                dynSettings.DynamoLogger.Log(info);
+            if (dynamoViewModel.Model.Logger != null)
+                dynamoViewModel.Model.Logger.Log(info);
         }
 
         #endregion

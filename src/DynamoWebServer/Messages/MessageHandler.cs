@@ -16,17 +16,20 @@ namespace DynamoWebServer.Messages
 {
     public class MessageHandler
     {
+        private readonly DynamoViewModel dynamoViewModel;
         private readonly JsonSerializerSettings jsonSettings;
 
         public event ResultReadyEventHandler ResultReady;
 
-        public MessageHandler()
+        public MessageHandler(DynamoViewModel dynamoViewModel)
         {
             jsonSettings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Objects,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
+
+            this.dynamoViewModel = dynamoViewModel;
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace DynamoWebServer.Messages
             {
                 OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
                 {
-                    LibraryItems = dynSettings.Controller.SearchViewModel.GetAllLibraryItemsByCategory()
+                    LibraryItems = dynamo.SearchViewModel.GetAllLibraryItemsByCategory()
                 }));
             }
         }
@@ -87,7 +90,7 @@ namespace DynamoWebServer.Messages
         {
             var recordableCommandMsg = (RecordableCommandsMessage)message;
 
-            var manager = dynSettings.Controller.VisualizationManager;
+            var manager = dynamo.VisualizationManager;
             SelectTabByGuid(dynamo, recordableCommandMsg.WorkspaceGuid);
 
             foreach (var command in recordableCommandMsg.Commands)
@@ -111,9 +114,9 @@ namespace DynamoWebServer.Messages
 
             if (!guid.Equals(Guid.Empty))
             {
-                if (dynSettings.Controller.CustomNodeManager.LoadedCustomNodes.ContainsKey(guid))
+                if (dynamo.Model.CustomNodeManager.LoadedCustomNodes.ContainsKey(guid))
                 {
-                    var name = dynSettings.Controller.CustomNodeManager.LoadedCustomNodes[guid]
+                    var name = dynamo.Model.CustomNodeManager.LoadedCustomNodes[guid]
                         .WorkspaceModel.Name;
                     var workspace = dynamo.Workspaces.First(elem => elem.Name == name);
                     var index = dynamo.Workspaces.IndexOf(workspace);
@@ -126,7 +129,7 @@ namespace DynamoWebServer.Messages
         private void ModifiedNodesData(object sender, RenderCompletionEventArgs e)
         {
             var nodes = new List<ExecutedNode>();
-            foreach (var item in dynSettings.Controller.DynamoModel.NodeMap)
+            foreach (var item in dynamoViewModel.Model.NodeMap)
             {
                 string data;
                 NodeModel node = item.Value;
@@ -176,7 +179,7 @@ namespace DynamoWebServer.Messages
                 Nodes = nodes
             }));
 
-            dynSettings.Controller.VisualizationManager.RenderComplete -= ModifiedNodesData;
+            dynamoViewModel.VisualizationManager.RenderComplete -= ModifiedNodesData;
         }
 
         #endregion

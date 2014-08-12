@@ -104,7 +104,7 @@ namespace Dynamo.Search.SearchElements
         [DataMember]
         public IEnumerable<string> ReturnKeys { get; private set; }
         
-        public LibraryItem(SearchElementBase node)
+        public LibraryItem(SearchElementBase node, DynamoModel dynamoModel)
         {
             Category = node.FullCategoryName;
             Type = node.Type;
@@ -115,12 +115,12 @@ namespace Dynamo.Search.SearchElements
             Weight = node.Weight;
             Keywords = node.Keywords;
 
-            PopulateKeysAndParameters();
+            PopulateKeysAndParameters(dynamoModel);
         }
 
-        private void PopulateKeysAndParameters()
+        private void PopulateKeysAndParameters(DynamoModel dynamoModel)
         {
-            var controller = dynSettings.Controller.EngineController;
+            var controller = dynamoModel.EngineController;
             var functionItem = (controller.GetFunctionDescriptor(CreatingName));
             if (functionItem != null)
             {
@@ -138,14 +138,14 @@ namespace Dynamo.Search.SearchElements
             else
             {
                 TypeLoadData tld = null;
-                
-                if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(CreatingName))
+
+                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreatingName))
                 {
-                    tld = dynSettings.Controller.BuiltInTypesByName[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByName[CreatingName];
                 }
-                else if (dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(CreatingName))
+                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreatingName))
                 {
-                    tld = dynSettings.Controller.BuiltInTypesByNickname[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByNickname[CreatingName];
                 }
 
                 if (tld != null)

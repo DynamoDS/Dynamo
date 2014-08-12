@@ -569,7 +569,7 @@ namespace Dynamo.ViewModels
             if (allLibraryItems == null)
             {
                 allLibraryItems = new List<LibraryItem>();
-                foreach (var elem in BrowserRootCategories)
+                foreach (var elem in Model.BrowserRootCategories)
                 {
                     allLibraryItems.AddRange(GetLibraryItemsByCategory(elem));
                 }
@@ -579,12 +579,13 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
         {
+            var dynamoModel = dynamoViewModel.Model;
             var result = new List<LibraryItem>();
             foreach (BrowserItem item in elem.Items)
             {
                 if (item is SearchElementBase) 
                 {
-                    result.Add(new LibraryItem(item as SearchElementBase));
+                    result.Add(new LibraryItem(item as SearchElementBase, dynamoModel));
                 }
                 else
                 {
