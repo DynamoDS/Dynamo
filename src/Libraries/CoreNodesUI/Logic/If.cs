@@ -19,7 +19,7 @@ namespace DSCoreNodesUI.Logic
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {
-        public If()
+        public If(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             InPortData.Add(new PortData("test", "Test block"));
             InPortData.Add(new PortData("true", "True block"));
@@ -67,7 +67,7 @@ namespace DSCoreNodesUI.Logic
                     FalseExpression = inputAstNodes[2]
                 };
             }
-            
+
             return new[]
             {
                 AstFactory.BuildAssignment(lhs, rhs)

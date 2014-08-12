@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         [TestModel(@".\Level\Level.rvt")]
         public void Level()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Level\Level.dyn");
             //string testPath = Path.GetFullPath(samplePath);

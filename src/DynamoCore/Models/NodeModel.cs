@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Security.Permissions;
 using System.Windows;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -17,7 +15,6 @@ using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
@@ -57,8 +54,7 @@ namespace Dynamo.Models
 
         #region public members
 
-        // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
-        public WorkspaceModel WorkSpace;
+        public WorkspaceModel Workspace { get; private set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -314,7 +310,7 @@ namespace Dynamo.Models
 
                 cachedMirrorData = null;
 
-                var engine = dynSettings.Controller.EngineController;
+                var engine = Workspace.DynamoModel.EngineController;
                 var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
                 if (runtimeMirror != null)
@@ -512,8 +508,10 @@ namespace Dynamo.Models
 
         #endregion
 
-        protected NodeModel()
+        protected NodeModel(WorkspaceModel workspaceModel)
         {
+            this.Workspace = workspaceModel;
+
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
 
@@ -560,7 +558,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Called when this node is being removed from the workspace.
+        ///     Called when this node is being removed from the Workspace.
         /// </summary>
         public virtual void Destroy() { }
 
@@ -571,7 +569,7 @@ namespace Dynamo.Models
 
         public MirrorData GetValue(int outPortIndex)
         {
-            return dynSettings.Controller.EngineController.GetMirror(
+            return Workspace.DynamoModel.EngineController.GetMirror(
                 GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
         }
 
@@ -606,8 +604,8 @@ namespace Dynamo.Models
         /// </summary>
         protected internal void ReportModification()
         {
-            if (IsReportingModifications && WorkSpace != null)
-                WorkSpace.Modified();
+            if (IsReportingModifications && Workspace != null)
+                Workspace.Modified();
         }
 
         #endregion
@@ -618,7 +616,7 @@ namespace Dynamo.Models
         ///     Override this to implement custom save data for your Element. If overridden, you should also override
         ///     LoadNode() in order to read the data back when loaded.
         /// </summary>
-        /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
+        /// <param name="xmlDoc">The XmlDocument representing the whole Workspace containing this Element.</param>
         /// <param name="nodeElement">The XmlElement representing this Element.</param>
         /// <param name="context">Why is this being called?</param>
         protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context) { }
@@ -626,8 +624,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Saves this node into an XML Document.
         /// </summary>
-        /// <param name="xmlDoc">Overall XmlDocument representing the entire workspace being saved.</param>
-        /// <param name="dynEl">The XmlElement representing this node in the workspace.</param>
+        /// <param name="xmlDoc">Overall XmlDocument representing the entire Workspace being saved.</param>
+        /// <param name="dynEl">The XmlElement representing this node in the Workspace.</param>
         /// <param name="context">The context of this save operation.</param>
         public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
@@ -678,7 +676,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Called when the node's workspace has been saved.
+        ///     Called when the node's Workspace has been saved.
         /// </summary>
         protected internal virtual void OnSave() { }
         
@@ -989,27 +987,21 @@ namespace Dynamo.Models
                     }
                 });
 
-            if (dynSettings.Controller != null &&
-                dynSettings.Controller.UIDispatcher != null &&
-                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
-            {
-                // This is put in place to solve the crashing issue outlined in 
-                // the following defect. ValidateConnections can be called from 
-                // a background evaluation thread at any point in time, we do 
-                // not want such calls to update UI in anyway while we're here 
-                // (the UI update is caused by setting State property which leads
-                // to tool-tip update that triggers InfoBubble to update its UI,
-                // a problem that is currently being resolved and tested on a 
-                // separate branch). When the InfoBubble restructuring gets over,
-                // please ensure the following scenario is tested and continue to 
-                // work:
-                // 
-                //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-                // 
-                dynSettings.Controller.UIDispatcher.BeginInvoke(setState);
-            }
-            else
-                setState();
+            // This is put in place to solve the crashing issue outlined in 
+            //    // the following defect. ValidateConnections can be called from 
+            //    // a background evaluation thread at any point in time, we do 
+            //    // not want such calls to update UI in anyway while we're here 
+            //    // (the UI update is caused by setting State property which leads
+            //    // to tool-tip update that triggers InfoBubble to update its UI,
+            //    // a problem that is currently being resolved and tested on a 
+            //    // separate branch). When the InfoBubble restructuring gets over,
+            //    // please ensure the following scenario is tested and continue to 
+            //    // work:
+            //    // 
+            //    //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+            //    // 
+
+            if (this.Workspace.DynamoModel != null) this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
         }
 
         public void Error(string p)
@@ -1467,9 +1459,9 @@ namespace Dynamo.Models
         /// each of the node's ports and processing the underlying
         /// CLR data as IGraphicItems.
         /// </summary>
-        public virtual void UpdateRenderPackage()
+        public virtual void UpdateRenderPackage(int maxTesselationDivisions)
         {
-            if (dynSettings.Controller == null)
+            if (Workspace.DynamoModel == null)
             {
                 return;
             }
@@ -1491,7 +1483,7 @@ namespace Dynamo.Models
             var ident = AstIdentifierForPreview.Name;
 
             var data = from varName in drawableIds
-                        select dynSettings.Controller.EngineController.GetMirror(varName)
+                        select Workspace.DynamoModel.EngineController.GetMirror(varName)
                         into mirror
                         where mirror != null
                         select mirror.GetData();
@@ -1506,7 +1498,7 @@ namespace Dynamo.Models
             List<IRenderPackage> newRenderPackages = new List<IRenderPackage>();
             foreach (var varName in drawableIds)
             {
-                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                var graphItems = Workspace.DynamoModel.EngineController.GetGraphicItems(varName);
                 if (graphItems == null)
                     continue;
 
@@ -1517,7 +1509,8 @@ namespace Dynamo.Models
                     PushGraphicItemIntoPackage(gItem, 
                         package, 
                         labelMap.Count > count ? labelMap[count] : "?",
-                        sizeMap.Count > count ? sizeMap[count] : -1.0);
+                        sizeMap.Count > count ? sizeMap[count] : -1.0,
+                        maxTesselationDivisions );
 
                     package.ItemsCount++;
                     newRenderPackages.Add(package);
@@ -1545,12 +1538,12 @@ namespace Dynamo.Models
             }
         }
 
-        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
+        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, 
+            double size, int maxTesselationDivisions )
         {
             try
             {
-
-                graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
+                graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
                 package.Tag = tag;
             }
             catch (Exception e)
@@ -1754,8 +1747,8 @@ namespace Dynamo.Models
 
         public bool ShouldDisplayPreview()
         {
-            // Previews are only shown in Home workspace.
-            if (!(this.WorkSpace is HomeWorkspaceModel))
+            // Previews are only shown in Home Workspace.
+            if (!(this.Workspace is HomeWorkspaceModel))
                 return false;
 
             return this.ShouldDisplayPreviewCore();

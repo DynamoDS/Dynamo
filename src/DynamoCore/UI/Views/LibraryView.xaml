@@ -24,7 +24,11 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ClassDetailsDataTemplate">
+<<<<<<< HEAD
             <Grid Background="CornflowerBlue">
+=======
+			<Grid Background="CornflowerBlue">
+>>>>>>> remotes/origin/CategoriesProtoImplementation
 				<Grid.Width>
 					<Binding Path="ActualWidth"
 							 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
@@ -40,6 +44,27 @@
 											  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
 											  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
 		<controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+<<<<<<< HEAD
+=======
+        <DataTemplate x:Key="titleText">
+            <Border Height="24">
+                <TextBlock Text="{Binding}"
+                           Margin="4 0"
+                           VerticalAlignment="Center"
+                           Foreground="Red"
+                           FontSize="11"
+                           FontWeight="Normal"
+                           Width="200"
+                           TextWrapping="Wrap" />
+            </Border>
+        </DataTemplate>
+
+        <Style TargetType="{x:Type Expander}">
+            <Setter Property="HeaderTemplate"
+                    Value="{StaticResource titleText}" />
+        </Style>
+        
+>>>>>>> remotes/origin/CategoriesProtoImplementation
     </UserControl.Resources>
 	<Grid Name="LibraryGrid">
 
@@ -49,10 +74,8 @@
 				  ItemsSource="{Binding}">
 			<ListView.ItemTemplate>
 				<DataTemplate>
-
 					<Expander Foreground="Blue"
-							  Header="{Binding Path=Name}"
-							  Width="{Binding ElementName=CategoryListView, Path=ActualWidth}">
+							  Header="{Binding Path=Name}">
 
 						<!-- This is inner list (showing subcategories) -->
 						<ListView ScrollViewer.CanContentScroll="False"
@@ -62,7 +85,8 @@
 								<ItemsPanelTemplate>
 									<controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
 										ElementName=CategoryListView, 
-										Converter={StaticResource LibraryWrapPanelWidthConverter}}" />
+										Converter={StaticResource LibraryWrapPanelWidthConverter}}"
+                                                               MinWidth="150" />
 								</ItemsPanelTemplate>
 							</ListView.ItemsPanel>
                             <!--<ListView.ItemContainerStyle>

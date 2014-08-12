@@ -15,27 +15,64 @@ namespace DSRevitNodesTests.GeometryConversion
     [TestFixture]
     internal class RevitToProtoSolidTests : GeometricRevitNodeTest
     {
-        [Test]
-        [TestModel(@".\Solids.rfa")]
-        public void AllSolidsConvert()
+        private static void AssertAllSolidsAreConvertedProperly(IEnumerable<Autodesk.Revit.DB.Solid> allSolidsInDoc)
         {
-
-            var allSolidsInDoc = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
-                .Cast<Revit.Elements.Form>()
-                .SelectMany(x => x.InternalGeometry())
-                .OfType<Autodesk.Revit.DB.Solid>();
-
             foreach (var solid in allSolidsInDoc)
             {
                 var asmSolid = solid.ToProtoType(false);
 
-                asmSolid.Volume.ShouldBeApproximately(solid.Volume);
-                asmSolid.Area.ShouldBeApproximately(solid.SurfaceArea);
-                Assert.AreEqual(solid.Faces.Size, asmSolid.Faces.Length);
-                asmSolid.Centroid().ShouldBeApproximately(solid.ComputeCentroid());
+                // revit can return negative volumes
+                var revitVolume = Math.Abs(solid.Volume);
+                var revitSurfaceArea = solid.SurfaceArea;
+                var revitCentroid = solid.ComputeCentroid();
 
+                var asmVolume = asmSolid.Volume;
+                var asmSurfaceArea = asmSolid.Area;
+                var asmCentroid = asmSolid.Centroid();
+
+                revitVolume.ShouldDifferByLessThanPercentage(asmVolume, 1);
+                revitSurfaceArea.ShouldDifferByLessThanPercentage(asmSurfaceArea, 1);
+
+                revitCentroid.ShouldBeApproximately(asmCentroid, 1);
             }
+        }
 
+        [Test]
+        [TestModel(@".\Solids.rfa")]
+        public void ToProtoType_Boolean_ShouldConvertAllFormsInDocument()
+        {
+            var formSolids = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
+                .Cast<Revit.Elements.Form>()
+                .SelectMany(x => x.InternalGeometry())
+                .OfType<Autodesk.Revit.DB.Solid>();
+
+            AssertAllSolidsAreConvertedProperly(formSolids);
+        }
+
+        [Test]
+        [TestModel(@".\MoreSolids.rfa")]
+        public void ToProtoType_Boolean_ShouldConvertAllHermiteFormsInDocument()
+        {
+            var formSolids = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
+                .Cast<Revit.Elements.Form>()
+                .SelectMany(x => x.InternalGeometry())
+                .OfType<Autodesk.Revit.DB.Solid>();
+
+            AssertAllSolidsAreConvertedProperly(formSolids);
+        }
+
+        [Test]
+        [TestModel(@".\cutWalls.rvt")]
+        public void ToProtoType_Boolean_ShouldConvertCutWallsInDocument()
+        {
+            var allSolidsInDoc = ElementSelector.ByType<Autodesk.Revit.DB.Wall>(true)
+                .Cast<Revit.Elements.Wall>()
+                .SelectMany(x => x.InternalGeometry())
+                .OfType<Autodesk.Revit.DB.Solid>()
+                .ToList();
+
+            Assert.AreEqual(3, allSolidsInDoc.Count);
+            AssertAllSolidsAreConvertedProperly(allSolidsInDoc);
         }
     }
 }

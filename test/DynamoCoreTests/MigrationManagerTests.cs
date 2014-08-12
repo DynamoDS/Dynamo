@@ -217,13 +217,13 @@ namespace Dynamo.Tests
             Version newVer = new Version(0, 7, 1);
             Version newestVer = new Version(0, 7, 2);
 
-            DynamoController.IsTestMode = false;
+            DynamoModel.IsTestMode = false;
             var decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer);
             var decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer);
             Assert.AreEqual(MigrationManager.Decision.Migrate, decision1);
             Assert.AreEqual(MigrationManager.Decision.Retain, decision2);
 
-            DynamoController.IsTestMode = true;
+            DynamoModel.IsTestMode = true;
             decision1 = MigrationManager.ShouldMigrateFile(oldVer, newVer);
             decision2 = MigrationManager.ShouldMigrateFile(newestVer, newVer);
             Assert.AreEqual(MigrationManager.Decision.Migrate, decision1);

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Dynamo.ViewModels;
+
 namespace Dynamo.Core
 {
     public class CrashPromptArgs : EventArgs
@@ -22,7 +24,7 @@ namespace Dynamo.Core
 
         // Default Crash Prompt
         public CrashPromptArgs(string details, string overridingText = null, string filePath = null)
-        {
+        {  
             if (details != null)
             {
                 Details = details;

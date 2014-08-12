@@ -148,7 +148,7 @@ namespace Dynamo.Models
         internal ClassDetails()
         {
             // Class details is by default hidden.
-            ClassDetailsVisibility = Visibility.Collapsed;
+            ClassDetailsVisibility = Visibility.Hidden;
         }
 
         public Visibility ClassDetailsVisibility { get; set; }

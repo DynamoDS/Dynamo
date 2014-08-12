@@ -4,7 +4,10 @@ using System.Linq;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Search;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
@@ -13,7 +16,7 @@ namespace Dynamo
     {
         internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
 
-        internal CustomNodeDefinition(Guid id)
+        internal CustomNodeDefinition( Guid id)
         {
             FunctionId = id;
         }
@@ -119,12 +122,11 @@ namespace Dynamo
         /// Compiles this custom node definition, updating all UI instances to match
         /// inputs and outputs and registering new definition with the EngineController.
         /// </summary>
-        /// <param name="controller"></param>
-        public void Compile(EngineController controller)
+        public void Compile(DynamoModel dynamoModel, EngineController controller)
         {
             // If we are loading dyf file, dont compile it until all nodes are loaded
             // otherwise some intermediate function defintions will be created.
-            // TODO: This is a hack, in reality we should be preventing this from being called at the Workspace.Modified() level --SJE
+            // TODO: This is a hack, in reality we should be preventing this from being called at the Workspace.RequestSync() level --SJE
             if (IsBeingLoaded || IsProxy)
                 return;
 
@@ -215,7 +217,7 @@ namespace Dynamo
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            var customNodeInstances = dynSettings.Controller.DynamoModel.AllNodes
+            var customNodeInstances = dynamoModel.AllNodes
                         .OfType<Function>()
                         .Where(el => el.Definition != null && el.Definition == this);
             
@@ -243,26 +245,26 @@ namespace Dynamo
 
         #region Custom Node Management
 
-        public bool AddToSearch()
+        public bool AddToSearch(SearchModel search)
         {
             return
-                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
-                                                                                WorkspaceModel.Name,
-                                                                                WorkspaceModel.Category,
-                                                                                WorkspaceModel.Description,
-                                                                                WorkspaceModel.FileName ));
+                search.Add(new CustomNodeInfo(  FunctionId, 
+                                                WorkspaceModel.Name,
+                                                WorkspaceModel.Category,
+                                                WorkspaceModel.Description,
+                                                WorkspaceModel.FileName ));
         }
 
-        public void UpdateCustomNodeManager()
+        public void UpdateCustomNodeManager(CustomNodeManager customNodeManager)
         {
-            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
-                                                                            WorkspaceModel.Name,
-                                                                            WorkspaceModel.Category,
-                                                                            WorkspaceModel.Description,
-                                                                            WorkspaceModel.FileName));
+            customNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
+                                                                WorkspaceModel.Name,
+                                                                WorkspaceModel.Category,
+                                                                WorkspaceModel.Description,
+                                                                WorkspaceModel.FileName));
         }
 
-        public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
+        public bool SyncWithWorkspace(DynamoModel dynamoModel, bool addToSearch, bool compileFunction)
         {
 
             // Get the internal nodes for the function
@@ -271,29 +273,24 @@ namespace Dynamo
             try
             {
                 // Add function defininition
-                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
+                dynamoModel.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
 
                 // search
                 if (addToSearch)
                 {
-                    AddToSearch();
+                    AddToSearch(dynamoModel.SearchModel);
                 }
 
                 var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
                                               functionWorkspace.Description, WorkspaceModel.FileName);
 
-                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
-
-#if USE_DSENGINE
-                Compile(dynSettings.Controller.EngineController);
-#else
-                CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
-#endif
+                dynamoModel.CustomNodeManager.SetNodeInfo(info);
+                Compile(dynamoModel, dynamoModel.EngineController);
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log("Error saving:" + e.GetType());
-                dynSettings.DynamoLogger.Log(e);
+                dynamoModel.Logger.Log("Error saving:" + e.GetType());
+                dynamoModel.Logger.Log(e);
                 return false;
             }
 

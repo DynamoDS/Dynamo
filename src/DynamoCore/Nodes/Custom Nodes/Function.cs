@@ -21,13 +21,13 @@ namespace Dynamo.Nodes
     [IsMetaNode]
     public partial class Function : FunctionCallBase
     {
-        protected internal Function(CustomNodeDefinition def) 
-            : base(new CustomNodeController(def))
+        public Function(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
+
+        protected internal Function(WorkspaceModel workspace, CustomNodeDefinition def)
+            : base(workspace, new CustomNodeController(workspace.DynamoModel, def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
-        public Function() : this(null) { }
 
         public new string Name
         {
@@ -59,8 +59,8 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
-                    ? dynSettings.Controller.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
+                return  this.Workspace.DynamoModel.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
+                    ? this.Workspace.DynamoModel.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
                     : "Custom Nodes";
             }
         }
@@ -320,7 +320,7 @@ namespace Dynamo.Nodes
     {
         private string inputSymbol = "";
 
-        public Symbol()
+        public Symbol(WorkspaceModel workspace) : base(workspace)
         {
             OutPortData.Add(new PortData("", "Symbol"));
 
@@ -404,7 +404,7 @@ namespace Dynamo.Nodes
     {
         private string symbol = "";
 
-        public Output()
+        public Output(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("", ""));
 

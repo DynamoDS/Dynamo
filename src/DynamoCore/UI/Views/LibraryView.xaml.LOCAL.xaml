@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="Dynamo.UI.Views.LibraryView"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:controls="clr-namespace:Dynamo.Controls"
+			 mc:Ignorable="d"
+			 d:DesignHeight="525"
+			 d:DesignWidth="350">
+	<UserControl.Resources>
+		<DataTemplate x:Key="ClassObjectDataTemplate">
+			<StackPanel Orientation="Vertical"
+						Width="86"
+						Height="92">
+				<Image Source="..\..\Resources\Icons\Saturation.png"
+					   Width="40"
+					   Height="40"
+					   Margin="8"
+					   HorizontalAlignment="Center" />
+				<TextBlock Text="{Binding Path=Name}"
+						   HorizontalAlignment="Center" />
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ClassDetailsDataTemplate">
+			<Grid Background="CornflowerBlue">
+				<Grid.Width>
+					<Binding Path="ActualWidth"
+							 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
+				</Grid.Width>
+				<Grid.Visibility>
+					<Binding Path="ClassDetailsVisibility" />
+				</Grid.Visibility>
+			</Grid>
+		</DataTemplate>
+
+		<controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
+											  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
+											  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
+		<controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+        <DataTemplate x:Key="titleText">
+            <Border Height="24">
+                <TextBlock Text="{Binding}"
+                           Margin="4 0"
+                           VerticalAlignment="Center"
+                           Foreground="Red"
+                           FontSize="11"
+                           FontWeight="Normal"
+                           Width="200"
+                           TextWrapping="Wrap" />
+            </Border>
+        </DataTemplate>
+
+        <Style TargetType="{x:Type Expander}">
+            <Setter Property="HeaderTemplate"
+                    Value="{StaticResource titleText}" />
+        </Style>
+        
+    </UserControl.Resources>
+	<Grid Name="LibraryGrid">
+
+		<!-- This is the outer list (showing categories) -->
+		<ListView Name="CategoryListView"
+				  ScrollViewer.CanContentScroll="False"
+				  ItemsSource="{Binding}">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<Expander Foreground="Blue"
+							  Header="{Binding Path=Name}">
+
+						<!-- This is inner list (showing subcategories) -->
+						<ListView ScrollViewer.CanContentScroll="False"
+								  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+								  ItemsSource="{Binding Path=Classes}">
+							<ListView.ItemsPanel>
+								<ItemsPanelTemplate>
+									<controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
+										ElementName=CategoryListView, 
+										Converter={StaticResource LibraryWrapPanelWidthConverter}}"
+                                                               MinWidth="150" />
+								</ItemsPanelTemplate>
+							</ListView.ItemsPanel>
+						</ListView>
+
+					</Expander>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+
+	</Grid>
+</UserControl>

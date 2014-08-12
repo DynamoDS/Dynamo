@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml;
-using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Python;
-using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace DSIronPythonNode
 {
@@ -31,10 +20,14 @@ namespace DSIronPythonNode
         private string propertyName = string.Empty;
         private System.Guid boundNodeId = System.Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly IronPythonCompletionProvider completionProvider = new IronPythonCompletionProvider();
+        private readonly IronPythonCompletionProvider completionProvider;
+        private readonly DynamoViewModel dynamoViewModel;
 
-        public ScriptEditorWindow()
+        public ScriptEditorWindow(DynamoViewModel dynamoViewModel)
         {
+            this.dynamoViewModel = dynamoViewModel;
+            this.completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.Logger);
+
             InitializeComponent();
             var view = FindUpVisualTree<DynamoView>(this);
             this.Owner = view;
@@ -75,9 +68,9 @@ namespace DSIronPythonNode
             }
             catch (System.Exception ex)
             {
-                dynSettings.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
-                dynSettings.DynamoLogger.Log(ex.Message);
-                dynSettings.DynamoLogger.Log(ex.StackTrace);
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
@@ -108,9 +101,9 @@ namespace DSIronPythonNode
             }
             catch (System.Exception ex)
             {
-                dynSettings.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
-                dynSettings.DynamoLogger.Log(ex.Message);
-                dynSettings.DynamoLogger.Log(ex.StackTrace);
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
@@ -132,10 +125,10 @@ namespace DSIronPythonNode
         {
             if (this.DialogResult.HasValue && (this.DialogResult.Value))
             {
-                var command = new DynCmd.UpdateModelValueCommand(
+                var command = new DynamoViewModel.UpdateModelValueCommand(
                     this.boundNodeId, this.propertyName, this.editText.Text);
 
-                dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+                this.dynamoViewModel.ExecuteCommand(command);
             }
         }
 

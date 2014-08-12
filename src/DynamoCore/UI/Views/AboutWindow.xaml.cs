@@ -19,23 +19,25 @@ namespace Dynamo.UI.Views
     {
         bool ignoreClose;
         ILogger logger;
+        private readonly DynamoViewModel dynamoViewModel;
 
-        public AboutWindow(ILogger logger, DynamoViewModel model)
+        public AboutWindow(ILogger logger, DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
             this.logger = logger;
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
-            DataContext = model;
+            DataContext = dynamoViewModel;
+            this.dynamoViewModel = dynamoViewModel;
 
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
         }
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
         {
-            if (dynSettings.Controller != null)
+            if (this.dynamoViewModel != null)
             {
-                var um = dynSettings.Controller.UpdateManager;
+                var um = this.dynamoViewModel.Model.UpdateManager;
                 um.UpdateDownloaded -= OnUpdatePackageDownloaded;
             }
         }
@@ -46,9 +48,10 @@ namespace Dynamo.UI.Views
         {
             //Request a check for update version info
             DisplayVersionInformation(null);
-            var um = dynSettings.Controller.UpdateManager;
+            var um = this.dynamoViewModel.Model.UpdateManager;
             um.UpdateDownloaded += OnUpdatePackageDownloaded;
-            dynSettings.Controller.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, um.UpdateDataAvailable));
+            this.dynamoViewModel.Model.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), 
+                this.dynamoViewModel.Model.Logger, um.UpdateDataAvailable));
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -103,7 +106,7 @@ namespace Dynamo.UI.Views
 
         private void AboutWindow_OnClosed(object sender, EventArgs e)
         {
-            var um = dynSettings.Controller.UpdateManager;
+            var um = this.dynamoViewModel.Model.UpdateManager;
             um.UpdateDownloaded -= OnUpdatePackageDownloaded;
         }
     }

@@ -641,11 +641,6 @@
             Makes PolySurface by Loft through Curves.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>
-            Makes PolySurface by Loft through PolyCurves.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
             <summary>
             Makes PolySurface by Loft through PolyCurves.
