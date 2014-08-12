@@ -9,7 +9,9 @@
 			 d:DesignHeight="525"
 			 d:DesignWidth="350">
 	<UserControl.Resources>
-		<DataTemplate x:Key="ClassObjectDataTemplate">
+        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+        <controls:VisibilityToHeigthConverter x:Key="VisibilityToHeigthConverter" />
+        <DataTemplate x:Key="ClassObjectDataTemplate">
 			<StackPanel Orientation="Vertical"
 						Width="66"
 						Height="66">
@@ -24,28 +26,26 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ClassDetailsDataTemplate">
-<<<<<<< HEAD
             <Grid Background="CornflowerBlue">
-=======
-			<Grid Background="CornflowerBlue">
->>>>>>> remotes/origin/CategoriesProtoImplementation
 				<Grid.Width>
 					<Binding Path="ActualWidth"
 							 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
 				</Grid.Width>
-				<Grid.Visibility>
+                <Grid.Height>
+                    <Binding Path="ClassDetailsVisibility"
+                             Converter="{StaticResource VisibilityToHeigthConverter}"/>
+                </Grid.Height>
+                <Grid.Visibility>
 					<Binding Path="ClassDetailsVisibility" />
 				</Grid.Visibility>
-                <uicontrols:StandardPanel/>                
+                <uicontrols:StandardPanel Name="standardPanel"/>                
 			</Grid>
         </DataTemplate>
 
 		<controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
 											  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
 											  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-		<controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
-<<<<<<< HEAD
-=======
+
         <DataTemplate x:Key="titleText">
             <Border Height="24">
                 <TextBlock Text="{Binding}"
@@ -54,7 +54,7 @@
                            Foreground="Red"
                            FontSize="11"
                            FontWeight="Normal"
-                           Width="200"
+                           Width="220"
                            TextWrapping="Wrap" />
             </Border>
         </DataTemplate>
@@ -63,8 +63,7 @@
             <Setter Property="HeaderTemplate"
                     Value="{StaticResource titleText}" />
         </Style>
-        
->>>>>>> remotes/origin/CategoriesProtoImplementation
+
     </UserControl.Resources>
 	<Grid Name="LibraryGrid">
 
