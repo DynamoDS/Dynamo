@@ -371,17 +371,17 @@ namespace Dynamo.PackageManager
 
         public void RefreshAndSearchAsync()
         {
-            SearchResults.Clear();
+            this.ClearSearchResults();
             this.SearchState = PackageSearchState.SYNCING;
 
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
                 lock (SearchResults)
                 {
-                    SearchResults.Clear();
+                    ClearSearchResults();
                     foreach (var result in t.Result)
                     {
-                        SearchResults.Add(result);
+                        this.AddToSearchResults(result);
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
                 }
@@ -390,14 +390,20 @@ namespace Dynamo.PackageManager
 
         }
 
-        private void AddToSearchResults(SearchElementBase element)
+        private void AddToSearchResults(PackageManagerSearchElement element)
         {
             element.Executed += this.PackageOnExecuted;
+            this.SearchResults.Add(element);
         }
 
         private void ClearSearchResults()
         {
-            
+            foreach (var ele in this.SearchResults)
+            {
+                ele.Executed -= PackageOnExecuted;
+            }
+
+            this.SearchResults.Clear();
         }
 
         private void PackageOnExecuted( SearchElementBase searchElement )
