@@ -162,7 +162,7 @@ namespace Dynamo.PackageManager
                 {
                     destPath = Path.Combine(dyfDir.FullName, Path.GetFileName(file));
                 }
-                else if (file.EndsWith("dll") || file.EndsWith("exe"))
+                else if (file.EndsWith("dll") || file.EndsWith("exe") || file.EndsWith("xml"))
                 {
                     destPath = Path.Combine(binDir.FullName, Path.GetFileName(file));
                 }
