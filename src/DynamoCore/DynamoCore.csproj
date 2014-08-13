@@ -137,6 +137,7 @@ limitations under the License.
     <Compile Include="Core\DynamoScheduler.cs" />
     <Compile Include="Core\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\SchedulerThread.cs" />
     <Compile Include="Core\TimeStampOrdering.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
