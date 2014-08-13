@@ -1,8 +1,7 @@
 ﻿
-using System;
-using System.Diagnostics;
 
-using Dynamo.Interfaces;
+using System.Diagnostics;
+using System.Threading;
 
 #if true
 
@@ -68,6 +67,20 @@ namespace Dynamo.Core.Threading
             return timeStamp0.identifier < timeStamp1.identifier;
         }
     }
+
+    sealed class TimeStampGenerator
+    {
+        private long timeStampValue = 1023;
+
+        internal TimeStamp Next
+        {
+            get
+            {
+                return new TimeStamp(Interlocked.Increment(ref timeStampValue));
+            }
+        }
+    }
+
 }
 
 #else
