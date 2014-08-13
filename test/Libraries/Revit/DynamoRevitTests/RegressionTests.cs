@@ -5,8 +5,11 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Applications;
+using Dynamo.Applications.Models;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using DynamoUnits;
 
 using DynamoUtilities;
@@ -28,7 +31,7 @@ namespace Dynamo.Tests
         protected static string _defsPath;
         protected static string _emptyModelPath1;
         protected static string _emptyModelPath;
-        public static DynamoController Controller;
+        protected DynamoViewModel ViewModel;
 
         /// <summary>
         /// Automated creation of regression test cases. Opens each workflow
@@ -61,13 +64,13 @@ namespace Dynamo.Tests
                 SwapCurrentModel(revitFilePath);
 
                 //open the dyn file
-                Controller.DynamoViewModel.OpenCommand.Execute(dynamoFilePath);
+                ViewModel.OpenCommand.Execute(dynamoFilePath);
 
                 //run the expression and assert that it does not
                 //throw an error
-                Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+                Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
                 var errorNodes =
-                    dynSettings.Controller.DynamoModel.Nodes.Where(
+                    ViewModel.Model.Nodes.Where(
                         x => x.State == ElementState.Error || x.State == ElementState.Warning);
                 Assert.AreEqual(0, errorNodes.Count());
             }
@@ -77,8 +80,8 @@ namespace Dynamo.Tests
             }
             finally
             {
-                Controller.ShutDown(false);
-                Controller = null;
+                ViewModel.Model.ShutDown(false);
+                ViewModel = null;
                 Teardown();
             }
 
@@ -145,23 +148,19 @@ namespace Dynamo.Tests
         {
             try
             {
-                var asm = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                DynamoPathManager.Instance.InitializeCore(asm);
+                DynamoRevit.InitializeUnits();
 
-                var updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
-                updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-                updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
+                var model = RevitDynamoModel.Start(
+                    new RevitDynamoModel.StartConfiguration()
+                    {
+                        StartInTestMode = true
+                    });
 
-                SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-                SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-                SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
-
-                var logger = new DynamoLogger(DynamoPathManager.Instance.Logs);
-                dynSettings.DynamoLogger = logger;
-                var updateManager = new UpdateManager.UpdateManager(logger);
-
-                Controller = DynamoRevit.CreateDynamoRevitControllerAndViewModel(updater, logger, Context.NONE);
-                DynamoController.IsTestMode = true;
+                this.ViewModel = DynamoViewModel.Start(
+                    new DynamoViewModel.StartConfiguration()
+                    {
+                        DynamoModel = model
+                    });
 
                 // create the transaction manager object
                 TransactionManager.SetupManager(new AutomaticTransactionStrategy());
@@ -233,7 +232,7 @@ namespace Dynamo.Tests
 
         void CurrentUIApplication_ViewActivating(object sender, Autodesk.Revit.UI.Events.ViewActivatingEventArgs e)
         {
-            DynamoRevit.SetRunEnabledBasedOnContext(e.NewActiveView);
+            ((RevitDynamoModel)this.ViewModel.Model).SetRunEnabledBasedOnContext(e.NewActiveView);
         }
     }
 

@@ -133,7 +133,7 @@ namespace Dynamo.ViewModels
             int index = portIndex;
             bool isInPort = portType == PortType.INPUT;
 
-            NodeModel node = _model.GetModelInternal(nodeId) as NodeModel;
+            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
 
             // Test if port already has a connection, if so grab it and begin connecting 
@@ -141,18 +141,18 @@ namespace Dynamo.ViewModels
             if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
             {
                 // Define the new active connector
-                var c = new ConnectorViewModel(portModel.Connectors[0].Start);
+                var c = new ConnectorViewModel(this, portModel.Connectors[0].Start);
                 this.SetActiveConnector(c);
 
                 // Disconnect the connector model from its start and end ports
                 // and remove it from the connectors collection. This will also
                 // remove the view model.
                 ConnectorModel connector = portModel.Connectors[0];
-                if (_model.Connectors.Contains(connector))
+                if (Model.Connectors.Contains(connector))
                 {
                     List<ModelBase> models = new List<ModelBase>();
                     models.Add(connector);
-                    _model.RecordAndDeleteModels(models);
+                    Model.RecordAndDeleteModels(models);
                     connector.NotifyConnectedPortsOfDeletion();
                 }
             }
@@ -161,7 +161,7 @@ namespace Dynamo.ViewModels
                 try
                 {
                     // Create a connector view model to begin drawing
-                    var connector = new ConnectorViewModel(portModel);
+                    var connector = new ConnectorViewModel(this, portModel);
                     this.SetActiveConnector(connector);
                 }
                 catch (Exception ex)
@@ -176,7 +176,7 @@ namespace Dynamo.ViewModels
             int index = portIndex;
             bool isInPort = portType == PortType.INPUT;
 
-            NodeModel node = _model.GetModelInternal(nodeId) as NodeModel;
+            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
             ConnectorModel connectorToRemove = null;
 
@@ -184,7 +184,7 @@ namespace Dynamo.ViewModels
             if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
             {
                 connectorToRemove = portModel.Connectors[0];
-                _model.Connectors.Remove(connectorToRemove);
+                Model.Connectors.Remove(connectorToRemove);
                 portModel.Disconnect(connectorToRemove);
                 var startPort = connectorToRemove.Start;
                 startPort.Disconnect(connectorToRemove);
@@ -203,18 +203,15 @@ namespace Dynamo.ViewModels
                 second = start;
             }
 
-            ConnectorModel newConnectorModel = ConnectorModel.Make(firstPort.Owner,
+            ConnectorModel newConnectorModel = this.Model.AddConnection( firstPort.Owner,
                 second.Owner, firstPort.Index, second.Index, PortType.INPUT);
-
-            if (newConnectorModel != null) // Add to the current workspace
-                _model.Connectors.Add(newConnectorModel);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             if (connectorToRemove != null)
                 models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
             models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
-            _model.RecordModelsForUndo(models);
+            Model.RecordModelsForUndo(models);
             this.SetActiveConnector(null);
         }
 
@@ -285,10 +282,10 @@ namespace Dynamo.ViewModels
             List<ModelBase> models = DynamoSelection.Instance.Selection.
                 Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
-            this._model.RecordModelsForModification(models);
-            DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
-            controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            this.Model.RecordModelsForModification(models);
+
+            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void OnDragSelectionStarted(object sender, EventArgs e)
@@ -632,7 +629,7 @@ namespace Dynamo.ViewModels
                 }
 
                 if (returnFocusToSearch != false)
-                    dynSettings.ReturnFocusToSearch();
+                    owningWorkspace.DynamoViewModel.ReturnFocusToSearch();
 
                 return eventHandled;
             }
@@ -652,8 +649,8 @@ namespace Dynamo.ViewModels
                     Point mouseCursor = e.GetPosition(sender as IInputElement);
                     var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
                     var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
-                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                    dynamoViewModel.ExecuteCommand(command);
+
+                    owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                     SetCurrentState(State.None); // Dragging operation ended.
                 }
@@ -707,8 +704,8 @@ namespace Dynamo.ViewModels
                     var rect = new Rect(x, y, width, height);
 
                     var command = new DynCmd.SelectInRegionCommand(rect, isCrossSelection);
-                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                    dynamoViewModel.ExecuteCommand(command);
+
+                    owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                 }
                 else if (this.currentState == State.DragSetup)
@@ -723,8 +720,7 @@ namespace Dynamo.ViewModels
                     // Record and begin the drag operation for selected nodes.
                     var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
                     var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
-                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                    dynamoViewModel.ExecuteCommand(command);
+                    owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                     SetCurrentState(State.NodeReposition);
                     return true;
@@ -759,8 +755,8 @@ namespace Dynamo.ViewModels
                     return false;
 
                 PortModel portModel = portViewModel.PortModel;
-                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
+                WorkspaceViewModel workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
@@ -768,7 +764,7 @@ namespace Dynamo.ViewModels
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
-                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                    owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
                         nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
 
                     if (null != owningWorkspace.activeConnector)
@@ -787,7 +783,7 @@ namespace Dynamo.ViewModels
                         Guid nodeId = portModel.Owner.GUID;
                         int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
-                        dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                        owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
                             nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
 
                         owningWorkspace.CurrentCursor = null;
@@ -808,8 +804,7 @@ namespace Dynamo.ViewModels
                 var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
                         PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
 
-                var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                dynamoViewModel.ExecuteCommand(command);
+                owningWorkspace.DynamoViewModel.ExecuteCommand(command);
             }
 
             private void CancelWindowSelection()
@@ -860,8 +855,8 @@ namespace Dynamo.ViewModels
 
                 // Clear existing selection set.
                 var selectNothing = new DynCmd.SelectModelCommand(Guid.Empty, ModifierKeys.None);
-                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                dynamoViewModel.ExecuteCommand(selectNothing);
+
+                owningWorkspace.DynamoViewModel.ExecuteCommand(selectNothing);
 
                 // Update the selection box and make it visible 
                 // but with an initial dimension of zero.
@@ -878,12 +873,12 @@ namespace Dynamo.ViewModels
             {
                 // create node
                 var guid = Guid.NewGuid();
-                var vm = dynSettings.Controller.DynamoViewModel;
-                vm.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
+
+                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
                     "Code Block", cursor.X, cursor.Y, false, true));
 
                 // select node
-                var placedNode = vm.Model.Nodes.Find((node) => node.GUID == guid);
+                var placedNode = owningWorkspace.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
                 if (placedNode != null)
                 {
                     DynamoSelection.Instance.ClearSelection();

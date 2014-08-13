@@ -2,6 +2,7 @@
 using System.Linq;
 using Dynamo.Nodes;
 using DynamoWebServer;
+using DynamoWebServer.Interfaces;
 using DynamoWebServer.Messages;
 
 using Moq;
@@ -12,11 +13,12 @@ using SuperSocket.SocketBase.Config;
 
 namespace Dynamo.Tests
 {
-    class SocketTests : DynamoUnitTest
+    class SocketTests : DynamoViewModelUnitTest
     {
         private const string GUID = "b43c1f0e-d88f-bfd7-8dd8-dc5536c18390";
         private WebServer webServer;
         private Mock<IWebSocket> mock;
+        private Mock<ISessionManager> sessionManager;
 
         [SetUp]
         public override void Init()
@@ -27,7 +29,9 @@ namespace Dynamo.Tests
             mock.Setup(ws => ws.Setup(It.IsAny<IRootConfig>(), It.IsAny<IServerConfig>())).Returns(true);
             mock.Setup(ws => ws.Start()).Returns(true);
 
-            webServer = new WebServer(mock.Object);
+            sessionManager = new Mock<ISessionManager>();
+
+            webServer = new WebServer(ViewModel, mock.Object, sessionManager.Object);
             webServer.Start();
         }
 
@@ -36,12 +40,13 @@ namespace Dynamo.Tests
         {
             var testDir = Path.Combine(GetTestDirectory(), @"core\commands");
             var commandPaths = Directory.GetFiles(testDir, "*.txt");
+            var messageHandler = new MessageHandler(ViewModel);
             Assert.NotNull(commandPaths);
             Assert.Greater(commandPaths.Length, 0);
             foreach (var path in commandPaths)
             {
                 var text = File.ReadAllText(path);
-                var message = MessageHandler.DeserializeMessage(text);
+                var message = messageHandler.DeserializeMessage(text);
                 Assert.NotNull(message);
             }
         }
@@ -49,17 +54,19 @@ namespace Dynamo.Tests
         [Test]
         public void CanExecuteCreateCommand()
         {
+            var model = ViewModel.Model;
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNode.txt");
             string createCommand = File.ReadAllLines(commandPath)[0];
 
             webServer.ExecuteMessageFromSocket(createCommand, "");
-            
-            Assert.IsTrue(Controller.DynamoModel.Nodes.Any(node => node.GUID.ToString() == GUID));
+
+            Assert.IsTrue(model.Nodes.Any(node => node.GUID.ToString() == GUID));
         }
         
         [Test]
         public void CanExecuteUpdateCommand()
         {
+            var model = ViewModel.Model;
             CanExecuteCreateCommand();
 
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\updateNode.txt");
@@ -67,7 +74,7 @@ namespace Dynamo.Tests
 
             webServer.ExecuteMessageFromSocket(updateCommand, "");
 
-            var doubleInput = Controller.DynamoModel.Nodes.First(
+            var doubleInput = model.Nodes.First(
                     node => node.GUID.ToString() == GUID) as DoubleInput;
 
             Assert.NotNull(doubleInput);
@@ -78,13 +85,14 @@ namespace Dynamo.Tests
         [Test]
         public void CanExecuteDeleteCommand()
         {
+            var model = ViewModel.Model;
             CanExecuteCreateCommand();
 
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\deleteNode.txt");
             string deleteCommand = File.ReadAllLines(commandPath)[0];
 
             webServer.ExecuteMessageFromSocket(deleteCommand, "");
-            Assert.IsFalse(Controller.DynamoModel.Nodes.Any(node => node.GUID.ToString() == GUID));
+            Assert.IsFalse(model.Nodes.Any(node => node.GUID.ToString() == GUID));
         }
 
         [Test]

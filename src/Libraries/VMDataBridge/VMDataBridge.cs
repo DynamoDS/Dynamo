@@ -10,6 +10,7 @@ namespace VMDataBridge
     /// <summary>
     ///     Provides callback registration by GUID, allows for hooking Actions into the VM.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class DataBridge
     {
         #region Singleton
@@ -63,7 +64,6 @@ namespace VMDataBridge
         /// </summary>
         /// <param name="id">String identifying which registered callback to invoke.</param>
         /// <param name="data">Data to be passed to the callback.</param>
-        [IsVisibleInDynamoLibrary(false)]
         public static void BridgeData(string id, [ArbitraryDimensionArrayImport] object data)
         {
             Action<object> callback;

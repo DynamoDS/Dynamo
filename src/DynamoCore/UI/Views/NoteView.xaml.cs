@@ -13,9 +13,6 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
-    /// <summary>
-    /// Interaction logic for dynNoteView.xaml
-    /// </summary>
     public partial class dynNoteView : IViewModelView<NoteViewModel>
     {
         public NoteViewModel ViewModel { get; private set; }
@@ -23,9 +20,6 @@ namespace Dynamo.Nodes
         public dynNoteView()
         {
             InitializeComponent();
-
-            // for debugging purposes
-            this.DataContextChanged += OnDataContextChanged;
 
             // update the size of the element when the text changes
             noteText.SizeChanged += (sender, args) =>
@@ -84,15 +78,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
-        {
-            
-        }
-
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
@@ -113,7 +102,7 @@ namespace Dynamo.Nodes
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
-                dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
+                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
         private void Note_MouseDown(object sender, MouseButtonEventArgs e)

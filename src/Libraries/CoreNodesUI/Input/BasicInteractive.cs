@@ -39,7 +39,8 @@ namespace DSCoreNodesUI
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue();
 
-        protected BasicInteractive()
+        protected BasicInteractive(WorkspaceModel workspace)
+            : base(workspace)
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
@@ -120,6 +121,8 @@ namespace DSCoreNodesUI
 
     public abstract class Double : BasicInteractive<double>
     {
+        protected Double(WorkspaceModel workspace) : base(workspace) { }
+
         public override bool IsConvertible
         {
             get { return true; }
@@ -153,6 +156,8 @@ namespace DSCoreNodesUI
 
     public abstract class Integer : BasicInteractive<int>
     {
+        protected Integer(WorkspaceModel workspace) : base(workspace) { }
+
         protected override int DeserializeValue(string val)
         {
             try
@@ -181,6 +186,8 @@ namespace DSCoreNodesUI
 
     public abstract class Bool : BasicInteractive<bool>
     {
+        protected Bool(WorkspaceModel workspace) : base(workspace) { }
+
         protected override bool DeserializeValue(string val)
         {
             try
@@ -209,6 +216,8 @@ namespace DSCoreNodesUI
 
     public abstract class String : BasicInteractive<string>
     {
+        protected String(WorkspaceModel workspace) : base(workspace) { }
+
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";
