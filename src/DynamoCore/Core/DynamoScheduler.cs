@@ -27,7 +27,7 @@ namespace Dynamo.Core.Threading
         /// false otherwise. Note that this method returns false when scheduler
         /// begins to shutdown, even when the task queue is not empty.</returns>
         /// 
-        internal bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
+        public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
             AsyncTask nextTask = null;
 
