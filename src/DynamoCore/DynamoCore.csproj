@@ -130,9 +130,12 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AsyncTask.cs" />
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\DynamoRunner.cs" />
+    <Compile Include="Core\DynamoScheduler.cs" />
+    <Compile Include="Core\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\TimeStampOrdering.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
