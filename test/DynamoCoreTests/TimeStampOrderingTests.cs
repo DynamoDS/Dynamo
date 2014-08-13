@@ -65,10 +65,14 @@ namespace Dynamo.Tests
             TimeStamp a = first;
             Assert.IsFalse(a > first);
             Assert.IsFalse(a < first);
+            Assert.IsTrue(a.Equals(first));
+            Assert.IsTrue(first.Equals(a));
 
             TimeStamp b = next;
             Assert.IsFalse(b > next);
             Assert.IsFalse(b < next);
+            Assert.IsTrue(b.Equals(next));
+            Assert.IsTrue(next.Equals(b));
         }
     }
 

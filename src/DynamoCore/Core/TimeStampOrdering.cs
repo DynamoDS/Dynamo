@@ -39,6 +39,20 @@ namespace Dynamo.Core.Threading
             get { return tickCount; }
         }
 
+        public override bool Equals(object other)
+        {
+            if (!(other is TimeStamp))
+                return false;
+
+            var t = ((TimeStamp)other);
+            return (identifier == t.identifier && (tickCount == t.tickCount));
+        }
+
+        public override int GetHashCode()
+        {
+            return identifier.GetHashCode() ^ tickCount.GetHashCode();
+        }
+
         /// <summary>
         /// The public usage of time stamps should be restricted to these
         /// methods used to ensure an ordering on timestamps

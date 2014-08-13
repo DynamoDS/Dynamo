@@ -61,9 +61,9 @@ namespace Dynamo
         public void TimeStampGenerator00()
         {
             var scheduler = new DynamoScheduler();
-            Assert.AreEqual(1024, scheduler.NextTimeStamp);
-            Assert.AreEqual(1025, scheduler.NextTimeStamp);
-            Assert.AreEqual(1026, scheduler.NextTimeStamp);
+            Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
+            Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
+            Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
         }
 
         /// <summary>
