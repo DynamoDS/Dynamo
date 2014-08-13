@@ -21,7 +21,6 @@ using Dynamo.ViewModels;
 using DynamoUtilities;
 
 using Greg.Requests;
-using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Double = System.Double;
@@ -36,7 +35,7 @@ namespace Dynamo.PackageManager
     public class PublishPackageViewModel : NotificationObject
     {
 
-        #region Properties
+        #region Properties/Fields
 
         private readonly DynamoViewModel dynamoViewModel;
 
@@ -405,7 +404,6 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// The class constructor. </summary>
-        /// <param name="client"> Reference to to the PackageManagerClient object for the app </param>
         public PublishPackageViewModel( DynamoViewModel dynamoViewModel )
         {
             this.dynamoViewModel = dynamoViewModel;
@@ -584,8 +582,8 @@ namespace Dynamo.PackageManager
             {
                 fDialog = new OpenFileDialog()
                 {
-                    Filter = "Dynamo Custom Node Definitions (*.dyf)|*.dyf",
-                    Title = "Add Custom Node To Package..."
+                    Filter = "Custom Node, DLL (*.dyf, *.dll)|*.dyf;*.dll",
+                    Title = "Add To Custom Node or Library (DLL) to Package..."
                 };
             }
 
@@ -605,29 +603,54 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
-
-                var nodeInfo = this.dynamoViewModel.Model.CustomNodeManager.AddFileToPath(fDialog.FileName);
-                if (nodeInfo != null)
-                {
-                    // add the new packages folder to path
-                    this.dynamoViewModel.Model.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(fDialog.FileName));
-                    this.dynamoViewModel.Model.CustomNodeManager.UpdateSearchPath();
-
-                    var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
-
-                    if (funcDef != null && this.FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
-                    {
-                        this.FunctionDefinitions.Add(funcDef);
-                        this.GetAllDependencies();
-                        this.RaisePropertyChanged("PackageContents");
-                    }
-                }
+                this.AddDependency(fDialog.FileName);
             }
         }
 
         private bool CanShowAddFileDialogAndAdd()
         {
             return true;
+        }
+
+        private void AddDependency(string filename)
+        {
+            if (!File.Exists(filename)) return;
+
+            if (filename.EndsWith(".dll")) this.AddDllDependency(filename);
+            if (filename.EndsWith(".dyf")) this.AddCustomNodeDependency(filename);
+        }
+
+        private void AddCustomNodeDependency(string filename)
+        {
+            var nodeInfo = this.dynamoViewModel.Model.CustomNodeManager.AddFileToPath(filename);
+            if (nodeInfo != null)
+            {
+                // add the new packages folder to path
+                this.dynamoViewModel.Model.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(filename));
+                this.dynamoViewModel.Model.CustomNodeManager.UpdateSearchPath();
+
+                var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+
+                if (funcDef != null && this.FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
+                {
+                    this.FunctionDefinitions.Add(funcDef);
+                    this.GetAllDependencies();
+                    this.RaisePropertyChanged("PackageContents");
+                }
+            }
+        }
+
+        private void AddDllDependency(string filename)
+        {
+            try
+            {
+                this.PackageContents.Add(
+                    new PackageItemRootViewModel(Assembly.LoadFrom(filename)));
+            }
+            catch (Exception e)
+            {
+                this.dynamoViewModel.Model.Logger.Log(e);
+            }
         }
 
         /// <summary>

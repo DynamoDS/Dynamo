@@ -157,7 +157,7 @@ namespace Dynamo.PackageManager.UI
                         };
                     if (!discovered)
                     {
-                        discoveredDeps.Add(this);
+                        discoveredDeps.Add(dep);
                         packDep.BuildDependencies(discoveredDeps);
                     }
                     this.Items.Add(packDep);
@@ -165,7 +165,8 @@ namespace Dynamo.PackageManager.UI
             }
             else if (DependencyType == DependencyType.Assembly)
             {
-                foreach (var dep in Assembly.GetReferencedAssemblies())
+                var assems = Assembly.GetReferencedAssemblies();
+                foreach (var dep in assems)
                 {
                     var depAss = Assembly.Load(dep);
                     var discovered = discoveredDeps.Contains(dep);
@@ -175,7 +176,7 @@ namespace Dynamo.PackageManager.UI
                     };
                     if (!discovered)
                     {
-                        discoveredDeps.Add(this);
+                        discoveredDeps.Add(dep);
                         packDep.BuildDependencies(discoveredDeps);
                     }
                     this.Items.Add(packDep);

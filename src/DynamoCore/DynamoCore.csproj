@@ -291,8 +291,8 @@ limitations under the License.
     <Compile Include="ViewModels\PackageItemViewModel.cs" />
     <Compile Include="ViewModels\PackageItemLeafViewModel.cs" />
     <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
-    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
-      <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
+    <Compile Include="UI\Views\PublishPackageView.xaml.cs">
+      <DependentUpon>PublishPackageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\PublishPackageViewModel.cs" />
     <Compile Include="UI\Views\PackageManagerSearchView.xaml.cs">
@@ -597,7 +597,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\PackageManagerPublishView.xaml">
+    <Page Include="UI\Views\PublishPackageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
