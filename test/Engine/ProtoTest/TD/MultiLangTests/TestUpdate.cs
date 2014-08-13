@@ -866,6 +866,7 @@ a1 = 5;
 c = 2;
 b = c * 2;
 x = b;
+d;
 [Imperative]
 {
     c = 1;
@@ -3732,7 +3733,8 @@ z2 = z;
             thisTest.Verify("z2", 1);
         }
         [Test, Ignore]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest")]
+        [Category("Failing")]
         public void T51_Defect_1461388()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
@@ -5427,6 +5429,7 @@ pt3 = pt1.XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T66_1467513_RighthandsideUpdate_innerassociative()
         {
             String code = @"
@@ -5440,7 +5443,7 @@ pt3 = pt1.XPlusY(pt2);
             }
             a = 2; 
                 ";
-            string errmsg = "1467513 - [Design issue]Update on the inner associatve block is not triggered ";
+            string errmsg = "MAGN-1509 [Design issue]Update on the inner associatve block is not triggered";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
         }
@@ -6907,7 +6910,6 @@ test = b1.y;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
         public void T91_1467547_3()
         {
             String code = @"
@@ -6929,9 +6931,7 @@ test = b1.y;
         z=t();
         a = 50;
 ";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1502
-            string errmsg = "MAGN-1502: Function pointer doesn't get update";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("z", 57);
         }
 
@@ -7023,7 +7023,7 @@ a;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("z", 57);
+            thisTest.Verify("z", 17);
         }
 
         [Test]

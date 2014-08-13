@@ -816,10 +816,8 @@ namespace ProtoTest.TD.MultiLangTests
             string code =
                 @"                                   class B extends A{ b=2; }                    class A{                        a : B;                        c : A;                    }                    def foo( x)                    {                        test = A.A();                        test.a = x;                        test.c = x;                        return = test;                    }                    a1 = foo( B.B() );                    b1 = a1.a.b;                    b2 = a1.c.b;                    c1 = foo(A.A());                    d1= c1.a.b;";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a1", 1);
             thisTest.Verify("b1", 2);
             thisTest.Verify("b2", 2);
-            //thisTest.Verify("c1", null);
             thisTest.Verify("d1", null);
         }
 
@@ -986,12 +984,12 @@ namespace ProtoTest.TD.MultiLangTests
         [Test]
 
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_singleton_To_Intarray()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:int[][]= {1};                                         b:int[][] =  {1.1};                     c:int[][]={""a""};                     d:int[][]= {'c'};                    x1= test.test();                    e:int[][]= {x1};                    e1=e.x;                    f:int[][]= {true};                    g :int[][]={null;}";
-            //string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
-            string error = "1467332  - Sprint 27 - Rev 3956 {null} to array upgrdation must null out ";
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1 } });
             thisTest.Verify("b", new object[] { new object[] { 1 } });
@@ -1115,11 +1113,13 @@ namespace ProtoTest.TD.MultiLangTests
         [Test]
 
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_singleton_To_stringarray()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:string[][]= {1};                                         b:string[][] =  {1.0};                     c:string[][]={""test""};                     d:string[][]= {'1'};                    x1= test.test();                    e:string[][]= {x1};                    e1=e.x;                    f:string[][]= {false};                    g :string[][]={null};";
-            string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
+
+            string error = "MAGN-1670 Sprint 27 - Rev 3956 {null} to array upgrdation must null out";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", null);
             thisTest.Verify("b", null);
@@ -1192,15 +1192,12 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
-        [Category("Failing")]
         public void TS048_Param_eachType_To_varArray()
         {
             string code =
                 @"                  class A{ a=1; }                        def foo ( x:var[] )                        {	                        b1= x ;	                        return =b1;                        }                        a  = foo( 1.5);                         b  = foo( 1);                         c  = foo( ""1.5""); // char to var                         d  = foo( A.A());   // user define to var                        d1 = d.a;                        e  = foo( false);   //bool to var                         f  = foo( null);    //null to var                         ";
 
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3964
-            string error = "MAGN-3964: Type conversion from var to var array promotion is not happening";
-            thisTest.RunScriptSource(code, error);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
             thisTest.Verify("c", new object[] { "1.5" });

@@ -87,6 +87,7 @@
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="ScopedNodeTest.cs" />
     <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
+    <Compile Include="SchedulerTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
     <Compile Include="Setup.cs" />
