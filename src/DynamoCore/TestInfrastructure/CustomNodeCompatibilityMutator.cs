@@ -8,9 +8,9 @@ using System.Linq;
 
 namespace Dynamo.TestInfrastructure
 {
-    class CustomNodeMutator : AbstractMutator
+    class CustomNodeCompatibilityMutator : AbstractMutator
     {
-        public CustomNodeMutator(Random rand)
+        public CustomNodeCompatibilityMutator(Random rand)
             : base(rand)
         {
 

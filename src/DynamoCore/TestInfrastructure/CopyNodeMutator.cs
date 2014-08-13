@@ -31,7 +31,7 @@ namespace Dynamo.TestInfrastructure
             dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoViewModel.SelectModelCommand selectNodeCommand =
-                    new DynamoViewModel.SelectModelCommand(node.GUID, (ModifierKeys)0);
+                    new DynamoViewModel.SelectModelCommand(node.GUID, ModifierKeys.None);
 
                 DynamoViewModel.ExecuteCommand(selectNodeCommand);
 
