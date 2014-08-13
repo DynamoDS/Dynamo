@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 
-namespace Dynamo.Core
+namespace Dynamo.Core.Threading
 {
-    internal partial class DynamoScheduler
+    public partial class DynamoScheduler
     {
         #region Public Class Operational Methods
 
