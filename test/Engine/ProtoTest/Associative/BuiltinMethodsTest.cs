@@ -872,15 +872,15 @@ x = foo(5);
             public void TestStringFunction()
             {
                 String code =
-                @"import(""string.dll"");
-                a = String.StringLength(""designScripT"");
+                @"import(""DSCoreNodes.dll"");
+                a = String.Length(""designScripT"");
                 b = String.ToUpper(""DynaMo"");
                 c = String.ToLower(""DYNamO"");
                 d = String.ToNumber(""157.589"");
-                e = String.SplitString(""Star_Wars_1_The_Phantom_Menace"",""_"");
-                f = String.JoinStrings(e,""_"");
-                g = String.JoinStrings(e);
-                h = String.SubString(""DesignScript"",2,5);";
+                e = String.Split(""Star_Wars_1_The_Phantom_Menace"",""_"");
+                f = String.Join(""_"", e);
+                g = String.Concat(e);
+                h = String.Substring(""DesignScript"",2,5);";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
                 thisTest.Verify("a", 12);
                 thisTest.Verify("b", "DYNAMO");

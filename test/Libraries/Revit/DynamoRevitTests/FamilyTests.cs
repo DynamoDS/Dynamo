@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         [TestModel(@".\Family\GetCurvesFromFamilyInstance.rfa")]
         public void GetCurvesFromFamilyInstance()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Family\GetCurvesFromFamilyInstance.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -24,7 +24,7 @@ namespace Dynamo.Tests
             //model.Open(testPath);
             //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            //var node = (CurvesFromFamilyInstance)dynSettings.Controller.DynamoModel.Nodes.First(x => x is CurvesFromFamilyInstance);
+            //var node = (CurvesFromFamilyInstance)ViewModel.Model.Nodes.First(x => x is CurvesFromFamilyInstance);
             //Assert.IsTrue(node.OldValue.IsCollection);
 
             //// check that we get the correct number of curves back from the instance
@@ -34,7 +34,7 @@ namespace Dynamo.Tests
             //// get the filter node from dynamo and  make sure it has an empty list as output
             ////we've filtered the list of distances by 0 to make sure distances between orginal points
             //// and end points of new curves are 0.
-            //var filterNode = (FilterOut)dynSettings.Controller.DynamoModel.Nodes.First(x => x is FilterOut);
+            //var filterNode = (FilterOut)ViewModel.Model.Nodes.First(x => x is FilterOut);
             //Assert.IsTrue(filterNode.OldValue.IsCollection);
             
             //// ensure it is empty
@@ -49,13 +49,14 @@ namespace Dynamo.Tests
         [TestModel(@".\Family\GetFamilyInstancesByType.rvt")]
         public void GetFamilyInstancesByType()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstancesByType.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             Assert.AreEqual(100, GetPreviewValue("5eac6ab9-e736-49a9-a90a-8b6d93676813"));
         }
@@ -67,23 +68,24 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstanceLocation.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             AssertPreviewCount("4274fd18-23b8-4c5c-9006-14d927fa3ff3", 100);
+
         }
 
         [Test]
         [TestModel(@".\Family\AC_locationStandAlone.rfa")]
         public void CanLocateAdaptiveComponent()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Family\AC_locationStandAlone.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             var pnt = GetPreviewValue("79dde258-ddce-49b7-9700-da21b2d5a9ae") as Autodesk.DesignScript.Geometry.Point;
             Assert.IsNotNull(pnt);
@@ -98,13 +100,11 @@ namespace Dynamo.Tests
         [TestModel(@".\Family\AC_locationInDividedSurface.rfa")]
         public void CanLocateAdaptiveComponentInDividedSurface()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
             string samplePath = Path.Combine(_testPath, @".\Family\AC_locationInDividedSurface.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             AssertPreviewCount("76076507-d16e-4480-802c-14ba87d88f81", 25);
         }

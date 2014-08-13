@@ -448,12 +448,12 @@ namespace Revit.Elements
         {
             get
             {
-                var curves = GetFaces(new Options()
+                var faces = GetFaces(new Options()
                 {
                     ComputeReferences = true
                 });
 
-                return curves.Select(x => x.ToProtoType()).ToArray();
+                return faces.SelectMany(x => x.ToProtoType()).ToArray();
             }
         }
 

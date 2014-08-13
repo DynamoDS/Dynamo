@@ -52,7 +52,7 @@ namespace Dynamo.ViewModels
             {
                 var msg = string.Format("PausePlaybackCommand '{0}' inserted",
                     automationSettings.InsertPausePlaybackCommand());
-                dynSettings.DynamoLogger.Log(msg);
+                model.Logger.Log(msg);
             }
         }
 
@@ -73,8 +73,8 @@ namespace Dynamo.ViewModels
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
 
-            if (dynSettings.Controller.DebugSettings.VerboseLogging)
-                dynSettings.DynamoLogger.Log("Command: " + command);
+            if (Model.DebugSettings.VerboseLogging)
+                model.Logger.Log("Command: " + command);
 
             command.Execute(this);
         }
@@ -85,32 +85,39 @@ namespace Dynamo.ViewModels
 
         private void OpenFileImpl(OpenFileCommand command)
         {
+            this.VisualizationManager.Pause();
+
             string xmlFilePath = command.XmlFilePath;
-            dynSettings.Controller.DynamoModel.OpenInternal(xmlFilePath);
+            model.OpenInternal(xmlFilePath);
+
+            this.AddToRecentFiles(xmlFilePath);
+
+            //clear the clipboard to avoid copying between dyns
+            model.ClipBoard.Clear();
+            this.VisualizationManager.UnPause();
         }
 
         private void RunCancelImpl(RunCancelCommand command)
         {
-            dynSettings.Controller.RunCancelInternal(
+            model.RunCancelInternal(
                 command.ShowErrors, command.CancelRun);
         }
 
         private void ForceRunCancelImpl(RunCancelCommand command)
         {
-            dynSettings.Controller.ForceRunCancelInternal(
+            model.ForceRunCancelInternal(
                 command.ShowErrors, command.CancelRun);
         }
 
         private void MutateTestImpl()
         {
-
-            var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(controller);
+            var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
             mutatorDriver.RunMutationTests();
         }
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
-            NodeModel nodeModel = Model.CreateNode(
+            NodeModel nodeModel = CurrentSpace.AddNode(
                 command.NodeId,
                 command.NodeName,
                 command.X,
@@ -126,7 +133,12 @@ namespace Dynamo.ViewModels
 
         private void CreateNoteImpl(CreateNoteCommand command)
         {
-            NoteModel noteModel = Model.AddNoteInternal(command, null);
+            NoteModel noteModel = Model.CurrentWorkspace.AddNote(
+                command.DefaultPosition,
+                command.X,
+                command.Y,
+                command.NoteText,
+                command.NodeId);
             CurrentSpace.RecordCreatedModel(noteModel);
 
             UndoCommand.RaiseCanExecuteChanged();
@@ -211,7 +223,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            _model.DeleteModelInternal(modelsToDelete);
+            model.DeleteModelInternal(modelsToDelete);
 
             UndoCommand.RaiseCanExecuteChanged();
             RedoCommand.RaiseCanExecuteChanged();
@@ -256,14 +268,14 @@ namespace Dynamo.ViewModels
 
         private void CreateCustomNodeImpl(CreateCustomNodeCommand command)
         {
-            this._model.NewCustomNodeWorkspace(command.NodeId,
+            this.model.NewCustomNodeWorkspace(command.NodeId,
                 command.Name, command.Category, command.Description, true);
         }
 
         private void SwitchTabImpl(SwitchTabCommand command)
         {
             // We don't attempt to null-check here, we need it to fail fast.
-            _model.CurrentWorkspace = _model.Workspaces[command.TabIndex];
+            model.CurrentWorkspace = model.Workspaces[command.TabIndex];
 
             if (command.IsInPlaybackMode)
                 RaisePropertyChanged("CurrentWorkspaceIndex");

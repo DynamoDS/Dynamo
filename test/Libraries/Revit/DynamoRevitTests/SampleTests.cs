@@ -22,11 +22,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void CreatePointSequenceSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
+            var model = ViewModel.Model;
             string samplePath = Path.Combine(_testPath, @".\Samples\createpoint_sequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
@@ -52,7 +51,7 @@ namespace Dynamo.Tests
             //// TODO:(Ritesh) Revisit and fix the text case after discussing with Zach
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
             //OpenModel(@".\01 Create Point\create point-end.dyn");
 
             //// check all the nodes and connectors are loaded
@@ -64,7 +63,7 @@ namespace Dynamo.Tests
 
             //// test copying and pasting the workflow
             //DynamoSelection.Instance.ClearSelection();
-            //DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
+            //DynamoSelection.Instance.Selection.AddRange(ViewModel.Model.Nodes);
             //model.Copy(null);
             //model.Paste(null);
 
@@ -91,7 +90,7 @@ namespace Dynamo.Tests
             //// TODO:(Ritesh) Revisit and fix the text case after discussing with Zach
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
             //OpenModel(@".\01 Create Point\create point.dyn");
 
             //// check all the nodes and connectors are loaded
@@ -112,10 +111,10 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void RefGridSlidersSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
             string samplePath = Path.Combine(_testPath, @".\Samples\refgridsliders.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.GreaterOrEqual(8, model.CurrentWorkspace.Nodes.Count);
@@ -147,7 +146,8 @@ namespace Dynamo.Tests
             //// TODO:(Ritesh) Revisit and fix the text case after discussing with Zach
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            //var model = dynSettings.Controller.DynamoModel;
+
+            //var model = ViewModel.Model;
             //OpenModel(@".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
 
             //// check all the nodes and connectors are loaded
@@ -170,10 +170,11 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void DivideSelectedCurveEndSample()
         {
+
             // TODO:(Ritesh) Revisit and fix the text case after discussing with Zach
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //ModelCurve mc1;
             //CreateOneModelCurve(out mc1);
@@ -182,7 +183,7 @@ namespace Dynamo.Tests
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            //var selectionNodes = ViewModel.Model.Nodes.Where(x => x is CurvesBySelection);
             //Assert.AreEqual(1, selectionNodes.Count());
 
             //((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
@@ -195,10 +196,10 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\DivideSelectedCurve.rfa")]
         public void DivideSelectedCurveSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
             string samplePath = Path.Combine(_testPath, @".\Samples\divideselectedcurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.GreaterOrEqual(7, model.CurrentWorkspace.Nodes.Count);
@@ -234,8 +235,7 @@ namespace Dynamo.Tests
             // TODO:(Ritesh) Revisit and fix the text case after discussing with Zach
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            //var model = dynSettings.Controller.DynamoModel;
-
+            //var model = ViewModel.Model;
             //ModelCurve mc1;
             //ModelCurve mc2;
             //CreateTwoModelCurves(out mc1, out mc2);
@@ -246,7 +246,7 @@ namespace Dynamo.Tests
             //model.Open(testPath);
 
             ////get the two selection nodes in the sample
-            //var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            //var selectionNodes = ViewModel.Model.Nodes.Where(x => x is CurvesBySelection);
             //Assert.AreEqual(2, selectionNodes.Count());
 
             //((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
@@ -265,7 +265,7 @@ namespace Dynamo.Tests
 
             // TODO:(Ritesh) Revisit and fix the text case after discussing with Zach
 
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //ModelCurve mc1;
             //ModelCurve mc2;
@@ -277,7 +277,7 @@ namespace Dynamo.Tests
             //model.Open(testPath);
 
             ////populate the selection nodes in the sample
-            //var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            //var selectionNodes = ViewModel.Model.Nodes.Where(x => x is CurvesBySelection);
             //((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
             //((CurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
 
@@ -294,11 +294,11 @@ namespace Dynamo.Tests
 
             //// TODO:(Ritesh) Revisit and fix the text case after discussing with Zach
 
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = ViewModel.Model;
 
             //string samplePath = Path.Combine(_testPath, @".\Samples\graph function and connect points.dyn");
             //string testPath = Path.GetFullPath(samplePath);
-            //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //ViewModel.OpenCommand.Execute(testPath);
 
             //string customDefPath1 = Path.Combine(_defsPath, "GraphFunction.dyf");
             //string customDefPath2 = Path.Combine(_defsPath, "ConnectPoints.dyf");
@@ -308,7 +308,7 @@ namespace Dynamo.Tests
             //Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1) != null);
             //Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2) != null);
 
-            //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //ViewModel.OpenCommand.Execute(testPath);
 
             //var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -332,9 +332,8 @@ namespace Dynamo.Tests
             //// Marking this as Ignore as this one causing error from Revit side.
             //string samplePath = Path.Combine(_testPath, @".\Samples\scalablegraphfunction.dyn");
             //string testPath = Path.GetFullPath(samplePath);
-            //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-
-            //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //ViewModel.OpenCommand.Execute(testPath);
+            //ViewModel.OpenCommand.Execute(testPath);
 
             //AssertNoDummyNodes();
             
@@ -356,7 +355,7 @@ namespace Dynamo.Tests
             //Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
             //Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath) != null);
 
-            //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //ViewModel.OpenCommand.Execute(testPath);
             //AssertNoDummyNodes();
 
             //dynSettings.Controller.RunExpression();
@@ -366,11 +365,11 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\instparam.rvt")]
         public void InstParamSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\instparam.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
@@ -390,11 +389,11 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\instparammassfamilies.rvt")]
         public void InstParam2MassesSample()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\instparam2masses.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
@@ -421,7 +420,7 @@ namespace Dynamo.Tests
             //string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\instparam2masses.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
-            //Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //ViewModel.OpenCommand.Execute(testPath);
 
             //var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
@@ -439,11 +438,12 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Attractor_1()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\AttractorLogic_End.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -469,11 +469,11 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\IndexedFamilyInstances.rfa")]
         public void IndexedFamilyInstances()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\IndexedFamilyInstances.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -491,17 +491,18 @@ namespace Dynamo.Tests
                 var familyInstance = GetPreviewValueAtIndex(family, i) as FamilyInstance;
                 Assert.IsNotNull(familyInstance);
             }
+
         }
 
         [Test]
         [TestModel(@".\Samples\tesselation.rfa")]
         public void Tesselation_1()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\2dDomain.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -526,11 +527,11 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\tesselation.rfa")]
         public void Tesselation_2()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\tesselationwithcoincidentgrids.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -558,11 +559,12 @@ namespace Dynamo.Tests
             // Will enable verification after fixing test case.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\tesselation.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -591,11 +593,12 @@ namespace Dynamo.Tests
             // Will enable verification after fixing test case.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\tesselation_types.dyn");
             string testPath = Path.GetFullPath(samplePath);
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -623,12 +626,12 @@ namespace Dynamo.Tests
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\TranslateandRotatesequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -646,12 +649,12 @@ namespace Dynamo.Tests
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\TranslateandRotate.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -666,12 +669,12 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Formulas_FormulaCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\FormulaCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -692,12 +695,12 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Formulas_ScalableCircle()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\ScalableCircle.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -709,7 +712,6 @@ namespace Dynamo.Tests
 
             var refPointNodeID = "f3ea3259-dffc-4917-b561-ee1552700200";
             AssertPreviewCount(refPointNodeID, 10);
-
             // get all Ref Points
             for (int i = 0; i <= 9; i++)
             {
@@ -722,12 +724,12 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Spreadsheets_ExcelToStuff()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\ExceltoStuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -747,19 +749,20 @@ namespace Dynamo.Tests
             Assert.IsFalse(string.IsNullOrEmpty(excelFilePath));
             Assert.IsTrue(File.Exists(excelFilePath));
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
         }
 
         [Test]
         [TestModel(@".\empty.rfa")]
         public void Spreadsheets_CSVToStuff()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\CSVtoStuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -787,7 +790,7 @@ namespace Dynamo.Tests
             // referencing the samples directly from the samples folder
             // and the custom nodes from the distrib folder
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
             // look at the sample folder and one directory up to get the distrib folder and combine with defs folder
             string customNodePath = Path.Combine(Path.Combine(_samplesPath, @"..\\"), @".\
 \Dynamo Sample Custom Nodes\dyf\");
@@ -805,15 +808,15 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing." + customDefPath2);
 
             Assert.DoesNotThrow(() =>
-                         dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2));
+                         ViewModel.Model.CustomNodeManager.AddFileToPath(customDefPath2));
             Assert.DoesNotThrow(() =>
-                          dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1));
+                          ViewModel.Model.CustomNodeManager.AddFileToPath(customDefPath1));
 
 
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            var nodes = ViewModel.Model.Nodes.OfType<DummyNode>();
 
             double noOfNdoes = nodes.Count();
 
@@ -822,12 +825,12 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.AreEqual(2, dynSettings.Controller.CustomNodeManager.LoadedCustomNodes.Count);
+            Assert.AreEqual(2, ViewModel.Model.CustomNodeManager.LoadedCustomNodes.Count);
             // check all the nodes and connectors are loaded
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
 
             var workspace = model.CurrentWorkspace;
@@ -861,12 +864,12 @@ namespace Dynamo.Tests
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\all curve test model curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -884,12 +887,12 @@ namespace Dynamo.Tests
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\all curve test.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -907,12 +910,12 @@ namespace Dynamo.Tests
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Arc and Line from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -927,12 +930,12 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\AllCurves.rfa")]
         public void ArcAndLine()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Arc and Line.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
             
             AssertNoDummyNodes();
 
@@ -947,12 +950,12 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\AllCurves.rfa")]
         public void ArcFromRefPoints()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Arc from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
             
@@ -967,15 +970,16 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\AllCurves.rfa")]
         public void Arc()
         {
+
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Arc.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -993,12 +997,12 @@ namespace Dynamo.Tests
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\circle.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1013,15 +1017,16 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\AllCurves.rfa")]
         public void Ellipse()
         {
+
             // TODO:[Ritesh] Need to add more verification.
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4041
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\ellipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1037,14 +1042,14 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\AllCurves.rfa")]
         public void ConnectTwoPointArraysWithoutPython()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\connect two point arrays without python.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            var nodes = ViewModel.Model.Nodes.OfType<DummyNode>();
 
             double noOfNdoes = nodes.Count();
 
@@ -1057,60 +1062,60 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
         }
 
         [Ignore]
         public void ConnectTwoPointArrays()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\connect two point arrays.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
         }
 
         [Ignore]
         public void CreateSineWaveFromSelectedCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\create sine wave from selected curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
         }
 
         [Test]
         public void CreateSineWaveFromSelectedPoints()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\create sine wave from selected points.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
         }
 
@@ -1122,12 +1127,12 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Adaptive_Component_Placement()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Adaptive Component Placement.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1170,12 +1175,12 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Color()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Color.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1203,12 +1208,12 @@ namespace Dynamo.Tests
             // this test marked as Ignore because on running it is throwing error from Revit side.
             // if I run it manually there is no error. Will discuss this with Ian
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Revit_Floors and Framing.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1243,12 +1248,12 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_ImportSolid()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Revit_ImportSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1270,14 +1275,14 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_PlaceFamiliesByLevel_Set_Parameters()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine
                 (_testPath, @".\Samples\Revit_PlaceFamiliesByLevel_Set Parameters.dyn");
 
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1302,14 +1307,14 @@ namespace Dynamo.Tests
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_StructuralFraming()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine
                 (_testPath, @".\Samples\Revit_StructuralFraming.dyn");
 
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1334,13 +1339,13 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Geometry_Curves()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Geometry_Curves.dyn");
 
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1365,13 +1370,13 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Geometry_Points()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Samples\Geometry_Points.dyn");
 
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
@@ -1396,7 +1401,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Geometry_Solids()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
             OpenModel(@".\Geometry\Geometry_Solids.dyn");
 
             AssertNoDummyNodes();
@@ -1428,7 +1433,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void Geometry_Surfaces()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
             OpenModel(@".\Geometry\Geometry_Surfaces.dyn");
 
             AssertNoDummyNodes();

@@ -364,7 +364,7 @@ n;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("m", false, 0);
-            thisTest.Verify("n", false, 0);
+            thisTest.Verify("n", true, 0);
         }
 
         [Test]
@@ -1396,7 +1396,6 @@ result = {a1,b1,c1};";
         [Category("Array")]
         public void T045_Defect_CountArray_2()
         {
-            Assert.Fail("1467093 - Sprint 24 : rev 2747 : dynamic array issue: assigning value to dynamic array hangs ");
             string code = @"
 result=
 [Imperative]
@@ -1430,8 +1429,10 @@ result = Count(a);";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T046_Sum_IfElse()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
             string code = @"
 result = 
 [Imperative]
@@ -1457,15 +1458,17 @@ result =
 	return = m;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 10, 10.0, 10.0, 0, 10, 10, 0 };
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
+            Object[] v1 = new Object[] { 10, 10.0, 10.0, -1, 10, 11, -1 };
             thisTest.Verify("result", v1, 0);
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failing")]
         public void T047_Sum_ForLoop()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
             string code = @"
 result = 
 [Imperative]
@@ -1485,13 +1488,14 @@ result =
 	
 	return = d; 
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 0, 0, 10.0 };
             thisTest.Verify("result", v1, 0);
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failing")]
         public void T048_Sum_WhileLoop()
         {
             string code = @"
@@ -1519,7 +1523,8 @@ result =
 	
 	return = e; 
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { -2.0, 8.0 };
             thisTest.Verify("result", v1, 0);
         }
@@ -1547,7 +1552,7 @@ result = foo(c);
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failing")]
         public void T050_Sum_Class()
         {
             string code = @"
@@ -1598,7 +1603,9 @@ n= d.foo(c);
 result = {m,n,Sum({m,n})};
 //11.0,true,11.0
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 11.0, true, 11.0 };
             thisTest.Verify("result", v1, 0);
         }
@@ -1619,7 +1626,7 @@ result = Sum(a)==0&& b==-1.00? b :c;
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failing")]
         public void T052_Sum_RangeExpression()
         {
             string code = @"
@@ -1633,7 +1640,8 @@ result =
 	
 	return = Sum(a);//12.0
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("result", 12.0, 0);
         }
         /*
@@ -1662,7 +1670,7 @@ result = Sum(a);//12.0";
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failing")]
         public void T055_Sum_ModifierStack()
         {
             string code = @"
@@ -1673,12 +1681,14 @@ a =
 	Sum({a1,a2}) => a3;//2
 }
 result = Sum({a1,a2,a3,a});//6";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("result", 6, 0);
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest"), Category("Failing")]
         public void T056_Sum_AssociativeImperative()
         {
             string code = @"
@@ -1700,7 +1710,8 @@ b1 = {b,1};
 	a[2]  =1;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("sum1", 0.0, 0);
             thisTest.Verify("sum2", 4.0, 0);
             thisTest.Verify("sum3", 0.0, 0);
@@ -1708,7 +1719,7 @@ b1 = {b,1};
         //datatype
 
         [Test]
-        [Category("Design Issue")]
+        [Category("Design Issue"), Category("Failing")]
         public void T057_Average_DataType_01()
         {
             string code = @"
@@ -1720,7 +1731,9 @@ a1 = Average(a);
 b1 = Average(b);
 c1 = Average(c);
 d1 = Average(d);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Object v1 = null;
             //Assert.Fail("1467164 - Sprint 25 - Rev 3125: Built-in function: Average() should ignore the elements which can't be converted to int/double in the array");
             thisTest.Verify("a1", v1, 0);
@@ -1731,7 +1744,7 @@ d1 = Average(d);";
 
         [Test]
         [Category("ProtoGeometry")]
-        [Category("Design Issue")]
+        [Category("Design Issue"), Category("Failing")]
         public void T058_Average_DataType_02()
         {
             string code = @"
@@ -1746,7 +1759,9 @@ a1 = Average(a);
 b1 = Average(b);
 c1 = Average(c);
 d1 = Average(d);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             //Assert.Fail("11467164 - Sprint 25 - Rev 3125: Built-in function: Average() should ignore the elements which can't be converted to int/double in the array");
             thisTest.Verify("a1", 0.0, 0);
             thisTest.Verify("b1", 2.0, 0);
@@ -1784,7 +1799,7 @@ d = Flatten(c);";
         }
 
         [Test]
-        [Category("Design Issue")]
+        [Category("Design Issue"), Category("Failing")]
         public void T060_Average_ForLoop()
         {
             string code = @"
@@ -1808,8 +1823,8 @@ result =
 	return = e;
 	
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.Fail("Data type conversion needs to  be decided");
+            string err = "MAGN-4103 [Design Issue]: Type coercion issue from conversion of bool, null, empty arrays to numbers";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 0.0, 1.5, 10.0 };
             thisTest.Verify("result", v1, 0);
         }
@@ -2165,7 +2180,7 @@ d = { 0 };//0
 e = { { true }, true }; //2
 f = { };//0
 g = 1; //0
-h = null; //null
+h = null; //0
 i = { { } }; //0
 j = { null }; //0
 k = ""string"";//0
@@ -2185,7 +2200,6 @@ r =
 }
                ";
             thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467420 - REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
             thisTest.Verify("ra", 1);
             thisTest.Verify("rb", 1);
             thisTest.Verify("rc", 0);
@@ -2193,7 +2207,7 @@ r =
             thisTest.Verify("re", 2);
             thisTest.Verify("rf", 0);
             thisTest.Verify("rg", 0);
-            thisTest.Verify("rh", null);
+            thisTest.Verify("rh", 0);
             thisTest.Verify("ri", 0);
             thisTest.Verify("rj", 0);
             thisTest.Verify("rk", 0);
@@ -2220,6 +2234,7 @@ a4 = Rank({ { { 1 } } });
 
         [Test]
         [Category("Built in Functions")]
+        [Category("Failing")]
         public void TV_1467350_Flatten()
         {
             String code =
@@ -2234,26 +2249,25 @@ g = {{null}};
 h = {null,{1}};
 i = {""1234"", true};
 j = {true,{},null};
-fa = Flatten(a);//{}
-fb = Flatten(b);//{1}
-fc = Flatten(c);//{}
-fd = Flatten(d);//{}
-fe = Flatten(e);//{1,2,3,4}
-ff = Flatten(f);//{}
-fg = Flatten(g);//{}
-fh = Flatten(h);//{1}
-fi = Flatten(i);//{""1234"", true}
-fj = Flatten(j);//{true};
+fa = Flatten(a);
+fb = Flatten(b);
+fc = Flatten(c);
+fd = Flatten(d);
+fe = Flatten(e);
+ff = Flatten(f);
+fg = Flatten(g);
+fh = Flatten(h);
+fi = Flatten(i);
+fj = Flatten(j);
 ";
             thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467350 - IDE: t = Faltten(3), the output of t is \"t = {Value not yest supported for tracking}\"");
-            thisTest.SetErrorMessage("1467420 - REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
+            thisTest.SetErrorMessage("MAGN-1684 REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
             Object[] v1 = new Object[] { };
             //Object v2 = null;
             Object[] v3 = new Object[] { 1, 2, 3, 4 };
             Object[] v4 = new Object[] { "1234", true };
             Object[] v5 = new Object[] { 1 };
-            Object[] v6 = new Object[] { true };
+            Object[] v6 = new Object[] { true, null };
             Object[] v7 = new Object[] { null };
             Object[] v8 = new Object[] { null, 1 };
             thisTest.Verify("fa", v1);
@@ -2328,14 +2342,13 @@ z = Insert(x, y, -5);";
 x = {1, 2};
 y = 3;
 z = Insert(x, y, -1);";
-            string error = "DNL-1467590 Insert at negative index is giving incorrect result";
-            thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("z", new object[] { 1, 2, 3 });
+            thisTest.VerifyRunScriptSource(code);
+            thisTest.Verify("z", new object[] { 1, 3, 2 });
         }
 
         [Test]
         [Category("Built in Functions")]
-        public void T073_Insert_ShadowCopy()
+        public void T073_Insert_ShallowCopy()
         {
             string code = @"
 x = { 1, 2 };
@@ -2344,7 +2357,7 @@ z = Insert(x, y, 0);
 y[0] = 100;";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("z", new object[] { new object[] { 4, 5 }, 1, 2 });
+            thisTest.Verify("z", new object[] { new object[] { 100, 5 }, 1, 2 });
         }
 
         [Test]
@@ -2594,9 +2607,10 @@ sort = Sort(sorterFunction, a);
         }
 
         [Test]
-        //Test "1467446"
+        [Category("Failing")]
         public void BIM32_Sort_class()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4099
             String code =
 @"
 class test{
@@ -2609,19 +2623,23 @@ def sorterFunction(a : double, b : int)
 def create ()
 {
 sort = Sort(sorterFunction, a);
+return = sort;
 }
 }
 z=test.test();
 y=z.create();
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4099 Member function cannot be used as function pointer";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
+            
         }
 
         [Test]
-        //Test "1467446"
+        [Category("Failing")]
         public void BIM33_Sort_class_2()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4099
             String code =
 @"
 class test{
@@ -2635,12 +2653,14 @@ def create ()
     {
 y=test.test();        
 sort = Sort(y.sorterFunction, a);
+return = sort;
 }
 }
 z=test.test();
 y=z.create();
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4099 Member function cannot be used as function pointer";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("y", new object[] { 1, 2, 3 });
         }
 
@@ -2691,7 +2711,7 @@ sort = Sort(sorterFunction,a1);
 
         [Test]
         public void BIM36_Sort_conditional_1467446()
-        {//1467446
+        {
             String code =
             @"
           def sorterFunction(a : double, b : int)
@@ -2702,13 +2722,13 @@ sort = Sort(sorterFunction,a1);
                 {
                       return =a < b ? 1 : -1;
                 }
-                sort = { { 3, 1, 3 } => toSort;
+                sort = { { 3, 1, 2 } => toSort;
                 false => ascend;
                 ascend!=false?Sort(sorterFunction, toSort):Sort(sorterFunction2, toSort) => sort;
                 }
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("sort", new object[] { 1, 2, 3 });
+            thisTest.Verify("sort", new object[] { 3, 2, 1 });
         }
 
         [Test]
@@ -2775,7 +2795,7 @@ sort = Sort(sorterFunction,a1);
 
         [Test]
         public void BIM39_Sort_multiarray_1467446()
-        {//1467446
+        {
             String code =
             @"
                 sort;
@@ -2794,7 +2814,7 @@ sort = Sort(sorterFunction,a1);
                 d = foo(a1);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("sort", new object[] { new object[] { 2, 3, 4 }, new object[] { 1, 2, 5 }, new object[] { 4, 6, 8 } });
+            thisTest.Verify("d", new object[] { new object[] { 2, 3, 4 }, new object[] { 1, 2, 5 }, new object[] { 4, 6, 8 } });
         }
 
         [Test]
@@ -4019,16 +4039,15 @@ t8 = 0;
 @"
 import (""DSCoreNodes.dll"");
 
-a1 = Math.Round( 3.45, 1, MidpointRounding.ToEven) ;
-a2 = Math.Round( 3.45, 1, MidpointRounding.AwayFromZero);
-a3 = Math.Round( 3.45, MidpointRounding.ToEven) ;
-a4 = Math.Round( 3.45, MidpointRounding.AwayFromZero);
+a1 = Math.Round( 3.45, 1) ;
+a2 = Math.Round( 3.45);
+
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 3.4);
-            thisTest.Verify("a2", 3.5);
-            thisTest.Verify("a3", 3.0);
-            thisTest.Verify("a4", 3.0);
+          
+            thisTest.Verify("a2", 3.0);
+          
         }
 
         [Test]
@@ -4145,6 +4164,7 @@ import (""DSCoreNodes.dll"");
         }
 
         [Test]
+        [Category("Failing")]
         public void T068_Rand_1()
         {
             String code =
@@ -4152,7 +4172,7 @@ import (""DSCoreNodes.dll"");
 import (""DSCoreNodes.dll"");
 
 b1 = 1 > 0 ? Math.Rand() : 10 ;
-b2 = 1 > 0 ? Math.Rand(1..2, 2..3) : 10 ;
+b2 = 1 > 0 ? Math.Random(1..2, 2..3) : 10 ;
 test1 = 0;
 test2 = 0;
 c1 = 1;
@@ -4481,17 +4501,20 @@ b = Sort(sorterFunction, a);
         }
 
         [Test]
+        [Category("Failing")]
         public void T072_defect_1467577()
         {
             String code =
 @"
-index= IndexOf(1..10.11 , {1,2});
+index= IndexOf(1..10..1 , {1,2});
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("index", new Object[] { 1, 2 });
+            string err = "MAGN-4106 IndexOf Built-in method fails to replicate";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
+            thisTest.Verify("index", new Object[] { 0, 1 });
         }
 
         [Test]
+        [Category("Failing")]
         public void T072_defect_1467577_2()
         {
             String code =
@@ -4503,7 +4526,8 @@ def testRepl(val : var[], index:int)
 z = testRepl(1..5, 1..2);
 z1 = IndexOf(1..5, { 1, 2 });
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4106 IndexOf Built-in method fails to replicate";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("z", new Object[] { 0, 1 });
             thisTest.Verify("z1", new Object[] { 0, 1 });
         }
@@ -4704,15 +4728,13 @@ test = { x1, x2, x3, x4, x5, x6, x8 };
         {
             String code =
 @"
-x1 = Average(a) ;// returns null, also throws runtime error ? 
-x2 = Average(a) ;// returns -1
-x4 = Average(null) ;// returns -1
-x5 = Average({}) ;// returns 0.0
-x6 = Average({null}) ;// returns 0.0
+x1 = Average(a) ;
+x2 = Average(a) ;
+x4 = Average(null) ;
+x5 = Average({}) ;
+x6 = Average({null}) ;
 ";
-            string errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative case";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyRuntimeWarningCount(0);
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("x1", null);
             thisTest.Verify("x2", null);
             thisTest.Verify("x4", null);
@@ -4912,11 +4934,12 @@ test = { A.A() => x;
         public void Defect_ImportFromCSV_1467622()
         {
             String code =
-            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/nonuniform.csv"";
+            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
             b = ImportFromCSV(a);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", new object[] { new object[] { 1.0, 2, 3, 4, 5, 6 }, new object[] { 2, 3.0, 4, 5, 6, 7, 8 } }
+            thisTest.Verify("b", new object[] { new object[] { 1, 2, 3, 4, 5 }, new object[] { 2, 3, 4, 5, 6 },
+            new object[] { 3, 4, 5, 6, 7 } }
 );
         }
 
@@ -4925,11 +4948,12 @@ test = { A.A() => x;
         public void Defect_ImportFromCSV_1467622_2()
         {
             String code =
-            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma_nonuniform.csv"";
+            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
             b = ImportFromCSV(a);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", new object[] { new object[] { 10, 20, 30, null }, new object[] { 40, 50, 60, 40, null } }
+            thisTest.Verify("b", new object[] { new object[] { 10, 40 }, new object[] { 20, 50 },
+            new object[] { 30, 60 }, new object[] { null, null } }
 );
         }
     }

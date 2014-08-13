@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Windows.Data;
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -177,7 +173,8 @@ namespace Dynamo.Views
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
-            ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
+            // KILLDYNSETTINGS
+            //ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -199,14 +196,14 @@ namespace Dynamo.Views
             {
                 WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
 
-                oldViewModel.CurrentOffsetChanged -= new PointEventHandler(vm_CurrentOffsetChanged);
-                oldViewModel.ZoomChanged -= new ZoomEventHandler(vm_ZoomChanged);
-                oldViewModel.RequestZoomToViewportCenter -= new ZoomEventHandler(vm_ZoomAtViewportCenter);
-                oldViewModel.RequestZoomToViewportPoint -= new ZoomEventHandler(vm_ZoomAtViewportPoint);
-                oldViewModel.RequestZoomToFitView -= new ZoomEventHandler(vm_ZoomToFitView);
-                oldViewModel.RequestCenterViewOnElement -= new NodeEventHandler(CenterViewOnElement);
-                oldViewModel.RequestNodeCentered -= new NodeEventHandler(vm_RequestNodeCentered);
-                oldViewModel.RequestAddViewToOuterCanvas -= new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+                oldViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+                oldViewModel.Model.ZoomChanged -= vm_ZoomChanged;
+                oldViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
+                oldViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
+                oldViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
+                oldViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
+                oldViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
+                oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
             }
@@ -214,14 +211,14 @@ namespace Dynamo.Views
             if (ViewModel != null)
             {
                 // Adding registration of event listener
-                ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
-                ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
-                ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
-                ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
-                ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
-                ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
-                ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-                ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+                ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
+                ViewModel.Model.ZoomChanged +=vm_ZoomChanged;
+                ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
+                ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
+                ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
+                ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
+                ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
+                ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
 
@@ -245,14 +242,14 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
+            this.ViewModel.DynamoViewModel.Model.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    this.ViewModel.DynamoViewModel.Model.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
 
                 if (args.CanEditName) workspace.Name = args.Name;
@@ -302,7 +299,7 @@ namespace Dynamo.Views
             //sw.Start();
             //DrawGrid();
             //sw.Stop();
-            //dynSettings.DynamoLogger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
+            //dynamoModel.Logger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
@@ -384,7 +381,7 @@ namespace Dynamo.Views
             double zoom = AdjustZoomForCurrentZoomAmount((e as ZoomEventArgs).Zoom);
 
             // Limit Zoom
-            double resultZoom = ViewModel._model.Zoom + zoom;
+            double resultZoom = ViewModel.Model.Zoom + zoom;
             if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
                 resultZoom = WorkspaceModel.ZOOM_MINIMUM;
             else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
@@ -397,8 +394,8 @@ namespace Dynamo.Views
 
             // Get relative point of ZoomBorder child in relates to viewpoint center point
             Point relativePoint = new Point();
-            relativePoint.X = (centerPoint.X - ViewModel._model.X) / ViewModel._model.Zoom;
-            relativePoint.Y = (centerPoint.Y - ViewModel._model.Y) / ViewModel._model.Zoom;
+            relativePoint.X = (centerPoint.X - ViewModel.Model.X) / ViewModel.Model.Zoom;
+            relativePoint.Y = (centerPoint.Y - ViewModel.Model.Y) / ViewModel.Model.Zoom;
 
             ZoomAtViewportPoint(zoom, relativePoint);
         }
@@ -409,10 +406,10 @@ namespace Dynamo.Views
             const double lowerLimit = .01;
 
             //quadratic adjustment
-            //var adjustedZoom = (lowerLimit + Math.Pow((ViewModel._model.Zoom / WorkspaceModel.ZOOM_MAXIMUM), 2) * (upperLimit - lowerLimit)) * zoom;
+            //var adjustedZoom = (lowerLimit + Math.Pow((ViewModel.Model.Zoom / WorkspaceModel.ZOOM_MAXIMUM), 2) * (upperLimit - lowerLimit)) * zoom;
 
             //linear adjustment
-            var adjustedZoom = (lowerLimit + (ViewModel._model.Zoom / WorkspaceModel.ZOOM_MAXIMUM) * (upperLimit - lowerLimit)) * zoom;
+            var adjustedZoom = (lowerLimit + (ViewModel.Model.Zoom / WorkspaceModel.ZOOM_MAXIMUM) * (upperLimit - lowerLimit)) * zoom;
 
             return adjustedZoom;
         }
@@ -428,22 +425,22 @@ namespace Dynamo.Views
         private void ZoomAtViewportPoint(double zoom, Point relative)
         {
             // Limit zoom
-            double resultZoom = ViewModel._model.Zoom + zoom;
+            double resultZoom = ViewModel.Model.Zoom + zoom;
             if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
                 resultZoom = WorkspaceModel.ZOOM_MINIMUM;
             else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
                 resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
 
             double absoluteX, absoluteY;
-            absoluteX = relative.X * ViewModel._model.Zoom + ViewModel._model.X;
-            absoluteY = relative.Y * ViewModel._model.Zoom + ViewModel._model.Y;
+            absoluteX = relative.X * ViewModel.Model.Zoom + ViewModel.Model.X;
+            absoluteY = relative.Y * ViewModel.Model.Zoom + ViewModel.Model.Y;
             Point resultOffset = new Point();
             resultOffset.X = absoluteX - (relative.X * resultZoom);
             resultOffset.Y = absoluteY - (relative.Y * resultZoom);
 
-            ViewModel._model.Zoom = resultZoom;
-            ViewModel._model.X = resultOffset.X;
-            ViewModel._model.Y = resultOffset.Y;
+            ViewModel.Model.Zoom = resultZoom;
+            ViewModel.Model.X = resultOffset.X;
+            ViewModel.Model.Y = resultOffset.Y;
 
             vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
             vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
@@ -483,9 +480,9 @@ namespace Dynamo.Views
             resultOffset.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
 
             // Apply on model
-            ViewModel._model.Zoom = scaleRequired;
-            ViewModel._model.X = resultOffset.X;
-            ViewModel._model.Y = resultOffset.Y;
+            ViewModel.Model.Zoom = scaleRequired;
+            ViewModel.Model.X = resultOffset.X;
+            ViewModel.Model.Y = resultOffset.Y;
 
             vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
             vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));

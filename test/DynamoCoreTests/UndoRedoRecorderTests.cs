@@ -592,14 +592,15 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class SerializationTests : DynamoUnitTest
+    internal class SerializationTests : DynamoViewModelUnitTest
     {
         [Test]
         public void TestBasicAttributes()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(400, 100, "Dynamo.Nodes.Addition");
-            var sumNode = Controller.DynamoViewModel.Model.Nodes[0] as DSFunction;
+            var model = ViewModel.Model;
+            model.CurrentWorkspace.AddNode(400, 100, "Dynamo.Nodes.Addition");
+
+            var sumNode = model.Nodes[0] as DSFunction;
 
             //Assert inital values
             Assert.AreEqual(400, sumNode.X);
@@ -650,10 +651,11 @@ namespace Dynamo.Tests
         [Test]
         public void TestDoubleInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(400, 0, "Number");
 
-            var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleInput;
+            var model = ViewModel.Model;
+            model.CurrentWorkspace.AddNode(400, 0, "Number");
+
+            var numNode = ViewModel.Model.Nodes[0] as DoubleInput;
             numNode.Value = "0.0";
             numNode.X = 400; //To check if base Serialization method is being called
 
@@ -680,10 +682,10 @@ namespace Dynamo.Tests
         [Test]
         public void TestDoubleSliderInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(400, 0, "Number Slider");
+            var model = ViewModel.Model;
+            model.CurrentWorkspace.AddNode(400, 0, "Number Slider");
 
-            var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleSlider;
+            var numNode = ViewModel.Model.Nodes[0] as DoubleSlider;
             numNode.X = 400; //To check if NodeModel base Serialization method is being called
             numNode.Value = 50.0; //To check if Double class's Serialization methods work
             numNode.Max = 100.0;
@@ -720,10 +722,10 @@ namespace Dynamo.Tests
         [Test]
         public void TestBool()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(0, 0, "Boolean");
+            var model = ViewModel.Model;
+            model.CurrentWorkspace.AddNode(0, 0, "Boolean");
 
-            var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
+            var boolNode = ViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
             boolNode.Value = false;
             boolNode.X = 400; //To check if base Serialization method is being called
 
@@ -750,7 +752,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringInput()
         {
-            var strNode = new StringInput();
+            var strNode = new StringInput(ViewModel.Model.CurrentWorkspace);
             strNode.Value = "Enter";
             strNode.X = 400; //To check if base Serialization method is being called
 
@@ -847,7 +849,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSublists()
         {
-            var strNode = new Sublists();
+            var strNode = new Sublists(ViewModel.Model.CurrentWorkspace);
             strNode.Value = "Enter";
             strNode.X = 400; //To check if base Serialization method is being called
 
@@ -874,10 +876,11 @@ namespace Dynamo.Tests
         [Test]
         public void TestFormula()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(0, 0, "Formula");
 
-            var formulaNode = Controller.DynamoViewModel.Model.Nodes[0] as Formula;
+            var model = ViewModel.Model;
+            model.CurrentWorkspace.AddNode(0, 0, "Formula");
+
+            var formulaNode = ViewModel.Model.Nodes[0] as Formula;
             formulaNode.FormulaString = "x+y";
             formulaNode.X = 400; //To check if base Serialization method is being called
 
@@ -907,15 +910,15 @@ namespace Dynamo.Tests
         [Test]
         public void TestFunctionNode()
         {
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_serialization\");
             string openPath = Path.Combine(examplePath, "graph function.dyn");
             string openPath2 = Path.Combine(examplePath, "GraphFunction.dyf");
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(openPath2)!= null);
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+                ViewModel.Model.CustomNodeManager.AddFileToPath(openPath2)!= null);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            dynSettings.Controller.RunExpression(null);
+            ViewModel.Model.RunExpression();
             System.Threading.Thread.Sleep(500);
 
             // check if the node is loaded
@@ -955,9 +958,9 @@ namespace Dynamo.Tests
         public void TestDummyNodeInternals00()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
+            ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
@@ -978,9 +981,9 @@ namespace Dynamo.Tests
         public void TestDummyNodeInternals01()
         {
             var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
-            Controller.DynamoViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
+            ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 

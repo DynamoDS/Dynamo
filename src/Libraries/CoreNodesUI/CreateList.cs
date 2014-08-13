@@ -14,7 +14,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode
     {
-        public CreateList()
+        public CreateList(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("index0", "Item Index #0"));
             OutPortData.Add(new PortData("list", "A list"));
