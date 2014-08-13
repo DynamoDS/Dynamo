@@ -10,14 +10,13 @@ namespace Dynamo.Core
 
         sealed class TimeStampGenerator
         {
-            private long timeStampValue = 1024;
-            private readonly object timeStampMutex = new object();
+            private long timeStampValue = 1023;
 
             internal long Next
             {
                 get
                 {
-                    lock (timeStampMutex) { return timeStampValue++; }
+                    return Interlocked.Increment(ref timeStampValue);
                 }
             }
         }
