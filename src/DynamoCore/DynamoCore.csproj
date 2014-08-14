@@ -143,6 +143,7 @@ limitations under the License.
     <Compile Include="DSEngine\SyncDataManager.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
+    <Compile Include="Interfaces\ISchedulerThread.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
     <Compile Include="Library\FunctionDescriptor.cs" />
