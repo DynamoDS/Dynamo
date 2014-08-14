@@ -805,7 +805,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestAdd01()
         {
             List<string> codes = new List<string>() 
