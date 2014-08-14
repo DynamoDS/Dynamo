@@ -10,8 +10,8 @@ namespace Dynamo.TestInfrastructure
 {
     class CustomNodeCompatibilityMutator : AbstractMutator
     {
-        public CustomNodeCompatibilityMutator(Random rand)
-            : base(rand)
+        public CustomNodeCompatibilityMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
 
         }
@@ -29,7 +29,7 @@ namespace Dynamo.TestInfrastructure
 
             if (lastNode.OutPorts.Count > 0)
             {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoViewModel.MakeConnectionCommand connectCmd1 =
                         new DynamoViewModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.OUTPUT, DynamoViewModel.MakeConnectionCommand.Mode.Begin);
@@ -42,7 +42,7 @@ namespace Dynamo.TestInfrastructure
             }
             else
             {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoViewModel.MakeConnectionCommand connectCmd1 =
                         new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.OUTPUT, DynamoViewModel.MakeConnectionCommand.Mode.Begin);

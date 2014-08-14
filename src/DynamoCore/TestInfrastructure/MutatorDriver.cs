@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.Remoting;
 using DynamoUtilities;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Core;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -21,11 +22,11 @@ namespace Dynamo.TestInfrastructure
     /// </summary>
     public class MutatorDriver
     {
-        private DynamoController dynamoController;
+        private readonly DynamoViewModel dynamoViewModel;
 
-        public MutatorDriver(DynamoController dynamoController)
+        public MutatorDriver(DynamoViewModel dynamoViewModel)
         {
-            this.dynamoController = dynamoController;
+            this.dynamoViewModel = dynamoViewModel;
         }
 
         internal void RunMutationTests()
@@ -33,7 +34,7 @@ namespace Dynamo.TestInfrastructure
             Random rand = new Random(1);
             //DebugSettings.VerboseLogging = true;
 
-            String logTarget = dynSettings.DynamoLogger.LogPath + "MutationLog.log";
+            String logTarget = dynamoViewModel.Model.Logger.LogPath + "MutationLog.log";
 
             StreamWriter writer = new StreamWriter(logTarget);
 
@@ -64,11 +65,12 @@ namespace Dynamo.TestInfrastructure
                         NumberRangeTest(writer);
                         ListTest(writer);
 						
+						CustomNodeTest(writer);
                         CustomNodeCompatibilityTest(writer);
                     }
                     finally
                     {
-                        dynSettings.DynamoLogger.Log("Fuzz testing finished.");
+                    dynamoViewModel.Model.Logger.Log("Fuzz testing finished.");
 
                         writer.Flush();
                         writer.Close();
@@ -92,21 +94,21 @@ namespace Dynamo.TestInfrastructure
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
 
-                    var nodes = dynamoController.DynamoModel.Nodes.ToList();
+                    var nodes = dynamoViewModel.Model.Nodes.ToList();
                     int nodesCountBeforeDelete = nodes.Count;
 
                     writer.WriteLine("### - Beginning eval");
 
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
                     }));
 
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -122,7 +124,7 @@ namespace Dynamo.TestInfrastructure
 
                     List<AbstractMutator> mutators = new List<AbstractMutator>()
                                 {
-                                    new DeleteNodeMutator(rand)
+                                    new DeleteNodeMutator(dynamoViewModel, rand)
                                 };
 
 
@@ -138,11 +140,11 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Beginning re-exec");
 
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
                     }));
 
@@ -152,18 +154,18 @@ namespace Dynamo.TestInfrastructure
                     writer.Flush();
                     writer.WriteLine("### - Beginning undo");
 
-                    int nodesCountAfterDelete = dynamoController.DynamoModel.Nodes.Count;
+                    int nodesCountAfterDelete = dynamoViewModel.Model.Nodes.Count;
 
                     if (nodesCountBeforeDelete > nodesCountAfterDelete)
                     {
                         for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                         {
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.UndoRedoCommand undoCommand =
                                     new DynamoViewModel.UndoRedoCommand(
                                         DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                dynamoViewModel.ExecuteCommand(undoCommand);
 
                             }));
 
@@ -174,17 +176,17 @@ namespace Dynamo.TestInfrastructure
                         writer.Flush();
                         writer.WriteLine("### - Beginning re-exec");
 
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
 
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
 
                         }));
                         Thread.Sleep(10);
 
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -192,7 +194,7 @@ namespace Dynamo.TestInfrastructure
                         writer.WriteLine("### - re-exec complete");
                         writer.Flush();
 
-                        nodesCountAfterDelete = dynamoController.DynamoModel.Nodes.Count;
+                        nodesCountAfterDelete = dynamoViewModel.Model.Nodes.Count;
                         if (nodesCountBeforeDelete == nodesCountAfterDelete)
                             writer.WriteLine("### - Node was restored");
                         else
@@ -210,14 +212,14 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("DeleteNodeTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("DeleteNodeTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
         private void CopyNodeTest(StreamWriter writer)
         {
             bool passed = false;
-            List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.ToList();
+            List<NodeModel> nodes = dynamoViewModel.Model.Nodes.ToList();
             if (nodes.Count == 0)
                 return;
 
@@ -231,13 +233,13 @@ namespace Dynamo.TestInfrastructure
 
                     writer.WriteLine("##### - Beginning run: " + i);
                     writer.WriteLine("### - Beginning eval");
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -248,7 +250,7 @@ namespace Dynamo.TestInfrastructure
 
                     List<AbstractMutator> mutators = new List<AbstractMutator>()
                         {
-                            new CopyNodeMutator(rand)
+                            new CopyNodeMutator(dynamoViewModel, rand)
                         };
                     AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                     int numberOfUndosNeeded = mutator.Mutate();
@@ -257,11 +259,11 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Beginning undo");
                     for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.UndoRedoCommand undoCommand =
                                 new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            dynamoViewModel.ExecuteCommand(undoCommand);
 
                         }));
                         Thread.Sleep(100);
@@ -269,13 +271,13 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - undo complete");
                     writer.Flush();
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -285,7 +287,7 @@ namespace Dynamo.TestInfrastructure
                     {
                         try
                         {
-                            int nodesCountAfterCopying = dynamoController.DynamoModel.Nodes.ToList().Count;
+                            int nodesCountAfterCopying = dynamoViewModel.Model.Nodes.ToList().Count;
 
                             if (nodesCountBeforeCopying != nodesCountAfterCopying)
                             {
@@ -322,7 +324,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("CopyNodeTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("CopyNodeTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -341,22 +343,22 @@ namespace Dynamo.TestInfrastructure
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
 
-                    var nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == typeof(CodeBlockNodeModel)).ToList();
+                    var nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == typeof(CodeBlockNodeModel)).ToList();
                     if (nodes.Count == 0)
                         return;
 
                     writer.WriteLine("### - Beginning eval");
 
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
-                        {
-                            DynamoViewModel.RunCancelCommand runCancel =
-                                new DynamoViewModel.RunCancelCommand(false, false);
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
-                        }));
+                    }));
 
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -391,7 +393,7 @@ namespace Dynamo.TestInfrastructure
 
                     List<AbstractMutator> mutators = new List<AbstractMutator>()
                                 {
-                                    new CodeBlockNodeMutator(rand), new DeleteNodeMutator(rand)
+                                    new CodeBlockNodeMutator(dynamoViewModel, rand), new DeleteNodeMutator(dynamoViewModel, rand)
                                 };
 
 
@@ -407,11 +409,11 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Beginning re-exec");
 
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
-                        {
-                            DynamoViewModel.RunCancelCommand runCancel =
-                                new DynamoViewModel.RunCancelCommand(false, false);
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
                         }));
 
@@ -424,14 +426,14 @@ namespace Dynamo.TestInfrastructure
 
                     for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
-                            {
-                                DynamoViewModel.UndoRedoCommand undoCommand =
-                                    new DynamoViewModel.UndoRedoCommand(
-                                        DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.UndoRedoCommand undoCommand =
+                                new DynamoViewModel.UndoRedoCommand(
+                                    DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                            dynamoViewModel.ExecuteCommand(undoCommand);
 
-                            }));
+                        }));
 
                         Thread.Sleep(100);
 
@@ -442,17 +444,17 @@ namespace Dynamo.TestInfrastructure
                     writer.Flush();
                     writer.WriteLine("### - Beginning re-exec");
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
-                        {
-                            DynamoViewModel.RunCancelCommand runCancel =
-                                new DynamoViewModel.RunCancelCommand(false, false);
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
 
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
-                        }));
+                    }));
                     Thread.Sleep(10);
 
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -504,7 +506,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("CodeBlockNodeTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("CodeBlockNodeTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -526,7 +528,7 @@ namespace Dynamo.TestInfrastructure
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
 
-                    List<NodeModel> nodes = dynamoController.DynamoModel.Nodes;
+                    List<NodeModel> nodes = dynamoViewModel.Model.Nodes;
                     int randVal = rand.Next(nodes.Count);
 
                     writer.WriteLine("### - Beginning eval");
@@ -542,12 +544,12 @@ namespace Dynamo.TestInfrastructure
                             //let's remember the indexes
                             int startIndex = connector.Start.Index;
 
-                            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.DeleteModelCommand delCommand =
                                     new DynamoViewModel.DeleteModelCommand(node.GUID);
 
-                                dynamoController.DynamoViewModel.ExecuteCommand(delCommand);
+                                dynamoViewModel.ExecuteCommand(delCommand);
 
                             }));
 
@@ -556,12 +558,12 @@ namespace Dynamo.TestInfrastructure
                             else
                                 writer.WriteLine("### - Connector was deleted");
 
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.UndoRedoCommand undoCommand =
                                     new DynamoViewModel.UndoRedoCommand(
                                         DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                dynamoViewModel.ExecuteCommand(undoCommand);
 
                             }));
 
@@ -579,7 +581,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("ConnectorTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("ConnectorTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -606,16 +608,16 @@ namespace Dynamo.TestInfrastructure
                     Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
                     if (type != null)
                     {
-                        List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                        List<NodeModel> nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
                         writer.WriteLine("### - Beginning eval");
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
                         }));
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -638,7 +640,7 @@ namespace Dynamo.TestInfrastructure
 
                         List<AbstractMutator> mutators = new List<AbstractMutator>()
                     {
-                        new IntegerSliderMutator(rand)
+                        new IntegerSliderMutator(dynamoViewModel, rand)
                     };
                         AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                         int numberOfUndosNeeded = mutator.Mutate();
@@ -647,12 +649,12 @@ namespace Dynamo.TestInfrastructure
                         writer.WriteLine("### - Beginning undo");
                         for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                         {
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.UndoRedoCommand undoCommand =
                                     new DynamoViewModel.UndoRedoCommand(
                                         DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                dynamoViewModel.ExecuteCommand(undoCommand);
                             }));
                             Thread.Sleep(100);
                         }
@@ -660,17 +662,17 @@ namespace Dynamo.TestInfrastructure
                         writer.Flush();
                         writer.WriteLine("### - Beginning re-exec");
 
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
 
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
 
                         }));
                         Thread.Sleep(10);
 
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -721,7 +723,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("IntegerSliderTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("IntegerSliderTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -744,16 +746,16 @@ namespace Dynamo.TestInfrastructure
                     Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
                     if (type != null)
                     {
-                        List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                        List<NodeModel> nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
                         writer.WriteLine("### - Beginning eval");
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
                         }));
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -776,7 +778,7 @@ namespace Dynamo.TestInfrastructure
 
                         List<AbstractMutator> mutators = new List<AbstractMutator>()
                     {
-                        new DoubleSliderMutator(rand)
+                        new DoubleSliderMutator(dynamoViewModel, rand)
                     };
                         AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                         int numberOfUndosNeeded = mutator.Mutate();
@@ -785,12 +787,12 @@ namespace Dynamo.TestInfrastructure
                         writer.WriteLine("### - Beginning undo");
                         for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                         {
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.UndoRedoCommand undoCommand =
                                     new DynamoViewModel.UndoRedoCommand(
                                         DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                dynamoViewModel.ExecuteCommand(undoCommand);
                             }));
                             Thread.Sleep(100);
                         }
@@ -801,17 +803,17 @@ namespace Dynamo.TestInfrastructure
                         writer.Flush();
                         writer.WriteLine("### - Beginning re-exec");
 
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
 
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
 
                         }));
                         Thread.Sleep(10);
 
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -861,7 +863,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("DoubleSliderTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("DoubleSliderTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -888,19 +890,19 @@ namespace Dynamo.TestInfrastructure
                     Type type = assembly.GetType("DSCore.File.Directory");
                     List<NodeModel> nodes = new List<NodeModel>();
                     if (type != null)
-                        nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                        nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
                     if (nodes.Count == 0)
                         return;
 
                     writer.WriteLine("### - Beginning eval");
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -923,7 +925,7 @@ namespace Dynamo.TestInfrastructure
 
                     List<AbstractMutator> mutators = new List<AbstractMutator>()
                     {
-                        new DirectoryPathMutator(rand)
+                        new DirectoryPathMutator(dynamoViewModel, rand)
                     };
                     AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                     int numberOfUndosNeeded = mutator.Mutate();
@@ -932,12 +934,12 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Beginning undo");
                     for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.UndoRedoCommand undoCommand =
                                 new DynamoViewModel.UndoRedoCommand(
                                     DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            dynamoViewModel.ExecuteCommand(undoCommand);
                         }));
                         Thread.Sleep(100);
                     }
@@ -945,17 +947,17 @@ namespace Dynamo.TestInfrastructure
                     writer.Flush();
                     writer.WriteLine("### - Beginning re-exec");
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
 
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
                     }));
                     Thread.Sleep(10);
 
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -1004,7 +1006,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("DirectoryPathTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("DirectoryPathTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -1027,19 +1029,19 @@ namespace Dynamo.TestInfrastructure
                     Type type = assembly.GetType("DSCore.File.Filename");
                     List<NodeModel> nodes = new List<NodeModel>();
                     if (type != null)
-                        nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                        nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
                     if (nodes.Count == 0)
                         return;
 
                     writer.WriteLine("### - Beginning eval");
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -1062,7 +1064,7 @@ namespace Dynamo.TestInfrastructure
 
                     List<AbstractMutator> mutators = new List<AbstractMutator>()
                     {
-                        new FilePathMutator(rand)
+                        new FilePathMutator(dynamoViewModel, rand)
                     };
                     AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                     int numberOfUndosNeeded = mutator.Mutate();
@@ -1071,30 +1073,30 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Beginning undo");
                     for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.UndoRedoCommand undoCommand =
                                 new DynamoViewModel.UndoRedoCommand(
                                     DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            dynamoViewModel.ExecuteCommand(undoCommand);
                         }));
                         Thread.Sleep(100);
-                    }                    
+                    }
                     writer.WriteLine("### - undo complete");
                     writer.Flush();
                     writer.WriteLine("### - Beginning re-exec");
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
 
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
                     }));
                     Thread.Sleep(10);
 
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -1143,7 +1145,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("FilePathTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("FilePathTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -1161,19 +1163,19 @@ namespace Dynamo.TestInfrastructure
                 for (int i = 0; i < 1000; i++)
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
-                    List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == typeof(DoubleInput)).ToList();
+                    List<NodeModel> nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == typeof(DoubleInput)).ToList();
 
                     if (nodes.Count == 0)
                         return;
 
                     writer.WriteLine("### - Beginning eval");
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -1196,7 +1198,7 @@ namespace Dynamo.TestInfrastructure
 
                     List<AbstractMutator> mutators = new List<AbstractMutator>()
                     {
-                        new NumberInputMutator(rand)
+                        new NumberInputMutator(dynamoViewModel, rand)
                     };
                     AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                     int numberOfUndosNeeded = mutator.Mutate();
@@ -1205,12 +1207,12 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Beginning undo");
                     for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.UndoRedoCommand undoCommand =
                                 new DynamoViewModel.UndoRedoCommand(
                                     DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            dynamoViewModel.ExecuteCommand(undoCommand);
                         }));
                         Thread.Sleep(100);
                     }
@@ -1218,17 +1220,17 @@ namespace Dynamo.TestInfrastructure
                     writer.Flush();
                     writer.WriteLine("### - Beginning re-exec");
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
 
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
                     }));
                     Thread.Sleep(10);
 
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -1277,7 +1279,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("NumberTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("NumberTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -1291,19 +1293,19 @@ namespace Dynamo.TestInfrastructure
                 for (int i = 0; i < 1000; i++)
                 {
                     writer.WriteLine("##### - Beginning run: " + i);
-                    List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == typeof(StringInput)).ToList();
+                    List<NodeModel> nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == typeof(StringInput)).ToList();
 
                     if (nodes.Count == 0)
                         return;
 
                     writer.WriteLine("### - Beginning eval");
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -1326,7 +1328,7 @@ namespace Dynamo.TestInfrastructure
 
                     List<AbstractMutator> mutators = new List<AbstractMutator>()
                     {
-                        new StringInputMutator(rand)
+                        new StringInputMutator(dynamoViewModel, rand)
                     };
                     AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                     int numberOfUndosNeeded = mutator.Mutate();
@@ -1335,12 +1337,12 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Beginning undo");
                     for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.UndoRedoCommand undoCommand =
                                 new DynamoViewModel.UndoRedoCommand(
                                     DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                            dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                            dynamoViewModel.ExecuteCommand(undoCommand);
                         }));
                         Thread.Sleep(100);
                     }
@@ -1351,17 +1353,17 @@ namespace Dynamo.TestInfrastructure
                     writer.Flush();
                     writer.WriteLine("### - Beginning re-exec");
 
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.RunCancelCommand runCancel =
                             new DynamoViewModel.RunCancelCommand(false, false);
 
-                        dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                        dynamoViewModel.ExecuteCommand(runCancel);
 
                     }));
                     Thread.Sleep(10);
 
-                    while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                    while (dynamoViewModel.Model.Runner.Running)
                     {
                         Thread.Sleep(10);
                     }
@@ -1410,7 +1412,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("StringTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("StringTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -1432,7 +1434,7 @@ namespace Dynamo.TestInfrastructure
                 Type type = assembly.GetType("DSCoreNodesUI.NumberSeq");
                 List<NodeModel> nodes = new List<NodeModel>();
                 if (type != null)
-                    nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                    nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
                 if (nodes.Count == 0)
                     return;
@@ -1447,7 +1449,7 @@ namespace Dynamo.TestInfrastructure
                         Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of the node "Number" to connect to the node "Number Sequence" on Amount
                         Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of the node "Number" to connect to the node "Number Sequence" on Step
 
-                        dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             double coordinatesX = 120;
                             double coordinatesY = 180;
@@ -1461,9 +1463,9 @@ namespace Dynamo.TestInfrastructure
                                 new DynamoViewModel.CreateNodeCommand(guidNumber3, "Number", coordinatesX, coordinatesY + 200, false, true);
 
                             //execute commands
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber1);
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber2);
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeNumber3);                  
+                            dynamoViewModel.ExecuteCommand(createNodeNumber1);
+                            dynamoViewModel.ExecuteCommand(createNodeNumber2);
+                            dynamoViewModel.ExecuteCommand(createNodeNumber3);
                         }));
 
                         for (int i = 0; i < 1000; i++)
@@ -1471,13 +1473,13 @@ namespace Dynamo.TestInfrastructure
                             writer.WriteLine("##### - Beginning run: " + i);
 
                             writer.WriteLine("### - Beginning eval");
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.RunCancelCommand runCancel =
                                     new DynamoViewModel.RunCancelCommand(false, false);
-                                dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                dynamoViewModel.ExecuteCommand(runCancel);
                             }));
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                            while (dynamoViewModel.Model.Runner.Running)
                             {
                                 Thread.Sleep(10);
                             }
@@ -1491,17 +1493,20 @@ namespace Dynamo.TestInfrastructure
                                 foreach (ConnectorModel connector in firstNodeConnectors)
                                 {
                                     Guid guid = connector.Start.Owner.GUID;
-                                    Object data = connector.Start.Owner.GetValue(0).Data;
-                                    String val = data != null ? data.ToString() : "null";
-                                    valueMap.Add(guid, val);
-                                    writer.WriteLine(guid + " :: " + val);
-                                    writer.Flush();
+                                    if (!valueMap.ContainsKey(guid))
+                                    {
+                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        String val = data != null ? data.ToString() : "null";
+                                        valueMap.Add(guid, val);
+                                        writer.WriteLine(guid + " :: " + val);
+                                        writer.Flush();
+                                    }
                                 }
                             }
 
                             List<AbstractMutator> mutators = new List<AbstractMutator>()
                             {
-                                new NumberSequenceMutator(rand)
+                                new NumberSequenceMutator(dynamoViewModel, rand)
                             };
                             AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                             int numberOfUndosNeeded = mutator.Mutate();
@@ -1511,15 +1516,15 @@ namespace Dynamo.TestInfrastructure
                             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                             {
                                 List<NodeModel> numberSeqNodes = new List<NodeModel>();
-                                numberSeqNodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                                numberSeqNodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
-                                dynamoController.UIDispatcher.Invoke(new Action(() =>
+                                dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                                 {
                                     for (int j = 0; j < 3 * numberSeqNodes.Count; j++)
                                     {
                                         DynamoViewModel.UndoRedoCommand undoCommand =
                                             new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                        dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                        dynamoViewModel.ExecuteCommand(undoCommand);
                                     }
                                 }));
 
@@ -1528,13 +1533,13 @@ namespace Dynamo.TestInfrastructure
                             writer.WriteLine("### - undo complete");
                             writer.Flush();
 
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.RunCancelCommand runCancel =
                                     new DynamoViewModel.RunCancelCommand(false, false);
-                                dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                dynamoViewModel.ExecuteCommand(runCancel);
                             }));
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                            while (dynamoViewModel.Model.Runner.Running)
                             {
                                 Thread.Sleep(10);
                             }
@@ -1583,7 +1588,7 @@ namespace Dynamo.TestInfrastructure
                     }
                     finally
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.DeleteModelCommand delNumberCommand1 =
                                 new DynamoViewModel.DeleteModelCommand(Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"));
@@ -1592,9 +1597,9 @@ namespace Dynamo.TestInfrastructure
                             DynamoViewModel.DeleteModelCommand delNumberCommand3 =
                                 new DynamoViewModel.DeleteModelCommand(Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"));
 
-                            dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand1);
-                            dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand2);
-                            dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand3);
+                            dynamoViewModel.ExecuteCommand(delNumberCommand1);
+                            dynamoViewModel.ExecuteCommand(delNumberCommand2);
+                            dynamoViewModel.ExecuteCommand(delNumberCommand3);
                         }));
 
                     }
@@ -1602,7 +1607,7 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("NumberSequenceTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("NumberSequenceTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -1620,7 +1625,7 @@ namespace Dynamo.TestInfrastructure
                 Type type = assembly.GetType("DSCoreNodesUI.NumberRange");
                 List<NodeModel> nodes = new List<NodeModel>();
                 if (type != null)
-                    nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                    nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
                 if (nodes.Count == 0)
                     return;
@@ -1635,7 +1640,7 @@ namespace Dynamo.TestInfrastructure
                         Guid guidNumber2 = Guid.Parse("788dfa62-dbb2-4556-ad13-ce20ccc5ec0d"); //Guid of the node "Number" to connect to the node "Number Range" on Amount
                         Guid guidNumber3 = Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"); //Guid of the node "Number" to connect to the node "Number Range" on Step
 
-                        dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             double coordinatesX = 120;
                             double coordinatesY = 180;
@@ -1649,9 +1654,9 @@ namespace Dynamo.TestInfrastructure
                                 new DynamoViewModel.CreateNodeCommand(guidNumber3, "Number", coordinatesX, coordinatesY + 200, false, true);
 
                             //execute commands
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd1);
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd2);
-                            dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd3);                  
+                            dynamoViewModel.ExecuteCommand(createNodeCmd1);
+                            dynamoViewModel.ExecuteCommand(createNodeCmd2);
+                            dynamoViewModel.ExecuteCommand(createNodeCmd3);
                         }));
 
                         for (int i = 0; i < 1000; i++)
@@ -1659,13 +1664,13 @@ namespace Dynamo.TestInfrastructure
                             writer.WriteLine("##### - Beginning run: " + i);
 
                             writer.WriteLine("### - Beginning eval");
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.RunCancelCommand runCancel =
                                     new DynamoViewModel.RunCancelCommand(false, false);
-                                dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                dynamoViewModel.ExecuteCommand(runCancel);
                             }));
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                            while (dynamoViewModel.Model.Runner.Running)
                             {
                                 Thread.Sleep(10);
                             }
@@ -1679,17 +1684,20 @@ namespace Dynamo.TestInfrastructure
                                 foreach (ConnectorModel connector in firstNodeConnectors)
                                 {
                                     Guid guid = connector.Start.Owner.GUID;
-                                    Object data = connector.Start.Owner.GetValue(0).Data;
-                                    String val = data != null ? data.ToString() : "null";
-                                    valueMap.Add(guid, val);
-                                    writer.WriteLine(guid + " :: " + val);
-                                    writer.Flush();
+                                    if (!valueMap.ContainsKey(guid))
+                                    {
+                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        String val = data != null ? data.ToString() : "null";
+                                        valueMap.Add(guid, val);
+                                        writer.WriteLine(guid + " :: " + val);
+                                        writer.Flush();
+                                    }
                                 }
                             }
 
                             List<AbstractMutator> mutators = new List<AbstractMutator>()
                             {
-                                new NumberRangeMutator(rand)
+                                new NumberRangeMutator(dynamoViewModel, rand)
                             };
                             AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                             int numberOfUndosNeeded = mutator.Mutate();
@@ -1699,15 +1707,15 @@ namespace Dynamo.TestInfrastructure
                             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                             {
                                 List<NodeModel> numberRangeNodes = new List<NodeModel>();
-                                numberRangeNodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                                numberRangeNodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
-                                dynamoController.UIDispatcher.Invoke(new Action(() =>
+                                dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                                 {
                                     for (int j = 0; j < 3 * numberRangeNodes.Count; j++)
                                     {
                                         DynamoViewModel.UndoRedoCommand undoCommand =
                                             new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                        dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                        dynamoViewModel.ExecuteCommand(undoCommand);
                                     }
                                 }));
 
@@ -1716,13 +1724,13 @@ namespace Dynamo.TestInfrastructure
                             writer.WriteLine("### - undo complete");
                             writer.Flush();
 
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.RunCancelCommand runCancel =
                                     new DynamoViewModel.RunCancelCommand(false, false);
-                                dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                dynamoViewModel.ExecuteCommand(runCancel);
                             }));
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                            while (dynamoViewModel.Model.Runner.Running)
                             {
                                 Thread.Sleep(10);
                             }
@@ -1769,7 +1777,7 @@ namespace Dynamo.TestInfrastructure
                     }
                     finally
                     {
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.DeleteModelCommand delNumberCommand1 =
                                 new DynamoViewModel.DeleteModelCommand(Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"));
@@ -1778,9 +1786,9 @@ namespace Dynamo.TestInfrastructure
                             DynamoViewModel.DeleteModelCommand delNumberCommand3 =
                                 new DynamoViewModel.DeleteModelCommand(Guid.Parse("7bfb0b00-3dbc-4ab4-ba6b-f7743b72bbc5"));
 
-                            dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand1);
-                            dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand2);
-                            dynamoController.DynamoViewModel.ExecuteCommand(delNumberCommand3);
+                            dynamoViewModel.ExecuteCommand(delNumberCommand1);
+                            dynamoViewModel.ExecuteCommand(delNumberCommand2);
+                            dynamoViewModel.ExecuteCommand(delNumberCommand3);
                         }));
                     }
                 }
@@ -1788,7 +1796,7 @@ namespace Dynamo.TestInfrastructure
 
             finally
             {
-                dynSettings.DynamoLogger.Log("NumberRangeTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("NumberRangeTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -1804,7 +1812,7 @@ namespace Dynamo.TestInfrastructure
             Type type = assembly.GetType("DSCoreNodesUI.CreateList");
             List<NodeModel> nodes = new List<NodeModel>();
             if (type != null)
-                nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
             if (nodes.Count == 0)
                 return;
@@ -1817,7 +1825,7 @@ namespace Dynamo.TestInfrastructure
 
                     Guid guidNumber1 = Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"); //Guid of the node "Number" to coonect to the node "List" on InPorts(0)
 
-                    dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         double coordinatesX = 120;
                         double coordinatesY = 180;
@@ -1827,20 +1835,20 @@ namespace Dynamo.TestInfrastructure
                             new DynamoViewModel.CreateNodeCommand(guidNumber1, "Number", coordinatesX, coordinatesY, false, true);
 
                         //execute command
-                        dynamoController.DynamoViewModel.ExecuteCommand(createNodeCmd);                    
+                        dynamoViewModel.ExecuteCommand(createNodeCmd);
                     }));
 
                     for (int i = 0; i < 1000; i++)
                     {
                         writer.WriteLine("##### - Beginning run: " + i);
                         writer.WriteLine("### - Beginning eval");
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
                         }));
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -1867,7 +1875,7 @@ namespace Dynamo.TestInfrastructure
 
                         List<AbstractMutator> mutators = new List<AbstractMutator>()
                         {
-                            new ListMutator(rand)
+                            new ListMutator(dynamoViewModel, rand)
                         };
                         AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
                         int numberOfUndosNeeded = mutator.Mutate();
@@ -1876,16 +1884,16 @@ namespace Dynamo.TestInfrastructure
                         writer.WriteLine("### - Beginning undo");
                         for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                         {
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 List<NodeModel> listNodes = new List<NodeModel>();
-                                listNodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == type).ToList();
+                                listNodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
                                 for (int j = 0; j < listNodes.Count; j++)
                                 {
                                     DynamoViewModel.UndoRedoCommand undoCommand =
                                         new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                    dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                    dynamoViewModel.ExecuteCommand(undoCommand);
                                 }
                             }));
                             Thread.Sleep(100);
@@ -1893,13 +1901,13 @@ namespace Dynamo.TestInfrastructure
                         writer.WriteLine("### - undo complete");
                         writer.Flush();
 
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
                         }));
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -1951,15 +1959,15 @@ namespace Dynamo.TestInfrastructure
                 }
                 finally
                 {
-                    dynamoController.UIDispatcher.Invoke(new Action(() =>
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         DynamoViewModel.DeleteModelCommand delNumberCmd =
                             new DynamoViewModel.DeleteModelCommand(Guid.Parse("fa532273-cf1d-4f41-874e-6146f634e2d3"));
 
-                        dynamoController.DynamoViewModel.ExecuteCommand(delNumberCmd);
+                        dynamoViewModel.ExecuteCommand(delNumberCmd);
                     }));
 
-                    dynSettings.DynamoLogger.Log("ListTest : " + (passed ? "pass" : "FAIL"));
+                    dynamoViewModel.Model.Logger.Log("ListTest : " + (passed ? "pass" : "FAIL"));
                 }
             }
         }
@@ -1974,7 +1982,7 @@ namespace Dynamo.TestInfrastructure
 
             List<Type> types = LoadAllTypesFromDynamoAssemblies();
 
-            List<NodeModel> nodes = dynamoController.DynamoModel.Nodes.Where(t => t.GetType() == typeof(Function)).ToList();
+            List<NodeModel> nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == typeof(Function)).ToList();
 
             if (nodes.Count == 0)
                 return;
@@ -1992,14 +2000,14 @@ namespace Dynamo.TestInfrastructure
                         writer.WriteLine("##### - Beginning run for type: " + type.ToString());
                         writer.WriteLine("### - Beginning eval");
 
-                        dynamoController.UIDispatcher.Invoke(new Action(() =>
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                         {
                             DynamoViewModel.RunCancelCommand runCancel =
                                 new DynamoViewModel.RunCancelCommand(false, false);
-                            dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                            dynamoViewModel.ExecuteCommand(runCancel);
                         }));
 
-                        while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                        while (dynamoViewModel.Model.Runner.Running)
                         {
                             Thread.Sleep(10);
                         }
@@ -2014,13 +2022,13 @@ namespace Dynamo.TestInfrastructure
 
                         if (!string.IsNullOrEmpty(nodeName))
                         {
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 Guid guidNumber = Guid.NewGuid();
 
                                 DynamoViewModel.CreateNodeCommand createCommand =
                                new DynamoViewModel.CreateNodeCommand(guidNumber, nodeName, coordinatesX, coordinatesY, false, false);
-                                dynamoController.DynamoViewModel.ExecuteCommand(createCommand);
+                                dynamoViewModel.ExecuteCommand(createCommand);
                             }));
 
                             Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
@@ -2036,7 +2044,7 @@ namespace Dynamo.TestInfrastructure
 
                             List<AbstractMutator> mutators = new List<AbstractMutator>()
                         {
-                            new CustomNodeCompatibilityMutator(rand)
+                            new CustomNodeCompatibilityMutator(dynamoViewModel, rand)
                         };
 
                             AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
@@ -2046,13 +2054,13 @@ namespace Dynamo.TestInfrastructure
                             writer.WriteLine("### - Beginning undo");
                             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
                             {
-                                dynamoController.UIDispatcher.Invoke(new Action(() =>
+                                dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                                 {
                                     for (int j = 0; j < 3; j++)
                                     {
                                         DynamoViewModel.UndoRedoCommand undoCommand =
                                             new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                                        dynamoController.DynamoViewModel.ExecuteCommand(undoCommand);
+                                        dynamoViewModel.ExecuteCommand(undoCommand);
                                     }
                                 }));
                                 Thread.Sleep(100);
@@ -2060,14 +2068,14 @@ namespace Dynamo.TestInfrastructure
                             writer.WriteLine("### - undo complete");
                             writer.Flush();
 
-                            dynamoController.UIDispatcher.Invoke(new Action(() =>
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.RunCancelCommand runCancel =
                                     new DynamoViewModel.RunCancelCommand(false, false);
 
-                                dynamoController.DynamoViewModel.ExecuteCommand(runCancel);
+                                dynamoViewModel.ExecuteCommand(runCancel);
                             }));
-                            while (dynamoController.DynamoViewModel.Controller.Runner.Running)
+                            while (dynamoViewModel.Model.Runner.Running)
                             {
                                 Thread.Sleep(10);
                             }
@@ -2077,7 +2085,7 @@ namespace Dynamo.TestInfrastructure
                             {
                                 try
                                 {
-                                    NodeModel nodeAfterUndo = dynamoController.DynamoModel.Nodes.ToList().FirstOrDefault(t => t.GUID == node.GUID);
+                                    NodeModel nodeAfterUndo = dynamoViewModel.Model.Nodes.ToList().FirstOrDefault(t => t.GUID == node.GUID);
 
                                     if (nodeAfterUndo != null)
                                     {
@@ -2122,7 +2130,205 @@ namespace Dynamo.TestInfrastructure
             }
             finally
             {
-                dynSettings.DynamoLogger.Log("CustomNodeTest : " + (passed ? "pass" : "FAIL"));
+                dynamoViewModel.Model.Logger.Log("CustomNodeTest : " + (passed ? "pass" : "FAIL"));
+            }
+        }
+
+        private void CustomNodeTest(StreamWriter writer)
+        {
+            bool passed = false;
+
+            List<NodeModel> nodes = dynamoViewModel.Model.CurrentWorkspace.Nodes.Where(t => t.GetType() == typeof(Function)).ToList();
+
+            if (nodes.Count == 0)
+                return;
+
+            try
+            {
+                Random rand = new Random(1);
+
+                for (int i = 0; i < 1000; i++)
+                {
+                    NodeModel node = nodes[rand.Next(nodes.Count)];
+
+                    writer.WriteLine("##### - Beginning run: " + i);
+                    writer.WriteLine("### - Beginning eval");
+
+                    dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                    {
+                        DynamoViewModel.RunCancelCommand runCancel =
+                            new DynamoViewModel.RunCancelCommand(false, false);
+                        dynamoViewModel.ExecuteCommand(runCancel);
+                    }));
+
+                    while (dynamoViewModel.Model.Runner.Running)
+                    {
+                        Thread.Sleep(10);
+                    }
+
+                    writer.WriteLine("### - Eval complete");
+                    writer.Flush();
+
+                    List<ConnectorModel> firstNodeConnectors = node.AllConnectors.ToList();
+
+                    Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+                    foreach (ConnectorModel connector in firstNodeConnectors)
+                    {
+                        if (connector.End.Owner.GUID != node.GUID)
+                        {
+                            Guid guid = connector.Start.Owner.GUID;
+                            Object data = connector.Start.Owner.GetValue(0).Data;
+                            String val = data != null ? data.ToString() : "null";
+                            valueMap.Add(guid, val);
+                            writer.WriteLine(guid + " :: " + val);
+                            writer.Flush();
+                        }
+                    }
+
+                    string customNodeFilePath = string.Empty;
+                    if (node is Function)
+                        customNodeFilePath = ((Function)node).Definition.WorkspaceModel.FileName;
+
+                    var workspaces = dynamoViewModel.Model.Workspaces;
+
+                    if (File.Exists(customNodeFilePath))
+                    {
+                        int currentWorkspaceIndex = dynamoViewModel.CurrentWorkspaceIndex;
+
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.OpenFileCommand openFile =
+                                new DynamoViewModel.OpenFileCommand(customNodeFilePath);
+                            dynamoViewModel.ExecuteCommand(openFile);
+                            Thread.Sleep(100);
+                        }));
+
+                        List<NodeModel> nodesInCustomNodeBeforeMutation = workspaces.FirstOrDefault(t => t.Name == ((Function)node).Definition.WorkspaceModel.Name).Nodes.ToList();
+                        Dictionary<Guid, String> customNodeStructureBeforeMutation = GetDictionaryOfConnectedNodes(nodesInCustomNodeBeforeMutation);
+
+                        List<AbstractMutator> mutators = new List<AbstractMutator>()
+                        {
+                            new CustomNodeMutator(dynamoViewModel, currentWorkspaceIndex, rand)
+                        };
+                        AbstractMutator mutator = mutators[rand.Next(mutators.Count)];
+                        int numberOfUndosNeeded = mutator.Mutate();
+                        Thread.Sleep(100);
+
+                        writer.WriteLine("### - Beginning undo");
+                        for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+                        {
+                            dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                            {
+                                DynamoViewModel.UndoRedoCommand undoCommand =
+                                    new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                dynamoViewModel.ExecuteCommand(undoCommand);
+                            }));
+                            Thread.Sleep(100);
+                        }
+                        writer.WriteLine("### - undo complete");
+                        writer.Flush();
+
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel =
+                                new DynamoViewModel.RunCancelCommand(false, false);
+
+                            dynamoViewModel.ExecuteCommand(runCancel);
+                        }));
+                        while (dynamoViewModel.Model.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.SwitchTabCommand switchCmd =
+                                new DynamoViewModel.SwitchTabCommand(currentWorkspaceIndex);
+
+                            dynamoViewModel.ExecuteCommand(switchCmd);
+                            Thread.Sleep(100);
+                        }));
+
+                        List<NodeModel> nodesInCustomNodeAfterMutation = workspaces.FirstOrDefault(t => t.Name == ((Function)node).Definition.WorkspaceModel.Name).Nodes.ToList();
+                        Dictionary<Guid, String> customNodeStructureAfterMutation = GetDictionaryOfConnectedNodes(nodesInCustomNodeAfterMutation);
+
+                        writer.WriteLine("### - Beginning test of CustomNode structure");
+                        if (customNodeStructureBeforeMutation.Count == customNodeStructureAfterMutation.Count)
+                        {
+                            foreach (var item in customNodeStructureAfterMutation)
+                            {
+                                if (item.Value != customNodeStructureBeforeMutation[item.Key])
+                                {
+                                    writer.WriteLine("!!!!!!!!!!! - test of CustomNode structure is failed");
+                                    writer.Flush();
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteLine("!!!!!!!!!!! - test of CustomNode structure is failed");
+                            writer.Flush();
+                            return;
+                        }
+
+                        writer.WriteLine("### - Beginning test of CustomNode");
+                        if (node.OutPorts.Count > 0)
+                        {
+                            try
+                            {
+                                NodeModel nodeAfterUndo = workspaces.FirstOrDefault(t => t.GetType() == node.Workspace.GetType()).Nodes.ToList().FirstOrDefault(t => t.GUID == node.GUID);
+
+                                if (nodeAfterUndo == null)
+                                {
+                                    writer.WriteLine("!!!!!!!!!!! - test of CustomNode is failed");
+                                    writer.Flush();
+                                    return;
+                                }
+
+                                List<ConnectorModel> firstNodeConnectorsAfterUndo = nodeAfterUndo.AllConnectors.ToList();
+
+                                foreach (ConnectorModel connector in firstNodeConnectorsAfterUndo)
+                                {
+                                    if (connector.End.Owner.GUID != node.GUID)
+                                    {
+                                        Object data = connector.Start.Owner.GetValue(0).Data;
+                                        String nodeVal = data != null ? data.ToString() : "null";
+
+                                        if (valueMap[connector.Start.Owner.GUID] != nodeVal)
+                                        {
+                                            writer.WriteLine("!!!!!!!!!!! - test of CustomNode is failed");
+                                            writer.WriteLine(node.GUID);
+
+                                            writer.WriteLine("Was: " + nodeVal);
+                                            writer.WriteLine("Should have been: " + valueMap[connector.End.Owner.GUID]);
+                                            writer.Flush();
+                                            return;
+
+                                            Debug.WriteLine("==========> Failure on run: " + i);
+                                            Debug.WriteLine("Lookup map failed to agree");
+                                            Validity.Assert(false);
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                writer.WriteLine("!!!!!!!!!!! - test of CustomNode is failed");
+                                writer.Flush();
+                                return;
+                            }
+                        }
+
+                        writer.WriteLine("### - test of CustomNode complete");
+                        writer.Flush();
+                    }
+                    passed = true;
+                }
+            }
+            finally
+            {
+                dynamoViewModel.Model.Logger.Log("CustomNodeTest : " + (passed ? "pass" : "FAIL"));
             }
         }
 
@@ -2221,7 +2427,7 @@ namespace Dynamo.TestInfrastructure
                     }
                     catch (Exception e)
                     {
-                        dynSettings.DynamoLogger.Log(e);
+                        dynamoViewModel.Model.Logger.Log(e);
                     }
                 }
             }
@@ -2234,8 +2440,7 @@ namespace Dynamo.TestInfrastructure
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
-            var controller = dynSettings.Controller;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
+            var searchViewModel = dynamoViewModel.Model.SearchModel;
 
             List<Type> types = new List<Type>();
 
@@ -2265,12 +2470,12 @@ namespace Dynamo.TestInfrastructure
                             }
                         }
 
-                        if (!DynamoLoader.IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
+                        if (!dynamoViewModel.Model.Loader.IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                             continue;
 
                         //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
                         //if available, to discern whether we should load this type
-                        if (!controller.Context.Equals(Context.NONE))
+                        if (!dynamoViewModel.Model.Context.Equals(Context.NONE))
                         {
 
                             object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
@@ -2281,7 +2486,7 @@ namespace Dynamo.TestInfrastructure
                                 //if the attribute's values contain the context stored on the controller
                                 //then skip loading this type.
 
-                                if (exclusions.Reverse().Any(e => e.Contains(controller.Context)))
+                                if (exclusions.Reverse().Any(e => e.Contains(dynamoViewModel.Model.Context)))
                                     continue;
 
                                 //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
@@ -2321,18 +2526,40 @@ namespace Dynamo.TestInfrastructure
                     }
                     catch (Exception e)
                     {
-                        dynSettings.DynamoLogger.Log(e);
+                        dynamoViewModel.Model.Logger.Log(e);
                     }
 
                 }
             }
             catch (Exception e)
             {
-                dynSettings.DynamoLogger.Log("Could not load types.");
-                dynSettings.DynamoLogger.Log(e);
+                dynamoViewModel.Model.Logger.Log("Could not load types.");
+                dynamoViewModel.Model.Logger.Log(e);
             }
 
             return types;
+        }
+
+        private Dictionary<Guid, String> GetDictionaryOfConnectedNodes(List<NodeModel> list)
+        {
+            Dictionary<Guid, String> dictionary = new Dictionary<Guid, string>();
+            foreach (NodeModel node in list)
+            {
+                List<ConnectorModel> nodeConnectors = node.AllConnectors.ToList();
+                string connectorGuids = string.Empty;
+
+                foreach (ConnectorModel connector in nodeConnectors)
+                {
+                    if (connector.Start.Owner.GUID != node.GUID)
+                        connectorGuids += connector.Start.Owner.GUID.ToString() + "_";
+
+                    else if (connector.End.Owner.GUID != node.GUID)
+                        connectorGuids += connector.End.Owner.GUID.ToString() + "_";
+
+                }
+                dictionary.Add(node.GUID, connectorGuids);
+            }
+            return dictionary;
         }
 
         #endregion

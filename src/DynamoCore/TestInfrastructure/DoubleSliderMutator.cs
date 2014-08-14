@@ -12,8 +12,8 @@ namespace Dynamo.TestInfrastructure
 {
     class DoubleSliderMutator : AbstractMutator
     {
-        public DoubleSliderMutator(Random rand)
-            : base(rand)
+        public DoubleSliderMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
 
         }
@@ -48,7 +48,7 @@ namespace Dynamo.TestInfrastructure
             {
                 string value = (min + (max - min) * Rand.NextDouble()).ToString();
 
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoViewModel.UpdateModelValueCommand updateValue =
                         new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", value);

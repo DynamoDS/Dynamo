@@ -14,8 +14,8 @@ namespace Dynamo.TestInfrastructure
 {
     class NumberSequenceMutator : AbstractMutator
     {
-        public NumberSequenceMutator(Random rand)
-            : base(rand)
+        public NumberSequenceMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
 
         }
@@ -40,7 +40,7 @@ namespace Dynamo.TestInfrastructure
 
             foreach (NodeModel n in nodes)
             {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     //create commands
                     DynamoViewModel.MakeConnectionCommand connToStart1 =

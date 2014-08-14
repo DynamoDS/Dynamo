@@ -10,8 +10,8 @@ namespace Dynamo.TestInfrastructure
 {
     class NumberInputMutator : AbstractMutator
     {
-        public NumberInputMutator(Random rand)
-            : base(rand)
+        public NumberInputMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
 
         }
@@ -26,7 +26,7 @@ namespace Dynamo.TestInfrastructure
 
             string value = Rand.Next(100).ToString();
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoViewModel.UpdateModelValueCommand updateValue =
                     new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", value);

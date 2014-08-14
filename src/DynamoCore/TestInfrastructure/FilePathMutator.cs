@@ -11,8 +11,8 @@ namespace Dynamo.TestInfrastructure
 {
     class FilePathMutator : AbstractMutator
     {
-        public FilePathMutator(Random rand)
-            : base(rand)
+        public FilePathMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
 
         }
@@ -36,7 +36,7 @@ namespace Dynamo.TestInfrastructure
 
             NodeModel node = nodes[Rand.Next(nodes.Count)];
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoViewModel.UpdateModelValueCommand updateValue =
                     new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", assemblyPath);

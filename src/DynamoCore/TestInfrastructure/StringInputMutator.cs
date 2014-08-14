@@ -10,8 +10,8 @@ namespace Dynamo.TestInfrastructure
 {
     class StringInputMutator : AbstractMutator
     {
-        public StringInputMutator(Random rand)
-            : base(rand)
+        public StringInputMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
 
         }
@@ -28,7 +28,7 @@ namespace Dynamo.TestInfrastructure
             Random random = new Random();
             string value = new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoViewModel.UpdateModelValueCommand updateValue =
                     new DynamoViewModel.UpdateModelValueCommand(node.GUID, "Value", value);

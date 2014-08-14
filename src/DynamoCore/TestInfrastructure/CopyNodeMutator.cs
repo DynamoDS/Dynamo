@@ -13,8 +13,8 @@ namespace Dynamo.TestInfrastructure
 {
     class CopyNodeMutator : AbstractMutator
     {
-        public CopyNodeMutator(Random rand)
-            : base(rand)
+        public CopyNodeMutator(DynamoViewModel viewModel, Random rand)
+            : base(viewModel, rand)
         {
 
         }
@@ -28,7 +28,7 @@ namespace Dynamo.TestInfrastructure
 
             NodeModel node = nodes[Rand.Next(nodes.Count)];
 
-            dynSettings.Controller.UIDispatcher.Invoke(new Action(() =>
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoViewModel.SelectModelCommand selectNodeCommand =
                     new DynamoViewModel.SelectModelCommand(node.GUID, ModifierKeys.None);
