@@ -13,6 +13,8 @@ using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 
@@ -21,6 +23,8 @@ namespace UnitsUI
     public abstract class MeasurementInputBase : NodeModel, IWpfNode
     {
         protected SIUnit _measure;
+
+        protected MeasurementInputBase(WorkspaceModel workspaceModel) : base(workspaceModel) { }
 
         public double Value
         {
@@ -74,6 +78,9 @@ namespace UnitsUI
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
+
+            
+
             //add an edit window option to the 
             //main context window
             var editWindowItem = new System.Windows.Controls.MenuItem();
@@ -105,7 +112,7 @@ namespace UnitsUI
 
             tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
 
-            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            (nodeUI.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -156,7 +163,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
-        public LengthFromString()
+        public LengthFromString(WorkspaceModel ws) : base(ws)
         {
             _measure = Length.FromDouble(0.0);
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
@@ -196,7 +203,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
     {
-        public AreaFromString()
+        public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
         {
             _measure = Area.FromDouble(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
@@ -218,7 +225,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
     {
-        public VolumeFromString()
+        public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             _measure = Volume.FromDouble(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));

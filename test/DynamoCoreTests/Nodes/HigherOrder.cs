@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    public class HigherOrder : DSEvaluationUnitTest
+    public class HigherOrder : DSEvaluationViewModelUnitTest
     {
         string TestFolder { get { return GetTestDirectory(); } }
 

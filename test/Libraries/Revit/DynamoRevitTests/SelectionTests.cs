@@ -21,12 +21,12 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             //open the test file
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
             //first assert that we have only one node
-            var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
+            var nodeCount = ViewModel.Model.Nodes.Count;
             Assert.AreEqual(1, nodeCount);
 
             //assert that we have the right number of family symbols
@@ -42,7 +42,7 @@ namespace Dynamo.Tests
                 }
             }
 
-            FamilyTypes typeSelNode = (FamilyTypes)dynSettings.Controller.DynamoModel.Nodes.First();
+            FamilyTypes typeSelNode = (FamilyTypes)ViewModel.Model.Nodes.First();
             Assert.AreEqual(typeSelNode.Items.Count, count);
 
             //assert that the selected index is correct
@@ -58,17 +58,17 @@ namespace Dynamo.Tests
         [TestModel(@".\Selection\Selection.rfa")]
         public void AllSelectionNodes()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             string samplePath = Path.Combine(_testPath, @".\Selection\Selection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             //open the test file
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            ViewModel.OpenCommand.Execute(testPath);
 
             AssertNoDummyNodes();
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             var selNodes = model.AllNodes.Where(x => x is DSElementSelection || x is DSModelElementsSelection);
             Assert.IsFalse(selNodes.Any(x => x.CachedValue == null));

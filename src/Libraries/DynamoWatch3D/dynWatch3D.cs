@@ -46,8 +46,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                var dvm = dynSettings.Controller.DynamoViewModel;
-                return dvm.ToggleCanNavigateBackgroundCommand;
+                return this.DynamoViewModel.ToggleCanNavigateBackgroundCommand;
             }
         }
 
@@ -69,7 +68,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public Watch3D()
+        public Watch3D(WorkspaceModel workspace) : base(workspace)
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
@@ -96,10 +95,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        private static RenderPackage PackageRenderData(IGraphicItem gItem)
+        private RenderPackage PackageRenderData(IGraphicItem gItem)
         {
             var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
+            gItem.Tessellate(renderPackage, -1.0, this.DynamoViewModel.VisualizationManager.MaxTesselationDivisions);
             renderPackage.ItemsCount++;
             return renderPackage;
         }
@@ -112,6 +111,8 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            this.DynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;
 
@@ -220,13 +221,13 @@ namespace Dynamo.Nodes
             }
             catch(Exception ex)
             {
-                dynSettings.DynamoLogger.Log(ex);
-                dynSettings.DynamoLogger.Log("View attributes could not be read from the file.");
+                this.Workspace.DynamoModel.Logger.Log(ex);
+                this.Workspace.DynamoModel.Logger.Log("View attributes could not be read from the file.");
             }
             
         }
 
-        public override void UpdateRenderPackage()
+        public override void UpdateRenderPackage(int maxTessDivisions)
         {
             //do nothing
             //a watch should not draw its outputs
@@ -272,7 +273,7 @@ namespace Dynamo.Nodes
         public void GetBranchVisualization(object parameters)
         {
             var taskId = (long)parameters;
-            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
+            this.DynamoViewModel.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -303,9 +304,8 @@ namespace Dynamo.Nodes
 
         private void CheckForLatestRender(object obj)
         {
-            dynSettings.Controller.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
+            this.DynamoViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
-
 
         #endregion
 
@@ -313,5 +313,7 @@ namespace Dynamo.Nodes
         {
             return false; // Previews are not shown for this node type.
         }
+
+        public DynamoViewModel DynamoViewModel { get; set; }
     }
 }

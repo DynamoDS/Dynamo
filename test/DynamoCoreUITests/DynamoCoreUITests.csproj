@@ -71,7 +71,7 @@
   <ItemGroup>
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
-    <Compile Include="DynamoTestUI.cs" />
+    <Compile Include="DynamoTestUIBase.cs" />
     <Compile Include="PackageManagerUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordedTests.cs" />

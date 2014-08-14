@@ -28,7 +28,8 @@ copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\FunctionObject.ds %cwd%\
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\DSCoreNodes_DynamoCustomization.xml %cwd%\temp\bin\DSCoreNodes_DynamoCustomization.xml
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCustomization.xml %cwd%\temp\bin\ProtoGeometry_DynamoCustomization.xml
 
-robocopy %cwd%\..\..\extern\LibG %cwd%\temp\bin\LibG
+robocopy %cwd%\..\..\extern\LibG_219 %cwd%\temp\bin\LibG_219
+robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 
 robocopy %cwd%\..\..\ %cwd%\Extra README.md
 cd %cwd%\Extra
@@ -41,6 +42,5 @@ robocopy %cwd%\..\..\doc\distrib\dynamo_packages %cwd%\temp\dynamo_packages /e
 robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
 robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 
-"C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoASM.iss
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
 rmdir /Q /S %cwd%\temp

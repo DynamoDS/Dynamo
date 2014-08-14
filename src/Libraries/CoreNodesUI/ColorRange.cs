@@ -28,7 +28,8 @@ namespace DSCoreNodesUI
                 RequestChangeColorRange(sender, e);
         }
 
-        public ColorRange()
+        public ColorRange(WorkspaceModel workspace)
+            : base(workspace)
         {
             InPortData.Add(new PortData("start", "The start color."));
             InPortData.Add(new PortData("end", "The end color."));
@@ -71,6 +72,8 @@ namespace DSCoreNodesUI
                 Height = 200
             };
 
+            var dm = this.Workspace.DynamoModel;
+
             view.inputGrid.Children.Add(drawPlane);
 
             RequestChangeColorRange += delegate
@@ -85,8 +88,8 @@ namespace DSCoreNodesUI
                     var startId = colorStartNode.GetAstIdentifierForOutputIndex(startIndex).Name;
                     var endId = colorEndNode.GetAstIdentifierForOutputIndex(endIndex).Name;
 
-                    var startMirror = dynSettings.Controller.EngineController.GetMirror(startId);
-                    var endMirror = dynSettings.Controller.EngineController.GetMirror(endId);
+                    var startMirror = dm.EngineController.GetMirror(startId);
+                    var endMirror = dm.EngineController.GetMirror(endId);
 
                     object start = null;
                     object end = null;

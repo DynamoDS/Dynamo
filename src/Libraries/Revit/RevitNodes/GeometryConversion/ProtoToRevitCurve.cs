@@ -91,13 +91,13 @@ namespace Revit.GeometryConversion
             {
                 // TODO: general NURBS degree elevation
                 var numSamples = crv.ControlPoints().Count() + 1;
-                var pts = Enumerable.Range(0, numSamples).Select(x => x/(double)numSamples)
+                var pts = Enumerable.Range(0, numSamples+1).Select(x => x/(double)numSamples)
                     .Select(crv.PointAtParameter);
 
-                var resampledCrv = NurbsCurve.ByPointsTangents(
-                    pts,
-                    crv.TangentAtParameter(0).Normalized(),
-                    crv.TangentAtParameter(1).Normalized());
+                var tstart = crv.TangentAtParameter(0);
+                var tend = crv.TangentAtParameter(1);
+
+                var resampledCrv = NurbsCurve.ByPointsTangents( pts, tstart.Normalized(), tend.Normalized());
 
                 return Autodesk.Revit.DB.NurbSpline.Create(resampledCrv.ControlPoints().ToXyzs(false),
                     resampledCrv.Weights(),
