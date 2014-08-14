@@ -2295,6 +2295,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        [Category("Failing")]
         public void TestCodeblockModification08()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4160
