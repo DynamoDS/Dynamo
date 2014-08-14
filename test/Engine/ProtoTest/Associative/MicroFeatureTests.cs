@@ -2212,7 +2212,6 @@ ss[0] = 'x';
 m = ss;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.SetErrorMessage("1467274 - Sprint26: rev3611: type conversion checking through two paths");
             thisTest.Verify("r1", "ab3");
             thisTest.Verify("r2", "abfalse");
             thisTest.Verify("r4", false);
