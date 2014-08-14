@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.DocTests
 {
-    class UserManualTests
+    public class UserManualTests
     {
         readonly TestFrameWork thisTest = new TestFrameWork();
         [SetUp]
@@ -22,7 +22,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM02_Point()
         {
             string code =
@@ -34,7 +34,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM03_Point()
         {
             string code =
@@ -43,7 +43,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM04_Line()
         {
             string code =
@@ -52,7 +52,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM05_SurfaceLoft()
         {
             string code =
@@ -61,7 +61,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM06_SurfaceThicken()
         {
             string code =
@@ -70,7 +70,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM07_SolidPlaneIntersect()
         {
             string code =
@@ -79,7 +79,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM08_CoordinateSystem()
         {
             string code =
@@ -88,7 +88,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM09_PointOnCylinderShere()
         {
             string code =
@@ -97,7 +97,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM10_Line()
         {
             string code =
@@ -106,7 +106,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM11_Solids()
         {
             string code =
@@ -115,7 +115,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM11_LineColor()
         {
             string code =
@@ -124,7 +124,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM12_Vector()
         {
             string code =
@@ -133,7 +133,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM13_Vector()
         {
             string code =
@@ -142,7 +142,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM14_Vector()
         {
             string code =
@@ -151,7 +151,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM15_Vector()
         {
             string code =
@@ -160,7 +160,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM16_Vector()
         {
             string code =
@@ -169,7 +169,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM17_Vector()
         {
             string code =
@@ -178,7 +178,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM18_Vector()
         {
             string code =
@@ -196,7 +196,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM20_RangeLine()
         {
             string code =
@@ -245,7 +245,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM25_Collection()
         {
             string code =
@@ -254,7 +254,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM26_Collection()
         {
             string code =
@@ -339,7 +339,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM35_Associativity()
         {
             string code =
@@ -348,7 +348,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM36_Associativity()
         {
             string code =
@@ -357,7 +357,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM37_Functions()
         {
             string code =
@@ -394,7 +394,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM41_Functions()
         {
             string code =
@@ -417,7 +417,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM43_Math()
         {
             string code =
@@ -436,7 +436,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM45_Curves()
         {
             string code =
@@ -445,7 +445,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM46_Curves()
         {
             string code =
@@ -455,7 +455,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM47_Curves()
         {
             string code =
@@ -464,7 +464,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM48_Curves()
         {
             string code =
@@ -473,7 +473,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM49_Curves()
         {
             string code =
@@ -482,7 +482,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM50_Curves()
         {
             string code =
@@ -491,7 +491,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM51_IDE()
         {
             string code =
@@ -501,7 +501,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM52_IDE()
         {
             string code =
@@ -510,7 +510,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM53_Translation()
         {
             string code =
@@ -519,7 +519,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM54_Transform()
         {
             string code =
@@ -528,7 +528,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM55_Scale()
         {
             string code =
@@ -537,7 +537,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM56_ShearedCS()
         {
             string code =
@@ -546,7 +546,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM57_Imperative()
         {
             string code =
@@ -555,7 +555,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM58_Associative()
         {
             string code =
@@ -564,7 +564,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM59_Boolean()
         {
             string code =
@@ -573,7 +573,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM60_Boolean()
         {
             string code =
@@ -635,7 +635,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM67_Boolean()
         {
             string code =
@@ -644,7 +644,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM68_Looping()
         {
             string code =
@@ -661,7 +661,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM70_Replication()
         {
             string code =
@@ -670,7 +670,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM71_Replication()
         {
             string code =
@@ -679,7 +679,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM72_Replication()
         {
             string code =
@@ -688,7 +688,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM73_Replication()
         {
             string code =
@@ -697,7 +697,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM74_ModifierStack()
         {
             string code =
@@ -750,7 +750,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM78_Surface()
         {
             string code =
@@ -759,7 +759,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM79_Surface()
         {
             string code =
@@ -768,7 +768,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM80_Surface()
         {
             string code =
@@ -777,7 +777,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM81_Surface()
         {
             string code =
@@ -786,7 +786,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM82_Surface()
         {
             string code =
@@ -803,7 +803,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM84_Parameterization()
         {
             string code =
@@ -812,7 +812,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM85_Intersection()
         {
             string code =
@@ -821,7 +821,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM86_Trim()
         {
             string code =
@@ -830,7 +830,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM87_SelectTrim()
         {
             string code =
@@ -840,7 +840,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM88_GeometricBoolean()
         {
             string code =
@@ -849,7 +849,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM89_GeometricBoolean()
         {
             string code =
@@ -858,7 +858,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM90_GeometricBoolean()
         {
             string code =
@@ -867,7 +867,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM91_NonManifoldSolid()
         {
             string code =
@@ -876,7 +876,7 @@ namespace ProtoTest.TD.DocTests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void UM92_NonManifoldSolid()
         {
             string code =
