@@ -1186,9 +1186,11 @@ b1 = b1.create();
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T023_Defect_1459789_7()
         {
-            string err = "1467061 - Sprint 23 : rev 2587 : Update issue : When a class instance is updated from imperative scope the update is not happening as expected in some cases";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1506
+            string err = "MAGN-1506: Update issue : When a class instance is updated from imperative scope the update is not happening as expected in some cases";
             string src = @"class A 
 {    
     a1: var;    
