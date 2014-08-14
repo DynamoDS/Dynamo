@@ -163,25 +163,25 @@ namespace Dynamo.PackageManager.UI
                     this.Items.Add(packDep);
                 }
             }
-            else if (DependencyType == DependencyType.Assembly)
-            {
-                var assems = Assembly.GetReferencedAssemblies();
-                foreach (var dep in assems)
-                {
-                    var depAss = Assembly.Load(dep);
-                    var discovered = discoveredDeps.Contains(dep);
-                    var packDep = new PackageItemInternalViewModel(depAss, this)
-                    {
-                        AlreadyDiscovered = discovered
-                    };
-                    if (!discovered)
-                    {
-                        discoveredDeps.Add(dep);
-                        packDep.BuildDependencies(discoveredDeps);
-                    }
-                    this.Items.Add(packDep);
-                }
-            }
+            //else if (DependencyType == DependencyType.Assembly)
+            //{
+            //    var assems = Assembly.GetReferencedAssemblies();
+            //    foreach (var dep in assems)
+            //    {
+            //        var depAss = Assembly.Load(dep);
+            //        var discovered = discoveredDeps.Contains(dep);
+            //        var packDep = new PackageItemInternalViewModel(depAss, this)
+            //        {
+            //            AlreadyDiscovered = discovered
+            //        };
+            //        if (!discovered)
+            //        {
+            //            discoveredDeps.Add(dep);
+            //            packDep.BuildDependencies(discoveredDeps);
+            //        }
+            //        this.Items.Add(packDep);
+            //    }
+            //}
         }
 
         public bool AlreadyDiscovered { get; set; }

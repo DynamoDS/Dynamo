@@ -105,7 +105,7 @@ namespace Dynamo.PackageManager
         /// <value>
         /// The set of dependencies  </value>
         private List<PackageItemRootViewModel> _packageContents = null;
-        public List<PackageItemRootViewModel> PackageContents
+        public IEnumerable<PackageItemRootViewModel> PackageContents
         {
             get
             {
@@ -583,7 +583,7 @@ namespace Dynamo.PackageManager
                 fDialog = new OpenFileDialog()
                 {
                     Filter = "Custom Node, DLL (*.dyf, *.dll)|*.dyf;*.dll",
-                    Title = "Add To Custom Node or Library (DLL) to Package..."
+                    Title = "Add Custom Node or Library to Package..."
                 };
             }
 
