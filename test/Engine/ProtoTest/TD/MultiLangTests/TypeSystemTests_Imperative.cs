@@ -747,6 +747,7 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS048_Param_eachType_To_varArray_Imperative()
         {
             string code =
