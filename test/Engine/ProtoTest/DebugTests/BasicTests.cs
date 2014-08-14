@@ -13887,7 +13887,6 @@ def foo(y : int)
 
         [Test]
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        [Category("Failing")]
         public void IDE_Debugger_698()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
