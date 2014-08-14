@@ -127,12 +127,12 @@
     <!-- Install the Addin files-->
     <ComponentGroup Id="REVIT_2014" Directory="ADDINS_2014">
       <Component Id="DynamoForRevit2015.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
-        <File Id="DynamoForRevit2015.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2014.addin"/>
+        <File Id="DynamoForRevit2015.addin" Name="Dynamo.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2014.addin"/>
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="REVIT_2015" Directory="ADDINS_2015">
       <Component Id="DynamoForRevit2014.addin" Guid="fde9dc0b-4b8c-46d3-9950-42c9f66b5e60">
-        <File Id="DynamoForRevit2014.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2015.addin"></File>
+        <File Id="DynamoForRevit2014.addin" Name="Dynamo.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2015.addin"></File>
       </Component>
     </ComponentGroup>
   </Fragment>
