@@ -16,8 +16,7 @@ namespace Dynamo.UI.Views
         {
             InitializeComponent();
             CreateInitialData();
-            // CategoryListView.ItemsSource = libraryData.Categories;
-            ClassListView.ItemsSource = libraryData.Categories[0].Classes;
+            CategoryListView.ItemsSource = libraryData.Categories;
         }
 
         private void CreateInitialData()

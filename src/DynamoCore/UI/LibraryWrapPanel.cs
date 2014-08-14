@@ -29,16 +29,6 @@ namespace Dynamo.Controls
         {
             if (sizeInfo.WidthChanged) // Only recorder when width changes.
                 OrderListItems();
-
-            base.OnRenderSizeChanged(sizeInfo);
-        }
-
-        protected override Size MeasureOverride(Size availableSize)
-        {
-            foreach (UIElement child in this.Children)
-                child.Measure(availableSize);
-
-            return new Size(100, 100);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
