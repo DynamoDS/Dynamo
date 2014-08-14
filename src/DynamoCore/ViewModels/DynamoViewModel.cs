@@ -472,6 +472,14 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
 
             SubscribeDispatcherHandlers();
+
+#if BLOODSTONE
+            this.VisualizationManager.RenderComplete += (sender, args) =>
+            {
+                var action = new Action(() => GetBranchVisualization(null));
+                UIDispatcher.BeginInvoke(action);
+            };
+#endif
         }
 
         #region Event handler destroy/create

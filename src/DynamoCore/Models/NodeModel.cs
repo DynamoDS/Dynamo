@@ -1545,7 +1545,7 @@ namespace Dynamo.Models
 
 #if BLOODSTONE
                 foreach (var gi in graphItems)
-                    MergeGraphicItemIntoPackage(gi, p);
+                    MergeGraphicItemIntoPackage(gi, p, maxTesselationDivisions);
 
                 newRenderPackages.Add(p);
 #else
@@ -1600,12 +1600,12 @@ namespace Dynamo.Models
             }
         }
 
-        private void MergeGraphicItemIntoPackage(IGraphicItem gi, IRenderPackage p)
+        private void MergeGraphicItemIntoPackage(IGraphicItem gi,
+            IRenderPackage p, int maxTesselationDivisions)
         {
             try
             {
-                var vm = dynSettings.Controller.VisualizationManager;
-                gi.Tessellate(p, -1.0, dynSettings.Controller.VisualizationManager.MaxTesselationDivisions);
+                gi.Tessellate(p, -1.0, maxTesselationDivisions);
             }
             catch (Exception)
             {

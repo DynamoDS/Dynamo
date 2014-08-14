@@ -195,15 +195,8 @@ namespace Dynamo
         /// <param name="e"></param>
         protected virtual void OnRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-#if BLOODSTONE
-            this.controller.UIDispatcher.Invoke(new Action(delegate
-            {
-                this.controller.DynamoViewModel.GetBranchVisualization(null);
-            }));
-#else
             if (RenderComplete != null)
                 RenderComplete(sender, e);
-#endif
         }
 
         /// <summary>

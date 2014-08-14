@@ -389,7 +389,7 @@ namespace Dynamo.Controls
             var renderModes = new Dictionary<string, RenderMode>();
             var nodeColors = new Dictionary<string, Dynamo.Bloodstone.NodeColor>();
 
-            foreach (var node in this._vm.Model.Nodes)
+            foreach (var node in dynamoViewModel.Model.Nodes)
             {
                 var nodeId = node.GUID.ToString();
                 renderModes.Add(nodeId, node.RenderStyle);
