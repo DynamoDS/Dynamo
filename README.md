@@ -4,7 +4,7 @@ Dynamo is a Visual Programming language that aims to be accessible to both non-p
 
 ## Get Dynamo ##
 
-If you're looking to learn or download Dynamo, head to [dynamobim.org](http://dynamobim.org/learn/)
+Looking to learn or download Dynamo?  Checkout [dynamobim.org](http://dynamobim.org/learn/)!
 
 
 ## Build ###
