@@ -113,14 +113,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="images.resx" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(DevEnvDir)..\Tools\vsvars32.bat"
-resgen /usesourcepath $(ProjectDir)images.resx $(ProjectDir)images.resources
-al /target:lib /embed:$(ProjectDir)images.resources /out:$(TargetDir)..\$(TargetName).resources.dll</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

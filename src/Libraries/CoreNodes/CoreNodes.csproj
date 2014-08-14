@@ -29,7 +29,6 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\bin\AnyCPU\Debug\DSCoreNodes.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -99,19 +98,9 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="images.resx">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>call "$(DevEnvDir)..\Tools\vsvars32.bat"
-resgen /usesourcepath $(ProjectDir)images.resx $(ProjectDir)images.resources
-al /target:lib /embed:$(ProjectDir)images.resources /out:$(OutDir)$(TargetName).resources.dll</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -9,15 +9,6 @@ using Dynamo.ViewModels;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Media.Imaging;
-using System.Resources;
-using System.Collections;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -26,8 +17,7 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
-        private static Dictionary<string, BitmapImage> _cachedIcons =
-               new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+        
 
         #region Properties
 
@@ -78,9 +68,6 @@ namespace Dynamo.Search.SearchElements
         private string _outputParametrs;
         public string OutputParametrs { get { return _outputParametrs; } }
 
-		private BitmapImage _smallIcon;
-        public BitmapImage SmallIcon { get { return _smallIcon ?? (_smallIcon = GetSmallIcon(this)); } }
-		
         private bool _searchable = true;
         public override bool Searchable { get { return _searchable; } }
 
@@ -116,9 +103,6 @@ namespace Dynamo.Search.SearchElements
         }
         #endregion
 
-        private string _assembly;
-        private string smallIconPostfix = ".Small";
-
         /// <summary>
         ///     The class constructor - use this constructor for built-in types\
         ///     that are not yet loaded.
@@ -127,7 +111,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", string assembly="", IEnumerable<Tuple<string, string>> inputParametrs = null, string outputParametrs = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", IEnumerable<Tuple<string, string>> inputParametrs = null, string outputParametrs = "")
         {
             this.Node = null;
             this._name = name;
@@ -138,12 +122,11 @@ namespace Dynamo.Search.SearchElements
             this._fullName = fullName;
             this._inputParametrs = inputParametrs;
             this._outputParametrs = outputParametrs;
-            this._assembly = assembly;
         }
 
         public virtual NodeSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._fullName,"", this._inputParametrs, this._outputParametrs);
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._fullName, this._inputParametrs, this._outputParametrs);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }
@@ -201,75 +184,6 @@ namespace Dynamo.Search.SearchElements
         {
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
-
-        private BitmapImage GetSmallIcon(NodeSearchElement member)
-        {
-            var resourceAssemblyPath = "";
-
-            if (_cachedIcons.ContainsKey(member._fullName))
-                return _cachedIcons[member._fullName];
-
-            if (!string.IsNullOrEmpty(member._assembly))
-                if (ResolveResourceAssembly(member._assembly, ref resourceAssemblyPath))
-                {
-                    System.Reflection.Assembly resourcesAssembly = System.Reflection.Assembly.LoadFrom(resourceAssemblyPath);
-
-                    System.IO.Stream stream =
-                        resourcesAssembly.GetManifestResourceStream
-                        (resourcesAssembly.GetManifestResourceNames()[0]);
-
-                    if (stream != null)
-                    {
-
-                        ResourceReader resReader = new ResourceReader(stream);
-                        Dictionary<string, object> data = resReader
-                                    .OfType<DictionaryEntry>()
-                                    .Select(i => new { Key = i.Key.ToString(), value = i.Value })
-                                    .ToDictionary(i => i.Key, i => i.value);
-
-                        foreach (var item in data)
-                        {
-                            MemoryStream memory = new MemoryStream();
-                            Bitmap bitmap;
-                            BitmapImage bitmapImage = new BitmapImage();
-                            if (item.Value != null)
-                            {
-                                bitmap = item.Value as Bitmap;
-                                bitmap.Save(memory, ImageFormat.Png);
-                                memory.Position = 0;
-                                bitmapImage.BeginInit();
-                                bitmapImage.StreamSource = memory;
-                                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                                bitmapImage.EndInit();
-                            }
-                            if (!_cachedIcons.ContainsKey(item.Key))
-                                _cachedIcons.Add(item.Key, bitmapImage);
-                        }
-                        if (_cachedIcons.ContainsKey(String.Concat(member._fullName, smallIconPostfix)))
-                            return _cachedIcons[String.Concat(member._fullName, smallIconPostfix)];
-
-
-                    }
-                    return null;
-                }
-            return null;
-        }
-
-        public static bool ResolveResourceAssembly(string assemblyLocation, ref string resourceAssemblyPath)
-        {
-
-
-            var qualifiedPath = Path.GetFullPath(assemblyLocation);
-            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
-            var dir = Path.GetDirectoryName(qualifiedPath);
-
-            fn = fn + ".resources.dll";
-
-            resourceAssemblyPath = Path.Combine(dir, fn);
-
-            return File.Exists(resourceAssemblyPath);
-        }
-
     }
 
 }
