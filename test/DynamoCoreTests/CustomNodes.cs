@@ -51,7 +51,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -72,8 +72,8 @@ namespace Dynamo.Tests
             var valuePostCollapse = watchNode.CachedValue;
 
             // Ensure the values are equal and both 65.
-            var svPreCollapse = ((long)valuePreCollapse);
-            var svPostCollapse = ((long)valuePostCollapse);
+            var svPreCollapse = (valuePreCollapse);
+            var svPostCollapse = (valuePostCollapse);
             Assert.AreEqual(65, svPreCollapse);
             Assert.AreEqual(svPreCollapse, svPostCollapse);
         }
@@ -101,7 +101,7 @@ namespace Dynamo.Tests
             model.AddToSelection(minNode);
             model.AddToSelection(numNode);
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -144,7 +144,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -212,7 +212,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
             Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 selectionSet.AsEnumerable(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -313,7 +313,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                  DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
                     .Select(x => (x as NodeModel)),
                     model.CurrentWorkspace,

@@ -53,6 +53,20 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Create a NodeModel with a given type as the method generic parameter
+        /// </summary>
+        /// <returns> The newly instantiated NodeModel with a new guid</returns>
+        internal T CreateNodeInstance<T>() where T : NodeModel
+        {
+            var node = this.GetNodeModelInstanceByType(typeof(T)) as T;
+            if (node == null) return node;
+
+            node.GUID = Guid.NewGuid();
+
+            return node;
+        }
+
+        /// <summary>
         ///     Create a NodeModel from a type object
         /// </summary>
         /// <param name="elementType"> The Type object from which the node can be activated </param>

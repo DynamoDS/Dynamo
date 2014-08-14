@@ -54,7 +54,7 @@ namespace Dynamo.Models
 
         #region public members
 
-        public WorkspaceModel Workspace { get; private set; }
+        public WorkspaceModel Workspace { get; internal set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
