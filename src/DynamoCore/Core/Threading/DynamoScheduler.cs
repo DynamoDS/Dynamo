@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Dynamo.Core.Threading
 {
@@ -10,6 +11,24 @@ namespace Dynamo.Core.Threading
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
         internal TimeStamp NextTimeStamp { get { return generator.Next; } }
+
+        /// <summary>
+        /// Callers of this method create an instance of AsyncTask derived 
+        /// class and call this method to schedule the task for execution.
+        /// </summary>
+        /// <param name="asyncTask">The task to execute asynchronously.</param>
+        /// 
+        internal void ScheduleForExecution(AsyncTask asyncTask)
+        {
+            lock (taskQueue)
+            {
+                taskQueue.Add(asyncTask); // Append new task to the end
+
+                // Mark the queue as being updated. This causes the next call
+                // to "ProcessNextTask" method to post process the task queue.
+                taskQueueUpdated = true;
+            }
+        }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 
