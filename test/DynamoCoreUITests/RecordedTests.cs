@@ -72,15 +72,13 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void _SnowPeashooter()
         {
-            //RunCommandsFromFile("SnowPeashooter.xml");
+            RunCommandsFromFile("SnowPeashooter.xml");
 
-            //Assert.AreEqual(1, workspace.Nodes.Count);
-            //Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
 
-            //var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
-            //Assert.AreEqual("12.34", number.Value);
-
-            Assert.Inconclusive("Porting : DoubleInput");
+            var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual("12.34", number.Value);
         }
 
         [Test, RequiresSTA]
