@@ -576,6 +576,9 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_01()
         {
             ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
@@ -613,6 +616,9 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_02()
         {
             ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
