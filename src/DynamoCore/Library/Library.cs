@@ -126,7 +126,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
-        private BitmapImage smallIcon;        
+        private BitmapImage smallIcon;
 
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
             : this(null, null, name, parameters, null, type)
@@ -433,12 +433,8 @@ namespace Dynamo.DSEngine
                 return null;
 
             LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
-
-            if (cust != null)
-                return cust.GetSmallIcon(member);
-            else
-                return null;            
-        }        
+            return (cust != null) ? cust.GetSmallIcon(member) : null;
+        }
     }
 
     /// <summary>

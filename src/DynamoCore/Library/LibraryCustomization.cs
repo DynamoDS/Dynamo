@@ -79,17 +79,25 @@ namespace Dynamo.DSEngine
 
     public class LibraryCustomization
     {
-        private Assembly assembly;
         private XDocument XmlDocument;
 
+        // resourcesReader is a storage of our icons.
+        private ResourceReader resourcesReader;
         private Dictionary<string, BitmapImage> cachedIcons;
 
         internal LibraryCustomization(Assembly assembly, XDocument document)
         {
-            this.assembly = assembly;
             this.XmlDocument = document;
 
             cachedIcons = new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+
+            Stream stream =
+                assembly.GetManifestResourceStream(assembly.GetManifestResourceNames()[0]);
+
+            if (stream == null)
+                return;
+            
+            resourcesReader = new ResourceReader(stream);
         }
 
         public string GetNamespaceCategory(string namespaceName)
@@ -112,58 +120,46 @@ namespace Dynamo.DSEngine
         internal BitmapImage GetSmallIcon(FunctionDescriptor descriptor)
         {
             string iconKey = descriptor.QualifiedName + Configurations.SmallIconPostfix;
-            return LoadIconIntenral(iconKey);
+            return LoadIconInternal(iconKey);
         }
 
         internal BitmapImage GetLargeIcon(FunctionDescriptor descriptor)
         {
             string iconKey = descriptor.QualifiedName + Configurations.LargeIconPostfix;
-            return LoadIconIntenral(iconKey);
+            return LoadIconInternal(iconKey);
         }
 
-        private BitmapImage LoadIconIntenral(string iconKey)
+        private BitmapImage LoadIconInternal(string iconKey)
         {
             if (cachedIcons.ContainsKey(iconKey))
                 return cachedIcons[iconKey];
 
-            Stream stream =
-                assembly.GetManifestResourceStream(assembly.GetManifestResourceNames()[0]);
-
-            if (stream == null)
+            if (resourcesReader == null)
                 return null;
-
-            // resReader is a storage of our icons.
-            ResourceReader resReader = new ResourceReader(stream);
 
             // Gets all images from resReader where they are saved as DictionaryEntries and
             // choose one of them with correct key.
-            DictionaryEntry iconData = resReader
+            DictionaryEntry iconData = resourcesReader
                 .OfType<DictionaryEntry>()
                 .Where(i => i.Key.ToString() == iconKey).FirstOrDefault();
 
-            if (iconData.Key == null)
+            if (iconData.Key == null || iconData.Value == null)
                 return null;
 
             MemoryStream memory = new MemoryStream();
             Bitmap bitmap;
             BitmapImage bitmapImage = new BitmapImage();
-            if (iconData.Value != null)
-            {
-                bitmap = iconData.Value as Bitmap;
-                bitmap.Save(memory, ImageFormat.Png);
-                memory.Position = 0;
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-            }
+            bitmap = iconData.Value as Bitmap;
+            bitmap.Save(memory, ImageFormat.Png);
+            memory.Position = 0;
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memory;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
 
             cachedIcons.Add(iconKey, bitmapImage);
 
-            if (cachedIcons.ContainsKey(iconKey))
-                return cachedIcons[iconKey];
-            else
-                return null;
+            return bitmapImage;
         }
     }
 }
