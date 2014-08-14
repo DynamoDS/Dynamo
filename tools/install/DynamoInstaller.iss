@@ -4,7 +4,7 @@
 AppName=Dynamo
 AppVerName=Dynamo 0.7.1
 AppPublisher=Dynamo
-AppID={6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
+AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
