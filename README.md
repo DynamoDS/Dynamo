@@ -14,11 +14,7 @@ You'll need Visual Studio and a git client to build Dynamo.  Find more about how
 
 ## Contribute ##
 
-Dynamo is an open-source project and would be nothing without its community.  
-
-You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues)
-
-You can submit your own code to the Dynamo project via a Github [pull request](https://help.github.com/articles/using-pull-requests).  
+Dynamo is an open-source project and would be nothing without its community.  You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues).  You can submit your own code to the Dynamo project via a Github [pull request](https://help.github.com/articles/using-pull-requests).  
 
 
 ## Releases ##
