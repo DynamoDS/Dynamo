@@ -108,6 +108,7 @@ namespace Dynamo.Models
         {
             get
             {
+                //TODO: remove loading image from defined path
                 string startupPath = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName).FullName;
                 MemoryStream memory = new MemoryStream();
                 Bitmap bitmap = new Bitmap(startupPath + @"\src\DynamoCore\Resources\Icons\Saturation.png");
@@ -120,7 +121,6 @@ namespace Dynamo.Models
                 bitmapImage.EndInit();
                 return bitmapImage;
             }
-            set { }
         }
 
         public Visibility SPVisibility { get; private set; }
@@ -148,14 +148,27 @@ namespace Dynamo.Models
         internal ClassDetails()
         {
             // Class details is by default hidden.
-            ClassDetailsVisibility = Visibility.Hidden;
+            ClassDetailsVisibility = false;
         }
 
-        public Visibility ClassDetailsVisibility { get; set; }
+        public bool ClassDetailsVisibility { get; set; }
 
-        public ObservableCollection<ClassMember> CreateMembers { get; set; }
-        public ObservableCollection<ClassMember> ActionMembers { get; set; }
-        public ObservableCollection<ClassMember> QueryMembers { get; set; }
+        public ObservableCollection<ClassMember> CreateMembers { get; private set; }
+        public ObservableCollection<ClassMember> ActionMembers { get; private set; }
+        public ObservableCollection<ClassMember> QueryMembers { get; private set; }
+
+        public void AddCreateMembers(ObservableCollection<ClassMember> members)
+        {
+            this.CreateMembers = members;
+        }
+        public void AddActionMembers(ObservableCollection<ClassMember> members)
+        {
+            this.ActionMembers = members;
+        }
+        public void AddQueryMembers(ObservableCollection<ClassMember> members)
+        {
+            this.QueryMembers = members;
+        }
     }
 
     public class ClassMember
@@ -171,6 +184,7 @@ namespace Dynamo.Models
         {
             get
             {
+                //TODO: remove loading image from defined path, use LibraryCustomizationServices
                 string startupPath = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName).FullName;
                 MemoryStream memory = new MemoryStream();
                 Bitmap bitmap = new Bitmap(startupPath + @"\src\DynamoCore\Resources\Icons\Hue.png");

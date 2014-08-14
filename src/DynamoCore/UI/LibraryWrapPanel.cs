@@ -102,17 +102,17 @@ namespace Dynamo.Controls
             var classDetails = classObjectBase as ClassDetails;
             if (classDetails != null && (selectedItemIndex == -1))
             {
-                classDetails.ClassDetailsVisibility = Visibility.Collapsed;
+                classDetails.ClassDetailsVisibility = false;
                 return;
             }
 
             // Otherwise, if we get here it means the class details is shown!
-            classDetails.ClassDetailsVisibility = Visibility.Visible;
+            classDetails.ClassDetailsVisibility = true;
 
             //Add members of selected class to class details
-            classDetails.ActionMembers = currentClass.ActionMembers;
-            classDetails.CreateMembers = currentClass.CreateMembers;
-            classDetails.QueryMembers = currentClass.QueryMembers;
+            classDetails.AddActionMembers(currentClass.ActionMembers);
+            classDetails.AddCreateMembers(currentClass.CreateMembers);
+            classDetails.AddQueryMembers(currentClass.QueryMembers);
 
             // When we know the number of items on a single row, through selected 
             // item index we will find out where the expanded StandardPanel sit.

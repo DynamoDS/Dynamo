@@ -1611,18 +1611,4 @@ namespace Dynamo.Controls
         }
     }
 
-    public class VisibilityToHeightConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var visibility = (Visibility)value;
-            if (visibility == Visibility.Hidden) return 0;
-            return Double.NaN;          
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return new NotImplementedException();
-        }
-    }
 }
