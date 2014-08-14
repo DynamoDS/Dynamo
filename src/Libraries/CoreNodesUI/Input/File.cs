@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
@@ -8,7 +7,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
-using Dynamo.Utilities;
 using Autodesk.DesignScript.Runtime;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -19,7 +17,8 @@ namespace DSCore.File
     [SupressImportIntoVM]
     public abstract class FileSystemBrowser : DSCoreNodesUI.String
     {
-        protected FileSystemBrowser(string tip)
+        protected FileSystemBrowser(WorkspaceModel workspace, string tip)
+            : base(workspace)
         {
             OutPortData[0].ToolTipString = tip;
             RegisterAllPorts();
@@ -29,6 +28,7 @@ namespace DSCore.File
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
+
             //add a button to the inputGrid on the dynElement
             var readFileButton = new DynamoNodeButton
             {
@@ -53,7 +53,10 @@ namespace DSCore.File
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
-            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
+            tb.TextChanged += delegate { 
+                tb.ScrollToHorizontalOffset(double.PositiveInfinity); 
+                view.ViewModel.DynamoViewModel.ReturnFocusToSearch(); 
+            };
             tb.Margin = new Thickness(0,5,0,5);
 
             var sp = new StackPanel();
@@ -73,7 +76,6 @@ namespace DSCore.File
         protected abstract void readFileButton_Click(object sender, RoutedEventArgs e);
     }
 
-
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
@@ -81,7 +83,7 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
-        public Filename() : base("Filename") { }
+        public Filename(WorkspaceModel workspace) : base(workspace, "Filename") { }
 
         protected override void readFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -111,7 +113,7 @@ namespace DSCore.File
     //MAGN -3382 [IsVisibleInDynamoLibrary(false)]
     public class Directory : FileSystemBrowser
     {
-        public Directory() : base("Directory") { }
+        public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
 
         protected override void readFileButton_Click(object sender, RoutedEventArgs e)
         {

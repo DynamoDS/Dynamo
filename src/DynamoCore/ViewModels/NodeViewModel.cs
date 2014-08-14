@@ -45,6 +45,9 @@ namespace Dynamo.ViewModels
 
         #region public members
 
+        public readonly DynamoViewModel DynamoViewModel;
+        public readonly WorkspaceViewModel WorkspaceViewModel;
+
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
         public bool IsFullyConnected
@@ -119,7 +122,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
+                if (nodeLogic.Workspace is CustomNodeWorkspaceModel)
                     return "Not available in custom nodes";
 
                 var variableName = nodeLogic.AstIdentifierBase;
@@ -129,12 +132,12 @@ namespace Dynamo.ViewModels
                 {
                     try
                     {
-                        var engine = dynSettings.Controller.EngineController;
+                        var engine = DynamoViewModel.Model.EngineController;
                         previewValue = engine.GetStringValue(variableName);
                     }
                     catch (Exception ex)
                     {
-                        dynSettings.DynamoLogger.Log(ex.Message);
+                        DynamoViewModel.Model.Logger.Log(ex.Message);
                     }
                 }
 
@@ -282,10 +285,10 @@ namespace Dynamo.ViewModels
 
         public bool ShowDebugASTs
         {
-            get { return dynSettings.Controller.DebugSettings.ShowDebugASTs; }
+            get { return DynamoViewModel.Model.DebugSettings.ShowDebugASTs; }
             set
             {
-                dynSettings.Controller.DebugSettings.ShowDebugASTs = value;
+                DynamoViewModel.Model.DebugSettings.ShowDebugASTs = value;
             }
         }
 
@@ -323,8 +326,11 @@ namespace Dynamo.ViewModels
 
         #region constructors
 
-        public NodeViewModel(NodeModel logic)
+        public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic)
         {
+            this.WorkspaceViewModel = workspaceViewModel;
+            this.DynamoViewModel = workspaceViewModel.DynamoViewModel;
+
             nodeLogic = logic;
 
             //respond to collection changed events to sadd
@@ -334,10 +340,10 @@ namespace Dynamo.ViewModels
 
             logic.PropertyChanged += logic_PropertyChanged;
 
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
-            dynSettings.Controller.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
+            this.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
+            this.DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
-            ErrorBubble = new InfoBubbleViewModel();
+            ErrorBubble = new InfoBubbleViewModel(this.DynamoViewModel);
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -347,7 +353,7 @@ namespace Dynamo.ViewModels
 
             if (IsDebugBuild)
             {
-                dynSettings.Controller.EngineController.AstBuilt += EngineController_AstBuilt;
+                DynamoViewModel.Model.EngineController.AstBuilt += EngineController_AstBuilt;
             }
         }
 
@@ -404,12 +410,12 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                InPorts.Add(new PortViewModel(item, nodeLogic));
+                InPorts.Add(new PortViewModel(this, item));
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                OutPorts.Add(new PortViewModel(item, nodeLogic));
+                OutPorts.Add(new PortViewModel(this, item));
             }
         }
 
@@ -498,7 +504,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateBubbleContent()
         {
-            if (ErrorBubble == null || dynSettings.Controller == null)
+            if (ErrorBubble == null || DynamoViewModel == null)
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
@@ -509,7 +515,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(ErrorBubble))
+                if (!DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(ErrorBubble))
                     return;
 
                 var topLeft = new Point(NodeModel.X, NodeModel.Y);
@@ -570,13 +576,13 @@ namespace Dynamo.ViewModels
         private void DeleteNodeAndItsConnectors(object parameter)
         {
             var command = new DynamoViewModel.DeleteModelCommand(nodeLogic.GUID);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+            DynamoViewModel.ExecuteCommand(command);
         }
 
         private void SetLacingType(object param)
         {
             // Record the state of this node before changes.
-            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            DynamoModel dynamo = DynamoViewModel.Model;
             dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
 
             LacingStrategy strategy = LacingStrategy.Disabled;
@@ -586,8 +592,8 @@ namespace Dynamo.ViewModels
             NodeLogic.ArgumentLacing = strategy;
 
             RaisePropertyChanged("ArgumentLacing");
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void SetNodeRenderStyle(object param)
@@ -620,11 +626,8 @@ namespace Dynamo.ViewModels
         private void ViewCustomNodeWorkspace(object parameter)
         {
             var f = (nodeLogic as Function);
-            if (f != null)
-            {
-                dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(
-                    f.Definition);
-            }
+            if(f!= null)
+                DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)
@@ -661,7 +664,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
+                    InPorts.Add(new PortViewModel(this, item as PortModel));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -685,7 +688,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
+                    OutPorts.Add(new PortViewModel(this, item as PortModel));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -702,27 +705,27 @@ namespace Dynamo.ViewModels
         private void ToggleIsVisible(object parameter)
         {
             // Record the state of this node before changes.
-            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            DynamoModel dynamo = DynamoViewModel.Model;
             dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
 
             nodeLogic.IsVisible = !nodeLogic.IsVisible;
 
             RaisePropertyChanged("IsVisible");
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void ToggleIsUpstreamVisible(object parameter)
         {
             // Record the state of this node before changes.
-            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            DynamoModel dynamo = DynamoViewModel.Model;
             dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
 
             nodeLogic.IsUpstreamVisible = !nodeLogic.IsUpstreamVisible;
 
             RaisePropertyChanged("IsUpstreamVisible");
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanVisibilityBeToggled(object parameter)
@@ -820,7 +823,7 @@ namespace Dynamo.ViewModels
 
         private void GotoWorkspace(object parameters)
         {
-            dynSettings.Controller.DynamoViewModel.GoToWorkspace((NodeLogic as Function).Definition.FunctionId);
+            DynamoViewModel.GoToWorkspace((NodeLogic as Function).Definition.FunctionId);
         }
 
         private bool CanGotoWorkspace(object parameters)

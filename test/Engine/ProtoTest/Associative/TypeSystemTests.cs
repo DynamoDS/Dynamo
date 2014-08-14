@@ -233,11 +233,13 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void TestIntSetOnArrayStructure()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
             string code =
                 @"                    x:int[][] = 3;                    y:int[][] = {3};                    z:int[][] = {{3}};                    z1:int[][] = {{{3}}};";
-            string error = "1467326 - Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
+            string error = "MAGN-1668 Sprint 27 - Rev 3905 when there is rank mismatch for function , array upagrades to 1 dimension higer than expected";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "x", new object[] { new object[] { 3 } });
             TestFrameWork.Verify(mirror, "y", new object[] { new object[] { 3 } });

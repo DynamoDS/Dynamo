@@ -991,7 +991,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 buf.Append(NameNode);
                 string argType = ArgumentType.ToString();
-                if (!string.IsNullOrEmpty(argType))
+                if (!string.IsNullOrEmpty(argType) && !argType.Equals("null"))
                     buf.Append(" : " + argType);
             }
             else
@@ -1108,6 +1108,21 @@ namespace ProtoCore.AST.AssociativeAST
                 (Body == null ? base.GetHashCode() : Body.GetHashCode());
 
             return bodyHashCode;
+        }
+
+        public override string ToString()
+        {
+            if (Body == null)
+            {
+                return string.Empty;
+            }
+
+            var buf = new StringBuilder();
+            for (int i = 0; i < Body.Count; ++i)
+            {
+                buf.Append(Body[i].ToString());
+            }
+            return buf.ToString();
         }
     }
 
@@ -2719,6 +2734,7 @@ namespace ProtoCore.AST.AssociativeAST
             return new IdentifierListNode
             {
                 LeftNode = new IdentifierNode(className),
+                Optr = Operator.dot,
                 RightNode = BuildFunctionCall(functionName, arguments)
             };
         }

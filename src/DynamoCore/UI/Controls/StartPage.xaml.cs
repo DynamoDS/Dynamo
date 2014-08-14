@@ -111,8 +111,12 @@ namespace Dynamo.UI.Controls
         ObservableCollection<StartPageListItem> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
 
-        internal StartPageViewModel()
+        internal readonly DynamoViewModel DynamoViewModel;
+
+        internal StartPageViewModel(DynamoViewModel dynamoViewModel)
         {
+            this.DynamoViewModel = dynamoViewModel;
+
             this.sampleFiles = new ObservableCollection<StartPageListItem>();
             this.recentFiles = new ObservableCollection<StartPageListItem>();
 
@@ -186,7 +190,7 @@ namespace Dynamo.UI.Controls
 
             #endregion
 
-            var dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = this.DynamoViewModel;
             RefreshRecentFileList(dvm.RecentFiles);
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
@@ -298,7 +302,7 @@ namespace Dynamo.UI.Controls
 
         private void HandleRegularCommand(StartPageListItem item)
         {
-            var dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = this.DynamoViewModel;
 
             switch (item.ContextData)
             {
@@ -325,7 +329,7 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            var dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = this.DynamoViewModel;
             if (dvm.OpenCommand.CanExecute(path))
                 dvm.OpenCommand.Execute(path);
         }
@@ -347,6 +351,8 @@ namespace Dynamo.UI.Controls
 
     public partial class StartPageView : UserControl
     {
+        private DynamoViewModel dynamoViewModel;
+
         public StartPageView()
         {
             InitializeComponent();
@@ -358,6 +364,8 @@ namespace Dynamo.UI.Controls
         private void OnStartPageLoaded(object sender, RoutedEventArgs e)
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
+            this.dynamoViewModel = startPageViewModel.DynamoViewModel;
+           
             this.filesListBox.ItemsSource = startPageViewModel.FileOperations;
             this.askListBox.ItemsSource = startPageViewModel.CommunityLinks;
             this.referenceListBox.ItemsSource = startPageViewModel.References;
@@ -383,7 +391,7 @@ namespace Dynamo.UI.Controls
 
         private void OnCloseStartPageClicked(object sender, MouseButtonEventArgs e)
         {
-            dynSettings.Controller.DynamoViewModel.ShowStartPage = false;
+            this.dynamoViewModel.ShowStartPage = false;
         }
 
         #endregion

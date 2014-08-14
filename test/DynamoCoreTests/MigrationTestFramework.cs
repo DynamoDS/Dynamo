@@ -15,7 +15,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class MigrationTestFramework : Dynamo.Tests.DSEvaluationUnitTest
+    class MigrationTestFramework : Dynamo.Tests.DSEvaluationViewModelUnitTest
     {
         /// <summary>
         /// Automated creation of regression test cases.
@@ -29,14 +29,14 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(dynamoFilePath, "Dynamo file path is invalid or missing.");
             
             //open the dyn file
-            Assert.True(dynSettings.Controller.DynamoViewModel.OpenCommand.CanExecute(dynamoFilePath));
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(dynamoFilePath);
+            Assert.True(ViewModel.OpenCommand.CanExecute(dynamoFilePath));
+            ViewModel.OpenCommand.Execute(dynamoFilePath);
 
 
             AssertNoDummyNodes();
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             GetPreviewValues();
         }

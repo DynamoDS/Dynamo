@@ -12,6 +12,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 
@@ -38,7 +40,7 @@ namespace Dynamo
         private bool drawToAlternateContext = true;
         //private Octree.OctreeSearch.Octree octree;
         private bool updatingPaused = false;
-        private readonly DynamoController controller;
+        protected readonly DynamoModel dynamoModel;
         private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
         private bool alternateDrawingContextAvailable;
         private long taskId = -1;
@@ -224,24 +226,24 @@ namespace Dynamo
 
         #region constructors
 
-        public VisualizationManager()
+        public VisualizationManager(DynamoModel dynamoModel)
         {
             MaxTesselationDivisions = 128;
 
-            controller = dynSettings.Controller;
-            renderManager = new RenderManager(controller);
+            this.dynamoModel = dynamoModel;
+            renderManager = new RenderManager(this, dynamoModel);
             //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
 
-            controller.DynamoModel.WorkspaceClearing += Pause;
-            controller.DynamoModel.WorkspaceCleared += UnPauseAndUpdate;
+            dynamoModel.WorkspaceClearing += Pause;
+            dynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
-            controller.DynamoModel.NodeAdded += NodeAdded;
-            controller.DynamoModel.NodeDeleted += NodeDeleted;
+            dynamoModel.NodeAdded += NodeAdded;
+            dynamoModel.NodeDeleted += NodeDeleted;
 
-            controller.DynamoModel.DeletionStarted += Pause;
-            controller.DynamoModel.DeletionComplete += UnPauseAndUpdate;
+            dynamoModel.DeletionStarted += Pause;
+            dynamoModel.DeletionComplete += UnPauseAndUpdate;
 
-            controller.DynamoModel.CleaningUp += Clear;
+            dynamoModel.CleaningUp += Clear;
 
             UnPause(this, EventArgs.Empty);
         }
@@ -283,7 +285,7 @@ namespace Dynamo
             var packages = new List<RenderPackage>();
 
             //This also isn't thread safe
-            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+            foreach (var node in dynamoModel.Nodes)
             {
                 lock (node.RenderPackagesMutex)
                 {
@@ -311,7 +313,7 @@ namespace Dynamo
 
                 var allPackages = new List<RenderPackage>();
 
-                foreach (var node in controller.DynamoModel.Nodes)
+                foreach (var node in dynamoModel.Nodes)
                 {
                     lock (node.RenderPackagesMutex)
                     {
@@ -343,7 +345,7 @@ namespace Dynamo
             if (tag.Node == null)
             {
                 //send back everything
-                List<NodeModel> copyOfNodesList = controller.DynamoModel.Nodes;
+                List<NodeModel> copyOfNodesList = dynamoModel.Nodes;
                 foreach (var modelNode in copyOfNodesList)
                 {
                     lock (modelNode.RenderPackagesMutex)
@@ -492,7 +494,7 @@ namespace Dynamo
             if (e.Action == NotifyCollectionChangedAction.Reset)
                 return;
 
-            if (updatingPaused || dynSettings.Controller == null)
+            if (updatingPaused)
                 return;
 
             // For a selection event, we need only to trigger a new rendering for 
@@ -528,12 +530,12 @@ namespace Dynamo
 
         private void RegisterEventListeners()
         {
-            controller.EvaluationCompleted += Update;
-            controller.RequestsRedraw += Update;
-            controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            dynamoModel.EvaluationCompleted += Update;
+            dynamoModel.RequestsRedraw += Update;
+            dynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
-            dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
+            dynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
 
             renderManager.RenderComplete += RenderManagerOnRenderComplete;
 
@@ -547,12 +549,12 @@ namespace Dynamo
 
         private void UnregisterEventListeners()
         {
-            controller.EvaluationCompleted -= Update;
-            controller.RequestsRedraw -= Update;
-            controller.DynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
+            dynamoModel.EvaluationCompleted -= Update;
+            dynamoModel.RequestsRedraw -= Update;
+            dynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
-            dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
+            dynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
 
             renderManager.RenderComplete -= RenderManagerOnRenderComplete;
         }

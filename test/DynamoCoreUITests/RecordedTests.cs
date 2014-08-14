@@ -18,7 +18,7 @@ namespace DynamoCoreUITests
     public delegate void CommandCallback(string commandTag);
 
     [TestFixture]
-    public class RecordedTests : DSEvaluationUnitTest
+    public class RecordedTests : DSEvaluationViewModelUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
@@ -48,18 +48,18 @@ namespace DynamoCoreUITests
         protected void Exit()
         {
             commandCallback = null;
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
                 // There are exceptions made to certain test cases where async evaluation 
                 // needs to be permitted. IsTestMode is marked as false for these test cases
                 // to emulate the real UI async scenario. Since the UI takes care of shutting down
                 // the controller in such a case, we need to make sure it is not shut down twice
                 // by checking for IsTestMode here as well
-                if (DynamoController.IsTestMode)
+                if (DynamoModel.IsTestMode)
                 {
-                    this.Controller.ShutDown(true);
+                    this.ViewModel.Model.ShutDown(true);
                 }
-                this.Controller = null;
+                this.ViewModel = null;
             }
 
             GC.Collect();
@@ -288,7 +288,7 @@ namespace DynamoCoreUITests
         public void TestCustomNode()
         {
             RunCommandsFromFile("TestCustomNode.xml");
-            var workspaces = this.Controller.DynamoModel.Workspaces;
+            var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
             Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
@@ -313,7 +313,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
             {
-                var workspaces = Controller.DynamoModel.Workspaces;
+                var workspaces = ViewModel.Model.Workspaces;
 
                 if (commandTag == "FirstRun")
                 {
@@ -370,7 +370,7 @@ namespace DynamoCoreUITests
             // modify the name of the input node
             RunCommandsFromFile("Deffect_CN_1143.xml", false, (commandTag) =>
             {
-                var workspaces = Controller.DynamoModel.Workspaces;
+                var workspaces = ViewModel.Model.Workspaces;
 
                 if (commandTag == "FirstRun")
                 {
@@ -416,7 +416,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("Deffect_CN_2144.xml", false, (commandTag) =>
             {
-                var workspaces = Controller.DynamoModel.Workspaces;
+                var workspaces = ViewModel.Model.Workspaces;
 
                 if (commandTag == "FirstRun")
                 {
@@ -543,7 +543,7 @@ namespace DynamoCoreUITests
         public void CreateAndUseCustomNode()
         {
             RunCommandsFromFile("CreateAndUseCustomNode.xml");
-            var workspaces = this.Controller.DynamoModel.Workspaces;
+            var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
             Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
@@ -568,7 +568,7 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
+            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
         }
 
         /// <summary>
@@ -592,7 +592,7 @@ namespace DynamoCoreUITests
             if (this.customNodesToBeLoaded != null)
                 throw new InvalidOperationException("LoadCustomNodes called twice");
 
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
                 var message = "'LoadCustomNodes' should be called before 'RunCommandsFromFile'";
                 throw new InvalidOperationException(message);
@@ -617,28 +617,38 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUI.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            if (this.Controller != null)
+            if (this.ViewModel != null)
             {
                 var message = "Multiple DynamoController detected!";
                 throw new InvalidOperationException(message);
             }
 
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
             // Create the controller to run alongside the view.
-            this.Controller = DynamoController.MakeSandbox(commandFilePath);
-            var controller = this.Controller;
-            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
-            DynamoController.IsTestMode = true;
+            this.ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    CommandFilePath = commandFilePath,
+                    DynamoModel = model
+                });
+
+            this.ViewModel.DynamicRunEnabled = autoRun;
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
             {
                 foreach (var customNode in this.customNodesToBeLoaded)
                 {
-                    if (controller.CustomNodeManager.AddFileToPath(customNode) == null)
+                    if (ViewModel.Model.CustomNodeManager.AddFileToPath(customNode) == null)
                     {
                         throw new System.IO.FileFormatException(string.Format(
                             "Failed to load custom node: {0}", customNode));
@@ -649,16 +659,14 @@ namespace DynamoCoreUITests
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
-            var dynamoView = new DynamoView();
-            dynamoView.DataContext = controller.DynamoViewModel;
-            controller.UIDispatcher = dynamoView.Dispatcher;
+            var dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
-            Assert.IsNotNull(controller);
-            Assert.IsNotNull(controller.DynamoModel);
-            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
-            workspace = controller.DynamoModel.CurrentWorkspace;
-            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+            Assert.IsNotNull(this.ViewModel);
+            Assert.IsNotNull(this.ViewModel.Model);
+            Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
+            workspace = this.ViewModel.Model.CurrentWorkspace;
+            workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
         }
 
         private void RegisterCommandCallback(CommandCallback commandCallback)
@@ -670,7 +678,7 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException("RunCommandsFromFile called twice");
 
             this.commandCallback = commandCallback;
-            var automation = this.Controller.DynamoViewModel.Automation;
+            var automation = this.ViewModel.Automation;
             automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
         }
 
@@ -861,10 +869,10 @@ namespace DynamoCoreUITests
             //var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
             //Assert.AreEqual(null, cbn);
 
-            //var addNode = workspaceViewModel._model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
+            //var addNode = workspaceViewModel.Model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
             //Assert.NotNull(addNode);
 
-            //var numberList = workspaceViewModel._model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
+            //var numberList = workspaceViewModel.Model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
             //Assert.AreEqual(3, numberList.Count);
 
             Assert.Inconclusive("Porting : DoubleInput");
@@ -957,7 +965,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -1761,7 +1769,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
             {
-                ProtoCore.Core core = Controller.EngineController.LiveRunnerCore;
+                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
@@ -1851,7 +1859,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
             {
-                ProtoCore.Core core = Controller.EngineController.LiveRunnerCore;
+                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
@@ -1898,7 +1906,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "Point-10")
                 {
@@ -1932,7 +1940,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "WithWarning")
                 {
@@ -1960,7 +1968,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "WithWrongInput")
                 {
@@ -1993,7 +2001,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2100.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2007,7 +2015,7 @@ namespace DynamoCoreUITests
 
             });
 
-            NodeModel nodeModel = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace(
+            NodeModel nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(
                 "3f309016-7b00-4487-9b68-f0640e892d39");
 
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
@@ -2025,7 +2033,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2102.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "Start")
                 {
@@ -2069,7 +2077,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2272.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2121,7 +2129,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2453.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2156,7 +2164,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2593.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2215,7 +2223,7 @@ namespace DynamoCoreUITests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3113
 
             RunCommandsFromFile("Defect_MAGN_3113.xml", true);
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var workspace = ViewModel.Model.CurrentWorkspace;
 
             // check for number of Nodes and Connectors
             Assert.AreEqual(2, workspace.Nodes.Count);
@@ -2235,7 +2243,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2373.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2268,11 +2276,11 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2563.xml", true);
 
-            Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, Controller.DynamoModel.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Connectors.Count);
 
 
-            NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+            NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                 ("aeed3ffe-7294-43a9-8a05-83b5ff05f527");
 
             Assert.AreEqual(ElementState.Warning, node.State);
@@ -2285,7 +2293,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2247.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2323,7 +2331,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2311.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2331,7 +2339,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
 
                     Assert.AreEqual(ElementState.Warning, node.State);
@@ -2342,7 +2350,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
 
                     Assert.AreEqual(ElementState.Warning, node.State);
@@ -2359,7 +2367,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2279.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2376,7 +2384,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
 
                     Assert.AreNotEqual(ElementState.Warning, node.State);
@@ -2389,7 +2397,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(1, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
 
                     Assert.AreNotEqual(ElementState.Warning, node.State);
@@ -2407,7 +2415,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3116.xml", false, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2423,7 +2431,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(1, workspace.Nodes.Count);
                     Assert.AreEqual(0, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("6e2644dc-3336-4a87-a97f-12b2aab14a6b");
 
                     Assert.AreNotEqual(ElementState.Warning, node.State);
@@ -2441,7 +2449,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_2290.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2462,12 +2470,12 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("826ba392-b385-4960-89cc-c076c3abffb0");
                     Assert.AreNotEqual(ElementState.Warning, node.State);
                     AssertPreviewValue("826ba392-b385-4960-89cc-c076c3abffb0", new int[] { 0, 3 });
 
-                    NodeModel node1 = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                    NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("8765fc5f-4edd-482c-8541-9acb6e39352c");
                     Assert.AreNotEqual(ElementState.Warning, node1.State);
                     AssertPreviewValue("8765fc5f-4edd-482c-8541-9acb6e39352c",
@@ -2487,7 +2495,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3166.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 if (commandTag == "FirstRun")
                 {
@@ -2534,7 +2542,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3599.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 var cbn = GetNode("26d75d07-10d7-4517-83b8-0f45711706b2") as CodeBlockNodeModel;
 
@@ -2578,7 +2586,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3580.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 var cbn = GetNode("b9c2edd6-5d73-4243-90fb-2b608250adee") as CodeBlockNodeModel;
 
@@ -2662,7 +2670,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_3212.xml", true, (commandTag) =>
             {
-                var workspace = Controller.DynamoModel.CurrentWorkspace;
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
                 var cbn = GetNode("28029adc-b19d-414c-996c-545572aa9efc") as CodeBlockNodeModel;
 
@@ -2704,18 +2712,18 @@ namespace DynamoCoreUITests
             {
                 // We need to run asynchronously for this test case as we need to 
                 // simulate cancellation of execution from UI asynchoronously
-                DynamoController.IsTestMode = false; 
+                DynamoModel.IsTestMode = false; 
 
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(true, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -2733,18 +2741,18 @@ namespace DynamoCoreUITests
             {
                 // We need to run asynchronously for this test case as we need to 
                 // simulate cancellation of execution from UI asynchoronously
-                DynamoController.IsTestMode = false;
+                DynamoModel.IsTestMode = false;
 
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, Controller.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, Controller.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(true, ViewModel.Model.Runner.Running);
                 }
                 else if (commandTag == "AfterCancel")
                 {
