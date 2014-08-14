@@ -9,7 +9,7 @@ If you're looking to learn or download Dynamo, head to [dynamobim.org](http://dy
 
 ## Build ###
 
-You'll need Visual Studio and a git client to build Dynamo.  Find more about how to build dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki)  
+You'll need Visual Studio and a git client to build Dynamo.  Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
 
 
 ## Contribute ##
