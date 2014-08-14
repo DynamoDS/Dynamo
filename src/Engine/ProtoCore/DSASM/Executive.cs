@@ -1803,6 +1803,12 @@ namespace ProtoCore.DSASM
                 foreach (var noderef in executingGraphNode.updateNodeRefList)
                 {
                     ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
+
+                    if (executingGraphNode.ssaExprID == graphNode.ssaExprID)
+                    {
+                        continue;
+                    }
+
                     if (!graphNode.DependsOn(noderef, ref matchingNode))
                     {
                         continue;
