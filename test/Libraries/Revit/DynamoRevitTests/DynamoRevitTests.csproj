@@ -163,6 +163,10 @@
       <Name>RevitServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\RevitNodesTests\RevitNodesTests.csproj">
+      <Project>{9e79dc8d-25b1-491f-b094-ea39de1bbc66}</Project>
+      <Name>RevitNodesTests</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
