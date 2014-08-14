@@ -65,8 +65,8 @@
                Property="DYNAMO_INSTALLDIR"
                Value="[DYNAMO_INSTALLDIR]\AddIns\Dynamo" />-->
     
-    <Property Id='DYNAMO_INSTALLDIR'>[ProgramFiles64Folder]\Dynamo 0.7</Property>
-    <Property Id='ADDINS_DIR'></Property>
+    <Property Id='DYNAMO_INSTALLDIR'></Property>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.7" After="LaunchConditions"></SetProperty>
     
     <Feature Id="DYNAMO_CORE_FEATURE" 
              Title="Dynamo Core" 
@@ -111,9 +111,9 @@
         <Directory Id="ADESK_DATA" Name="Autodesk">
           <Directory Id="REVIT_DATA" Name="Revit">
             <Directory Id="ADDIN_DATA" Name="Addins">
-              <Directory Id="2014_ADDINS" Name="2014">
+              <Directory Id="ADDINS_2014" Name="2014">
               </Directory>
-              <Directory Id="2015_ADDINS" Name="2015">
+              <Directory Id="ADDINS_2015" Name="2015">
               </Directory>
             </Directory>
           </Directory>
@@ -138,12 +138,12 @@
     </DirectoryRef>
     
     <!-- Install the Addin files-->
-    <ComponentGroup Id="REVIT_2014" Directory="2014_ADDINS">
+    <ComponentGroup Id="REVIT_2014" Directory="ADDINS_2014">
       <Component Id="DynamoForRevit2015.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
         <File Id="DynamoForRevit2015.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2014.addin"/>
       </Component>
     </ComponentGroup>
-    <ComponentGroup Id="REVIT_2015" Directory="2015_ADDINS">
+    <ComponentGroup Id="REVIT_2015" Directory="ADDINS_2015">
       <Component Id="DynamoForRevit2014.addin" Guid="fde9dc0b-4b8c-46d3-9950-42c9f66b5e60">
         <File Id="DynamoForRevit2014.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2015.addin"></File>
       </Component>
