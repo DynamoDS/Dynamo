@@ -49,5 +49,6 @@ namespace Dynamo.ViewModels
                 return hideSearch;
             }
         }
+
     }
 }
