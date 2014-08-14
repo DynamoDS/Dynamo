@@ -105,37 +105,37 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(ele);
         }
 
-        [Test]
+        [Test, Ignore]
         public void ReferencePointByElementId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test]
+        [Test, Ignore]
         public void ReferencePointByUniqueId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test]
+        [Test, Ignore]
         public void FamilyInstanceByElementId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test]
+        [Test, Ignore]
         public void FamilyInstanceByUniqueId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test]
+        [Test, Ignore]
         public void DividedPathByElementId_ValidArgs()
         {
             Assert.Inconclusive();
         }
 
-        [Test]
+        [Test, Ignore]
         public void DividedSurfaceByUniqueId_ValidArgs()
         {
             Assert.Inconclusive();

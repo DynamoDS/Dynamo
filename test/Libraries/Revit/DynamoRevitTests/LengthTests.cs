@@ -15,8 +15,8 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_testPath, @".\Length\Length.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+            ViewModel.OpenCommand.Execute(testPath);
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
     }
 }

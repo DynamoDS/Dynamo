@@ -51,7 +51,7 @@ namespace Dynamo.Controls
             {
                 if (this.previewControl == null)
                 {
-                    this.previewControl = new PreviewControl();
+                    this.previewControl = new PreviewControl(this.ViewModel);
                     this.previewControl.StateChanged += OnPreviewControlStateChanged;
                     this.expansionBay.Children.Add(this.previewControl);
                 }
@@ -312,26 +312,21 @@ namespace Dynamo.Controls
             //e.Handled = true;
         }
 
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-
-        }
-
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel == null) return;
 
             var view = WPF.FindUpVisualTree<DynamoView>(this);
 
-            dynSettings.ReturnFocusToSearch();
+            this.ViewModel.DynamoViewModel.ReturnFocusToSearch();
 
             view.mainGrid.Focus();
 
             var node = this.ViewModel.NodeModel;
-            if (node.WorkSpace.Nodes.Contains(node))
+            if (node.Workspace.Nodes.Contains(node))
             {
                 Guid nodeGuid = this.ViewModel.NodeModel.GUID;
-                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                this.ViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
             }
             if (e.ClickCount == 2)

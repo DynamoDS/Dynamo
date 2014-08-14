@@ -246,7 +246,7 @@ namespace ProtoCore.DSASM
                         return false;
                     if (Object.ReferenceEquals(c1, c2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
-                    ClassNode classnode = c1.DSExecutable.classTable.ClassNodes[(int)sv1.metaData.type];
+                    ClassNode classnode = c1.DSExecutable.classTable.ClassNodes[sv1.metaData.type];
                     if (classnode.IsImportedClass)
                     {
                         var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);

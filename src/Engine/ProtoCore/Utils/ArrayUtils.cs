@@ -179,7 +179,7 @@ namespace ProtoCore.Utils
             if (!array.IsArray)
             {
                 Dictionary<int, StackValue> ret = new Dictionary<int, StackValue>();
-                ret.Add((int)array.metaData.type, array);
+                ret.Add(array.metaData.type, array);
                 return ret;
             }
 
@@ -191,8 +191,8 @@ namespace ProtoCore.Utils
             for (int i = 0; i < heapElement.VisibleSize; ++i)
             {
                 StackValue sv = heapElement.Stack[i];
-                if (!usageFreq.ContainsKey((int)sv.metaData.type))
-                    usageFreq.Add((int)sv.metaData.type, sv);
+                if (!usageFreq.ContainsKey(sv.metaData.type))
+                    usageFreq.Add(sv.metaData.type, sv);
             }
 
             return usageFreq;
@@ -210,7 +210,7 @@ namespace ProtoCore.Utils
             if (!array.IsArray)
             {
                 Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
-                ret.Add(core.ClassTable.ClassNodes[(int)array.metaData.type], 1);
+                ret.Add(core.ClassTable.ClassNodes[array.metaData.type], 1);
                 return ret;
             }
 
@@ -222,7 +222,7 @@ namespace ProtoCore.Utils
             for (int i = 0; i < heapElement.VisibleSize; ++i)
             {
                 StackValue sv = heapElement.Stack[i];
-                ClassNode cn = core.ClassTable.ClassNodes[(int)sv.metaData.type];
+                ClassNode cn = core.ClassTable.ClassNodes[sv.metaData.type];
                 if (!usageFreq.ContainsKey(cn))
                     usageFreq.Add(cn, 0);
 
@@ -244,7 +244,7 @@ namespace ProtoCore.Utils
             if (!array.IsArray)
             {
                 Dictionary<ClassNode, int> ret = new Dictionary<ClassNode, int>();
-                ret.Add(core.ClassTable.ClassNodes[(int) array.metaData.type], 1);
+                ret.Add(core.ClassTable.ClassNodes[array.metaData.type], 1);
                 return ret;
             }
 
@@ -273,7 +273,7 @@ namespace ProtoCore.Utils
                 else
                 {
 
-                    ClassNode cn = core.ClassTable.ClassNodes[(int)sv.metaData.type];
+                    ClassNode cn = core.ClassTable.ClassNodes[sv.metaData.type];
                     if (!usageFreq.ContainsKey(cn))
                         usageFreq.Add(cn, 0);
 
@@ -313,7 +313,7 @@ namespace ProtoCore.Utils
                 }
             }
 
-            var dict = heapElement.Dict as Dictionary<StackValue, StackValue>;
+            var dict = heapElement.Dict;
             if (dict != null)
             {
                 foreach (var sv in dict.Values)
@@ -519,7 +519,7 @@ namespace ProtoCore.Utils
                 return 0;
             }
 
-            var dict = he.Dict as Dictionary<StackValue, StackValue>;
+            var dict = he.Dict;
             return (null == dict) ? 0 : dict.Count;
         }
 
@@ -692,13 +692,16 @@ namespace ProtoCore.Utils
                 }
 
                 StackValue oldValue;
-                if (!he.Dict.TryGetValue(index, out oldValue))
+                GCUtils.GCRetain(value, core);
+                if (he.Dict.TryGetValue(index, out oldValue))
+                {
+                    GCUtils.GCRelease(oldValue, core);
+                }
+                else
                 {
                     oldValue = StackValue.Null;
+                    GCUtils.GCRetain(index, core);
                 }
-
-                GCUtils.GCRetain(index, core);
-                GCUtils.GCRetain(value, core);
                 he.Dict[index] = value;
 
                 return oldValue;
@@ -1228,7 +1231,6 @@ namespace ProtoCore.Utils
 
                 if (index >= 0 && index < he.VisibleSize)
                 {
-                    StackValue oldValue = he.Stack[index];
                     he.Stack[index] = StackValue.Null;
 
                     if (index == he.VisibleSize - 1)

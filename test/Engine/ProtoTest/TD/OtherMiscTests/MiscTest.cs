@@ -13,7 +13,7 @@ namespace ProtoTest.TD.OtherMiscTests
         public void Setup()
         {
         }
-        [Test, Ignore]
+        [Test]
         [Category("SmokeTest")]
         public void Fibunacci()
         {
@@ -418,8 +418,10 @@ inputBool = true;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void DynamicReferenceResolving_Complex_Case()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4138
             string code = @"
 class A
 {
@@ -550,9 +552,10 @@ testFoo1 = t.foo1(6); // foo1 does not exist in A, function not found warning; t
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void DynamicReference_FunctionCall_With_Default_Arg()
         {
-            string err = "1467384 - Sprint 27 - Rev 4210 default arguments are not working inside class ";
+            string err = "MAGN-4137 Method resolution error with default arguments in member function";
             string code = @"class A
 {
 }
@@ -675,7 +678,6 @@ p2 = Point.ByCoordinates(0,0,0);";
         [Category("ProtoGeometry")]
         public void Comments_Negative()
         {
-            Assert.Fail("1467117 -IDE doesn't print any output if first few lines are commented out in way for ex. /* /* */  ");
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 string code = @"
@@ -775,11 +777,12 @@ n = Count(arr);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("n", 4);
         }
-        [Test, Ignore]
+        [Test]
+        [Category("Failing")]
         public void imperative_Replication_1467070()
         {
-            // need to move this to post R1 project
-            Assert.Fail("1467070 Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope ");
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
+            string err = "MAGN-4092 Replication should not be supported in Imperative scope";
             string code = @"
 [Imperative]
 {
@@ -798,14 +801,16 @@ a={3,4,5};
 return = t;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("t", new Object[] { null, null, 3, 4, 5 });
         }
-        [Test, Ignore]
+        [Test]
+        [Category("Failing")]
         public void imperative_Replication_1467070_2()
         {
-            // need to move this to post R1 project
-            Assert.Fail("1467070 Sprint 23 - rev 2636 - 328558 Replication must be disabled in imperative scope ");
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
+            string err = "MAGN-4092 Replication should not be supported in Imperative scope";
+
             string code = @"
 [Imperative]
 {
@@ -824,7 +829,7 @@ return = t;
         }
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("t", new Object[] { null, null, 3, 4, 5 });
         }
 
@@ -929,7 +934,7 @@ return = t;
             String code =
             @"
                 import(""ProtoGeometry.dll"");
-                wcs = CoordinateSystem.WCS;
+                wcs = CoordinateSystem.Identity();
                 base = Cylinder.ByRadiusHeight(wcs, 10, 5);
             ";
             string errmsg = "";

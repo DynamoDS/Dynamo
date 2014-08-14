@@ -3122,7 +3122,7 @@ a =
             Assert.IsTrue((Int64)startCharNo == 0);
         }
 
-        [Test, Ignore]
+        [Test]
         [Category("Debugger")]
         public void TestStepNextClass()
         {
@@ -3151,13 +3151,14 @@ a = p.x;
             Obj o = vms.mirror.GetDebugValue("p");
             string type = vms.mirror.GetType("p");
 
-
-            // Step
-            vms = fsr.StepOver();
+            Assert.IsTrue(type == "V");
 
             // Second var
             o = vms.mirror.GetDebugValue("a");
             type = vms.mirror.GetType("a");
+
+            Assert.IsTrue((Int64)o.Payload == 10);
+            Assert.IsTrue(type == "int");
         }
 
         [Test]
@@ -13653,7 +13654,7 @@ a =
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_stepin_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13692,7 +13693,7 @@ x = a1.update(1); //line 28
 b1 = B.B(); //line 31
 n = 22;
 ", runnerConfig);
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.Step();

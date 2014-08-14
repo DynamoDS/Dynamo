@@ -695,9 +695,19 @@ namespace ProtoTestFx.TD
             else if (value == null)
                 Assert.IsTrue(data.IsNull);
             else if (value is int)
+            {
+                if (data.IsNull)
+                    throw new AssertionException("Incorrect verification of null value with int");
+
                 Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            }
             else if (value is double)
-                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+            {
+                if (data.IsNull)
+                    throw new AssertionException("Incorrect verification of null value with double");
+
+                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);                
+            }
             else
                 Assert.AreEqual(value, data.Data);
         }

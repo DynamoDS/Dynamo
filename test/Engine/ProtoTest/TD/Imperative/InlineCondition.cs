@@ -389,10 +389,11 @@ x4 = a.foo(power(3)) >= power(b.foo(3)) ? a.foo(power(3)) : power(b.foo(3));
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T014_Inline_Using_Collections()
         {
 
-            string err = "1467166 - Sprint24 : rev 3133 : Regression : comparison of collection with singleton should yield null in imperative scope";
+            string err = " comparison of collection with singleton should yield null in imperative scope";
             string src = @"t1;t2;t3;t4;t5;t7;
 c1;c2;c3;c4;
 [Imperative]
@@ -621,20 +622,6 @@ a3 = 1 > 2 ? true : b;";
             thisTest.Verify("a2", ExpectedRes_1, 0);
             thisTest.Verify("b", ExpectedRes_2, 0);
             thisTest.Verify("a3", ExpectedRes_2, 0);
-        }
-
-        [Test]
-        [Category("Imperative")]
-        public void T021_Defect_1467166_array_comparison_issue()
-        {
-            string code = @"
-[Imperative] 
-{
-    a = { 0, 1, 2}; 
-    xx = a < 1 ? 1 : 0;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("xx", 5);
         }
 
         [Test]
