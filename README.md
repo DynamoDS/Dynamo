@@ -2,28 +2,21 @@
 Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
 
-## Download ##
+## Get Dynamo ##
 
-The current version will run as an addin for Autodesk Revit 2014, Autodesk Revit 2015, and Autodesk Project Vasari Beta 3, as well as a Stand-Alone application with more limited functionality. 
-
-[Download now!](http://dynamobim.org/download/)
-
-
-## Learn ##
-
-The best place to learn about using Dynamo is at [dynamobim.org](http://dynamobim.org/learn/)
+If you're looking to learn or download Dynamo, head to [dynamobim.org](http://dynamobim.org/learn/)
 
 
 ## Build ###
 
-You'll need Visual Studio and git client to build Dynamo.  Find more about how to build dynamo at our [wiki](http://dynamobim.org/learn/)  
+You'll need Visual Studio and a git client to build Dynamo.  Find more about how to build dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki)  
 
 
 ## Contribute ##
 
-Dynamo is an open-source project and would be nothing without its community of bug-finding users and contributors.  
+Dynamo is an open-source project and would be nothing without its community.  
 
-You can track and submit bugs via Github [issues](https://github.com/DynamoDS/Dynamo/issues)
+You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues)
 
 You can submit your own code to the Dynamo project via a Github [pull request](https://help.github.com/articles/using-pull-requests).  
 
