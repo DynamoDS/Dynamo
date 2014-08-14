@@ -12,7 +12,8 @@
             <StackPanel Orientation="Vertical"
                         Width="86"
                         Height="92">
-                <Image Width="40"
+                <Image Source="..\..\Resources\Icons\Saturation.png"
+                       Width="40"
                        Height="40"
                        Margin="8"
                        HorizontalAlignment="Center" />
@@ -22,8 +23,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="ClassDetailsDataTemplate">
-            <Grid Background="CornflowerBlue"
-                  Height="128">
+            <Grid Background="CornflowerBlue">
                 <Grid.Width>
                     <Binding Path="ActualWidth"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
@@ -37,17 +37,54 @@
         <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                               ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                               ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
+        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+        <DataTemplate x:Key="titleText">
+            <Border Height="24">
+                <TextBlock Text="{Binding}"
+                           Margin="4 0"
+                           VerticalAlignment="Center"
+                           Foreground="Red"
+                           FontSize="11"
+                           FontWeight="Normal"
+                           Width="200"
+                           TextWrapping="Wrap" />
+            </Border>
+        </DataTemplate>
+
+        <Style TargetType="{x:Type Expander}">
+            <Setter Property="HeaderTemplate"
+                    Value="{StaticResource titleText}" />
+        </Style>
+
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
 
-        <ListView Name="ClassListView"
+        <!-- This is the outer list (showing categories) -->
+        <ListView Name="CategoryListView"
                   ScrollViewer.CanContentScroll="False"
-                  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <controls:LibraryWrapPanel />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
+                  ItemsSource="{Binding}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Expander Foreground="Blue"
+                              Header="{Binding Path=Name}">
+
+                        <!-- This is inner list (showing subcategories) -->
+                        <ListView ScrollViewer.CanContentScroll="False"
+                                  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                                  ItemsSource="{Binding Path=Classes}">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
+										ElementName=CategoryListView, 
+										Converter={StaticResource LibraryWrapPanelWidthConverter}}"
+                                                               MinWidth="150" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </ListView>
+
+                    </Expander>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
 
     </Grid>
