@@ -23,8 +23,7 @@
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
     <!--Property used to define on which version of Revit to install.-->
-    <Property Id="REVIT_FLAVOR" Value="Autodesk Revit Architecture 2015"/>
-    <Property Id="INSTALL_FOR_REVIT_2014">0</Property>
+    <Property Id="INSTALL_FOR_REVIT_2014">1</Property>
     <Property Id="INSTALL_FOR_REVIT_2015">1</Property>
     
     <!--Find Revit installations by finding the uninstall registry key.-->
@@ -52,18 +51,6 @@
       <RegistrySearch Id='RevitRegistry_Architecture_2015' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
     </Property>
-
-    <!--<Property Id="DYNAMO_INSTALL_BASE">
-      <RegistrySearch Id='RevitForDynamo' Type='raw' Win64='yes'
-        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[REVIT_FLAVOR]' Name='InstallLocation' />
-    </Property>
-    
-    <Property Id='DYNAMO_INSTALLDIR'></Property>
-    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[DYNAMO_INSTALL_BASE]\AddIns\Dynamo" After="LaunchConditions"></SetProperty>
-    
-    <CustomAction Id="AdjustInstallDir"
-               Property="DYNAMO_INSTALLDIR"
-               Value="[DYNAMO_INSTALLDIR]\AddIns\Dynamo" />-->
     
     <Property Id='DYNAMO_INSTALLDIR'></Property>
     <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.7" After="LaunchConditions"></SetProperty>
