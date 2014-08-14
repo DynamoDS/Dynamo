@@ -2202,9 +2202,8 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS093_Param_notypedefined_indexing_Userdefined()
         {
             string code =
-                    @"                    class A{ a;}                    class B{                        b : A;                        constructor B(x : A, y : A)                        {                            b = x;                        }                    }                    points = { A.A(), A.A() };                    def CreateLine(points )                    {                        return = B.B(points[0], points[1]);                    }                    test = CreateLine(points);                    z=test.b.a;                    ";
-            string error = "1467309 - rev 3786 :  Warning:Couldn't decide which function to execute... coming from valid code ";
-            thisTest.VerifyRunScriptSource(code, error);
+                    @"                    class A{ a = 0;}                    class B{                        b : A;                        constructor B(x : A, y : A)                        {                            b = x;                        }                    }                    points = { A.A(), A.A() };                    def CreateLine(points: var[] )                    {                        return = B.B(points[0], points[1]);                    }                    test = CreateLine(points);                    z=test.b.a;                    ";
+            thisTest.RunScriptSource(code);
             thisTest.Verify("z", 0);
         }
 
