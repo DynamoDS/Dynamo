@@ -18,6 +18,8 @@ namespace ProtoTest.TD.OtherMiscTests
         public void Fibunacci()
         {
             string code = @"
+fib10_r;
+fib10_i;
 [Imperative]
 {
     def fibonacci_recursive:int(number : int)
