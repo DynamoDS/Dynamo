@@ -177,7 +177,7 @@ def MinimumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
         
         if (_count == 0)
         {
-            return = keys;
+            return = _keys;
         }
 
         for (_index in 0..(_count - 1))
