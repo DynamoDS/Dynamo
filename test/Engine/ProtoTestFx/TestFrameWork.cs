@@ -713,9 +713,13 @@ namespace ProtoTestFx.TD
                 var values = value as IEnumerable;
                 if (object.ReferenceEquals(values, null))
                 {
-                    throw new AssertionException("The value is :" + data.Data.ToString() + "; but the expected value is " + value.ToString());
+                    string errorMessage = string.Format(
+                        "The value is {1}, but the expected value is {2}.",
+                        data.Data ?? "null",
+                        value);
+                    throw new AssertionException(errorMessage);
                 }
-                AssertCollection(data, value as IEnumerable);
+                AssertCollection(data, values);
             }
             else
             {
