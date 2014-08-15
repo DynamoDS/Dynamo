@@ -197,7 +197,7 @@ def MaximumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
         
         if (_count == 0)
         {
-            return = keys;
+            return = _keys;
         }
 
         for (_index in 0..(_count - 1))
@@ -472,7 +472,7 @@ def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
 
         if (_count == 0)
         {
-            return = keys;
+            return = _keys;
         }
 
         for (_index in 0..(_count - 1))
@@ -495,7 +495,7 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
         _count = Count(list);
         if (_count == 0)
         {
-              return = {};
+            return = {};
         }
         
         _groupedList = { };
