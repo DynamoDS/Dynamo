@@ -109,6 +109,38 @@ namespace Dynamo
             Assert.AreEqual(values.Count, distinct.Count());
         }
 
+        [Test]
+        public void TimeStampGenerator02()
+        {
+            var generator = new TimeStampGenerator();
+
+            TimeStamp first = generator.Next;
+            TimeStamp next = generator.Next;
+            TimeStamp nextnext = generator.Next;
+
+            Assert.IsTrue(first < next);
+            Assert.IsTrue(first < nextnext);
+            Assert.IsTrue(next < nextnext);
+
+            Assert.IsTrue(next > first);
+            Assert.IsTrue(nextnext > first);
+            Assert.IsTrue(nextnext > next);
+
+            // Alisasing the variable is necessary to prevent 
+            // the compiler's naive comparison check preventing this
+            TimeStamp a = first;
+            Assert.IsFalse(a > first);
+            Assert.IsFalse(a < first);
+            Assert.IsTrue(a.Equals(first));
+            Assert.IsTrue(first.Equals(a));
+
+            TimeStamp b = next;
+            Assert.IsFalse(b > next);
+            Assert.IsFalse(b < next);
+            Assert.IsTrue(b.Equals(next));
+            Assert.IsTrue(next.Equals(b));
+        }
+
         #endregion
 
         #region AsyncTask Related Test Cases
