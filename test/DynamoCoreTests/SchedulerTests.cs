@@ -43,7 +43,7 @@ namespace Dynamo
             this.doneEvent.Set(); // Done with grabbing.
         }
 
-        internal long TimeStampValue { get; private set; }
+        internal TimeStamp TimeStampValue { get; private set; }
     }
 
     #endregion
@@ -61,9 +61,9 @@ namespace Dynamo
         public void TimeStampGenerator00()
         {
             var scheduler = new DynamoScheduler();
-            Assert.AreEqual(1024, scheduler.NextTimeStamp);
-            Assert.AreEqual(1025, scheduler.NextTimeStamp);
-            Assert.AreEqual(1026, scheduler.NextTimeStamp);
+            Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
+            Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
+            Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
         }
 
         /// <summary>
@@ -96,13 +96,13 @@ namespace Dynamo
             }));
 
             WaitHandle.WaitAll(events);
-            var values = new List<long>();
+            var values = new List<TimeStamp>();
             for (int index = 0; index < EventCount; ++index)
                 values.Add(grabbers[index].TimeStampValue);
 
-            // Ensure we get a list of numbers, and that these numbers are all 
-            // unique (i.e. the distinct set of numbers returned should have the 
-            // same count as the original list).
+            // Ensure we get a list of time stamps, and that these numbers are 
+            // all unique (i.e. the distinct set of numbers returned should have
+            // the same count as the original list).
             // 
             Assert.AreEqual(EventCount, values.Count);
             var distinct = values.Distinct();
