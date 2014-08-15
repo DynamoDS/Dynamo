@@ -178,6 +178,52 @@
                                                                MinWidth="150" />
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Style.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                         Color="#00000000" />
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                         Color="#00000000" />
+                                    </Style.Resources>
+
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <Border BorderThickness="{TemplateBinding BorderThickness}"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        SnapsToDevicePixels="true">
+                                                    <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                      RecognizesAccessKey="True"
+                                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                </Border>
+
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsEnabled"
+                                                             Value="false">
+                                                        <Setter Property="Foreground"
+                                                                Value="#ADADAD" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected"
+                                                 Value="true">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource WorkspaceBackgroundBrush}" />
+                                            <Setter Property="BorderThickness"
+                                                    Value="0" />
+                                        </Trigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </ListView.ItemContainerStyle>
                         </ListView>
                     </Expander>
                 </DataTemplate>
