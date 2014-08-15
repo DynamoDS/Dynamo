@@ -908,14 +908,12 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
-        [Category("Failing")]
         public void TS46_typedassignment_To_array_1467294_2()
         {
             string code =
                 @"               class test                    {                        x=1;                    }                    a:double[]= 1;                                         b:int[] =  1.1;                     c:string[]=""a"";                     d:char []= 'c';                    x1= test.test();                    e:test []= x1;                    e1=e.x;                    f:bool []= true;                    g []=null;";
             
-            string error = "1467294 - Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
-            thisTest.RunScriptSource(code, error);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1.0 });
             thisTest.Verify("b", new object[] { 1 });
             thisTest.Verify("c", new object[] { "a" });
