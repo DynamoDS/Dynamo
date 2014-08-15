@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Dynamo.Core
+namespace Dynamo.Core.Threading
 {
     partial class DynamoScheduler
     {
