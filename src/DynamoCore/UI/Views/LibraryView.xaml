@@ -9,7 +9,6 @@
 			 d:DesignHeight="525"
 			 d:DesignWidth="350">
 	<UserControl.Resources>
-        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
         <DataTemplate x:Key="ClassObjectDataTemplate">
 			<StackPanel Orientation="Vertical"
 						Width="66"
@@ -23,7 +22,6 @@
 						   HorizontalAlignment="Center" />
 			</StackPanel>
 		</DataTemplate>
-
 		<DataTemplate x:Key="ClassDetailsDataTemplate">
             <Grid Background="Transparent">
 				<Grid.Width>
@@ -36,11 +34,6 @@
                 <uicontrols:StandardPanel Name="standardPanel"/>
 			</Grid>
         </DataTemplate>
-
-		<controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
-											  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
-											  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-
         <DataTemplate x:Key="titleText">
             <Border Height="24">
                 <TextBlock Text="{Binding}"
@@ -53,6 +46,11 @@
                            TextWrapping="Wrap" />
             </Border>
         </DataTemplate>
+
+        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+        <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
+                                              ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
+                                              ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
 
         <Style TargetType="{x:Type Expander}">
             <Setter Property="HeaderTemplate"
@@ -83,7 +81,6 @@
                                                                MinWidth="150" />
 								</ItemsPanelTemplate>
 							</ListView.ItemsPanel>
-
                         </ListView>
 					</Expander>
 				</DataTemplate>

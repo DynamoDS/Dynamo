@@ -48,6 +48,7 @@ limitations under the License.
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;DEBUG;USE_DSENGINE,ENABLE_NEW_LIBRARY_VIEW</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_DSENGINE;ENABLE_NEW_LIBRARY_VIEW;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,6 +60,7 @@ limitations under the License.
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;USE_DSENGINE,ENABLE_NEW_LIBRARY_VIEW</DefineConstants>
+    <DefineConstants>TRACE;ENABLE_NEW_LIBRARY_VIEW</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>

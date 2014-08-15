@@ -304,9 +304,12 @@ namespace Dynamo.Controls
             sidebarGrid.Children.Add(search);
             this.dynamoViewModel.SearchViewModel.Visible = true;
 #else
-    var search = new SearchView(
-        this.dynamoViewModel.SearchViewModel,
-        this.dynamoViewModel);
+
+            var search = new SearchView(
+                this.dynamoViewModel.SearchViewModel,
+                this.dynamoViewModel);
+            sidebarGrid.Children.Add(search);
+            this.dynamoViewModel.SearchViewModel.Visible = true;
 #endif
 
             #endregion
