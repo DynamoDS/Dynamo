@@ -52,14 +52,14 @@ namespace DynamoCoreUITests
         public void CanHideConsoleWhenShown()
         {
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            View.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(View.ConsoleShowing)));
+            Assert.False(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
         [Category("DynamoUI")]
         public void ConsoleIsHiddenOnOpen()
         {
-            Assert.False(View.ConsoleShowing);
+            Assert.False(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
@@ -67,10 +67,10 @@ namespace DynamoCoreUITests
         public void CanShowConsoleWhenHidden()
         {
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            View.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(View.ConsoleShowing)));
+            Assert.False(ViewModel.ConsoleHeight > 0);
 
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            View.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.True(View.ConsoleShowing)));
+            Assert.True(ViewModel.ConsoleHeight > 0);
         }
 
         #endregion

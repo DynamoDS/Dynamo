@@ -51,11 +51,6 @@ namespace Dynamo.Controls
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
-        public bool ConsoleShowing
-        {
-            get { return LogScroller.Height > 0; }
-        }
-
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
