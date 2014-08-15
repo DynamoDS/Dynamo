@@ -709,12 +709,15 @@
                 </Style>
             </Button.Style>
         </Button>
-        <dynui:LibraryToolTipPopup x:Name="Popup"
-                           IsOpen="{Binding ElementName=Popup, Path=DataContext, Converter={StaticResource BrowserItemToBooleanConverter}, Mode=OneWay}"
-                           AttachmentSide="Right"
-                           StaysOpen="True"
-                           AllowsTransparency="True"
-                           MouseLeave="Popup_MouseLeave">
+        <dynui:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                   IsOpen="{Binding ElementName=libraryToolTipPopup, 
+                                                    Path=DataContext, 
+                                                    Converter={StaticResource BrowserItemToBooleanConverter}, 
+                                                    Mode=OneWay}"
+                                   AttachmentSide="Right"
+                                   StaysOpen="True"
+                                   AllowsTransparency="True"
+                                   MouseLeave="libraryToolTipPopup_MouseLeave">
         </dynui:LibraryToolTipPopup>
     </Grid>
 

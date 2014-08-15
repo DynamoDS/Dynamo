@@ -366,14 +366,14 @@ namespace Dynamo.Search
         private void nodeButton_MouseEnter(object sender, MouseEventArgs e)
         {
             Button from_sender = sender as Button;
-            Popup.PlacementTarget = from_sender;
-            Popup.DataContext = from_sender.DataContext;
-            Popup.WindowH = WindowH;
+            libraryToolTipPopup.PlacementTarget = from_sender;
+            libraryToolTipPopup.DataContext = from_sender.DataContext;
+            libraryToolTipPopup.WindowH = WindowH;
         }
 
-        private void Popup_MouseLeave(object sender, MouseEventArgs e)
+        private void libraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
         {
-            Popup.DataContext = null;
+            libraryToolTipPopup.DataContext = null;
         }
 
     }

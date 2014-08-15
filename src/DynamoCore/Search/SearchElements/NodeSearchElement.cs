@@ -56,9 +56,12 @@ namespace Dynamo.Search.SearchElements
             {
                 if (_inputParametrs == null)
                 {
-                    List<Tuple<string, string>> list = new List<Tuple<string, string>>();
-                    list.Add(Tuple.Create<string, string>("", "none"));
-                    return list;
+                    _inputParametrs = new List<Tuple<string, string>>();
+
+                    var tempList = _inputParametrs as List<Tuple<string, string>>;
+                    tempList.Add(Tuple.Create<string, string>("", "none"));
+
+                    _inputParametrs = tempList;
                 }
                 return _inputParametrs;
             }
