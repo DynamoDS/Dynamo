@@ -676,7 +676,7 @@ namespace Dynamo.ViewModels
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
 
             // support long nested categories like Math.Math.StaticMembers.Abs
-            var parentItem  = parent as BrowserInternalElement;
+            var parentItem = parent as BrowserInternalElement;
             while (parentItem != null)
             {
                 var grandParent = parentItem.Parent;
@@ -692,11 +692,9 @@ namespace Dynamo.ViewModels
                 return GetCategoryByName(newCategoryName);
             }
 
-            BrowserInternalElement tempCat;
-            if (!isLastCategory)
-                tempCat = new BrowserInternalElement(childCategoryName, parent);
-            else
-                tempCat = new BrowserClassElement(childCategoryName, parent);
+            BrowserInternalElement tempCat = new BrowserInternalElement(childCategoryName, parent);
+            tempCat.IsPlaceHolder = isLastCategory;
+
             parent.AddChild(tempCat);
 
             return tempCat;
@@ -877,26 +875,31 @@ namespace Dynamo.ViewModels
         ///     "Core.List.Create" will remain as "Core.List.Create"
         /// 
         /// </summary>
-        public string ProcessNodeCategory(string category, ref string group)
+        public string ProcessNodeCategory(string category, ref SearchElementGroup group)
         {
             if (string.IsNullOrEmpty(category))
                 return category;
 
             int index = category.LastIndexOf(CATEGORY_DELIMITER);
 
-            // If "index" is "-1", then the whole "category" will be used as-is.
-            string groupCandidate = category.Substring(index + 1);
-            switch (groupCandidate)
+            // If "index" is "-1", then the whole "category" will be used as-is.            
+            switch (category.Substring(index + 1))
             {
                 case CATEGORY_GROUP_ACTIONS:
+                    group = SearchElementGroup.Action;
+                    break;
                 case CATEGORY_GROUP_CREATE:
+                    group = SearchElementGroup.Create;
+                    break;
                 case CATEGORY_GROUP_QUERY:
-                    group = groupCandidate;
-                    return category.Substring(0, index);
+                    group = SearchElementGroup.Query;
+                    break;
                 default:
-                    group = CATEGORY_GROUP_ACTIONS;
+                    group = SearchElementGroup.Action;
                     return category;
             }
+
+            return category.Substring(0, index);
         }
 
         /// <summary>
@@ -932,7 +935,7 @@ namespace Dynamo.ViewModels
                     //      | nValue: int    |
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
-                    string group = null;
+                    SearchElementGroup group = SearchElementGroup.None;
                     var category = ProcessNodeCategory(function.Category, ref group);
 
                     // do not add GetType method names to search
@@ -983,7 +986,7 @@ namespace Dynamo.ViewModels
             }
 
             attribs = t.GetCustomAttributes(typeof (NodeCategoryAttribute), false);
-            string group = null;
+            SearchElementGroup group = SearchElementGroup.None;
             var cat = "";
             if (attribs.Length > 0)
             {
@@ -1005,7 +1008,7 @@ namespace Dynamo.ViewModels
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
+            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName);
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;
@@ -1121,7 +1124,7 @@ namespace Dynamo.ViewModels
 
         public bool Add(CustomNodeInfo nodeInfo)
         {
-            string group = null;
+            SearchElementGroup group = SearchElementGroup.None;
             string category = ProcessNodeCategory(nodeInfo.Category, ref group);
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
 

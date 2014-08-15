@@ -19,34 +19,34 @@
                  ItemsSource="{Binding Path=CreateMembers}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                    <Image HorizontalAlignment="Left"
-                           Height="29"
-                           Margin="5,5,0,0"
-                           VerticalAlignment="Top"
-                           Width="29"
-                           Source="{Binding SmallIcon}" />
-                    <TextBlock HorizontalAlignment="Left"
-                               TextWrapping="Wrap"
-                               Text="{Binding Name}"
-                               VerticalAlignment="Top"                               
-                               Margin="5,10,0,0"/>
-                </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Image HorizontalAlignment="Left"
+                               Height="29"
+                               Margin="5,5,0,0"
+                               VerticalAlignment="Top"
+                               Width="29"
+                               Source="{Binding SmallIcon}" />
+                        <TextBlock HorizontalAlignment="Left"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Name}"
+                                   VerticalAlignment="Top"
+                                   Margin="5,10,0,0" />
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <StackPanel Orientation="Horizontal"
                     Grid.Row="2">
-        <TextBlock Name="query"
-                   PreviewMouseLeftButtonDown="QueryMouseLeftButtonDown"
-                   FontWeight="UltraBold">QUERY</TextBlock>
-        <TextBlock Name="action"
-                   Margin="10,0,0,0"
-                   PreviewMouseLeftButtonDown="ActionMouseLeftButtonDown">ACTION</TextBlock>
+            <TextBlock Name="query"
+                       PreviewMouseLeftButtonDown="QueryMouseLeftButtonDown"
+                       FontWeight="UltraBold">QUERY</TextBlock>
+            <TextBlock Name="action"
+                       Margin="10,0,0,0"
+                       PreviewMouseLeftButtonDown="ActionMouseLeftButtonDown">ACTION</TextBlock>
         </StackPanel>
         <ListBox x:Name="queryActionMethods"
                  Grid.Row="3"
-                 Grid.ColumnSpan="2"                 
+                 Grid.ColumnSpan="2"
                  DataContextChanged="queryActionMethods_DataContextChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -60,8 +60,8 @@
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
-                                   VerticalAlignment="Top"                                   
-                                   Margin="5,10,0,0"/>
+                                   VerticalAlignment="Top"
+                                   Margin="5,10,0,0" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -17,7 +17,7 @@ namespace Dynamo.Search.SearchElements
         private FunctionDescriptor _functionItem;
         private string _displayString;
 
-        public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, string group) :
+        public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
             base(displayString, functionItem.Description, new List<string> { }, group)
         {
             _displayString = displayString;

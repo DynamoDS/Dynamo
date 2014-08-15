@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Dynamo.Nodes.Search;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -561,30 +562,30 @@ namespace Dynamo.Tests
         [Test]
         public void ProcessNodeCategoryTests()
         {
-            string group = null;
+            SearchElementGroup group = SearchElementGroup.None;
             string category = null;
             Assert.AreEqual(null, _search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual(null, group);
+            Assert.AreEqual(SearchElementGroup.None, group);
 
-            group = null;
+            group = SearchElementGroup.None;
             category = "";
             Assert.AreEqual("", _search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual(null, group);
+            Assert.AreEqual(SearchElementGroup.None, group);
 
-            group = null;
+            group = SearchElementGroup.None;
             category = "Builtin Functions";
             Assert.AreEqual("Builtin Functions", _search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual("Actions", group);
+            Assert.AreEqual(SearchElementGroup.Action, group);
 
-            group = null;
+            group = SearchElementGroup.None;
             category = "Core.Evaluate";
             Assert.AreEqual("Core.Evaluate", _search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual("Actions", group);
+            Assert.AreEqual(SearchElementGroup.Action, group);
 
-            group = null;
+            group = SearchElementGroup.None;
             category = "Core.List.Create";
             Assert.AreEqual("Core.List", _search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual("Create", group);
+            Assert.AreEqual(SearchElementGroup.Create, group);
         }
 		
         #endregion

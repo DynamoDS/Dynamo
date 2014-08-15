@@ -13,7 +13,7 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
-        private string _fullName ;
+        private string _fullName;
 
         #region Properties
 
@@ -48,8 +48,8 @@ namespace Dynamo.Search.SearchElements
         /// Group property </summary>
         /// <value>
         /// Group to which Node belongs to</value>
-        private string _group;
-        public string Group { get { return _group; } }
+        private SearchElementGroup _group;
+        public SearchElementGroup Group { get { return _group; } }
 
         private bool _searchable = true;
         public override bool Searchable { get { return _searchable; } }
@@ -95,7 +95,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string group, string fullName = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, SearchElementGroup group, string fullName = "")
         {
             this.Node = null;
             this._name = name;
@@ -109,7 +109,7 @@ namespace Dynamo.Search.SearchElements
 
         public virtual NodeSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._fullName);
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._group, this._fullName);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }

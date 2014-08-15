@@ -27,7 +27,7 @@ namespace Dynamo.Search.SearchElements
 
         public override string Type { get { return "Custom Node"; } }
 
-        public CustomNodeSearchElement(CustomNodeInfo info, string group) : base(info.Name, info.Description, new List<string>(), group)
+        public CustomNodeSearchElement(CustomNodeInfo info, SearchElementGroup group) : base(info.Name, info.Description, new List<string>(), group)
         {
             this.Node = null;
             this.FullCategoryName = info.Category;

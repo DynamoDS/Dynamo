@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Models;
 using Dynamo.Nodes.Search;
 using Dynamo.Utilities;
 
@@ -15,14 +14,14 @@ namespace Dynamo.Controls
         private const double ClassObjectWidth = 66.0;
         private const double ClassObjectHeight = 66.0;
         private ObservableCollection<BrowserItem> collection;
-        private BrowserClassElement currentClass;
+        private BrowserInternalElement currentClass;
 
         protected override void OnInitialized(EventArgs e)
         {
             // ListView should never be null.
             var classListView = WPF.FindUpVisualTree<ListView>(this);
             collection = classListView.ItemsSource as ObservableCollection<BrowserItem>;
-            collection.Add(new BrowserDetailsElement());
+            collection.Add(new ClassInformation());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
 
             base.OnInitialized(e);
@@ -70,7 +69,7 @@ namespace Dynamo.Controls
         {
             var index = ((sender as ListView).SelectedIndex);
             selectedItemIndex = TranslateSelectionIndex(index);
-            currentClass = collection[index] as BrowserClassElement;
+            currentClass = collection[index] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
@@ -84,7 +83,7 @@ namespace Dynamo.Controls
 
         private int GetClassDetailsIndex()
         {
-            var query = collection.Select(c => c).Where(c => c is BrowserDetailsElement);
+            var query = collection.Select(c => c).Where(c => c is ClassInformation);
             var classObjectBase = query.ElementAt(0);
             return collection.IndexOf(classObjectBase);
         }
@@ -101,20 +100,18 @@ namespace Dynamo.Controls
             var classObjectBase = collection[currentClassDetailsIndex];
 
             // If there is no selection, then mark the class details as hidden.
-            var classDetails = classObjectBase as BrowserDetailsElement;
+            var classDetails = classObjectBase as ClassInformation;
             if (classDetails != null && (selectedItemIndex == -1))
             {
-                classDetails.StandardPanelVisibility = Visibility.Collapsed;
+                classDetails.SPVisibility = Visibility.Collapsed;
                 return;
             }
 
             // Otherwise, if we get here it means the class details is shown!
-            classDetails.StandardPanelVisibility = Visibility.Visible;
+            classDetails.SPVisibility = Visibility.Visible;
 
             //Add members of selected class to class details            
-            classDetails.ActionMembers = currentClass.ActionMembers;
-            classDetails.CreateMembers = currentClass.CreateMembers;
-            classDetails.QueryMembers = currentClass.QueryMembers;
+            classDetails.PopulateMemberCollections(collection[selectedItemIndex] as BrowserInternalElement);
 
             // When we know the number of items on a single row, through selected 
             // item index we will find out where the expanded StandardPanel sit.

@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Dynamo.DSEngine;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Nodes.Search
@@ -93,6 +93,11 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        /// <summary>
+        /// Specifies whether or not BrowserInternalElement is container for leaves.
+        /// </summary>
+        public bool IsPlaceHolder { get; set; }
+
         public BrowserInternalElement()
         {
             this._name = "Default";
@@ -110,65 +115,87 @@ namespace Dynamo.Nodes.Search
         public string FullCategoryName { get; set; }
     }
 
-    public class BrowserClassElement : BrowserInternalElement
+    public class ClassInformation : BrowserItem
     {
-        private ObservableCollection<BrowserInternalElement> createMembers;
-        private ObservableCollection<BrowserInternalElement> actionMembers;
-        private ObservableCollection<BrowserInternalElement> queryMembers;
+        #region BrowserItem abstract members implementation 
 
-        internal BrowserClassElement(string name, BrowserItem parent)
-            : base(name, parent)
+        public override ObservableCollection<BrowserItem> Items
         {
-            this.createMembers = new ObservableCollection<BrowserInternalElement>();
-            this.actionMembers = new ObservableCollection<BrowserInternalElement>();
-            this.queryMembers = new ObservableCollection<BrowserInternalElement>();
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
+        public override string Name
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Specifies whether or not instance should be shown as StandardPanel.
+        /// </summary>
+        public Visibility SPVisibility { get; set; }
+
+        private ObservableCollection<BrowserInternalElement> createMembers;
         public ObservableCollection<BrowserInternalElement> CreateMembers
         {
             get { return this.createMembers; }
         }
 
+        private ObservableCollection<BrowserInternalElement> actionMembers;
         public ObservableCollection<BrowserInternalElement> ActionMembers
         {
             get { return this.actionMembers; }
         }
 
+        private ObservableCollection<BrowserInternalElement> queryMembers;
         public ObservableCollection<BrowserInternalElement> QueryMembers
         {
             get { return this.queryMembers; }
         }
 
-        internal override void AddChild(BrowserInternalElement elem)
+        public ClassInformation()
         {
-            switch ((elem as NodeSearchElement).Group)
+            SPVisibility = System.Windows.Visibility.Collapsed;
+        }
+
+        public void PopulateMemberCollections(BrowserInternalElement element)
+        {
+            createMembers = new ObservableCollection<BrowserInternalElement>();
+            actionMembers = new ObservableCollection<BrowserInternalElement>();
+            queryMembers = new ObservableCollection<BrowserInternalElement>();
+
+            foreach (var subelement in element.Items)
             {
-                case LibraryServices.Categories.Constructors:
-                    CreateMembers.Add(elem);
-                    break;
-                case LibraryServices.Categories.MemberFunctions:
-                    ActionMembers.Add(elem);
-                    break;
-                case LibraryServices.Categories.Properties:
-                    QueryMembers.Add(elem);
-                    break;
+                var nodeSearchEle = subelement as NodeSearchElement;
+                // nodeSearchEle is null means that our subelement is not a leaf of nodes tree.
+                // Normally we shouldn't have this situations. Should be clarified
+                // with project management.
+                if (nodeSearchEle == null)
+                    continue;
+
+                switch (nodeSearchEle.Group)
+                {
+                    case SearchElementGroup.Create:
+                        createMembers.Add(subelement as BrowserInternalElement);
+                        break;
+
+                    case SearchElementGroup.Action:
+                        actionMembers.Add(subelement as BrowserInternalElement);
+                        break;
+
+                    case SearchElementGroup.Query:
+                        queryMembers.Add(subelement as BrowserInternalElement);
+                        break;
+                }
             }
         }
-    }
-
-    public class BrowserDetailsElement : BrowserInternalElement
-    {
-        internal BrowserDetailsElement()
-            : base()
-        {
-            // Class details is by default hidden.
-            StandardPanelVisibility = System.Windows.Visibility.Collapsed;
-        }
-
-        public Visibility StandardPanelVisibility { get; set; }
-
-        public ObservableCollection<BrowserInternalElement> CreateMembers { get; set; }
-        public ObservableCollection<BrowserInternalElement> ActionMembers { get; set; }
-        public ObservableCollection<BrowserInternalElement> QueryMembers { get; set; }
     }
 }

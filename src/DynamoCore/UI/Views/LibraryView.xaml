@@ -31,7 +31,7 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
                 </Grid.Width>
                 <Grid.Visibility>
-                    <Binding Path="StandardPanelVisibility" />
+                    <Binding Path="SPVisibility" />
                 </Grid.Visibility>
                 <uicontrols:StandardPanel DataContext="{Binding}" />
             </Grid>
