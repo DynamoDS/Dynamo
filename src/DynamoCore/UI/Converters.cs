@@ -1628,8 +1628,15 @@ namespace Dynamo.Controls
         }
     }
 
-
-    public class InputParameterTypeConverter : IValueConverter
+    /// This converter is used to format the display string for both input and output 
+    /// parameters on the "TooltipWindow.xaml". If "parameter" here is "inputParam", 
+    /// then this converter is invoked by input parameter related binding. A colon 
+    /// character will be prefixed to the parameter type (e.g. "value : double") only 
+    /// for input parameter (since an output of a function does not have a name). Also,
+    /// the colon will only appended when there is actually an input parameter (for 
+    /// cases without input parameter, only "none" string will be displayed so there is 
+    /// no point in prefixing a colon character (e.g. we don't want ": none").
+    public class InOutParamTypeConverter : IValueConverter
     {
         private static readonly string NoneString = "none";
         private static readonly string ColonString = ":";
@@ -1640,7 +1647,7 @@ namespace Dynamo.Controls
             bool shouldPrefixColon = false;
 
             if(parameter!=null)
-                shouldPrefixColon = ((parameter as string).Equals("true"));
+                shouldPrefixColon = ((parameter as string).Equals("inputParam"));
 
             var input = value as string;
             if (string.IsNullOrEmpty(input) || input.Equals(NoneString)) 

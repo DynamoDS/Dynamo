@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-            <controls:InputParameterTypeConverter x:Key="InputParameterTypeConverter" />
+            <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -81,7 +81,8 @@
                                 <Run.Text>
                                 <Binding Path="Item2"
                                          Mode="OneWay"
-                                         Converter="{StaticResource InputParameterTypeConverter}" ConverterParameter="true"/>
+                                         Converter="{StaticResource InOutParamTypeConverter}"
+                                         ConverterParameter="inputParam"/>
                                 </Run.Text>
                             </Run>
                             </TextBlock>
@@ -102,7 +103,7 @@
                     <TextBlock.Text>
                         <Binding Path="OutputParametrs"
                                  Mode="OneWay"
-                                 Converter="{StaticResource InputParameterTypeConverter}"/>
+                                 Converter="{StaticResource InOutParamTypeConverter}"/>
                     </TextBlock.Text>
                 </TextBlock>
 
