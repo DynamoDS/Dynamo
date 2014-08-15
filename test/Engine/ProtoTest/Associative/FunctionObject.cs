@@ -292,6 +292,7 @@ r = f.i;
             string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
     @"
+import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
 class Point
 {
