@@ -47,6 +47,7 @@ namespace DynamoCoreUITests
 
         #region ToggleConsoleShowingCommand
 
+        //Tested with CTRL+SHIFT+UP. Work as expected to hide and show the console window
         [Test]
         [Category("DynamoUI")]
         public void CanHideConsoleWhenShown()
