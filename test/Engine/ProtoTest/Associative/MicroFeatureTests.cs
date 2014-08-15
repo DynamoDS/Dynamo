@@ -1980,6 +1980,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestGCFFI001()
         {
             String code =
@@ -1989,6 +1992,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestGCRefCount002()
         {
             String code =
@@ -2009,6 +2015,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestNullFFI()
         {
             String code =
