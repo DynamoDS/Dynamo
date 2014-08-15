@@ -908,6 +908,7 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TS46_typedassignment_To_array_1467294_2()
         {
             string code =
@@ -1072,23 +1073,6 @@ namespace ProtoTest.TD.MultiLangTests
             thisTest.Verify("d", new object[] { new object[] { true } });
             thisTest.Verify("e", new object[] { new object[] { true } });
             thisTest.Verify("f", new object[] { new object[] { true } });
-            thisTest.Verify("g", null);
-        }
-
-        [Test]
-        [Category("Type System")]
-        public void TS46_typedassignment_To_boolarray_2()
-        {
-            string code =
-                @"               class test                    {                        x=1;                    }                    a:bool[]= 0;                                         b:bool[] =  0.0;                     c:bool[]="""";                     d:bool[]= '0';                    x1= test.test();                    e:bool[]= null;                    e1=e.x;                    f:bool[]= false;                    g :bool[]=null;";
-            string error = "1467295 - Sprint 26 : rev 3766 null gets converted into an array of nulls (while converting into array of any type) when the conversion is not allowed ";
-            thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", new object[] { false });
-            thisTest.Verify("b", new object[] { false });
-            thisTest.Verify("c", new object[] { false });
-            thisTest.Verify("d", new object[] { false });
-            thisTest.Verify("e1", new object[] { false });
-            thisTest.Verify("f", new object[] { false });
             thisTest.Verify("g", null);
         }
 
@@ -1789,11 +1773,13 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("Type System")]
+        [Category("Failing")]
         public void TZ01_Defect_1467235_coercion_from_singleton_array_4()
         {
             string code =
                     @"                    class A {                    def foo : var[](x:var[][])                    {                        return = x;                    }                    }                    s = A.A();                    r = s.foo(1);";
-            string error = "1467235 - Sprint25: rev 3411 : When class property is a collection and a single value is passed to it, it should be coerced to a collection";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4172
+            string error = "MAGN-4172: What is the proper coercion strategy for this?";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
         }
@@ -1927,9 +1913,8 @@ namespace ProtoTest.TD.MultiLangTests
         public void TZ01_1467320_single_To_Dynamicarray()
         {
             string code =
-                    @"              class A                    {                        x = { };	                    constructor A ( y : int )	                    {                        x =  y ;	                    }                    }                    c = A.A(0);                    d = c.x;";
-            string error = "1467320 Sprint 27 - Rev 3873 ,Upgrade to array does not happen if the member property define as dynamic array and single value is assigned ";
-            thisTest.VerifyRunScriptSource(code, error);
+                    @"              class A                    {                        x:int[] = { };	                    constructor A ( y : int )	                    {                        x =  y ;	                    }                    }                    c = A.A(0);                    d = c.x;";
+            thisTest.VerifyRunScriptSource(code);
             thisTest.Verify("d", new object[] { 0 });
         }
 
