@@ -205,7 +205,6 @@ r = Apply(fo2, 42);
         }
 
         [Test]
-        [Category("Failing")]
         public void TestCompose03()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
@@ -285,7 +284,6 @@ r = f.i;
         }
 
         [Test]
-        [Category("Failing")]
         public void TestSortByKey()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
