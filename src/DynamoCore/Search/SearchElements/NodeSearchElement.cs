@@ -50,18 +50,23 @@ namespace Dynamo.Search.SearchElements
         public override string Description { get { return _description; } }
 
         private IEnumerable<Tuple<string, string>> _inputParametrs;
-        public IEnumerable<Tuple<string, string>> InputParametrs 
-        { 
-            get 
+        public IEnumerable<Tuple<string, string>> InputParametrs
+        {
+            get
             {
-                if (_inputParametrs==null)
+                if (_inputParametrs == null)
                 {
                     List<Tuple<string, string>> list = new List<Tuple<string, string>>();
-                    list.Add(Tuple.Create<string, string>("","none"));
+                    list.Add(Tuple.Create<string, string>("", "none"));
                     return list;
                 }
-                    return _inputParametrs;
-            } 
+                return _inputParametrs;
+            }
+
+            set
+            {
+                _inputParametrs = value;
+            }
         }
 
         private string _outputParametrs;
@@ -119,7 +124,7 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
-            this._inputParametrs = inputParametrs;
+            this.InputParametrs = inputParametrs;
             this._outputParametrs = outputParametrs;
         }
 
