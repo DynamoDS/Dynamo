@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Resources;
-using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Resources;
-using System.Linq;
 
 namespace Dynamo.Models
 {
@@ -81,26 +73,16 @@ namespace Dynamo.Models
     {
         private ObservableCollection<ClassMember> createMembers = null;
         private ObservableCollection<ClassMember> actionMembers = null;
-        private ObservableCollection<ClassMember> queryMembers = null; 
+        private ObservableCollection<ClassMember> queryMembers = null;
 
         internal ClassObject(string name)
         {
             this.Name = name;
 
-            this.SPVisibility = Visibility.Collapsed;
-
             this.createMembers = new ObservableCollection<ClassMember>();
             this.actionMembers = new ObservableCollection<ClassMember>();
             this.queryMembers = new ObservableCollection<ClassMember>();
         }
-
-        //internal void Add(ClassMember member)
-        //{
-        //    if (this.members == null)
-        //        this.members = new ObservableCollection<ClassMember>();
-
-        //    this.members.Add(member);
-        //}
 
         public string Name { get; private set; }
 
@@ -122,8 +104,6 @@ namespace Dynamo.Models
                 return bitmapImage;
             }
         }
-
-        public Visibility SPVisibility { get; private set; }
 
         public int Index { get; set; }
 
