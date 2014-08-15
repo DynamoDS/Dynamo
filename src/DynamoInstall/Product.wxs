@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   
   <Product Id="6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B" 
-           Name="Dynamo" 
+           Name="Dynamo 0.7.1" 
            Language="1033" 
            Version="0.7.1" 
            Manufacturer="Dynamo" 
