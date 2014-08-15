@@ -653,7 +653,7 @@ namespace Dynamo.Tests
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             Assert.AreEqual(2, ViewModel.SearchViewModel.SearchResults.Count);
@@ -751,7 +751,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             // search for refactored node
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("TheNoodle");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("TheNoodle");
 
             // results are correct
             Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
@@ -759,7 +759,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(newId, node3.Guid);
 
             // search for un-refactored node
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
 
             // results are correct
             Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
@@ -805,7 +805,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.SearchDictionary.NumElements);
 
             // search common base name
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
 
             // results are correct
             Assert.AreEqual(2, ViewModel.SearchViewModel.SearchResults.Count);
