@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dynamo.Core
+namespace Dynamo.Core.Threading
 {
     internal abstract class AsyncTask
     {

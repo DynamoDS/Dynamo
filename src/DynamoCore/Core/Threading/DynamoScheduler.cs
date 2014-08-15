@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 
-namespace Dynamo.Core
+namespace Dynamo.Core.Threading
 {
-    internal partial class DynamoScheduler
+    public partial class DynamoScheduler
     {
         #region Public Class Operational Methods
 
@@ -27,7 +27,7 @@ namespace Dynamo.Core
         /// false otherwise. Note that this method returns false when scheduler
         /// begins to shutdown, even when the task queue is not empty.</returns>
         /// 
-        internal bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
+        public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
             AsyncTask nextTask = null;
 
