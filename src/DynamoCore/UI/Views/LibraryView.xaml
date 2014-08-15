@@ -5,11 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
     <UserControl.Resources>
-        <DataTemplate x:Key="ClassObjectDataTemplate">
+        <ResourceDictionary>
+            <DataTemplate x:Key="ClassObjectDataTemplate">
             <StackPanel Orientation="Vertical"
                         Width="66"
                         Height="66">
@@ -22,7 +24,7 @@
                            HorizontalAlignment="Center" />
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="ClassDetailsDataTemplate">
+            <DataTemplate x:Key="ClassDetailsDataTemplate">
             <Grid Background="Transparent">
                 <Grid.Width>
                     <Binding Path="ActualWidth"
@@ -34,29 +36,15 @@
                 <uicontrols:StandardPanel Name="standardPanel" />
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="titleText">
-            <Border Height="24">
-                <TextBlock Text="{Binding}"
-                           Margin="4 0"
-                           VerticalAlignment="Center"
-                           Foreground="Red"
-                           FontSize="11"
-                           FontWeight="Normal"
-                           Width="220"
-                           TextWrapping="Wrap" />
-            </Border>
-        </DataTemplate>
 
-        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
-        <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
+            <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+            <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                               ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                               ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-
-        <Style TargetType="{x:Type Expander}">
-            <Setter Property="HeaderTemplate"
-                    Value="{StaticResource titleText}" />
-        </Style>
-
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
 
