@@ -37,6 +37,107 @@
             </Grid>
         </DataTemplate>
 
+            <ControlTemplate x:Key="ExpanderButtonTemp"
+                             TargetType="{x:Type ToggleButton}">
+                <Border x:Name="ExpanderButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid MinHeight="30"
+                          MinWidth="220">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image x:Name="ExpandCollapseStateIcon"
+                               Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                               Width="16"
+                               Height="16"
+                               VerticalAlignment="Center"
+                               Margin="0" />
+                        <ContentPresenter x:Name="HeaderContent"
+                                          Grid.Column="1"
+                                          Margin="0,0,0,0"
+                                          ContentSource="Content"
+                                          VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="True" />
+                            <Condition Property="IsChecked"
+                                       Value="False" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="True" />
+                            <Condition Property="IsChecked"
+                                       Value="True" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="False" />
+                            <Condition Property="IsChecked"
+                                       Value="True" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <!-- Expander Template-->
+            <ControlTemplate x:Key="ExpanderTemp"
+                             TargetType="{x:Type Expander}">
+                <DockPanel>
+                    <ToggleButton x:Name="ExpanderButton"
+                                  DockPanel.Dock="Top"
+                                  Template="{StaticResource ExpanderButtonTemp}"
+                                  Content="{TemplateBinding Header}"
+                                  IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                  OverridesDefaultStyle="True"
+                                  Padding="1.5,0">
+                    </ToggleButton>
+                    <ContentPresenter x:Name="ExpanderContent"
+                                      Grid.Row="1"
+                                      Visibility="Collapsed"
+                                      DockPanel.Dock="Bottom" />
+                </DockPanel>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsExpanded"
+                             Value="True">
+                        <Setter TargetName="ExpanderContent"
+                                Property="Visibility"
+                                Value="Visible" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
             <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                               ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
@@ -51,11 +152,16 @@
         <!-- This is the outer list (showing categories) -->
         <ListView Name="CategoryListView"
                   ScrollViewer.CanContentScroll="False"
-                  ItemsSource="{Binding}">
+                  ItemsSource="{Binding}"
+                  Background="{StaticResource WorkspaceBackgroundBrush}"
+                  BorderThickness="0">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Expander Foreground="Blue"
-                              Header="{Binding Path=Name}">
+                    <Expander Header="{Binding Path=Name}"
+                              OverridesDefaultStyle="True"
+                              Template="{StaticResource ExpanderTemp}"
+                              Foreground="#DDD"
+                              FontSize="13">
 
                         <!-- This is inner list (showing subcategories) -->
                         <ListView ScrollViewer.CanContentScroll="False"
@@ -73,6 +179,23 @@
                     </Expander>
                 </DataTemplate>
             </ListView.ItemTemplate>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <Border BorderThickness="0,0,0,2"
+                                        BorderBrush="#2F2F2F">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
 
     </Grid>
