@@ -6,11 +6,14 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="300"
+             Background="Transparent">
     <UserControl.Resources>
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
-    <Grid Visibility="{Binding Path=ClassDetailsVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
+    <Grid Visibility="{Binding Path=ClassDetailsVisibility,
+                               Converter={StaticResource BoolToVisibilityConverter},
+                               ConverterParameter='Collapse'}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -19,26 +22,29 @@
         </Grid.RowDefinitions>
         <TextBlock Visibility="{Binding Path=ClassDetailsVisibility,
                                         Converter={StaticResource BoolToVisibilityConverter},
-                                        ConverterParameter='Collapse'}">CREATE</TextBlock>
+                                        ConverterParameter='Collapse'}"
+                   Foreground="#DDD">CREATE</TextBlock>
         <ListBox x:Name="creationMethods"
                  Grid.Row="1"
-                 ItemsSource="{Binding Path=CreateMembers}">
+                 ItemsSource="{Binding Path=CreateMembers}"
+                 Background="Transparent"
+                 BorderBrush="Transparent">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                    <Image HorizontalAlignment="Left"
-                           Height="Auto"
-                           Margin="5,5,0,0"
-                           VerticalAlignment="Top"
-                           Width="Auto"
-                           Source="{Binding SmallIcon}" />
-                    <TextBlock HorizontalAlignment="Left"
-                               TextWrapping="Wrap"
-                               Text="{Binding Name}"
+                    <StackPanel Orientation="Horizontal">
+                        <Image HorizontalAlignment="Left"
+                               Height="29"
+                               Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="111"
-                               Margin="5,10,0,0"/>
-                </StackPanel>
+                               Width="29"
+                               Source="{Binding SmallIcon}" />
+                        <TextBlock HorizontalAlignment="Left"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Name}"
+                                   VerticalAlignment="Top"
+                                   Margin="5,10,0,0"
+                                   Foreground="#DDD" />
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -47,32 +53,36 @@
                     Visibility="{Binding Path=ClassDetailsVisibility,
                                         Converter={StaticResource BoolToVisibilityConverter},
                                         ConverterParameter='Collapse'}">
-        <TextBlock Name="query"
-                   PreviewMouseLeftButtonDown="OnQueryMouseLeftButtonDown"
-                   FontWeight="UltraBold">QUERY</TextBlock>
-        <TextBlock Name="action"
-                   Margin="10,0,0,0"
-                   PreviewMouseLeftButtonDown="OnActionMouseLeftButtonDown">ACTION</TextBlock>
+            <TextBlock Name="query"
+                       PreviewMouseLeftButtonDown="OnQueryMouseLeftButtonDown"
+                       FontWeight="UltraBold"
+                       Foreground="#DDD">QUERY</TextBlock>
+            <TextBlock Name="action"
+                       Margin="10,0,0,0"
+                       PreviewMouseLeftButtonDown="OnActionMouseLeftButtonDown"
+                       Foreground="#DDD">ACTION</TextBlock>
         </StackPanel>
         <ListBox x:Name="queryActionMethods"
                  Grid.Row="3"
                  Grid.ColumnSpan="2"
-                 DataContextChanged="OnDataContextChanged">
+                 DataContextChanged="OnDataContextChanged"
+                 Background="Transparent"
+                 BorderBrush="Transparent">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Image HorizontalAlignment="Left"
-                               Height="Auto"
+                               Height="29"
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="Auto"
+                               Width="29"
                                Source="{Binding SmallIcon}" />
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
                                    VerticalAlignment="Top"
-                                   Width="111"
-                                   Margin="5,10,0,0"/>
+                                   Margin="5,10,0,0"
+                                   Foreground="#DDD" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
