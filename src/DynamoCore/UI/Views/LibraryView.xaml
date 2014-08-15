@@ -12,17 +12,18 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="ClassObjectDataTemplate">
-            <StackPanel Orientation="Vertical"
-                        Width="66"
-                        Height="66">
-                <Image Source="{Binding Path=SmallIcon}"
-                       Width="29"
-                       Height="29"
-                       Margin="8"
-                       HorizontalAlignment="Center" />
-                <TextBlock Text="{Binding Path=Name}"
+                <StackPanel Orientation="Vertical"
+                            Width="66"
+                            Height="66">
+                    <Image Source="{Binding Path=SmallIcon}"
+                           Width="29"
+                           Height="29"
+                           Margin="8"
                            HorizontalAlignment="Center" />
-            </StackPanel>
+                    <TextBlock Text="{Binding Path=Name}"
+                               HorizontalAlignment="Center"
+                               Foreground="#DDD" />
+                </StackPanel>
         </DataTemplate>
             <DataTemplate x:Key="ClassDetailsDataTemplate">
             <Grid Background="Transparent">
@@ -166,7 +167,9 @@
                         <!-- This is inner list (showing subcategories) -->
                         <ListView ScrollViewer.CanContentScroll="False"
                                   ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                                  ItemsSource="{Binding Path=Classes}">
+                                  ItemsSource="{Binding Path=Classes}"
+                                  Background="#2F2F2F"
+                                  BorderBrush="Transparent">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
