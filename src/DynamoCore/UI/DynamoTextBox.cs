@@ -514,16 +514,10 @@ namespace Dynamo.UI.Controls
 
                 case Side.Right:
                     x = target.Width + 3*gap - 50;
-
-                    if ((WindowH - 48)
-                          - (popup.Height) - targetLocation.Y - gap * 3 > 0)
-                        y = 0;
-                    else
-                    {
-                        var delta = (WindowH - 48)
-                          - (popup.Height) - targetLocation.Y - gap * 3;
-                        y = delta;
-                    }
+                    //tooltip must be upper black bottom area
+                    var availableHeight = WindowH - popup.Height - targetLocation.Y - gap * 3;
+                    if (availableHeight < 48)
+                        y = availableHeight-48;
                     primaryAxis = PopupPrimaryAxis.Horizontal;
                     break;
 
