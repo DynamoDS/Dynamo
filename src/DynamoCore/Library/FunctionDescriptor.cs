@@ -79,6 +79,7 @@ namespace Dynamo.DSEngine
                     });
             }
             if (parameters.Any())
+            {
                 InputParametrs = parameters.Select(
                     par =>
                     {
@@ -86,6 +87,7 @@ namespace Dynamo.DSEngine
 
                     }
                     );
+            }
 
             ReturnType = returnType ?? "var[]..[]";
             Type = type;
