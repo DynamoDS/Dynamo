@@ -709,13 +709,13 @@
                 </Style>
             </Button.Style>
         </Button>
-        <dynui:DynamoPopup x:Name="Popup"
+        <dynui:LibraryToolTipPopup x:Name="Popup"
                            IsOpen="{Binding ElementName=Popup, Path=DataContext, Converter={StaticResource BrowserItemToBooleanConverter}, Mode=OneWay}"
                            AttachmentSide="Right"
                            StaysOpen="True"
                            AllowsTransparency="True"
                            MouseLeave="Popup_MouseLeave">
-        </dynui:DynamoPopup>
+        </dynui:LibraryToolTipPopup>
     </Grid>
 
 </UserControl>

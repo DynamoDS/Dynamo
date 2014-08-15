@@ -47,7 +47,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USE_DSENGINE;USE_DSENGINE;USE_DSENGINE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_DSENGINE;ENABLE_NEW_LIBRARY_VIEW;USE_DSENGINE;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>

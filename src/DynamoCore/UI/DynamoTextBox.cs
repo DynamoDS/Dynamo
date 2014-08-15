@@ -462,13 +462,13 @@ namespace Dynamo.UI.Controls
         }
     }
 
-    public class DynamoPopup : Popup
+    public class LibraryToolTipPopup : Popup
     {
         public double WindowH;
         public static readonly DependencyProperty AttachmentSidePopupProperty =
             DependencyProperty.Register("AttachmentSidePopup",
-            typeof(DynamoPopup.Side), typeof(DynamoPopup),
-            new PropertyMetadata(DynamoPopup.Side.Left));
+            typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
+            new PropertyMetadata(LibraryToolTipPopup.Side.Left));
 
         public enum Side
         {
@@ -480,7 +480,7 @@ namespace Dynamo.UI.Controls
             get { return ((Side)GetValue(AttachmentSidePopupProperty)); }
             set { SetValue(AttachmentSidePopupProperty, value); }
         }
-        public DynamoPopup()
+        public LibraryToolTipPopup()
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
