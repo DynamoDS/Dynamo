@@ -14,7 +14,7 @@
 	<key>BackgroundGraphic</key>
 	<dict>
 		<key>Bounds</key>
-		<string>{{0, 0}, {805.8900146484375, 536.28997802734375}}</string>
+		<string>{{0, 0}, {805.8900146484375, 536.2899923324585}}</string>
 		<key>Class</key>
 		<string>SolidGraphic</string>
 		<key>ID</key>
@@ -46,7 +46,7 @@
 	<key>Creator</key>
 	<string>Luke Church</string>
 	<key>DisplayScale</key>
-	<string>1 0/72 in = 1 0/72 in</string>
+	<string>1 0/72 in = 1.0000 in</string>
 	<key>GraphDocumentVersion</key>
 	<integer>8</integer>
 	<key>GraphicsList</key>
@@ -234,7 +234,7 @@
 			<key>Points</key>
 			<array>
 				<string>{609.42256297561403, 118.93480030053892}</string>
-				<string>{545.57743702438586, 89.355177726804826}</string>
+				<string>{545.57743702438597, 89.355177726804826}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -533,6 +533,8 @@ e.g. RevitServices}</string>
 					<string>FilledArrow</string>
 					<key>Legacy</key>
 					<true/>
+					<key>Pattern</key>
+					<integer>1</integer>
 					<key>TailArrow</key>
 					<string>0</string>
 				</dict>
@@ -738,7 +740,7 @@ e.g DynamoRevit}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-08-14 22:47:31 +0000</string>
+	<string>2014-08-15 14:56:58 +0000</string>
 	<key>Modifier</key>
 	<string>Luke Church</string>
 	<key>NotesVisible</key>
@@ -774,7 +776,7 @@ e.g DynamoRevit}</string>
 		<key>NSPaperSize</key>
 		<array>
 			<string>size</string>
-			<string>{841.8900146484375, 595.28997802734375}</string>
+			<string>{841.8900146484375, 595.2899923324585}</string>
 		</array>
 		<key>NSPrintReverseOrientation</key>
 		<array>
@@ -824,7 +826,7 @@ e.g DynamoRevit}</string>
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{350, 251}, {1389, 922}}</string>
+		<string>{{466, 244}, {1389, 922}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
