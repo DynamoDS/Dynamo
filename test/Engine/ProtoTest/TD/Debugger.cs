@@ -211,7 +211,6 @@ c = 1;";
         }
 
         [Test]
-        [Ignore]
         [Category("WatchFx Tests")]
         [Category("ProtoGeometry")]
         public void T003_Defect_1467629_Debugging_InlineCondition_With_Multiple_Return_Types()
@@ -233,26 +232,18 @@ class FixitySymbol // this class is implicitly extended from var
         localWCS = CoordinateSystem.WCS;
         Symbol = isFixed ? // using an in-line conditional
             Cuboid.ByLengths(CoordinateSystem.ByOriginVectors(Origin, // if true 
-            localWCS.XAxis, localWCS.YAxis), Size, Size, Size) : { Sphere.ByCenterPointRadius(Origin, Size * 0.25),
-            Cone.ByCenterLineRadius(Line.ByStartPointDirectionLength(Origin, localWCS.ZAxis, -Size), Size * 0.01, Size * 0.5) };
+            Vector.ByCoordinates(1,0,0), Vector.ByCoordinates(0,1,0)), Size, Size, Size) : { Sphere.ByCenterPointRadius(Origin, Size * 0.25),
+            Cone.ByCenterLineRadius(Line.ByStartPointDirectionLength(Origin, Vector.ByCoordinates(0,0,1), -Size), Size * 0.01, Size * 0.5) };
     }
     def Move : FixitySymbol(x : double, y : double, z : double) // an instance method 
     {
         return = FixitySymbol.FromOriginSize(this.Origin.Translate(x, y, z), this.Size, this.IsFixed); // note: the use of 'this' key word to refer to the instance 
     }
-    // in general instances of DesignScript class are immutable, and cannot be changed 
-    // to give the illusion of change, this instance method actually calls a constructor 
-    // and creates a new instance, but using some of the properties of the previous instance 
-    def SetColor(color : Color)
-    {
-        this.Symbol = this.Symbol.SetColor(color); // call SetColor on constituent geometric properties 
-        return = null;
-    }
+    
 }
 origin1 = Point.ByCoordinates(5, 5, 0); // define some appropriate input arguments 
 origin2 = Point.ByCoordinates(0..10..5, 10, 0); // including a collection of points 
 firstFixitySymbol = FixitySymbol.FromOriginSize(origin1, 2, true); // initially constructed 
-firstFixitySymbol.SetColor(Color.Cyan); // set color 
 firstFixitySymbol = firstFixitySymbol.Move(0, -4, 0); // modified by the instance method";
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }

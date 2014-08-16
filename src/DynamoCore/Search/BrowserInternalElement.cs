@@ -141,7 +141,7 @@ namespace Dynamo.Nodes.Search
         /// <summary>
         /// Specifies whether or not instance should be shown as StandardPanel.
         /// </summary>
-        public Visibility SPVisibility { get; set; }
+        public bool ClassDetailsVisibility { get; set; }
 
         private ObservableCollection<BrowserInternalElement> createMembers;
         public ObservableCollection<BrowserInternalElement> CreateMembers
@@ -159,11 +159,6 @@ namespace Dynamo.Nodes.Search
         public ObservableCollection<BrowserInternalElement> QueryMembers
         {
             get { return this.queryMembers; }
-        }
-
-        public ClassInformation()
-        {
-            SPVisibility = System.Windows.Visibility.Collapsed;
         }
 
         public void PopulateMemberCollections(BrowserInternalElement element)

@@ -31,8 +31,6 @@ namespace Dynamo.Controls
         {
             if (sizeInfo.WidthChanged) // Only recorder when width changes.
                 OrderListItems();
-
-            base.OnRenderSizeChanged(sizeInfo);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -103,12 +101,12 @@ namespace Dynamo.Controls
             var classDetails = classObjectBase as ClassInformation;
             if (classDetails != null && (selectedItemIndex == -1))
             {
-                classDetails.SPVisibility = Visibility.Collapsed;
+                classDetails.ClassDetailsVisibility = false;
                 return;
             }
 
             // Otherwise, if we get here it means the class details is shown!
-            classDetails.SPVisibility = Visibility.Visible;
+            classDetails.ClassDetailsVisibility = true;
 
             //Add members of selected class to class details            
             classDetails.PopulateMemberCollections(collection[selectedItemIndex] as BrowserInternalElement);

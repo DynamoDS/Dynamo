@@ -9,6 +9,8 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Diagnostics;
 
+using Dynamo.ViewModels;
+
 namespace Dynamo.Nodes.Prompts
 {
     /// <summary>
@@ -90,7 +92,7 @@ namespace Dynamo.Nodes.Prompts
 
         private void PostOnGithub_Click(object sender, RoutedEventArgs e)
         {
-            dynSettings.Controller.ReportABug(null);
+            DynamoViewModel.ReportABug(null);
         }
 
         private void Details_Click(object sender, RoutedEventArgs e)

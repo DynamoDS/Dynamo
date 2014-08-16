@@ -12,48 +12,62 @@
         <DataTemplate x:Key="ClassObjectDataTemplate">
             <StackPanel Orientation="Vertical"
                         Width="66"
-                        Height="80">
+                        Height="66">
                 <Image Source="{Binding Path=SmallIcon}"
                        Width="29"
                        Height="29"
                        Margin="8"
                        HorizontalAlignment="Center" />
                 <TextBlock Text="{Binding Path=Name}"
-                           HorizontalAlignment="Center"
-                           TextWrapping="Wrap" />
+                           HorizontalAlignment="Center" />
             </StackPanel>
         </DataTemplate>
-
         <DataTemplate x:Key="ClassDetailsDataTemplate">
-            <Grid Background="CornflowerBlue">
+            <Grid Background="Transparent">
                 <Grid.Width>
                     <Binding Path="ActualWidth"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
                 </Grid.Width>
                 <Grid.Visibility>
-                    <Binding Path="SPVisibility" />
+                    <Binding Path="ClassDetailsVisibility" />
                 </Grid.Visibility>
                 <uicontrols:StandardPanel DataContext="{Binding}" />
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Key="titleText">
+            <Border Height="24">
+                <TextBlock Text="{Binding}"
+                           Margin="4 0"
+                           VerticalAlignment="Center"
+                           Foreground="Red"
+                           FontSize="11"
+                           FontWeight="Normal"
+                           Width="220"
+                           TextWrapping="Wrap" />
+            </Border>
+        </DataTemplate>
 
+        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
         <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                               ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                               ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-        <controls:LibraryWrapPanelWidthConverter x:Key="LibraryWrapPanelWidthConverter" />
+
+        <Style TargetType="{x:Type Expander}">
+            <Setter Property="HeaderTemplate"
+                    Value="{StaticResource titleText}" />
+        </Style>
+
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
 
         <!-- This is the outer list (showing categories) -->
         <ListView Name="CategoryListView"
                   ScrollViewer.CanContentScroll="False"
-                  ItemsSource="{Binding BrowserRootCategories}">
+                  ItemsSource="{Binding Model.BrowserRootCategories}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-
                     <Expander Foreground="Blue"
-                              Header="{Binding Path=Name}"
-                              Width="{Binding ElementName=CategoryListView, Path=ActualWidth}">
+                              Header="{Binding Path=Name}">
 
                         <!-- This is inner list (showing subcategories) -->
                         <ListView ScrollViewer.CanContentScroll="False"
@@ -63,26 +77,10 @@
                                 <ItemsPanelTemplate>
                                     <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
 										ElementName=CategoryListView, 
-										Converter={StaticResource LibraryWrapPanelWidthConverter}}" />
+										Converter={StaticResource LibraryWrapPanelWidthConverter}}"
+                                                               MinWidth="150" />
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
-                            <!--<ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}">
-                                    <Style.Triggers>
-                                        <Trigger Property="DataContext"
-                                                 Value="">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="ListViewItem">
-                                                        <ContentPresenter />
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListView.ItemContainerStyle>-->
-
                         </ListView>
                     </Expander>
                 </DataTemplate>

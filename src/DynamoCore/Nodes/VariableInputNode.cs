@@ -13,17 +13,18 @@ namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
+
+        protected VariableInputNode(WorkspaceModel workspace) : base(workspace)
+        {
+            VariableInputController = new BasicVariableInputNodeController(this);
+        }
+
         public virtual void SetupCustomUIElements(dynNodeView view)
         {
             VariableInputController.SetupNodeUI(view);
         }
 
         private BasicVariableInputNodeController VariableInputController { get; set; }
-
-        protected VariableInputNode()
-        {
-            VariableInputController = new BasicVariableInputNodeController(this);
-        }
 
         private sealed class BasicVariableInputNodeController : VariableInputNodeController
         {
@@ -133,6 +134,7 @@ namespace Dynamo.Nodes
     public abstract class VariableInputNodeController
     {
         private readonly NodeModel model;
+
 
         private int inputAmtLastBuild;
         private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>();
@@ -295,10 +297,10 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { model, UndoRedoRecorder.UserAction.Modification }
                 };
-                model.WorkSpace.RecordModelsForUndo(models);
+                model.Workspace.RecordModelsForUndo(models);
             }
             else
-                model.WorkSpace.RecordModelForModification(model);
+                model.Workspace.RecordModelForModification(model);
         }
 
         public bool HandleModelEventCore(string eventName)
@@ -320,7 +322,7 @@ namespace Dynamo.Nodes
                 // For that reason, that entry on the undo-stack needs to be 
                 // popped (the node modification will be recorded here instead).
                 // 
-                model.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                model.Workspace.UndoRecorder.PopFromUndoGroup();
 
                 RecordModels();
                 RemoveInputFromModel();

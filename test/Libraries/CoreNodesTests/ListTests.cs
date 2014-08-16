@@ -10,13 +10,61 @@ namespace DSCoreNodesTests
     [TestFixture]
     internal static class ListTests
     {
+        #region UniqueInList
+        private sealed class Point
+        {
+            private bool Equals(Point other)
+            {
+                return X == other.X && Y == other.Y;
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return (X*397) ^ Y;
+                }
+            }
+
+            public readonly int X;
+            public readonly int Y;
+
+            public Point(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
+
+            public Point() { }
+
+            public override bool Equals(object obj)
+            {
+                return !ReferenceEquals(null, obj)
+                    && (ReferenceEquals(this, obj)
+                        || obj.GetType() == GetType() && Equals((Point)obj));
+            }
+        }
+
+        [Test]
+        public static void UniqueInListWithPoints()
+        {
+            var pt1 = new Point();
+            var pt2 = new Point(1, 0);
+            var pt3 = new Point(1, 0);
+
+            Assert.AreEqual(
+                new ArrayList { pt1, pt2 },
+                List.UniqueItems(new ArrayList { pt1, pt2, pt1, pt3 }));
+        }
+
         [Test]
         public static void UniqueInList()
         {
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3, 4, 5 },
-                List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4, 5, 4, 2, 1, 3 }));
+                List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4.0, 5, 4, 2, 1, 3 }));
         }
+        #endregion
 
         [Test]
         public static void ListContains()

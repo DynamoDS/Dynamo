@@ -17,7 +17,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Tests
 {
-    class CodeBlockNodeTests : DynamoUnitTest
+    class CodeBlockNodeTests : DynamoViewModelUnitTest
     {
 #if false
         [Test]
@@ -259,7 +259,7 @@ b = c[w][x][y][z];";
         [Test]
         public void Defect_MAGN_4024()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             // Create the initial code block node.
             var codeBlockNodeOne = CreateCodeBlockNode();
@@ -292,10 +292,10 @@ b = c[w][x][y][z];";
         public void Defect_MAGN_784()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanUndo);
-            Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanRedo);
+            Assert.IsFalse(ViewModel.Model.CurrentWorkspace.CanUndo);
+            Assert.IsFalse(ViewModel.Model.CurrentWorkspace.CanRedo);
         }
 
         [Test]
@@ -331,8 +331,8 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(codeBlockNode1, @"1;");
 
             // Connect the two nodes
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
-            ConnectorModel connector = ConnectorModel.Make(codeBlockNode1, codeBlockNode0,
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            ConnectorModel connector = ConnectorModel.Make(workspace, codeBlockNode1, codeBlockNode0,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector);
 
@@ -361,17 +361,17 @@ b = c[w][x][y][z];";
             var command = new DynCmd.CreateNodeCommand(
                 nodeGuid, "Watch", 0, 0, true, false);
 
-            Controller.DynamoViewModel.ExecuteCommand(command);
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            ViewModel.ExecuteCommand(command);
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var watchNode = workspace.NodeFromWorkspace<Watch>(nodeGuid);
 
             // Connect the two nodes
-            ConnectorModel connector0 = ConnectorModel.Make(codeBlockNode0, watchNode,
+            ConnectorModel connector0 = ConnectorModel.Make(workspace, codeBlockNode0, watchNode,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector0);
 
             // Run
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // Update the code block node
             UpdateCodeBlockNodeContent(codeBlockNode0, @"truuuue;");
@@ -384,12 +384,12 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(codeBlockNode1, @"false;");
 
             // Connect the two code block nodes
-            ConnectorModel connector1 = ConnectorModel.Make(codeBlockNode1, codeBlockNode0,
+            ConnectorModel connector1 = ConnectorModel.Make(workspace, codeBlockNode1, codeBlockNode0,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector1);
 
             // Run
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             UpdateCodeBlockNodeContent(codeBlockNode0, @"true;");
 
@@ -397,12 +397,12 @@ b = c[w][x][y][z];";
             Assert.AreEqual(0, codeBlockNode0.InPortData.Count);
 
             // Run
-            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             // Delete the first code block node
             List<ModelBase> nodes = new List<ModelBase>();
             nodes.Add(codeBlockNode0);
-            Controller.DynamoModel.DeleteModelInternal(nodes);
+            ViewModel.Model.DeleteModelInternal(nodes);
 
             // Undo
             workspace.Undo();
@@ -420,12 +420,12 @@ b = c[w][x][y][z];";
             var command = new DynCmd.CreateNodeCommand(
                 nodeGuid, "Point.Origin", 0, 0, true, false);
 
-            Controller.DynamoViewModel.ExecuteCommand(command);
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            ViewModel.ExecuteCommand(command);
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var pointOriginNode = workspace.NodeFromWorkspace<DSFunction>(nodeGuid);
 
             // Connect the two nodes
-            ConnectorModel connector = ConnectorModel.Make(pointOriginNode, codeBlockNode,
+            ConnectorModel connector = ConnectorModel.Make(workspace, pointOriginNode, codeBlockNode,
                 0, 0, PortType.INPUT);
             workspace.Connectors.Add(connector);
 
@@ -688,8 +688,8 @@ b = c[w][x][y][z];";
             var command = new DynCmd.CreateNodeCommand(
                 nodeGuid, "Code Block", 0, 0, true, false);
 
-            Controller.DynamoViewModel.ExecuteCommand(command);
-            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            ViewModel.ExecuteCommand(command);
+            var workspace = ViewModel.Model.CurrentWorkspace;
             var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(nodeGuid);
 
             Assert.IsNotNull(cbn);
@@ -699,7 +699,7 @@ b = c[w][x][y][z];";
         private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
         {
             var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
-            Controller.DynamoViewModel.ExecuteCommand(command);
+            ViewModel.ExecuteCommand(command);
         }
     }
 }

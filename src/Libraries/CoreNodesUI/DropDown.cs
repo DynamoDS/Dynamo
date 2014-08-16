@@ -46,7 +46,7 @@ namespace DSCoreNodesUI
             }
         }
 
-        protected DSDropDownBase(string outputName)
+        protected DSDropDownBase(WorkspaceModel workspaceModel, string outputName) : base(workspaceModel)
         {
             OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName)));
             RegisterAllPorts();

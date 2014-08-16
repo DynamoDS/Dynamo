@@ -1,6 +1,5 @@
-﻿using System;
-using System.Windows.Controls;
-using Dynamo.Models;
+﻿using System.Windows.Controls;
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -9,9 +8,22 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibraryView : UserControl
     {
-        public LibraryView()
+        //TODO: use LibraryViewModel if it will be ready
+        private readonly SearchViewModel viewModel;
+        private readonly DynamoViewModel dynamoViewModel;
+
+        public LibraryView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
+            this.viewModel = searchViewModel;
+            this.dynamoViewModel = dynamoViewModel;
+
             InitializeComponent();
+            Loaded += LibraryViewLoaded;
+        }
+
+        void LibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DataContext = this.viewModel;
         }
     }
 }
