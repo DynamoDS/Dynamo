@@ -844,6 +844,9 @@ namespace ProtoTest.LiveRunner
 
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestModify01()
         {
             List<string> codes = new List<string>() 
@@ -984,6 +987,9 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void RegressMAGN753()
         {
             List<string> codes = new List<string>() 
@@ -1235,51 +1241,6 @@ namespace ProtoTest.LiveRunner
             }
         }
 
-        [Test]
-        public void TestFunctionModification03()
-        {
-            // Test function with same name but with different parameters
-            List<string> codes = new List<string>() 
-            {
-                "def f() { t1 = 1; t2 = 5; return = t1..t2;} x = f(); r = Equals(x, {1, 2, 3, 4, 5});",
-                "def f(x) { t = (x > 0) ? 41 : 42; return = t;} x = f(-1); r = Equals(x, 42);",
-                "def f(x, y) { t1 = x; t2 = y; return = t1 + t2;} x = f(1, 2); r = Equals(x, 3);",
-                "def f(x, y) { return = x..y;} m = 2; n = 6; z1 = f(m, n); z2 = f(); r1 = Equals(z1, {2, 3, 4, 5, 6}); r2 = Equals(z2, null); r = r1 && r2;",
-                "def f(x, y, z) { t1 = x; t2 = y; t3 = z; return = t1 + t2 + t3;} x = f(1, 2, 3); r = Equals(x, 6);",
-            };
-
-            Guid guid = System.Guid.NewGuid();
-
-            {
-                List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
-
-                var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
-
-                AssertValue("r", true);
-            }
-
-
-            IEnumerable<int> indexes = Enumerable.Range(0, codes.Count);
-            int shuffleCount = codes.Count;
-
-            for (int i = 0; i < shuffleCount; ++i)
-            {
-                indexes = indexes.OrderBy(_ => randomGen.Next());
-
-                foreach (var index in indexes)
-                {
-                    List<Subtree> modified = new List<Subtree>();
-                    modified.Add(CreateSubTreeFromCode(guid, codes[index]));
-
-                    var syncData = new GraphSyncData(null, null, modified);
-                    astLiveRunner.UpdateGraph(syncData);
-
-                    AssertValue("r", true);
-                }
-            }
-        }
 
         [Test]
         [Category("Failing")]
