@@ -22,6 +22,12 @@
       <SourceControlFiles>False</SourceControlFiles>
       <Extensions>vert;frag;</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Shader Files\Modern">
+      <UniqueIdentifier>{880e8670-9aa6-42d3-8114-c994b84a947f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shader Files\Legacy">
+      <UniqueIdentifier>{41cc79a7-f6d4-4dc1-a50e-6e8102c17146}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -90,11 +96,17 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\phong.frag">
-      <Filter>Resource Files\Shader Files</Filter>
+    <None Include="Resources\Shaders\Modern\phong.frag">
+      <Filter>Resource Files\Shader Files\Modern</Filter>
     </None>
-    <None Include="Resources\Shaders\phong.vert">
-      <Filter>Resource Files\Shader Files</Filter>
+    <None Include="Resources\Shaders\Modern\phong.vert">
+      <Filter>Resource Files\Shader Files\Modern</Filter>
+    </None>
+    <None Include="Resources\Shaders\Legacy\phong.frag">
+      <Filter>Resource Files\Shader Files\Legacy</Filter>
+    </None>
+    <None Include="Resources\Shaders\Legacy\phong.vert">
+      <Filter>Resource Files\Shader Files\Legacy</Filter>
     </None>
   </ItemGroup>
 </Project>

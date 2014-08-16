@@ -31,8 +31,8 @@ Scene::Scene(VisualizerWnd^ visualizer) :
 void Scene::Initialize(int width, int height)
 {
     std::string vs, fs;
-    Utils::LoadShaderResource(IDR_SHADER_PHONG_VERT, vs);
-    Utils::LoadShaderResource(IDR_SHADER_PHONG_FRAG, fs);
+    Utils::LoadShaderResource(IDR_SHADER_PHONG_VERT_LEGACY, vs);
+    Utils::LoadShaderResource(IDR_SHADER_PHONG_FRAG_LEGACY, fs);
 
     // Create shaders and their program.
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();

@@ -11,7 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <Choose>
-    <When Condition=" '$(VisualStudioVersion)'=='11.0' "> <!-- VS2012 -->
+    <When Condition=" '$(VisualStudioVersion)'=='11.0' ">
+      <!-- VS2012 -->
       <PropertyGroup Label="Globals">
         <ProjectGuid>{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}</ProjectGuid>
         <Keyword>Win32Proj</Keyword>
@@ -20,7 +21,8 @@
         <PlatformToolset>v110</PlatformToolset>
       </PropertyGroup>
     </When>
-    <When Condition=" '$(VisualStudioVersion)'=='12.0' "> <!-- VS2013 -->
+    <When Condition=" '$(VisualStudioVersion)'=='12.0' ">
+      <!-- VS2013 -->
       <PropertyGroup Label="Globals">
         <ProjectGuid>{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}</ProjectGuid>
         <Keyword>Win32Proj</Keyword>
@@ -131,10 +133,6 @@
     <ResourceCompile Include="Resources\Resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\phong.frag" />
-    <None Include="Resources\Shaders\phong.vert" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
     </ProjectReference>
@@ -143,6 +141,12 @@
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\Legacy\phong.frag" />
+    <None Include="Resources\Shaders\Legacy\phong.vert" />
+    <None Include="Resources\Shaders\Modern\phong.frag" />
+    <None Include="Resources\Shaders\Modern\phong.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
