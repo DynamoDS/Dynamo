@@ -172,8 +172,6 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
             const std::string& content) const;
         virtual IFragmentShader* CreateFragmentShaderCore(
             const std::string& content) const;
-        virtual IShaderProgram* CreateShaderProgramCore(
-            IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) const;
         virtual IShaderProgram* CreateShaderProgramCore(ShaderName shaderName) const;
         virtual IVertexBuffer* CreateVertexBufferCore(void) const;
         virtual void BeginRenderFrameCore(HDC deviceContext) const;

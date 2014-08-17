@@ -534,13 +534,6 @@ namespace Dynamo { namespace Bloodstone {
             return this->CreateFragmentShaderCore(content);
         }
 
-        IShaderProgram* CreateShaderProgram(
-            IVertexShader* pVertexShader,
-            IFragmentShader* pFragmentShader) const
-        {
-            return this->CreateShaderProgramCore(pVertexShader, pFragmentShader);
-        }
-
         IShaderProgram* CreateShaderProgram(ShaderName shaderName) const
         {
             return this->CreateShaderProgramCore(shaderName);
@@ -590,8 +583,6 @@ namespace Dynamo { namespace Bloodstone {
             const std::string& content) const = 0;
         virtual IFragmentShader* CreateFragmentShaderCore(
             const std::string& content) const = 0;
-        virtual IShaderProgram* CreateShaderProgramCore(
-            IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) const = 0;
         virtual IShaderProgram* CreateShaderProgramCore(ShaderName shaderName) const = 0;
 
         virtual IVertexBuffer* CreateVertexBufferCore(void) const = 0;

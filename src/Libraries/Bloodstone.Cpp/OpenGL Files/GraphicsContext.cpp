@@ -140,15 +140,6 @@ IFragmentShader* GraphicsContext::CreateFragmentShaderCore(const std::string& co
     return pFragmentShader;
 }
 
-IShaderProgram* GraphicsContext::CreateShaderProgramCore(
-    IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) const
-{
-    auto pvs = dynamic_cast<VertexShader *>(pVertexShader);
-    auto pfs = dynamic_cast<FragmentShader *>(pFragmentShader);
-    ShaderProgram* pShaderProgram = new ShaderProgram(pvs, pfs);
-    return pShaderProgram;
-}
-
 IShaderProgram* GraphicsContext::CreateShaderProgramCore(ShaderName shaderName) const
 {
     GetResourceIdentifiersParam params;
@@ -161,9 +152,9 @@ IShaderProgram* GraphicsContext::CreateShaderProgramCore(ShaderName shaderName) 
     Utils::LoadShaderResource(params.fragmentShaderId, fs);
 
     // Create shaders and their program.
-    auto pvs = this->CreateVertexShader(vs);
-    auto pfs = this->CreateFragmentShader(fs);
-    return this->CreateShaderProgram(pvs, pfs);
+    auto pvs = dynamic_cast<VertexShader *>(this->CreateVertexShader(vs));
+    auto pfs = dynamic_cast<FragmentShader *>(this->CreateFragmentShader(fs));
+    return new ShaderProgram(pvs, pfs);
 }
 
 IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
