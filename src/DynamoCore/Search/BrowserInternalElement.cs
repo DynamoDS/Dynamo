@@ -170,9 +170,10 @@ namespace Dynamo.Nodes.Search
             foreach (var subelement in element.Items)
             {
                 var nodeSearchEle = subelement as NodeSearchElement;
-                // nodeSearchEle is null means that our subelement is not a leaf of nodes tree.
-                // Normally we shouldn't have this situations. Should be clarified
-                // with project management.
+                // nodeSearchEle is null means that our subelement 
+                // is not a leaf of nodes tree.
+                // Normally we shouldn't have this situation.
+                // TODO: discuss with product management.
                 if (nodeSearchEle == null)
                     continue;
 
