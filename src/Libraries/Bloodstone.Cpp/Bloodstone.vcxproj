@@ -121,6 +121,7 @@
     <ClCompile Include="NodeSceneData.cpp" />
     <ClCompile Include="OpenGL Files\Buffers.cpp" />
     <ClCompile Include="OpenGL Files\Camera.cpp" />
+    <ClCompile Include="OpenGL Files\Constants.cpp" />
     <ClCompile Include="OpenGL Files\GraphicsContext.cpp" />
     <ClCompile Include="OpenGL Files\Shaders.cpp" />
     <ClCompile Include="Scene.cpp" />

@@ -414,6 +414,12 @@ namespace Dynamo { namespace Bloodstone {
         }
     };
 
+    enum class ShaderName
+    {
+        Phong,
+        MaxShaderName
+    };
+
     enum class TransMatrix
     {
         Model, View, Projection, Normal
@@ -530,9 +536,14 @@ namespace Dynamo { namespace Bloodstone {
 
         IShaderProgram* CreateShaderProgram(
             IVertexShader* pVertexShader,
-            IFragmentShader* pFragmentShader)
+            IFragmentShader* pFragmentShader) const
         {
             return this->CreateShaderProgramCore(pVertexShader, pFragmentShader);
+        }
+
+        IShaderProgram* CreateShaderProgram(ShaderName shaderName) const
+        {
+            return this->CreateShaderProgramCore(shaderName);
         }
 
         IVertexBuffer* CreateVertexBuffer(void) const
@@ -580,7 +591,8 @@ namespace Dynamo { namespace Bloodstone {
         virtual IFragmentShader* CreateFragmentShaderCore(
             const std::string& content) const = 0;
         virtual IShaderProgram* CreateShaderProgramCore(
-            IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) = 0;
+            IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) const = 0;
+        virtual IShaderProgram* CreateShaderProgramCore(ShaderName shaderName) const = 0;
 
         virtual IVertexBuffer* CreateVertexBufferCore(void) const = 0;
         virtual void BeginRenderFrameCore(HDC deviceContext) const = 0;

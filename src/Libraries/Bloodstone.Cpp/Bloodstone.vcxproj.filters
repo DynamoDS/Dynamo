@@ -92,6 +92,9 @@
     <ClCompile Include="NodeSceneData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGL Files\Constants.cpp">
+      <Filter>OpenGL Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Resource.rc">
