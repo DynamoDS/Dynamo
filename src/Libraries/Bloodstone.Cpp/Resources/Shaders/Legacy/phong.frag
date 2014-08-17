@@ -1,10 +1,8 @@
-#version 330
+#version 120
 
-in vec3 vertNormal;
-in vec3 vertPosition;
-in vec4 vertColor;
-
-out vec4 outColor;
+varying vec3 vertNormal;
+varying vec3 vertPosition;
+varying vec4 vertColor;
 
 uniform float alpha;
 
@@ -29,7 +27,7 @@ void main(void)
     // 
     if (controlParams[0] < 3.0)
     {
-        outColor = vec4(vertColor.rgb, alpha);
+        gl_FragColor = vec4(vertColor.rgb, alpha);
         return;
     }
 
@@ -54,5 +52,5 @@ void main(void)
     finalColor += ambient + diffuse + specular;
     // END - For multiple lights
 
-    outColor = vec4(finalColor.rgb, 1.0);
+    gl_FragColor = vec4(finalColor.rgb, 1.0);
 }

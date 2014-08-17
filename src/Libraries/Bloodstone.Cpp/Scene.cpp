@@ -151,6 +151,7 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         {
             auto pVertexBuffer = pGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(pointData);
+            pVertexBuffer->BindToShaderProgram(mpPhongShader);
             pNodeSceneData->AppendVertexBuffer(pVertexBuffer);
         }
 
@@ -159,6 +160,7 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         {
             auto pVertexBuffer = pGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(lineData);
+            pVertexBuffer->BindToShaderProgram(mpPhongShader);
             pNodeSceneData->AppendVertexBuffer(pVertexBuffer);
         }
 
@@ -167,6 +169,7 @@ void Scene::UpdateNodeGeometries(RenderPackages^ geometries)
         {
             auto pVertexBuffer = pGraphicsContext->CreateVertexBuffer();
             pVertexBuffer->LoadData(triangleData);
+            pVertexBuffer->BindToShaderProgram(mpPhongShader);
             pNodeSceneData->AppendVertexBuffer(pVertexBuffer);
         }
 

@@ -1,12 +1,12 @@
-#version 330
+#version 120
 
-layout (location = 0) in vec3 inPosition;
-layout (location = 1) in vec3 inNormal;
-layout (location = 2) in vec4 inColor;
+attribute vec3 inPosition;
+attribute vec3 inNormal;
+attribute vec4 inColor;
 
-out vec3 vertNormal;
-out vec3 vertPosition;
-out vec4 vertColor;
+varying vec3 vertNormal;
+varying vec3 vertPosition;
+varying vec4 vertColor;
 
 uniform mat4 model;
 uniform mat4 view;
