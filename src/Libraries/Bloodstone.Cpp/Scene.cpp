@@ -30,16 +30,8 @@ Scene::Scene(VisualizerWnd^ visualizer) :
 
 void Scene::Initialize(int width, int height)
 {
-    std::string vs, fs;
-    Utils::LoadShaderResource(IDR_SHADER_PHONG_VERT_LEGACY, vs);
-    Utils::LoadShaderResource(IDR_SHADER_PHONG_FRAG_LEGACY, fs);
-
-    // Create shaders and their program.
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
-    auto pvs = pGraphicsContext->CreateVertexShader(vs);
-    auto pfs = pGraphicsContext->CreateFragmentShader(fs);
-
-    mpShaderProgram = pGraphicsContext->CreateShaderProgram(pvs, pfs);
+    mpShaderProgram = pGraphicsContext->CreateShaderProgram(ShaderName::Phong);
     mpShaderProgram->BindTransformMatrix(TransMatrix::Model, "model");
     mpShaderProgram->BindTransformMatrix(TransMatrix::View, "view");
     mpShaderProgram->BindTransformMatrix(TransMatrix::Projection, "proj");

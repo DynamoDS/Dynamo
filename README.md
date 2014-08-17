@@ -28,6 +28,8 @@ The following list represents what are to be implemented in Bloodstone for it to
 - [x] Implement pan operation
 - [x] Implement zoom operation
 - [x] Implement zoom extent with double-click
+- [ ] Encapsulate things like ```controlParams``` in impl-specific classes
+- [ ] Remove APIs to deal with vertex/fragment shader from IGraphicsContext
 - [ ] Remove "alpha" uniform from Phong fragment shader
 - [ ] Set the background Cornflower blue to match the geometry contents
 - [ ] Output diagnostic information on Dynamo

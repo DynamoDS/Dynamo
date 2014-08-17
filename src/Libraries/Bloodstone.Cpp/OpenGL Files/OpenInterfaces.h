@@ -2,8 +2,8 @@
 #ifndef _OPEN_INTERFACE_H_
 #define _OPEN_INTERFACE_H_
 
-#include "../Interfaces.h"
 #include "Utilities.h"
+#include "Constants.h"
 #include "../../../../extern/OpenGL/glcorearb.h"
 #include "../../../../extern/OpenGL/glext.h"
 #include "../../../../extern/OpenGL/wglext.h"
@@ -173,7 +173,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual IFragmentShader* CreateFragmentShaderCore(
             const std::string& content) const;
         virtual IShaderProgram* CreateShaderProgramCore(
-            IVertexShader* pVertexShader, IFragmentShader* pFragmentShader);
+            IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) const;
+        virtual IShaderProgram* CreateShaderProgramCore(ShaderName shaderName) const;
         virtual IVertexBuffer* CreateVertexBufferCore(void) const;
         virtual void BeginRenderFrameCore(HDC deviceContext) const;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;

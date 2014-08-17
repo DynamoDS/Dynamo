@@ -141,12 +141,29 @@ IFragmentShader* GraphicsContext::CreateFragmentShaderCore(const std::string& co
 }
 
 IShaderProgram* GraphicsContext::CreateShaderProgramCore(
-    IVertexShader* pVertexShader, IFragmentShader* pFragmentShader)
+    IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) const
 {
     auto pvs = dynamic_cast<VertexShader *>(pVertexShader);
     auto pfs = dynamic_cast<FragmentShader *>(pFragmentShader);
     ShaderProgram* pShaderProgram = new ShaderProgram(pvs, pfs);
     return pShaderProgram;
+}
+
+IShaderProgram* GraphicsContext::CreateShaderProgramCore(ShaderName shaderName) const
+{
+    GetResourceIdentifiersParam params;
+    params.openGlVersion = GetOpenGLVersion(mMajorVersion, mMinorVersion);
+    params.shaderName = ShaderName::Phong;
+    GetResourceIdentifiers(&params);
+
+    std::string vs, fs;
+    Utils::LoadShaderResource(params.vertexShaderId, vs);
+    Utils::LoadShaderResource(params.fragmentShaderId, fs);
+
+    // Create shaders and their program.
+    auto pvs = this->CreateVertexShader(vs);
+    auto pfs = this->CreateFragmentShader(fs);
+    return this->CreateShaderProgram(pvs, pfs);
 }
 
 IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
