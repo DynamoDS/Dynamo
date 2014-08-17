@@ -54,6 +54,9 @@
     <ClInclude Include="NodeSceneData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGL Files\Constants.h">
+      <Filter>OpenGL Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
