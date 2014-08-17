@@ -303,6 +303,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         ShaderProgram(VertexShader* pVertexShader, FragmentShader* pFragmentShader);
         ~ShaderProgram(void);
         void Activate(void) const;
+        int GetAttributeLocation(const std::string& name) const;
 
     protected:
         virtual int GetShaderParameterIndexCore(const std::string& name) const;
@@ -344,7 +345,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
     protected:
         virtual PrimitiveType GetPrimitiveTypeCore() const;
         virtual void LoadDataCore(const GeometryData& geometries);
-        virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox);
+        virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox) const;
+        virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram);
 
     private:
         void EnsureVertexBufferCreation(void);

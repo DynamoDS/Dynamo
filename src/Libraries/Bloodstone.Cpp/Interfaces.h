@@ -482,15 +482,21 @@ namespace Dynamo { namespace Bloodstone {
             this->LoadDataCore(geometries);
         }
 
-        void GetBoundingBox(BoundingBox* pBoundingBox)
+        void GetBoundingBox(BoundingBox* pBoundingBox) const
         {
-            GetBoundingBoxCore(pBoundingBox);
+            this->GetBoundingBoxCore(pBoundingBox);
+        }
+
+        void BindToShaderProgram(IShaderProgram* pShaderProgram)
+        {
+            this->BindToShaderProgramCore(pShaderProgram);
         }
 
     protected:
         virtual PrimitiveType GetPrimitiveTypeCore() const = 0;
         virtual void LoadDataCore(const GeometryData& geometries) = 0;
-        virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox) = 0;
+        virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox) const = 0;
+        virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram) = 0;
     };
 
     class IGraphicsContext

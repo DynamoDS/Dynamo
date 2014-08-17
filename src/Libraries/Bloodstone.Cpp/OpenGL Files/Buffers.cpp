@@ -118,9 +118,33 @@ void VertexBuffer::LoadDataCore(const GeometryData& geometries)
     LoadDataInternal(data);
 }
 
-void VertexBuffer::GetBoundingBoxCore(BoundingBox* pBoundingBox)
+void VertexBuffer::GetBoundingBoxCore(BoundingBox* pBoundingBox) const
 {
     (*pBoundingBox) = mBoundingBox;
+}
+
+void VertexBuffer::BindToShaderProgramCore(IShaderProgram* pShaderProgram)
+{
+    EnsureVertexBufferCreation();
+
+    GL::glBindVertexArray(mVertexArrayId);
+    GL::glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
+
+    GL::glEnableVertexAttribArray(0);   // Position
+    GL::glEnableVertexAttribArray(1);   // Normal
+    GL::glEnableVertexAttribArray(2);   // Color
+
+    const auto pProgram = dynamic_cast<ShaderProgram *>(pShaderProgram);
+    const auto locPosition = pProgram->GetAttributeLocation("inPosition");
+    const auto locNormal = pProgram->GetAttributeLocation("inNormal");
+    const auto locColor = pProgram->GetAttributeLocation("inColor");
+
+    GL::glVertexAttribPointer(locPosition, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(0));
+    GL::glVertexAttribPointer(locNormal,   3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
+    GL::glVertexAttribPointer(locColor,    4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
+
+    GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GL::glBindVertexArray(0);
 }
 
 void VertexBuffer::EnsureVertexBufferCreation(void)

@@ -123,6 +123,11 @@ void ShaderProgram::Activate(void) const
     GL::glUseProgram(mProgramId);
 }
 
+int ShaderProgram::GetAttributeLocation(const std::string& name) const
+{
+    return GL::glGetAttribLocation(mProgramId, name.c_str());
+}
+
 int ShaderProgram::GetShaderParameterIndexCore(const std::string& name) const
 {
     return GL::glGetUniformLocation(mProgramId, name.c_str());
