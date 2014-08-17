@@ -20,7 +20,7 @@ Scene::Scene(VisualizerWnd^ visualizer) :
     mAlphaParamIndex(-1),
     mColorParamIndex(-1),
     mControlParamsIndex(-1),
-    mpShaderProgram(nullptr),
+    mpPhongShader(nullptr),
     mpNodeSceneData(nullptr),
     mVisualizer(visualizer)
 {
@@ -31,14 +31,14 @@ Scene::Scene(VisualizerWnd^ visualizer) :
 void Scene::Initialize(int width, int height)
 {
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
-    mpShaderProgram = pGraphicsContext->CreateShaderProgram(ShaderName::Phong);
-    mpShaderProgram->BindTransformMatrix(TransMatrix::Model, "model");
-    mpShaderProgram->BindTransformMatrix(TransMatrix::View, "view");
-    mpShaderProgram->BindTransformMatrix(TransMatrix::Projection, "proj");
-    mpShaderProgram->BindTransformMatrix(TransMatrix::Normal, "normalMatrix");
-    mAlphaParamIndex = mpShaderProgram->GetShaderParameterIndex("alpha");
-    mColorParamIndex = mpShaderProgram->GetShaderParameterIndex("colorOverride");
-    mControlParamsIndex = mpShaderProgram->GetShaderParameterIndex("controlParams");
+    mpPhongShader = pGraphicsContext->CreateShaderProgram(ShaderName::Phong);
+    mpPhongShader->BindTransformMatrix(TransMatrix::Model, "model");
+    mpPhongShader->BindTransformMatrix(TransMatrix::View, "view");
+    mpPhongShader->BindTransformMatrix(TransMatrix::Projection, "proj");
+    mpPhongShader->BindTransformMatrix(TransMatrix::Normal, "normalMatrix");
+    mAlphaParamIndex = mpPhongShader->GetShaderParameterIndex("alpha");
+    mColorParamIndex = mpPhongShader->GetShaderParameterIndex("colorOverride");
+    mControlParamsIndex = mpPhongShader->GetShaderParameterIndex("controlParams");
 
     auto pCamera = pGraphicsContext->GetDefaultCamera();
     {
@@ -58,9 +58,9 @@ void Scene::Destroy(void)
         this->mpNodeSceneData = nullptr;
     }
 
-    if (this->mpShaderProgram != nullptr) {
-        delete this->mpShaderProgram;
-        this->mpShaderProgram = nullptr;
+    if (this->mpPhongShader != nullptr) {
+        delete this->mpPhongShader;
+        this->mpPhongShader = nullptr;
     }
 }
 
@@ -82,11 +82,11 @@ void Scene::RenderScene(void)
 
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
     pGraphicsContext->EnableAlphaBlend();
-    pGraphicsContext->ActivateShaderProgram(mpShaderProgram);
+    pGraphicsContext->ActivateShaderProgram(mpPhongShader);
 
     // Fit the camera to the bounding box, and apply transformation.
     auto pCamera = pGraphicsContext->GetDefaultCamera();
-    mpShaderProgram->ApplyTransformation(pCamera);
+    mpPhongShader->ApplyTransformation(pCamera);
 
     RenderGeometries(geometries);
 }
@@ -277,7 +277,7 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
 {
     float alpha = 1.0f;
     auto pGraphicsContext = mVisualizer->GetGraphicsContext();
-    mpShaderProgram->SetParameter(mAlphaParamIndex, &alpha, 1);
+    mpPhongShader->SetParameter(mAlphaParamIndex, &alpha, 1);
 
     auto iterator = geometries.begin();
     for (; iterator != geometries.end(); ++iterator)
@@ -299,18 +299,18 @@ void Scene::RenderGeometries(const std::vector<NodeSceneData *>& geometries)
             controlParams[1] = 1.0f; // Override color.
         }
 
-        mpShaderProgram->SetParameter(mColorParamIndex, &rgbaColor[0], 4);
+        mpPhongShader->SetParameter(mColorParamIndex, &rgbaColor[0], 4);
 
         // Draw primitives of lower dimensionality first (e.g. points and lines).
         controlParams[0] = 1.0f;
-        mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
+        mpPhongShader->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::Low);
 
         if (pNodeSceneData->GetRenderMode() == RenderMode::Shaded)
             controlParams[0] = 3.0f;
 
         // Draw primitives of higher dimensionality later (e.g. triangles).
-        mpShaderProgram->SetParameter(mControlParamsIndex, &controlParams[0], 4);
+        mpPhongShader->SetParameter(mControlParamsIndex, &controlParams[0], 4);
         pNodeSceneData->Render(pGraphicsContext, Dimensionality::High);
     }
 }

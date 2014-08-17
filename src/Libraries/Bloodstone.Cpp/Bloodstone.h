@@ -114,7 +114,7 @@ namespace Dynamo { namespace Bloodstone {
         int mAlphaParamIndex;
         int mColorParamIndex;
         int mControlParamsIndex;
-        IShaderProgram* mpShaderProgram;
+        IShaderProgram* mpPhongShader;
 
         VisualizerWnd^ mVisualizer;
         std::map<std::wstring, NodeSceneData*>* mpNodeSceneData;
