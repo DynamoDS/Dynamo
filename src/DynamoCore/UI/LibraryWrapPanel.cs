@@ -10,9 +10,12 @@ namespace Dynamo.Controls
 {
     public class LibraryWrapPanel : WrapPanel
     {
-        private int selectedItemIndex = -1;
-        private const double ClassObjectWidth = 66.0;
-        private const double ClassObjectHeight = 66.0;
+        /// <summary>
+        /// Field specifies the prospective index of selected class in collection.
+        /// </summary>
+        private int selectedClassProspectiveIndex = -1;
+        private bool isClassObjectSizeSet = false;
+        private double classObjectWidth = -1.0;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
 
@@ -29,7 +32,7 @@ namespace Dynamo.Controls
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
-            if (sizeInfo.WidthChanged) // Only recorder when width changes.
+            if (sizeInfo.WidthChanged) // Only reorder when width changes.
                 OrderListItems();
         }
 
@@ -37,6 +40,15 @@ namespace Dynamo.Controls
         {
             if (this.Children == null || this.Children.Count == 0)
                 return finalSize;
+
+            // Find out class object size.
+            // First item is always class object.
+            if (!isClassObjectSizeSet)
+            {
+                classObjectWidth = this.Children[0].DesiredSize.Width;
+
+                isClassObjectSizeSet = true;
+            }
 
             double x = 0, y = 0, currentRowHeight = 0;
             foreach (UIElement child in this.Children)
@@ -66,20 +78,28 @@ namespace Dynamo.Controls
         private void OnClassViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = ((sender as ListView).SelectedIndex);
-            selectedItemIndex = TranslateSelectionIndex(index);
+            selectedClassProspectiveIndex = TranslateSelectionIndex(index);
             currentClass = collection[index] as BrowserInternalElement;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
+        /// <summary>
+        /// Function counts prospective index of selected class in collection.
+        /// In case if index of selected class bigger then index of ClassInformation
+        /// object it should be decreased by 1 because at next stages ClassInformation
+        /// will free occupied index.
+        /// </summary>
+        /// <param name="selection"></param>
+        /// <returns></returns>
         private int TranslateSelectionIndex(int selection)
         {
-            if (selection < GetClassDetailsIndex())
+            if (selection < GetClassInformationIndex())
                 return selection;
 
             return selection - 1;
         }
 
-        private int GetClassDetailsIndex()
+        private int GetClassInformationIndex()
         {
             var query = collection.Select(c => c).Where(c => c is ClassInformation);
             var classObjectBase = query.ElementAt(0);
@@ -93,41 +113,44 @@ namespace Dynamo.Controls
             if (collection == null || (collection.Count <= 1) || currentClass == null)
                 return;
 
-            // Find out where ClassDetails object is positioned in collection.
-            var currentClassDetailsIndex = GetClassDetailsIndex();
-            var classObjectBase = collection[currentClassDetailsIndex];
+            // Find out where ClassInformation object is positioned in collection.
+            var currentClassInformationIndex = GetClassInformationIndex();
+            var classObjectBase = collection[currentClassInformationIndex];
 
-            // If there is no selection, then mark the class details as hidden.
-            var classDetails = classObjectBase as ClassInformation;
-            if (classDetails != null && (selectedItemIndex == -1))
+            // If there is no selection, then mark the StandardPanel as hidden.
+            var classInformation = classObjectBase as ClassInformation;
+            if (classInformation != null && (selectedClassProspectiveIndex == -1))
             {
-                classDetails.ClassDetailsVisibility = false;
+                classInformation.ClassDetailsVisibility = false;
                 return;
             }
 
-            // Otherwise, if we get here it means the class details is shown!
-            classDetails.ClassDetailsVisibility = true;
+            // Otherwise, if we get here it means the StandardPanel is shown!
+            classInformation.ClassDetailsVisibility = true;
 
-            //Add members of selected class to class details            
-            classDetails.PopulateMemberCollections(collection[selectedItemIndex] as BrowserInternalElement);
+            //Add members of selected class to StandardPanel            
+            classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
 
             // When we know the number of items on a single row, through selected 
             // item index we will find out where the expanded StandardPanel sit.
-            var itemsPerRow = ((int)Math.Floor(ActualWidth / ClassObjectWidth));
-            var d = ((double)selectedItemIndex) / itemsPerRow;
+            var itemsPerRow = ((int)Math.Floor(ActualWidth / classObjectWidth));
+            var d = ((double)selectedClassProspectiveIndex) / itemsPerRow;
             var selectedItemRow = ((int)Math.Floor(d));
 
-            // Calculate the correct index where ClassDetails object should go 
+            // Calculate the correct index where ClassInformation object should go 
             // in the collection. If the selected item is on the first row (i.e. 
-            // row #0), then the ClassDetails object should be at the index 
+            // row #0), then the ClassInformation object should be at the index 
             // 'itemsPerRow'. Similarly, if the selected item is on row #N, then
-            // ClassDetails object should be at the index '(N + 1) * itemsPerRow'.
-            var correctClassDetailsIndex = ((selectedItemRow + 1) * itemsPerRow);
+            // ClassInformation object should be at the index '(N + 1) * itemsPerRow'.
+            var correctClassInformationIndex = ((selectedItemRow + 1) * itemsPerRow);
 
-            // We need to move the ClassDetails object to the right index.
-            classObjectBase = collection[currentClassDetailsIndex];
-            collection.RemoveAt(currentClassDetailsIndex);
-            collection.Insert(correctClassDetailsIndex, classObjectBase);
+            // But correctClassInformationIndex must be less than collection.Count.
+            if (correctClassInformationIndex >= collection.Count)
+                correctClassInformationIndex = collection.Count - 1;
+
+            // We need to move the ClassInformation object to the right index.            
+            collection.RemoveAt(currentClassInformationIndex);
+            collection.Insert(correctClassInformationIndex, classInformation);
         }
     }
 }
