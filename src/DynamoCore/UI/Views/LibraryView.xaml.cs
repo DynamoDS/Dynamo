@@ -5,8 +5,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Input;
 
-using Dynamo.Utilities;
-
 namespace Dynamo.UI.Views
 {
     /// <summary>
