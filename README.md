@@ -4,7 +4,7 @@ Dynamo is a Visual Programming language that aims to be accessible to both non-p
 
 ## Get Dynamo ##
 
-Looking to learn or download Dynamo?  Checkout [dynamobim.org](http://dynamobim.org/learn/)!
+Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim.org/learn/)!
 
 
 ## Build ###
@@ -61,7 +61,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Instrumentation ##
-Dynamo now contains an instrumentation system. This anonymously reports usage data to the Dynamo team that will be used to enhance the usability the product. Aggregated summaries of the data will be shared back with the Dynamo community.
+Dynamo contains an instrumentation system that anonymously reports usage data to the Dynamo team that will be used to enhance the usability the product. Aggregated summaries of the data will be shared back with the Dynamo community.
 
 An example of the data communicated is:
 
