@@ -28,6 +28,7 @@ namespace ProtoTestFx.TD
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
+        bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
  
@@ -251,8 +252,7 @@ namespace ProtoTestFx.TD
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
                 
-                string value = Environment.GetEnvironmentVariable("DumpDS");
-                if (value == "true")
+                if (dumpDS == "true")
                 {
 
                     String fileName = TestContext.CurrentContext.Test.Name + ".ds";
