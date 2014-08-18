@@ -193,8 +193,6 @@ namespace ProtoTestFx.TD
                 
                 StackTrace trace = new StackTrace();
                 int caller = 2;
-                System.Diagnostics.StackFrame frame = trace.GetFrame(caller);
-                string callerName = frame.GetMethod().Name;
                 
                 string tempPath = System.IO.Path.GetTempPath();
                 string import = @"testImport\";
@@ -252,16 +250,22 @@ namespace ProtoTestFx.TD
                     }
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
-                String fileName = TestContext.CurrentContext.Test.Name + ".ds";
-                String folderName = TestContext.CurrentContext.Test.FullName;
 
-                string[] substrings = folderName.Split('.');
+                string value = Environment.GetEnvironmentVariable("DumpDS");
+                if (value == "true")
+                {
 
-                string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
-                if (!System.IO.Directory.Exists(path))
-                    System.IO.Directory.CreateDirectory(path);
+                    String fileName = TestContext.CurrentContext.Test.Name + ".ds";
+                    String folderName = TestContext.CurrentContext.Test.FullName;
 
-                createDSFile(fileName, path, sourceCode);
+                    string[] substrings = folderName.Split('.');
+
+                    string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
+                    if (!System.IO.Directory.Exists(path))
+                        System.IO.Directory.CreateDirectory(path);
+
+                    createDSFile(fileName, path, sourceCode);
+                }
                 SetErrorMessage(errorstring);
                 return testMirror;
             }
@@ -690,10 +694,10 @@ namespace ProtoTestFx.TD
 
         public static void AssertValue(MirrorData data, object value)
         {
-            if (value == null)
-            {
+            if (data.IsCollection)
+                AssertCollection(data, value as IEnumerable);
+            else if (value == null)
                 Assert.IsTrue(data.IsNull);
-            }
             else if (value is int)
             {
                 if (data.IsNull)
@@ -706,25 +710,10 @@ namespace ProtoTestFx.TD
                 if (data.IsNull)
                     throw new AssertionException("Incorrect verification of null value with double");
 
-                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
-            }
-            else if (data.IsCollection)
-            {
-                var values = value as IEnumerable;
-                if (object.ReferenceEquals(values, null))
-                {
-                    string errorMessage = string.Format(
-                        "The value is {1}, but the expected value is {2}.",
-                        data.Data ?? "null",
-                        value);
-                    throw new AssertionException(errorMessage);
-                }
-                AssertCollection(data, values);
+                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);                
             }
             else
-            {
                 Assert.AreEqual(value, data.Data);
-            }
         }
 
         public IList<MethodMirror> GetMethods(string className, string methodName)
