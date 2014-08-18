@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -57,18 +58,9 @@ namespace Dynamo.Search.SearchElements
                 if (_inputParametrs == null)
                 {
                     _inputParametrs = new List<Tuple<string, string>>();
-
-                    var tempList = _inputParametrs as List<Tuple<string, string>>;
-                    tempList.Add(Tuple.Create<string, string>("", "none"));
-
-                    _inputParametrs = tempList;
+                    (_inputParametrs as List<Tuple<string, string>>).Add(Tuple.Create<string, string>("", "none"));
                 }
                 return _inputParametrs;
-            }
-
-            set
-            {
-                _inputParametrs = value;
             }
         }
 
@@ -127,7 +119,7 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
-            this.InputParametrs = inputParametrs;
+            this._inputParametrs = inputParametrs;
             this._outputParametrs = outputParametrs;
         }
 
