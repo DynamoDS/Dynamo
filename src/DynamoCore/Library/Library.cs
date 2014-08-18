@@ -166,7 +166,7 @@ namespace Dynamo.DSEngine
                     });
             }
 
-            ReturnType = returnType ?? "var[]..[]";
+            ReturnType = returnType == null? "var[]..[]" : returnType.Split('.').Last();
             Type = type;
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;

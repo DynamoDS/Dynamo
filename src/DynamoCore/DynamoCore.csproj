@@ -148,11 +148,16 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
-    <Compile Include="Core\TimeStampOrdering.cs" />
+    <Compile Include="Core\Threading\AsyncTask.cs" />
+    <Compile Include="Core\Threading\DynamoScheduler.cs" />
+    <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
+    <Compile Include="Core\Threading\SchedulerThread.cs" />
+    <Compile Include="Core\Threading\TimeStampGenerator.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
+    <Compile Include="Interfaces\ISchedulerThread.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
     <Compile Include="Library\FunctionDescriptor.cs" />

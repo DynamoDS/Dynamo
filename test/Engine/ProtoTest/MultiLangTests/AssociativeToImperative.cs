@@ -51,10 +51,10 @@ namespace ProtoTest.MultiLangTests
 
         [Test]
         [Category("Modifier Block")]
+        [Category("Failing")]
         public void EmbeddedTest004()
         {
-
-            Assert.Fail("This code should fail as x@first should be read only, however it doesn't");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1580
             String code =
 @"x;[Associative]{	x = {        0 => x@first;        +1 => x@second;}    [Imperative]    {        x@first = x + 5;    }}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -65,9 +65,10 @@ namespace ProtoTest.MultiLangTests
 
         [Test]
         [Category("Modifier Block")]
+        [Category("Failing")]
         public void EmbeddedTest005()
         {
-            Assert.Fail("This code should fail as x@second should be read only, however it doesn't");
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1580
             String code =
 @"x;[Associative]{	x = {        0 => x@first;        +1 => x@second;}    [Imperative]    {        x@second = x + 5;    }}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();

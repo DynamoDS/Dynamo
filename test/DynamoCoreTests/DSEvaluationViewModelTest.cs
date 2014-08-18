@@ -959,11 +959,8 @@ namespace Dynamo.Tests
         public void TestSingleIFRecusion_4058()
         {
             var model = ViewModel.Model;
-            Assert.Inconclusive("Single IF Recursion ");
-
             RunModel(@"core\dsevaluation\TestSingleIFRecusion_4058.dyn");
-
-            AssertPreviewValue("4c70f814-5c42-4fb9-89b0-b3cfe6f93b6d", 4);
+            AssertPreviewValue("f2b979b2-7824-428c-a960-5e7ca8cac1f1", 4);
             
         }
         [Test]
@@ -1002,10 +999,7 @@ namespace Dynamo.Tests
         public void TestNestedIFRecursion_4058()
         {
             var model = ViewModel.Model;
-            Assert.Inconclusive("MultipleIF Recursion ");
-
             RunModel(@"core\dsevaluation\NestedIFRecursion_4058.dyn");
-
             AssertPreviewValue("2a09f286-b0fe-443a-be87-591f5c6e9264", "Odd");
 
         }

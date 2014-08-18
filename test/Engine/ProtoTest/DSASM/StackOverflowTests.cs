@@ -27,7 +27,8 @@ namespace ProtoTest.DSASM
 
         [Test]
         [Ignore]
-        [Category("StackOverflow"), Category("Failing")]
+        [Category("StackOverflow")]
+        [Category("Failing")]
         public void StackOverflow_DNL_1467354()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4091
