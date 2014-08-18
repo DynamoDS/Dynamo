@@ -45,7 +45,7 @@ namespace Dynamo.Applications
             {
                 SetupDynamoPaths(application);
 
-                AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+                SubscribeAssemblyResolvingEvent();
 
                 ControlledApplication = application.ControlledApplication;
 
@@ -94,6 +94,8 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
+            UnsubscribeAssemblyResolvingEvent();
+
             return Result.Succeeded;
         }
 
@@ -150,6 +152,16 @@ namespace Dynamo.Applications
                 DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
                 DynamoPathManager.Instance.SetLibGPath(Path.Combine(DynamoPathManager.Instance.MainExecPath, "libg_220"));
             }
+        }
+
+        private void SubscribeAssemblyResolvingEvent()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+        }
+
+        private void UnsubscribeAssemblyResolvingEvent()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
         }
     }
 }

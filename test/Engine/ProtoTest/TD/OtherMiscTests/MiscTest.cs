@@ -18,6 +18,8 @@ namespace ProtoTest.TD.OtherMiscTests
         public void Fibunacci()
         {
             string code = @"
+fib10_r;
+fib10_i;
 [Imperative]
 {
     def fibonacci_recursive:int(number : int)
@@ -655,7 +657,7 @@ a=5;";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Comments_Nested()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -675,7 +677,7 @@ p2 = Point.ByCoordinates(0,0,0);";
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Comments_Negative()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -928,7 +930,7 @@ return = t;
 
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestKeyword_reserved_1467551_4()
         {
             String code =
