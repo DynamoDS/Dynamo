@@ -255,6 +255,9 @@ limitations under the License.
     <Compile Include="UI\Commands\RecordableCommands.cs" />
     <Compile Include="UI\DynamoTextBox.cs" />
     <Compile Include="UI\StateMachine.cs" />
+    <Compile Include="UI\Views\LibraryContainerView.xaml.cs">
+      <DependentUpon>LibraryContainerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
     </Compile>
@@ -612,6 +615,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\LibraryContainerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

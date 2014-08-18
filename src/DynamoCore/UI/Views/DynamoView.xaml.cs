@@ -300,7 +300,7 @@ namespace Dynamo.Controls
 #endif
             #region Search initialization
 #if ENABLE_NEW_LIBRARY_VIEW
-            var search = new LibraryView();
+            var search = new LibraryContainerView();
             sidebarGrid.Children.Add(search);
             this.dynamoViewModel.SearchViewModel.Visible = true;
 #else
