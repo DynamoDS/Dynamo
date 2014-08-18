@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
+using Dynamo.Interfaces;
+
 namespace Dynamo.Core.Threading
 {
     public partial class DynamoScheduler
@@ -11,6 +13,16 @@ namespace Dynamo.Core.Threading
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
         internal TimeStamp NextTimeStamp { get { return generator.Next; } }
+
+        internal DynamoScheduler(ISchedulerThread schedulerThread)
+        {
+            this.schedulerThread = schedulerThread;
+
+            // The host implementation of ISchedulerThread can begin access the 
+            // scheduler as soon as this method is invoked. It is important for 
+            // this call to be done at the very end of the constructor.
+            this.schedulerThread.Initialize(this);
+        }
 
         /// <summary>
         /// Callers of this method create an instance of AsyncTask derived 

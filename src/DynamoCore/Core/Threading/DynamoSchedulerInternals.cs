@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 
+using Dynamo.Interfaces;
+
 namespace Dynamo.Core.Threading
 {
     partial class DynamoScheduler
@@ -20,6 +22,7 @@ namespace Dynamo.Core.Threading
         };
 
         private bool taskQueueUpdated;
+        private readonly ISchedulerThread schedulerThread;
         private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
         private readonly TimeStampGenerator generator = new TimeStampGenerator();
 
