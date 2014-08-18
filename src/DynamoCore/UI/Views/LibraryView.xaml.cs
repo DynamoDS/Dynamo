@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Controls;
 using Dynamo.Models;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Input;
 
 namespace Dynamo.UI.Views
 {
@@ -11,6 +14,8 @@ namespace Dynamo.UI.Views
     {
         private readonly Random random = new Random();
         private readonly LibraryModel libraryData = new LibraryModel();
+
+        private int lastSelectedClassObject;
 
         public LibraryView()
         {
@@ -32,6 +37,7 @@ namespace Dynamo.UI.Views
                 for (int o = 0; o < objects; o++)
                 {
                     var classObject = new ClassObject(string.Format("Class #{0}", o));
+                    classObject.Index = o;
                     category.Add(classObject);
 
                     // Generate some data members.
@@ -52,6 +58,45 @@ namespace Dynamo.UI.Views
                     }
                 }
             }
+        }
+
+        //used to make ClassDetails unclickable
+        private void OnListViewClassesMouseDown(object sender, RoutedEventArgs e)
+        {
+            //var item = sender as ClassObject;
+            //var itm = e.OriginalSource as ListBoxItem;
+            //var t = sender as FrameworkElement;
+            //var s = TryFindParent(sender as ListViewItem);
+            
+            
+            ListView SubCategoryListView = null;
+            ListViewItem lvi = sender as ListViewItem;
+            // Get a reference to the parent ListViewItem control
+            DependencyObject temp = lvi;
+            int maxlevel = 0;
+            while (!(temp is ListView) && maxlevel < 1000)
+            {
+                temp = VisualTreeHelper.GetParent(temp);
+                maxlevel++;
+            }
+            SubCategoryListView = temp as ListView;
+            SubCategoryListView.SelectedItems.Clear();
+            SubCategoryListView.SelectedItems.Add(SubCategoryListView.Items[5]);
+            
+            
+
+            
+        }
+
+        public static ListView TryFindParent(ListViewItem child)
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+            ListView parent = parentObject as ListView;
+            if (parent != null)
+                return parent;
+            else
+                return null;
         }
     }
 }
