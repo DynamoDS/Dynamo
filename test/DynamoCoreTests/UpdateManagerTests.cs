@@ -10,22 +10,22 @@ namespace Dynamo.Tests
     /// <summary>
     /// Test cases to mock return values.
     /// </summary>
-    public class UpdateManagerTestNotUpToDate : DynamoUnitTest
+    public class UpdateManagerTestNotUpToDate : DynamoViewModelUnitTest
     {
         [Test]
         public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
-            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
+            ViewModel.Model.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.NotNull(Controller.UpdateManager.UpdateInfo);
+            Assert.NotNull(ViewModel.Model.UpdateManager.UpdateInfo);
         }
 
         [Test]
         public void UpdateCheckReturnsInfoWhenNewerDailyBuildAvailable()
         {
-            var um = dynSettings.Controller.UpdateManager;
+            var um = ViewModel.Model.UpdateManager;
 
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.dailyBuildAvailableData);
@@ -33,7 +33,7 @@ namespace Dynamo.Tests
             um.CheckNewerDailyBuilds = true;
             um.UpdateDataAvailable(updateRequest.Object);
             
-            Assert.NotNull(Controller.UpdateManager.UpdateInfo);
+            Assert.NotNull(ViewModel.Model.UpdateManager.UpdateInfo);
         }
 
         [Test]
@@ -41,10 +41,10 @@ namespace Dynamo.Tests
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
-            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
+            ViewModel.Model.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.NotNull(Controller.UpdateManager.UpdateInfo);
-            Assert.AreEqual(Controller.UpdateManager.AvailableVersion.ToString(), "9.9.9.0");
+            Assert.NotNull(ViewModel.Model.UpdateManager.UpdateInfo);
+            Assert.AreEqual(ViewModel.Model.UpdateManager.AvailableVersion.ToString(), "9.9.9.0");
         }
 
         [Test]
@@ -52,9 +52,9 @@ namespace Dynamo.Tests
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
-            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
+            ViewModel.Model.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(Controller.UpdateManager.UpdateInfo);
+            Assert.Null(ViewModel.Model.UpdateManager.UpdateInfo);
         }
 
         [Test]
@@ -62,9 +62,9 @@ namespace Dynamo.Tests
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noData);
-            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
+            ViewModel.Model.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(Controller.UpdateManager.UpdateInfo);
+            Assert.Null(ViewModel.Model.UpdateManager.UpdateInfo);
         }
 
         [Test]
@@ -73,9 +73,9 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(string.Empty);
 
-            Controller.UpdateManager.CheckForProductUpdate(updateRequest.Object);
+            ViewModel.Model.UpdateManager.CheckForProductUpdate(updateRequest.Object);
 
-            Assert.Null(Controller.UpdateManager.UpdateInfo);
+            Assert.Null(ViewModel.Model.UpdateManager.UpdateInfo);
         }
 
         [Test]

@@ -8,13 +8,13 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    class WorkspaceHeaderTests : UnitTestBase
+    class WorkspaceHeaderTests : DynamoViewModelUnitTest
     {
         [Test]
         public void CanRecognizeCustomNodeWorkspace()
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
-            var workspaceInfo = WorkspaceHeader.FromPath(examplePath);
+            var workspaceInfo = WorkspaceHeader.FromPath(ViewModel.Model, examplePath);
 
             Assert.AreEqual(workspaceInfo.Name, "Sequence2");
             Assert.AreEqual(workspaceInfo.ID, "6aecda57-7679-4afb-aa02-05a75cc3433e");
@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         public void CanRecognizeHomeWorkspace()
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "combine-with-three.dyn");
-            var workspaceInfo = WorkspaceHeader.FromPath(examplePath);
+            var workspaceInfo = WorkspaceHeader.FromPath(ViewModel.Model, examplePath);
 
             Assert.AreEqual("Home", workspaceInfo.Name);
             Assert.IsTrue( String.IsNullOrEmpty(workspaceInfo.ID) );

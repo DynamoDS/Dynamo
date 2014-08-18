@@ -358,12 +358,14 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failing")]
         public void T011_Defect_1467281_conditionals()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3941
             string code =
                @"x = 2 == { };                  y = {}==null;                 z = {{1}}=={1};                 z2 = { { 1 } } == 1;                 z3=1=={{1}};                 z4={1}=={{1}};";
             thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467281 Sprint 26 - Rev 3695 [Design Decision] incorrect conditional tests on empty arrays  ");
+            thisTest.SetErrorMessage("MAGN-3941 [Design Issue] Errors with conditionals with empty arrays and ararys with different ranks");
             thisTest.Verify("x", false); //WAITING FOR DESIGN DECISION
             thisTest.Verify("y", false);//WAITING FOR DESIGN DECISION
             thisTest.Verify("z", null);

@@ -6989,7 +6989,7 @@ b : int;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Numeric_Associative()
         {
             String code =
@@ -7044,7 +7044,7 @@ b : int;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Numeric_Imperative()
         {
             String code =
@@ -7093,7 +7093,7 @@ b : int;
 
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Geometric_Associative()
         {
             String code =
@@ -7205,7 +7205,7 @@ c : Line;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Geometric_Imperative()
         {
             String code =
@@ -7705,7 +7705,7 @@ zz = A.A();
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestFFIDebugging()
         {
             String code =
@@ -7750,7 +7750,7 @@ zz = A.A();
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestFFIDebugWithUpdate()
         {
             String code =
@@ -8069,7 +8069,7 @@ a = foo();
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void LanguageBlockInsideFunction3()
         {
             string src =
@@ -8177,7 +8177,7 @@ lines = { };
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void LanguageBlockInsideFunction4()
         {
             string src =
@@ -8578,7 +8578,7 @@ test = a1.t;";
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestNestedReplication()
         {
             string src =
@@ -10880,7 +10880,7 @@ b = 2;";
             Assert.AreEqual(33, (Int64)objExecVal.Payload);
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Testdotproperty_523_2()
         {
             // Execute and verify the defect IDE-519
@@ -10918,7 +10918,7 @@ b = 2;";
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Testdotproperty_523_3()
         {
             // Execute and verify the defect IDE-519
@@ -10996,7 +10996,7 @@ return = a;
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Testdotproperty_523_4()
         {
             // Execute and verify the defect IDE-519
@@ -11077,7 +11077,7 @@ return = a;
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Testdotproperty_523_5()
         {
             // Execute and verify the defect IDE-519
@@ -11158,7 +11158,7 @@ return = a;
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Testdotproperty_607()
         {
             // related defect : DNL-1467498 Regression in geometry due to Cartesian dot operation implementation : Runtime warning : Can't locate Geometry constructor..
@@ -11473,7 +11473,7 @@ p = Point.Point(3, 4, 5);", runnerConfig);
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_IDE_653_1()
         {
             fsr.PreStart(
@@ -11505,7 +11505,7 @@ surfaceGeom = sface.SurfaceGeometry.SetVisibility(true);", runnerConfig);
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")]
+        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_IDE_653_2()
         {
             fsr.PreStart(
@@ -12492,7 +12492,7 @@ r = 0;
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
 
         public void inlineconditional_656_1()
         {
@@ -12551,7 +12551,7 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
 
         public void inlineconditional_stepin_656_1()
         {
@@ -13654,7 +13654,7 @@ a =
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("Failing")]
         public void inlineconditional_stepin_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -13693,7 +13693,7 @@ x = a1.update(1); //line 28
 b1 = B.B(); //line 31
 n = 22;
 ", runnerConfig);
-
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
             DebugRunner.VMState vms = fsr.Step();
 
             vms = fsr.Step();
@@ -13886,8 +13886,7 @@ def foo(y : int)
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
-        [Category("Failing")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void IDE_Debugger_698()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -13963,7 +13962,7 @@ s = Print(results);
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void IDE_Debugger_698_2()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -14858,7 +14857,7 @@ a : Dummy = null;
             Assert.AreEqual(2, (Int64)objExecVal.Payload);
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestDebug_757()
         {
             string src = @" 
@@ -14905,7 +14904,7 @@ a : Dummy = null;
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_StepOver_734()
         {
             fsr.PreStart(
@@ -14941,7 +14940,7 @@ a : Dummy = null;
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_StepIn_734_2()
         {
             fsr.PreStart(
@@ -14976,7 +14975,7 @@ a : Dummy = null;
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_StepIn_734_3()
         {
             fsr.PreStart(
@@ -15014,7 +15013,7 @@ a : Dummy = null;
             vms = fsr.Step();
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_StepIn_734_4()
         {
             fsr.PreStart(
@@ -15110,7 +15109,7 @@ z = { A.A(), A.A() };
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Tempvariable_Associative_crash()
         {
             // Execute and verify the main script in a debug session
@@ -15148,7 +15147,7 @@ z = { A.A(), A.A() };
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Tempvariable_Associative_2()
         {
             // Execute and verify the main script in a debug session
@@ -15185,7 +15184,7 @@ z = { A.A(), A.A() };
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Tempvariable_crash_imperative()
         {
             // Execute and verify the main script in a debug session
@@ -15224,7 +15223,7 @@ z = { A.A(), A.A() };
         }
 
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Tempvariable_Imperative_2()
         {
             // Execute and verify the main script in a debug session
@@ -15946,7 +15945,7 @@ a = a < 5 ? 3 : 4;
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         [Category("ReleaseCriteria")]
         public void UseCase_Robert_simple_numeric_imperative_2()
         {
@@ -15988,7 +15987,7 @@ b : int;
 
         }
         [Test]
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")]
+        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         [Category("ReleaseCriteria")]
         public void UseCase_Robert_simple_numeric_associative_2()
         {

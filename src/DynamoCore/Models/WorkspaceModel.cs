@@ -12,6 +12,8 @@ using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -25,9 +27,10 @@ namespace Dynamo.Models
         public static readonly double ZOOM_MAXIMUM = 4.0;
         public static readonly double ZOOM_MINIMUM = 0.01;
 
-        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
-
         #region internal members
+
+        internal readonly NodeFactory NodeFactory;
+        public DynamoModel DynamoModel { get; private set; }
 
         private string _fileName;
         private string _name;
@@ -48,6 +51,45 @@ namespace Dynamo.Models
         #endregion
 
         #region events
+
+        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
+
+        public event NodeEventHandler RequestNodeCentered;
+        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
+        {
+            if (RequestNodeCentered != null)
+                RequestNodeCentered(this, e);
+        }
+
+        public event ZoomEventHandler ZoomChanged;
+        /// <summary>
+        /// Used during open and workspace changes to set the zoom of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
+        {
+            if (ZoomChanged != null)
+            {
+                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
+                ZoomChanged(this, e);
+            }
+        }
+
+        public event PointEventHandler CurrentOffsetChanged;
+        /// <summary>
+        /// Used during open and workspace changes to set the location of the workspace
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
+        {
+            if (CurrentOffsetChanged != null)
+            {
+                Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
+                CurrentOffsetChanged(this, e);
+            }
+        }
 
         public event Action OnModified;
         public event WorkspaceSavedEvent WorkspaceSaved;
@@ -354,9 +396,12 @@ namespace Dynamo.Models
 
         #region constructors
 
-        protected WorkspaceModel(
-            String name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
+        protected WorkspaceModel( DynamoModel dynamoModel, String name, IEnumerable<NodeModel> e,
+            IEnumerable<ConnectorModel> c, double x, double y)
         {
+            this.DynamoModel = dynamoModel;
+            NodeFactory = new NodeFactory(this, dynamoModel);
+
             Name = name;
 
             Nodes = new TrulyObservableCollection<NodeModel>(e);
@@ -388,7 +433,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            dynSettings.DynamoLogger.Log("Saving " + newPath + "...");
+            DynamoModel.Logger.Log("Saving " + newPath + "...");
             try
             {
                 if (SaveInternal(newPath))
@@ -397,13 +442,141 @@ namespace Dynamo.Models
             catch (Exception ex)
             {
                 //Log(ex);
-                dynSettings.DynamoLogger.Log(ex.Message);
-                dynSettings.DynamoLogger.Log(ex.StackTrace);
+                DynamoModel.Logger.Log(ex.Message);
+                DynamoModel.Logger.Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
 
             return true;
+        }
+
+        public NodeModel AddNode(double x, double y, string nodeName)
+        {
+            System.Guid id = Guid.NewGuid();
+            return AddNode(id, nodeName, x, y, false, false, null);
+        }
+
+        /// <summary>
+        /// Create a node with the given parameters. Since this method is called
+        /// on an instance of DynamoModel, it also raises node added event to any
+        /// event handlers, typically useful for real user scenario (listeners 
+        /// may include package manager and other UI components).
+        /// </summary>
+        /// <param name="nodeId">The Guid to be used for the new node, it cannot
+        /// be Guid.Empty since this method does not attempt to internally generate 
+        /// a new Guid. An ArgumentException will be thrown if this argument is 
+        /// Guid.Empty.</param>
+        /// <param name="nodeName">The name of the node type to be created.</param>
+        /// <param name="x">The x coordinates where the newly created node should 
+        /// be placed. This value is ignored if useDefaultPos is true.</param>
+        /// <param name="y">The y coordinates where the newly created node should 
+        /// be placed. This value is ignored if useDefaultPos is true.</param>
+        /// <param name="useDefaultPos">This parameter indicates if the node 
+        /// should be created at the default position. If this parameter is true,
+        /// the node is created at the center of view, and both x and y parameters
+        /// are ignored. If this is false, the values for both x and y parameters 
+        /// will be used as the initial position of the new node.</param>
+        /// <param name="transformCoordinates">If this parameter is true, then the
+        /// position of new node will be transformed from outerCanvas space into 
+        /// zoomCanvas space.</param>
+        /// <param name="xmlNode">This argument carries information that a node 
+        /// may require for its creation. The new node loads itself from this 
+        /// parameter if one is specified. This parameter is optional.</param>
+        /// <returns>Returns the created NodeModel, or null if the operation has 
+        /// failed.</returns>
+        /// 
+        public NodeModel AddNode(
+            Guid nodeId, string nodeName, double x, double y,
+            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
+        {
+            if (nodeId == Guid.Empty)
+                throw new ArgumentException("Node ID must be specified", "nodeId");
+
+            NodeModel node = this.NodeFactory.CreateNodeInstance(nodeName);
+            if (node == null)
+            {
+                string format = "Failed to create node '{0}' (GUID: {1})";
+                DynamoModel.Logger.Log(string.Format(format, nodeName, nodeId));
+                return null;
+            }
+
+            if (useDefaultPos == false) // Position was specified.
+            {
+                node.X = x;
+                node.Y = y;
+            }
+
+            this.Nodes.Add(node);
+
+            if (null != xmlNode)
+                node.Load(xmlNode);
+
+            // Override the guid so we can store for connection lookup
+            node.GUID = nodeId;
+
+            ModelEventArgs args = null;
+            if (!useDefaultPos)
+                args = new ModelEventArgs(node, x, y, transformCoordinates);
+            else
+            {
+                // The position of the new node has not been specified.
+                args = new ModelEventArgs(node, transformCoordinates);
+            }
+
+            this.OnRequestNodeCentered(this, args);
+
+            node.EnableInteraction();
+
+            if (DynamoModel.CurrentWorkspace == DynamoModel.HomeSpace)
+                node.SaveResult = true;
+
+            DynamoModel.OnNodeAdded(node);
+            return node;
+        }
+
+        public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.INPUT )
+        {
+            try
+            {
+                var c = ConnectorModel.Make(this, start, end, startIndex, endIndex, portType );
+
+                if (c != null)
+                    this.Connectors.Add(c);
+
+                this.DynamoModel.OnConnectorAdded(c);
+
+                return c;
+            }
+            catch (Exception e)
+            {
+                DynamoModel.Logger.Log(e.Message);
+                DynamoModel.Logger.Log(e);
+            }
+
+            return null;
+        }
+
+        public NoteModel AddNote(bool centerNote, double x, double y, string text, Guid id)
+        {
+            NoteModel noteModel = new NoteModel(this, x, y);
+            noteModel.GUID = id;
+
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+
+            if (centerNote)
+            {
+                var args = new ModelEventArgs(noteModel, true);
+                this.OnRequestNodeCentered(this, args);
+            }
+
+            noteModel.Text = "New Note";
+            if (!string.IsNullOrEmpty(text))
+                noteModel.Text = text;
+
+            this.Notes.Add(noteModel);
+            return noteModel;
         }
 
         /// <summary>
@@ -414,7 +587,7 @@ namespace Dynamo.Models
             return SaveAs(FileName);
         }
 
-        //TODO: Replace all Modified calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
+        //TODO: Replace all RequestSync calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
         public void DisableReporting()
         {
             Nodes.ToList().ForEach(x => x.DisableReporting());
@@ -427,7 +600,7 @@ namespace Dynamo.Models
 
         public virtual void Modified()
         {
-            //dynSettings.DynamoLogger.Log("Workspace modified.");
+            //dynamoModel.Logger.Log("Workspace modified.");
             if (OnModified != null)
                 OnModified();
         }
@@ -596,9 +769,9 @@ namespace Dynamo.Models
             try
             {
                 ProtoCore.Core core = null;
-                if (dynSettings.Controller != null)
+                if (DynamoModel != null)
                 {
-                    var engine = dynSettings.Controller.EngineController;
+                    var engine = DynamoModel.EngineController;
                     if (engine != null && (engine.LiveRunnerCore != null))
                         core = engine.LiveRunnerCore;
                 }
@@ -625,8 +798,8 @@ namespace Dynamo.Models
             {
                 // We'd prefer file saving process to not crash Dynamo,
                 // otherwise user will lose the last hope in retaining data.
-                dynSettings.DynamoLogger.Log(exception.Message);
-                dynSettings.DynamoLogger.Log(exception.StackTrace);
+                DynamoModel.Logger.Log(exception.Message);
+                DynamoModel.Logger.Log(exception.StackTrace);
             }
         }
 
@@ -683,34 +856,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// After command framework is implemented, this method should now be only 
-        /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
-        /// way for any other code paths to convert nodes to code programmatically. 
-        /// For that we now have ConvertNodesToCodeInternal which takes in more 
-        /// configurable arguments.
-        /// </summary>
-        /// <param name="parameters">This is not used and should always be null,
-        /// otherwise an ArgumentException will be thrown.</param>
-        /// 
-        internal void NodeToCode(object parameters)
-        {
-            if (null != parameters) // See above for details of this exception.
-            {
-                const string message = "Internal error, argument must be null";
-                throw new ArgumentException(message, "parameters");
-            }
-
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynCmd.ConvertNodesToCodeCommand(nodeID);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
-        }
-
-        internal bool CanNodeToCode(object parameters)
-        {
-            return DynamoSelection.Instance.Selection.Count > 0;
-        }
-
         internal void ConvertNodesToCodeInternal(Guid nodeId)
         {
             IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
@@ -718,7 +863,7 @@ namespace Dynamo.Models
                 return;
 
             Dictionary<string, string> variableNameMap;
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
+            string code = this.DynamoModel.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
             //UndoRedo Action Group----------------------------------------------
             UndoRecorder.BeginActionGroup();
@@ -784,7 +929,7 @@ namespace Dynamo.Models
             #endregion
 
             #region Step II. Create the new code block node
-            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX / nodeCount, totalY / nodeCount);
+            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX / nodeCount, totalY / nodeCount );
             UndoRecorder.RecordCreationForUndo(codeBlockNode);
             Nodes.Add(codeBlockNode);
             #endregion
@@ -798,7 +943,7 @@ namespace Dynamo.Models
             //End UndoRedo Action Group------------------------------------------
 
             // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
+            var placedNode = this.DynamoModel.Nodes.Find((node) => node.GUID == nodeId);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -821,11 +966,13 @@ namespace Dynamo.Models
         ///     Updates relevant parameters on save
         /// </summary>
         /// <param name="model">The workspace that was just saved</param>
-        private static void OnWorkspaceSaved(WorkspaceModel model)
+        private void OnWorkspaceSaved(WorkspaceModel model)
         {
             model.LastSaved = DateTime.Now;
             model.HasUnsavedChanges = false;
-            dynSettings.Controller.DynamoViewModel.AddToRecentFiles(model.FileName);
+
+            // KILLDYNSETTINGS - just expose this as an event on dynamoModel
+            this.DynamoModel.OnWorkspaceSaved(model);
         }
 
         private void MarkUnsaved(
@@ -977,7 +1124,7 @@ namespace Dynamo.Models
                     // or the selection set was not quite set up properly.
                     // 
                     var node = model as NodeModel;
-                    Debug.Assert(this == node.WorkSpace);
+                    Debug.Assert(this == node.Workspace);
 
                     // Note that AllConnectors is duplicated as a separate list 
                     // by calling its "ToList" method. This is the because the 
@@ -998,7 +1145,7 @@ namespace Dynamo.Models
                     node.DisableReporting();
                     node.Destroy();
                     node.Cleanup();
-                    node.WorkSpace.Nodes.Remove(node);
+                    node.Workspace.Nodes.Remove(node);
                 }
                 else if (model is ConnectorModel)
                 {
@@ -1089,20 +1236,19 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
-                ConnectorModel connector = ConnectorModel.Make();
+                ConnectorModel connector = ConnectorModel.Make(this);
                 connector.Deserialize(modelData, SaveContext.Undo);
                 Connectors.Add(connector);
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
-                NoteModel noteModel = new NoteModel(0.0, 0.0);
+                NoteModel noteModel = new NoteModel(this, 0.0, 0.0);
                 noteModel.Deserialize(modelData, SaveContext.Undo);
                 Notes.Add(noteModel);
             }
             else // Other node types.
             {
-                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
-                nodeModel.WorkSpace = this;
+                NodeModel nodeModel = NodeFactory.CreateNodeInstance(typeName);
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
             }
@@ -1186,10 +1332,9 @@ namespace Dynamo.Models
                 startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
 
                 //Make the new connection and then record and add it
-                var newConnector = ConnectorModel.Make(codeBlockNode, connector.End.Owner,
+                var newConnector = this.AddConnection(codeBlockNode, connector.End.Owner,
                     startIndex, endIndex, PortType.INPUT);
 
-                this.Connectors.Add(newConnector);
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
         }
@@ -1216,14 +1361,12 @@ namespace Dynamo.Models
                 //After conversion, all these connecetions should become only 1 connection and not many
                 //Hence for inputs, it is required to make sure that a certain type of connection has not
                 //been created already.
-                if (Connectors.Where(x => (x.Start == connector.Start &&
-                    x.End == codeBlockNode.InPorts[endIndex])).FirstOrDefault() == null)
+                if (Connectors.FirstOrDefault(x => (x.Start == connector.Start &&
+                    x.End == codeBlockNode.InPorts[endIndex])) == null)
                 {
                     //Make the new connection and then record and add it
-                    var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
-                        startIndex, endIndex, PortType.INPUT);
-
-                    this.Connectors.Add(newConnector);
+                    var newConnector = this.AddConnection(connector.Start.Owner, codeBlockNode,
+                        startIndex, endIndex);
                     UndoRecorder.RecordCreationForUndo(newConnector);
                 }
             }
@@ -1260,18 +1403,21 @@ namespace Dynamo.Models
 
                 });
 
-            if (dynSettings.Controller != null &&
-                dynSettings.Controller.UIDispatcher != null &&
-                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(getString);
-                return outData;
-            }
-            else
-                return String.Empty;
+            // KILLDYNSETTINGS: shouldn't know about the dispatcher - whether it exists or not
+            DynamoModel.OnRequestDispatcherInvoke(getString);
+            return outData;
+
+            //if (dynamoModel != null &&
+            //    dynamoModel.UIDispatcher != null &&
+            //    dynamoModel.UIDispatcher.CheckAccess() == false)
+            //{
+            //    dynamoModel.UIDispatcher.Invoke(getString);
+            //    return outData;
+            //}
+            //else
+            //    return String.Empty;
 
         }
-
 
     }
 }

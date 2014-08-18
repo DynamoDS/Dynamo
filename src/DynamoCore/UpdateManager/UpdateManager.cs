@@ -10,6 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.UI;
 using System.Xml.Linq;
@@ -182,13 +183,15 @@ namespace Dynamo.UpdateManager
         private bool versionCheckInProgress;
         private BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
-        private readonly ILogger logger;
         private const string InstallNameBase = "DynamoInstall";
         private const string OldDailyInstallNameBase = "DynamoDailyInstall";
         private bool checkNewerDailyBuilds;
         private bool forceUpdate;
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
+
+        private readonly ILogger logger;
+        private readonly DynamoModel dynamoModel;
 
         #endregion
 
@@ -247,7 +250,7 @@ namespace Dynamo.UpdateManager
                 RaisePropertyChanged("UpdateFileLocation");
 
                 // Save the last downloaded location to the preferences.
-                dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath = updateFileLocation;
+                dynamoModel.PreferenceSettings.LastUpdateDownloadPath = updateFileLocation;
             }
         }
 
@@ -278,7 +281,7 @@ namespace Dynamo.UpdateManager
             {
                 if (!checkNewerDailyBuilds && value)
                 {
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateDataAvailable));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynamoModel.Logger, UpdateDataAvailable));
                 }
                 checkNewerDailyBuilds = value;
                 RaisePropertyChanged("CheckNewerDailyBuilds");
@@ -297,7 +300,7 @@ namespace Dynamo.UpdateManager
                 if (!forceUpdate && value)
                 {
                     // do a check
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.DynamoLogger, UpdateDataAvailable));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynamoModel.Logger, UpdateDataAvailable));
                 }
                 forceUpdate = value;
                 RaisePropertyChanged("ForceUpdate");
@@ -306,9 +309,11 @@ namespace Dynamo.UpdateManager
 
         #endregion
 
-        public UpdateManager(ILogger logger)
+        public UpdateManager(DynamoModel dynamoModel)
         {
-            this.logger = logger;
+            this.dynamoModel = dynamoModel;
+            this.logger = dynamoModel.Logger;
+
             PropertyChanged += UpdateManager_PropertyChanged;
         }
 
@@ -413,7 +418,7 @@ namespace Dynamo.UpdateManager
 
             //if (ExistingUpdateIsNewer())
             //{
-            //    logger.Log(string.Format("Using previously updated download {0}", dynSettings.Controller.PreferenceSettings.LastUpdateDownloadPath));
+            //    logger.Log(string.Format("Using previously updated download {0}", dynamoModel.PreferenceSettings.LastUpdateDownloadPath));
             //    UpdateDownloaded(this, new UpdateDownloadedEventArgs(null, UpdateFileLocation));
             //    versionCheckInProgress = false;
             //    return;
@@ -522,7 +527,7 @@ namespace Dynamo.UpdateManager
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private static string GetLatestBuildFromS3(IAsynchronousRequest request, bool checkDailyBuilds)
+        private string GetLatestBuildFromS3(IAsynchronousRequest request, bool checkDailyBuilds)
         {
             XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
 
@@ -535,7 +540,7 @@ namespace Dynamo.UpdateManager
                 }
                 catch (Exception e)
                 {
-                    dynSettings.DynamoLogger.Log(e);
+                    dynamoModel.Logger.Log(e);
                     return null;
                 }
             }

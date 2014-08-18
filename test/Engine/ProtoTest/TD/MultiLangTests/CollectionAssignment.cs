@@ -1577,7 +1577,7 @@ return=z;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { 0, 0 };
             Object[] v3 = new Object[] { 1, 1, 1 };
-            Object[] v4 = new Object[] { null, false, new Object[] { 2, 2 } };
+            Object[] v4 = new Object[] { null, false, null };
             Object[] v5 = new Object[] { v2, v3, v4 };
             thisTest.Verify("x", v5);
         }
@@ -1714,9 +1714,10 @@ c = [Imperative]
 
         [Test]
         [Category("Variable resolution")]
-        public void T26_Defct_DNL_1459616_5()//not
+        [Category("Failing")]
+        public void T26_Defct_DNL_1459616_5()
         {
-            string error = "1465812 - Sprint 22 : rev 2362 : Global variables cannot be accessed from class scope";
+            string error = "MAGN-1511 Sprint 22 : rev 2362 : [Design Issue ]Global variables cannot be accessed from class scope";
             string code = @"class A
 {
     x : var[]..[];

@@ -12,13 +12,13 @@ using NUnit.Framework;
 
 namespace DataBridgeTests
 {
-    public class DataBridgeTests : DSEvaluationUnitTest
+    public class DataBridgeTests : DSEvaluationViewModelUnitTest
     {
         [Test]
         public void CanUseWatchInCustomNode()
         {
             var examplesPath = Path.Combine(GetTestDirectory(), @"core\watch");
-            var model = Controller.DynamoModel;
+            var model = ViewModel.Model;
 
             RunModel(Path.Combine(examplesPath, "watchdatabridge.dyn"));
 

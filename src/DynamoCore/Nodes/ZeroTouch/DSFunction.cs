@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.DSEngine;
+using Dynamo.Library;
 using Dynamo.Models;
 
 using Autodesk.DesignScript.Runtime;
@@ -22,10 +23,11 @@ namespace Dynamo.Nodes
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSFunction : DSFunctionBase
     {
-        public DSFunction(FunctionDescriptor descriptor)
-            : base(new ZeroTouchNodeController(descriptor)) { }
+        public DSFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
 
-        public DSFunction() : this(null) { }
+        public DSFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
+            : base(workspaceModel, new ZeroTouchNodeController(workspaceModel.DynamoModel.EngineController, 
+                descriptor)) { }
     }
 
     /// <summary>
@@ -33,7 +35,14 @@ namespace Dynamo.Nodes
     /// </summary>
     public class ZeroTouchNodeController : FunctionCallNodeController
     {
-        public ZeroTouchNodeController(FunctionDescriptor zeroTouchDef) : base(zeroTouchDef) { }
+        private readonly EngineController engineController;
+
+        public ZeroTouchNodeController(
+            EngineController engineController, FunctionDescriptor zeroTouchDef) :
+                base(zeroTouchDef)
+        {
+            this.engineController = engineController;
+        }
 
         /// <summary>
         ///     Definition of a zero-touch-imported function.
@@ -180,7 +189,7 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
-            var engine = dynSettings.Controller.EngineController;
+            var engine = this.engineController;
 
             if (!string.IsNullOrEmpty(assembly))
             {
