@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
@@ -33,11 +31,6 @@ namespace Dynamo.DSEngine
         private readonly DynamoModel dynamoModel;
 
         private Object MacroMutex = new Object();
-
-        internal SyncDataManager SyncDataManager
-        {
-            get { return syncDataManager; }
-        }
 
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
@@ -456,9 +449,6 @@ namespace Dynamo.DSEngine
         {
             syncDataManager.DeleteNodes(node.GUID);
         }
-
-
-
 
         #region N2C
 
