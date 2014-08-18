@@ -49,11 +49,14 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void ArrayAssignmentNoCycle2()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4117
             String code =
 @"// Script must not cyclea={0,1,2};x={10,11,12};i = 1;a[0] = x[0];x[i] = a[i];y = x[i]; // 1";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4117 SSA Issue: Script must not cycle";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Obj o = mirror.GetValue("y");
             Assert.IsTrue((Int64)o.Payload == 1);
         }

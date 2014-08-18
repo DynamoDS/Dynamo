@@ -354,7 +354,6 @@ namespace Dynamo.Applications
             DocumentManager.Instance.CurrentUIApplication.ViewActivating -=
                 Application_ViewActivating;
 
-            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
             AppDomain.CurrentDomain.AssemblyResolve -=
                 Analyze.Render.AssemblyHelper.ResolveAssemblies;
 

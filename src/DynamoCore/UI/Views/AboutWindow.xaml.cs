@@ -161,7 +161,7 @@ namespace Dynamo.UI.Views
             if (System.IO.File.Exists(inFilename))
             {
                 TextRange range = new TextRange(inFlowDocument.ContentStart, inFlowDocument.ContentEnd);
-                FileStream fStream = new FileStream(inFilename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                FileStream fStream = new FileStream(inFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                 range.Load(fStream, DataFormats.Rtf);
                 fStream.Close();

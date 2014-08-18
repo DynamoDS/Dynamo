@@ -690,16 +690,41 @@ namespace ProtoTestFx.TD
 
         public static void AssertValue(MirrorData data, object value)
         {
-            if (data.IsCollection)
-                AssertCollection(data, value as IEnumerable);
-            else if (value == null)
+            if (value == null)
+            {
                 Assert.IsTrue(data.IsNull);
+            }
             else if (value is int)
+            {
+                if (data.IsNull)
+                    throw new AssertionException("Incorrect verification of null value with int");
+
                 Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            }
             else if (value is double)
+            {
+                if (data.IsNull)
+                    throw new AssertionException("Incorrect verification of null value with double");
+
                 Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+            }
+            else if (data.IsCollection)
+            {
+                var values = value as IEnumerable;
+                if (object.ReferenceEquals(values, null))
+                {
+                    string errorMessage = string.Format(
+                        "The value is {1}, but the expected value is {2}.",
+                        data.Data ?? "null",
+                        value);
+                    throw new AssertionException(errorMessage);
+                }
+                AssertCollection(data, values);
+            }
             else
+            {
                 Assert.AreEqual(value, data.Data);
+            }
         }
 
         public IList<MethodMirror> GetMethods(string className, string methodName)

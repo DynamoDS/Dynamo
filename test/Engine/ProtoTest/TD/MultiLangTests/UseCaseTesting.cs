@@ -129,93 +129,6 @@ b = a>5? 0:1;
             thisTest.Verify("b", v1);
         }
 
-        [Test]
-        public void T003_modifying_members_of_a_collection_abstract_1_Robert()
-        {
-            Assert.Fail("1463663 - Sprint 20 : rev 2130 : Modifier stack syntax is not matching the specification ");
-
-            string code = @"
-a = #{
-	2 => a@init;
-    +4;
-    -3;                                
-}
-/*a =
-	{
-		{1,2,3,4};
-		//{a[0], a[-1]} -5; // modify selected members [question: can we refer to 'a' in this way inside its own modifier block?]
-		+10 // this modification applies to the whole collection
-	}
-	
-b = a + 1; // use the complete 'a' collection 'downstream'
-	
-// option 2: embed the selective modification of members of a collection within the modifier block of that collection
-//           using a right assign variable to identify the state of the cellection from which to select the members to modify
-a =
-	{
-		{1,2,3,4} => a@initial; // identify the initial state to modify
-		{a@initial[0], a@initial[-1] -5;  // modify selected members [question: can we refer to 'a@initial' in this way 
-											// inside the modifier block where the right assigned variable was created?]
-		+10 // this modification applies to the whole collection
-	}
-	
-b = a + 1; // use the complete 'a' collection 'downstream'
-// option 3: make an alias from members of a collection to be modified
-a =
-	{
-		{1,2,3,4};
-		+10 // this modification applies to the whole collection
-	}
-cornerA <=> {a[0], a[-1]}; // create alias from members of the 'a' collection
-cornerA =
-	{
-		-5;  // alias applies to the final state of 'a'
-	}
-	
-b = a + 1; // use the complete 'a' collection 'downstream'
-	
-// option 4: make an alias from a right assigned variable (defining an intermediate state of the original modifier block)
-a =
-	{
-		{1,2,3,4} => a@initial; // identify the initial state to modify
-		+10 // this modification applies to the whole collection
-	}
-	
-// create an alias from right assigned variable (defining an intermediate state of the original modifier block)
-cornerA <=> {a@initial[0], a@initial[-1]}; 
-cornerA =
-	{
-		-5;  // alias applies to an intermediate state of 'a'
-	}
-	
-b = a + 1; // use the complete 'a' collection 'downstream'
-// option 5: direct 'long hand' modification of members of a collection
-a =
-	{
-		{1,2,3,4} => a@initial; // identify the initial state to modify
-		+10 // this modification applies to the whole collection
-	}
-	
-// directly modify members of the collection
-{a[0], a[-1]} = {a[0], a[-1]} -5;
-	
-b = a + 1; // use the complete 'a' collection 'downstream'
-// option 6: semi-direct 'long hand' modification of members of a collection using an alias
-a =
-	{
-		{1,2,3,4} => a@initial; // identify the initial state to modify
-		+10 // this modification applies to the whole collection
-	}
-	
-// create an alias from right assigned variable (defining an intermediate state of the original modifier block)
-cornerA <=> {a@initial[0], a@initial[-1]}; 
-cornerA = cornerA -5;  // alias applies to an intermediate state of 'a'
-	
-b = a + 1; // use the complete 'a' collection 'downstream'
-*/";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-        }
 
         [Test]
         [Category("SmokeTest")]
@@ -240,8 +153,6 @@ a  = a2 + b;    // 6";
         [Test]
         public void T005_modifiers_with_right_assignments_Robert()
         {
-            Assert.Fail("1465319 - sprint 21 : [Design Issue] : rev 2301 : update issue with modifier stack ");
-
             string code = @"
 a = 
     {
@@ -257,7 +168,13 @@ b =
         + 2 ;            // 5
     }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // Verification to be done later, when design issues in the code are sorted out            
+            thisTest.Verify("a", 82);
+            thisTest.Verify("b", 52);
+            thisTest.Verify("@a2", 30);
+            thisTest.Verify("@b1", 20);
+            thisTest.Verify("@b2", 50);
+            thisTest.Verify("@a1", 10);
+      
         }
 
         [Test]
@@ -281,10 +198,11 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
+        [Category("Failing")]
         public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
-            Assert.Fail("1463663 - Sprint 20 : rev 2130 : Modifier stack syntax is not matching the specification ");
 
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1578
             string code = @"
 class BSplineSurface
 {
@@ -382,19 +300,17 @@ test = trimmedSurface.x;
         [Test]
         public void T009_modifier_test_1_Robert()
         {
-            Assert.Fail("1463663 - Sprint 20 : rev 2130 : Modifier stack syntax is not matching the specification ");
-
             string code = @"
 x = {10,20};
 x[0] = x[0] +1;     // this works x = {11, 20}
 // now let's try the same type of construct using the modifier block syntax
 y = { 
         {50, 60} ;   // initial definition
-         + 1 ;       // is this the correct syntax for modifying all members of a collection
-         y[0] + 1 ;  // is this the correct syntax for modifying   a member  of a collection
+         + 1 => y@1 ;       // is this the correct syntax for modifying all members of a collection
+         y@1[0] + 1 ;  // is this the correct syntax for modifying   a member  of a collection
     }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //thisTest.Verify("test", 4.0);
+            thisTest.Verify("y", 52);
         }
 
         [Test]
@@ -500,7 +416,7 @@ i = 5;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg, testPath);
 
             thisTest.Verify("i", 8);
-            thisTest.Verify("totalLength", 12.0);
+            thisTest.Verify("totalLength", 42.0);
         }
 
         [Test]

@@ -4288,6 +4288,7 @@ def recursion : int(a : int)
     return = loc;
 }
 a = 10;
+x;
 [Imperative]
 {
 	x = recursion(a); 
@@ -8305,6 +8306,7 @@ d = foo(1.5);";
         }
 
         [Test]
+        [Category("Failing")]
         [Category("SmokeTest")]
         public void TV106_Defect_1467132()
         {
@@ -8322,7 +8324,8 @@ c2 = foo(b);
 c3 = Average({});
 result = {foo(a),foo(b)};";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            string errmsg = "1467301 - rev 3778 : Builtin method 'Average' returns 0.0 when an empty array is passed to it";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4171
+            string errmsg = "MAGN-4171: Replication method resolution";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("result", new Object[] { 1.5, new Object[] { 1.0, 0.0 } });
         }

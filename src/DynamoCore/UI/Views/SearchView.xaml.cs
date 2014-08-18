@@ -27,8 +27,6 @@ namespace Dynamo.Search
         private readonly DynamoViewModel dynamoViewModel;
         private DynamoView dynamoView;
 
-        readonly DispatcherTimer searchTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 100), IsEnabled = false };
-
         public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
             this.viewModel = searchViewModel;
@@ -48,8 +46,6 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
-
-            searchTimer.Tick += SearchTimerTick;
         }
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
@@ -231,18 +227,6 @@ namespace Dynamo.Search
             if (binding != null)
                 binding.UpdateSource();
 
-            searchTimer.IsEnabled = true;
-            searchTimer.Stop();
-            searchTimer.Start();
-        }
-
-        void SearchTimerTick(object sender, EventArgs e)
-        {
-            searchTimer.IsEnabled = false;
-
-            Debug.WriteLine("Updating search results...");
-            // end of timer processing
-            // Execute command to pop search stack
             this.viewModel.SearchCommand.Execute(null);
         }
 
