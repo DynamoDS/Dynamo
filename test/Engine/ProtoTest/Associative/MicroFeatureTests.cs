@@ -1980,6 +1980,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestGCFFI001()
         {
             String code =
@@ -1989,6 +1992,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestGCRefCount002()
         {
             String code =
@@ -2009,6 +2015,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestNullFFI()
         {
             String code =
@@ -2957,19 +2966,16 @@ c = [Associative]
 
 
         [Test]
-        [Category("Failing")]
         public void TestNullsOnExpression01()
         {
             string code =
 @"
         a = 1 + null;
-        b = "" == null;
+        b = """" == null;
 ";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4157
-            string errmsg = "MAGN-4157: using null in an expression is crashing.";
-            thisTest.RunScriptSource(code, errmsg);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            thisTest.Verify("b", null);
+            thisTest.Verify("b", false);
         }
 
 
