@@ -29,7 +29,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
             
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Sequence2");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Sequence2");
             Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
             Assert.AreEqual("Sequence2", ViewModel.SearchViewModel.SearchResults[0].Name);
         }

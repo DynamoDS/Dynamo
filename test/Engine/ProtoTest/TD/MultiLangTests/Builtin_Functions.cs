@@ -1743,8 +1743,8 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("ProtoGeometry")]
-        [Category("Design Issue"), Category("Failing")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("Design Issue")]
         public void T058_Average_DataType_02()
         {
             string code = @"
@@ -3002,7 +3002,7 @@ d = { };
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void BIM53_RemoveDuplicates_geoemtry_1467447()
         {//1467446
             String code =
