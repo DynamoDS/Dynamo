@@ -60,43 +60,10 @@ namespace Dynamo.UI.Views
             }
         }
 
-        //used to make ClassDetails unclickable
+        // Used to make ClassDetails unclickable.
         private void OnListViewClassesMouseDown(object sender, RoutedEventArgs e)
         {
-            //var item = sender as ClassObject;
-            //var itm = e.OriginalSource as ListBoxItem;
-            //var t = sender as FrameworkElement;
-            //var s = TryFindParent(sender as ListViewItem);
-            
-            
-            ListView SubCategoryListView = null;
-            ListViewItem lvi = sender as ListViewItem;
-            // Get a reference to the parent ListViewItem control
-            DependencyObject temp = lvi;
-            int maxlevel = 0;
-            while (!(temp is ListView) && maxlevel < 1000)
-            {
-                temp = VisualTreeHelper.GetParent(temp);
-                maxlevel++;
-            }
-            SubCategoryListView = temp as ListView;
-            SubCategoryListView.SelectedItems.Clear();
-            SubCategoryListView.SelectedItems.Add(SubCategoryListView.Items[5]);
-            
-            
-
-            
-        }
-
-        public static ListView TryFindParent(ListViewItem child)
-        {
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
-            if (parentObject == null) return null;
-            ListView parent = parentObject as ListView;
-            if (parent != null)
-                return parent;
-            else
-                return null;
+            //TODO: here should be implemented logic, that would make ClassDetails unclickable
         }
     }
 }
