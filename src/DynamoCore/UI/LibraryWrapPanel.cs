@@ -11,9 +11,10 @@ namespace Dynamo.Controls
     public class LibraryWrapPanel : WrapPanel
     {
         private int selectedItemIndex = -1;
-        private const double ClassObjectWidth = 96.0;
-        private const double ClassObjectHeight = 96.0;
+        private const double ClassObjectWidth = 66.0;
+        private const double ClassObjectHeight = 66.0;
         private ObservableCollection<ClassObjectBase> collection;
+        private ClassObject currentClass;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -65,6 +66,7 @@ namespace Dynamo.Controls
         {
             var index = ((sender as ListView).SelectedIndex);
             selectedItemIndex = TranslateSelectionIndex(index);
+            currentClass = collection[index] as ClassObject;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
@@ -87,7 +89,7 @@ namespace Dynamo.Controls
         {
             if (double.IsNaN(this.ActualWidth))
                 return;
-            if (collection == null || (collection.Count <= 1))
+            if (collection == null || (collection.Count <= 1) || currentClass == null)
                 return;
 
             // Find out where ClassDetails object is positioned in collection.
@@ -98,12 +100,17 @@ namespace Dynamo.Controls
             var classDetails = classObjectBase as ClassDetails;
             if (classDetails != null && (selectedItemIndex == -1))
             {
-                classDetails.ClassDetailsVisibility = Visibility.Collapsed;
+                classDetails.ClassDetailsVisibility = false;
                 return;
             }
 
             // Otherwise, if we get here it means the class details is shown!
-            classDetails.ClassDetailsVisibility = Visibility.Visible;
+            classDetails.ClassDetailsVisibility = true;
+
+            //Add members of selected class to class details
+            classDetails.AddActionMembers(currentClass.ActionMembers);
+            classDetails.AddCreateMembers(currentClass.CreateMembers);
+            classDetails.AddQueryMembers(currentClass.QueryMembers);
 
             // When we know the number of items on a single row, through selected 
             // item index we will find out where the expanded StandardPanel sit.
@@ -117,9 +124,6 @@ namespace Dynamo.Controls
             // 'itemsPerRow'. Similarly, if the selected item is on row #N, then
             // ClassDetails object should be at the index '(N + 1) * itemsPerRow'.
             var correctClassDetailsIndex = ((selectedItemRow + 1) * itemsPerRow);
-
-            if (correctClassDetailsIndex == currentClassDetailsIndex)
-                return; // No repositioning is required.
 
             // We need to move the ClassDetails object to the right index.
             classObjectBase = collection[currentClassDetailsIndex];

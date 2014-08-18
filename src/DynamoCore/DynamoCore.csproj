@@ -59,7 +59,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;ENABLE_NEW_LIBRARY_VIEW</DefineConstants>
+    <DefineConstants>TRACE;USE_DSENGINE;ENABLE_NEW_LIBRARY_VIEW</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
@@ -846,6 +846,9 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\Saturation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Hue.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
