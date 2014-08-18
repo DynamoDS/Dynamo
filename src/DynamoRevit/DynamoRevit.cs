@@ -92,6 +92,8 @@ namespace Dynamo.Applications
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
             return RevitDynamoModel.Start(
                 new RevitDynamoModel.StartConfiguration()
                 {
@@ -99,6 +101,19 @@ namespace Dynamo.Applications
                     DynamoCorePath = corePath,
                     Context = GetRevitContext(commandData)
                 });
+
+#else
+
+            return RevitDynamoModel.Start(
+                new RevitDynamoModel.StartConfiguration()
+                {
+                    Preferences = prefs,
+                    DynamoCorePath = corePath,
+                    Context = GetRevitContext(commandData),
+                    SchedulerThread = new RevitSchedulerThread(commandData.Application)
+                });
+
+#endif
         }
 
         private static DynamoViewModel InitializeCoreViewModel(RevitDynamoModel revitDynamoModel)
