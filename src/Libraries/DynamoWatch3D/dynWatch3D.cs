@@ -83,6 +83,12 @@ namespace Dynamo.Nodes
             WatchIsResizable = true;
         }
 
+        public override void Destroy()
+        {
+            base.Destroy();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
         private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
         {
             if (data is IGraphicItem)

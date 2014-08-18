@@ -86,22 +86,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void EvaluationCompleted(object o)
+        public override void Destroy()
         {
-            CachedValue = o;
-            DispatchOnUIThread(
-                delegate
-                {
-                    //unhook the binding
-                    OnRequestBindingUnhook(EventArgs.Empty);
-
-                    Root.Children.Clear();
-                    Root.Children.Add(GetWatchNode());
-
-                    //rehook the binding
-                    OnRequestBindingRehook(EventArgs.Empty);
-                }
-            );
+            base.Destroy();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
         /// <summary>
@@ -133,11 +121,6 @@ namespace Dynamo.Nodes
             return outputIndex == 0
                 ? AstIdentifierForPreview
                 : base.GetAstIdentifierForOutputIndex(outputIndex);
-        }
-
-        protected override void OnBuilt()
-        {
-            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
