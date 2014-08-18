@@ -714,6 +714,18 @@ namespace ProtoAssociative
             updatePcDictionary(line, col);
         }
 
+
+        protected void EmitJumpDependency()
+        {
+            EmitInstrConsole(ProtoCore.DSASM.kw.jdep);
+
+            Instruction instr = new Instruction();
+            instr.opCode = ProtoCore.DSASM.OpCode.JDEP;
+
+            ++pc;
+            codeBlock.instrStream.instrList.Add(instr);
+        }
+
         //protected override void EmitDependency(int exprUID, bool isSSAAssign)
         protected void EmitDependency(int exprUID, int modBlkUID, bool isSSAAssign)
         {
@@ -733,6 +745,11 @@ namespace ProtoAssociative
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
             //AppendInstruction(instr);
+
+            if (!core.Options.IsDeltaExecution)
+            {
+                EmitJumpDependency();
+            }
         }
 
         private void InferDFSTraverse(AssociativeNode node, ref ProtoCore.Type inferedType)

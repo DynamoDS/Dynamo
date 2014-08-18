@@ -50,7 +50,7 @@ namespace ProtoTestFx.TD
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            testCore.Options.Verbose = false;
+            //testCore.Options.Verbose = false;
 //            testCore.Options.kDynamicCycleThreshold = 5;
             
             //FFI registration and cleanup
@@ -252,6 +252,8 @@ namespace ProtoTestFx.TD
                     }
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
+
+                /*
                 String fileName = TestContext.CurrentContext.Test.Name + ".ds";
                 String folderName = TestContext.CurrentContext.Test.FullName;
 
@@ -263,6 +265,7 @@ namespace ProtoTestFx.TD
 
                 createDSFile(fileName, path, sourceCode);
                 SetErrorMessage(errorstring);
+                 */
                 return testMirror;
             }
         }

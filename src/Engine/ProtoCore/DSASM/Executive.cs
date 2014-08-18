@@ -1753,7 +1753,7 @@ namespace ProtoCore.DSASM
             return propertyChanged;
         }
 
-        private void UpdateGraphDeferred(int exprUID, int modBlkId, bool isSSAAssign)
+        private void UpdateGraphDefered(int exprUID, int modBlkId, bool isSSAAssign)
         {
             //UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
 
@@ -7898,24 +7898,48 @@ namespace ProtoCore.DSASM
             //UpdateGraph(exprID, modBlkID, isSSA);
             //SetupNextExecutableGraph(fi, ci);
 
-            // Get the next graph to be executed
-            if (core.Options.ApplyUpdate)
-            {
-                // Execute only the dirty nodes
-                // No graphupdate allowed
-                SetupNextDeferredExecutableGraph(fi, ci);
-                UpdateGraph(exprID, modBlkID, isSSA);
-                SetupNextExecutableGraph(fi, ci);
-            }
-            else
-            {
-                // Mark dependent graphnodes as dirty
-                UpdateGraphDeferred(exprID, modBlkID, isSSA);
-                SetupNextExecutableGraph(fi, ci);
-            }
+            //// Get the next graph to be executed
+            //if (core.Options.ApplyUpdate)
+            //{
+            //    // Execute only the dirty nodes
+            //    // No graphupdate allowed
+            //    SetupNextDeferredExecutableGraph(fi, ci);
+            //    UpdateGraph(exprID, modBlkID, isSSA);
+            //    SetupNextExecutableGraph(fi, ci);
+            //}
+            //else
+            //{
+            //    // Mark dependent graphnodes as dirty
+            //    UpdateGraphDefered(exprID, modBlkID, isSSA);
+            //    SetupNextExecutableGraph(fi, ci);
+            //}
 
+            UpdateGraph(exprID, modBlkID, isSSA);
+            ++pc;
 
             return;
+        }
+
+        private void JDEP_Handler(Instruction instruction)
+        {
+            // The current function and class scope
+            int ci = DSASM.Constants.kInvalidIndex;
+            int fi = DSASM.Constants.kGlobalScope;
+            bool isInFunction = IsInsideFunction();
+
+            if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
+            {
+                Validity.Assert(core.DebugProps.DebugStackFrame.Count > 0);
+                isInFunction = core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun);
+            }
+
+            if (isInFunction)
+            {
+                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+            }
+            //SetupNextDeferredExecutableGraph(fi, ci);
+            SetupNextExecutableGraph(fi, ci);
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
@@ -8541,6 +8565,12 @@ namespace ProtoCore.DSASM
                 case OpCode.JZ:
                     {
                         JZ_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.JDEP:
+                    {
+                        JDEP_Handler(instruction);
                         return;
                     }
 
