@@ -464,7 +464,6 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
-        public double MainWindowHeight;
         public static readonly DependencyProperty AttachmentSidePopupProperty =
             DependencyProperty.Register("AttachmentSidePopup",
             typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
@@ -501,8 +500,8 @@ namespace Dynamo.UI.Controls
             double x = 0, y = 0;
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
-
-            Point targetLocation = this.PlacementTarget.PointToScreen(new Point(0, 0));
+            Point targetLocation = this.PlacementTarget.TransformToAncestor(Application.Current.MainWindow)
+                                        .Transform(new Point(0, 0));
 
             switch (this.AttachmentSide)
             {
@@ -514,10 +513,10 @@ namespace Dynamo.UI.Controls
 
                 case Side.Right:
                     x = target.Width + 3*gap - 50;
-                    //tooltip must be upper black bottom area
-                    var availableHeight = MainWindowHeight - popup.Height - targetLocation.Y-48;
-                    if (availableHeight < 0)
-                        y = availableHeight;
+                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
+                        - (targetLocation.Y + Configurations.NodeButtonHeight);
+                    if (availableHeight < Configurations.BottomPanelHeight)
+                        y = availableHeight - (Configurations.BottomPanelHeight+gap*4);
                     primaryAxis = PopupPrimaryAxis.Horizontal;
                     break;
 

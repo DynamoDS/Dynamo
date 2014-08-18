@@ -137,6 +137,8 @@ namespace Dynamo.UI
         public static double NodeTooltipArrowHeight_SideConnecting = 12;
 
         public static double ToolTipTargetGapInPixels = 3.0;
+        public static double NodeButtonHeight = 32;//height of node button
+        public static double BottomPanelHeight = 48;//height of black bottom panel with 2 buttons: Run & Cansel
         #endregion
 
         #region Library Item Tooltip

@@ -25,7 +25,6 @@ namespace Dynamo.Search
     {
         private readonly SearchViewModel viewModel;
         private readonly DynamoViewModel dynamoViewModel;
-        private DynamoView dynamoView;
 
         public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
@@ -68,7 +67,6 @@ namespace Dynamo.Search
             this.viewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
             this.viewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
 
-            this.dynamoView = WPF.FindUpVisualTree<DynamoView>(this);
 
         }
 
@@ -348,8 +346,6 @@ namespace Dynamo.Search
             Button from_sender = sender as Button;
             libraryToolTipPopup.PlacementTarget = from_sender;
             libraryToolTipPopup.DataContext = from_sender.DataContext;
-
-            libraryToolTipPopup.MainWindowHeight = this.dynamoView.ActualHeight;
         }
 
         private void libraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
