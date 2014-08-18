@@ -32,9 +32,6 @@ namespace Dynamo.TestInfrastructure
 
             //We've performed a single delete
             return 1;
-
-        }
-
-        
+        }        
     }
 }
