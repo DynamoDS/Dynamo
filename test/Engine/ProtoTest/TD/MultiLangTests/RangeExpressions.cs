@@ -1231,20 +1231,6 @@ a;b;
         }
 
         [Test]
-        public void TA20_RangeExpressionWithTripleDotOperator()
-        {
-            string err = "1463466 - Sprint 20 : Rev 2112 : triple dots are not supported in range expressions ";
-            string code = @"a;
-[Imperative]
-{
-	a = 1...7..2;
-}	";
-            thisTest.VerifyRunScriptSource(code, err);
-            //List<Object> result1 = new List<Object>() { 3 };
-            //Assert.IsTrue(mirror.CompareArrays("a", result1, typeof(System.Double)));
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void TA21_Defect_1454692()
         {
