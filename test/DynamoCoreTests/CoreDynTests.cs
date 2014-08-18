@@ -360,10 +360,10 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
             //open and run the expression
-            Controller.DynamoViewModel.OpenCommand.Execute(openPath);
+            ViewModel.OpenCommand.Execute(openPath);
 
-            var watch = dynSettings.Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            var numNode = Controller.DynamoModel.CurrentWorkspace.Nodes.OfType<DoubleInput>().Last();
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var numNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<DoubleInput>().Last();
 
             //test the negative case
             numNode.Value = "-1";
