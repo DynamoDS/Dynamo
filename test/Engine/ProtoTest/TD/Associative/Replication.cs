@@ -4500,7 +4500,7 @@ c=2 * {{1},{2}};";
 
         [Test]
         [Category("Failing")]
-        public void Regression_MAGN3807()
+        public void EmptyInputForLongestLacing()
         {
             string code = @"
 a = {};
