@@ -61,7 +61,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Instrumentation ##
-Dynamo contains an instrumentation system that anonymously reports usage data to the Dynamo team that will be used to enhance the usability the product. Aggregated summaries of the data will be shared back with the Dynamo community.
+Dynamo contains an instrumentation system that anonymously reports usage data to the Dynamo team. This data will be used to enhance the usability of the product. Aggregated summaries of the data will be shared back with the Dynamo community.
 
 An example of the data communicated is:
 
