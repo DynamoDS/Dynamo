@@ -47,6 +47,12 @@
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="PreviewMouseLeftButtonDown"
+                                 Handler="OnMouseLeftButtonDown" />
+                </Style>
+            </ListBox.ItemContainerStyle>
         </ListBox>
         <StackPanel Orientation="Horizontal"
                     Grid.Row="2"
@@ -86,6 +92,12 @@
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="PreviewMouseLeftButtonDown"
+                                 Handler="OnMouseLeftButtonDown" />
+                </Style>
+            </ListBox.ItemContainerStyle>
         </ListBox>
     </Grid>
 </UserControl>

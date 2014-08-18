@@ -67,6 +67,12 @@ namespace Dynamo.Models
     {
         // Dummy base class so "ClassObject" and "ClassDetails" 
         // can be bound to the list view in a single collection.
+        private bool _focusable = false;
+        public bool Focusable 
+        {
+            get { return _focusable; }
+            set { _focusable = value; } 
+        }
     }
 
     public class ClassObject : ClassObjectBase
@@ -82,6 +88,8 @@ namespace Dynamo.Models
             this.createMembers = new ObservableCollection<ClassMember>();
             this.actionMembers = new ObservableCollection<ClassMember>();
             this.queryMembers = new ObservableCollection<ClassMember>();
+
+            this.Focusable = true;
         }
 
         public string Name { get; private set; }

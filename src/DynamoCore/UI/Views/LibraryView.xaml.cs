@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Input;
 
+using Dynamo.Utilities;
+
 namespace Dynamo.UI.Views
 {
     /// <summary>
@@ -60,10 +62,5 @@ namespace Dynamo.UI.Views
             }
         }
 
-        // Used to make ClassDetails unclickable.
-        private void OnListViewClassesMouseDown(object sender, RoutedEventArgs e)
-        {
-            //TODO: here should be implemented logic, that would make ClassDetails unclickable
-        }
     }
 }

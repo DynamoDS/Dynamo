@@ -202,20 +202,12 @@
                                                                       RecognizesAccessKey="True"
                                                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                                 </Border>
-
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsEnabled"
-                                                             Value="false">
-                                                        <Setter Property="Foreground"
-                                                                Value="#ADADAD" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
-                                    
-                                    <EventSetter Event="Selected"
-                                                 Handler="OnListViewClassesMouseDown" />
+
+                                    <Setter Property="Focusable"
+                                            Value="{Binding Path=Focusable}" />
 
                                     <Style.Triggers>
                                         <Trigger Property="IsSelected"

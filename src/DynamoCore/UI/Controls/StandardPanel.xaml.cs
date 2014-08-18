@@ -34,5 +34,11 @@ namespace Dynamo.UI.Controls
         {
             queryActionMethods.ItemsSource = (this.DataContext as ClassDetails).QueryMembers;
         }
+
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //TODO: Execute node class.
+            MessageBox.Show("test");
+        }
     }
 }
