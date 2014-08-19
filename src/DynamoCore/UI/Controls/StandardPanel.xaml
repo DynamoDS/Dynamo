@@ -10,6 +10,40 @@
              Background="Transparent">
     <UserControl.Resources>
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <Style x:Key="ListBoxItemStyle"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver"
+                                               Value="True" />
+                                    <Condition Property="IsSelected"
+                                               Value="False" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background"
+                                        Value="#2F2F2F" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="PreviewMouseLeftButtonDown"
+                         Handler="OnMouseLeftButtonDown" />
+        </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding Path=ClassDetailsVisibility,
                                Converter={StaticResource BoolToVisibilityConverter},
@@ -28,7 +62,8 @@
                  Grid.Row="1"
                  ItemsSource="{Binding Path=CreateMembers}"
                  Background="Transparent"
-                 BorderBrush="Transparent">
+                 BorderBrush="Transparent"
+                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -47,12 +82,6 @@
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <EventSetter Event="PreviewMouseLeftButtonDown"
-                                 Handler="OnMouseLeftButtonDown" />
-                </Style>
-            </ListBox.ItemContainerStyle>
         </ListBox>
         <StackPanel Orientation="Horizontal"
                     Grid.Row="2"
@@ -73,7 +102,8 @@
                  Grid.ColumnSpan="2"
                  DataContextChanged="OnDataContextChanged"
                  Background="Transparent"
-                 BorderBrush="Transparent">
+                 BorderBrush="Transparent"
+                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -92,12 +122,6 @@
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <EventSetter Event="PreviewMouseLeftButtonDown"
-                                 Handler="OnMouseLeftButtonDown" />
-                </Style>
-            </ListBox.ItemContainerStyle>
         </ListBox>
     </Grid>
 </UserControl>
