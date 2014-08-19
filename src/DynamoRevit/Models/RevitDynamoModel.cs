@@ -68,6 +68,12 @@ namespace Dynamo.Applications.Models
             return RevitDynamoModel.Start(new StartConfiguration());
         }
 
+        public new static RevitDynamoModel StartInTestMode()
+        {
+            var config = new StartConfiguration() { StartInTestMode = true };
+            return RevitDynamoModel.Start(config);
+        }
+
         public new static RevitDynamoModel Start(StartConfiguration configuration)
         {
             // where necessary, assign defaults

@@ -229,6 +229,18 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region initialization related methods
+
+        public interface IStartConfiguration
+        {
+            string Context { get; }
+            string DynamoCorePath { get; }
+            bool StartInTestMode { get; }
+            IPreferences Preferences { get; }
+            IUpdateManager UpdateManager { get; }
+            DynamoRunner Runner { get; }
+        }
+
         public struct StartConfiguration
         {
             public string Context { get; set; }
@@ -246,6 +258,12 @@ namespace Dynamo.Models
         public static DynamoModel Start()
         {
             return Start(new StartConfiguration());
+        }
+
+        public static DynamoModel StartInTestMode()
+        {
+            var config = new StartConfiguration() { StartInTestMode = true };
+            return Start(config);
         }
 
         /// <summary>
@@ -357,6 +375,8 @@ namespace Dynamo.Models
             BaseUnit.VolumeUnit = preferences.VolumeUnit;
             BaseUnit.NumberFormat = preferences.NumberFormat;
         }
+
+        #endregion
 
         #region internal methods
 

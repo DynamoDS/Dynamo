@@ -6,6 +6,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.Applications;
 using Dynamo.Applications.Models;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -103,12 +104,18 @@ namespace Dynamo.Tests
             {
                 DynamoRevit.InitializeUnits();
 
-                var model = RevitDynamoModel.Start(
-                    new RevitDynamoModel.StartConfiguration()
-                    {
-                        StartInTestMode = true,
-                        DynamoCorePath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\")
-                    });
+                var asmLocation = Assembly.GetExecutingAssembly().Location;
+                var directory = Path.GetDirectoryName(asmLocation);
+                var config = new DynamoModel.StartConfiguration()
+                {
+                    Context = Core.Context.REVIT_2014,
+                    DynamoCorePath = Path.GetFullPath(directory + @"\..\"),
+                    StartInTestMode = true,
+                    Preferences = new PreferenceSettings(),
+                    Runner = new RevitDynamoRunner()
+                };
+
+                var model = RevitDynamoModel.Start(config);
 
                 this.ViewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()

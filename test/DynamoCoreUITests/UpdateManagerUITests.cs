@@ -6,13 +6,12 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.Interfaces;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.UpdateManager;
 using DynamoCore.UI.Controls;
 
 using DynamoUtilities;
@@ -29,15 +28,18 @@ namespace DynamoCoreUITests
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
-            var corePath =
-                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var asmLocation = Assembly.GetExecutingAssembly().Location;
+            var corePath = Path.GetFullPath(Path.GetDirectoryName(asmLocation));
 
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
+                    Context = Dynamo.Core.Context.NONE,
+                    DynamoCorePath = corePath,
+                    Preferences = new PreferenceSettings(),
                     StartInTestMode = true,
                     UpdateManager = updateManager,
-                    DynamoCorePath = corePath
+                    Runner = new DynamoRunner()
                 });
 
             ViewModel = DynamoViewModel.Start(
