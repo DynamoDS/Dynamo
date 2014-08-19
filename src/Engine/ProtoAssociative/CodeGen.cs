@@ -9398,7 +9398,7 @@ namespace ProtoAssociative
             }
             else if (node is StringNode)
             {
-                EmitStringNode(node, ref inferedType, subPass);
+                EmitStringNode(node, ref inferedType, graphNode, subPass);
             }
             else if (node is DefaultArgNode)
             {
