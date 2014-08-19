@@ -453,8 +453,18 @@ namespace Dynamo.Models
 
         public NodeModel AddNode(double x, double y, string nodeName)
         {
-            System.Guid id = Guid.NewGuid();
+            var id = Guid.NewGuid();
             return AddNode(id, nodeName, x, y, false, false, null);
+        }
+
+        public T AddNode<T>() where T : NodeModel
+        {
+            var node = this.NodeFactory.CreateNodeInstance<T>();
+            if (node == null) throw new Exception("The supplied node Type was invalid!");
+
+            this.Nodes.Add(node);
+
+            return node;
         }
 
         /// <summary>
