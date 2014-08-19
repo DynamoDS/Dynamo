@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-
-using ProtoCore.Lang;
 using ProtoCore.Utils;
 using System;
 using ProtoCore.DSASM;
@@ -289,19 +287,6 @@ namespace ProtoCore.AssociativeGraph
             updateNodeRefList.Add(nodeRef);
         }
 
-        public void PushProcReference(ProcedureNode proc)
-        {
-            Validity.Assert(null != proc);
-            UpdateNode updateNode = new UpdateNode();
-            updateNode.procNode = proc;
-            updateNode.nodeType = UpdateNodeType.kMethod;
-
-            UpdateNodeRef nodeRef = new UpdateNodeRef();
-            nodeRef.PushUpdateNode(updateNode);
-
-            updateNodeRefList.Add(nodeRef);
-        }
-
         public bool IsUpdateableBy(UpdateNodeRef modifiedRef)
         {
             // Function to check if the current graphnode can be modified by the modified reference
@@ -326,7 +311,7 @@ namespace ProtoCore.AssociativeGraph
         {
             string getter = Constants.kGetterPrefix + propertyName;
 
-            foreach (var dependent in this.dependentList)
+            foreach (var dependent in dependentList)
             {
                 foreach (var updateNodeRef in dependent.updateNodeRefList)
                 {
@@ -354,7 +339,7 @@ namespace ProtoCore.AssociativeGraph
         {
             string getter = Constants.kGetterPrefix + propertyName;
 
-            foreach (var dependent in this.dependentList)
+            foreach (var dependent in dependentList)
             {
                 foreach (var updateNodeRef in dependent.updateNodeRefList)
                 {
@@ -772,20 +757,13 @@ namespace ProtoCore.AssociativeGraph
                 return false;
             }
 
-            if (CoreUtils.IsSSATemp(updateNodeRefList[0].nodeList[0].symbol.name))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return CoreUtils.IsSSATemp(updateNodeRefList[0].nodeList[0].symbol.name);
         }
     }
 
     public class DependencyGraph
     {
-        private readonly ProtoCore.Core core;
+        private readonly Core core;
         private List<GraphNode> graphList;
 
         // For quickly get a list of graph nodes at some scope. 
@@ -806,7 +784,7 @@ namespace ProtoCore.AssociativeGraph
             return (((ulong)ci) << 32) | pi;
         }
 
-        public DependencyGraph(ProtoCore.Core core)
+        public DependencyGraph(Core core)
         {
             this.core = core;
             graphList = new List<GraphNode>();
@@ -815,7 +793,7 @@ namespace ProtoCore.AssociativeGraph
 
         public List<GraphNode> GetGraphNodesAtScope(int classIndex, int procIndex)
         {
-            List<GraphNode> nodes = null;
+            List<GraphNode> nodes;
             graphNodeMap.TryGetValue(GetGraphNodeKey(classIndex, procIndex), out nodes);
             return nodes;
         }
@@ -850,7 +828,7 @@ namespace ProtoCore.AssociativeGraph
             graphList.Add(node);
 
             ulong key = GetGraphNodeKey(node.classIndex, node.procIndex);
-            List<GraphNode> nodes = null;
+            List<GraphNode> nodes;
             if (graphNodeMap.TryGetValue(key, out nodes))
             {
                 nodes.Add(node);

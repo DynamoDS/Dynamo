@@ -646,8 +646,8 @@ namespace ProtoCore
                 }
                 else
                 {
-                    ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
-                    ProtoCore.DSASM.ProcedureNode procNodeDummy = new DSASM.ProcedureNode();
+                    AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
+                    ProcedureNode procNodeDummy = new ProcedureNode();
                     procNodeDummy.name = functionName;
                     updateNode.procNode = procNodeDummy;
                     updateNode.nodeType = AssociativeGraph.UpdateNodeType.kMethod;
