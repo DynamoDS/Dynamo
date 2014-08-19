@@ -129,7 +129,7 @@ namespace ProtoCore.Lang
             "RemoveKey",                // kRemoveKey
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
-            "TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
+            "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
         };
 
         public static string GetMethodName(MethodID id)
