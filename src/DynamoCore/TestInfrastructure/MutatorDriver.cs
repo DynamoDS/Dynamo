@@ -43,41 +43,41 @@ namespace Dynamo.TestInfrastructure
             System.Diagnostics.Debug.WriteLine("MutateTest Internal activate");
 
             new Thread(() =>
+            {
+                try
                 {
-                    try
-                    {
-                        ConnectorTest(writer);
-                        CopyNodeTest(writer);
-                        DeleteNodeTest(writer);
+                    ConnectorTest(writer);
+                    CopyNodeTest(writer);
+                    DeleteNodeTest(writer);
 
-                        CodeBlockNodeTest(writer);
+                    CodeBlockNodeTest(writer);
 
-                        IntegerSliderTest(writer);
-                        DoubleSliderTest(writer);
-                        
-                        DirectoryPathTest(writer);
-                        FilePathTest(writer);
-                        
-                        NumberInputTest(writer);
-                        StringInputTest(writer);
-                        
-                        NumberSequenceTest(writer);
-                        NumberRangeTest(writer);
-                        ListTest(writer);
-						
-						CustomNodeTest(writer);
-                        CustomNodeCompatibilityTest(writer);
-                    }
-                    finally
-                    {
+                    IntegerSliderTest(writer);
+                    DoubleSliderTest(writer);
+
+                    DirectoryPathTest(writer);
+                    FilePathTest(writer);
+
+                    NumberInputTest(writer);
+                    StringInputTest(writer);
+
+                    NumberSequenceTest(writer);
+                    NumberRangeTest(writer);
+                    ListTest(writer);
+
+                    CustomNodeTest(writer);
+                    CustomNodeCompatibilityTest(writer);
+                }
+                finally
+                {
                     dynamoViewModel.Model.Logger.Log("Fuzz testing finished.");
 
-                        writer.Flush();
-                        writer.Close();
-                        writer.Dispose();
-                    }
+                    writer.Flush();
+                    writer.Close();
+                    writer.Dispose();
+                }
 
-                }).
+            }).
                 Start();
         }
 
@@ -415,7 +415,7 @@ namespace Dynamo.TestInfrastructure
                             new DynamoViewModel.RunCancelCommand(false, false);
                         dynamoViewModel.ExecuteCommand(runCancel);
 
-                        }));
+                    }));
 
                     Thread.Sleep(100);
 
@@ -716,7 +716,7 @@ namespace Dynamo.TestInfrastructure
                             }
                         }
                         writer.WriteLine("### - test of IntegerSlider complete");
-                        writer.Flush();                        
+                        writer.Flush();
                     }
                     passed = true;
                 }
@@ -856,7 +856,7 @@ namespace Dynamo.TestInfrastructure
                             }
                         }
                         writer.WriteLine("### - test of DoubleSlider complete");
-                        writer.Flush();                        
+                        writer.Flush();
                     }
                     passed = true;
                 }
@@ -1000,7 +1000,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of DirectoryPath complete");
-                    writer.Flush();                    
+                    writer.Flush();
                 }
                 passed = true;
             }
@@ -1139,7 +1139,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of FilePath complete");
-                    writer.Flush();                    
+                    writer.Flush();
                 }
                 passed = true;
             }
@@ -1406,7 +1406,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of Number complete");
-                    writer.Flush();                    
+                    writer.Flush();
                 }
                 passed = true;
             }
@@ -2440,7 +2440,7 @@ namespace Dynamo.TestInfrastructure
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
-            var searchModel = dynamoViewModel.Model.SearchModel;
+            var searchViewModel = dynamoViewModel.Model.SearchModel;
 
             List<Type> types = new List<Type>();
 
@@ -2473,11 +2473,28 @@ namespace Dynamo.TestInfrastructure
                         if (!dynamoViewModel.Model.Loader.IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                             continue;
 
-                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
+                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                        //if available, to discern whether we should load this type
+                        if (!dynamoViewModel.Model.Context.Equals(Context.NONE))
                         {
-                            searchModel.Add(t);
+
+                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                            if (platformExclusionAttribs.Length > 0)
+                            {
+                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+
+                                //if the attribute's values contain the context stored on the controller
+                                //then skip loading this type.
+
+                                if (exclusions.Reverse().Any(e => e.Contains(dynamoViewModel.Model.Context)))
+                                    continue;
+                            }
                         }
 
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
+                        {
+                            searchViewModel.Add(t);
+                        }
                         types.Add(t);
                     }
                     catch (Exception e)
