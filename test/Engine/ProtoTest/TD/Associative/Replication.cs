@@ -4507,6 +4507,7 @@ a = {};
 b = {1,2};
 c = a<1L> + b<1L>;
 ";
+
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3807#
             var errorMessage = "MAGN-3807 Unhandled exception in Dynamo Engine with Adaptive Family Placement";
             var mirror = thisTest.VerifyRunScriptSource(code, errorMessage);
