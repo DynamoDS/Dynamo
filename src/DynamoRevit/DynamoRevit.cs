@@ -133,14 +133,6 @@ namespace Dynamo.Applications
                         TransactionManager.Instance.ForceCloseTransaction();
                     });
 
-
-            //KILLDYNSETTINGS - not sure if this works
-            //this.dynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
-            //this.dynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
-            //    dynamoController.FindNodesFromSelection;
-
-            // Register the view model to handle sign-on requests
-
             return viewModel;
         }
 
