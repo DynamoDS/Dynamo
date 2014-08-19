@@ -63,7 +63,6 @@ namespace Dynamo.Models
 
         public override void OnDisplayed()
         {
-            //DynamoView bench = dynSettings.Bench; // ewwwy
         }
     }
 }

@@ -11,10 +11,7 @@ namespace Dynamo.Utilities
     public static class NodeCollapser
     {
         /// <summary>
-        ///     Collapse a set of nodes in a given workspace.  Has the side effects of prompting the user
-        ///     first in order to obtain the name and category for the new node, 
-        ///     writes the function to a dyf file, adds it to the FunctionDict, adds it to search, and compiles and 
-        ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
+        ///     Collapse a set of nodes in a given workspace.
         /// </summary>
         /// <param name="dynamoModel">The current DynamoModel</param>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>

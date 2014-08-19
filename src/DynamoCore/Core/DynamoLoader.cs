@@ -48,8 +48,8 @@ namespace Dynamo.Utilities
 
         /// <summary>
         /// Load all types which inherit from NodeModel whose assemblies are located in
-        /// the bin/nodes directory. Add the types to the searchviewmodel and
-        /// the controller's dictionaries.
+        /// the bin/nodes directory. Add the types to the SearchModel and
+        /// the current DynamoModel's dictionaries.
         /// </summary>
         internal void LoadNodeModels()
         {

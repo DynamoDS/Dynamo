@@ -1274,18 +1274,12 @@ namespace Dynamo.Models
         {
             OnWorkspaceClearing(this, EventArgs.Empty);
 
-            // KILLDYNSETTINGS
-            //Controller.IsUILocked = true;
-
             CleanWorkbench();
 
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
-
-            // KILLDYNSETTINGS
-            //Controller.IsUILocked = false;
 
             OnWorkspaceCleared(this, EventArgs.Empty);
         }

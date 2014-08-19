@@ -289,13 +289,6 @@ namespace Dynamo.Nodes
 
         internal void SelectVisualizationInView(object parameters)
         {
-            //Debug.WriteLine("Selecting mesh from watch 3d node.");
-            //var arr = (double[])parameters;
-            //double x = arr[0];
-            //double y = arr[1];
-            //double z = arr[2];
-
-            //dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
         }
 
         internal bool CanSelectVisualizationInView(object parameters)

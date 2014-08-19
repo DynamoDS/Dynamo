@@ -251,7 +251,7 @@ namespace Dynamo.Applications
         ///     Handler for Revit's ViewActivating event.
         ///     Addins are not available in some views in Revit, notably perspective views.
         ///     This will present a warning that Dynamo is not available to run and disable the run button.
-        ///     This handler is called before the ViewActivated event registered on the controller.
+        ///     This handler is called before the ViewActivated event registered on the RevitDynamoModel.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
