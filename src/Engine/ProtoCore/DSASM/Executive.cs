@@ -1880,7 +1880,7 @@ namespace ProtoCore.DSASM
                 {
                     var dimSymbol1 = depDimNodes[dimIndex].symbol;
                     var dimSymbol2 = updateDimNodes[dimIndex].symbol;
-                    if (!dimSymbol1.IsEqualAtScope(dimSymbol2))
+                    if (!dimSymbol1.Equals(dimSymbol2))
                     {
                         return;
                     }
@@ -4890,7 +4890,7 @@ namespace ProtoCore.DSASM
             {
                 SymbolNode symbolNode = GetSymbolNode(blockId, (int)instruction.op2.opdata, (int)instruction.op1.opdata);
                 AssociativeGraph.UpdateNode firstDepNode = Properties.executingGraphNode.dependentList[0].updateNodeRefList[0].nodeList[0];
-                elementBasedUpdate = firstDepNode.symbol.IsEqualAtScope(symbolNode);
+                elementBasedUpdate = firstDepNode.symbol.Equals(symbolNode);
             }
 
             if (0 == dimensions && !elementBasedUpdate || !objectIndexing)

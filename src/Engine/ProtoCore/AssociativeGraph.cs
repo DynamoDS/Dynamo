@@ -450,7 +450,7 @@ namespace ProtoCore.AssociativeGraph
 
                     if (null != modifiedRef.nodeList[0].symbol && null != depNodeRef.nodeList[0].symbol)
                     {
-                        bothSymbolsMatch = modifiedRef.nodeList[0].symbol.IsEqualAtScope(depNodeRef.nodeList[0].symbol);
+                        bothSymbolsMatch = modifiedRef.nodeList[0].symbol.Equals(depNodeRef.nodeList[0].symbol);
 
 
                         bothSymbolsStatic =
@@ -481,7 +481,7 @@ namespace ProtoCore.AssociativeGraph
                                     }
                                     else if (modDimNode.nodeType == UpdateNodeType.kSymbol)
                                     {
-                                        bothSymbolsMatch = modDimNode.symbol.IsEqualAtScope(depDimNode.symbol);
+                                        bothSymbolsMatch = modDimNode.symbol.Equals(depDimNode.symbol);
                                     }
                                     else
                                     {
@@ -609,7 +609,7 @@ namespace ProtoCore.AssociativeGraph
 
                         if (null != modifiedRef.nodeList[m].symbol && null != depNodeRef.nodeList[m].symbol)
                         {
-                            bothSymbolsMatch = modifiedRef.nodeList[m].symbol.IsEqualAtScope(depNodeRef.nodeList[m].symbol);
+                            bothSymbolsMatch = modifiedRef.nodeList[m].symbol.Equals(depNodeRef.nodeList[m].symbol);
                             bothSymbolsStatic =
                                 modifiedRef.nodeList[m].symbol.memregion == MemoryRegion.kMemStatic
                                 && depNodeRef.nodeList[m].symbol.memregion == MemoryRegion.kMemStatic
@@ -899,7 +899,7 @@ namespace ProtoCore.AssociativeGraph
 
             if (nodeType == UpdateNodeType.kSymbol || nodeType == UpdateNodeType.kLiteral)
             {
-                return symbol.IsEqualAtScope(rhs.symbol);
+                return symbol.Equals(rhs.symbol);
             }
             else if (nodeType == UpdateNodeType.kMethod)
             {
