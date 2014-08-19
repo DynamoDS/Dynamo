@@ -140,7 +140,8 @@ namespace Dynamo.PackageManager.UI
         }
 
         /// <summary>
-        /// Enumerate the dependencies of this item as its children.  The 
+        /// Enumerate the dependencies of this item as its children.  Currently does not discover assembly 
+        /// dependencies.
         /// </summary>
         public void BuildDependencies( HashSet<object> discoveredDeps )
         {

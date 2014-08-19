@@ -130,7 +130,7 @@ namespace Dynamo.ViewModels
                 }
 
                 var newPkgVm = new PublishPackageViewModel(this.dynamoViewModel);
-                newPkgVm.FunctionDefinitions = fs;
+                newPkgVm.CustomNodeDefinitions = fs;
                 this.dynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
             }
             else

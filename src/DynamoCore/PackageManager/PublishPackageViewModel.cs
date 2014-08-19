@@ -101,39 +101,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Dependencies property </summary>
-        /// <value>
-        /// The set of dependencies  </value>
-        private List<PackageItemRootViewModel> _packageContents = null;
-        public IEnumerable<PackageItemRootViewModel> PackageContents
-        {
-            get
-            {
-                _packageContents = FunctionDefinitions.Select((def) => new PackageItemRootViewModel(def))
-                                                      .ToList();
-                return _packageContents;
-            }
-        }
-
-        /// <summary>
-        /// AdditionalFiles property </summary>
-        /// <value>
-        /// Tells whether the publish UI is visible</value>
-        private ObservableCollection<string> _additionalFiles = new ObservableCollection<string>();
-        public ObservableCollection<string> AdditionalFiles
-        {
-            get { return _additionalFiles; }
-            set
-            {
-                if (this._additionalFiles != value)
-                {
-                    this._additionalFiles = value;
-                    this.RaisePropertyChanged("AdditionalFiles");
-                }
-            }
-        }
-
-        /// <summary>
         /// Name property </summary>
         /// <value>
         /// The name of the node to be uploaded </value>
@@ -355,18 +322,53 @@ namespace Dynamo.PackageManager
         public Package Package { get; set; }
 
         /// <summary>
-        /// CustomNodeDefinition property </summary>
-        /// <value>
-        /// The FuncDefinition for the current package to be uploaded</value>
-        private List<CustomNodeDefinition> _FunctionDefinitions;
-        public List<CustomNodeDefinition> FunctionDefinitions
+        /// PackageContents property 
+        /// </summary>
+        private List<PackageItemRootViewModel> _packageContents = null;
+        public IEnumerable<PackageItemRootViewModel> PackageContents
         {
-            get { return _FunctionDefinitions; }
+            get
+            {
+                _packageContents = CustomNodeDefinitions.Select(
+                    (def) => new PackageItemRootViewModel(def))
+                    .Concat(Assemblies.Select((assem) => new PackageItemRootViewModel(assem)))
+                    .ToList();
+                return _packageContents;
+            }
+        }
+
+
+        /// <summary>
+        /// CustomNodeDefinitions property 
+        /// </summary>
+        private List<CustomNodeDefinition> customNodeDefinitions;
+        public List<CustomNodeDefinition> CustomNodeDefinitions
+        {
+            get { return customNodeDefinitions; }
             set
             {
-                _FunctionDefinitions = value;
-                this.Name = FunctionDefinitions[0].WorkspaceModel.Name;
+                customNodeDefinitions = value;
+                this.Name = CustomNodeDefinitions[0].WorkspaceModel.Name;
                 this.UpdateDependencies();
+            }
+        }
+
+        public List<Assembly> Assemblies { get; set; }
+
+        /// <summary>
+        /// AdditionalFiles property 
+        /// </summary>
+        private ObservableCollection<string> _additionalFiles = new ObservableCollection<string>();
+        public ObservableCollection<string> AdditionalFiles
+        {
+            get { return _additionalFiles; }
+            set
+            {
+                if (this._additionalFiles != value)
+                {
+                    this._additionalFiles = value;
+                    this.RaisePropertyChanged("AdditionalFiles");
+                }
             }
         }
 
@@ -410,6 +412,7 @@ namespace Dynamo.PackageManager
             this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
             this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.Dependencies = new ObservableCollection<PackageDependency>();
+            this.Assemblies = new List<Assembly>();
         }
 
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
@@ -419,7 +422,7 @@ namespace Dynamo.PackageManager
                 Group = l.Group,
                 Description = l.Description,
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
-                FunctionDefinitions =
+                CustomNodeDefinitions =
                     l.LoadedCustomNodes.Select(
                         x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
                         .ToList(),
@@ -468,15 +471,15 @@ namespace Dynamo.PackageManager
         private IEnumerable<CustomNodeDefinition> AllDependentFuncDefs()
         {
             return
-                FunctionDefinitions.Select(x => x.Dependencies)
+                CustomNodeDefinitions.Select(x => x.Dependencies)
                                    .SelectMany(x => x)
-                                   .Where(x => !FunctionDefinitions.Contains(x))
+                                   .Where(x => !CustomNodeDefinitions.Contains(x))
                                    .Distinct();
         }
 
         private IEnumerable<CustomNodeDefinition> AllFuncDefs()
         {
-            return AllDependentFuncDefs().Union(FunctionDefinitions).Distinct();
+            return AllDependentFuncDefs().Union(CustomNodeDefinitions).Distinct();
         }
 
         private IEnumerable<string> GetAllFiles()
@@ -631,10 +634,9 @@ namespace Dynamo.PackageManager
 
                 var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
 
-                if (funcDef != null && this.FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
+                if (funcDef != null && this.CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
-                    this.FunctionDefinitions.Add(funcDef);
-                    this.GetAllDependencies();
+                    this.CustomNodeDefinitions.Add(funcDef);
                     this.RaisePropertyChanged("PackageContents");
                 }
             }
@@ -644,8 +646,8 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                this.PackageContents.Add(
-                    new PackageItemRootViewModel(Assembly.LoadFrom(filename)));
+                this.Assemblies.Add(Assembly.LoadFrom(filename));
+                this.RaisePropertyChanged("PackageContents");
             }
             catch (Exception e)
             {
@@ -657,7 +659,6 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the element</summary>
         private void Submit()
         {
-
             try
             {
                 var newpkg = Package == null;
