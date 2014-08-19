@@ -72,6 +72,7 @@ namespace Dynamo.PackageManager
         public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this);  } }
 
         public ObservableCollection<Type> LoadedTypes { get; set; }
+        public ObservableCollection<Assembly> LoadedAssemblies { get; set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
         public ObservableCollection<PackageDependency> Dependencies { get; set; }
 
@@ -84,6 +85,7 @@ namespace Dynamo.PackageManager
             this.Name = name;
             this.VersionName = versionName;
             this.LoadedTypes = new ObservableCollection<Type>();
+            this.LoadedAssemblies = new ObservableCollection<Assembly>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
         }
@@ -201,10 +203,10 @@ namespace Dynamo.PackageManager
 
         internal bool InUse( DynamoModel dynamoModel )
         {
-            return (LoadedTypes.Any() || WorkspaceOpen(dynamoModel) || CustomNodeInWorkspace(dynamoModel)) && Loaded;
+            return (LoadedTypes.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
         }
 
-        private bool CustomNodeInWorkspace(DynamoModel dynamoModel)
+        private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
@@ -216,7 +218,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        private bool WorkspaceOpen(DynamoModel dynamoModel)
+        private bool IsWorkspaceFromPackageOpen(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
             var guids = LoadedCustomNodes.Select(x => x.Guid);
