@@ -27,7 +27,8 @@
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <Grid Background="{StaticResource WorkspaceBackgroundBrush}">
+                <Grid Background="{StaticResource WorkspaceBackgroundBrush}"
+                      Margin="-6,0,0,0">
                     <Grid.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
@@ -180,7 +181,8 @@
                                 <ItemsPanelTemplate>
                                     <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
 										                       ElementName=CategoryListView}"
-                                                               Background="Transparent" />
+                                                               Background="Transparent" 
+                                                               Margin="5,6,0,0"/>
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
                             <ListView.ItemContainerStyle>
