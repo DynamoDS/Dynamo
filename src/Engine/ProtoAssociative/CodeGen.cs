@@ -7833,7 +7833,7 @@ namespace ProtoAssociative
                 graphNode.updateNodeRefList[0].nodeList[0].dimensionNodeList = graphNode.dimensionNodeList;
 
                 // @keyu: foo.id = 42; will generate same leftNodeRef and leftNodeArgRef
-                if (!isThisPtr && !leftNodeRef.IsEqual(leftNodeArgRef))
+                if (!isThisPtr && !leftNodeRef.Equals(leftNodeArgRef))
                 {
                     graphNode.updateNodeRefList.Add(leftNodeArgRef);
                 }

@@ -2040,7 +2040,7 @@ namespace ProtoCore.DSASM
                         if (graphNode.updateNodeRefList.Count == 1)
                         {
                             var updateNodeRef = graphNode.updateNodeRefList[0];
-                            if (depUpdateNodeRef.IsEqual(updateNodeRef))
+                            if (depUpdateNodeRef.Equals(updateNodeRef))
                             {
                                 continue;
                             }
@@ -2208,7 +2208,7 @@ namespace ProtoCore.DSASM
 
             for (int n = 0; n < executingNode.updateNodeRefList.Count; ++n)
             {
-                if (!gnode.updateNodeRefList[n].IsEqual(executingNode.updateNodeRefList[n]))
+                if (!gnode.updateNodeRefList[n].Equals(executingNode.updateNodeRefList[n]))
                 {
                     return;
                 }
@@ -7890,7 +7890,7 @@ namespace ProtoCore.DSASM
                 bool addNewModifiedRef = true;
                 for (int i = 0; i < istream.xUpdateList.Count; ++i)
                 {
-                    if (modifiedRef.IsEqual(istream.xUpdateList[i]))
+                    if (modifiedRef.Equals(istream.xUpdateList[i]))
                     {
                         istream.xUpdateList[i].symbolData = modifiedRef.symbolData;
                         addNewModifiedRef = false;

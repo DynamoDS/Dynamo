@@ -265,7 +265,6 @@ namespace ProtoCore.AssociativeGraph
         public void PushSymbolReference(SymbolNode symbol, UpdateNodeType type = UpdateNodeType.kSymbol)
         {
             Validity.Assert(null != symbol);
-            Validity.Assert(null != updateNodeRefList);
             UpdateNode updateNode = new UpdateNode();
             updateNode.symbol = symbol;
             updateNode.nodeType = type;
@@ -279,7 +278,6 @@ namespace ProtoCore.AssociativeGraph
         public void PushSymbolReference(SymbolNode symbol)
         {
             Validity.Assert(null != symbol);
-            Validity.Assert(null != updateNodeRefList);
             UpdateNode updateNode = new UpdateNode();
             updateNode.symbol = symbol;
             updateNode.nodeType = UpdateNodeType.kSymbol;
@@ -294,7 +292,6 @@ namespace ProtoCore.AssociativeGraph
         public void PushProcReference(ProcedureNode proc)
         {
             Validity.Assert(null != proc);
-            Validity.Assert(null != updateNodeRefList);
             UpdateNode updateNode = new UpdateNode();
             updateNode.procNode = proc;
             updateNode.nodeType = UpdateNodeType.kMethod;
@@ -869,7 +866,6 @@ namespace ProtoCore.AssociativeGraph
     public enum UpdateNodeType
     {
         kLiteral,
-        kClass,
         kSymbol,
         kMethod
     };
@@ -930,20 +926,18 @@ namespace ProtoCore.AssociativeGraph
 
         public UpdateNodeRef(UpdateNodeRef rhs)
         {
-            nodeList = new List<UpdateNode>();
             if (null != rhs && null != rhs.nodeList)
             {
-                foreach (UpdateNode node in rhs.nodeList)
-                {
-                    PushUpdateNode(node);
-                }
+                nodeList = new List<UpdateNode>(rhs.nodeList);
+            }
+            else
+            {
+                nodeList = new List<UpdateNode>();
             }
         }
 
-
         public void PushUpdateNode(UpdateNode node)
         {
-            Validity.Assert(null != nodeList);
             nodeList.Add(node);
         }
 
@@ -958,7 +952,6 @@ namespace ProtoCore.AssociativeGraph
 
         public UpdateNodeRef GetUntilFirstProc()
         {
-            Validity.Assert(null != nodeList);
             UpdateNodeRef newRef = new UpdateNodeRef();
             foreach (UpdateNode node in nodeList)
             {
@@ -970,8 +963,14 @@ namespace ProtoCore.AssociativeGraph
             return newRef;
         }
 
-        public bool IsEqual(UpdateNodeRef rhs)
+        public override bool Equals(object obj)
         {
+            var rhs = obj as UpdateNodeRef;
+            if (rhs == null)
+            {
+                return false;
+            }
+
             if (nodeList.Count != rhs.nodeList.Count)
             {
                 return false;
@@ -993,6 +992,7 @@ namespace ProtoCore.AssociativeGraph
                         }
                     }
                 }
+
                 if (!nodeList[n].Equals(rhs.nodeList[n]))
                 {
                     return false;
