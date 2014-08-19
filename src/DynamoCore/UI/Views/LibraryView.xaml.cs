@@ -15,8 +15,6 @@ namespace Dynamo.UI.Views
         private readonly Random random = new Random();
         private readonly LibraryModel libraryData = new LibraryModel();
 
-        private int lastSelectedClassObject;
-
         public LibraryView()
         {
             InitializeComponent();
@@ -37,7 +35,6 @@ namespace Dynamo.UI.Views
                 for (int o = 0; o < objects; o++)
                 {
                     var classObject = new ClassObject(string.Format("Class #{0}", o));
-                    classObject.Index = o;
                     category.Add(classObject);
 
                     // Generate some data members.
