@@ -76,11 +76,10 @@ namespace Dynamo.ViewModels
 
         public bool RunEnabled
         {
-            get { return runEnabled; }
+            get { return model.RunEnabled; }
             set
             {
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
+                model.RunEnabled = value;
             }
         }
 
@@ -747,6 +746,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsPanning");
                 RaisePropertyChanged("IsOrbiting");
             }
+            else if (e.PropertyName == "RunEnabled")
+                RaisePropertyChanged("RunEnabled");
         }
 
         internal bool CanWriteToLog(object parameters)

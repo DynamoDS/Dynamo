@@ -27,6 +27,7 @@ namespace DynamoCoreUITests
         private CommandCallback commandCallback = null;
 
         // For access within test cases.
+        protected DynamoView dynamoView = null;
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
 
@@ -364,6 +365,25 @@ namespace DynamoCoreUITests
 
             });
         }
+        [Test, RequiresSTA]
+        public void TestRunEnabledButtonCanBeDisabled()
+        {
+            RunCommandsFromFile("TestRunEnabledButtonCanBeDisabled.xml", false, (commandTag) =>
+            {
+                //This test case is to verify that when RunEnabled is changed to false from the model, 
+                //the Run button is disabled. The strategy here is to directly modify the RunEnabled value
+                //in the model. But at that time, the view has not yet had a chance to refresh its button.
+                //So the process is separated into two steps. At the second step. the button status is checked.
+                if (commandTag == "OpenFile")
+                {
+                    ViewModel.Model.RunEnabled = false;
+                }
+                else if (commandTag == "CheckButtonIsDisabled")
+                {
+                    Assert.IsFalse(dynamoView.RunButton.IsEnabled);
+                }
+            });
+        }
         [Test]
         public void Deffect_CN_1143()
         {
@@ -659,7 +679,7 @@ namespace DynamoCoreUITests
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
-            var dynamoView = new DynamoView(this.ViewModel);
+            dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
             Assert.IsNotNull(this.ViewModel);
