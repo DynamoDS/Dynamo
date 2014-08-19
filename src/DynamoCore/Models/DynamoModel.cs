@@ -367,6 +367,8 @@ namespace Dynamo.Models
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
+            CleanWorkbench();
+
             EngineController.Dispose();
             EngineController = null;
 
@@ -593,6 +595,7 @@ namespace Dynamo.Models
             foreach (NodeModel el in elements)
             {
                 el.DisableReporting();
+                el.Destroy();
             }
 
             foreach (NodeModel el in elements)
