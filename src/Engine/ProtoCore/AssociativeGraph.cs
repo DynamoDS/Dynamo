@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+
+using ProtoCore.Lang;
 using ProtoCore.Utils;
 using System;
 using ProtoCore.DSASM;
@@ -225,34 +227,30 @@ namespace ProtoCore.AssociativeGraph
         }
 
 
-        public bool PushDependent(GraphNode dependent)
+        public void PushDependent(GraphNode dependent)
         {
-            Validity.Assert(null != dependentList);
-
-            if (allowDependents)
+            if (!allowDependents)
             {
-                //if (!dependent.updateNodeRefList[0].nodeList[0].symbol.name.StartsWith(ProtoCore.DSASM.Constants.kTempVar))
-                {
-                    bool exists = false;
-                    foreach (GraphNode gnode in dependentList)
-                    {
-                        if (dependent.updateNodeRefList[0].nodeList[0].IsEqual(gnode.updateNodeRefList[0].nodeList[0]))
-                        {
-                            exists = true;
-                        }
-                    }
+                return;
+            }
 
-                    if (!exists)
-                    {
-                        if (dependent.UID != Constants.kInvalidIndex)
-                        {
-                            dependent.UID = dependentList.Count;
-                        }
-                        dependentList.Add(dependent);
-                    }
+            bool exists = false;
+            foreach (GraphNode gnode in dependentList)
+            {
+                if (dependent.updateNodeRefList[0].nodeList[0].Equals(gnode.updateNodeRefList[0].nodeList[0]))
+                {
+                    exists = true;
                 }
             }
-            return true;
+
+            if (!exists)
+            {
+                if (dependent.UID != Constants.kInvalidIndex)
+                {
+                    dependent.UID = dependentList.Count;
+                }
+                dependentList.Add(dependent);
+            }
         }
 
         public void ResolveLHSArrayIndex()
@@ -317,7 +315,7 @@ namespace ProtoCore.AssociativeGraph
                 for (int n = 0; n < modifiedRef.nodeList.Count; ++n)
                 {
                     UpdateNode updateNode = modifiedRef.nodeList[n];
-                    if (!updateNode.IsEqual(updateNodeRefList[0].nodeList[n]))
+                    if (!updateNode.Equals(updateNodeRefList[0].nodeList[n]))
                     {
                         isUpdateable = false;
                         break;
@@ -890,19 +888,28 @@ namespace ProtoCore.AssociativeGraph
             dimensionNodeList = new List<UpdateNode>();
         }
 
-        public bool IsEqual(UpdateNode rhs)
+        public override bool Equals(object obj)
         {
-            if (nodeType == rhs.nodeType)
+            var rhs = obj as UpdateNode;
+            if (rhs == null)
             {
-                if (nodeType == UpdateNodeType.kSymbol || nodeType == UpdateNodeType.kLiteral)
-                {
-                    return symbol.IsEqualAtScope(rhs.symbol);
-                }
-                else if (nodeType == UpdateNodeType.kMethod)
-                {
-                    return procNode.IsEqual(rhs.procNode);
-                }
+                return false;
             }
+
+            if (nodeType != rhs.nodeType)
+            {
+                return false;
+            }
+
+            if (nodeType == UpdateNodeType.kSymbol || nodeType == UpdateNodeType.kLiteral)
+            {
+                return symbol.IsEqualAtScope(rhs.symbol);
+            }
+            else if (nodeType == UpdateNodeType.kMethod)
+            {
+                return procNode.Equals(rhs.procNode);
+            }
+
             return false;
         }
     }
@@ -986,7 +993,7 @@ namespace ProtoCore.AssociativeGraph
                         }
                     }
                 }
-                if (!nodeList[n].IsEqual(rhs.nodeList[n]))
+                if (!nodeList[n].Equals(rhs.nodeList[n]))
                 {
                     return false;
                 }
