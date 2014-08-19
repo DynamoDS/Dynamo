@@ -3,12 +3,180 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <Grid x:Name="internalGrid">
-        <TextBlock Text="HERE WILL BE LIBRARY LABEL AND SEARCH TEXTBOX" Foreground="White" />
-        <views:LibraryView Margin="0,20,0,0"></views:LibraryView>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource DynamoWindowBrush}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- LIBRARY LABEL -->
+        <Grid Background="{StaticResource WorkspaceBackgroundBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0"
+                   FontWeight="Normal"
+                   Margin="0"
+                   Padding="16,0,0,0"
+                   Foreground="#AAAAAA"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Stretch">
+                Library
+            </Label>
+            <Button MouseEnter="LibraryExpanderMouseEnter"
+                    MouseLeave="LibraryExpanderMouseLeave"
+                    Click="LibraryExpanderClick"
+                    Template="{DynamicResource BackgroundButton}"
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
+                <Button.Resources>
+                    <ControlTemplate x:Key="BackgroundButton"
+                                     TargetType="Button">
+                        <Border BorderThickness="0"
+                                BorderBrush="Black"
+                                Background="{StaticResource WorkspaceBackgroundBrush}"
+                                Height="20"
+                                Margin="0,0,-1,0">
+                            <ContentPresenter HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Resources>
+                <Button.Content>
+                    <Image Source="/DynamoCore;component/UI/Images/expand_normal.png"
+                           Width="20"
+                           Height="20"
+                           RenderTransformOrigin="0.5, 0.5">
+                        <Image.RenderTransform>
+                            <RotateTransform Angle="180" />
+                        </Image.RenderTransform>
+                    </Image>
+                </Button.Content>
+            </Button>
+        </Grid>
+
+        <!-- SEARCH TEXTBOX -->
+        <Border BorderThickness="0,0,0,1"
+                BorderBrush="#3F3F3F"
+                Grid.Row="1">
+            <Grid Height="30"
+                  VerticalAlignment="Center"
+                  MouseEnter="SearchTextBoxGridMouseEnter"
+                  MouseLeave="SearchTextBoxGridMouseLeave">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.ColumnSpan="2"
+                            Width="Auto"
+                            Orientation="Horizontal">
+                    <StackPanel.HorizontalAlignment>
+                        <Binding Path="SearchIconAlignment" />
+                    </StackPanel.HorizontalAlignment>
+
+                    <Image x:Name="SearchIcon"
+                           Source="/DynamoCore;component/UI/Images/search_normal.png"
+                           Width="25"
+                           Height="26"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left" />
+
+                    <TextBlock FontSize="14"
+                               IsHitTestVisible="False"
+                               Foreground="#666"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding Path=SearchText, 
+                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                               HorizontalAlignment="Center"
+                               Height="18"
+                               Width="48">Search</TextBlock>
+                </StackPanel>
+                <TextBox Name="SearchTextBox"
+                         KeyboardNavigation.TabIndex="0"
+                         Foreground="#DDD"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontSize="14"
+                         IsEnabled="True"
+                         TextChanged="SearchTextBoxTextChanged"
+                         GotKeyboardFocus="SearchTextBoxGotKeyboardFocus"
+                         LostKeyboardFocus="SearchTextBoxLostKeyboardFocus"
+                         IsVisibleChanged="SearchTextBoxIsVisibleChanged"
+                         PreviewKeyDown="SearchTextBoxKeyDown"
+                         KeyDown="SearchTextBoxKeyDown"
+                         VerticalAlignment="Center"
+                         Text="{Binding Path=SearchText,Mode=TwoWay}"
+                         MinWidth="280"
+                         CaretBrush="#DDD"
+                         Margin="23,7,-6,5"
+                         Grid.ColumnSpan="2" />
+
+                <Button Name="SearchCancelButton"
+                        Grid.Column="2"
+                        Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
+                        Click="SearchCancelButtonClick"
+                        VerticalAlignment="Center">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Image Name="SearchCancelImage"
+                                               Source="/DynamoCore;component/UI/Images/searchcancel_normal.png"
+                                               Width="20"
+                                               Height="20" />
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter TargetName="SearchCancelImage"
+                                                        Property="Source"
+                                                        Value="/DynamoCore;component/UI/Images/searchcancel_hover.png" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="False">
+                                                <Setter TargetName="SearchCancelImage"
+                                                        Property="Source"
+                                                        Value="/DynamoCore;component/UI/Images/searchcancel_normal.png" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- LIBRARY VIEW -->
+        <views:LibraryView Grid.Row="2"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch"></views:LibraryView>
     </Grid>
 </UserControl>
