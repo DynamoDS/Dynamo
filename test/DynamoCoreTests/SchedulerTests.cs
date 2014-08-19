@@ -1,9 +1,9 @@
 ﻿using Dynamo.Core;
+using Dynamo.Core.Threading;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,7 +43,7 @@ namespace Dynamo
             this.doneEvent.Set(); // Done with grabbing.
         }
 
-        internal long TimeStampValue { get; private set; }
+        internal TimeStamp TimeStampValue { get; private set; }
     }
 
     #endregion
@@ -61,9 +61,9 @@ namespace Dynamo
         public void TimeStampGenerator00()
         {
             var scheduler = new DynamoScheduler();
-            Assert.AreEqual(1024, scheduler.NextTimeStamp);
-            Assert.AreEqual(1025, scheduler.NextTimeStamp);
-            Assert.AreEqual(1026, scheduler.NextTimeStamp);
+            Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
+            Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
+            Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
         }
 
         /// <summary>
@@ -96,17 +96,49 @@ namespace Dynamo
             }));
 
             WaitHandle.WaitAll(events);
-            var values = new List<long>();
+            var values = new List<TimeStamp>();
             for (int index = 0; index < EventCount; ++index)
                 values.Add(grabbers[index].TimeStampValue);
 
-            // Ensure we get a list of numbers, and that these numbers are all 
-            // unique (i.e. the distinct set of numbers returned should have the 
-            // same count as the original list).
+            // Ensure we get a list of time stamps, and that these numbers are 
+            // all unique (i.e. the distinct set of numbers returned should have
+            // the same count as the original list).
             // 
             Assert.AreEqual(EventCount, values.Count);
             var distinct = values.Distinct();
             Assert.AreEqual(values.Count, distinct.Count());
+        }
+
+        [Test]
+        public void TimeStampGenerator02()
+        {
+            var generator = new TimeStampGenerator();
+
+            TimeStamp first = generator.Next;
+            TimeStamp next = generator.Next;
+            TimeStamp nextnext = generator.Next;
+
+            Assert.IsTrue(first < next);
+            Assert.IsTrue(first < nextnext);
+            Assert.IsTrue(next < nextnext);
+
+            Assert.IsTrue(next > first);
+            Assert.IsTrue(nextnext > first);
+            Assert.IsTrue(nextnext > next);
+
+            // Alisasing the variable is necessary to prevent 
+            // the compiler's naive comparison check preventing this
+            TimeStamp a = first;
+            Assert.IsFalse(a > first);
+            Assert.IsFalse(a < first);
+            Assert.IsTrue(a.Equals(first));
+            Assert.IsTrue(first.Equals(a));
+
+            TimeStamp b = next;
+            Assert.IsFalse(b > next);
+            Assert.IsFalse(b < next);
+            Assert.IsTrue(b.Equals(next));
+            Assert.IsTrue(next.Equals(b));
         }
 
         #endregion

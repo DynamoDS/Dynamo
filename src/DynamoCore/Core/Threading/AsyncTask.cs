@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dynamo.Core
+namespace Dynamo.Core.Threading
 {
     internal abstract class AsyncTask
     {
@@ -39,12 +39,6 @@ namespace Dynamo.Core
         /// 
         internal void MarkTaskAsScheduled()
         {
-            if (ScheduledTime != 0)
-            {
-                const string message = "Task cannot be scheduled twice";
-                throw new InvalidOperationException(message);
-            }
-
             ScheduledTime = scheduler.NextTimeStamp;
         }
 
@@ -83,10 +77,10 @@ namespace Dynamo.Core
 
         #region Public Class Properties
 
-        internal long CreationTime { get; private set; }
-        internal long ScheduledTime { get; private set; }
-        internal long ExecutionStartTime { get; private set; }
-        internal long ExecutionEndTime { get; private set; }
+        internal TimeStamp CreationTime { get; private set; }
+        internal TimeStamp ScheduledTime { get; private set; }
+        internal TimeStamp ExecutionStartTime { get; private set; }
+        internal TimeStamp ExecutionEndTime { get; private set; }
         internal Exception Exception { get; private set; }
 
         #endregion
