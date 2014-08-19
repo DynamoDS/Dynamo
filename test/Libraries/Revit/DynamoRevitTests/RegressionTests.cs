@@ -150,7 +150,7 @@ namespace Dynamo.Tests
             {
                 DynamoRevit.InitializeUnits();
 
-                var model = RevitDynamoModel.StartInTestMode();
+                var model = RevitDynamoModel.Start(true);
 
                 this.ViewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()

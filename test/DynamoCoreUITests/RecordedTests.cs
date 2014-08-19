@@ -627,7 +627,7 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException(message);
             }
 
-            var model = DynamoModel.StartInTestMode();
+            var model = DynamoModel.Start(true);
 
             // Create the controller to run alongside the view.
             this.ViewModel = DynamoViewModel.Start(

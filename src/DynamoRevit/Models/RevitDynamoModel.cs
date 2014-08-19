@@ -63,37 +63,49 @@ namespace Dynamo.Applications.Models
 
         #region Constructors
 
-        public new static RevitDynamoModel Start()
+        public class RevitStartConfiguration : IStartConfiguration
         {
-            return RevitDynamoModel.Start(new StartConfiguration());
+            public string Context { get; set; }
+            public string DynamoCorePath { get; set; }
+            public IPreferences Preferences { get; set; }
+            public bool StartInTestMode { get; set; }
+            public IUpdateManager UpdateManager { get; set; }
+            public DynamoRunner Runner { get; set; }
         }
 
-        public new static RevitDynamoModel StartInTestMode()
+        public new static RevitDynamoModel Start(bool startInTestMode)
         {
-            var config = new StartConfiguration() { StartInTestMode = true };
-            return RevitDynamoModel.Start(config);
-        }
+            var asmLocation = Assembly.GetExecutingAssembly().Location;
 
-        public new static RevitDynamoModel Start(StartConfiguration configuration)
-        {
-            // where necessary, assign defaults
-            if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Core.Context.REVIT_2014;
-            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+            var configuration = new RevitStartConfiguration()
             {
-                var asmLocation = Assembly.GetExecutingAssembly().Location;
-                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
-            }
+                Context = Core.Context.REVIT_2014,
+                DynamoCorePath = Path.GetDirectoryName(asmLocation),
+                Preferences = new PreferenceSettings(),
+                StartInTestMode = startInTestMode,
+                Runner = new RevitDynamoRunner()
+            };
 
+            return RevitDynamoModel.Start(configuration);
+        }
+
+        public new static RevitDynamoModel Start(IStartConfiguration configuration)
+        {
+            if (configuration == null)
+                throw new ArgumentNullException("configuration");
+            if (string.IsNullOrEmpty(configuration.Context))
+                throw new ArgumentNullException("IStartConfiguration.Context");
+            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+                throw new ArgumentNullException("IStartConfiguration.DynamoCorePath");
             if (configuration.Preferences == null)
-                configuration.Preferences = new PreferenceSettings();
+                throw new ArgumentNullException("IStartConfiguration.Preferences");
             if (configuration.Runner == null)
-                configuration.Runner = new RevitDynamoRunner();
+                throw new ArgumentNullException("IStartConfiguration.Runner");
 
             return new RevitDynamoModel(configuration);
         }
 
-        private RevitDynamoModel(StartConfiguration configuration) :
+        private RevitDynamoModel(IStartConfiguration configuration) :
             base(configuration)
         {
             string context = configuration.Context;

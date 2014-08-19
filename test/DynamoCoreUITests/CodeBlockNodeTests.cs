@@ -206,7 +206,7 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException(message);
             }
 
-            var model = DynamoModel.StartInTestMode();
+            var model = DynamoModel.Start(true);
 
             ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()

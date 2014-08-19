@@ -106,7 +106,7 @@ namespace Dynamo.Tests
 
                 var asmLocation = Assembly.GetExecutingAssembly().Location;
                 var directory = Path.GetDirectoryName(asmLocation);
-                var config = new DynamoModel.StartConfiguration()
+                var config = new RevitDynamoModel.RevitStartConfiguration()
                 {
                     Context = Core.Context.REVIT_2014,
                     DynamoCorePath = Path.GetFullPath(directory + @"\..\"),

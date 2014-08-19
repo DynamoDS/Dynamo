@@ -32,7 +32,7 @@ namespace DynamoCoreUITests
             var corePath = Path.GetFullPath(Path.GetDirectoryName(asmLocation));
 
             Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DynamoStartConfiguration()
                 {
                     Context = Dynamo.Core.Context.NONE,
                     DynamoCorePath = corePath,

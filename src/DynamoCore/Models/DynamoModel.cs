@@ -241,7 +241,7 @@ namespace Dynamo.Models
             DynamoRunner Runner { get; }
         }
 
-        public struct StartConfiguration
+        public class DynamoStartConfiguration : IStartConfiguration
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
@@ -255,42 +255,39 @@ namespace Dynamo.Models
         /// Start DynamoModel with all default configuration options
         /// </summary>
         /// <returns></returns>
-        public static DynamoModel Start()
+        public static DynamoModel Start(bool startInTestMode)
         {
-            return Start(new StartConfiguration());
-        }
+            var asmLocation = Assembly.GetExecutingAssembly().Location;
 
-        public static DynamoModel StartInTestMode()
-        {
-            var config = new StartConfiguration() { StartInTestMode = true };
-            return Start(config);
-        }
-
-        /// <summary>
-        /// Start DynamoModel with custom configuration.  Defaults will be assigned not provided.
-        /// </summary>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public static DynamoModel Start(StartConfiguration configuration)
-        {
-            // where necessary, assign defaults
-            if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Core.Context.NONE;
-            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+            var configuration = new DynamoStartConfiguration()
             {
-                var asmLocation = Assembly.GetExecutingAssembly().Location;
-                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
-            }
+                Context = Core.Context.NONE,
+                DynamoCorePath = Path.GetDirectoryName(asmLocation),
+                Preferences = new PreferenceSettings(),
+                StartInTestMode = startInTestMode,
+                Runner = new DynamoRunner()
+            };
 
+            return Start(configuration);
+        }
+
+        public static DynamoModel Start(IStartConfiguration configuration)
+        {
+            if (configuration == null)
+                throw new ArgumentNullException("configuration");
+            if (string.IsNullOrEmpty(configuration.Context))
+                throw new ArgumentNullException("IStartConfiguration.Context");
+            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+                throw new ArgumentNullException("IStartConfiguration.DynamoCorePath");
             if (configuration.Preferences == null)
-                configuration.Preferences = new PreferenceSettings();
+                throw new ArgumentNullException("IStartConfiguration.Preferences");
             if (configuration.Runner == null)
-                configuration.Runner = new DynamoRunner();
+                throw new ArgumentNullException("IStartConfiguration.Runner");
 
             return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(StartConfiguration configuration)
+        protected DynamoModel(IStartConfiguration configuration)
         {
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
