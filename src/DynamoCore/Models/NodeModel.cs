@@ -1674,24 +1674,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Indicates whether the node should be drawn
-        /// </summary>
-        public bool ContainsGeometryData {
-            get
-            {
-                foreach (var varName in GetDrawableIds())
-                {
-                    var graphItems = Workspace.DynamoModel.EngineController.GetGraphicItems(varName);
-
-                    if (graphItems != null)
-                        return true;
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Gets the drawable Id as registered with visualization manager for
         /// the given output port on the given node.
         /// </summary>

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using System.IO;
+using Dynamo.Models;
 
 namespace DynamoWebServer.Messages
 {
@@ -44,16 +45,13 @@ namespace DynamoWebServer.Messages
         [DataMember]
         public bool ContainsGeometryData { get; private set; }
 
-        public ExecutedNode(string id, string state, string stateMessage,
-            string data, bool containsGeometryData)
+        public ExecutedNode(NodeModel node, string data)
         {
-            this.NodeID = id;
-            this.State = state;
-            this.StateMessage = stateMessage;
+            this.NodeID = node.GUID.ToString();
+            this.State = node.State.ToString();
+            this.StateMessage = node.ToolTipText;
             this.Data = data;
-            this.ContainsGeometryData = containsGeometryData;
+            this.ContainsGeometryData = node.HasRenderPackages;
         }
-
-        
     }
 }

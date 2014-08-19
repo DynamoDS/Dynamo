@@ -168,7 +168,7 @@ namespace DynamoWebServer.Messages
                     }
                 }
 
-                var execNode = new ExecutedNode(node.GUID.ToString(), node.State.ToString(), node.ToolTipText, data, node.ContainsGeometryData);
+                var execNode = new ExecutedNode(node, data);
                 nodes.Add(execNode);
             }
 
