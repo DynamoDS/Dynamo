@@ -308,7 +308,7 @@ b4 = Math.Ceiling(a4); //null
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void T80585_Count()
         {
             string code = @"
@@ -347,7 +347,7 @@ b4 = Count(a4); //0";
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void language_functions_test_1()
         {
             string code = @"
@@ -448,7 +448,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void set_operation_functions_test_1()
         {
             string code = @"
@@ -522,6 +522,16 @@ setUnion = SetUnion(other1Dcollection, one1Dcollection); ";
             thisTest.Verify("setUnion", v10);
         }
         /* 
-[Test]         public void TestFrameWork_IntDouble()         {             String code = @"     a = 1.0; ";             thisTest.RunScriptSource(code);             thisTest.Verify("a", 1);                     }*/
+[Test]
+         public void TestFrameWork_IntDouble()
+         {
+             String code =
+ @"
+     a = 1.0;
+ ";
+             thisTest.RunScriptSource(code);
+             thisTest.Verify("a", 1);
+            
+         }*/
     }
 }
