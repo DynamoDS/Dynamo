@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  
+  <Product Id="*" 
+           Name="Dynamo" 
+           Language="1033" 
+           Version="0.7.1" 
+           Manufacturer="Dynamo" 
+           UpgradeCode="f84e2239-049c-43cb-b875-ada28893a9db" >
+
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" 
+             Platform="x64"/>
+
+    <MajorUpgrade 
+      Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    
+    <MediaTemplate EmbedCab="yes" />
+
+    <!--<UIRef Id="WixUI_FeatureTree"/>
+    <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
+
+    <!--Property used to define on which version of Revit to install.-->
+    <Property Id="REVIT_FLAVOR" Value="Autodesk Revit Architecture 2015"/>
+    <Property Id="INSTALL_FOR_REVIT_2014">0</Property>
+    <Property Id="INSTALL_FOR_REVIT_2015">1</Property>
+    
+    <!--Find Revit installations by finding the uninstall registry key.-->
+    <Property Id="VASARI">
+      <RegistrySearch Id='VasariRegistry_2014' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Vasari Beta 3' Name='InstallLocation' />
+    </Property>
+    
+    <Property Id="REVIT_2014">
+      <RegistrySearch Id='RevitRegistry_2014' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit 2014' Name='InstallLocation' />
+    </Property>
+    
+    <Property Id="REVIT_ARCHITECTURE_2014">
+      <RegistrySearch Id='RevitRegistry_Architecture_2014' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2014' Name='InstallLocation' />
+    </Property>
+    
+    <Property Id="REVIT_2015">
+      <RegistrySearch Id='RevitRegistry_2015' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit 2015' Name='InstallLocation' />
+    </Property>
+    
+    <Property Id="REVIT_ARCHITECTURE_2015">
+      <RegistrySearch Id='RevitRegistry_Architecture_2015' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
+    </Property>
+
+    <Property Id="DYNAMO_INSTALL_BASE">
+      <RegistrySearch Id='RevitForDynamo' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[REVIT_FLAVOR]' Name='InstallLocation' />
+    </Property>
+    
+    <Property Id='DYNAMO_INSTALLDIR'></Property>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[DYNAMO_INSTALL_BASE]\AddIns\Dynamo" After="LaunchConditions"></SetProperty>
+
+    <CustomAction Id="AdjustInstallDir"
+               Property="DYNAMO_INSTALLDIR"
+               Value="[DYNAMO_INSTALLDIR]\AddIns\Dynamo" />
+    
+    <Feature Id="DYNAMO_CORE_FEATURE" 
+             Title="Dynamo Core" 
+             Level="1">
+      <ComponentGroupRef Id="RELEASE"/>
+      <ComponentGroupRef Id="DEFINITIONS"/>
+      <ComponentRef Id="ApplicationShortcut" />
+      <Feature Id="DYNAMO_CORE_SAMPLES"
+             Title="Sample Content"
+             Level="1" >
+        <ComponentGroupRef Id="SAMPLES"/>
+      </Feature>
+    </Feature>
+    
+    <!--Revit features are only the addin. All Revit assets are currently installed as part of core.-->
+    <Feature Id="DYNAMO_REVIT_2014" 
+             Title="Dynamo for Revit 2014" 
+             Level="1">
+      <ComponentGroupRef Id="REVIT_2014"/>
+      <Condition Level="0">(REVIT_2014="" AND REVIT_ARCHITECTURE_2014="" AND VASARI="") OR INSTALL_FOR_REVIT_2014=0</Condition>
+    </Feature>
+    
+    <Feature Id="DYNAMO_REVIT_2015" 
+             Title="Dynamo for Revit 2015"
+             Level="1">
+      <ComponentGroupRef Id="REVIT_2015"/>
+      <Condition Level="0">(REVIT_2015="" AND REVIT_ARCHITECTURE_2015="") OR INSTALL_FOR_REVIT_2015=0</Condition>
+    </Feature>
+
+    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
+  
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Dynamo"/>
+      </Directory>
+      <Directory Id="DYNAMO_INSTALLDIR"/>
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
+          <Directory Id="PROGDATA_07" Name="0.7"/>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Dynamo 0.7"
+                  Description="Dynamo Sandbox"
+                  Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
+                  WorkingDirectory="DYNAMO_INSTALLDIR"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Dynamo_07" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+    
+    <ComponentGroup Id="REVIT_2014" Directory="DYNAMO_INSTALLDIR">
+      <Component Id="DynamoForRevit2015.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
+        <File Id="DynamoForRevit2015.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2014.addin"/>
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="REVIT_2015" Directory="DYNAMO_INSTALLDIR">
+      <Component Id="DynamoForRevit2014.addin" Guid="fde9dc0b-4b8c-46d3-9950-42c9f66b5e60">
+        <File Id="DynamoForRevit2014.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2015.addin"></File>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  
+</Wix>

@@ -40,10 +40,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Name, "Home");
 
             // search and results are correct
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Input");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
             Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
 
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Output");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
             Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
         }
 
@@ -58,11 +58,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
 
             // search and results are correct
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Input");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
             Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
             Assert.AreEqual("Input", ViewModel.SearchViewModel.SearchResults[0].Name);
 
-            ViewModel.SearchViewModel.SearchAndUpdateResultsSync("Output");
+            ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
             Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
             Assert.AreEqual("Output", ViewModel.SearchViewModel.SearchResults[0].Name);
 

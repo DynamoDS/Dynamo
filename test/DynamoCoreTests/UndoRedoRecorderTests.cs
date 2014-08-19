@@ -598,16 +598,15 @@ namespace Dynamo.Tests
         public void TestBasicAttributes()
         {
             var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(400, 100, "Dynamo.Nodes.Addition");
+            model.CurrentWorkspace.AddNode(400, 100, "+");
 
             var sumNode = model.Nodes[0] as DSFunction;
 
             //Assert inital values
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
-            Assert.AreEqual("Dynamo.Nodes.Addition", sumNode.GetType().ToString());
-            Assert.AreEqual("Add", sumNode.NickName);
-            Assert.AreEqual(LacingStrategy.Longest, sumNode.ArgumentLacing);
+            Assert.AreEqual("+", sumNode.NickName);
+            Assert.AreEqual(LacingStrategy.Shortest, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(true, sumNode.InteractionEnabled);
@@ -639,9 +638,8 @@ namespace Dynamo.Tests
             sumNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
-            Assert.AreEqual("Dynamo.Nodes.Addition", sumNode.GetType().ToString());
-            Assert.AreEqual("Add", sumNode.NickName);
-            Assert.AreEqual(LacingStrategy.Longest, sumNode.ArgumentLacing);
+            Assert.AreEqual("+", sumNode.NickName);
+            Assert.AreEqual(LacingStrategy.Shortest, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(true, sumNode.InteractionEnabled);
@@ -683,7 +681,7 @@ namespace Dynamo.Tests
         public void TestDoubleSliderInput()
         {
             var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(400, 0, "Number Slider");
+            model.CurrentWorkspace.AddNode(400, 0, "Double Slider");
 
             var numNode = ViewModel.Model.Nodes[0] as DoubleSlider;
             numNode.X = 400; //To check if NodeModel base Serialization method is being called

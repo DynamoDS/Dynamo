@@ -275,8 +275,6 @@ namespace Dynamo.Models
             Runner = runner;
             Context = context;
             IsTestMode = isTestMode;
-            DisposeLogic.IsShuttingDown = false;
-            this.EngineController = new EngineController(this);
 
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             DebugSettings = new DebugSettings();
@@ -301,6 +299,9 @@ namespace Dynamo.Models
             this.Loader.PackageLoader.DoCachedPackageUninstalls();
             this.Loader.PackageLoader.LoadPackages();
 
+            DisposeLogic.IsShuttingDown = false;
+
+            this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
             //This is necessary to avoid a race condition by causing a thread join
@@ -389,7 +390,7 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 

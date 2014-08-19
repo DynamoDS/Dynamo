@@ -29,7 +29,7 @@ namespace Dynamo.Utilities
                 }
 
                 // Then check the dll path
-                assemblyPath = Path.Combine(DynamoPathManager.Instance.Asm, new AssemblyName(args.Name).Name + ".dll");
+                assemblyPath = Path.Combine(DynamoPathManager.Instance.LibG, new AssemblyName(args.Name).Name + ".dll");
                 if (File.Exists(assemblyPath))
                 {
                     return Assembly.LoadFrom(assemblyPath);
@@ -61,7 +61,7 @@ namespace Dynamo.Utilities
 
         public static Assembly LoadLibG()
         {
-            var libG = Assembly.LoadFrom(DynamoPathManager.Instance.Asm);
+            var libG = Assembly.LoadFrom(DynamoPathManager.Instance.LibG);
             return libG;
         }
     }

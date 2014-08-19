@@ -5337,6 +5337,7 @@ def foo:Base()
 {
     return = Derive.Derive();
 }
+r;
 [Imperative]
 {
 b = foo();
