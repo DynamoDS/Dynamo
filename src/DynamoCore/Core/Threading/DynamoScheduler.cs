@@ -1,15 +1,15 @@
 ﻿using System.Threading;
 
-namespace Dynamo.Core
+namespace Dynamo.Core.Threading
 {
-    internal partial class DynamoScheduler
+    public partial class DynamoScheduler
     {
         #region Public Class Operational Methods
 
         /// <summary>
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
-        internal long NextTimeStamp { get { return timeStamp.Next; } }
+        internal TimeStamp NextTimeStamp { get { return generator.Next; } }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 
@@ -27,7 +27,7 @@ namespace Dynamo.Core
         /// false otherwise. Note that this method returns false when scheduler
         /// begins to shutdown, even when the task queue is not empty.</returns>
         /// 
-        internal bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
+        public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
             AsyncTask nextTask = null;
 

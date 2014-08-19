@@ -2,7 +2,7 @@
 <RevitAddIns>
 <AddIn Type="Application">
 <Name>Dynamo For Revit</Name>
-<Assembly>".\Revit_2015\DynamoRevitDS.dll"</Assembly>
+<Assembly>"C:\Program Files\Dynamo 0.7\Revit_2015\DynamoRevitDS.dll"</Assembly>
 <VisibilityMode>AlwaysVisible</VisibilityMode>
 <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>
 <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
