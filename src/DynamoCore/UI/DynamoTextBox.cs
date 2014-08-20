@@ -464,6 +464,9 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
+        public static object cashedDataContext;
+        public static bool isMouseOver = false;
+
         public static readonly DependencyProperty AttachmentSidePopupProperty =
             DependencyProperty.Register("AttachmentSidePopup",
             typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
@@ -483,12 +486,26 @@ namespace Dynamo.UI.Controls
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
+            this.MouseLeave += LibraryToolTipPopup_MouseLeave;
             this.DataContextChanged += Popup_DataContextChanged;
             this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
         }
 
+        private void LibraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
+        {
+            isMouseOver = false;
+        }
+
         private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (isMouseOver)
+                this.DataContext = cashedDataContext;
+
+            if (this.DataContext as
+                Dynamo.Search.SearchElements.DSFunctionNodeSearchElement
+                != null)
+                cashedDataContext = this.DataContext;
+
             this.Child = null;
             Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
             tooltip.DataContext = this.DataContext;

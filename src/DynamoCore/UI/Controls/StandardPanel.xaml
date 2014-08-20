@@ -16,8 +16,6 @@
                TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="MouseEnter"
                          Handler="ListBoxItem_MouseEnter" />
-            <EventSetter Event="MouseLeave"
-                         Handler="Popup_MouseLeave" />
         </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding Path=ClassDetailsVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
