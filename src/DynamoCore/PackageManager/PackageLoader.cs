@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -43,10 +44,10 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackages()
+        public void LoadPackagesIntoDynamo()
         {
             this.ScanAllPackageDirectories();
-            LocalPackages.ToList().ForEach( (pkg) => pkg.Load(loader, logger) );
+            LocalPackages.ToList().ForEach( (pkg) => pkg.LoadIntoDynamo(loader, logger) );
         }
 
         private List<Package> ScanAllPackageDirectories()
@@ -114,6 +115,11 @@ namespace Dynamo.PackageManager
             return LocalPackages.Any(package => package.LoadedTypes.Contains(t));
         }
 
+        public bool IsUnderPackageControl(Assembly t)
+        {
+            return LocalPackages.Any(package => package.LoadedAssemblies.Contains(t));
+        }
+
         public Package GetPackageFromRoot(string path)
         {
             return LocalPackages.FirstOrDefault(pkg => pkg.RootDirectory == path);
@@ -134,11 +140,9 @@ namespace Dynamo.PackageManager
             return LocalPackages.FirstOrDefault(ele => ele.ContainsFile(path));
         }
 
-        internal void DoCachedPackageUninstalls()
+        internal void DoCachedPackageUninstalls( IPreferences preferences )
         {
-            // scan dynSettings for cached packages to unload
-            // unload them
-            // throw new NotImplementedException();
+            
         }
     }
 }

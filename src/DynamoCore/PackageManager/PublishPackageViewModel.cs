@@ -426,7 +426,7 @@ namespace Dynamo.PackageManager
                     l.LoadedCustomNodes.Select(
                         x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid))
                         .ToList(),
-                Assemblies = l.GetAssemblies(),
+                Assemblies = l.LoadedAssemblies.ToList(),
                 Name = l.Name,
                 Package = l
             };

@@ -30,6 +30,13 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(this.RootDirectory, "dyf"); }
         }
 
+        private bool _willUninstallOnNextRestart;
+        public bool WillUninstallOnNextRestart
+        {
+            get { return _willUninstallOnNextRestart; }
+            set { _willUninstallOnNextRestart = value; RaisePropertyChanged("WillUninstallOnNextRestart"); }
+        }
+
         public string BinaryDirectory
         {
             get { return Path.Combine(this.RootDirectory, "bin"); }
@@ -128,12 +135,12 @@ namespace Dynamo.PackageManager
 
         }
 
-        public void Load( DynamoLoader loader, ILogger logger )
+        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger )
         {
             try
             {
-                this.LoadAssemblies( loader, logger );
-                this.LoadCustomNodes( loader );
+                this.LoadAssembliesIntoDynamo( loader, logger );
+                this.LoadCustomNodesIntoDynamo( loader );
                 
                 Loaded = true;
             }
@@ -145,14 +152,14 @@ namespace Dynamo.PackageManager
 
         }
 
-        private void LoadCustomNodes( DynamoLoader loader)
+        private void LoadCustomNodesIntoDynamo( DynamoLoader loader)
         {
             loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
         }
 
-        private void LoadAssemblies( DynamoLoader loader, ILogger logger)
+        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger)
         {
-            var assemblies = GetAssemblies();
+            var assemblies = LoadAssembliesInBinDirectory();
 
             // filter the assemblies
             var zeroTouchAssemblies = new List<Assembly>();
@@ -184,7 +191,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal List<Assembly> GetAssemblies()
+        private List<Assembly> LoadAssembliesInBinDirectory()
         {
             if (!Directory.Exists(BinaryDirectory)) 
                 return new List<Assembly>();
@@ -202,6 +209,11 @@ namespace Dynamo.PackageManager
         }
 
         internal bool InUse( DynamoModel dynamoModel )
+        {
+            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
+        }
+
+        internal bool HasAssemb(DynamoModel dynamoModel)
         {
             return (LoadedTypes.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
         }
