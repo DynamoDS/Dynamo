@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Dynamo.Search;
@@ -93,11 +94,6 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
-        /// <summary>
-        /// Specifies whether or not BrowserInternalElement is container for leaves.
-        /// </summary>
-        public bool IsPlaceHolder { get; set; }
-
         public BrowserInternalElement()
         {
             this._name = "Default";
@@ -117,7 +113,7 @@ namespace Dynamo.Nodes.Search
 
     public class ClassInformation : BrowserItem
     {
-        #region BrowserItem abstract members implementation 
+        #region BrowserItem abstract members implementation
 
         public override ObservableCollection<BrowserItem> Items
         {
@@ -143,33 +139,41 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         public bool ClassDetailsVisibility { get; set; }
 
-        private ObservableCollection<BrowserInternalElement> createMembers;
-        public ObservableCollection<BrowserInternalElement> CreateMembers
+        public ClassInformation()
+            : base()
+        {
+            createMembers = new List<BrowserInternalElement>();
+            actionMembers = new List<BrowserInternalElement>();
+            queryMembers = new List<BrowserInternalElement>();
+        }
+
+        private List<BrowserInternalElement> createMembers;
+        public IEnumerable<BrowserInternalElement> CreateMembers
         {
             get { return this.createMembers; }
         }
 
-        private ObservableCollection<BrowserInternalElement> actionMembers;
-        public ObservableCollection<BrowserInternalElement> ActionMembers
+        private List<BrowserInternalElement> actionMembers;
+        public IEnumerable<BrowserInternalElement> ActionMembers
         {
             get { return this.actionMembers; }
         }
 
-        private ObservableCollection<BrowserInternalElement> queryMembers;
-        public ObservableCollection<BrowserInternalElement> QueryMembers
+        private List<BrowserInternalElement> queryMembers;
+        public IEnumerable<BrowserInternalElement> QueryMembers
         {
             get { return this.queryMembers; }
         }
 
         public void PopulateMemberCollections(BrowserInternalElement element)
         {
-            createMembers = new ObservableCollection<BrowserInternalElement>();
-            actionMembers = new ObservableCollection<BrowserInternalElement>();
-            queryMembers = new ObservableCollection<BrowserInternalElement>();
+            createMembers = new List<BrowserInternalElement>();
+            actionMembers = new List<BrowserInternalElement>();
+            queryMembers = new List<BrowserInternalElement>();
 
-            foreach (var subelement in element.Items)
+            foreach (var subElement in element.Items)
             {
-                var nodeSearchEle = subelement as NodeSearchElement;
+                var nodeSearchEle = subElement as NodeSearchElement;
                 // nodeSearchEle is null means that our subelement 
                 // is not a leaf of nodes tree.
                 // Normally we shouldn't have this situation.
@@ -180,15 +184,15 @@ namespace Dynamo.Nodes.Search
                 switch (nodeSearchEle.Group)
                 {
                     case SearchElementGroup.Create:
-                        createMembers.Add(subelement as BrowserInternalElement);
+                        createMembers.Add(subElement as BrowserInternalElement);
                         break;
 
                     case SearchElementGroup.Action:
-                        actionMembers.Add(subelement as BrowserInternalElement);
+                        actionMembers.Add(subElement as BrowserInternalElement);
                         break;
 
                     case SearchElementGroup.Query:
-                        queryMembers.Add(subelement as BrowserInternalElement);
+                        queryMembers.Add(subElement as BrowserInternalElement);
                         break;
                 }
             }
