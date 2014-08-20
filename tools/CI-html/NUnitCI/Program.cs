@@ -17,23 +17,32 @@ namespace NUnitCI
         {
 
             var body = new StringBuilder();
-            string curPath = @args[0];
-            string prePath = @args[1];
-            string outPath = @args[2];
-
-            //string curPath = @"C:\Users\t_anhp\Downloads\xmlCUR";
-            //string prePath = @"C:\Users\t_anhp\Downloads\xmlOLD";
-            //string outPath = @"C:\Users\t_anhp\Downloads\compareXML\Compare.html";
-
-            Console.WriteLine(curPath);
-            Console.WriteLine(prePath);
-
-            AppendNunitSummary(curPath, prePath, ref body);
-            AppendNuintDiff(curPath, prePath, ref body);
-            using (StreamWriter outfile = new StreamWriter(outPath))
+            //curPath and prePath are the current and previous paths of either directory or files
+            try
             {
-                outfile.Write(body.ToString());
+                string curPath = @args[0];
+                string prePath = @args[1];
+                string outPath = @args[2];
+
+
+                //string curPath = @"C:\Users\t_anhp\Downloads\xmlCUR";
+                //string prePath = @"C:\Users\t_anhp\Downloads\xmlOLD";
+                //string outPath = @"C:\Users\t_anhp\Downloads\compareXML\Compare.html";
+
+                Console.WriteLine(curPath);
+                Console.WriteLine(prePath);
+                AppendNunitSummary(curPath, prePath, ref body);
+                AppendNuintDiff(curPath, prePath, ref body);
+                using (StreamWriter outfile = new StreamWriter(outPath))
+                {
+                    outfile.Write(body.ToString());
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Less than 3 arguments passed in");
+            }
+        
         }
 
         public static void GetNunitRegressionInfo(string curXml, string preXml, out int PositiveRegression, out int NegativeRegression, out int newTestCase)
@@ -88,9 +97,7 @@ namespace NUnitCI
         }
         static Dictionary<string, int> GetResultSummaryForFile(string path)
         {
-            //  after having waited this long if file still does not exists
-            //  then probably move on
-            //
+            //this function is to build the summary dictionary of the test case results
             Dictionary<string, int> summary = new Dictionary<string, int>();
             string[] keyValues = { "total", "errors", "not-run", "inconclusive", "ignored", "skipped", "invalid", "failures" };
             if (Directory.Exists(path))
@@ -165,6 +172,7 @@ namespace NUnitCI
         }
         public static void AppendNunitSummary(string curPath, string prePath, ref StringBuilder body)
         {
+            //this fuction is to append the summary to the body of the comparision report
             if (body == null)
                 body = new StringBuilder();
 
@@ -228,6 +236,7 @@ namespace NUnitCI
 
         public static void AppendNuintDiff(string curPath, string prePath, ref StringBuilder body)
         {
+            //this function is to append the difference between xml files to the report
             int successToFailure = 0, failureToSuccess = 0;
             if (body == null)
                 body = new StringBuilder();
