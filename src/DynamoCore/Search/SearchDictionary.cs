@@ -251,9 +251,9 @@ namespace Dynamo.Search
             }
 
             // if you don't have enough results, do fuzzy search
-            if (searchDict.Count < minResultsForTolerantSearch)
+            if (searchDict.Count <= minResultsForTolerantSearch)
             {
-                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, query)))
+                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key.ToLower(), query)))
                 {
                     ComputeWeightAndAddToDictionary(query, pair, searchDict );
                 }

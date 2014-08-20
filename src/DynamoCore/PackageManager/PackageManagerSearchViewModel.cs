@@ -205,7 +205,7 @@ namespace Dynamo.PackageManager
             this.PackageManagerClientViewModel = client;
 
             SearchResults = new ObservableCollection<PackageManagerSearchElement>();
-            MaxNumSearchResults = 12;
+            MaxNumSearchResults = 35;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);

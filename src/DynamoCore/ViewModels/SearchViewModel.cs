@@ -199,7 +199,15 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
+            //var sw = new Stopwatch();
+
+            //sw.Start();
+
             var result = this.Model.Search(query).ToList();
+
+            //sw.Stop();
+            
+            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
             // Remove old execute handler from old top result
             if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
