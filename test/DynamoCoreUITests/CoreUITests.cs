@@ -570,7 +570,11 @@ namespace DynamoCoreUITests
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            Model = DynamoModel.StartInTestMode();
+            Model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
 
             ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()

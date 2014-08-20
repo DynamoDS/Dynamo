@@ -47,16 +47,10 @@ namespace DynamoSandbox
                 preloadMethod.Invoke(null, methodParams);
             }
 
-            var asmLocation = Assembly.GetExecutingAssembly().Location;
-
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    Preferences = PreferenceSettings.Load(),
-                    Context = Dynamo.Core.Context.NONE,
-                    DynamoCorePath = Path.GetDirectoryName(asmLocation),
-                    StartInTestMode = true,
-                    Runner = new DynamoRunner()
+                    Preferences = PreferenceSettings.Load()
                 });
 
             var viewModel = DynamoViewModel.Start(
