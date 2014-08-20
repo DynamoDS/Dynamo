@@ -166,14 +166,15 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
-            if(parameters.Any())
-            InputParametrs = parameters.Select(
-                par =>
-                {
-                   return  Tuple.Create<string,string>(par.Name, par.DisplayTypeName);
-
-                }
-                );
+            if (parameters.Any())
+            {
+                InputParametrs = parameters.Select(
+                    par =>
+                    {
+                        return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
+                    }
+                    );
+            }
 
             ReturnType = returnType == null? "var[]..[]" : returnType.Split('.').Last();
             Type = type;
