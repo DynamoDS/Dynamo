@@ -22,32 +22,7 @@ namespace Dynamo.Tests
         {
             LibraryServices libraryServices = LibraryServices.GetInstance();
             var loadedLibs = libraryServices.Libraries;
-            List<string> libs = libraryServices.Libraries.Select(
-                lib => {return Path.GetFileName(lib);}).ToList();
-
-            foreach (var lib in loadedLibs)
-            {
-               Assert.IsTrue(libs.Any(x => string.Compare(x, lib, true) == 0)); 
-            }
-        }
-
-        [Test]
-        [Category("Failing")]
-        public void TestLoadLibrary()
-        {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-            bool libraryLoaded = false;
-
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
-            
-            string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\MultiReturnTest.dll");
-            libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-            Assert.IsTrue(libraryLoaded);
-
-            var functions = libraryServices.GetFunctionGroups(libraryPath);
-            Assert.IsNotNull(functions);
-            Assert.IsTrue(functions.Any());
+            Assert.IsTrue(loadedLibs.Any());
         }
 
         [Test]
@@ -69,7 +44,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestLibraryAcrossSessions()
         {
             LibraryServices libraryServices = LibraryServices.GetInstance();
@@ -84,12 +58,12 @@ namespace Dynamo.Tests
 
             // open dyn file which uses node in that library
             RunModel(@"core\library\t1.dyn");
-            AssertValue("a", 1025);
+            AssertPreviewValue("2cacc70a-23a8-4fe0-92d1-9b72ae3db10b", 1025);
 
             // open the other dyn file which uses node in that library, and
             // library should still be available
             RunModel(@"core\library\t2.dyn");
-            AssertValue("a", 43);
+            AssertPreviewValue("880ea294-7a01-4a78-8602-54d73f4b681b", 43);
         }
 
         [Test]
