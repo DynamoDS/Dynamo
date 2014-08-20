@@ -40,9 +40,16 @@ namespace Dynamo.UI.Controls
             libraryToolTipPopup.DataContext = from_sender.DataContext;
         }
 
-        private void Popup_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        private void StandardPanel_MouseLeave(object sender, MouseEventArgs e)
         {
-            libraryToolTipPopup.DataContext = null;
+            if (Dynamo.UI.Controls.LibraryToolTipPopup.MouseInside)
+            {
+                Dynamo.UI.Controls.LibraryToolTipPopup.MouseInside = false;
+            }
+            else
+            {
+                libraryToolTipPopup.DataContext = null;
+            }
         }
     }
 }

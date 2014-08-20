@@ -7,8 +7,7 @@
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300"
-             MouseLeave="Popup_MouseLeave">
+             d:DesignWidth="300">
     <UserControl.Resources>
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
@@ -16,6 +15,8 @@
                TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="MouseEnter"
                          Handler="ListBoxItem_MouseEnter" />
+            <EventSetter Event="MouseLeave"
+                         Handler="StandardPanel_MouseLeave" />
         </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding Path=ClassDetailsVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
@@ -89,7 +90,6 @@
                                         IsOpen="{Binding ElementName=libraryToolTipPopup, Path=DataContext, Converter={StaticResource BrowserItemToBooleanConverter}, Mode=OneWay}"
                                         AttachmentSide="Right"
                                         StaysOpen="True"
-                                        AllowsTransparency="True" 
-                                        MouseLeave="Popup_MouseLeave"/>
+                                        AllowsTransparency="True" />
     </Grid>
 </UserControl>

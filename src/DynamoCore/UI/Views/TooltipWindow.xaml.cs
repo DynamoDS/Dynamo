@@ -39,6 +39,7 @@ namespace Dynamo.UI.Views
         private void ToolTip_MouseEnter(object sender, MouseEventArgs e)
         {
             Dynamo.UI.Controls.LibraryToolTipPopup.isMouseOver=true;
+            Dynamo.UI.Controls.LibraryToolTipPopup.MouseInside = true;
         }
 
     }
