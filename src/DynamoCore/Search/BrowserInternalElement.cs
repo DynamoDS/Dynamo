@@ -167,9 +167,9 @@ namespace Dynamo.Nodes.Search
 
         public void PopulateMemberCollections(BrowserInternalElement element)
         {
-            createMembers = new List<BrowserInternalElement>();
-            actionMembers = new List<BrowserInternalElement>();
-            queryMembers = new List<BrowserInternalElement>();
+            createMembers.Clear();
+            actionMembers.Clear();
+            queryMembers.Clear();
 
             foreach (var subElement in element.Items)
             {
