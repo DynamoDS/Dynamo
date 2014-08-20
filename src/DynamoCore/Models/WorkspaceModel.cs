@@ -422,8 +422,6 @@ namespace Dynamo.Models
 
         #region public methods
 
-        public abstract void OnDisplayed();
-
         /// <summary>
         ///     Save to a specific file path, if the path is null or empty, does nothing.
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
@@ -1413,19 +1411,8 @@ namespace Dynamo.Models
 
                 });
 
-            // KILLDYNSETTINGS: shouldn't know about the dispatcher - whether it exists or not
             DynamoModel.OnRequestDispatcherInvoke(getString);
             return outData;
-
-            //if (dynamoModel != null &&
-            //    dynamoModel.UIDispatcher != null &&
-            //    dynamoModel.UIDispatcher.CheckAccess() == false)
-            //{
-            //    dynamoModel.UIDispatcher.Invoke(getString);
-            //    return outData;
-            //}
-            //else
-            //    return String.Empty;
 
         }
 

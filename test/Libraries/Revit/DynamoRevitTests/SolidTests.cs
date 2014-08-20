@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             //model.Open(testPath);
             //ViewModel.Model.RunExpression();
 
-            //var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //var fec = new FilteredElementCollector( DocumentManager.Instance.CurrentDBDocument );
             //fec.OfClass(typeof(GenericForm));
 
             ////verify one loft created
@@ -135,7 +135,7 @@ namespace Dynamo.Tests
             //model.Open(testPath);
             //ViewModel.Model.RunExpression();
 
-            //var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //var fec = new FilteredElementCollector( DocumentManager.Instance.CurrentDBDocument );
             //fec.OfClass(typeof(GenericForm));
 
             ////verify one loft created
@@ -154,8 +154,8 @@ namespace Dynamo.Tests
             //string samplePath = Path.Combine(_testPath, @".\Solid\BoxByCenterAndDimensions.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
-            //model.Open(testPath);
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            //model.OpenWorkspace(testPath);
+            //Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
         [Test]
@@ -167,8 +167,8 @@ namespace Dynamo.Tests
             //string samplePath = Path.Combine(_testPath, @".\Solid\BoxByTwoCorners.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
-            //model.Open(testPath);
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            //model.OpenWorkspace(testPath);
+            //Assert.DoesNotThrow(() =>  ViewModel.Model.RunExpression());
         }
     }
 }
