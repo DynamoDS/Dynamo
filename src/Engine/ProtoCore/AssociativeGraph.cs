@@ -61,6 +61,7 @@ namespace ProtoCore.AssociativeEngine
                     continue;
                 }
 
+                bool entrypointSet = false;
                 int exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
                 foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
@@ -73,7 +74,11 @@ namespace ProtoCore.AssociativeEngine
                                 if (ProtoCore.DSASM.Constants.kInvalidIndex == exprId)
                                 {
                                     exprId = gnode.exprUID;
-                                    core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                    if (!entrypointSet)
+                                    {
+                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                        entrypointSet = true;
+                                    }
                                 }
                                 gnode.isDirty = true;
                             }

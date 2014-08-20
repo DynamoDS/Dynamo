@@ -1502,9 +1502,17 @@ namespace ProtoCore.DSASM
 
         private void SetupGraphEntryPoint(int entrypoint)
         {
-            //List<AssociativeGraph.GraphNode> graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
-            //foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+            List<AssociativeGraph.GraphNode> graphNodeList = null;
+            if (core.Options.ApplyUpdate)
+            {
+                // Getting the entry point only graphnodes at the global scope
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            }
+            else
+            {
+                graphNodeList = istream.dependencyGraph.GraphList;
+            }
+            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
             {
                 if (core.Options.IsDeltaExecution)
                 {
@@ -1532,54 +1540,6 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
-
-
-
-            // Find the graph where the entry point matches the graph pc
-            // Set that graph node as not dirty   
-            //foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
-            //{
-            //    if (core.Options.IsDeltaExecution)
-            //    {
-            //        // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
-            //        bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
-
-            //        //if (core.Options.ApplyUpdate)
-            //        //{
-            //        //    if (graphNode.isDeferred && inStartRange)
-            //        //    {
-            //        //        pc = graphNode.updateBlock.startpc;
-            //        //        graphNode.isDirty = false;
-            //        //        Properties.executingGraphNode = graphNode;
-            //        //        core.RuntimeExpressionUID = graphNode.exprUID;
-            //        //        break;
-            //        //    }
-            //        //}
-            //        //else
-            //        {
-            //            if (graphNode.isDirty && inStartRange)
-            //            {
-            //                pc = graphNode.updateBlock.startpc;
-            //                graphNode.isDirty = false;
-            //                Properties.executingGraphNode = graphNode;
-            //                core.RuntimeExpressionUID = graphNode.exprUID;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //    else if (graphNode.updateBlock.startpc == entrypoint)
-            //    {
-            //        Properties.executingGraphNode = graphNode;
-            //        core.RuntimeExpressionUID = graphNode.exprUID;
-            //        if (graphNode.isDirty)
-            //        {
-            //            graphNode.isDirty = false;
-            //            //count how many times one graphNode has been edited
-            //            graphNode.counter++;
-            //            break;
-            //        }
-            //    }
-            //}
         }
 
         private void handleCycle(ProtoCore.AssociativeGraph.GraphNode graphNode)
