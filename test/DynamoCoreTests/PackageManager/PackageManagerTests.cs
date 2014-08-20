@@ -36,7 +36,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - " 
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
-            pkg.Load(ViewModel.Model.Loader, ViewModel.Model.Logger);
+            pkg.LoadIntoDynamo(ViewModel.Model.Loader, ViewModel.Model.Logger);
+
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
         }
 
@@ -52,7 +53,8 @@ namespace Dynamo.Tests
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
             var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger);
-            loader.LoadPackages();
+            loader.LoadPackagesIntoDynamo();
+
             Assert.AreEqual(1, loader.LocalPackages.Count);
         }
 
@@ -61,7 +63,7 @@ namespace Dynamo.Tests
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
             var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, pkgDir);
-            loader.LoadPackages();
+            loader.LoadPackagesIntoDynamo();
             Assert.AreEqual(0, loader.LocalPackages.Count);
         }
 
