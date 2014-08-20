@@ -1810,7 +1810,7 @@ namespace ProtoCore.DSASM
                     if (!graphNode.isDirty)
                     {
                         graphNode.isDeferred = true;
-                        core.Options.DeferredUpdates++;
+                        core.DeferredUpdates++;
                     }
                 }
             }
@@ -2227,18 +2227,14 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            if (graphNode.isDirty)
-                            {
-                                //core.Options.DeferredUpdates++;
-                            }
-                            else
+                            if (!graphNode.isDirty)
                             {
                                 if (core.Options.ElementBasedArrayUpdate)
                                 {
                                     UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
                                 }
                                 graphNode.isDirty = true;
-                                core.Options.DeferredUpdates++;
+                                core.DeferredUpdates++;
                                 graphNode.forPropertyChanged = propertyChanged;
                                 nodesMarkedDirty++;
 

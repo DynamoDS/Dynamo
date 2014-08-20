@@ -1554,10 +1554,14 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private bool ApplyUpdate()
+        private void ApplyUpdate()
         {
-            Execute();
-            return true;
+            if (runnerCore.DeferredUpdates > 0)
+            {
+                ResetForDeltaExecution();
+                runnerCore.Options.ApplyUpdate = true;
+                Execute();
+            }
         }
 
         /// <summary>
@@ -1580,20 +1584,9 @@ namespace ProtoScript.Runners
                 System.Diagnostics.Debug.WriteLine("SyncInternal => " + code);
             }
 
-            //ResetForDeltaExecution();
-            //CompileAndExecute(code);
-
             ResetForDeltaExecution();
-            runnerCore.Options.ApplyUpdate = false;
-            runnerCore.Options.DeferredUpdates = 0; 
             CompileAndExecute(code);
-
-            if (runnerCore.Options.DeferredUpdates > 0)
-            {
-                ResetForDeltaExecution();
-                runnerCore.Options.ApplyUpdate = true;
-                ApplyUpdate();
-            }
+            ApplyUpdate();
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
@@ -1614,16 +1607,8 @@ namespace ProtoScript.Runners
             }
 
             ResetForDeltaExecution();
-            runnerCore.Options.ApplyUpdate = false;
-            runnerCore.Options.DeferredUpdates = 0;
             CompileAndExecute(dispatchASTList);
-
-            if (runnerCore.Options.DeferredUpdates > 0)
-            {
-                ResetForDeltaExecution();
-                runnerCore.Options.ApplyUpdate = true;
-                ApplyUpdate();
-            }
+            ApplyUpdate();
         }
 
 
