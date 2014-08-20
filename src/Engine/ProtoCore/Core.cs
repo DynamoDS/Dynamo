@@ -156,7 +156,7 @@ namespace ProtoCore
             ExecuteSSA = true;
             GCTempVarsOnDebug = true;
 
-            DumpFunctionResolverLogic = false;
+            DumpFunctionResolverLogic = false; 
             DumpOperatorToMethodByteCode = false;
             SuppressBuildOutput = false;
             BuildOptWarningAsError = false;
@@ -199,7 +199,6 @@ namespace ProtoCore
         }
 
         public bool ApplyUpdate { get; set; }
-        public int DeferredUpdates { get; set; }
         public bool DumpByteCode { get; set; }
         public bool DumpIL { get; private set; }
         public bool GenerateSSA { get; set; }
@@ -1124,6 +1123,8 @@ namespace ProtoCore
 
         public int newEntryPoint { get; private set; }
 
+        public int DeferredUpdates { get; set; }
+
         public void SetNewEntryPoint(int pc)
         {
             newEntryPoint = pc;
@@ -1280,6 +1281,9 @@ namespace ProtoCore
         /// </summary>
         public void ResetForDeltaExecution()
         {
+            Options.ApplyUpdate = false;
+            DeferredUpdates = 0; 
+
             ExecMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;

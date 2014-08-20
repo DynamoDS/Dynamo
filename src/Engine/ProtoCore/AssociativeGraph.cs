@@ -60,6 +60,7 @@ namespace ProtoCore.AssociativeEngine
                     continue;
                 }
 
+                bool entrypointSet = false;
                 int exprId = Constants.kInvalidIndex;
                 foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
@@ -72,7 +73,11 @@ namespace ProtoCore.AssociativeEngine
                                 if (Constants.kInvalidIndex == exprId)
                                 {
                                     exprId = gnode.exprUID;
-                                    core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                    if (!entrypointSet)
+                                    {
+                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                        entrypointSet = true;
+                                    }
                                 }
                                 gnode.isDirty = true;
                             }
@@ -778,6 +783,30 @@ namespace ProtoCore.AssociativeGraph
                 return graphList;
             }
         }
+
+        /// <summary>
+        /// Gets the next graphnode given the scope and pc regardless of dirty flag
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public GraphNode GetNextGraphNode(int pc, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null && gnodeList.Count > 0)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.updateBlock.startpc == pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
 
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {

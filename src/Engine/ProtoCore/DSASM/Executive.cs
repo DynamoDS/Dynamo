@@ -1502,36 +1502,29 @@ namespace ProtoCore.DSASM
 
         private void SetupGraphEntryPoint(int entrypoint)
         {
-            // Find the graph where the entry point matches the graph pc
-            // Set that graph node as not dirty   
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+            List<AssociativeGraph.GraphNode> graphNodeList = null;
+            if (core.Options.ApplyUpdate)
+            {
+                // Getting the entry point only graphnodes at the global scope
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            }
+            else
+            {
+                graphNodeList = istream.dependencyGraph.GraphList;
+            }
+            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
             {
                 if (core.Options.IsDeltaExecution)
                 {
                     // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
                     bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
-
-                    if (core.Options.ApplyUpdate)
+                    if (graphNode.isDirty && inStartRange)
                     {
-                        if (graphNode.isDeferred && inStartRange)
-                        {
-                            pc = graphNode.updateBlock.startpc;
-                            graphNode.isDirty = false;
-                            Properties.executingGraphNode = graphNode;
-                            core.RuntimeExpressionUID = graphNode.exprUID;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (graphNode.isDirty && inStartRange)
-                        {
-                            pc = graphNode.updateBlock.startpc;
-                            graphNode.isDirty = false;
-                            Properties.executingGraphNode = graphNode;
-                            core.RuntimeExpressionUID = graphNode.exprUID;
-                            break;
-                        }
+                        pc = graphNode.updateBlock.startpc;
+                        graphNode.isDirty = false;
+                        Properties.executingGraphNode = graphNode;
+                        core.RuntimeExpressionUID = graphNode.exprUID;
+                        break;
                     }
                 }
                 else if (graphNode.updateBlock.startpc == entrypoint)
@@ -1753,7 +1746,7 @@ namespace ProtoCore.DSASM
             return propertyChanged;
         }
 
-        private void UpdateGraphDeferred(int exprUID, int modBlkId, bool isSSAAssign)
+        private void UpdateGraphDefered(int exprUID, int modBlkId, bool isSSAAssign)
         {
             //UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, Properties.executingGraphNode);
 
@@ -1817,7 +1810,7 @@ namespace ProtoCore.DSASM
                     if (!graphNode.isDirty)
                     {
                         graphNode.isDeferred = true;
-                        core.Options.DeferredUpdates++;
+                        core.DeferredUpdates++;
                     }
                 }
             }
@@ -2234,16 +2227,14 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            if (graphNode.isDirty)
-                            {
-                            }
-                            else
+                            if (!graphNode.isDirty)
                             {
                                 if (core.Options.ElementBasedArrayUpdate)
                                 {
                                     UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
                                 }
                                 graphNode.isDirty = true;
+                                core.DeferredUpdates++;
                                 graphNode.forPropertyChanged = propertyChanged;
                                 nodesMarkedDirty++;
 
@@ -7898,24 +7889,66 @@ namespace ProtoCore.DSASM
             //UpdateGraph(exprID, modBlkID, isSSA);
             //SetupNextExecutableGraph(fi, ci);
 
-            // Get the next graph to be executed
+            //// Get the next graph to be executed
+            //if (core.Options.ApplyUpdate)
+            //{
+            //    // Execute only the dirty nodes
+            //    // No graphupdate allowed
+            //    SetupNextDeferredExecutableGraph(fi, ci);
+            //    UpdateGraph(exprID, modBlkID, isSSA);
+            //    SetupNextExecutableGraph(fi, ci);
+            //}
+            //else
+            //{
+            //    // Mark dependent graphnodes as dirty
+            //    UpdateGraphDefered(exprID, modBlkID, isSSA);
+            //    SetupNextExecutableGraph(fi, ci);
+            //}
+
+            // Find dependent nodes and mark them dirty
+            UpdateGraph(exprID, modBlkID, isSSA);
+
             if (core.Options.ApplyUpdate)
             {
-                // Execute only the dirty nodes
-                // No graphupdate allowed
-                SetupNextDeferredExecutableGraph(fi, ci);
-                UpdateGraph(exprID, modBlkID, isSSA);
+                // Go to the first dirty pc
+                Properties.executingGraphNode = istream.dependencyGraph.GetNextGraphNode(pc + 1, ci, fi);
                 SetupNextExecutableGraph(fi, ci);
             }
             else
             {
-                // Mark dependent graphnodes as dirty
-                UpdateGraphDeferred(exprID, modBlkID, isSSA);
-                SetupNextExecutableGraph(fi, ci);
+                // Go to the next pc
+                pc++;
+
+                // Given the next pc, get the next graphnode to execute and mark it clean
+                Properties.executingGraphNode = istream.dependencyGraph.GetNextGraphNode(pc, ci, fi);
+                if (Properties.executingGraphNode != null)
+                {
+                    Properties.executingGraphNode.isDirty = false;
+                }
+            }
+            return;
+        }
+
+        private void JDEP_Handler(Instruction instruction)
+        {
+            // The current function and class scope
+            int ci = DSASM.Constants.kInvalidIndex;
+            int fi = DSASM.Constants.kGlobalScope;
+            bool isInFunction = IsInsideFunction();
+
+            if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
+            {
+                Validity.Assert(core.DebugProps.DebugStackFrame.Count > 0);
+                isInFunction = core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun);
             }
 
-
-            return;
+            if (isInFunction)
+            {
+                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+            }
+            //SetupNextDeferredExecutableGraph(fi, ci);
+            SetupNextExecutableGraph(fi, ci);
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
@@ -8541,6 +8574,12 @@ namespace ProtoCore.DSASM
                 case OpCode.JZ:
                     {
                         JZ_Handler(instruction);
+                        return;
+                    }
+
+                case OpCode.JDEP:
+                    {
+                        JDEP_Handler(instruction);
                         return;
                     }
 

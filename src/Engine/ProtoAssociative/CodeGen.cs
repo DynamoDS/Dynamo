@@ -714,6 +714,18 @@ namespace ProtoAssociative
             updatePcDictionary(line, col);
         }
 
+
+        protected void EmitJumpDependency()
+        {
+            EmitInstrConsole(ProtoCore.DSASM.kw.jdep);
+
+            Instruction instr = new Instruction();
+            instr.opCode = ProtoCore.DSASM.OpCode.JDEP;
+
+            ++pc;
+            codeBlock.instrStream.instrList.Add(instr);
+        }
+
         //protected override void EmitDependency(int exprUID, bool isSSAAssign)
         protected void EmitDependency(int exprUID, int modBlkUID, bool isSSAAssign)
         {
@@ -733,6 +745,11 @@ namespace ProtoAssociative
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
             //AppendInstruction(instr);
+
+            if (!core.Options.IsDeltaExecution)
+            {
+                EmitJumpDependency();
+            }
         }
 
         private void InferDFSTraverse(AssociativeNode node, ref ProtoCore.Type inferedType)
@@ -4326,6 +4343,12 @@ namespace ProtoAssociative
                         //      warning is emitted during pre-execute phase, and at the ID is bound to null. (R1 - Feb)
 
                         int startpc = pc;
+
+                        // Set the first symbol that triggers the cycle to null
+                        ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode = new ProtoCore.AssociativeGraph.GraphNode();
+                        nullAssignGraphNode.updateBlock.startpc = pc;
+
+
                         EmitPushNull();
 
                         // Push the identifier local block  
@@ -4350,6 +4373,16 @@ namespace ProtoAssociative
 
                         EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
                         EmitPopForSymbol(symnode);
+
+
+                        nullAssignGraphNode.PushSymbolReference(symbolnode);
+                        nullAssignGraphNode.procIndex = globalProcIndex;
+                        nullAssignGraphNode.classIndex = globalClassIndex;
+                        nullAssignGraphNode.updateBlock.endpc = pc - 1;
+
+                        PushGraphNode(nullAssignGraphNode);
+                        EmitDependency(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, false);
+
 
                         // Comment it out. It doesn't work for the following 
                         // case:

@@ -84,6 +84,7 @@ namespace ProtoCore.DSASM
         JLZ,
         JGZ,
         JZ,
+        JDEP,
         AND,
         OR,
         NOT,

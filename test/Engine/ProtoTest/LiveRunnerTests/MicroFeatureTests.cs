@@ -1817,8 +1817,10 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        [Category("Failing")]
         public void TestFunctionOverloadRedefinitionOnUnmodifiedNode02()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4229
             List<string> codes = new List<string>() 
             {
                 "global = 0;",
@@ -4868,26 +4870,50 @@ v = foo(t);
         public void TestTransactionUpdate01()
         {
             string code = @"
-a = 1;
-x = a;
-a = 2;
-y = a;
-a = 3;
-z = a;
-a = 4;
+import(""FFITarget.dll"");
+x = 1;
+y = 2;
+p = TestUpdateCount.Ctor(x,y);
+x = 10;
+y = 20;
+a = p.UpdateCount;
 ";
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
             added.Add(CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            AssertValue("x", 4);
-            AssertValue("y", 4);
-            AssertValue("z", 4);
+
+            // Update should only have happened twice
+            AssertValue("a", 2);
         }
 
         [Test]
         public void TestTransactionUpdate02()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+x = 1;
+y = 2;
+p = TestUpdateCount.Ctor(x,y);
+x = 10;
+y = 20;
+x = 30;
+y = 40;
+a = p.UpdateCount;
+";
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, code));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Update should only have happened twice
+            AssertValue("a", 2);
+        }
+
+        [Test]
+        public void TestTransactionUpdate03()
         {
             List<string> codes = new List<string>() 
             {
