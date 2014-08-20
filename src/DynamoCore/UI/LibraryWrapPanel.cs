@@ -128,7 +128,9 @@ namespace Dynamo.Controls
             // We need to move the ClassDetails object to the right index.
             classObjectBase = collection[currentClassDetailsIndex];
             collection.RemoveAt(currentClassDetailsIndex);
-            collection.Insert(correctClassDetailsIndex, classObjectBase);
+            if (correctClassDetailsIndex <= collection.Count)
+                collection.Insert(correctClassDetailsIndex, classObjectBase);
+            else collection.Insert(collection.Count, classObjectBase);
         }
     }
 }
