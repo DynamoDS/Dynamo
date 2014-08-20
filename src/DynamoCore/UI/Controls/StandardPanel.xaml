@@ -4,11 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="300"
+             MouseLeave="Popup_MouseLeave">
     <UserControl.Resources>
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <Style x:Key="ListBoxItemStyle"
+               TargetType="{x:Type ListBoxItem}">
+            <EventSetter Event="MouseEnter"
+                         Handler="ListBoxItem_MouseEnter" />
+            <EventSetter Event="MouseLeave"
+                         Handler="Popup_MouseLeave" />
+        </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding Path=ClassDetailsVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
         <Grid.RowDefinitions>
@@ -22,7 +32,8 @@
                                         ConverterParameter='Collapse'}">CREATE</TextBlock>
         <ListBox x:Name="creationMethods"
                  Grid.Row="1"
-                 ItemsSource="{Binding Path=CreateMembers}">
+                 ItemsSource="{Binding Path=CreateMembers}"
+                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -56,7 +67,8 @@
         <ListBox x:Name="queryActionMethods"
                  Grid.Row="3"
                  Grid.ColumnSpan="2"
-                 DataContextChanged="OnDataContextChanged">
+                 DataContextChanged="OnDataContextChanged"
+                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -75,5 +87,11 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        IsOpen="{Binding ElementName=libraryToolTipPopup, Path=DataContext, Converter={StaticResource BrowserItemToBooleanConverter}, Mode=OneWay}"
+                                        AttachmentSide="Right"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True" 
+                                        MouseLeave="Popup_MouseLeave"/>
     </Grid>
 </UserControl>
