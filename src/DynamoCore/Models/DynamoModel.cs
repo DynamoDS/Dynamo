@@ -256,19 +256,31 @@ namespace Dynamo.Models
         public static DynamoModel Start(StartConfiguration configuration)
         {
             // where necessary, assign defaults
-            var context = configuration.Context ?? Core.Context.NONE;
-            var corePath = configuration.DynamoCorePath
-                ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var testMode = configuration.StartInTestMode;
-            var prefs = configuration.Preferences ?? new PreferenceSettings();
-            var runner = configuration.Runner ?? new DynamoRunner();
-            var updateManager = configuration.UpdateManager;
+            if (string.IsNullOrEmpty(configuration.Context))
+                configuration.Context = Core.Context.NONE;
+            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+            {
+                var asmLocation = Assembly.GetExecutingAssembly().Location;
+                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
+            }
 
-            return new DynamoModel(context, prefs, corePath, runner, updateManager, testMode);
+            if (configuration.Preferences == null)
+                configuration.Preferences = new PreferenceSettings();
+            if (configuration.Runner == null)
+                configuration.Runner = new DynamoRunner();
+
+            return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, IUpdateManager updateManager, bool isTestMode)
+        protected DynamoModel(StartConfiguration configuration)
         {
+            string context = configuration.Context;
+            IPreferences preferences = configuration.Preferences;
+            string corePath = configuration.DynamoCorePath;
+            DynamoRunner runner = configuration.Runner;
+            IUpdateManager updateManager = configuration.UpdateManager;
+            bool isTestMode = configuration.StartInTestMode;
+
             DynamoPathManager.Instance.InitializeCore(corePath);
             UsageReportingManager.Instance.InitializeCore(this);
 
