@@ -48,7 +48,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         Padding="{TemplateBinding Padding}">
                     <Grid MinHeight="30"
-                          MinWidth="220">
+                          MinWidth="66">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
