@@ -50,8 +50,8 @@ namespace Dynamo.UI.Views
             DisplayVersionInformation(null);
             var um = this.dynamoViewModel.Model.UpdateManager;
             um.UpdateDownloaded += OnUpdatePackageDownloaded;
-            this.dynamoViewModel.Model.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), 
-                this.dynamoViewModel.Model.Logger, um.UpdateDataAvailable));
+            this.dynamoViewModel.Model.UpdateManager.CheckForProductUpdate(
+                new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), um));
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)

@@ -327,7 +327,7 @@ namespace Dynamo.Models
         private void InitializeUpdateManager(IUpdateManager updateManager)
         {
             UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this.Logger, UpdateManager.UpdateDataAvailable));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), UpdateManager));
         }
 
         private void InitializeCurrentWorkspace()

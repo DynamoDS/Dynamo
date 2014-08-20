@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Dynamo.Core;
+
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
-
-using DynamoUtilities;
 
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -15,6 +12,27 @@ namespace Dynamo
 {
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Error}
+
+    public delegate void LogEventHandler(object sender, LogEventArgs args);
+
+    public class LogEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The message to be logged.
+        /// </summary>
+        public string Message { get; set; }
+    
+        /// <summary>
+        /// The log level at which to log the message.
+        /// </summary>
+        public LogLevel Level { get; set; }
+
+        public LogEventArgs(string message, LogLevel level)
+        {
+            Message = message;
+            Level = level;
+        }
+    }
 
     public class DynamoLogger:NotificationObject, ILogger, IDisposable
     {
