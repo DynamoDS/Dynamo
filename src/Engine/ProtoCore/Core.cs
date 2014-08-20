@@ -156,7 +156,7 @@ namespace ProtoCore
             ExecuteSSA = true;
             GCTempVarsOnDebug = true;
 
-            DumpFunctionResolverLogic = false;
+            DumpFunctionResolverLogic = false; 
             DumpOperatorToMethodByteCode = false;
             SuppressBuildOutput = false;
             BuildOptWarningAsError = false;

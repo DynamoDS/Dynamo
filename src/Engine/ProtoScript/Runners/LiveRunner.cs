@@ -1580,8 +1580,20 @@ namespace ProtoScript.Runners
                 System.Diagnostics.Debug.WriteLine("SyncInternal => " + code);
             }
 
+            //ResetForDeltaExecution();
+            //CompileAndExecute(code);
+
             ResetForDeltaExecution();
+            runnerCore.Options.ApplyUpdate = false;
+            runnerCore.Options.DeferredUpdates = 0; 
             CompileAndExecute(code);
+
+            if (runnerCore.Options.DeferredUpdates > 0)
+            {
+                ResetForDeltaExecution();
+                runnerCore.Options.ApplyUpdate = true;
+                ApplyUpdate();
+            }
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)

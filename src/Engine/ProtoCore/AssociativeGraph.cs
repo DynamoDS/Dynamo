@@ -807,6 +807,30 @@ namespace ProtoCore.AssociativeGraph
             }
         }
 
+        /// <summary>
+        /// Gets the next graphnode given the scope and pc regardless of dirty flag
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public GraphNode GetNextGraphNode(int pc, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null && gnodeList.Count > 0)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.updateBlock.startpc == pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
+
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {
             uint ci = (uint)classIndex;
