@@ -45,7 +45,7 @@ namespace Dynamo.Applications
             {
                 SetupDynamoPaths(application);
 
-                AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+                SubscribeAssemblyResolvingEvent();
 
                 ControlledApplication = application.ControlledApplication;
 
@@ -94,6 +94,8 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
+            UnsubscribeAssemblyResolvingEvent();
+
             return Result.Succeeded;
         }
 
@@ -126,7 +128,7 @@ namespace Dynamo.Applications
             // The executing assembly will be in Revit_20xx, so 
             // we have to walk up one level. Unfortunately, we
             // can't use DynamoPathManager here because those are not
-            // initialized until the controller is constructed.
+            // initialized until the DynamoModel is constructed.
             string assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // Add the Revit_20xx folder for assembly resolution
@@ -150,6 +152,16 @@ namespace Dynamo.Applications
                 DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
                 DynamoPathManager.Instance.SetLibGPath(Path.Combine(DynamoPathManager.Instance.MainExecPath, "libg_220"));
             }
+        }
+
+        private void SubscribeAssemblyResolvingEvent()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+        }
+
+        private void UnsubscribeAssemblyResolvingEvent()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
         }
     }
 }

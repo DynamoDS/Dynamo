@@ -485,7 +485,18 @@ namespace ProtoCore.Lang
                         interpreter, 
                         stackFrame);
                     break;
-               default:
+                case BuiltInMethods.MethodID.kTryGetValueFromNestedDictionaries:
+                    StackValue value;
+                    if (ArrayUtils.TryGetValueFromNestedDictionaries(formalParameters[0], formalParameters[1], out value, core))
+                    {
+                        ret = value;
+                    }
+                    else
+                    {
+                        ret = StackValue.Null;
+                    }
+                    break;
+                default:
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
 
@@ -833,7 +844,7 @@ namespace ProtoCore.Lang
             // Open the file to read from.
             List<Object[]> CSVdatalist = new List<Object[]>();
             int colNum = 0;
-            var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using (var sr = new StreamReader(fileStream))
             {
 

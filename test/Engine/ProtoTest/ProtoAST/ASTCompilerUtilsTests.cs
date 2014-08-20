@@ -25,7 +25,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestBuildAST_01()
         {
             //==============================================

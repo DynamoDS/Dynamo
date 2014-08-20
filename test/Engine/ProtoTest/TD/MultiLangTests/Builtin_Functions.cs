@@ -336,6 +336,8 @@ n;
         public void T010_SomeNulls_AssociativeImperative_02()
         {
             string code = @"
+m;
+n;
 [Imperative]
 {
 	a = {false};
@@ -1530,6 +1532,7 @@ result =
         }
 
         [Test]
+        [Category("Failing")]
         [Category("SmokeTest")]
         public void T049_Sum_Function()
         {
@@ -1547,7 +1550,9 @@ b = {m+n,{{{1}}}};
 c = {Sum(a),Sum(b)};
 result = foo(c);
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4171
+            string errmsg = "MAGN-4171: Replication method resolution";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, errmsg);
             thisTest.Verify("result", 1.9, 0);
         }
 
@@ -1743,8 +1748,8 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("ProtoGeometry")]
-        [Category("Design Issue"), Category("Failing")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("Design Issue")]
         public void T058_Average_DataType_02()
         {
             string code = @"
@@ -3002,7 +3007,7 @@ d = { };
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void BIM53_RemoveDuplicates_geoemtry_1467447()
         {//1467446
             String code =

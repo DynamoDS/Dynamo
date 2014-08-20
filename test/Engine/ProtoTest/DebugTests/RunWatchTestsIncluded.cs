@@ -8327,7 +8327,7 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch327_Defect_Geo_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13911,7 +13911,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch460_T020_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13927,7 +13927,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch461_T021_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20671,7 +20671,7 @@ l = tan(0); //0";
 
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch753_language_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20719,7 +20719,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch754_set_operation_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20988,7 +20988,7 @@ b4 = Math.Ceiling(a4); //null
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch758_T80585_Count()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -22674,7 +22674,7 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch826_T058_Average_DataType_02()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
