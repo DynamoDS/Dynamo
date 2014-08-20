@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 
 namespace FloodRunner
 {
@@ -33,12 +34,24 @@ namespace FloodRunner
 
         public WorkspaceModel NewWorkspace(string name)
         {
-            return new HomeWorkspaceModel();
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            return new HomeWorkspaceModel(model);
         }
 
         public WorkspaceModel LoadWorkspace(string filePath)
         {
-            return new HomeWorkspaceModel();
+            var model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true
+                });
+
+            return new HomeWorkspaceModel(model);
         }
 
         public bool SaveWorkspace(WorkspaceModel workspace, string filePath)

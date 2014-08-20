@@ -6,7 +6,6 @@ using System.Text;
 using Dynamo;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoWebServer.Responses;
 using Newtonsoft.Json;
@@ -97,7 +96,7 @@ namespace DynamoWebServer.Messages
             {
                 if (command is DynamoViewModel.RunCancelCommand)
                 {
-                    manager.RenderComplete += ModifiedNodesData;
+                    manager.RenderComplete += NodesDataModified;
                 }
 
                 dynamo.ExecuteCommand(command);
@@ -126,13 +125,12 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void ModifiedNodesData(object sender, RenderCompletionEventArgs e)
+        private void NodesDataModified(object sender, RenderCompletionEventArgs e)
         {
             var nodes = new List<ExecutedNode>();
-            foreach (var item in dynamoViewModel.Model.NodeMap)
+            foreach (var node in dynamoViewModel.Model.CurrentWorkspace.Nodes)
             {
                 string data;
-                NodeModel node = item.Value;
                 var codeBlock = node as CodeBlockNodeModel;
                 if (codeBlock != null)
                 {
@@ -154,23 +152,23 @@ namespace DynamoWebServer.Messages
                 else
                 {
                     data = "null";
-                    if (item.Value.CachedValue != null)
+                    if (node.CachedValue != null)
                     {
-                        if (item.Value.CachedValue.IsCollection)
+                        if (node.CachedValue.IsCollection)
                         {
                             data = "Array";
                         }
                         else
                         {
-                            if (item.Value.CachedValue.Data != null)
+                            if (node.CachedValue.Data != null)
                             {
-                                data = item.Value.CachedValue.Data.ToString();
+                                data = node.CachedValue.Data.ToString();
                             }
                         }
                     }
                 }
 
-                var execNode = new ExecutedNode(item.Key.ToString(), node.State.ToString(), node.ToolTipText, data, node.RenderPackages);
+                var execNode = new ExecutedNode(node, data);
                 nodes.Add(execNode);
             }
 
@@ -179,7 +177,7 @@ namespace DynamoWebServer.Messages
                 Nodes = nodes
             }));
 
-            dynamoViewModel.VisualizationManager.RenderComplete -= ModifiedNodesData;
+            dynamoViewModel.VisualizationManager.RenderComplete -= NodesDataModified;
         }
 
         #endregion

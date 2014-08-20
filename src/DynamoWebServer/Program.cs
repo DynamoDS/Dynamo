@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows;
+
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
@@ -31,6 +33,9 @@ namespace DynamoWebServer
                 new WebSocket(), new SessionManager());
 
             webSocketServer.Start();
+
+            var app = new Application();
+            app.Run(view);
         }
     }
 }

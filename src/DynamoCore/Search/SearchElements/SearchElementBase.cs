@@ -150,11 +150,10 @@ namespace Dynamo.Search.SearchElements
 
                 if (tld != null)
                 {
-                    ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
-                    var newEl = (NodeModel)obj.Unwrap();
+                    var newElement = (NodeModel)Activator.CreateInstance(tld.Type, dynamoModel.CurrentWorkspace);
 
-                    Parameters = newEl.InPorts.Select(elem => elem.PortName);
-                    ReturnKeys = newEl.OutPorts.Select(elem => elem.PortName);
+                    Parameters = newElement.InPorts.Select(elem => elem.PortName);
+                    ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
                 }
                 else
                 {
