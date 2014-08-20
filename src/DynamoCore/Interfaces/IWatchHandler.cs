@@ -97,7 +97,7 @@ namespace Dynamo.Interfaces
             return ProcessThing(data.Data as dynamic, tag, showRawData);
         }
 
-        private string ToString(object obj)
+        private static string ToString(object obj)
         {
             return obj != null ? obj.ToString() : "null";
         }

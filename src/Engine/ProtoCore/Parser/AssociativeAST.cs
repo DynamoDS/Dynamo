@@ -991,7 +991,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 buf.Append(NameNode);
                 string argType = ArgumentType.ToString();
-                if (!string.IsNullOrEmpty(argType))
+                if (!string.IsNullOrEmpty(argType) && !argType.Equals("null"))
                     buf.Append(" : " + argType);
             }
             else

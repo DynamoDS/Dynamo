@@ -96,7 +96,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestImportPointClass()
         {
             String code =
@@ -398,7 +398,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestInheritanceAcrossLangauges_CS_DS()
         {
             string code = @"                import (Vector from ""ProtoGeometry.dll"");                class Vector2 extends Vector                {                    public constructor Vector2(x : double, y : double, z : double) : base ByCoordinates(x, y, z)                    {}                }                                vec2 = Vector2.Vector2(1,1,1);                x = vec2.GetLength();                ";
@@ -552,7 +552,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestPropertyAccessor()
         {
             String code =
@@ -563,7 +563,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestAssignmentSingleton()
         {
             String code =
@@ -574,7 +574,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestAssignmentAsArray()
         {
             String code =
@@ -585,7 +585,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestReturnFromFunctionSingle()
         {
             String code =
@@ -596,7 +596,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_1462300()
         {
             String code =
@@ -607,7 +607,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryinClass()
         {
             String code =
@@ -618,7 +618,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryArrayAssignment()
         {
             String code =
@@ -632,7 +632,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryForLoop()
         {
             String code =
@@ -664,7 +664,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryInlineConditional()
         {
             String code =
@@ -676,7 +676,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryRangeExpression()
         {
             String code =
@@ -710,7 +710,7 @@ namespace ProtoFFITests
 [Test]          public void geometryUpdateAcrossMultipleLanguageBlocks()          {              String code =              @"                 import(""ProtoGeometry.dll"");                                     pt=Point.ByCoordinates(0,0,0);                    pt11={pt.X,pt.Y,pt.Z};                                     [Associative]                    {                          pt=Point.ByCoordinates(1,1,1);                          pt12={pt.X,pt.Y,pt.Z};                                                 [Imperative]                          {                              pt=Point.ByCoordinates(2,2,2);                              pt13={pt.X,pt.Y,pt.Z};                          }                          pt=Point.ByCoordinates(3,3,3);                          pt14={pt.X,pt.Y,pt.Z};                     }                      ";              object[] a = new object[] { 0.0, 0.0, 0.0 };              object[] b = new object[] { 1.0, 1.0, 1.0 };              object[] c = new object[] { 2.0, 2.0, 2.0 };              object[] d = new object[] { 3.0, 3.0, 3.0 };              ValidationData[] data = {   new ValidationData() { ValueName   = "p11", ExpectedValue = a, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p12", ExpectedValue = b, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p13", ExpectedValue = c, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p14", ExpectedValue = d, BlockIndex = 0 }                                        };              ExecuteAndVerify(code, data);          }*/
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryWhileLoop()
         {
             String code =
@@ -721,7 +721,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void properties()
         {
             String code =
@@ -733,14 +733,14 @@ namespace ProtoFFITests
 
         [Test]
         [Category("Replication")]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void coercion_notimplmented()
         {
             String code =
             @"               import (""ProtoGeometry.dll"");           vec =  Vector.ByCoordinates(1,0,0);           newVec=vec.Scale({1,null});//array           prop = VecGuarantedProperties(newVec);           def VecGuarantedProperties(vec :Vector)           {              return = {vec.Length };            }                    ";
             object[] c = new object[] { new object[] { 1.0 }, new object[] { null } };
             ValidationData[] data = { new ValidationData { ValueName = "prop", ExpectedValue = c, BlockIndex = 0 }                                       };
-            Assert.DoesNotThrow(() => ExecuteAndVerify(code, data), "1467114 Sprint24 : rev 2806 : Replication + function resolution issue : Requested coercion not implemented error message coming when collection has null");
+            
         }
 
         [Test]
@@ -879,7 +879,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestNonBrowsableClass()
         {
             string code = @"                import(""ProtoGeometry.dll"");                ";
@@ -892,7 +892,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestImportNonBrowsableClass()
         {
             string code = @"                import(DesignScriptEntity from ""ProtoGeometry.dll"");                ";
@@ -905,7 +905,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestImportBrowsableClass()
         {
             string code = @"                import(NurbsCurve from ""ProtoGeometry.dll"");                ";
@@ -930,7 +930,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestNonBrowsableInterfaces()
         {
             string code = @"                import(""ProtoGeometry.dll"");                ";
@@ -975,7 +975,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestDefaultConstructorNotAvailableOnAbstractClass()
         {
             string code = @"                import(""ProtoGeometry.dll"");                ";
@@ -986,7 +986,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestNestedClass()
         {
             string code =
@@ -1051,10 +1051,8 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestNamespacePartialResolution01()
         {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4034
             var mirror = thisTest.RunScriptSource(
             @"                import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);                x = p.Prop;            "

@@ -35,9 +35,11 @@ namespace ProtoTest.Associative
 
 
         [Test]
+        [Category("Failing")]
         //Test "SomeNulls()"
         public void ComputeReducedParams()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4115
             string code =
                            @"                      a = {1,2};                      b = {3,4};                  ";
 
