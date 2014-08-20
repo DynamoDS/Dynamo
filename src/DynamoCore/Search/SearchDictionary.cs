@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web.UI;
+
 using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
@@ -235,49 +237,66 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="query"> The query </param>
         /// <param name="numResults"> The max number of results to return </param>
-        public List<V> Search(string query, int numResults = 10)
+        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
+        public IEnumerable<V> Search(string query, int numResults = 10, int minResultsForTolerantSearch = 0)
         {
             var searchDict = new Dictionary<V, double>();
 
-            foreach (var pair in _tagDictionary)
+            query = query.ToLower();
+
+            // do containment check
+            foreach (var pair in _tagDictionary.Where(x => x.Key.ToLower().Contains(query)))
             {
-                if (pair.Key.ToLower().Contains(query.ToLower()) || MatchWithQuerystring(pair.Key, query))
+                ComputeWeightAndAddToDictionary(query, pair, searchDict );
+            }
+
+            // if you don't have enough results, do fuzzy search
+            if (searchDict.Count < minResultsForTolerantSearch)
+            {
+                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, query)))
                 {
-                    // it has a match, how close is it to matching the entire string?
-                    double matchCloseness = ((double) query.Length) / pair.Key.Length;
-
-                    foreach (V ele in pair.Value)
-                    {
-                        double weight = matchCloseness;
-                        // search elements have a weight associated with them
-                        var @base = ele as SearchElementBase;
-
-                        // ignore elements which should not be search for
-                        if (@base.Searchable == false)
-                            continue;
-
-                        if (@base != null)
-                            weight *= @base.Weight;
-
-                        // we may have seen V before
-                        if (searchDict.ContainsKey(ele))
-                        {
-                            // if we have, update its weight if better than the current one
-                            if (searchDict[ele] < weight) searchDict[ele] = weight;
-                        }
-                        else
-                        {
-                            // if we haven't seen it, add it to the dictionary for this search
-                            searchDict.Add(ele, weight);
-                        }
-                    }
+                    ComputeWeightAndAddToDictionary(query, pair, searchDict );
                 }
             }
 
-            return searchDict.OrderByDescending(x => x.Value)
-                             .Select(x => x.Key)
-                             .Take( Math.Min(numResults, searchDict.Count ))
-                             .ToList();
+            return searchDict
+                .OrderByDescending(x => x.Value)
+                .Select(x => x.Key)
+                .Take(Math.Min(numResults, searchDict.Count));
         }
+
+        private static void ComputeWeightAndAddToDictionary(string query, 
+            KeyValuePair<string, HashSet<V>> pair, Dictionary<V, double> searchDict )
+        {
+            // it has a match, how close is it to matching the entire string?
+            double matchCloseness = ((double)query.Length) / pair.Key.Length;
+
+            foreach (V ele in pair.Value)
+            {
+                double weight = matchCloseness;
+                // search elements have a weight associated with them
+                var @base = ele as SearchElementBase;
+
+                // ignore elements which should not be search for
+                if (@base.Searchable == false)
+                    continue;
+
+                if (@base != null)
+                    weight *= @base.Weight;
+
+                // we may have seen V before
+                if (searchDict.ContainsKey(ele))
+                {
+                    // if we have, update its weight if better than the current one
+                    if (searchDict[ele] < weight) searchDict[ele] = weight;
+                }
+                else
+                {
+                    // if we haven't seen it, add it to the dictionary for this search
+                    searchDict.Add(ele, weight);
+                }
+            }
+        }
+
     }
 }

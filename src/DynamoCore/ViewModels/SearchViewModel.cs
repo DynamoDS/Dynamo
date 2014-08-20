@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -198,7 +199,18 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            var result = this.Model.Search(query);
+            //Stopwatch t = new Stopwatch();
+
+            //t.Start();
+
+            var result = this.Model.Search(query).ToList();
+
+            //t.Stop();
+
+            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", t.Elapsed));
+            
+            //t = new Stopwatch();
+            //t.Start();
 
             // Remove old execute handler from old top result
             if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
@@ -227,6 +239,10 @@ namespace Dynamo.ViewModels
 
                 // hide the top result
                 topResult.Visibility = false;
+
+                // t.Stop();
+
+                //this.dynamoViewModel.Model.Logger.Log(String.Format("Everything else complete in {0}", t.Elapsed));
                 return;
             }
 
@@ -283,6 +299,10 @@ namespace Dynamo.ViewModels
             SearchResults.Clear();
             visibleSearchResults.ToList()
                 .ForEach(x => SearchResults.Add((NodeSearchElement)x));
+
+            //t.Stop();
+
+            //this.dynamoViewModel.Model.Logger.Log(String.Format("Everything else complete in {0}", t.Elapsed));
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
