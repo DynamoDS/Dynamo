@@ -1122,7 +1122,6 @@ namespace Dynamo.ViewModels
             CurrentSpaceViewModel.CancelActiveState();
 
             model.CurrentWorkspace = newWs;
-            model.CurrentWorkspace.OnDisplayed();
 
             //set the zoom and offsets events
             var vm = this.Model.Workspaces.First(x => x == newWs);
@@ -2021,28 +2020,6 @@ namespace Dynamo.ViewModels
         }
 
         #region IWatchViewModel interface
-
-        internal void SelectVisualizationInView(object parameters)
-        {
-            //Debug.WriteLine("Selecting mesh from background watch.");
-
-            //var arr = (double[])parameters;
-            //double x = arr[0];
-            //double y = arr[1];
-            //double z = arr[2];
-
-            //dynamoModel.VisualizationManager.LookupSelectedElement(x, y, z);
-        }
-
-        internal bool CanSelectVisualizationInView(object parameters)
-        {
-            if (parameters != null)
-            {
-                return true;
-            }
-
-            return false;
-        }
 
         public void GetBranchVisualization(object parameters)
         {
