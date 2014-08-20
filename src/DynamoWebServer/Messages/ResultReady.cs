@@ -1,8 +1,5 @@
 ﻿using System;
 
-using DynamoWebServer.Responses;
-using Dynamo.Interfaces;
-
 namespace DynamoWebServer.Messages
 {
     public delegate void ResultReadyEventHandler(object sender, ResultReadyEventArgs e);

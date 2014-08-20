@@ -2,7 +2,7 @@
 
 namespace DynamoWebServer.Messages
 {
-    class GeometryMessage : Message
+    class GetNodeGeometryMessage : Message
     {
         /// <summary>
         /// Guid of the specified node
@@ -10,7 +10,7 @@ namespace DynamoWebServer.Messages
         [DataMember]
         public string NodeID { get; set; }
 
-        public GeometryMessage(string id)
+        public GetNodeGeometryMessage(string id)
         {
             this.NodeID = id;
         }

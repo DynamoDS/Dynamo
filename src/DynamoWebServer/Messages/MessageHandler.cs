@@ -59,11 +59,11 @@ namespace DynamoWebServer.Messages
 
         internal void Execute(DynamoViewModel dynamo, Message message)
         {
-            if (message is RecordableCommandsMessage)
+            if (message is RunCommandsMessage)
             {
                 ExecuteCommands(dynamo, message);
             }
-            else if (message is LibraryItemsListMessage)
+            else if (message is GetLibraryItemsMessage)
             {
                 OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
                 {
@@ -87,7 +87,7 @@ namespace DynamoWebServer.Messages
 
         private void ExecuteCommands(DynamoViewModel dynamo, Message message)
         {
-            var recordableCommandMsg = (RecordableCommandsMessage)message;
+            var recordableCommandMsg = (RunCommandsMessage)message;
 
             var manager = dynamo.VisualizationManager;
             SelectTabByGuid(dynamo, recordableCommandMsg.WorkspaceGuid);

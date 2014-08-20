@@ -7,7 +7,7 @@ using Dynamo.ViewModels;
 namespace DynamoWebServer.Messages
 {
     [DataContract]
-    public class RecordableCommandsMessage : Message
+    public class RunCommandsMessage : Message
     {
         #region Class Data Members
 
