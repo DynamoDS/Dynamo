@@ -616,32 +616,6 @@ namespace Dynamo.Controls
                 var normal = new Vector3D(p.TriangleNormals[i],
                                             p.TriangleNormals[i + 1],
                                             p.TriangleNormals[i + 2]);
-
-                //find a matching point
-                //compare the angle between the normals
-                //to discern a 'break' angle for adjacent faces
-                //int foundIndex = -1;
-                //for (int j = 0; j < points.Count; j++)
-                //{
-                //    var testPt = points[j];
-                //    var testNorm = norms[j];
-                //    var ang = Vector3D.AngleBetween(normal, testNorm);
-
-                //    if (new_point.X == testPt.X &&
-                //        new_point.Y == testPt.Y &&
-                //        new_point.Z == testPt.Z &&
-                //        ang > 90.0000)
-                //    {
-                //        foundIndex = j;
-                //        break;
-                //    }
-                //}
-
-                //if (foundIndex != -1)
-                //{
-                //    tris.Add(foundIndex);
-                //    continue;
-                //}
                     
                 tris.Add(points.Count);
                 points.Add(new_point);
@@ -665,28 +639,6 @@ namespace Dynamo.Controls
                 sb.AppendFormat("[{0}]", splits[i]);
             }
             return sb.ToString();
-        }
-
-        private HitTestResultBehavior ResultCallback(HitTestResult result)
-        {
-            // Did we hit 3D?
-            var rayResult = result as RayHitTestResult;
-            if (rayResult != null)
-            {
-                // Did we hit a MeshGeometry3D?
-                var rayMeshResult =
-                    rayResult as RayMeshGeometry3DHitTestResult;
-
-                if (rayMeshResult != null)
-                {
-                    // Yes we did!
-                    var pt = rayMeshResult.PointHit;
-                    ((IWatchViewModel)DataContext).SelectVisualizationInViewCommand.Execute(new double[] { pt.X, pt.Y, pt.Z });
-                    return HitTestResultBehavior.Stop;
-                }
-            }
-
-            return HitTestResultBehavior.Continue;
         }
 
         #endregion

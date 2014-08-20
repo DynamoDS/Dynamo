@@ -38,7 +38,6 @@ namespace Dynamo.Nodes
         private Point3D _camPosition = new Point3D(10,10,10);
         private Vector3D _lookDirection = new Vector3D(-1,-1,-1);
 
-        public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
 
@@ -78,7 +77,6 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             WatchIsResizable = true;
         }
@@ -285,15 +283,6 @@ namespace Dynamo.Nodes
         public bool CanGetBranchVisualization(object parameter)
         {
             return true;
-        }
-
-        internal void SelectVisualizationInView(object parameters)
-        {
-        }
-
-        internal bool CanSelectVisualizationInView(object parameters)
-        {
-            return parameters != null;
         }
 
         private bool CanCheckForLatestRender(object obj)

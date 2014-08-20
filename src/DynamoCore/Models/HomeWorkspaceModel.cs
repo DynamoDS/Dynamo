@@ -60,9 +60,5 @@ namespace Dynamo.Models
 
             }
         }
-
-        public override void OnDisplayed()
-        {
-        }
     }
 }

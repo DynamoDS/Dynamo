@@ -504,7 +504,6 @@ namespace Dynamo.Models
             this.SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");
-            HomeSpace.OnDisplayed();
         }
 
         internal bool CanDoPostUIActivation(object parameter)
@@ -619,7 +618,6 @@ namespace Dynamo.Models
         internal void ViewHomeWorkspace()
         {
             CurrentWorkspace = HomeSpace;
-            CurrentWorkspace.OnDisplayed();
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
