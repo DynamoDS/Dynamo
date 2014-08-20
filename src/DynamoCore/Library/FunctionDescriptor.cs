@@ -80,11 +80,10 @@ namespace Dynamo.DSEngine
             }
             if (parameters.Any())
             {
-                InputParametrs = parameters.Select(
+                InputParameters = parameters.Select(
                     par =>
                     {
                         return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
-
                     }
                     );
             }
@@ -154,7 +153,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         ///     Inputs for Node
         /// </summary>
-        public IEnumerable<Tuple<string, string>> InputParametrs
+        public IEnumerable<Tuple<string, string>> InputParameters
         {
             get;
             private set;

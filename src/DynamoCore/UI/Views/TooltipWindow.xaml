@@ -52,7 +52,7 @@
                            FontSize="10"
                            Foreground="#50b5a3"
                            Margin="0,3,0,0" />
-                <ListBox ItemsSource="{Binding InputParametrs}"
+                <ListBox ItemsSource="{Binding InputParameters}"
                          Grid.Row="2"
                          Grid.ColumnSpan="3"
                          Background="Transparent"
@@ -96,7 +96,7 @@
                            FontSize="13"
                            Foreground="#777777">
                     <TextBlock.Text>
-                        <Binding Path="OutputParametrs"
+                        <Binding Path="OutputParameters"
                                  Mode="OneWay"
                                  Converter="{StaticResource InOutParamTypeConverter}"/>
                     </TextBlock.Text>

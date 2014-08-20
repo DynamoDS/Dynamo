@@ -12,7 +12,7 @@ namespace Dynamo.Search.SearchElements
 
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem) :
             base(displayString, functionItem.Summary, new List<string> { }, 
-                    functionItem.DisplayName, functionItem.InputParametrs, functionItem.ReturnType)
+                    functionItem.DisplayName, functionItem.InputParameters, functionItem.ReturnType)
         {
             _displayString = displayString;
             FunctionDescriptor = functionItem;
