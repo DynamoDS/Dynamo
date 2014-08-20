@@ -50,11 +50,12 @@ namespace DynamoSandbox
             var asmLocation = Assembly.GetExecutingAssembly().Location;
 
             var model = DynamoModel.Start(
-                new DynamoModel.DynamoStartConfiguration()
+                new DynamoModel.StartConfiguration()
                 {
-                    Context = Dynamo.Core.Context.NONE,
                     Preferences = PreferenceSettings.Load(),
+                    Context = Dynamo.Core.Context.NONE,
                     DynamoCorePath = Path.GetDirectoryName(asmLocation),
+                    StartInTestMode = true,
                     Runner = new DynamoRunner()
                 });
 

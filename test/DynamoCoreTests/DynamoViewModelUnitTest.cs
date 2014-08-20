@@ -60,7 +60,7 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
-            var model = DynamoModel.Start(true);
+            var model = DynamoModel.StartInTestMode();
 
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()

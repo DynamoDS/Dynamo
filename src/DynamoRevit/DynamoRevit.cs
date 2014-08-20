@@ -93,12 +93,11 @@ namespace Dynamo.Applications
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
             return RevitDynamoModel.Start(
-                new RevitDynamoModel.RevitStartConfiguration()
+                new RevitDynamoModel.StartConfiguration()
                 {
                     Preferences = prefs,
                     DynamoCorePath = corePath,
-                    Context = GetRevitContext(commandData),
-                    Runner = new RevitDynamoRunner()
+                    Context = GetRevitContext(commandData)
                 });
         }
 
@@ -247,7 +246,7 @@ namespace Dynamo.Applications
             //they changed the application version name conventions for vasari
             //it no longer has a version year so we can't compare it to other versions
             if (context == "Vasari")
-                context = Dynamo.Core.Context.VASARI_2014;
+                context = "Vasari 2014";
 
             return context;
         }

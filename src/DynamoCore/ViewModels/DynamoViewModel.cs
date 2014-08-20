@@ -427,7 +427,7 @@ namespace Dynamo.ViewModels
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration)
         {
-            var model = startConfiguration.DynamoModel ?? DynamoModel.Start(false);
+            var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
             var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
             var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
                 model.PreferenceSettings);
