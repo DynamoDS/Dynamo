@@ -215,7 +215,8 @@ namespace DynamoCoreUITests
             ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
-                    DynamoModel = model
+                    DynamoModel = model,
+                    CommandFilePath = commandFilePath
                 });
 
             ViewModel.DynamicRunEnabled = autoRun;
