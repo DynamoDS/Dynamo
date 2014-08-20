@@ -265,6 +265,51 @@ namespace Dynamo.Search
                 .Take(Math.Min(numResults, searchDict.Count));
         }
 
+        public List<V> SearchAlt(string query, int numResults = 10)
+        {
+            var searchDict = new Dictionary<V, double>();
+
+            foreach (var pair in _tagDictionary)
+            {
+                if (pair.Key.ToLower().Contains(query.ToLower()) || MatchWithQuerystring(pair.Key, query))
+                {
+                    // it has a match, how close is it to matching the entire string?
+                    double matchCloseness = ((double) query.Length) / pair.Key.Length;
+
+                    foreach (V ele in pair.Value)
+                    {
+                        double weight = matchCloseness;
+                        // search elements have a weight associated with them
+                        var @base = ele as SearchElementBase;
+
+                        // ignore elements which should not be search for
+                        if (@base.Searchable == false)
+                            continue;
+
+                        if (@base != null)
+                            weight *= @base.Weight;
+
+                        // we may have seen V before
+                        if (searchDict.ContainsKey(ele))
+                        {
+                            // if we have, update its weight if better than the current one
+                            if (searchDict[ele] < weight) searchDict[ele] = weight;
+                        }
+                        else
+                        {
+                            // if we haven't seen it, add it to the dictionary for this search
+                            searchDict.Add(ele, weight);
+                        }
+                    }
+                }
+            }
+
+            return searchDict.OrderByDescending(x => x.Value)
+                             .Select(x => x.Key)
+                             .Take( Math.Min(numResults, searchDict.Count ))
+                             .ToList();
+        }
+
         private static void ComputeWeightAndAddToDictionary(string query, 
             KeyValuePair<string, HashSet<V>> pair, Dictionary<V, double> searchDict )
         {

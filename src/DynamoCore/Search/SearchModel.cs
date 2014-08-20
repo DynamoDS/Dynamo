@@ -189,6 +189,16 @@ namespace Dynamo.Search
             return SearchDictionary.Search(search, MaxNumSearchResults);
         }
 
+        internal IEnumerable<SearchElementBase> SearchAlt(string search)
+        {
+            if (string.IsNullOrEmpty(search))
+            {
+                return _searchElements;
+            }
+
+            return SearchDictionary.SearchAlt(search, MaxNumSearchResults);
+        }
+
         #endregion
 
         #region Categories

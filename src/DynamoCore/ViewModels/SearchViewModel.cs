@@ -199,18 +199,19 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            //Stopwatch t = new Stopwatch();
+            Stopwatch t = new Stopwatch();
 
-            //t.Start();
+            t.Start();
 
-            var result = this.Model.Search(query).ToList();
+            //var result = this.Model.Search(query).ToList();
+            var result = this.Model.SearchAlt(query).ToList();
 
-            //t.Stop();
+            t.Stop();
 
-            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", t.Elapsed));
-            
-            //t = new Stopwatch();
-            //t.Start();
+            this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", t.Elapsed));
+
+            t = new Stopwatch();
+            t.Start();
 
             // Remove old execute handler from old top result
             if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
@@ -240,9 +241,9 @@ namespace Dynamo.ViewModels
                 // hide the top result
                 topResult.Visibility = false;
 
-                // t.Stop();
+                t.Stop();
 
-                //this.dynamoViewModel.Model.Logger.Log(String.Format("Everything else complete in {0}", t.Elapsed));
+                this.dynamoViewModel.Model.Logger.Log(String.Format("Everything else complete in {0}", t.Elapsed));
                 return;
             }
 
@@ -300,9 +301,9 @@ namespace Dynamo.ViewModels
             visibleSearchResults.ToList()
                 .ForEach(x => SearchResults.Add((NodeSearchElement)x));
 
-            //t.Stop();
+            t.Stop();
 
-            //this.dynamoViewModel.Model.Logger.Log(String.Format("Everything else complete in {0}", t.Elapsed));
+            this.dynamoViewModel.Model.Logger.Log(String.Format("Everything else complete in {0}", t.Elapsed));
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
