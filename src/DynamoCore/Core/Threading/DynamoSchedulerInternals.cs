@@ -6,23 +6,6 @@ namespace Dynamo.Core.Threading
 {
     partial class DynamoScheduler
     {
-        #region TimeStampGenerator Nested Class
-
-        sealed class TimeStampGenerator
-        {
-            private long timeStampValue = 1023;
-
-            internal long Next
-            {
-                get
-                {
-                    return Interlocked.Increment(ref timeStampValue);
-                }
-            }
-        }
-
-        #endregion
-
         #region Private Class Data Members
 
         private enum EventIndex
@@ -38,7 +21,7 @@ namespace Dynamo.Core.Threading
 
         private bool taskQueueUpdated;
         private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
-        private readonly TimeStampGenerator timeStamp = new TimeStampGenerator();
+        private readonly TimeStampGenerator generator = new TimeStampGenerator();
 
         #endregion
 

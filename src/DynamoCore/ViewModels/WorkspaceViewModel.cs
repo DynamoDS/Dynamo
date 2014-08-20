@@ -957,7 +957,7 @@ namespace Dynamo.ViewModels
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
         {
-            NodeCollapser.Collapse(DynamoViewModel, selectedNodes, this.Model);
+            NodeCollapser.Collapse(DynamoViewModel.Model, selectedNodes, this.Model);
         }
 
         internal void Loaded()
