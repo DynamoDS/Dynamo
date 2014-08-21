@@ -7,7 +7,8 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             Background="Transparent">
+             Background="Transparent"
+             MinWidth="100">
     <UserControl.Resources>
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <Style x:Key="ListBoxItemStyle"
@@ -113,6 +114,7 @@
                                Height="29"
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
+                               Width="29"
                                Source="{Binding SmallIcon}" />
 
                         <TextBlock HorizontalAlignment="Left"

@@ -33,9 +33,6 @@
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
                     </Grid.Width>
-                    <Grid.Visibility>
-                        <Binding Path="ClassDetailsVisibility" />
-                    </Grid.Visibility>
                     <uicontrols:StandardPanel Name="standardPanel" />
                 </Grid>
             </DataTemplate>
@@ -126,8 +123,7 @@
                     </ToggleButton>
                     <ContentPresenter x:Name="ExpanderContent"
                                       Visibility="Collapsed"
-                                      DockPanel.Dock="Bottom"
-                                      Margin="0,0,-19,0">
+                                      DockPanel.Dock="Bottom">
                         <ContentPresenter.Width>
                             <Binding Path="ActualWidth"
                                      RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
