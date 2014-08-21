@@ -43,12 +43,20 @@ namespace Dynamo.Search.SearchElements
 
         private string _fullName;
         public string FullName { get { return _fullName; } }
+		
         /// <summary>
         /// Description property </summary>
         /// <value>
         /// A string describing what the node does</value>
         private string _description;
         public override string Description { get { return _description; } }
+
+        /// <summary>
+        /// Group property </summary>
+        /// <value>
+        /// Group to which Node belongs to</value>
+        private SearchElementGroup _group;
+        public SearchElementGroup Group { get { return _group; } }
 
         private List<Tuple<string, string>> _inputParameters;
         public IEnumerable<Tuple<string, string>> InputParameters
@@ -100,6 +108,7 @@ namespace Dynamo.Search.SearchElements
                 RaisePropertyChanged("DescriptionVisibility");
             }
         }
+
         #endregion
 
         /// <summary>
@@ -110,7 +119,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", IEnumerable<Tuple<string, string>> inputParameters = null, string outputParameters = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, SearchElementGroup group, string fullName = "", IEnumerable<Tuple<string, string>> inputParameters = null, string outputParameters = "")
         {
             this.Node = null;
             this._name = name;
@@ -119,6 +128,7 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
+			this._group = group;
             if(inputParameters!=null)
             this._inputParameters = inputParameters.ToList();
             this._outputParameters = outputParameters;
@@ -126,8 +136,7 @@ namespace Dynamo.Search.SearchElements
 
         public virtual NodeSearchElement Copy()
         {
-
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._fullName, this._inputParameters, this._outputParameters);
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._group, this._fullName, this._inputParameters, this._outputParameters);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }

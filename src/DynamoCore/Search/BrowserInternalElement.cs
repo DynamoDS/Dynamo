@@ -1,11 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Nodes.Search
 {
-
     public class BrowserRootElement : BrowserItem
     {
 
@@ -45,7 +46,6 @@ namespace Dynamo.Nodes.Search
             this.Siblings = null;
             this._name = name;
         }
-
     }
 
     public class BrowserInternalElement : BrowserItem
@@ -108,8 +108,94 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
-
         public string FullCategoryName { get; set; }
     }
-}
 
+    public class ClassInformation : BrowserItem
+    {
+        #region BrowserItem abstract members implementation
+
+        public override ObservableCollection<BrowserItem> Items
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
+        public override string Name
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Specifies whether or not instance should be shown as StandardPanel.
+        /// </summary>
+        public bool ClassDetailsVisibility { get; set; }
+
+        public ClassInformation()
+            : base()
+        {
+            createMembers = new List<BrowserInternalElement>();
+            actionMembers = new List<BrowserInternalElement>();
+            queryMembers = new List<BrowserInternalElement>();
+        }
+
+        private List<BrowserInternalElement> createMembers;
+        public IEnumerable<BrowserInternalElement> CreateMembers
+        {
+            get { return this.createMembers; }
+        }
+
+        private List<BrowserInternalElement> actionMembers;
+        public IEnumerable<BrowserInternalElement> ActionMembers
+        {
+            get { return this.actionMembers; }
+        }
+
+        private List<BrowserInternalElement> queryMembers;
+        public IEnumerable<BrowserInternalElement> QueryMembers
+        {
+            get { return this.queryMembers; }
+        }
+
+        public void PopulateMemberCollections(BrowserInternalElement element)
+        {
+            createMembers.Clear();
+            actionMembers.Clear();
+            queryMembers.Clear();
+
+            foreach (var subElement in element.Items)
+            {
+                var nodeSearchEle = subElement as NodeSearchElement;
+                // nodeSearchEle is null means that our subelement 
+                // is not a leaf of nodes tree.
+                // Normally we shouldn't have this situation.
+                // TODO: discuss with product management.
+                if (nodeSearchEle == null)
+                    continue;
+
+                switch (nodeSearchEle.Group)
+                {
+                    case SearchElementGroup.Create:
+                        createMembers.Add(subElement as BrowserInternalElement);
+                        break;
+
+                    case SearchElementGroup.Action:
+                        actionMembers.Add(subElement as BrowserInternalElement);
+                        break;
+
+                    case SearchElementGroup.Query:
+                        queryMembers.Add(subElement as BrowserInternalElement);
+                        break;
+                }
+            }
+        }
+    }
+}

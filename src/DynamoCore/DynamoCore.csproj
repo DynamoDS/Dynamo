@@ -155,7 +155,6 @@ limitations under the License.
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Models\LibraryModel.cs" />
     <Compile Include="Models\DynamoModelEventArgs.cs" />
     <Compile Include="Models\DynamoModelDelegates.cs" />
     <Compile Include="Models\DynamoModelEvents.cs" />
@@ -174,6 +173,7 @@ limitations under the License.
     <Compile Include="PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClientViewModel.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
+    <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="PackageManager\PackageViewModel.cs" />
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
