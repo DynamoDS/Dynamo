@@ -607,7 +607,12 @@ namespace Dynamo.ViewModels
                             // should keep the input focus on the code block to 
                             // avoid it being dismissed (with empty content).
                             // 
-                            CreateCodeBlockNode(mouseDownPos);
+                            //int maxIterations = 100;
+                            //for (int i = 0; i < maxIterations; i++)
+                            {
+                                CreateCodeBlockNode(mouseDownPos);
+                            }
+
                             returnFocusToSearch = false;
                             curClick = null;
                         }
@@ -869,10 +874,13 @@ namespace Dynamo.ViewModels
                 SetCurrentState(State.WindowSelection);
             }
 
-            private void CreateCodeBlockNode(Point cursor)
+            private void CreateCodeBlockNode(Point cursor, int i = -1)
             {
                 // create node
                 var guid = Guid.NewGuid();
+
+                //owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
+                //    "Code Block", 100*i + cursor.X, 100*i + cursor.Y, false, true));
 
                 owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
                     "Code Block", cursor.X, cursor.Y, false, true));

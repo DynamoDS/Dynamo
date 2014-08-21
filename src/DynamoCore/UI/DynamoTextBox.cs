@@ -18,6 +18,7 @@ using ProtoCore.DSASM;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
+using ICSharpCode.AvalonEdit;
 
 namespace Dynamo.Nodes
 {
@@ -380,6 +381,89 @@ namespace Dynamo.Nodes
             else
                 (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;
         }
+    }
+
+    public class CodeBlockNodeTextBox : TextEditor
+    {
+        public CodeBlockNodeTextBox(string s = "")
+        {
+            //Text = s;
+            this.LostFocus += OnTextBoxFocusLost;
+            //AddHandler(PreviewMouseLeftButtonDownEvent,
+            //    new MouseButtonEventHandler(SelectivelyIgnoreMouseButton), true);
+
+            //this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeTextBox");
+            this.Tag = "Your code goes here";
+        }
+
+        private NodeViewModel nodeViewModel;
+        private NodeViewModel NodeViewModel
+        {
+            get
+            {
+                if (this.nodeViewModel != null) return this.nodeViewModel;
+
+                var f = WPF.FindUpVisualTree<dynNodeView>(this);
+                if (f != null) this.nodeViewModel = f.ViewModel;
+
+                return this.nodeViewModel;
+            }
+        }
+
+        private static void SelectivelyIgnoreMouseButton(
+            object sender, MouseButtonEventArgs e)
+        {
+            // Find the TextBox
+            DependencyObject parent = e.OriginalSource as UIElement;
+            while (parent != null && !(parent is TextEditor))
+                parent = VisualTreeHelper.GetParent(parent);
+
+            if (parent != null)
+            {
+                var textBox = parent as CodeBlockNodeTextBox;
+                if (textBox != null && (!textBox.IsKeyboardFocusWithin))
+                {
+                    // If the text box is not yet focussed, give it the focus and
+                    // stop further processing of this click event.
+                    textBox.Focus();
+                    
+                }
+            }
+        }
+
+        void OnTextBoxFocusLost(object sender, RoutedEventArgs e)
+        {
+            NodeViewModel nvm = NodeViewModel;
+
+            nvm.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    nvm.NodeModel.GUID, "Code", this.Text));
+        }
+
+
+        public string Code
+        {
+            get
+            {
+                //base.Text = (string)GetValue(CodeProperty);
+                SetValue(CodeProperty, base.Text);
+                return base.Text;
+            }
+            set
+            {
+                SetValue(CodeProperty, value);
+                base.Text = value;
+            }
+        }
+
+        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Code", typeof(string),
+            typeof(CodeBlockNodeTextBox) /*, new PropertyMetadata((obj, args) => 
+            {
+                var target = (CodeBlockNodeTextBox)obj;
+                target.Code = (string)args.NewValue;
+            })*/
+        );
+
     }
 }
 
