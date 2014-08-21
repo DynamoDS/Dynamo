@@ -553,14 +553,13 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Handler for the controller's RequestRedraw event.
+        /// Handler for the RequestRedraw event.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
             renderManager.RequestRenderAsync(new RenderTask());
-            //renderManager.Render();
         }
 
         private void Clear(object sender, EventArgs e)

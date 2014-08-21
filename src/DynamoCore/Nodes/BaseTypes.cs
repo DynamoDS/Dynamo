@@ -197,7 +197,7 @@ namespace Dynamo.Nodes
         /// qualified name. This method performs the search with the following 
         /// order:</para>
         /// <para>1. Search among the built-in types registered with 
-        /// DynamoController.BuiltInTypesByName dictionary</para>
+        /// DynamoModel.BuiltInTypesByName dictionary</para>
         /// <para>2. Search among the available .NET runtime types</para>
         /// <para>3. Search among built-in types, taking their "also-known-as" 
         /// attributes into consideration when matching the type name</para>
@@ -463,7 +463,12 @@ namespace Dynamo.Nodes
             Uri assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
             var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
-            return relativeUri.OriginalString.Replace('/', '\\');
+            var relativePath = relativeUri.OriginalString.Replace('/', '\\');
+            if (!HasPathInformation(relativePath))
+            {
+                relativePath = ".\\" + relativePath;
+            }
+            return relativePath;
         }
 
         /// <summary>

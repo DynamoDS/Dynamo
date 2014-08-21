@@ -76,11 +76,10 @@ namespace Dynamo.ViewModels
 
         public bool RunEnabled
         {
-            get { return runEnabled; }
+            get { return model.RunEnabled; }
             set
             {
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
+                model.RunEnabled = value;
             }
         }
 
@@ -747,6 +746,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsPanning");
                 RaisePropertyChanged("IsOrbiting");
             }
+            else if (e.PropertyName == "RunEnabled")
+                RaisePropertyChanged("RunEnabled");
         }
 
         internal bool CanWriteToLog(object parameters)
@@ -1122,7 +1123,6 @@ namespace Dynamo.ViewModels
             CurrentSpaceViewModel.CancelActiveState();
 
             model.CurrentWorkspace = newWs;
-            model.CurrentWorkspace.OnDisplayed();
 
             //set the zoom and offsets events
             var vm = this.Model.Workspaces.First(x => x == newWs);
@@ -2021,28 +2021,6 @@ namespace Dynamo.ViewModels
         }
 
         #region IWatchViewModel interface
-
-        internal void SelectVisualizationInView(object parameters)
-        {
-            //Debug.WriteLine("Selecting mesh from background watch.");
-
-            //var arr = (double[])parameters;
-            //double x = arr[0];
-            //double y = arr[1];
-            //double z = arr[2];
-
-            //dynamoModel.VisualizationManager.LookupSelectedElement(x, y, z);
-        }
-
-        internal bool CanSelectVisualizationInView(object parameters)
-        {
-            if (parameters != null)
-            {
-                return true;
-            }
-
-            return false;
-        }
 
         public void GetBranchVisualization(object parameters)
         {

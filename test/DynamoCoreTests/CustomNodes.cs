@@ -51,7 +51,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -74,6 +74,7 @@ namespace Dynamo.Tests
             // Ensure the values are equal and both 65.
             Assert.AreEqual(65, valuePreCollapse);
             Assert.AreEqual(valuePreCollapse, valuePostCollapse);
+
         }
 
         [Test]
@@ -99,7 +100,7 @@ namespace Dynamo.Tests
             model.AddToSelection(minNode);
             model.AddToSelection(numNode);
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -142,7 +143,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -210,7 +211,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
             Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                 selectionSet.AsEnumerable(),
                 model.CurrentWorkspace,
                 new FunctionNamePromptEventArgs
@@ -311,7 +312,7 @@ namespace Dynamo.Tests
                 model.AddToSelection(node);
             }
 
-            NodeCollapser.Collapse(ViewModel,
+            NodeCollapser.Collapse(ViewModel.Model,
                  DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
                     .Select(x => (x as NodeModel)),
                     model.CurrentWorkspace,
