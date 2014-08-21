@@ -63,36 +63,39 @@ namespace Dynamo.Applications.Models
 
         #region Constructors
 
-        public new struct StartConfiguration
-        {
-            public string Context { get; set; }
-            public string DynamoCorePath { get; set; }
-            public IPreferences Preferences { get; set; }
-            public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
-        }
-
         public new static RevitDynamoModel Start()
         {
             return RevitDynamoModel.Start(new StartConfiguration());
         }
 
-        public static RevitDynamoModel Start(RevitDynamoModel.StartConfiguration configuration)
+        public new static RevitDynamoModel Start(StartConfiguration configuration)
         {
             // where necessary, assign defaults
-            var context = configuration.Context ?? Core.Context.REVIT_2014;
-            var corePath = configuration.DynamoCorePath
-                ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var testMode = configuration.StartInTestMode;
-            var prefs = configuration.Preferences ?? new PreferenceSettings();
-            var updateManager = configuration.UpdateManager;
+            if (string.IsNullOrEmpty(configuration.Context))
+                configuration.Context = Core.Context.REVIT_2014;
+            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+            {
+                var asmLocation = Assembly.GetExecutingAssembly().Location;
+                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
+            }
 
-            return new RevitDynamoModel(context, prefs, corePath, updateManager, testMode);
+            if (configuration.Preferences == null)
+                configuration.Preferences = new PreferenceSettings();
+            if (configuration.Runner == null)
+                configuration.Runner = new RevitDynamoRunner();
+
+            return new RevitDynamoModel(configuration);
         }
 
-        private RevitDynamoModel(string context, IPreferences preferences, string corePath, IUpdateManager updateManager, bool isTestMode) :
-            base(context, preferences, corePath, new RevitDynamoRunner(), updateManager, isTestMode)
+        private RevitDynamoModel(StartConfiguration configuration) :
+            base(configuration)
         {
+            string context = configuration.Context;
+            IPreferences preferences = configuration.Preferences;
+            string corePath = configuration.DynamoCorePath;
+            IUpdateManager updateManager = configuration.UpdateManager;
+            bool isTestMode = configuration.StartInTestMode;
+
             RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
             SubscribeRevitServicesUpdaterEvents();
 
