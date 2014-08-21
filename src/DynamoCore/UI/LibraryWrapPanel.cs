@@ -49,7 +49,8 @@ namespace Dynamo.Controls
                 // StandardPanel still holds.
                 var firstChild = this.Children[0];
                 if (firstChild is StandardPanel)
-                    throw new InvalidOperationException("firstChild is StandardPanel.");
+                    throw new InvalidOperationException("firstChild is StandardPanel. " +
+                        "firstChild Type should be derived from BrowserItem");
 
                 classObjectWidth = firstChild.DesiredSize.Width;
             }
