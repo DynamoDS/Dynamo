@@ -339,6 +339,11 @@
             Obtain a solid Shell from the Faces of this Solid
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Projects the input Geometry onto this Solid, in the direction of the input Vector
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
             <summary>
             Returns the surface area -- sum of all the areas of all faces
@@ -525,6 +530,11 @@
             Combines this Surface and input Surfaces into a PolySurface
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Projects the input Geometry onto this Surface in the input Vector direction
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>
             Returns the total surface area.
@@ -671,11 +681,6 @@
             Make Polysurface by surfaces of Solid.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.PolyCurve)">
-            <summary>
-            Make Polysurface by sweeping Polycurve along rail.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make Polysurface by sweeping curves along rail.
@@ -689,11 +694,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
             <summary>
             Return new Surfaces representing the underlying Surfaces.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ProjectCurve(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Project curve on polysurface
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -847,6 +847,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
             Create a curve by pulling onto plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>
+            Pull this Curve onto the input Surface, in the direction of the Surface normals.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
