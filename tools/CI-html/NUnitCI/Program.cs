@@ -95,9 +95,14 @@ namespace NUnitCI
             }
             Console.WriteLine("nunit regression info done");
         }
+        /// <summary>
+        /// this function is to build the summary dictionary of the test case results
+        /// path is the path of folder or files
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         static Dictionary<string, int> GetResultSummaryForFile(string path)
         {
-            //this function is to build the summary dictionary of the test case results
             Dictionary<string, int> summary = new Dictionary<string, int>();
             string[] keyValues = { "total", "errors", "not-run", "inconclusive", "ignored", "skipped", "invalid", "failures" };
             if (Directory.Exists(path))
@@ -170,9 +175,15 @@ namespace NUnitCI
                 summary.Clear();
             }
         }
+        /// <summary>
+        /// this fuction is to append the summary to the body of the comparison report
+        /// curPath and prePath are the paths of folder or xml files
+        /// </summary>
+        /// <param name="curPath"></param>
+        /// <param name="prePath"></param>
+        /// <param name="body"></param>
         public static void AppendNunitSummary(string curPath, string prePath, ref StringBuilder body)
-        {
-            //this fuction is to append the summary to the body of the comparision report
+        {          
             if (body == null)
                 body = new StringBuilder();
 
@@ -233,10 +244,14 @@ namespace NUnitCI
             public NuintTestCaseResult result2;
         }
 
-
+        /// <summary>
+        /// this function is to append the difference between xml files to the report
+        /// </summary>
+        /// <param name="curPath"></param>
+        /// <param name="prePath"></param>
+        /// <param name="body"></param>
         public static void AppendNuintDiff(string curPath, string prePath, ref StringBuilder body)
         {
-            //this function is to append the difference between xml files to the report
             int successToFailure = 0, failureToSuccess = 0;
             if (body == null)
                 body = new StringBuilder();
@@ -370,6 +385,13 @@ namespace NUnitCI
             }
 
         }
+        /// <summary>
+        /// this function is to do the comparison
+        /// result1 and result2 are from previous and current xml respectively
+        /// </summary>
+        /// <param name="result1"></param>
+        /// <param name="result2"></param>
+        /// <returns></returns>
         public static List<NunitDiffResult> NuintDiff(NuintTestResult result1, NuintTestResult result2)
         {
             if (result1 == null || result2 == null)
