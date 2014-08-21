@@ -177,8 +177,8 @@
                                 <ItemsPanelTemplate>
                                     <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 
 										                       ElementName=CategoryListView}"
-                                                               Background="Transparent" 
-                                                               Margin="5,6,0,0"/>
+                                                               Background="Transparent"
+                                                               Margin="5,6,0,0" />
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
                             <ListView.ItemContainerStyle>
