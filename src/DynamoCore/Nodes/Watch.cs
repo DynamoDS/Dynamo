@@ -86,22 +86,10 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void EvaluationCompleted(object o)
+        public override void Destroy()
         {
-            CachedValue = o;
-            DispatchOnUIThread(
-                delegate
-                {
-                    //unhook the binding
-                    OnRequestBindingUnhook(EventArgs.Empty);
-
-                    Root.Children.Clear();
-                    Root.Children.Add(GetWatchNode());
-
-                    //rehook the binding
-                    OnRequestBindingRehook(EventArgs.Empty);
-                }
-            );
+            base.Destroy();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
         /// <summary>
@@ -135,11 +123,6 @@ namespace Dynamo.Nodes
                 : base.GetAstIdentifierForOutputIndex(outputIndex);
         }
 
-        protected override void OnBuilt()
-        {
-            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
-        }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
@@ -168,7 +151,7 @@ namespace Dynamo.Nodes
             var resultAst = new[]
             {
                 AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
                     DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };

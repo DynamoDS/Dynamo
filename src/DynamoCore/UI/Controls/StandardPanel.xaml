@@ -73,12 +73,14 @@
                                VerticalAlignment="Top"
                                Width="29"
                                Source="{Binding SmallIcon}" />
+
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
                                    VerticalAlignment="Top"
                                    Margin="5,10,0,0"
                                    Foreground="#DDD" />
+
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -111,8 +113,8 @@
                                Height="29"
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="29"
                                Source="{Binding SmallIcon}" />
+
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"

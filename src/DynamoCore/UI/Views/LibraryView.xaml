@@ -157,9 +157,9 @@
         <!-- This is the outer list (showing categories) -->
         <ListView Name="CategoryListView"
                   ScrollViewer.CanContentScroll="False"
-                  ItemsSource="{Binding}"
                   Background="{StaticResource WorkspaceBackgroundBrush}"
-                  BorderThickness="0">
+                  BorderThickness="0"
+                  ItemsSource="{Binding Model.BrowserRootCategories}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Expander Header="{Binding Path=Name}"
@@ -170,13 +170,13 @@
                         <!-- This is inner list (showing subcategories) -->
                         <ListView Name="SubCategoryListView"
                                   ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                                  ItemsSource="{Binding Path=Classes}"
                                   Background="#2F2F2F"
                                   BorderThickness="0"
                                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                   ScrollViewer.CanContentScroll="False"
-                                  ScrollViewer.IsDeferredScrollingEnabled="False">
+                                  ScrollViewer.IsDeferredScrollingEnabled="False"
+                                  ItemsSource="{Binding Path=Items}">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 

@@ -71,7 +71,6 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
-    <Compile Include="CustomNodeManagerTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
     <Compile Include="DSEvaluationViewModelTest.cs" />
     <Compile Include="DSFunctionNodeTest.cs" />
@@ -87,10 +86,10 @@
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="ScopedNodeTest.cs" />
     <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
+    <Compile Include="SchedulerTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
     <Compile Include="Setup.cs" />
-    <Compile Include="TimeStampOrderingTests.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />

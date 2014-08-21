@@ -51,11 +51,6 @@ namespace Dynamo.Controls
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
-        public bool ConsoleShowing
-        {
-            get { return LogScroller.Height > 0; }
-        }
-
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
@@ -299,18 +294,18 @@ namespace Dynamo.Controls
             LoadSamplesMenu();
 #endif
             #region Search initialization
-#if ENABLE_NEW_LIBRARY_VIEW
-            var search = new LibraryView();
-            sidebarGrid.Children.Add(search);
-            this.dynamoViewModel.SearchViewModel.Visible = true;
-#else
 
+#if ENABLE_NEW_LIBRARY_VIEW
+            var search = new LibraryView(
+                this.dynamoViewModel.SearchViewModel,
+                this.dynamoViewModel);
+#else
             var search = new SearchView(
                 this.dynamoViewModel.SearchViewModel,
                 this.dynamoViewModel);
+#endif
             sidebarGrid.Children.Add(search);
             this.dynamoViewModel.SearchViewModel.Visible = true;
-#endif
 
             #endregion
 
@@ -479,24 +474,10 @@ namespace Dynamo.Controls
             taskDialog.ShowDialog();
         }
 
-        //void PackageManagerClient_RequestSetLoginState(object sender, LoginStateEventArgs e)
-        //{
-        //    PackageManagerLoginState.Text = e.Text;
-        //    PackageManagerLoginButton.IsEnabled = e.Enabled;
-        //}
-
         void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                //var bench = dynSettings.Bench;
-
-                //if (bench == null)
-                //{
-                //    dynamoModel.Logger.Log("Cannot export bench as image without UI.  No image wil be exported.");
-                //    return;
-                //}
-
                 var control = WPF.FindChild<DragCanvas>(this, null);
 
                 double width = 1;

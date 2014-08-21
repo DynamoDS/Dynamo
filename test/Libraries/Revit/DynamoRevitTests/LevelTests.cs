@@ -22,7 +22,7 @@ namespace Dynamo.Tests
             //string testPath = Path.GetFullPath(samplePath);
 
             //model.Open(testPath);
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            //Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             ////ensure that the level count is the same
             //var levelColl = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
@@ -30,9 +30,9 @@ namespace Dynamo.Tests
             //Assert.AreEqual(levelColl.ToElements().Count(), 6);
 
             ////change the number and run again
-            //var numNode = (DoubleInput)dynRevitSettings.Controller.DynamoModel.Nodes.First(x => x is DoubleInput);
+            //var numNode = (DoubleInput)ViewModel.Model.DynamoModel.Nodes.First(x => x is DoubleInput);
             //numNode.Value = "0..20..2";
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            //Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
 
             ////ensure that the level count is the same
             //levelColl = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);

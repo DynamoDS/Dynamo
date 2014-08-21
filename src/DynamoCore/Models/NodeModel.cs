@@ -54,7 +54,7 @@ namespace Dynamo.Models
 
         #region public members
 
-        public WorkspaceModel Workspace { get; private set; }
+        public WorkspaceModel Workspace { get; internal set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -711,14 +711,16 @@ namespace Dynamo.Models
 
             if (OutPortData.Count == 1)
             {
-                return
-                    result.Concat(
-                        new[]
-                        {
-                            AstFactory.BuildAssignment(
-                                AstIdentifierForPreview,
-                                GetAstIdentifierForOutputIndex(0))
-                        });
+                var firstOuputIdent = GetAstIdentifierForOutputIndex(0);
+                if (!AstIdentifierForPreview.Equals(firstOuputIdent))
+                {
+                    result = result.Concat(
+                    new[]
+                    {
+                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOuputIdent)
+                    });
+                }
+                return result;
             }
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());

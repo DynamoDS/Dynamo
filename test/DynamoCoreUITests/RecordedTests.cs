@@ -53,7 +53,7 @@ namespace DynamoCoreUITests
                 // There are exceptions made to certain test cases where async evaluation 
                 // needs to be permitted. IsTestMode is marked as false for these test cases
                 // to emulate the real UI async scenario. Since the UI takes care of shutting down
-                // the controller in such a case, we need to make sure it is not shut down twice
+                // the Model in such a case, we need to make sure it is not shut down twice
                 // by checking for IsTestMode here as well
                 if (DynamoModel.IsTestMode)
                 {
@@ -623,7 +623,7 @@ namespace DynamoCoreUITests
 
             if (this.ViewModel != null)
             {
-                var message = "Multiple DynamoController detected!";
+                var message = "Multiple DynamoViewModel instances detected!";
                 throw new InvalidOperationException(message);
             }
 
@@ -633,7 +633,7 @@ namespace DynamoCoreUITests
                     StartInTestMode = true
                 });
 
-            // Create the controller to run alongside the view.
+            // Create the DynamoViewModel to control the view
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {

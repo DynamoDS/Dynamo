@@ -356,7 +356,7 @@ namespace ProtoTest.Imperative
             Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 0);
             Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 0);
             Assert.IsTrue((Int64)mirror.GetValue("d").Payload == 0);
-            Assert.IsTrue((Int64)mirror.GetValue("e").Payload == 4);
+            Assert.IsTrue((Int64)mirror.GetValue("e").Payload == 0);
         }
 
         [Test]
@@ -967,8 +967,10 @@ class VisibilityAttribute
         }
 
         [Test]
+        [Category("Failing")]
         public void TestStringOperations()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4118
             string code = @"[Imperative]
 {
 	s = ""ab"";
@@ -982,16 +984,14 @@ class VisibilityAttribute
 	ns = s;
 	ns[0] = 1;
 	r8 = ns == {1, 'b'};
-	//r9 = """" == """";
-	//r10 = ("""" == null);
-    r9 = s != ""ab"";
+	r9 = s != ""ab"";
     ss = ""abc"";
     ss[0] = 'x';
     r10 = """" == null;
 }
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467274 - Sprint26: rev3611: type conversion checking through two paths");
+            string err = "MAGN-4118 null upgrades to string when added to string";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("r1", "ab3");
             thisTest.Verify("r2", "abfalse");
             thisTest.Verify("r3", null);
@@ -1006,8 +1006,10 @@ class VisibilityAttribute
         }
 
         [Test]
+        [Category("Failing")]
         public void TestStringTypeConversion()
         {
+            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4119
             string code = @"[Imperative]
 {
 	def foo:bool(x:bool)
@@ -1018,7 +1020,8 @@ class VisibilityAttribute
 	r2 = 'h' && true;
 	r3 = 'h' + 1;
 }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4119 Char does not upgrade to 'int' in arithmetic expression";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
             thisTest.Verify("r3", Convert.ToInt64('h') + 1);

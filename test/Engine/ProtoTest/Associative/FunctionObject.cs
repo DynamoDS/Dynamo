@@ -205,7 +205,6 @@ r = Apply(fo2, 42);
         }
 
         [Test]
-        [Category("Failing")]
         public void TestCompose03()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
@@ -285,13 +284,13 @@ r = f.i;
         }
 
         [Test]
-        [Category("Failing")]
         public void TestSortByKey()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
             string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
     @"
+import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
 class Point
 {

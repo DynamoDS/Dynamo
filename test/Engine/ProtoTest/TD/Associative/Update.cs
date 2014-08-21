@@ -1186,9 +1186,11 @@ b1 = b1.create();
 
         [Test]
         [Category("Update")]
+        [Category("Failing")]
         public void T023_Defect_1459789_7()
         {
-            string err = "1467061 - Sprint 23 : rev 2587 : Update issue : When a class instance is updated from imperative scope the update is not happening as expected in some cases";
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1506
+            string err = "MAGN-1506: Update issue : When a class instance is updated from imperative scope the update is not happening as expected in some cases";
             string src = @"class A 
 {    
     a1: var;    
@@ -2182,6 +2184,26 @@ a1;
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
             Object n1 = null;
             thisTest.Verify("a1", n1);
+        }
+
+        [Test]
+        public void TestStringIndexing()
+        {
+
+            string code = @"
+a = {};
+x = 1;
+y = 2;
+a[""x""] = x;
+a[""y""] = y;
+x = 3;
+y = 4;
+r1 = a[""x""];
+r2 = a[""y""];
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", 3);
+            thisTest.Verify("r2", 4);
         }
     }
 }
