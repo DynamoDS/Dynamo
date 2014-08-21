@@ -121,6 +121,22 @@ namespace Dynamo.Nodes.Search
         }
 
         /// <summary>
+        /// Whether the item is focusable or not
+        /// </summary>
+        private bool _focusable = false;
+        public bool Focusable
+        {
+            get
+            {
+                return _focusable;
+            }
+            set
+            {
+                _focusable = value;
+            }
+        }
+
+        /// <summary>
         /// Whether the item is selected or not
         /// </summary>
         private bool _isSelected = false;
@@ -242,5 +258,7 @@ namespace Dynamo.Nodes.Search
                 return true;
             }
         }
+
+
     }
 }
