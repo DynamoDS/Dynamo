@@ -142,7 +142,7 @@ limitations under the License.
     <Compile Include="Core\Threading\DynamoScheduler.cs" />
     <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Threading\SchedulerThread.cs" />
-    <Compile Include="Core\TimeStampOrdering.cs" />
+    <Compile Include="Core\Threading\TimeStampGenerator.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
@@ -181,9 +181,21 @@ limitations under the License.
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
+    <Compile Include="TestInfrastructure\CopyNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeCompatibilityMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\DirectoryPathMutator.cs" />
+    <Compile Include="TestInfrastructure\DoubleSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\FilePathMutator.cs" />
+    <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\ListMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
+    <Compile Include="TestInfrastructure\StringInputMutator.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>

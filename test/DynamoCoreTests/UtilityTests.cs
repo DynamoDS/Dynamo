@@ -448,6 +448,18 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void MakeRelativePath06()
+        {
+            var tempPath = Path.GetTempPath();
+            var basePath = Path.Combine(tempPath, "home.dyn");
+
+            var absolutePath1 = Path.Combine(tempPath, "dummy.dll");
+            var relativePath = DynNodes.Utilities.MakeRelativePath(basePath, absolutePath1);
+            var absolutePath2 = DynNodes.Utilities.MakeAbsolutePath(basePath, relativePath);
+            Assert.AreEqual(absolutePath1, absolutePath2);
+        }
+
+        [Test]
         public void MakeAbsolutePath00()
         {
             Assert.Throws<ArgumentNullException>(() =>

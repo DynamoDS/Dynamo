@@ -9,7 +9,7 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
-        internal long NextTimeStamp { get { return timeStamp.Next; } }
+        internal TimeStamp NextTimeStamp { get { return generator.Next; } }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 
