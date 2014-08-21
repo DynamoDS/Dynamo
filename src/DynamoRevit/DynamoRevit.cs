@@ -148,14 +148,6 @@ namespace Dynamo.Applications
                         TransactionManager.Instance.ForceCloseTransaction();
                     });
 
-
-            //KILLDYNSETTINGS - not sure if this works
-            //this.dynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
-            //this.dynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
-            //    dynamoController.FindNodesFromSelection;
-
-            // Register the view model to handle sign-on requests
-
             return viewModel;
         }
 
@@ -274,7 +266,7 @@ namespace Dynamo.Applications
         ///     Handler for Revit's ViewActivating event.
         ///     Addins are not available in some views in Revit, notably perspective views.
         ///     This will present a warning that Dynamo is not available to run and disable the run button.
-        ///     This handler is called before the ViewActivated event registered on the controller.
+        ///     This handler is called before the ViewActivated event registered on the RevitDynamoModel.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

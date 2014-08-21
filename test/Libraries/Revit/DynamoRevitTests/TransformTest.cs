@@ -29,8 +29,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
 
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
-
             var nodes = ViewModel.Model.Nodes;
 
             double dummyNodesCount = nodes.OfType<DummyNode>().Count();
@@ -69,8 +67,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
 
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
-
             var nodes = ViewModel.Model.Nodes;
 
             double dummyNodesCount = nodes.OfType<DummyNode>().Count();
@@ -108,8 +104,6 @@ namespace Dynamo.Tests
             // Check that all nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
-
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             var nodes = ViewModel.Model.Nodes;
 
