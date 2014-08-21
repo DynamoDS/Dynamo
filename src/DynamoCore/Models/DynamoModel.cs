@@ -516,7 +516,6 @@ namespace Dynamo.Models
             this.SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");
-            HomeSpace.OnDisplayed();
         }
 
         internal bool CanDoPostUIActivation(object parameter)
@@ -631,7 +630,6 @@ namespace Dynamo.Models
         internal void ViewHomeWorkspace()
         {
             CurrentWorkspace = HomeSpace;
-            CurrentWorkspace.OnDisplayed();
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -1286,18 +1284,12 @@ namespace Dynamo.Models
         {
             OnWorkspaceClearing(this, EventArgs.Empty);
 
-            // KILLDYNSETTINGS
-            //Controller.IsUILocked = true;
-
             CleanWorkbench();
 
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
-
-            // KILLDYNSETTINGS
-            //Controller.IsUILocked = false;
 
             OnWorkspaceCleared(this, EventArgs.Empty);
         }

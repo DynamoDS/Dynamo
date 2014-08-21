@@ -129,8 +129,6 @@ namespace Dynamo.PackageManager
 
         internal void DoCachedPackageUninstalls()
         {
-            // scan dynSettings for cached packages to unload
-            // unload them
             // throw new NotImplementedException();
         }
     }
