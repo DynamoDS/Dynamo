@@ -4,7 +4,6 @@ using System.Net;
 using System.Windows;
 using System.Windows.Threading;
 
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoWebServer.Interfaces;
