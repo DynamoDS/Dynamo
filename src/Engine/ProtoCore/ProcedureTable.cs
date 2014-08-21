@@ -92,12 +92,18 @@ namespace ProtoCore.DSASM
             GraphNodeList = new List<GraphNode>();
         }
 
-        public bool IsEqual(ProcedureNode rhs)
+        public override bool Equals(object obj)
         {
+            var rhs = obj as ProcedureNode;
+            if (rhs == null)
+            {
+                return false;
+            }
+
             return procId == rhs.procId && 
                    classScope == rhs.classScope && 
                    localCount == rhs.localCount && 
-                   name == rhs.name;
+                   name.Equals(rhs.name);
         }
     }
 

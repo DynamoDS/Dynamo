@@ -146,11 +146,6 @@ namespace Dynamo.Models
             return true;
         }
 
-        public override void OnDisplayed()
-        {
-
-        }
-
         protected override bool PopulateXmlDocument(XmlDocument document)
         {
             if (!base.PopulateXmlDocument(document))

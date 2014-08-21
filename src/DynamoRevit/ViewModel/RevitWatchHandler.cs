@@ -12,7 +12,7 @@ using Element = Revit.Elements.Element;
 namespace Dynamo.Applications
 {
     /// <summary>
-    /// An Revit-specific implementation of IWatchHandler that is set on the Controller at startup.
+    /// An Revit-specific implementation of IWatchHandler that is set on the DynamoViewModel at startup.
     /// The main Process method dynamically dispatches to the appropriate
     /// internal method based on the type. For every time for which you would like
     /// to have a custom representation in the watch, you will need an additional

@@ -156,7 +156,6 @@ namespace Dynamo.Tests
             var readFile = ViewModel.Model.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
                 node.NickName == "Excel.ReadExcelFile").FirstOrDefault();
 
-            //Assert.Throws<AssertionException>(() => Controller.RunExpression(null));
             ViewModel.Model.RunExpression();
 
             Assert.IsTrue(readFile.CachedValue.Class.ClassName == "DSOffice.WorkBook");

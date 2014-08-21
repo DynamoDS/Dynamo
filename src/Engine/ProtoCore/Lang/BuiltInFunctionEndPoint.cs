@@ -485,7 +485,18 @@ namespace ProtoCore.Lang
                         interpreter, 
                         stackFrame);
                     break;
-               default:
+                case BuiltInMethods.MethodID.kTryGetValueFromNestedDictionaries:
+                    StackValue value;
+                    if (ArrayUtils.TryGetValueFromNestedDictionaries(formalParameters[0], formalParameters[1], out value, core))
+                    {
+                        ret = value;
+                    }
+                    else
+                    {
+                        ret = StackValue.Null;
+                    }
+                    break;
+                default:
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
 

@@ -11,7 +11,7 @@ namespace Dynamo.Interfaces
 {
     /// <summary>
     /// An object implementing the IWatchHandler interface is registered 
-    /// on the controller at startup, and defines the methods for processing
+    /// on the ViewModel at startup, and defines the methods for processing
     /// objects into string representations for visualizing in the Watch.
     /// To create a custom watch visualization scheme, you can create a simply
     /// replace this WatchHandler with one of your own creation.
