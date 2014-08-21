@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Nodes.Search;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.Controls
@@ -14,8 +15,7 @@ namespace Dynamo.Controls
         /// Field specifies the prospective index of selected class in collection.
         /// </summary>
         private int selectedClassProspectiveIndex = -1;
-        private bool isClassObjectSizeSet = false;
-        private double classObjectWidth = -1.0;
+        private double classObjectWidth = double.NaN;
         private ObservableCollection<BrowserItem> collection;
         private BrowserInternalElement currentClass;
 
@@ -43,11 +43,21 @@ namespace Dynamo.Controls
 
             // Find out class object size.
             // First item is always class object.
-            if (!isClassObjectSizeSet)
+            if (double.IsNaN(classObjectWidth))
             {
-                classObjectWidth = this.Children[0].DesiredSize.Width;
+                // Make sure our assumption of the first child being a 
+                // StandardPanel still holds.
+                var firstChild = this.Children[0];
+                if (firstChild is StandardPanel)
+                {
+                    // If the following exception is thrown, please look at "LibraryWrapPanel.cs"
+                    // where we insert both "BrowserItem" and "ClassInformation" items, ensure that
+                    // the "ClassInformation" item is inserted last.
+                    throw new InvalidOperationException("firstChild is StandardPanel. " +
+                        "firstChild Type should be derived from BrowserItem");
+                }
 
-                isClassObjectSizeSet = true;
+                classObjectWidth = firstChild.DesiredSize.Width;
             }
 
             double x = 0, y = 0, currentRowHeight = 0;

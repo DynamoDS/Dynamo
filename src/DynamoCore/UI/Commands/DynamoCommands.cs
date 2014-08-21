@@ -16,7 +16,7 @@ namespace Dynamo.ViewModels
         #region Automation Related Methods
 
         /// <summary>
-        /// DynamoController calls this method at the end of its initialization
+        /// DynamoView calls this method at the end of its initialization
         /// sequence so that loaded commands, if any, begin to playback.
         /// </summary>
         internal void BeginCommandPlayback(System.Windows.Window mainWindow)
