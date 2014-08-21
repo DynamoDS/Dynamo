@@ -386,6 +386,14 @@ namespace Dynamo.Models
             OnCleanup(args);
 
             Logger.Dispose();
+
+#if ENABLE_DYNAMO_SCHEDULER
+            if (scheduler != null)
+            {
+                scheduler.Shutdown();
+                scheduler = null;
+            }
+#endif
         }
         
         /// <summary>

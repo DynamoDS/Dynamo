@@ -30,19 +30,6 @@ namespace Dynamo.Core.Threading
 
         #region Private Class Helper Methods
 
-        private void ScheduleTask(AsyncTask asyncTask)
-        {
-            lock (taskQueue)
-            {
-                taskQueue.Add(asyncTask);
-                asyncTask.MarkTaskAsScheduled(); // Update internal time-stamp.
-                taskQueueUpdated = true; // Mark task queue as being updated.
-
-                // Signal task availability so scheduler picks it up.
-                waitHandles[(int)EventIndex.TaskAvailable].Set();
-            }
-        }
-
         private void CompactTaskQueue()
         {
             // TODO: Add queue compacting codes here.
