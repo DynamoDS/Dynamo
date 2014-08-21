@@ -28,6 +28,7 @@ namespace ProtoTestFx.TD
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
+        bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
  
@@ -193,8 +194,6 @@ namespace ProtoTestFx.TD
                 
                 StackTrace trace = new StackTrace();
                 int caller = 2;
-                System.Diagnostics.StackFrame frame = trace.GetFrame(caller);
-                string callerName = frame.GetMethod().Name;
                 
                 string tempPath = System.IO.Path.GetTempPath();
                 string import = @"testImport\";
@@ -252,16 +251,22 @@ namespace ProtoTestFx.TD
                     }
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
-                String fileName = TestContext.CurrentContext.Test.Name + ".ds";
-                String folderName = TestContext.CurrentContext.Test.FullName;
+                
+                if (dumpDS )
+                {
 
-                string[] substrings = folderName.Split('.');
+                    String fileName = TestContext.CurrentContext.Test.Name + ".ds";
+                    String folderName = TestContext.CurrentContext.Test.FullName;
 
-                string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
-                if (!System.IO.Directory.Exists(path))
-                    System.IO.Directory.CreateDirectory(path);
+                    string[] substrings = folderName.Split('.');
 
-                createDSFile(fileName, path, sourceCode);
+                    string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
+                    if (!System.IO.Directory.Exists(path))
+                        System.IO.Directory.CreateDirectory(path);
+
+                    createDSFile(fileName, path, sourceCode);
+                }
+
                 SetErrorMessage(errorstring);
                 return testMirror;
             }
