@@ -9,8 +9,7 @@
              d:DesignHeight="300"
              d:DesignWidth="450"
              Background="#01000000"
-             MaxWidth="370"
-             MouseEnter="ToolTip_MouseEnter">
+             MaxWidth="370" >
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />

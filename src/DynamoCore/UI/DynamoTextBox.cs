@@ -464,10 +464,8 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
-        public static object cashedDataContext;
+        public static object cachedDataContext;
         public static bool isMouseOver = false;
-        public static bool MouseInside = true;
-        private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
 
         public static readonly DependencyProperty AttachmentSidePopupProperty =
             DependencyProperty.Register("AttachmentSidePopup",
@@ -491,28 +489,29 @@ namespace Dynamo.UI.Controls
             this.MouseLeave += LibraryToolTipPopup_MouseLeave;
             this.DataContextChanged += Popup_DataContextChanged;
             this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
-            this.Child = tooltip;
         }
 
         private void LibraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
         {
             isMouseOver = false;
-            //cashedDataContext = null;
-            this.DataContext = null;
         }
 
         private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (
-                ((this.DataContext as Dynamo.Search.SearchElements.NodeSearchElement) != null)
+                (this.DataContext as Dynamo.Search.SearchElements.DSFunctionNodeSearchElement != null)
                 ||
-                ((this.DataContext as Dynamo.Search.SearchElements.DSFunctionNodeSearchElement) != null)
+                (this.DataContext as Dynamo.Search.SearchElements.NodeSearchElement != null)
                 )
-                cashedDataContext = this.DataContext;
+                cachedDataContext = this.DataContext;
+
             if (isMouseOver)
-            {
-                this.DataContext = cashedDataContext;
-            }
+                this.DataContext = cachedDataContext;
+
+            this.Child = null;
+            Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
+            tooltip.DataContext = this.DataContext;
+            this.Child = tooltip;
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)

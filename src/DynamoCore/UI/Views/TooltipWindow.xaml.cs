@@ -36,11 +36,5 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private void ToolTip_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Dynamo.UI.Controls.LibraryToolTipPopup.isMouseOver=true;
-            Dynamo.UI.Controls.LibraryToolTipPopup.MouseInside = true;
-        }
-
     }
 }
