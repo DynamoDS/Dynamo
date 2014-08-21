@@ -252,7 +252,7 @@ namespace ProtoTestFx.TD
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
                 
-                if (dumpDS == true)
+                if (dumpDS )
                 {
 
                     String fileName = TestContext.CurrentContext.Test.Name + ".ds";
