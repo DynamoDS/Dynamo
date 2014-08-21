@@ -9,7 +9,7 @@ namespace DynamoWebServer
 {
     public class WebSocket : IWebSocket
     {
-        private WebSocketServer webSocketServer = new WebSocketServer();
+        private readonly WebSocketServer webSocketServer = new WebSocketServer();
 
         public event Action<WebSocketSession> NewSessionConnected;
         public event Action<WebSocketSession, string> NewMessageReceived;
@@ -41,26 +41,38 @@ namespace DynamoWebServer
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
-            if (NewSessionConnected != null)
-                NewSessionConnected(session);
+            WebServer.ExecuteWithDispatcher(() =>
+            {
+                if (NewSessionConnected != null)
+                    NewSessionConnected(session);
+            });
         }
 
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
         {
-            if (NewMessageReceived != null)
-                NewMessageReceived(session, message);
+            WebServer.ExecuteWithDispatcher(() =>
+            {
+                if (NewMessageReceived != null)
+                    NewMessageReceived(session, message);
+            });
         }
 
         void socketServer_NewDataReceived(WebSocketSession session, byte[] value)
         {
-            if (NewDataReceived != null)
-                NewDataReceived(session, value);
+            WebServer.ExecuteWithDispatcher(() =>
+            {
+                if (NewDataReceived != null)
+                    NewDataReceived(session, value);
+            });
         }
 
         void socketServer_SessionClosed(WebSocketSession session, CloseReason reason)
         {
-            if (SessionClosed != null)
-                SessionClosed(session, reason);
+            WebServer.ExecuteWithDispatcher(() =>
+            {
+                if (SessionClosed != null)
+                    SessionClosed(session, reason);
+            });
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-
-using Dynamo.ViewModels;
 
 using DynamoWebServer.Interfaces;
 using DynamoWebServer.Messages;
@@ -22,20 +21,16 @@ namespace DynamoWebServer
 {
     public class WebServer : IWebServer
     {
-        private readonly DynamoViewModel dynamoViewModel;
+        private readonly DynamoViewModelPool pool;
         private readonly JsonSerializerSettings jsonSettings;
         private readonly IWebSocket webSocket;
         private readonly ISessionManager sessionManager;
 
-        private readonly MessageHandler messageHandler;
-
-        public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket, ISessionManager manager)
+        public WebServer(IWebSocket socket, ISessionManager manager)
         {
+            pool = new DynamoViewModelPool(5);
             webSocket = socket;
             sessionManager = manager;
-            this.dynamoViewModel = dynamoViewModel;
-            messageHandler = new MessageHandler(dynamoViewModel);
-            messageHandler.ResultReady += SendAnswerToWebSocket;
 
             jsonSettings = new JsonSerializerSettings
             {
@@ -44,12 +39,18 @@ namespace DynamoWebServer
             };
         }
 
+        public static void ExecuteWithDispatcher(Action action)
+        {
+            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
+                .Invoke(action);
+        }
+
         #region IServer
 
         public void Start()
         {
             string httpBindingAddress = ConfigurationManager.AppSettings["bindingAddress"];
-            int httpBindingport = int.Parse(ConfigurationManager.AppSettings["bindingPort"]);
+            int httpBindingport = Int32.Parse(ConfigurationManager.AppSettings["bindingPort"]);
 
             try
             {
@@ -61,14 +62,14 @@ namespace DynamoWebServer
                     ReceiveBufferSize = 256 * 1024
                 }))
                 {
-                    LogInfo("Failed to setup!");
-                    LogInfo("DynamoWebServer: failed to setup its socketserver");
+                    LogInfo("Failed to setup!", "");
+                    LogInfo("DynamoWebServer: failed to setup its socketserver", "");
                     return;
                 }
             }
             catch
             {
-                LogInfo("DynamoWebServer: failed to setup its socketserver");
+                LogInfo("DynamoWebServer: failed to setup its socketserver", "");
                 return;
             }
 
@@ -76,12 +77,12 @@ namespace DynamoWebServer
 
             if (!webSocket.Start())
             {
-                LogInfo("DynamoWebServer: failed to start its socketserver");
+                LogInfo("DynamoWebServer: failed to start its socketserver", "");
                 UnBindEvents();
                 return;
             }
 
-            LogInfo("The server started successfully!");
+            LogInfo("The server started successfully!", "");
         }
 
         public void SendResponse(Response response, string sessionId)
@@ -90,21 +91,18 @@ namespace DynamoWebServer
             if (session != null)
             {
                 session.Send(JsonConvert.SerializeObject(response, jsonSettings));
-                LogInfo("Web socket: send [Status: " + response.Status + "]");
+                LogInfo("Web socket: send [Status: " + response.Status + "]", sessionId);
             }
             else
             {
-                LogInfo("Web socket: can`t send response, socket not initialized! No clients connected? \n  SessionId: [" + sessionId + "]");
+                LogInfo("Web socket: can`t send response, socket not initialized! No clients connected? \n  SessionId: [" + sessionId + "]", sessionId);
             }
         }
 
         public void ExecuteMessageFromSocket(string message, string sessionId)
         {
-            var msg = messageHandler.DeserializeMessage(message);
-            //Save session in session manager
-            sessionManager.SetSession(sessionId);
-
-            ExecuteMessageFromSocket(msg);
+            var msg = sessionManager.Get(sessionId).DeserializeMessage(message);
+            ExecuteMessageFromSocket(msg, sessionId);
         }
 
         #endregion
@@ -119,13 +117,17 @@ namespace DynamoWebServer
                 session.Close();
                 return;
             }
+            var messageHandler = new MessageHandler(pool.Get(), session.SessionID);
+            messageHandler.ResultReady += SendAnswerToWebSocket;
 
-            LogInfo("Web socket: connected");
+            sessionManager.Add(session.SessionID, messageHandler);
+
+            LogInfo("Web socket: connected", session.SessionID);
         }
 
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
         {
-            LogInfo("Web socket: recived [" + message + "]");
+            LogInfo("Web socket: recived [" + message + "]", session.SessionID);
             SendResponse(new ContentResponse
             {
                 Message = DateTime.Now.ToShortDateString() + " Message received"
@@ -151,12 +153,15 @@ namespace DynamoWebServer
             if (reason == CloseReason.ServerShutdown)
                 return;
 
-            LogInfo("Web socket: disconnected");
+            pool.Put(sessionManager.Get(session.SessionID).DynamoViewModel);
+            sessionManager.Delete(session.SessionID);
+
+            LogInfo("Web socket: disconnected", session.SessionID);
         }
 
         void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
         {
-            SendResponse(e.Response, sessionManager.GetSession(dynamoViewModel));
+            SendResponse(e.Response, e.SessionId);
         }
 
         void BindEvents()
@@ -173,14 +178,18 @@ namespace DynamoWebServer
             webSocket.SessionClosed -= socketServer_SessionClosed;
         }
 
-        void ExecuteMessageFromSocket(Message message)
+        void ExecuteMessageFromSocket(Message message, string sessionId)
         {
-            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
-                .Invoke(new Action(() => messageHandler.Execute(dynamoViewModel, message)));
+            ExecuteWithDispatcher(() => sessionManager.Get(sessionId).Execute(sessionManager.Get(sessionId).DynamoViewModel, message));
         }
 
-        void LogInfo(string info)
+        void LogInfo(string info, string sessionId)
         {
+            if (sessionManager.Get(sessionId) == null)
+                return;
+
+            var dynamoViewModel = sessionManager.Get(sessionId).DynamoViewModel;
+
             if (dynamoViewModel.Model.Logger != null)
                 dynamoViewModel.Model.Logger.Log(info);
         }
