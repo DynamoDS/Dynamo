@@ -1,5 +1,9 @@
-﻿using Dynamo.ViewModels;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using Dynamo.ViewModels;
 using DynamoWebServer.Interfaces;
+using DynamoWebServer.Messages;
 
 namespace DynamoWebServer
 {
@@ -15,7 +19,7 @@ namespace DynamoWebServer
     /// incoming message sent from a connected client.
     public class SessionManager : ISessionManager
     {
-        private string sessionId;
+        readonly Dictionary<string, MessageHandler> messageHandlersDictionary = new Dictionary<string, MessageHandler>();
 
         /// <summary>
         /// This will be implemented later when we add multiuser support
@@ -26,16 +30,36 @@ namespace DynamoWebServer
         /// <returns>String session identifier</returns>
         public string GetSession(DynamoViewModel viewModel)
         {
-            return sessionId;
+            return messageHandlersDictionary.First(el => el.Value.DynamoViewModel == viewModel).Key;
         }
 
         /// <summary>
-        /// Adds session to the sessions list if it's not yet in there
+        /// Insert MessageHandler and session Id
         /// </summary>
-        /// <param name="id">String session identifier</param>
-        public void SetSession(string id)
+        /// <param name="id">Session Id</param>
+        /// <param name="messageHandler"></param>
+        public void Add(string id, MessageHandler messageHandler)
         {
-            sessionId = id;
+            messageHandlersDictionary.Add(id, messageHandler);
+        }
+
+        /// <summary>
+        /// Returns corresponding MessageHandler
+        /// </summary>
+        /// <param name="id">Session Id</param>
+        /// <returns></returns>
+        public MessageHandler Get(string id)
+        {
+            return messageHandlersDictionary.ContainsKey(id) ? messageHandlersDictionary[id] : null;
+        }
+
+        /// <summary>
+        /// Removes MessageHandler from dictionary
+        /// </summary>
+        /// <param name="id">Session Id</param>
+        public void Delete(string id)
+        {
+            messageHandlersDictionary.Remove(id);
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 
 using Dynamo;
-using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using DynamoWebServer.Responses;
@@ -15,12 +14,13 @@ namespace DynamoWebServer.Messages
 {
     public class MessageHandler
     {
-        private readonly DynamoViewModel dynamoViewModel;
-        private readonly JsonSerializerSettings jsonSettings;
-
+        public DynamoViewModel DynamoViewModel { get; private set; }
+        public string SessionId { get; private set; }
         public event ResultReadyEventHandler ResultReady;
 
-        public MessageHandler(DynamoViewModel dynamoViewModel)
+        private readonly JsonSerializerSettings jsonSettings;
+
+        public MessageHandler(DynamoViewModel dynamoViewModel, string sessionId)
         {
             jsonSettings = new JsonSerializerSettings
             {
@@ -28,7 +28,8 @@ namespace DynamoWebServer.Messages
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            this.dynamoViewModel = dynamoViewModel;
+            DynamoViewModel = dynamoViewModel;
+            SessionId = sessionId;
         }
 
         /// <summary>
@@ -57,6 +58,11 @@ namespace DynamoWebServer.Messages
             }
         }
 
+        /// <summary>
+        /// Execute Message on selected ViewModel
+        /// </summary>
+        /// <param name="dynamo">DynamoViewModel</param>
+        /// <param name="message">Message</param>
         internal void Execute(DynamoViewModel dynamo, Message message)
         {
             if (message is RunCommandsMessage)
@@ -67,8 +73,8 @@ namespace DynamoWebServer.Messages
             {
                 OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
                 {
-                    LibraryItems = dynamo.SearchViewModel.GetAllLibraryItemsByCategory()
-                }));
+                    LibraryItems = dynamo.SearchViewModel.GetAllLibraryItemsByCategory(),
+                }, SessionId));
             }
         }
 
@@ -128,7 +134,7 @@ namespace DynamoWebServer.Messages
         private void NodesDataModified(object sender, RenderCompletionEventArgs e)
         {
             var nodes = new List<ExecutedNode>();
-            foreach (var node in dynamoViewModel.Model.CurrentWorkspace.Nodes)
+            foreach (var node in DynamoViewModel.Model.CurrentWorkspace.Nodes)
             {
                 string data;
                 var codeBlock = node as CodeBlockNodeModel;
@@ -175,9 +181,9 @@ namespace DynamoWebServer.Messages
             OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
             {
                 Nodes = nodes
-            }));
+            },SessionId));
 
-            dynamoViewModel.VisualizationManager.RenderComplete -= NodesDataModified;
+            DynamoViewModel.VisualizationManager.RenderComplete -= NodesDataModified;
         }
 
         #endregion

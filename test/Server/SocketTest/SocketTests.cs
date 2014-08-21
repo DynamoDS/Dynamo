@@ -31,7 +31,7 @@ namespace Dynamo.Tests
 
             sessionManager = new Mock<ISessionManager>();
 
-            webServer = new WebServer(ViewModel, mock.Object, sessionManager.Object);
+            webServer = new WebServer(mock.Object, sessionManager.Object);
             webServer.Start();
         }
 
@@ -40,7 +40,7 @@ namespace Dynamo.Tests
         {
             var testDir = Path.Combine(GetTestDirectory(), @"core\commands");
             var commandPaths = Directory.GetFiles(testDir, "*.txt");
-            var messageHandler = new MessageHandler(ViewModel);
+            var messageHandler = new MessageHandler(ViewModel, "test");
             Assert.NotNull(commandPaths);
             Assert.Greater(commandPaths.Length, 0);
             foreach (var path in commandPaths)
