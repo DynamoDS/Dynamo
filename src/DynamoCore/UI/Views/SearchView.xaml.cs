@@ -26,8 +26,6 @@ namespace Dynamo.Search
         private readonly SearchViewModel viewModel;
         private readonly DynamoViewModel dynamoViewModel;
 
-        readonly DispatcherTimer searchTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 100), IsEnabled = false };
-
         public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
             this.viewModel = searchViewModel;
@@ -47,8 +45,6 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
-
-            searchTimer.Tick += SearchTimerTick;
         }
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
@@ -70,6 +66,7 @@ namespace Dynamo.Search
 
             this.viewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
             this.viewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
+
 
         }
 
@@ -228,18 +225,6 @@ namespace Dynamo.Search
             if (binding != null)
                 binding.UpdateSource();
 
-            searchTimer.IsEnabled = true;
-            searchTimer.Stop();
-            searchTimer.Start();
-        }
-
-        void SearchTimerTick(object sender, EventArgs e)
-        {
-            searchTimer.IsEnabled = false;
-
-            Debug.WriteLine("Updating search results...");
-            // end of timer processing
-            // Execute command to pop search stack
             this.viewModel.SearchCommand.Execute(null);
         }
 
@@ -354,6 +339,18 @@ namespace Dynamo.Search
         {
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
+        }
+
+        private void nodeButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Button from_sender = sender as Button;
+            libraryToolTipPopup.PlacementTarget = from_sender;
+            libraryToolTipPopup.DataContext = from_sender.DataContext;
+        }
+
+        private void libraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
+        {
+            libraryToolTipPopup.DataContext = null;
         }
 
     }

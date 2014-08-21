@@ -461,4 +461,89 @@ namespace Dynamo.UI.Controls
             set { SetValue(AttachmentSideProperty, value); }
         }
     }
+
+    public class LibraryToolTipPopup : Popup
+    {
+        public static readonly DependencyProperty AttachmentSidePopupProperty =
+            DependencyProperty.Register("AttachmentSidePopup",
+            typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
+            new PropertyMetadata(LibraryToolTipPopup.Side.Left));
+
+        public enum Side
+        {
+            Left, Top, Right, Bottom
+        }
+
+        public Side AttachmentSide
+        {
+            get { return ((Side)GetValue(AttachmentSidePopupProperty)); }
+            set { SetValue(AttachmentSidePopupProperty, value); }
+        }
+        public LibraryToolTipPopup()
+        {
+            this.Placement = PlacementMode.Custom;
+            this.AllowsTransparency = true;
+            this.DataContextChanged += Popup_DataContextChanged;
+            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
+        }
+
+        private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            this.Child = null;
+            Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
+            tooltip.DataContext = this.DataContext;
+            this.Child = tooltip;
+        }
+
+        private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
+        {
+            double x = 0, y = 0;
+            double gap = Configurations.ToolTipTargetGapInPixels;
+            PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
+            Point targetLocation = this.PlacementTarget.TransformToAncestor(Application.Current.MainWindow)
+                                        .Transform(new Point(0, 0));
+
+            switch (this.AttachmentSide)
+            {
+                case Side.Left:
+                    x = -(popup.Width + gap);
+                    y = (target.Height - popup.Height) * 0.5;
+                    primaryAxis = PopupPrimaryAxis.Horizontal;
+                    break;
+
+                case Side.Right:
+                    x = target.Width + 3*gap - 50;
+                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
+                        - (targetLocation.Y + Configurations.NodeButtonHeight);
+                    if (availableHeight < Configurations.BottomPanelHeight)
+                        y = availableHeight - (Configurations.BottomPanelHeight+gap*4);
+                    primaryAxis = PopupPrimaryAxis.Horizontal;
+                    break;
+
+                case Side.Top:
+                    x = (target.Width - popup.Width) * 0.5;
+                    y = -(popup.Height + gap);
+                    primaryAxis = PopupPrimaryAxis.Vertical;
+                    break;
+
+                case Side.Bottom:
+                    x = (target.Width - popup.Width) * 0.5;
+                    y = target.Height + gap;
+                    primaryAxis = PopupPrimaryAxis.Vertical;
+                    break;
+            }
+
+            return new CustomPopupPlacement[]
+            {
+                new CustomPopupPlacement()
+                {
+                    Point = new Point(x, y),
+                    PrimaryAxis = primaryAxis
+                }
+            };
+        }
+
+
+        
+    }
 }
