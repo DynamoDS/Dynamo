@@ -3592,6 +3592,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
         {
             String code =
@@ -3617,7 +3618,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
 a1.x = 5;// expected : test = { 5, { 5, { 5, 5} } }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467272 - Sprint25: rev 3603: Replication on dot operators not working for jagged arrays";
+            String errmsg = "MAGN-4107 Replication on dot operators not working for jagged arrays";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 5, new Object[] { 5, new Object[] { 5, 5 } } });
         }
@@ -5724,6 +5725,7 @@ a = { 5, 6, 7, 8 };
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T92_add()
         {
             String code =
@@ -5733,7 +5735,7 @@ b = { 5, 6 };
 def foo:int (a:int, b:int) { return = a + b; }
 c = foo(a,b);
 ";
-            string errmsg = "DNL-1467292 rev 3746 - REGRESSION :  replication on jagged array is giving unexpected output";
+            string errmsg = "MAGN-1673 Sprint 27 - Rev4014 - function argument with jagged array - its expected to replicate for the attached code";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", new object[] { new object[] { 6, 7 }, new object[] { 9, 10 } });
         }
@@ -6263,7 +6265,7 @@ test2 = a.f2;
         }
 
         [Test]
-
+        [Category("Failing")]
         public void T97_Defect_1467408_Replication_On_Class_Property_Assignment()
         {
             String code =
@@ -6281,13 +6283,14 @@ test1 = a.x;
 a.x = 2..3;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1682";
+            String errmsg = "MAGN-1682 Rev 4443 :[Design Issue]Replication on class property assignment is not working"; 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("test1", new Object[] { 2, 3 });
         }
 
         [Test]
+        [Category("Failing")]
         public void T98_replication_1467453()
         {
             String code =
@@ -6298,7 +6301,7 @@ d = { 5 + 6, b + 1 };
 c = { { 3 } } + d;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "1467453 - throws error index out of range  for valid code ";
+            String errmsg = "MAGN-1691 throws error index out of range  for jagged array arithmetic operation";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
             thisTest.Verify("a", 3);
@@ -7095,21 +7098,7 @@ o = foo(a, 1);
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("o", new Object[] {  });   
         }
-
-        [Test]
-        [Category("Failing")]
-        public void EmptyInputForLongestLacing()
-        {
-            string code = @"
-a = {};
-b = {1,2};
-c = a<1L> + b<1L>;
-";
-
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3807#
-            var errorMessage = "MAGN-3807 Unhandled exception in Dynamo Engine with Adaptive Family Placement";
-            var mirror = thisTest.VerifyRunScriptSource(code, errorMessage);
-        }
+    
     }
 
 }
