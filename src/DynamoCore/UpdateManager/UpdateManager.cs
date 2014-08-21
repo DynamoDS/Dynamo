@@ -545,7 +545,8 @@ namespace Dynamo.UpdateManager
                 }
                 catch (Exception e)
                 {
-                    dynamoModel.Logger.Log(e);
+                    OnLog(this, new LogEventArgs(e.Message, LogLevel.Console));
+                    OnLog(this, new LogEventArgs(e.StackTrace, LogLevel.Console));
                     return null;
                 }
             }
