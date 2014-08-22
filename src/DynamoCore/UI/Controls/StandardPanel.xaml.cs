@@ -54,9 +54,13 @@ namespace Dynamo.UI.Controls
             // But we need to know it before mouse will leave nodeSearchButton, that's why
             // we check where mouse pointer  is.
             if (point.X >= (nodeSearchButton.ActualWidth - 50)) // 50 is transparent width of tooltip at the left side.
-                if (point.Y <= (nodeSearchButton.ActualHeight - 3)) 
-            // Leave 3 pixels for case, when user move mouse to the bottom, not to the right.
+            {
+                if (point.Y <= (nodeSearchButton.ActualHeight - 3))
+                // Leave 3 pixels for case, when user move mouse to the bottom, not to the right.
+                {
                     Dynamo.UI.Controls.LibraryToolTipPopup.isMouseOver = true;
+                }
+            }
         }
 
     }
