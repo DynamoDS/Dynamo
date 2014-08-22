@@ -42,7 +42,7 @@ namespace Dynamo.UI.Controls
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (!Dynamo.UI.Controls.LibraryToolTipPopup.isMouseOver)
+            if (!libraryToolTipPopup.isMouseOver)
             libraryToolTipPopup.DataContext = null;
         }
 
@@ -58,7 +58,7 @@ namespace Dynamo.UI.Controls
                 // Leave 3 pixels for case, when user move mouse to the bottom, not to the right.
                 if (point.Y <= (nodeSearchButton.ActualHeight - 3))
                 {
-                    Dynamo.UI.Controls.LibraryToolTipPopup.isMouseOver = true;
+                    libraryToolTipPopup.isMouseOver = true;
                 }
             }
         }

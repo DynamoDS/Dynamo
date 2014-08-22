@@ -464,7 +464,7 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
-        public static bool isMouseOver = false;
+        public bool isMouseOver = false;
 
         public static readonly DependencyProperty AttachmentSidePopupProperty =
             DependencyProperty.Register("AttachmentSidePopup",
@@ -492,7 +492,7 @@ namespace Dynamo.UI.Controls
 
         private void OnLibraryToolTipPopupMouseLeave(object sender, MouseEventArgs e)
         {
-            isMouseOver = false;
+            this.isMouseOver = false;
         }
 
         private void OnPopupDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
