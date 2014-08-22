@@ -464,6 +464,7 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
+        // Variable for checking whether mouse is inside tooltip.
         public bool isMouseOver = false;
 
         public static readonly DependencyProperty AttachmentSidePopupProperty =
