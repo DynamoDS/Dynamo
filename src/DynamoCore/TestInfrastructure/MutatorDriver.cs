@@ -43,41 +43,41 @@ namespace Dynamo.TestInfrastructure
             System.Diagnostics.Debug.WriteLine("MutateTest Internal activate");
 
             new Thread(() =>
+            {
+                try
                 {
-                    try
-                    {
-                        ConnectorTest(writer);
-                        CopyNodeTest(writer);
-                        DeleteNodeTest(writer);
+                    ConnectorTest(writer);
+                    CopyNodeTest(writer);
+                    DeleteNodeTest(writer);
 
-                        CodeBlockNodeTest(writer);
+                    CodeBlockNodeTest(writer);
 
-                        IntegerSliderTest(writer);
-                        DoubleSliderTest(writer);
-                        
-                        DirectoryPathTest(writer);
-                        FilePathTest(writer);
-                        
-                        NumberInputTest(writer);
-                        StringInputTest(writer);
-                        
-                        NumberSequenceTest(writer);
-                        NumberRangeTest(writer);
-                        ListTest(writer);
-						
-						CustomNodeTest(writer);
-                        CustomNodeCompatibilityTest(writer);
-                    }
-                    finally
-                    {
+                    IntegerSliderTest(writer);
+                    DoubleSliderTest(writer);
+
+                    DirectoryPathTest(writer);
+                    FilePathTest(writer);
+
+                    NumberInputTest(writer);
+                    StringInputTest(writer);
+
+                    NumberSequenceTest(writer);
+                    NumberRangeTest(writer);
+                    ListTest(writer);
+
+                    CustomNodeTest(writer);
+                    CustomNodeCompatibilityTest(writer);
+                }
+                finally
+                {
                     dynamoViewModel.Model.Logger.Log("Fuzz testing finished.");
 
-                        writer.Flush();
-                        writer.Close();
-                        writer.Dispose();
-                    }
+                    writer.Flush();
+                    writer.Close();
+                    writer.Dispose();
+                }
 
-                }).
+            }).
                 Start();
         }
 
@@ -415,7 +415,7 @@ namespace Dynamo.TestInfrastructure
                             new DynamoViewModel.RunCancelCommand(false, false);
                         dynamoViewModel.ExecuteCommand(runCancel);
 
-                        }));
+                    }));
 
                     Thread.Sleep(100);
 
@@ -716,7 +716,7 @@ namespace Dynamo.TestInfrastructure
                             }
                         }
                         writer.WriteLine("### - test of IntegerSlider complete");
-                        writer.Flush();                        
+                        writer.Flush();
                     }
                     passed = true;
                 }
@@ -856,7 +856,7 @@ namespace Dynamo.TestInfrastructure
                             }
                         }
                         writer.WriteLine("### - test of DoubleSlider complete");
-                        writer.Flush();                        
+                        writer.Flush();
                     }
                     passed = true;
                 }
@@ -1000,7 +1000,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of DirectoryPath complete");
-                    writer.Flush();                    
+                    writer.Flush();
                 }
                 passed = true;
             }
@@ -1139,7 +1139,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of FilePath complete");
-                    writer.Flush();                    
+                    writer.Flush();
                 }
                 passed = true;
             }
@@ -1406,7 +1406,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
                     writer.WriteLine("### - test of Number complete");
-                    writer.Flush();                    
+                    writer.Flush();
                 }
                 passed = true;
             }
@@ -2488,41 +2488,14 @@ namespace Dynamo.TestInfrastructure
 
                                 if (exclusions.Reverse().Any(e => e.Contains(dynamoViewModel.Model.Context)))
                                     continue;
-
-                                //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
-                                if (t.Name.Equals("dynSkinCurveLoops"))
-                                {
-                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
-                                    const string nameOfMethodCreate = "noSkinSolidMethod";
-                                    bool exclude = true;
-                                    foreach (MethodInfo m in specialTypeStaticMethods)
-                                    {
-                                        if (m.Name == nameOfMethodCreate)
-                                        {
-                                            var argsM = new object[0];
-                                            exclude = (bool)m.Invoke(null, argsM);
-                                            break;
-                                        }
-                                    }
-                                    if (exclude)
-                                        continue;
-                                }
                             }
                         }
-
-                        string typeName;
 
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
                         {
                             searchViewModel.Add(t);
-                            typeName = (attribs[0] as NodeNameAttribute).Name;
                         }
-                        else
-                            typeName = t.Name;
-
                         types.Add(t);
-
-                        var data = new TypeLoadData(assembly, t);
                     }
                     catch (Exception e)
                     {
