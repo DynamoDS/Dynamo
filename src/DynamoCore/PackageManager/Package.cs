@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -30,13 +31,6 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(this.RootDirectory, "dyf"); }
         }
 
-        private bool _willUninstallOnNextRestart;
-        public bool WillUninstallOnNextRestart
-        {
-            get { return _willUninstallOnNextRestart; }
-            set { _willUninstallOnNextRestart = value; RaisePropertyChanged("WillUninstallOnNextRestart"); }
-        }
-
         public string BinaryDirectory
         {
             get { return Path.Combine(this.RootDirectory, "bin"); }
@@ -49,29 +43,36 @@ namespace Dynamo.PackageManager
 
         public bool Loaded { get; set; }
 
-        private bool _typesVisibleInManager;
-        public bool TypesVisibleInManager { get { return _typesVisibleInManager; } set { _typesVisibleInManager = value; RaisePropertyChanged("TypesVisibleInManager"); } }
+        private bool typesVisibleInManager;
+        public bool TypesVisibleInManager { get { return typesVisibleInManager; } set { typesVisibleInManager = value; RaisePropertyChanged("TypesVisibleInManager"); } }
 
-        private string _rootDirectory;
-        public string RootDirectory { get { return _rootDirectory; } set { _rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
+        private string rootDirectory;
+        public string RootDirectory { get { return rootDirectory; } set { rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
 
-        private string _description = "";
-        public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
+        private string description = "";
+        public string Description { get { return description; } set { description = value; RaisePropertyChanged("Description"); } }
 
-        private string _versionName = "";
-        public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
+        private string versionName = "";
+        public string VersionName { get { return versionName; } set { versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        private string _engineVersion = "";
-        public string EngineVersion { get { return _engineVersion; } set { _engineVersion = value; RaisePropertyChanged("EngineVersion"); } }
+        private string engineVersion = "";
+        public string EngineVersion { get { return engineVersion; } set { engineVersion = value; RaisePropertyChanged("EngineVersion"); } }
 
-        private string _license = "";
-        public string License { get { return _license; } set { _license = value; RaisePropertyChanged("License"); } }
+        private string license = "";
+        public string License { get { return license; } set { license = value; RaisePropertyChanged("License"); } }
 
-        private string _contents = "";
-        public string Contents { get { return _contents; } set { _contents = value; RaisePropertyChanged("Contents"); } }
+        private string contents = "";
+        public string Contents { get { return contents; } set { contents = value; RaisePropertyChanged("Contents"); } }
 
         private IEnumerable<string> _keywords = new List<string>();
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
+
+        private bool markedForUninstall;
+        public bool MarkedForUninstall
+        {
+            get { return markedForUninstall; }
+            private set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+        }
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
@@ -80,6 +81,7 @@ namespace Dynamo.PackageManager
 
         public ObservableCollection<Type> LoadedTypes { get; set; }
         public ObservableCollection<Assembly> LoadedAssemblies { get; set; }
+        public ObservableCollection<AssemblyName> LoadedAssemblyNames { get; set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
         public ObservableCollection<PackageDependency> Dependencies { get; set; }
 
@@ -93,8 +95,21 @@ namespace Dynamo.PackageManager
             this.VersionName = versionName;
             this.LoadedTypes = new ObservableCollection<Type>();
             this.LoadedAssemblies = new ObservableCollection<Assembly>();
+            this.LoadedAssemblyNames = new ObservableCollection<AssemblyName>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
+
+            this.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
+
+        }
+
+        private void LoadedAssembliesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            this.LoadedAssemblyNames.Clear();
+            foreach (var ass in LoadedAssemblies)
+            {
+                this.LoadedAssemblyNames.Add(ass.GetName());
+            }
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
@@ -191,15 +206,21 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private List<Assembly> LoadAssembliesInBinDirectory()
+        private IEnumerable<Assembly> LoadAssembliesInBinDirectory()
         {
             if (!Directory.Exists(BinaryDirectory)) 
                 return new List<Assembly>();
 
-            return
-                (new DirectoryInfo(BinaryDirectory))
+            var assemblies = (new DirectoryInfo(BinaryDirectory))
                     .EnumerateFiles("*.dll")
                     .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
+
+            foreach (var assem in assemblies)
+            {
+                this.LoadedAssemblies.Add(assem);
+            }
+
+            return assemblies;
         }
 
         internal bool ContainsFile(string path)
@@ -211,11 +232,6 @@ namespace Dynamo.PackageManager
         internal bool InUse( DynamoModel dynamoModel )
         {
             return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
-        }
-
-        internal bool HasAssemb(DynamoModel dynamoModel)
-        {
-            return (LoadedTypes.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
         }
 
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
@@ -244,13 +260,34 @@ namespace Dynamo.PackageManager
                         });
         }
 
-        internal void UninstallCore( CustomNodeManager customNodeManager, PackageLoader packageLoader, ILogger logger )
+        internal void MarkForUninstall(IPreferences prefs)
         {
+            this.MarkedForUninstall = true;
+
+            if (!prefs.PackageDirectoriesToUninstall.Contains(this.RootDirectory))
+            {
+                prefs.PackageDirectoriesToUninstall.Add(this.RootDirectory);
+            }
+        }
+
+        internal void UnmarkForUninstall(IPreferences prefs)
+        {
+            this.MarkedForUninstall = false;
+            prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(this.RootDirectory));
+        }
+
+        internal void UninstallCore( CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs, ILogger logger )
+        {
+            if (this.LoadedAssemblies.Any())
+            {
+                this.MarkForUninstall(prefs);
+                return;
+            }
+
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.RemoveFromDynamo(x.Guid));
                 packageLoader.LocalPackages.Remove(this);
-                //packageLoader.AssembliesToUnload.Add()
                 Directory.Delete(this.RootDirectory, true);
             }
             catch (Exception e)

@@ -135,7 +135,7 @@ namespace Dynamo.PackageManager.UI
                 {
                     return Definition.WorkspaceModel.Name;
                 }
-                return Assembly.FullName;
+                return Assembly.GetName().Name;
             }
         }
 

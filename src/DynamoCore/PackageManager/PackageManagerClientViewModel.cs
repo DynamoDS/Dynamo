@@ -187,7 +187,10 @@ namespace Dynamo.ViewModels
                             if (firstOrDefault != null)
                             {
                                 var dynModel = this.dynamoViewModel.Model;
-                                try { firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.Logger); }
+                                try
+                                {
+                                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.PreferenceSettings, dynModel.Logger);
+                                }
                                 catch
                                 {
                                     MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name +

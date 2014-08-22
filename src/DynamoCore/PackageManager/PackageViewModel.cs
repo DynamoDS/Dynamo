@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -23,6 +24,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishNewPackageCommand { get; set; }
         public DelegateCommand DeprecateCommand { get; set; }
         public DelegateCommand UndeprecateCommand { get; set; }
+        public DelegateCommand UnmarkForUninstallationCommand { get; set; }
 
         public PackageViewModel(DynamoViewModel dynamoViewModel, Package model)
         {
@@ -36,22 +38,56 @@ namespace Dynamo.ViewModels
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
+            UnmarkForUninstallationCommand = new DelegateCommand(this.UnmarkForUninstallation, this.CanUnmarkForUninstallation);
 
+            this.Model.PropertyChanged += ModelOnPropertyChanged;
             this.dynamoViewModel.Model.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
             this.dynamoViewModel.Model.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
         }
 
+        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "MarkedForUninstall")
+            {
+                this.UnmarkForUninstallationCommand.RaiseCanExecuteChanged();
+                this.UninstallCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private void UnmarkForUninstallation()
+        {
+            this.Model.UnmarkForUninstall( this.dynamoViewModel.Model.PreferenceSettings );
+        }
+
+        private bool CanUnmarkForUninstallation()
+        {
+            return this.Model.MarkedForUninstall;
+        }
+
         private void Uninstall()
         {
-            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Model.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (this.Model.LoadedAssemblies.Any())
+            {
+                var resAssem =
+                    MessageBox.Show(
+                        "The package " + this.Model.Name
+                            + " contains loaded binaries.  You will need to restart Dynamo fully, including the host application, before the uninstall takes effect.  Do you want to proceed?",
+                        "Uninstalling Package",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+                if (resAssem == MessageBoxResult.No) return;
+            }
+
+            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Model.Name + "?  This will delete the packages root directory.\n\n"+
+                " You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
             try
             {
                 var dynModel = this.dynamoViewModel.Model;
-                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.Logger);
+                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.PreferenceSettings, dynModel.Logger);
             }
             catch (Exception e)
             {
@@ -61,7 +97,8 @@ namespace Dynamo.ViewModels
 
         private bool CanUninstall()
         {
-            return !Model.InUse(this.dynamoViewModel.Model);
+            return (!this.Model.InUse(this.dynamoViewModel.Model) || this.Model.LoadedAssemblies.Any()) 
+                && !this.Model.MarkedForUninstall;
         }
 
         private void Deprecate()

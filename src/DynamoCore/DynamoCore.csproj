@@ -145,13 +145,13 @@ limitations under the License.
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\ISchedulerThread.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
-    <Compile Include="Library\DocumentationServices.cs" />
-    <Compile Include="Library\FunctionDescriptor.cs" />
-    <Compile Include="Library\FunctionGroup.cs" />
-    <Compile Include="Library\LibraryCustomization.cs" />
-    <Compile Include="Library\LibraryServices.cs" />
-    <Compile Include="Library\TypedParameter.cs" />
-    <Compile Include="Library\XmlDocumentationExtensions.cs" />
+    <Compile Include="Interfaces\Library\DocumentationServices.cs" />
+    <Compile Include="Interfaces\Library\FunctionDescriptor.cs" />
+    <Compile Include="Interfaces\Library\FunctionGroup.cs" />
+    <Compile Include="Interfaces\Library\LibraryCustomization.cs" />
+    <Compile Include="Interfaces\Library\LibraryServices.cs" />
+    <Compile Include="Interfaces\Library\TypedParameter.cs" />
+    <Compile Include="Interfaces\Library\XmlDocumentationExtensions.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
@@ -212,7 +212,7 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
-    <Compile Include="Library\FunctionType.cs" />
+    <Compile Include="Interfaces\Library\FunctionType.cs" />
     <Compile Include="DSEngine\EngineController.cs" />
     <Compile Include="DSEngine\LiveRunnerServices.cs" />
     <Compile Include="DSEngine\NodeToCode.cs" />

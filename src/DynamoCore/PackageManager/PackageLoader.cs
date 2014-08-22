@@ -142,6 +142,24 @@ namespace Dynamo.PackageManager
 
         internal void DoCachedPackageUninstalls( IPreferences preferences )
         {
+            var pkgDirsRemoved = new List<string>();
+            foreach (var pkgNameDirTup in preferences.PackageDirectoriesToUninstall)
+            {
+                try
+                {
+                    Directory.Delete(pkgNameDirTup, true);
+                    pkgDirsRemoved.Add(pkgNameDirTup);
+                    this.logger.Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
+                }
+                catch
+                {
+                    this.logger.LogWarning(
+                        String.Format("Failed to delete package directory at \"{0}\", you may need to delete the directory manually.", 
+                        pkgNameDirTup), WarningLevel.Moderate);
+                }
+            }
+            
+            preferences.PackageDirectoriesToUninstall.RemoveAll(pkgDirsRemoved.Contains);
         }
     }
 }
