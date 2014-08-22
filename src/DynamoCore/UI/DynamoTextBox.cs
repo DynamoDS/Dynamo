@@ -385,16 +385,7 @@ namespace Dynamo.Nodes
 
     public class CodeBlockNodeTextBox : ICSharpCode.AvalonEdit.TextEditor
     {
-        public CodeBlockNodeTextBox(string s = "")
-        {
-            Text = s;
-            this.LostFocus += OnTextBoxFocusLost;
-            //AddHandler(PreviewMouseLeftButtonDownEvent,
-            //    new MouseButtonEventHandler(SelectivelyIgnoreMouseButton), true);
-
-            //this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeTextBox");
-            this.Tag = "Your code goes here";
-        }
+        bool shift, enter;
 
         private NodeViewModel nodeViewModel;
         private NodeViewModel NodeViewModel
@@ -410,28 +401,60 @@ namespace Dynamo.Nodes
             }
         }
 
-        private static void SelectivelyIgnoreMouseButton(
-            object sender, MouseButtonEventArgs e)
+        public CodeBlockNodeTextBox(string s = "")
         {
-            // Find the TextBox
-            DependencyObject parent = e.OriginalSource as UIElement;
-            while (parent != null && !(parent is TextEditor))
-                parent = VisualTreeHelper.GetParent(parent);
+            //Text = s;
+            this.TextArea.LostFocus += TextArea_LostFocus;
+            this.Loaded += (obj, args) => this.TextArea.Focus();
+            RequestReturnFocusToSearch += TryFocusSearch;
 
-            if (parent != null)
+            //this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeTextBox");
+            this.Tag = "Your code goes here";
+        }
+
+        public event RequestReturnFocusToSearchHandler RequestReturnFocusToSearch;
+        public delegate void RequestReturnFocusToSearchHandler();
+        protected void OnRequestReturnFocusToSearch()
+        {
+            if (RequestReturnFocusToSearch != null)
+                RequestReturnFocusToSearch();
+        }
+
+        public string Code
+        {
+            get
             {
-                var textBox = parent as CodeBlockNodeTextBox;
-                if (textBox != null && (!textBox.IsKeyboardFocusWithin))
-                {
-                    // If the text box is not yet focussed, give it the focus and
-                    // stop further processing of this click event.
-                    textBox.Focus();
-                    
-                }
+                //return base.Text;
+                throw new NotImplementedException();
+            }
+            set
+            {
+                base.Text = value;
             }
         }
 
-        void OnTextBoxFocusLost(object sender, RoutedEventArgs e)
+        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Code", typeof(string),
+            typeof(CodeBlockNodeTextBox), new PropertyMetadata((obj, args) =>
+            {
+                var target = (CodeBlockNodeTextBox)obj;
+                target.Code = (string)args.NewValue;
+            })
+        );
+
+        private void TryFocusSearch()
+        {
+            if (this.NodeViewModel == null) return;
+
+            this.NodeViewModel.DynamoViewModel.ReturnFocusToSearch();
+        }
+
+        /// <summary>
+        /// Called when the CBN is committed and the underlying source data 
+        /// needs to be updated with the text typed in the CBN
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
             NodeViewModel nvm = NodeViewModel;
 
@@ -440,29 +463,54 @@ namespace Dynamo.Nodes
                     nvm.NodeModel.GUID, "Code", this.Text));
         }
 
-
-        public string Code
+        private void HandleEscape()
         {
-            get
-            {
-                //base.Text = (string)GetValue(CodeProperty);
-                SetValue(CodeProperty, base.Text);
-                return base.Text;
-            }
-            set
-            {
-                SetValue(CodeProperty, value);
-                base.Text = value;
-            }
+            var text = base.Text;
+            var cb = DataContext as CodeBlockNodeModel;
+
+            if (cb == null || cb.Code != null && text.Equals(cb.Code))
+                OnRequestReturnFocusToSearch();
+            else
+                base.Text = (DataContext as CodeBlockNodeModel).Code;
         }
 
-        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Text", typeof(string),
-            typeof(TextEditor) /*, new PropertyMetadata((obj, args) => 
+        /// <summary>
+        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
+        /// and sets them when pressed/released
+        /// </summary>
+        #region Key Press Event Handlers
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
             {
-                var target = (CodeBlockNodeTextBox)obj;
-                target.Code = (string)args.NewValue;
-            })*/
-        );
+                shift = true;
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                enter = true;
+            }
+            else if (e.Key == Key.Escape)
+            {
+                HandleEscape();
+            }
+            if (shift == true && enter == true)
+            {
+                OnRequestReturnFocusToSearch();
+                shift = enter = false;
+            }
+        }
+        protected override void OnPreviewKeyUp(KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            {
+                shift = false;
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                enter = false;
+            }
+        }
+        #endregion
 
     }
 }
