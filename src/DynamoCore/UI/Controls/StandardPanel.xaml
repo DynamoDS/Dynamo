@@ -88,10 +88,16 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
-                                        IsOpen="{Binding ElementName=libraryToolTipPopup, Path=DataContext, Converter={StaticResource BrowserItemToBooleanConverter}, Mode=OneWay}"
                                         AttachmentSide="Right"
                                         StaysOpen="True"
                                         AllowsTransparency="True"
-                                        MouseLeave="Popup_MouseLeave" />
+                                        MouseLeave="Popup_MouseLeave">
+            <uicontrols:LibraryToolTipPopup.IsOpen>
+                <Binding ElementName="libraryToolTipPopup"
+                         Path="DataContext"
+                         Mode="OneWay"
+                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+            </uicontrols:LibraryToolTipPopup.IsOpen>
+        </uicontrols:LibraryToolTipPopup>
     </Grid>
 </UserControl>
