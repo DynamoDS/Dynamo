@@ -155,7 +155,8 @@
                   ScrollViewer.CanContentScroll="False"
                   Background="{StaticResource WorkspaceBackgroundBrush}"
                   BorderThickness="0"
-                  ItemsSource="{Binding Model.BrowserRootCategories}">
+                  ItemsSource="{Binding Model.BrowserRootCategories}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Expander Header="{Binding Path=Name}"
