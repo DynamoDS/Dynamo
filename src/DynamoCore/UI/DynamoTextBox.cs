@@ -464,7 +464,6 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
-        public static object cachedDataContext;
         public static bool isMouseOver = false;
 
         public static readonly DependencyProperty AttachmentSidePopupProperty =
@@ -498,17 +497,6 @@ namespace Dynamo.UI.Controls
 
         private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (
-                (this.DataContext as Dynamo.Search.SearchElements.DSFunctionNodeSearchElement != null)
-                ||
-                (this.DataContext as Dynamo.Search.SearchElements.NodeSearchElement != null)
-                )
-                cachedDataContext = this.DataContext;
-
-            if (isMouseOver)
-                this.DataContext = cachedDataContext;
-
-            this.Child = null;
             Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
             tooltip.DataContext = this.DataContext;
             this.Child = tooltip;
