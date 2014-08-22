@@ -45,6 +45,8 @@ namespace Dynamo.Search
         /// <param name="tag"> The string to identify it in search </param>
         public void Add(V value, string tag)
         {
+            tag = tag.ToLower();
+
             if (_tagDictionary.ContainsKey(tag))
                 _tagDictionary[tag].Add(value);
             else
@@ -63,6 +65,8 @@ namespace Dynamo.Search
         /// <param name="tag"> The string to identify it in search </param>
         public void Add(IEnumerable<V> values, string tag)
         {
+            tag = tag.ToLower();
+
             if (_tagDictionary.ContainsKey(tag))
                 _tagDictionary[tag].UnionWith(values);
             else
@@ -84,6 +88,8 @@ namespace Dynamo.Search
         /// <param name="tags"> The list of strings to identify it in search </param>
         public void Add(V value, IEnumerable<string> tags)
         {
+            tags = tags.Select(x => x.ToLower());
+
             foreach (string tag in tags)
                 Add(value, tag);
         }
@@ -95,6 +101,8 @@ namespace Dynamo.Search
         /// <param name="tags"> The list of strings to identify it in search. Must have the same cardinality as the first parameter </param>
         public void Add(IEnumerable<V> values, IEnumerable<string> tags)
         {
+            tags = tags.Select(x => x.ToLower());
+
             foreach (string tag in tags)
                 Add(values, tag);
         }
@@ -106,6 +114,8 @@ namespace Dynamo.Search
         /// <param name="tag"> The tags to remove for the given value </param>
         public void Remove(V value, string tag)
         {
+            tag = tag.ToLower();
+
             _tagDictionary[tag].Remove(value);
             _symbolDictionary[value].Remove(tag);
         }
@@ -130,6 +140,8 @@ namespace Dynamo.Search
         /// <param name="tag"> The tag for which to remove elements </param>
         public void Remove(string tag)
         {
+            tag = tag.ToLower();
+
             if (_tagDictionary.ContainsKey(tag))
             {
                 HashSet<V> elems = _tagDictionary[tag];
@@ -171,6 +183,8 @@ namespace Dynamo.Search
         /// <param name="tags"> The list of tags to remove. </param>
         public void Remove(V value, IEnumerable<string> tags)
         {
+            tags = tags.Select(x => x.ToLower());
+
             foreach (string tag in tags)
                 Remove(value, tag);
         }
@@ -182,6 +196,8 @@ namespace Dynamo.Search
         /// <returns> The elements with the given tag </returns>
         public HashSet<V> ByTag(string tag)
         {
+            tag = tag.ToLower();
+
             return _tagDictionary[tag];
         }
 
@@ -197,11 +213,13 @@ namespace Dynamo.Search
         /// <param name="query"> The query </param>
         public HashSet<V> Filter(string query)
         {
+            query = query.ToLower();
+
             var result = new HashSet<V>();
 
             foreach (var pair in _tagDictionary)
             {
-                if (pair.Key.ToLower().Contains(query.ToLower()))
+                if (pair.Key.Contains(query))
                 {
                     result.UnionWith(pair.Value);
                 }
@@ -229,7 +247,7 @@ namespace Dynamo.Search
                                          .Replace("*", "\\*");
             string[] subPatterns = sanitizedQuery.Split(null);
             string pattern = "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
-            return Regex.IsMatch(key.ToLower(), pattern);
+            return Regex.IsMatch(key, pattern);
         }
 
         /// <summary>
@@ -245,7 +263,7 @@ namespace Dynamo.Search
             query = query.ToLower();
 
             // do containment check
-            foreach (var pair in _tagDictionary.Where(x => x.Key.ToLower().Contains(query)))
+            foreach (var pair in _tagDictionary.Where(x => x.Key.Contains(query)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict );
             }
@@ -253,7 +271,7 @@ namespace Dynamo.Search
             // if you don't have enough results, do fuzzy search
             if (searchDict.Count <= minResultsForTolerantSearch)
             {
-                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key.ToLower(), query)))
+                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, query)))
                 {
                     ComputeWeightAndAddToDictionary(query, pair, searchDict );
                 }
