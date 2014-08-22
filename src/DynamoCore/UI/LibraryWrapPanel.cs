@@ -158,9 +158,9 @@ namespace Dynamo.Controls
             if (correctClassInformationIndex >= collection.Count)
                 correctClassInformationIndex = collection.Count - 1;
 
-            // We need to move the ClassDetails object to the right index.
+            // We need to move the ClassInformation object to the right index.
             collection.RemoveAt(currentClassInformationIndex);
-            collection.Insert(correctClassInformationIndex, classObjectBase);
+            collection.Insert(correctClassInformationIndex, classInformation);
 
         }
     }

@@ -25,6 +25,5 @@ namespace Dynamo.UI.Views
         {
             DataContext = this.viewModel;
         }
-
     }
 }
