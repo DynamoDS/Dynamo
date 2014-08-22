@@ -854,7 +854,7 @@ namespace Dynamo.Tests
 
         #region New Sample Tests
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Adaptive_Component_Placement()
         {
@@ -902,7 +902,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Color()
         {
@@ -932,7 +932,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_Floors_and_Framing()
         {
@@ -975,7 +975,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_ImportSolid()
         {
@@ -1002,7 +1002,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_PlaceFamiliesByLevel_Set_Parameters()
         {
@@ -1034,7 +1034,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\Samples\DynamoSample.rvt")]
         public void Revit_StructuralFraming()
         {
@@ -1066,7 +1066,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\empty.rfa")]
         public void Geometry_Curves()
         {
@@ -1097,7 +1097,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\empty.rfa")]
         public void Geometry_Points()
         {
@@ -1128,7 +1128,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\empty.rfa")]
         public void Geometry_Solids()
         {
@@ -1160,7 +1160,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Samples")]
+        [Test, Category("SmokeTests")]
         [TestModel(@".\empty.rfa")]
         public void Geometry_Surfaces()
         {
