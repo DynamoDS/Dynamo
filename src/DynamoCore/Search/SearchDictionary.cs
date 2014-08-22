@@ -262,6 +262,12 @@ namespace Dynamo.Search
             return "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
         }
 
+        private bool ContainsSpecialCharacters(string element)
+        {
+            return element.Contains("*") || element.Contains(".") || element.Contains(" ")
+                || element.Contains("\\");
+        }
+
         /// <summary>
         /// Search for elements in the dictionary based on the query
         /// </summary>
@@ -280,8 +286,8 @@ namespace Dynamo.Search
                 ComputeWeightAndAddToDictionary(query, pair, searchDict );
             }
 
-            // if you don't have enough results, do fuzzy search
-            if (searchDict.Count <= minResultsForTolerantSearch)
+            // if you don't have enough results and the query contains special characters, do fuzzy search
+            if (searchDict.Count <= minResultsForTolerantSearch && ContainsSpecialCharacters(query))
             {
                 var regexPattern = MakePattern( SplitOnWhiteSpace( SanitizeQuery(query) ) );
 
