@@ -229,7 +229,7 @@ namespace Dynamo.Search
                                          .Replace("*", "\\*");
             string[] subPatterns = sanitizedQuery.Split(null);
             string pattern = "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
-            return Regex.IsMatch(key, pattern, RegexOptions.IgnoreCase);
+            return Regex.IsMatch(key.ToLower(), pattern);
         }
 
         /// <summary>
