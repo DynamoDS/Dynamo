@@ -485,17 +485,17 @@ namespace Dynamo.UI.Controls
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
-            this.MouseLeave += LibraryToolTipPopup_MouseLeave;
-            this.DataContextChanged += Popup_DataContextChanged;
+            this.MouseLeave += OnLibraryToolTipPopupMouseLeave;
+            this.DataContextChanged += OnPopupDataContextChanged;
             this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
         }
 
-        private void LibraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
+        private void OnLibraryToolTipPopupMouseLeave(object sender, MouseEventArgs e)
         {
             isMouseOver = false;
         }
 
-        private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void OnPopupDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
             tooltip.DataContext = this.DataContext;

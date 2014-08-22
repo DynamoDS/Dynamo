@@ -33,20 +33,20 @@ namespace Dynamo.UI.Controls
             queryActionMethods.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
         }
 
-        private void ListBoxItem_MouseEnter(object sender, MouseEventArgs e)
+        private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
             ListBoxItem from_sender = sender as ListBoxItem;
             libraryToolTipPopup.PlacementTarget = from_sender;
             libraryToolTipPopup.DataContext = from_sender.DataContext;
         }
 
-        private void Popup_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (!Dynamo.UI.Controls.LibraryToolTipPopup.isMouseOver)
             libraryToolTipPopup.DataContext = null;
         }
 
-        private void ListBoxItem_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnListBoxItemMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             Point point = Mouse.GetPosition(sender as IInputElement);
             FrameworkElement nodeSearchButton = sender as FrameworkElement;

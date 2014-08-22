@@ -8,16 +8,16 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             MouseLeave="Popup_MouseLeave">
+             MouseLeave="OnPopupMouseLeave">
     <UserControl.Resources>
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="MouseEnter"
-                         Handler="ListBoxItem_MouseEnter" />
+                         Handler="OnListBoxItemMouseEnter" />
             <EventSetter Event="MouseMove"
-                         Handler="ListBoxItem_MouseMove" />
+                         Handler="OnListBoxItemMouseMove" />
         </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding Path=ClassDetailsVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
@@ -91,7 +91,7 @@
                                         AttachmentSide="Right"
                                         StaysOpen="True"
                                         AllowsTransparency="True"
-                                        MouseLeave="Popup_MouseLeave">
+                                        MouseLeave="OnPopupMouseLeave">
             <uicontrols:LibraryToolTipPopup.IsOpen>
                 <Binding ElementName="libraryToolTipPopup"
                          Path="DataContext"
