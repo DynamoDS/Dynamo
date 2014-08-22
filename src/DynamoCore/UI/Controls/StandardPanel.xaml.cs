@@ -35,9 +35,9 @@ namespace Dynamo.UI.Controls
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
-            ListBoxItem from_sender = sender as ListBoxItem;
-            libraryToolTipPopup.PlacementTarget = from_sender;
-            libraryToolTipPopup.DataContext = from_sender.DataContext;
+            ListBoxItem fromSender = sender as ListBoxItem;
+            libraryToolTipPopup.PlacementTarget = fromSender;
+            libraryToolTipPopup.DataContext = fromSender.DataContext;
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -55,8 +55,8 @@ namespace Dynamo.UI.Controls
             // we check where mouse pointer  is.
             if (point.X >= (nodeSearchButton.ActualWidth - 50)) // 50 is transparent width of tooltip at the left side.
             {
-                if (point.Y <= (nodeSearchButton.ActualHeight - 3))
                 // Leave 3 pixels for case, when user move mouse to the bottom, not to the right.
+                if (point.Y <= (nodeSearchButton.ActualHeight - 3))
                 {
                     Dynamo.UI.Controls.LibraryToolTipPopup.isMouseOver = true;
                 }
