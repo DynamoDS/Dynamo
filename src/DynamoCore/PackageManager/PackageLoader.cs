@@ -142,7 +142,6 @@ namespace Dynamo.PackageManager
 
         internal void DoCachedPackageUninstalls( IPreferences preferences )
         {
-            
         }
     }
 }

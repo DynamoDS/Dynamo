@@ -335,7 +335,6 @@ x;
         }
 
         [Test]
-        [Category("Failing")]
         public void T011_Cyclic_Dependency_From_Geometry()
         {
             string code = @"
