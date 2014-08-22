@@ -71,6 +71,7 @@ namespace Dynamo.Models
         private DynamoScheduler scheduler;
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
+        private bool runEnabled = true;
 
         #endregion
 
@@ -196,7 +197,15 @@ namespace Dynamo.Models
             get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
-        public bool RunEnabled { get; set; }
+        public bool RunEnabled
+        {
+            get { return runEnabled; }
+            set
+            {
+                runEnabled = value;
+                RaisePropertyChanged("RunEnabled");
+            }
+        }
         public bool RunInDebug { get; set; }
 
         /// <summary>
