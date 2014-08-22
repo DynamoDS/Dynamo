@@ -72,8 +72,8 @@ namespace Dynamo.Tests
         {
             //Assert.Inconclusive("Porting : Formula");
 
-            var loader = new PackageLoader(ViewModel.Model, PackagesDirectory);
-            loader.LoadPackages();
+            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, PackagesDirectory);
+            loader.LoadPackagesIntoDynamo();
             var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
 
