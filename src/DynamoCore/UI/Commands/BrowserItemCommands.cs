@@ -258,7 +258,5 @@ namespace Dynamo.Nodes.Search
                 return true;
             }
         }
-
-
     }
 }
