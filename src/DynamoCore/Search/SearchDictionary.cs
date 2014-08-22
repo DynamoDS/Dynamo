@@ -237,21 +237,33 @@ namespace Dynamo.Search
         /// "geometry point by".
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="query"></param>
+        /// <param name="pattern"></param>
         /// <returns></returns>
-        private bool MatchWithQuerystring(string key, string query)
+        private bool MatchWithQuerystring(string key, string pattern)
         {
-            string sanitizedQuery = query.Trim()
-                                         .Replace("\\", "\\\\")
-                                         .Replace(".", "\\.")
-                                         .Replace("*", "\\*");
-            string[] subPatterns = sanitizedQuery.Split(null);
-            string pattern = "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
             return Regex.IsMatch(key, pattern);
         }
 
+        private string SanitizeQuery(string query)
+        {
+            return query.Trim()
+                        .Replace("\\", "\\\\")
+                        .Replace(".", "\\.")
+                        .Replace("*", "\\*");
+        }
+
+        private string[] SplitOnWhiteSpace(string s)
+        {
+            return s.Split(null);
+        }
+
+        private string MakePattern(string[] subPatterns)
+        {
+            return "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
+        }
+
         /// <summary>
-        ///     Search for elements in the dictionary based on the query
+        /// Search for elements in the dictionary based on the query
         /// </summary>
         /// <param name="query"> The query </param>
         /// <param name="numResults"> The max number of results to return </param>
@@ -271,9 +283,11 @@ namespace Dynamo.Search
             // if you don't have enough results, do fuzzy search
             if (searchDict.Count <= minResultsForTolerantSearch)
             {
-                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, query)))
+                var regexPattern = MakePattern( SplitOnWhiteSpace( SanitizeQuery(query) ) );
+
+                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, regexPattern)))
                 {
-                    ComputeWeightAndAddToDictionary(query, pair, searchDict );
+                    ComputeWeightAndAddToDictionary( query, pair, searchDict );
                 }
             }
 
