@@ -480,10 +480,10 @@ namespace Dynamo.Nodes
             tb1.SetBinding(CodeBlockNodeTextBox.CodeProperty,
                 new Binding("Code")
                 {
-                    Mode = BindingMode.OneWay,
+                    Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = false,
-                    Source = this
- //                   UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                    Source = this,
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus
 
                 });
 

@@ -383,11 +383,11 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class CodeBlockNodeTextBox : TextEditor
+    public class CodeBlockNodeTextBox : ICSharpCode.AvalonEdit.TextEditor
     {
         public CodeBlockNodeTextBox(string s = "")
         {
-            //Text = s;
+            Text = s;
             this.LostFocus += OnTextBoxFocusLost;
             //AddHandler(PreviewMouseLeftButtonDownEvent,
             //    new MouseButtonEventHandler(SelectivelyIgnoreMouseButton), true);
@@ -456,8 +456,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Code", typeof(string),
-            typeof(CodeBlockNodeTextBox) /*, new PropertyMetadata((obj, args) => 
+        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Text", typeof(string),
+            typeof(TextEditor) /*, new PropertyMetadata((obj, args) => 
             {
                 var target = (CodeBlockNodeTextBox)obj;
                 target.Code = (string)args.NewValue;
