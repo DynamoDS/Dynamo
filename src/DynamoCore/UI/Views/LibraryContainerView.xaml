@@ -47,9 +47,9 @@
                    HorizontalAlignment="Stretch">
                 Library
             </Label>
-            <Button MouseEnter="LibraryExpanderMouseEnter"
-                    MouseLeave="LibraryExpanderMouseLeave"
-                    Click="LibraryExpanderClick"
+            <Button MouseEnter="OnLibraryExpanderMouseEnter"
+                    MouseLeave="OnLibraryExpanderMouseLeave"
+                    Click="OnLibraryExpanderClick"
                     Template="{DynamicResource BackgroundButton}"
                     Grid.Column="1"
                     VerticalAlignment="Center">
@@ -85,8 +85,8 @@
                 Grid.Row="1">
             <Grid Height="30"
                   VerticalAlignment="Center"
-                  MouseEnter="SearchTextBoxGridMouseEnter"
-                  MouseLeave="SearchTextBoxGridMouseLeave">
+                  MouseEnter="OnSearchTextBoxGridMouseEnter"
+                  MouseLeave="OnSearchTextBoxGridMouseLeave">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -124,12 +124,12 @@
                          BorderThickness="0"
                          FontSize="14"
                          IsEnabled="True"
-                         TextChanged="SearchTextBoxTextChanged"
-                         GotKeyboardFocus="SearchTextBoxGotKeyboardFocus"
-                         LostKeyboardFocus="SearchTextBoxLostKeyboardFocus"
-                         IsVisibleChanged="SearchTextBoxIsVisibleChanged"
-                         PreviewKeyDown="SearchTextBoxKeyDown"
-                         KeyDown="SearchTextBoxKeyDown"
+                         TextChanged="OnSearchTextBoxTextChanged"
+                         GotKeyboardFocus="OnSearchTextBoxGotKeyboardFocus"
+                         LostKeyboardFocus="OnSearchTextBoxLostKeyboardFocus"
+                         IsVisibleChanged="OnSearchTextBoxIsVisibleChanged"
+                         PreviewKeyDown="OnSearchTextBoxKeyDown"
+                         KeyDown="OnSearchTextBoxKeyDown"
                          VerticalAlignment="Center"
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
@@ -140,7 +140,7 @@
                 <Button Name="SearchCancelButton"
                         Grid.Column="2"
                         Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
-                        Click="SearchCancelButtonClick"
+                        Click="OnSearchCancelButtonClick"
                         VerticalAlignment="Center">
                     <Button.Style>
                         <Style TargetType="Button">
