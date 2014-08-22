@@ -33,7 +33,7 @@ namespace Dynamo.TestInfrastructure
 
         public virtual int NumberOfLaunches
         {
-            get { return 1; }
+            get { return 1000; }
         }
     }
 }
