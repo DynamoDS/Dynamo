@@ -25,34 +25,33 @@
                  ItemsSource="{Binding Path=CreateMembers}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                    <Image HorizontalAlignment="Left"
-                           Height="Auto"
-                           Margin="5,5,0,0"
-                           VerticalAlignment="Top"
-                           Width="Auto"
-                           Source="{Binding SmallIcon}" />
-                    <TextBlock HorizontalAlignment="Left"
-                               TextWrapping="Wrap"
-                               Text="{Binding Name}"
+                    <StackPanel Orientation="Horizontal">
+                        <Image HorizontalAlignment="Left"
+                               Height="Auto"
+                               Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="111"
-                               Margin="5,10,0,0"/>
-                </StackPanel>
+                               Width="Auto"
+                               Source="..\..\Resources\Icons\Hue.png" />
+                        <TextBlock HorizontalAlignment="Left"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Name}"
+                                   VerticalAlignment="Top"
+                                   Margin="5,10,0,0" />
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <StackPanel Orientation="Horizontal"
                     Grid.Row="2"
                     Visibility="{Binding Path=ClassDetailsVisibility,
-                                        Converter={StaticResource BoolToVisibilityConverter},
-                                        ConverterParameter='Collapse'}">
-        <TextBlock Name="query"
-                   PreviewMouseLeftButtonDown="OnQueryMouseLeftButtonDown"
-                   FontWeight="UltraBold">QUERY</TextBlock>
-        <TextBlock Name="action"
-                   Margin="10,0,0,0"
-                   PreviewMouseLeftButtonDown="OnActionMouseLeftButtonDown">ACTION</TextBlock>
+                                         Converter={StaticResource BoolToVisibilityConverter},
+                                         ConverterParameter='Collapse'}">
+            <TextBlock Name="query"
+                       PreviewMouseLeftButtonDown="OnQueryMouseLeftButtonDown"
+                       FontWeight="UltraBold">QUERY</TextBlock>
+            <TextBlock Name="action"
+                       Margin="10,0,0,0"
+                       PreviewMouseLeftButtonDown="OnActionMouseLeftButtonDown">ACTION</TextBlock>
         </StackPanel>
         <ListBox x:Name="queryActionMethods"
                  Grid.Row="3"
@@ -66,13 +65,12 @@
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
                                Width="Auto"
-                               Source="{Binding SmallIcon}" />
+                               Source="..\..\Resources\Icons\Hue.png" />
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
                                    VerticalAlignment="Top"
-                                   Width="111"
-                                   Margin="5,10,0,0"/>
+                                   Margin="5,10,0,0" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

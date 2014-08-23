@@ -1487,6 +1487,11 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Make PolyCurve by thickening a curve.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make PolyCurve by joining curves. Flips curve as needed for connectivity
@@ -1495,11 +1500,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
             <summary>
             Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Make PolyCurve by thickening a curve.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
@@ -2080,6 +2080,16 @@
             Get a string representation of the Rectangle
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>
+            Create a Rectangle by four corner Points.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Create a Rectangle by four corner Points.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
@@ -2096,16 +2106,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Create a Rectangle by four corner Points.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Create a Rectangle by four corner Points.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Width">
@@ -2265,6 +2265,21 @@
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByThreePoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Create a the Plane containing the three input Points.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Plane.XY">
+            <summary>
+            Creates a plane in the world XY
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Plane.XZ">
+            <summary>
+            Creates a plane in the world XZ plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Plane.YZ">
+            <summary>
+            Creates a plane in the world YZ
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem">

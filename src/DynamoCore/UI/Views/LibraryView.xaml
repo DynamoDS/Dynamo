@@ -13,7 +13,7 @@
             <StackPanel Orientation="Vertical"
                         Width="66"
                         Height="66">
-                <Image Source="{Binding Path=SmallIcon}"
+                <Image Source="..\..\Resources\Icons\Saturation.png"
                        Width="29"
                        Height="29"
                        Margin="8"
@@ -31,7 +31,7 @@
                 <Grid.Visibility>
                     <Binding Path="ClassDetailsVisibility" />
                 </Grid.Visibility>
-                <uicontrols:StandardPanel Name="standardPanel" />
+                <uicontrols:StandardPanel DataContext="{Binding}" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="titleText">
@@ -63,7 +63,7 @@
         <!-- This is the outer list (showing categories) -->
         <ListView Name="CategoryListView"
                   ScrollViewer.CanContentScroll="False"
-                  ItemsSource="{Binding}">
+                  ItemsSource="{Binding Model.BrowserRootCategories}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Expander Foreground="Blue"
@@ -72,7 +72,7 @@
                         <!-- This is inner list (showing subcategories) -->
                         <ListView ScrollViewer.CanContentScroll="False"
                                   ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                                  ItemsSource="{Binding Path=Classes}">
+                                  ItemsSource="{Binding Path=Items}">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <controls:LibraryWrapPanel Width="{Binding Path=ActualWidth, 

@@ -539,7 +539,8 @@ namespace Dynamo.Search
                     //      | nValue: int    |
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
-                    var category = ProcessNodeCategory(function.Category);
+                    var group = SearchElementGroup.None;
+                    var category = ProcessNodeCategory(function.Category, ref group);
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -555,7 +556,7 @@ namespace Dynamo.Search
                             displayString = displayString + "(" + args + ")";
                     }
 
-                    var searchElement = new DSFunctionNodeSearchElement(displayString, function);
+                    var searchElement = new DSFunctionNodeSearchElement(displayString, function, group);
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
                     searchElement.Executed += this.OnExecuted;
@@ -591,11 +592,12 @@ namespace Dynamo.Search
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+            var group = SearchElementGroup.None;
             var cat = "";
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                cat = ProcessNodeCategory(cat);
+                cat = ProcessNodeCategory(cat, ref group);
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -612,7 +614,7 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
+            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName);
             searchEle.Executed += this.OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
@@ -665,7 +667,10 @@ namespace Dynamo.Search
 
         public bool Add(CustomNodeInfo nodeInfo)
         {
-            var nodeEle = new CustomNodeSearchElement(nodeInfo);
+            var group = SearchElementGroup.None;
+            nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
+
+            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             nodeEle.Executed += this.OnExecuted;
 
             if (SearchDictionary.Contains(nodeEle))
@@ -790,26 +795,31 @@ namespace Dynamo.Search
         ///     "Core.List.Create" will remain as "Core.List.Create"
         /// 
         /// </summary>
-        public string ProcessNodeCategory(string category)
+        public string ProcessNodeCategory(string category, ref SearchElementGroup group)
         {
             if (string.IsNullOrEmpty(category))
                 return category;
 
             int index = category.LastIndexOf(CATEGORY_DELIMITER);
 
-            // If "index" is "-1", then the whole "category" will be used as-is.
+            // If "index" is "-1", then the whole "category" will be used as-is.            
             switch (category.Substring(index + 1))
             {
                 case CATEGORY_GROUP_ACTIONS:
+                    group = SearchElementGroup.Action;
+                    break;
                 case CATEGORY_GROUP_CREATE:
+                    group = SearchElementGroup.Create;
+                    break;
                 case CATEGORY_GROUP_QUERY:
-                    // Group name is already known.
-                    return category;
-
+                    group = SearchElementGroup.Query;
+                    break;
                 default:
-                    // Defaulting to "CATEGORY_GROUP_ACTIONS" group if not defined.
-                    return category + CATEGORY_DELIMITER + CATEGORY_GROUP_ACTIONS;
+                    group = SearchElementGroup.Action;
+                    return category;
             }
+
+            return category.Substring(0, index);
         }
     }
 }

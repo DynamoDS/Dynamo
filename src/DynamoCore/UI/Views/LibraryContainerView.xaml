@@ -177,6 +177,7 @@
         <!-- LIBRARY VIEW -->
         <views:LibraryView Grid.Row="2"
                            VerticalAlignment="Stretch"
-                           HorizontalAlignment="Stretch"></views:LibraryView>
+                           HorizontalAlignment="Stretch"
+                           DataContext="{Binding}"></views:LibraryView>
     </Grid>
 </UserControl>

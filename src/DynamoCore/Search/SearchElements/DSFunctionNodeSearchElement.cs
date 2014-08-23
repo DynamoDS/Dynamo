@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.DSEngine;
 
 namespace Dynamo.Search.SearchElements
@@ -10,16 +9,17 @@ namespace Dynamo.Search.SearchElements
         internal readonly FunctionDescriptor FunctionDescriptor;
         private string _displayString;
 
-        public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionDescriptorItem) :
-            base(displayString, functionDescriptorItem.Description, new List<string> { })
+        public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
+            base(displayString, functionItem.Summary, new List<string> { }, group,
+                    functionItem.DisplayName, functionItem.InputParameters, functionItem.ReturnType)
         {
             _displayString = displayString;
-            FunctionDescriptor = functionDescriptorItem;
+            FunctionDescriptor = functionItem;
         }
 
         public override NodeSearchElement Copy()
         {
-            return new DSFunctionNodeSearchElement(_displayString, FunctionDescriptor);
+            return new DSFunctionNodeSearchElement(_displayString, FunctionDescriptor, Group);
         }
 
         public override bool Equals(object obj)

@@ -128,7 +128,7 @@ namespace Dynamo.Applications
             // The executing assembly will be in Revit_20xx, so 
             // we have to walk up one level. Unfortunately, we
             // can't use DynamoPathManager here because those are not
-            // initialized until the controller is constructed.
+            // initialized until the DynamoModel is constructed.
             string assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // Add the Revit_20xx folder for assembly resolution

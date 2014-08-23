@@ -4,19 +4,20 @@
              xmlns:search="clr-namespace:Dynamo.Nodes.Search"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
-             xmlns:controls="clr-namespace:Dynamo.Controls" 
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
+             xmlns:uiview="clr-namespace:Dynamo.UI.Views"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
              d:DesignHeight="300"  
              x:Name="SearchControl" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}"
-             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}" >
+             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -474,7 +475,9 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Button Command="{Binding ToggleIsExpanded}">
+                                <Button Command="{Binding ToggleIsExpanded}"
+                                        Name="nodeButton"
+                                        MouseEnter="nodeButton_MouseEnter">
                                     <Button.Focusable>False</Button.Focusable>
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
@@ -577,23 +580,8 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Converter={StaticResource BrowserItemToBooleanConverter}}"
-                                     Value="True">
-                            <Setter Property="ToolTip">
-                                <Setter.Value>
-                                    <dynui:DynamoToolTip AttachmentSide="Right"
-                                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
-                                        <Grid>
-                                            <TextBlock TextWrapping="Wrap"
-                                                       MaxWidth="320"
-                                                       Text="{Binding Path=Description}"></TextBlock>
-                                        </Grid>
-                                    </dynui:DynamoToolTip>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
                     </Style.Triggers>
-                </Style>
+                </Style>    
 
                 <DataTemplate x:Key="ContextMenuStyle">
                     <TextBlock  Text="{Binding Key}" />
@@ -639,7 +627,6 @@
                             <Border Height="30">
                                 <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
                             </Border>
-
                         </StackPanel>
 
                     </HierarchicalDataTemplate>
@@ -722,12 +709,16 @@
                 </Style>
             </Button.Style>
         </Button>
-        <!--<TextBlock Visibility="Visible" Grid.Row="2">
-                Library
-                <TextBlock.RenderTransform>
-                    <RotateTransform CenterX="0" CenterY="0" Angle="-90" />
-                </TextBlock.RenderTransform>
-        </TextBlock>-->
+        <dynui:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                   IsOpen="{Binding ElementName=libraryToolTipPopup, 
+                                                    Path=DataContext, 
+                                                    Converter={StaticResource BrowserItemToBooleanConverter}, 
+                                                    Mode=OneWay}"
+                                   AttachmentSide="Right"
+                                   StaysOpen="True"
+                                   AllowsTransparency="True"
+                                   MouseLeave="libraryToolTipPopup_MouseLeave">
+        </dynui:LibraryToolTipPopup>
     </Grid>
 
 </UserControl>

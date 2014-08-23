@@ -67,6 +67,7 @@ namespace Dynamo.Search
             this.viewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
             this.viewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
 
+
         }
 
         void SearchView_MouseLeave(object sender, MouseEventArgs e)
@@ -338,6 +339,18 @@ namespace Dynamo.Search
         {
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
+        }
+
+        private void nodeButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Button from_sender = sender as Button;
+            libraryToolTipPopup.PlacementTarget = from_sender;
+            libraryToolTipPopup.DataContext = from_sender.DataContext;
+        }
+
+        private void libraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
+        {
+            libraryToolTipPopup.DataContext = null;
         }
 
     }

@@ -155,7 +155,6 @@ limitations under the License.
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Models\LibraryModel.cs" />
     <Compile Include="Models\DynamoModelEventArgs.cs" />
     <Compile Include="Models\DynamoModelDelegates.cs" />
     <Compile Include="Models\DynamoModelEvents.cs" />
@@ -174,14 +173,27 @@ limitations under the License.
     <Compile Include="PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClientViewModel.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
+    <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="PackageManager\PackageViewModel.cs" />
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
+    <Compile Include="TestInfrastructure\CopyNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeCompatibilityMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\DirectoryPathMutator.cs" />
+    <Compile Include="TestInfrastructure\DoubleSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\FilePathMutator.cs" />
+    <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\ListMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
+    <Compile Include="TestInfrastructure\StringInputMutator.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -263,6 +275,9 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\Views\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\ToolTipWindow.xaml.cs">
+      <DependentUpon>ToolTipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
@@ -665,6 +680,10 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Views\ToolTipWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Views\WorkspaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -843,6 +862,10 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\Saturation.png" />
