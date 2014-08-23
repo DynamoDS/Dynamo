@@ -237,7 +237,9 @@ namespace Dynamo.UI.Views
             if (binding != null)
                 binding.UpdateSource();
 
-            this.viewModel.SearchCommand.Execute(null);
+            // Do not search for now.
+            // Search functionality isn't ready for now.
+            //this.viewModel.SearchCommand.Execute(null);
         }
 
         private void OnSearchTextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

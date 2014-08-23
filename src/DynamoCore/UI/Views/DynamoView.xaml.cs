@@ -51,11 +51,6 @@ namespace Dynamo.Controls
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
-        public bool ConsoleShowing
-        {
-            get { return LogScroller.Height > 0; }
-        }
-
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
@@ -303,7 +298,7 @@ namespace Dynamo.Controls
 #if ENABLE_NEW_LIBRARY_VIEW
             var search = new LibraryContainerView(
                 this.dynamoViewModel.SearchViewModel,
-                this.dynamoViewModel);            
+                this.dynamoViewModel);
 #else
             var search = new SearchView(
                 this.dynamoViewModel.SearchViewModel,
