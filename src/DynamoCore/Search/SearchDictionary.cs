@@ -225,8 +225,10 @@ namespace Dynamo.Search
                                          .Replace("\\", "\\\\")
                                          .Replace(".", "\\.")
                                          .Replace("*", "\\*");
+            sanitizedQuery = Regex.Replace(sanitizedQuery, @"[^\w\.@\s-]", "");
             string[] subPatterns = sanitizedQuery.Split(null);
             string pattern = "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
+
             return Regex.IsMatch(key, pattern, RegexOptions.IgnoreCase);
         }
 
@@ -238,6 +240,7 @@ namespace Dynamo.Search
         public List<V> Search(string query, int numResults = 10)
         {
             var searchDict = new Dictionary<V, double>();
+
 
             foreach (var pair in _tagDictionary)
             {
