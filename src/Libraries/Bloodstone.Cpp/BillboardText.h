@@ -14,7 +14,7 @@ namespace Dynamo { namespace Bloodstone {
     typedef unsigned short  FontId;
     typedef unsigned int    FontCharId;
 
-    enum class FontFlags : unsigned short
+    enum FontFlags : unsigned short
     {
         Thin      = 0x0001,
         Bold      = 0x0002,
@@ -82,7 +82,7 @@ namespace Dynamo { namespace Bloodstone {
         void Render(void) const;
         void Update(TextId textId,
             const std::wstring& text,
-            const float* position);
+            const float* worldPosition);
         void UpdateColor(TextId textId,
             const float* foregroundRgba,
             const float* backgroundRgba);

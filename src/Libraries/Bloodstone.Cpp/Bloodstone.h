@@ -16,6 +16,7 @@ namespace Dynamo { namespace Bloodstone {
     class GeometryData;
     class NodeSceneData;
     class BoundingBox;
+    class BillboardTextGroup;
     ref class Scene;
 
     public enum class SelectMode { AddToExisting, RemoveFromExisting, ClearExisting };
@@ -115,6 +116,7 @@ namespace Dynamo { namespace Bloodstone {
         int mColorParamIndex;
         int mControlParamsIndex;
         IShaderProgram* mpPhongShader;
+        BillboardTextGroup* mpBillboardTextGroup;
 
         VisualizerWnd^ mVisualizer;
         std::map<std::wstring, NodeSceneData*>* mpNodeSceneData;

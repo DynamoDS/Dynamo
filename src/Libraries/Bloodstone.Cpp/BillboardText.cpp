@@ -55,6 +55,7 @@ BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) :
 
 TextId BillboardTextGroup::Create(const FontSpecs& fontSpecs)
 {
+    // TODO: Initialize font colors to white on black.
     return 0;
 }
 
@@ -67,7 +68,7 @@ void BillboardTextGroup::Render(void) const
 }
 void BillboardTextGroup::Update(TextId textId,
                                 const std::wstring& text,
-                                const float* position)
+                                const float* worldPosition)
 {
 }
 

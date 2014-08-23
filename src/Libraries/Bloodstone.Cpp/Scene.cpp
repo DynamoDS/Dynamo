@@ -3,6 +3,7 @@
 #include "Bloodstone.h"
 #include "Utilities.h"
 #include "NodeSceneData.h"
+#include "BillboardText.h"
 #include "Resources\resource.h"
 
 #include <msclr/marshal_cppstd.h>
@@ -21,6 +22,7 @@ Scene::Scene(VisualizerWnd^ visualizer) :
     mColorParamIndex(-1),
     mControlParamsIndex(-1),
     mpPhongShader(nullptr),
+    mpBillboardTextGroup(nullptr),
     mpNodeSceneData(nullptr),
     mVisualizer(visualizer)
 {
@@ -47,10 +49,29 @@ void Scene::Initialize(int width, int height)
         camConfig.viewportHeight = height;
         pCamera->Configure(&camConfig);
     }
+
+    mpBillboardTextGroup = new BillboardTextGroup(pGraphicsContext);
+
+#if 1 // Temporary demo code section.
+
+    auto flags = FontFlags::Bold | FontFlags::Underline;
+    FontSpecs fontSpecs = { L"Consolas", 12, ((FontFlags) flags) };
+
+    float worldPosition[] = { 10.0f, 10.0f, 10.0f };
+    auto textId = mpBillboardTextGroup->Create(fontSpecs);
+    mpBillboardTextGroup->Update(textId, L"Hello World", worldPosition);
+
+#endif
 }
 
 void Scene::Destroy(void)
 {
+    if (this->mpBillboardTextGroup != nullptr)
+    {
+        delete this->mpBillboardTextGroup;
+        this->mpBillboardTextGroup = nullptr;
+    }
+
     if (this->mpNodeSceneData != nullptr)
     {
         ClearAllGeometries();
@@ -77,18 +98,20 @@ void Scene::RenderScene(void)
         geometries.push_back(iterator->second);
     }
 
-    if (geometries.size() <= 0)
-        return; // Nothing to render right now.
+    if (geometries.size() > 0)
+    {
+        auto pGraphicsContext = mVisualizer->GetGraphicsContext();
+        pGraphicsContext->EnableAlphaBlend();
+        pGraphicsContext->ActivateShaderProgram(mpPhongShader);
 
-    auto pGraphicsContext = mVisualizer->GetGraphicsContext();
-    pGraphicsContext->EnableAlphaBlend();
-    pGraphicsContext->ActivateShaderProgram(mpPhongShader);
+        // Fit the camera to the bounding box, and apply transformation.
+        auto pCamera = pGraphicsContext->GetDefaultCamera();
+        mpPhongShader->ApplyTransformation(pCamera);
 
-    // Fit the camera to the bounding box, and apply transformation.
-    auto pCamera = pGraphicsContext->GetDefaultCamera();
-    mpPhongShader->ApplyTransformation(pCamera);
+        RenderGeometries(geometries);
+    }
 
-    RenderGeometries(geometries);
+    mpBillboardTextGroup->Render(); // Render billboard text.
 }
 
 void Scene::ClearAllGeometries(void)
