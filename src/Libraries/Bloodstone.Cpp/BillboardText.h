@@ -30,15 +30,6 @@ namespace Dynamo { namespace Bloodstone {
         FontFlags flags;
     };
 
-    struct TextData
-    {
-        std::vector<FontCharId> text; // Text content
-        unsigned char foregroundRgba0[4]; // Top foreground color.
-        unsigned char foregroundRgba1[4]; // Bottom foreground color.
-        unsigned char backgroundRgba[4];  // Background shadow color.
-        float worldPosition[4]; // 4th entry ignored by vertex shader.
-    };
-
     class TextBitmap
     {
     public:
@@ -64,14 +55,32 @@ namespace Dynamo { namespace Bloodstone {
 
 #ifdef _WIN32
 
-    class TextBitmapGeneratorWin32 : ITextBitmapGenerator
+    class TextBitmapGeneratorWin32 : public ITextBitmapGenerator
     {
+    public:
+        TextBitmapGeneratorWin32();
     protected:
         virtual void CacheCore(const FontSpecs& fontSpecs, const std::wstring& text);
         virtual TextBitmap* GenerateBitmapCore() const;
     };
 
 #endif
+
+    class BillboardText
+    {
+    public:
+        BillboardText(TextId textId, const FontSpecs& fontSpecs);
+        void Update(const std::vector<FontCharId>& content);
+
+    private:
+        TextId mTextId;
+        FontSpecs mFontSpecs;
+        std::vector<FontCharId> mTextContent;
+        float mForegroundRgba0[4]; // Top foreground color.
+        float mForegroundRgba1[4]; // Bottom foreground color.
+        float mBackgroundRgba[4];  // Background shadow color.
+        float mWorldPosition[4]; // 4th entry ignored by vertex shader.
+    };
 
     class BillboardTextGroup
     {
@@ -92,6 +101,7 @@ namespace Dynamo { namespace Bloodstone {
             const float* backgroundRgba);
 
     private:
+        std::map<TextId, BillboardText> mBillboardTexts;
         IVertexBuffer* mpVertexBuffer;
         IShaderProgram* mpShaderProgram;
         ITextBitmapGenerator* mpBitmapGenerator;

@@ -29,6 +29,10 @@ unsigned char* TextBitmap::Data() const
 // TextBitmapGeneratorWin32
 // ================================================================================
 
+TextBitmapGeneratorWin32::TextBitmapGeneratorWin32()
+{
+}
+
 void TextBitmapGeneratorWin32::CacheCore(
     const FontSpecs& fontSpecs, const std::wstring& text)
 {
@@ -39,7 +43,29 @@ TextBitmap* TextBitmapGeneratorWin32::GenerateBitmapCore() const
     return nullptr;
 }
 
+static ITextBitmapGenerator* CreateTextBitmapGenerator(void)
+{
+    return new TextBitmapGeneratorWin32();
+}
+
 #endif
+
+BillboardText::BillboardText(TextId textId, const FontSpecs& fontSpecs) : 
+    mTextId(textId),
+    mFontSpecs(fontSpecs)
+{
+    mForegroundRgba0[0] = mForegroundRgba0[1] = mForegroundRgba0[2] = 1.0f;
+    mForegroundRgba1[0] = mForegroundRgba1[1] = mForegroundRgba1[2] = 1.0f;
+    mBackgroundRgba[0] = mBackgroundRgba[1] = mBackgroundRgba[2] = 0.0f;
+
+    // Alpha for both foreground and background colors.
+    mForegroundRgba0[3] = mForegroundRgba1[3] = mBackgroundRgba[3] = 1.0f;
+}
+
+void BillboardText::Update(const std::vector<FontCharId>& content)
+{
+    mTextContent = content;
+}
 
 // ================================================================================
 // BillboardTextGroup
@@ -51,6 +77,7 @@ BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) :
     mpShaderProgram(nullptr),
     mpBitmapGenerator(nullptr)
 {
+    mpBitmapGenerator = CreateTextBitmapGenerator();
 }
 
 TextId BillboardTextGroup::Create(const FontSpecs& fontSpecs)
