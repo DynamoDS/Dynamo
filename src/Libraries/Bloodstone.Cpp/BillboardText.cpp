@@ -31,6 +31,10 @@ ITextBitmapGenerator::ITextBitmapGenerator() : mCurrentFontId(1024)
 {
 }
 
+ITextBitmapGenerator::~ITextBitmapGenerator()
+{
+}
+
 FontId ITextBitmapGenerator::CacheFont(const FontSpecs& fontSpecs)
 {
     auto iterator = mFontSpecs.begin();
@@ -104,17 +108,35 @@ BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) :
     mpBitmapGenerator = CreateTextBitmapGenerator();
 }
 
+BillboardTextGroup::~BillboardTextGroup()
+{
+    auto iterator = mBillboardTexts.begin();
+    for (; iterator != mBillboardTexts.end(); ++iterator)
+        delete ((BillboardText *)(iterator->second));
+
+    mBillboardTexts.clear();
+}
+
 TextId BillboardTextGroup::Create(const FontSpecs& fontSpecs)
 {
     auto textId = mCurrentTextId++;
     auto fontId = mpBitmapGenerator->CacheFont(fontSpecs);
     auto pBillboardText = new BillboardText(textId, fontId);
+
+    // Insert the newly created billboard text into the internal list.
     auto pair = std::pair<TextId, BillboardText*>(textId, pBillboardText);
+    mBillboardTexts.insert(pair);
     return textId;
 }
 
 void BillboardTextGroup::Destroy(TextId textId)
 {
+    auto iterator = mBillboardTexts.find(textId);
+    if (iterator == mBillboardTexts.end())
+        return; // Text not found.
+
+    mBillboardTexts.erase(iterator);
+    delete ((BillboardText *)(iterator->second));
 }
 
 void BillboardTextGroup::Render(void) const

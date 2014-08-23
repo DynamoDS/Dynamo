@@ -54,6 +54,8 @@ namespace Dynamo { namespace Bloodstone {
     {
     public:
         ITextBitmapGenerator();
+        virtual ~ITextBitmapGenerator();
+
         FontId CacheFont(const FontSpecs& fontSpecs);
         TextBitmap* GenerateBitmap() const;
 
@@ -99,6 +101,8 @@ namespace Dynamo { namespace Bloodstone {
     {
     public:
         BillboardTextGroup(IGraphicsContext* pGraphicsContext);
+        ~BillboardTextGroup();
+
         TextId Create(const FontSpecs& fontSpecs);
         void Destroy(TextId textId);
         void Render(void) const;
