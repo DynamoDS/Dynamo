@@ -28,6 +28,14 @@ namespace Dynamo { namespace Bloodstone {
         std::wstring face;
         int height;
         FontFlags flags;
+
+        inline bool operator==(const FontSpecs& other) const
+        {
+            if (height != other.height || (flags != other.flags))
+                return false;
+
+            return this->face == other.face;
+        }
     };
 
     class TextBitmap
@@ -45,12 +53,17 @@ namespace Dynamo { namespace Bloodstone {
     class ITextBitmapGenerator
     {
     public:
-        void Cache(const FontSpecs& fontSpecs, const std::wstring& text);
+        ITextBitmapGenerator();
+        FontId CacheFont(const FontSpecs& fontSpecs);
         TextBitmap* GenerateBitmap() const;
 
     protected:
-        virtual void CacheCore(const FontSpecs& fontSpecs, const std::wstring& text) = 0;
         virtual TextBitmap* GenerateBitmapCore() const = 0;
+
+    protected:
+        FontId mCurrentFontId;
+        std::vector<FontCharId> mCachedCharacters;
+        std::map<FontId, FontSpecs> mFontSpecs;
     };
 
 #ifdef _WIN32
@@ -59,8 +72,8 @@ namespace Dynamo { namespace Bloodstone {
     {
     public:
         TextBitmapGeneratorWin32();
+
     protected:
-        virtual void CacheCore(const FontSpecs& fontSpecs, const std::wstring& text);
         virtual TextBitmap* GenerateBitmapCore() const;
     };
 
@@ -69,12 +82,12 @@ namespace Dynamo { namespace Bloodstone {
     class BillboardText
     {
     public:
-        BillboardText(TextId textId, const FontSpecs& fontSpecs);
+        BillboardText(TextId textId, FontId fontId);
         void Update(const std::vector<FontCharId>& content);
 
     private:
         TextId mTextId;
-        FontSpecs mFontSpecs;
+        FontId mFontId;
         std::vector<FontCharId> mTextContent;
         float mForegroundRgba0[4]; // Top foreground color.
         float mForegroundRgba1[4]; // Bottom foreground color.
@@ -101,7 +114,10 @@ namespace Dynamo { namespace Bloodstone {
             const float* backgroundRgba);
 
     private:
-        std::map<TextId, BillboardText> mBillboardTexts;
+
+        TextId mCurrentTextId;
+        std::map<TextId, BillboardText*> mBillboardTexts;
+
         IVertexBuffer* mpVertexBuffer;
         IShaderProgram* mpShaderProgram;
         ITextBitmapGenerator* mpBitmapGenerator;

@@ -23,6 +23,34 @@ unsigned char* TextBitmap::Data() const
     return nullptr;
 }
 
+// ================================================================================
+// ITextBitmapGenerator
+// ================================================================================
+
+ITextBitmapGenerator::ITextBitmapGenerator() : mCurrentFontId(1024)
+{
+}
+
+FontId ITextBitmapGenerator::CacheFont(const FontSpecs& fontSpecs)
+{
+    auto iterator = mFontSpecs.begin();
+    for (; iterator != mFontSpecs.end(); ++iterator)
+    {
+        if (fontSpecs == iterator->second)
+            return iterator->first;
+    }
+
+    auto fontId = mCurrentFontId++;
+    auto pair = std::pair<FontId, FontSpecs>(fontId, fontSpecs);
+    mFontSpecs.insert(pair);
+    return pair.first;
+}
+
+TextBitmap* ITextBitmapGenerator::GenerateBitmap() const
+{
+    return this->GenerateBitmapCore();
+}
+
 #ifdef _WIN32
 
 // ================================================================================
@@ -30,11 +58,6 @@ unsigned char* TextBitmap::Data() const
 // ================================================================================
 
 TextBitmapGeneratorWin32::TextBitmapGeneratorWin32()
-{
-}
-
-void TextBitmapGeneratorWin32::CacheCore(
-    const FontSpecs& fontSpecs, const std::wstring& text)
 {
 }
 
@@ -50,9 +73,9 @@ static ITextBitmapGenerator* CreateTextBitmapGenerator(void)
 
 #endif
 
-BillboardText::BillboardText(TextId textId, const FontSpecs& fontSpecs) : 
+BillboardText::BillboardText(TextId textId, FontId fontId) : 
     mTextId(textId),
-    mFontSpecs(fontSpecs)
+    mFontId(fontId)
 {
     mForegroundRgba0[0] = mForegroundRgba0[1] = mForegroundRgba0[2] = 1.0f;
     mForegroundRgba1[0] = mForegroundRgba1[1] = mForegroundRgba1[2] = 1.0f;
@@ -72,6 +95,7 @@ void BillboardText::Update(const std::vector<FontCharId>& content)
 // ================================================================================
 
 BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) : 
+    mCurrentTextId(1024),
     mpGraphicsContext(pGraphicsContext),
     mpVertexBuffer(nullptr),
     mpShaderProgram(nullptr),
@@ -82,8 +106,11 @@ BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) :
 
 TextId BillboardTextGroup::Create(const FontSpecs& fontSpecs)
 {
-    // TODO: Initialize font colors to white on black.
-    return 0;
+    auto textId = mCurrentTextId++;
+    auto fontId = mpBitmapGenerator->CacheFont(fontSpecs);
+    auto pBillboardText = new BillboardText(textId, fontId);
+    auto pair = std::pair<TextId, BillboardText*>(textId, pBillboardText);
+    return textId;
 }
 
 void BillboardTextGroup::Destroy(TextId textId)
