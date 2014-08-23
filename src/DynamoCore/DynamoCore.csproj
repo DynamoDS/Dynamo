@@ -270,6 +270,9 @@ limitations under the License.
     <Compile Include="UI\Views\LibraryContainerView.xaml.cs">
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
     </Compile>
@@ -634,6 +637,10 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\LibraryContainerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\LibrarySearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

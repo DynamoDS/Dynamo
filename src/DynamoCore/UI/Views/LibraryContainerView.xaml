@@ -175,9 +175,26 @@
         </Border>
 
         <!-- LIBRARY VIEW -->
-        <views:LibraryView Grid.Row="2"
+        <views:LibraryView x:Name="libraryView"
+                           Grid.Row="2"
                            VerticalAlignment="Stretch"
                            HorizontalAlignment="Stretch"
+                           Visibility="Visible"
                            DataContext="{Binding}"></views:LibraryView>
+
+        <!-- LIBRARYSEARCH VIEW -->
+        <views:LibrarySearchView Grid.Row="2">
+            <views:LibrarySearchView.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=libraryView, Path=Visibility}"
+                                     Value="Visible">
+                            <Setter Property="UserControl.Visibility"
+                                    Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:LibrarySearchView.Style>
+        </views:LibrarySearchView>
     </Grid>
 </UserControl>
