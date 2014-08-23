@@ -57,6 +57,9 @@
     <ClInclude Include="OpenGL Files\Constants.h">
       <Filter>OpenGL Files</Filter>
     </ClInclude>
+    <ClInclude Include="BillboardText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="OpenGL Files\Constants.cpp">
       <Filter>OpenGL Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardText.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

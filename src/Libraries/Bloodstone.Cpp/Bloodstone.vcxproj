@@ -101,6 +101,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BillboardText.h" />
     <ClInclude Include="Bloodstone.h" />
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="NodeSceneData.h" />
@@ -112,6 +113,7 @@
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BillboardText.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged>false</CompileAsManaged>
       <PrecompiledHeader>
