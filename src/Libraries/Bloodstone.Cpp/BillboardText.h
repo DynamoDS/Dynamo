@@ -85,7 +85,11 @@ namespace Dynamo { namespace Bloodstone {
     {
     public:
         BillboardText(TextId textId, FontId fontId);
-        void Update(const std::vector<FontCharId>& content);
+        void Update(const std::wstring& content);
+        void Update(const float* position);
+        void UpdateForeground0(const float* rgba);
+        void UpdateForeground1(const float* rgba);
+        void UpdateBackground(const float* rgba);
 
     private:
         TextId mTextId;
@@ -106,9 +110,10 @@ namespace Dynamo { namespace Bloodstone {
         TextId Create(const FontSpecs& fontSpecs);
         void Destroy(TextId textId);
         void Render(void) const;
-        void Update(TextId textId,
-            const std::wstring& text,
-            const float* worldPosition);
+        void UpdateText(TextId textId,
+            const std::wstring& text);
+        void UpdatePosition(TextId textId,
+            const float* position);
         void UpdateColor(TextId textId,
             const float* foregroundRgba,
             const float* backgroundRgba);
@@ -118,6 +123,8 @@ namespace Dynamo { namespace Bloodstone {
             const float* backgroundRgba);
 
     private:
+
+        BillboardText* GetBillboardText(TextId textId) const;
 
         TextId mCurrentTextId;
         std::map<TextId, BillboardText*> mBillboardTexts;

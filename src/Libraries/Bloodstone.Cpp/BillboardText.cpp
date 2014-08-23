@@ -89,9 +89,39 @@ BillboardText::BillboardText(TextId textId, FontId fontId) :
     mForegroundRgba0[3] = mForegroundRgba1[3] = mBackgroundRgba[3] = 1.0f;
 }
 
-void BillboardText::Update(const std::vector<FontCharId>& content)
+void BillboardText::Update(const std::wstring& content)
 {
-    mTextContent = content;
+    mTextContent.clear(); // Clear the existing content first.
+
+    auto iterator = content.begin();
+    for (; iterator != content.end(); ++iterator) {
+        wchar_t character = *iterator;
+        mTextContent.push_back(MAKEFONTCHARID(mFontId, character));
+    }
+}
+
+void BillboardText::Update(const float* position)
+{
+    for (int i = 0; i < 4; i++)
+        mWorldPosition[i] = position[i];
+}
+
+void BillboardText::UpdateForeground0(const float* rgba)
+{
+    for (int i = 0; i < 4; i++)
+        mForegroundRgba0[i] = rgba[i];
+}
+
+void BillboardText::UpdateForeground1(const float* rgba)
+{
+    for (int i = 0; i < 4; i++)
+        mForegroundRgba1[i] = rgba[i];
+}
+
+void BillboardText::UpdateBackground(const float* rgba)
+{
+    for (int i = 0; i < 4; i++)
+        mBackgroundRgba[i] = rgba[i];
 }
 
 // ================================================================================
@@ -142,16 +172,30 @@ void BillboardTextGroup::Destroy(TextId textId)
 void BillboardTextGroup::Render(void) const
 {
 }
-void BillboardTextGroup::Update(TextId textId,
-                                const std::wstring& text,
-                                const float* worldPosition)
+void BillboardTextGroup::UpdateText(TextId textId, const std::wstring& text)
 {
+    auto pBillboardText = GetBillboardText(textId);
+    if (pBillboardText != nullptr)
+        pBillboardText->Update(text);
+}
+
+void BillboardTextGroup::UpdatePosition(TextId textId, const float* position)
+{
+    auto pBillboardText = GetBillboardText(textId);
+    if (pBillboardText != nullptr)
+        pBillboardText->Update(position);
 }
 
 void BillboardTextGroup::UpdateColor(TextId textId,
     const float* foregroundRgba,
     const float* backgroundRgba)
 {
+    auto pBillboardText = GetBillboardText(textId);
+    if (pBillboardText != nullptr) {
+        pBillboardText->UpdateForeground0(foregroundRgba);
+        pBillboardText->UpdateForeground1(foregroundRgba);
+        pBillboardText->UpdateBackground(backgroundRgba);
+    }
 }
 
 void BillboardTextGroup::UpdateColor(TextId textId,
@@ -159,4 +203,16 @@ void BillboardTextGroup::UpdateColor(TextId textId,
     const float* foregroundRgba1,
     const float* backgroundRgba)
 {
+    auto pBillboardText = GetBillboardText(textId);
+    if (pBillboardText != nullptr) {
+        pBillboardText->UpdateForeground0(foregroundRgba0);
+        pBillboardText->UpdateForeground1(foregroundRgba1);
+        pBillboardText->UpdateBackground(backgroundRgba);
+    }
+}
+
+BillboardText* BillboardTextGroup::GetBillboardText(TextId textId) const
+{
+    auto iterator = mBillboardTexts.find(textId);
+    return ((iterator == mBillboardTexts.end()) ? nullptr : iterator->second);
 }
