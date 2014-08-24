@@ -102,19 +102,9 @@ namespace Dynamo.DSEngine
 
         public string GetNamespaceCategory(string namespaceName)
         {
-            return XmlDocument.XPathEvaluate(
-                String.Format("string(/doc/namespaces/namespace[@name='{0}']/category)", namespaceName)
-                ).ToString().Trim();
-
-            //var nodes = (IEnumerable<Object>)XmlDocument.XPathEvaluate(
-            //    String.Format("/doc/namespaces/namespace", namespaceName)
-            //    );
-
-            //foreach (var node in nodes)
-            //{
-            //}
-
-            //return nodes.ToString().Trim();
+            var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
+            var obj = XmlDocument.XPathEvaluate(String.Format(format, namespaceName));
+            return obj.ToString().Trim();
         }
 
         internal BitmapImage GetSmallIcon(FunctionDescriptor descriptor)
