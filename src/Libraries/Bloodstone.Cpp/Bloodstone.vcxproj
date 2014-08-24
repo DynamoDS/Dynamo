@@ -147,10 +147,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Legacy\phong.frag" />
-    <None Include="Resources\Shaders\Legacy\phong.vert" />
-    <None Include="Resources\Shaders\Modern\phong.frag" />
-    <None Include="Resources\Shaders\Modern\phong.vert" />
+    <None Include="Resources\Shaders\Phong21.frag" />
+    <None Include="Resources\Shaders\Phong21.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

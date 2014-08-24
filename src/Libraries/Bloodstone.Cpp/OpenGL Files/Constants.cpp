@@ -54,7 +54,7 @@ bool Dynamo::Bloodstone::OpenGL::GetResourceIdentifiers(GetResourceIdentifiersPa
     {
         // Phong shader.
         {
-            IDR_SHADER_PHONG_VERT_LEGACY,
+            IDR_SHADER_PHONG_21_VERT,
             0, 0, 0, 0, 0, 0, 0, 0, 0,
         },
     };
@@ -63,7 +63,7 @@ bool Dynamo::Bloodstone::OpenGL::GetResourceIdentifiers(GetResourceIdentifiersPa
     {
         // Phong shader.
         {
-            IDR_SHADER_PHONG_FRAG_LEGACY,
+            IDR_SHADER_PHONG_21_FRAG,
             0, 0, 0, 0, 0, 0, 0, 0, 0,
         },
     };
