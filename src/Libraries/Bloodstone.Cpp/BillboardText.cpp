@@ -96,7 +96,7 @@ void BillboardText::Update(const std::wstring& content)
     auto iterator = content.begin();
     for (; iterator != content.end(); ++iterator) {
         wchar_t character = *iterator;
-        mTextContent.push_back(MAKEFONTCHARID(mFontId, character));
+        mTextContent.push_back(MAKEGLYPHID(mFontId, character));
     }
 }
 
@@ -157,8 +157,7 @@ TextId BillboardTextGroup::Create(const FontSpecs& fontSpecs)
     // Insert the newly created billboard text into the internal list.
     auto pair = std::pair<TextId, BillboardText*>(textId, pBillboardText);
     mBillboardTexts.insert(pair);
-
-
+    ADDFLAG(mRegenerationHints, RegenerationHints::TextureContent);
     return textId;
 }
 
@@ -236,14 +235,24 @@ BillboardText* BillboardTextGroup::GetBillboardText(TextId textId) const
 
 void BillboardTextGroup::RegenerateInternal(void)
 {
-    if (HASFLAG(mRegenerationHints, RegenerationHints::TextureContent)) {
-    }
-
-    if (HASFLAG(mRegenerationHints, RegenerationHints::VertexBufferLayout)) {
-    }
-
-    if (HASFLAG(mRegenerationHints, RegenerationHints::VertexBufferContent)) {
-    }
+    if (HASFLAG(mRegenerationHints, RegenerationHints::TextureContent))
+        RegenerateTexture();
+    if (HASFLAG(mRegenerationHints, RegenerationHints::VertexBufferLayout))
+        RegenerateVertexBuffer();
+    if (HASFLAG(mRegenerationHints, RegenerationHints::VertexBufferContent))
+        UpdateVertexBuffer();
 
     mRegenerationHints = RegenerationHints::None; // Clear all.
+}
+
+void BillboardTextGroup::RegenerateTexture(void)
+{
+}
+
+void BillboardTextGroup::RegenerateVertexBuffer(void)
+{
+}
+
+void BillboardTextGroup::UpdateVertexBuffer(void)
+{
 }

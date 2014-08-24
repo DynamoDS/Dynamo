@@ -6,15 +6,15 @@
 #include <string>
 #include <vector>
 
-#define MAKEFONTCHARID(fid, c)  (((fid & 0x0000ffff) << 16) | (c & 0x0000ffff))
-#define ADDFLAG(c, n)           ((RegenerationHints)(c | n))
-#define HASFLAG(c, f)           ((c & f) != RegenerationHints::None)
+#define MAKEGLYPHID(fid, c) (((fid & 0x0000ffff) << 16) | (c & 0x0000ffff))
+#define ADDFLAG(c, n)       ((RegenerationHints)(c | n))
+#define HASFLAG(c, f)       ((c & f) != RegenerationHints::None)
 
 namespace Dynamo { namespace Bloodstone {
 
     typedef unsigned int    TextId;
     typedef unsigned short  FontId;
-    typedef unsigned int    FontCharId;
+    typedef unsigned int    GlyphId;
 
     enum FontFlags : unsigned short
     {
@@ -38,6 +38,16 @@ namespace Dynamo { namespace Bloodstone {
 
             return this->face == other.face;
         }
+    };
+
+    struct GlyphMetrics
+    {
+        int innerWidth;
+        int innerHeight;
+        int outerWidth;
+        int outerHeight;
+        float texCoords[4];
+        float advance;
     };
 
     class TextBitmap
@@ -66,8 +76,8 @@ namespace Dynamo { namespace Bloodstone {
 
     protected:
         FontId mCurrentFontId;
-        std::vector<FontCharId> mCachedCharacters;
         std::map<FontId, FontSpecs> mFontSpecs;
+        std::map<GlyphId, GlyphMetrics> mCachedGlyphs;
     };
 
 #ifdef _WIN32
@@ -106,7 +116,7 @@ namespace Dynamo { namespace Bloodstone {
     private:
         TextId mTextId;
         FontId mFontId;
-        std::vector<FontCharId> mTextContent;
+        std::vector<GlyphId> mTextContent;
         float mForegroundRgba0[4]; // Top foreground color.
         float mForegroundRgba1[4]; // Bottom foreground color.
         float mBackgroundRgba[4];  // Background shadow color.
@@ -138,6 +148,9 @@ namespace Dynamo { namespace Bloodstone {
 
         BillboardText* GetBillboardText(TextId textId) const;
         void RegenerateInternal(void);
+        void RegenerateTexture(void);
+        void RegenerateVertexBuffer(void);
+        void UpdateVertexBuffer(void);
 
         TextId mCurrentTextId;
         std::map<TextId, BillboardText*> mBillboardTexts;
