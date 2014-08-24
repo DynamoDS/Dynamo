@@ -9,6 +9,10 @@ using namespace Dynamo::Bloodstone::OpenGL;
 // Convert float count to offset.
 #define FC2O(x) ((const void *)(x * sizeof(float)))
 
+// ================================================================================
+// VertexBuffer
+// ================================================================================
+
 VertexBuffer::VertexBuffer() :
     mVertexCount(0),
     mVertexArrayId(0),
@@ -177,4 +181,29 @@ void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
 
     GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
     GL::glBindVertexArray(0);
+}
+
+// ================================================================================
+// BillboardVertexBuffer
+// ================================================================================
+
+BillboardVertexBuffer::BillboardVertexBuffer(IGraphicsContext* pGraphicsContext) : 
+    IBillboardVertexBuffer(pGraphicsContext)
+{
+}
+
+BillboardVertexBuffer::~BillboardVertexBuffer(void)
+{
+}
+
+void BillboardVertexBuffer::RenderCore(void) const
+{
+}
+
+void BillboardVertexBuffer::UpdateCore(const std::vector<BillboardVertex>& vertices)
+{
+}
+
+void BillboardVertexBuffer::BindToShaderProgramCore(IShaderProgram* pShaderProgram)
+{
 }

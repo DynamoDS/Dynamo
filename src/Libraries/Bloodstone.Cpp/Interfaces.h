@@ -4,6 +4,8 @@
 
 namespace Dynamo { namespace Bloodstone {
 
+    class IGraphicsContext; // Forward declaration.
+
     class GeometryData
     {
     public:
@@ -498,6 +500,61 @@ namespace Dynamo { namespace Bloodstone {
         virtual void LoadDataCore(const GeometryData& geometries) = 0;
         virtual void GetBoundingBoxCore(BoundingBox* pBoundingBox) const = 0;
         virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram) = 0;
+    };
+
+    struct BillboardVertex
+    {
+        float position[3];
+        float texCoords[4];
+        float colorRgba[4];
+
+        BillboardVertex()
+        {
+            position[0] = position[1] = position[2] = 0.0f;
+            texCoords[0] = texCoords[1] = texCoords[2] = texCoords[3] = 0.0f;
+            colorRgba[0] = colorRgba[1] = colorRgba[2] = colorRgba[3] = 1.0f;
+        }
+    };
+
+    class IBillboardVertexBuffer
+    {
+    public:
+        IBillboardVertexBuffer(IGraphicsContext* pGraphicsContext) : 
+            mpGraphicsContext(pGraphicsContext)
+        {
+        }
+
+        virtual ~IBillboardVertexBuffer()
+        {
+        }
+
+        void Render(void) const
+        {
+            this->RenderCore();
+        }
+
+        void Update(const std::vector<BillboardVertex>& vertices)
+        {
+            this->UpdateCore(vertices);
+        }
+
+        void BindToShaderProgram(IShaderProgram* pShaderProgram)
+        {
+            this->BindToShaderProgramCore(pShaderProgram);
+        }
+
+    protected:
+        virtual void RenderCore(void) const = 0;
+        virtual void UpdateCore(const std::vector<BillboardVertex>& vertices) = 0;
+        virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram) = 0;
+
+    protected:
+        IGraphicsContext* mpGraphicsContext;
+    };
+
+    enum class VertexBufferType
+    {
+        Generic, Billboard
     };
 
     class IGraphicsContext

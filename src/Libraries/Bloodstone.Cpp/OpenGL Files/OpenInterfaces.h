@@ -393,6 +393,18 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         PrimitiveType mPrimitiveType;
     };
 
+    class BillboardVertexBuffer : public Dynamo::Bloodstone::IBillboardVertexBuffer
+    {
+    public:
+        BillboardVertexBuffer(IGraphicsContext* pGraphicsContext);
+        ~BillboardVertexBuffer(void);
+
+    protected:
+        virtual void RenderCore(void) const;
+        virtual void UpdateCore(const std::vector<BillboardVertex>& vertices);
+        virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram);
+    };
+
 } } }
 
 #endif
