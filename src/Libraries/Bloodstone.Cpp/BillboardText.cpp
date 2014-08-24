@@ -27,7 +27,10 @@ unsigned char* TextBitmap::Data() const
 // ITextBitmapGenerator
 // ================================================================================
 
-ITextBitmapGenerator::ITextBitmapGenerator() : mCurrentFontId(1024)
+ITextBitmapGenerator::ITextBitmapGenerator() :
+    mContentUpdated(false),
+    mCurrentFontId(1024),
+    mpTextBitmap(nullptr)
 {
 }
 
@@ -47,12 +50,33 @@ FontId ITextBitmapGenerator::CacheFont(const FontSpecs& fontSpecs)
     auto fontId = mCurrentFontId++;
     auto pair = std::pair<FontId, FontSpecs>(fontId, fontSpecs);
     mFontSpecs.insert(pair);
+
+    mContentUpdated = true;
     return pair.first;
 }
 
-TextBitmap* ITextBitmapGenerator::GenerateBitmap() const
+void ITextBitmapGenerator::CacheGlyphs(const std::vector<GlyphId>& glyphs)
 {
-    return this->GenerateBitmapCore();
+    auto iterator = glyphs.begin();
+    for (; iterator != glyphs.end(); ++iterator)
+    {
+        // If glyph is not currently cached, add to pending list.
+        if (mCachedGlyphs.find(*iterator) != mCachedGlyphs.end())
+            continue;
+
+        mContentUpdated = true;
+        mGlyphsToCache.push_back(*iterator);
+    }
+}
+
+const TextBitmap* ITextBitmapGenerator::GenerateBitmap()
+{
+    if (mContentUpdated == false)
+        return mpTextBitmap;
+
+    mContentUpdated = false;
+    mpTextBitmap = this->GenerateBitmapCore();
+    return mpTextBitmap;
 }
 
 #ifdef _WIN32
@@ -87,6 +111,21 @@ BillboardText::BillboardText(TextId textId, FontId fontId) :
 
     // Alpha for both foreground and background colors.
     mForegroundRgba0[3] = mForegroundRgba1[3] = mBackgroundRgba[3] = 1.0f;
+}
+
+TextId BillboardText::GetTextId(void) const
+{
+    return this->mTextId;
+}
+
+FontId BillboardText::GetFontId(void) const
+{
+    return this->mFontId;
+}
+
+const std::vector<GlyphId>& BillboardText::GetGlyphs(void) const
+{
+    return this->mTextContent;
 }
 
 void BillboardText::Update(const std::wstring& content)
@@ -148,7 +187,7 @@ BillboardTextGroup::~BillboardTextGroup()
     mBillboardTexts.clear();
 }
 
-TextId BillboardTextGroup::Create(const FontSpecs& fontSpecs)
+TextId BillboardTextGroup::CreateText(const FontSpecs& fontSpecs)
 {
     auto textId = mCurrentTextId++;
     auto fontId = mpBitmapGenerator->CacheFont(fontSpecs);
@@ -185,6 +224,7 @@ void BillboardTextGroup::UpdateText(TextId textId, const std::wstring& text)
     auto pBillboardText = GetBillboardText(textId);
     if (pBillboardText != nullptr) {
         pBillboardText->Update(text);
+        mpBitmapGenerator->CacheGlyphs(pBillboardText->GetGlyphs());
         ADDFLAG(mRegenerationHints, RegenerationHints::All);
     }
 }

@@ -58,7 +58,7 @@ void Scene::Initialize(int width, int height)
     FontSpecs fontSpecs = { L"Consolas", 12, ((FontFlags) flags) };
 
     float worldPosition[] = { 10.0f, 10.0f, 10.0f };
-    auto textId = mpBillboardTextGroup->Create(fontSpecs);
+    auto textId = mpBillboardTextGroup->CreateText(fontSpecs);
     mpBillboardTextGroup->UpdateText(textId, L"Hello World");
     mpBillboardTextGroup->UpdatePosition(textId, worldPosition);
 

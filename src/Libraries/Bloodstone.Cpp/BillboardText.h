@@ -69,13 +69,17 @@ namespace Dynamo { namespace Bloodstone {
         virtual ~ITextBitmapGenerator();
 
         FontId CacheFont(const FontSpecs& fontSpecs);
-        TextBitmap* GenerateBitmap() const;
+        void CacheGlyphs(const std::vector<GlyphId>& glyphs);
+        const TextBitmap* GenerateBitmap();
 
     protected:
         virtual TextBitmap* GenerateBitmapCore() const = 0;
 
     protected:
+        bool mContentUpdated;
         FontId mCurrentFontId;
+        TextBitmap* mpTextBitmap;
+        std::vector<GlyphId> mGlyphsToCache;
         std::map<FontId, FontSpecs> mFontSpecs;
         std::map<GlyphId, GlyphMetrics> mCachedGlyphs;
     };
@@ -107,6 +111,10 @@ namespace Dynamo { namespace Bloodstone {
     {
     public:
         BillboardText(TextId textId, FontId fontId);
+        TextId GetTextId(void) const;
+        FontId GetFontId(void) const;
+        const std::vector<GlyphId>& GetGlyphs(void) const;
+
         void Update(const std::wstring& content);
         void Update(const float* position);
         void UpdateForeground0(const float* rgba);
@@ -129,7 +137,7 @@ namespace Dynamo { namespace Bloodstone {
         BillboardTextGroup(IGraphicsContext* pGraphicsContext);
         ~BillboardTextGroup();
 
-        TextId Create(const FontSpecs& fontSpecs);
+        TextId CreateText(const FontSpecs& fontSpecs);
         void Destroy(TextId textId);
         void Render(void) const;
         void UpdateText(TextId textId,
