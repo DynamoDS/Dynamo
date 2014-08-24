@@ -5,20 +5,20 @@
 using namespace Dynamo::Bloodstone;
 
 // ================================================================================
-// TextBitmap
+// GlyphBitmap
 // ================================================================================
 
-int TextBitmap::Width() const
+int GlyphBitmap::Width() const
 {
     return 0;
 }
 
-int TextBitmap::Height() const
+int GlyphBitmap::Height() const
 {
     return 0;
 }
 
-unsigned char* TextBitmap::Data() const
+unsigned char* GlyphBitmap::Data() const
 {
     return nullptr;
 }
@@ -30,7 +30,7 @@ unsigned char* TextBitmap::Data() const
 ITextBitmapGenerator::ITextBitmapGenerator() :
     mContentUpdated(false),
     mCurrentFontId(1024),
-    mpTextBitmap(nullptr)
+    mpGlyphBitmap(nullptr)
 {
 }
 
@@ -69,14 +69,14 @@ void ITextBitmapGenerator::CacheGlyphs(const std::vector<GlyphId>& glyphs)
     }
 }
 
-const TextBitmap* ITextBitmapGenerator::GenerateBitmap()
+const GlyphBitmap* ITextBitmapGenerator::GenerateBitmap()
 {
     if (mContentUpdated == false)
-        return mpTextBitmap;
+        return mpGlyphBitmap;
 
     mContentUpdated = false;
-    mpTextBitmap = this->GenerateBitmapCore();
-    return mpTextBitmap;
+    mpGlyphBitmap = this->GenerateBitmapCore();
+    return mpGlyphBitmap;
 }
 
 #ifdef _WIN32
@@ -89,7 +89,7 @@ TextBitmapGeneratorWin32::TextBitmapGeneratorWin32()
 {
 }
 
-TextBitmap* TextBitmapGeneratorWin32::GenerateBitmapCore() const
+GlyphBitmap* TextBitmapGeneratorWin32::GenerateBitmapCore() const
 {
     return nullptr;
 }
