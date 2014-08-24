@@ -6,7 +6,9 @@
 #include <string>
 #include <vector>
 
-#define MAKEFONTCHARID(fid, c)   (((fid & 0x0000ffff) << 16) | (c & 0x0000ffff))
+#define MAKEFONTCHARID(fid, c)  (((fid & 0x0000ffff) << 16) | (c & 0x0000ffff))
+#define ADDFLAG(c, n)           ((RegenerationHints)(c | n))
+#define HASFLAG(c, f)           ((c & f) != RegenerationHints::None)
 
 namespace Dynamo { namespace Bloodstone {
 
@@ -81,6 +83,16 @@ namespace Dynamo { namespace Bloodstone {
 
 #endif
 
+    enum RegenerationHints
+    {
+        None                = 0x00000000,
+        VertexBufferContent = 0x00000001,
+        VertexBufferLayout  = 0x00000002 | VertexBufferContent,
+        TextureContent      = 0x00000004 | VertexBufferLayout,
+
+        All = TextureContent | VertexBufferLayout | VertexBufferContent
+    };
+
     class BillboardText
     {
     public:
@@ -125,10 +137,12 @@ namespace Dynamo { namespace Bloodstone {
     private:
 
         BillboardText* GetBillboardText(TextId textId) const;
+        void RegenerateInternal(void);
 
         TextId mCurrentTextId;
         std::map<TextId, BillboardText*> mBillboardTexts;
 
+        RegenerationHints mRegenerationHints;
         IVertexBuffer* mpVertexBuffer;
         IShaderProgram* mpShaderProgram;
         ITextBitmapGenerator* mpBitmapGenerator;

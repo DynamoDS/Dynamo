@@ -129,6 +129,7 @@ void BillboardText::UpdateBackground(const float* rgba)
 // ================================================================================
 
 BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) : 
+    mRegenerationHints(RegenerationHints::None),
     mCurrentTextId(1024),
     mpGraphicsContext(pGraphicsContext),
     mpVertexBuffer(nullptr),
@@ -156,6 +157,8 @@ TextId BillboardTextGroup::Create(const FontSpecs& fontSpecs)
     // Insert the newly created billboard text into the internal list.
     auto pair = std::pair<TextId, BillboardText*>(textId, pBillboardText);
     mBillboardTexts.insert(pair);
+
+
     return textId;
 }
 
@@ -167,23 +170,33 @@ void BillboardTextGroup::Destroy(TextId textId)
 
     mBillboardTexts.erase(iterator);
     delete ((BillboardText *)(iterator->second));
+    ADDFLAG(mRegenerationHints, RegenerationHints::VertexBufferLayout);
 }
 
 void BillboardTextGroup::Render(void) const
 {
+    if (mRegenerationHints != RegenerationHints::None) {
+        auto pThis = const_cast<BillboardTextGroup *>(this);
+        pThis->RegenerateInternal();
+    }
 }
+
 void BillboardTextGroup::UpdateText(TextId textId, const std::wstring& text)
 {
     auto pBillboardText = GetBillboardText(textId);
-    if (pBillboardText != nullptr)
+    if (pBillboardText != nullptr) {
         pBillboardText->Update(text);
+        ADDFLAG(mRegenerationHints, RegenerationHints::All);
+    }
 }
 
 void BillboardTextGroup::UpdatePosition(TextId textId, const float* position)
 {
     auto pBillboardText = GetBillboardText(textId);
-    if (pBillboardText != nullptr)
+    if (pBillboardText != nullptr) {
         pBillboardText->Update(position);
+        ADDFLAG(mRegenerationHints, RegenerationHints::VertexBufferContent);
+    }
 }
 
 void BillboardTextGroup::UpdateColor(TextId textId,
@@ -191,11 +204,13 @@ void BillboardTextGroup::UpdateColor(TextId textId,
     const float* backgroundRgba)
 {
     auto pBillboardText = GetBillboardText(textId);
-    if (pBillboardText != nullptr) {
-        pBillboardText->UpdateForeground0(foregroundRgba);
-        pBillboardText->UpdateForeground1(foregroundRgba);
-        pBillboardText->UpdateBackground(backgroundRgba);
-    }
+    if (pBillboardText == nullptr)
+        return;
+
+    pBillboardText->UpdateForeground0(foregroundRgba);
+    pBillboardText->UpdateForeground1(foregroundRgba);
+    pBillboardText->UpdateBackground(backgroundRgba);
+    ADDFLAG(mRegenerationHints, RegenerationHints::VertexBufferContent);
 }
 
 void BillboardTextGroup::UpdateColor(TextId textId,
@@ -204,15 +219,31 @@ void BillboardTextGroup::UpdateColor(TextId textId,
     const float* backgroundRgba)
 {
     auto pBillboardText = GetBillboardText(textId);
-    if (pBillboardText != nullptr) {
-        pBillboardText->UpdateForeground0(foregroundRgba0);
-        pBillboardText->UpdateForeground1(foregroundRgba1);
-        pBillboardText->UpdateBackground(backgroundRgba);
-    }
+    if (pBillboardText == nullptr)
+        return;
+
+    pBillboardText->UpdateForeground0(foregroundRgba0);
+    pBillboardText->UpdateForeground1(foregroundRgba1);
+    pBillboardText->UpdateBackground(backgroundRgba);
+    ADDFLAG(mRegenerationHints, RegenerationHints::VertexBufferContent);
 }
 
 BillboardText* BillboardTextGroup::GetBillboardText(TextId textId) const
 {
     auto iterator = mBillboardTexts.find(textId);
     return ((iterator == mBillboardTexts.end()) ? nullptr : iterator->second);
+}
+
+void BillboardTextGroup::RegenerateInternal(void)
+{
+    if (HASFLAG(mRegenerationHints, RegenerationHints::TextureContent)) {
+    }
+
+    if (HASFLAG(mRegenerationHints, RegenerationHints::VertexBufferLayout)) {
+    }
+
+    if (HASFLAG(mRegenerationHints, RegenerationHints::VertexBufferContent)) {
+    }
+
+    mRegenerationHints = RegenerationHints::None; // Clear all.
 }
