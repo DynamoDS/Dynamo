@@ -147,6 +147,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\BillboardText21.frag" />
+    <None Include="Resources\Shaders\BillboardText21.vert" />
     <None Include="Resources\Shaders\Phong21.frag" />
     <None Include="Resources\Shaders\Phong21.vert" />
   </ItemGroup>

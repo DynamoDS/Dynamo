@@ -108,5 +108,11 @@
     <None Include="Resources\Shaders\Phong21.vert">
       <Filter>Resource Files\Shader Files</Filter>
     </None>
+    <None Include="Resources\Shaders\BillboardText21.frag">
+      <Filter>Resource Files\Shader Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\BillboardText21.vert">
+      <Filter>Resource Files\Shader Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

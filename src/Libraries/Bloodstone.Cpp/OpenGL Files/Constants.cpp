@@ -57,6 +57,12 @@ bool Dynamo::Bloodstone::OpenGL::GetResourceIdentifiers(GetResourceIdentifiersPa
             IDR_SHADER_PHONG_21_VERT,
             0, 0, 0, 0, 0, 0, 0, 0, 0,
         },
+
+        // Billboard text shader.
+        {
+            IDR_SHADER_BILLBOARD_TEXT_21_VERT,
+            0, 0, 0, 0, 0, 0, 0, 0, 0,
+        }
     };
 
     unsigned int fsids[ShaderName::MaxShaderName][Version::MaxEntries] = 
@@ -66,6 +72,12 @@ bool Dynamo::Bloodstone::OpenGL::GetResourceIdentifiers(GetResourceIdentifiersPa
             IDR_SHADER_PHONG_21_FRAG,
             0, 0, 0, 0, 0, 0, 0, 0, 0,
         },
+
+        // Billboard text shader.
+        {
+            IDR_SHADER_BILLBOARD_TEXT_21_FRAG,
+            0, 0, 0, 0, 0, 0, 0, 0, 0,
+        }
     };
 
     const int shaderName = ((int) pParam->shaderName);

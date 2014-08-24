@@ -417,6 +417,7 @@ namespace Dynamo { namespace Bloodstone {
     enum class ShaderName
     {
         Phong,
+        BillboardText,
         MaxShaderName
     };
 
