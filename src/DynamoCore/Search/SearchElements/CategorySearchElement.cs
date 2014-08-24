@@ -1,4 +1,5 @@
-﻿using Dynamo.Utilities;
+﻿using System.Windows.Media.Imaging;
+using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -68,6 +69,18 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        //public override BitmapImage SmallIcon
+        //{
+        //    get
+        //    {
+        //        throw new System.NotImplementedException();
+        //    }
+        //    set
+        //    {
+        //        throw new System.NotImplementedException();
+        //    }
+        //}
+
         #endregion
 
         /// <summary>
@@ -81,6 +94,5 @@ namespace Dynamo.Search.SearchElements
             NumElements = 0;
             _description = "";
         }
-        
     }
 }

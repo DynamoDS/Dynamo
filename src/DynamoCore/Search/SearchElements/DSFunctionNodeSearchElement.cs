@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 
 namespace Dynamo.Search.SearchElements
@@ -8,6 +9,12 @@ namespace Dynamo.Search.SearchElements
     {
         internal readonly FunctionDescriptor FunctionDescriptor;
         private string _displayString;
+
+        public override BitmapImage SmallIcon
+        {
+            get { return GetSmallIcon(FunctionDescriptor); }
+            set { }
+        }
 
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
             base(displayString, functionItem.Summary, new List<string> { }, group,
@@ -43,6 +50,15 @@ namespace Dynamo.Search.SearchElements
         public bool Equals(DSFunctionNodeSearchElement other)
         {
             return this.FunctionDescriptor == other.FunctionDescriptor;
+        }
+
+        private BitmapImage GetSmallIcon(FunctionDescriptor member)
+        {
+            if (string.IsNullOrEmpty(member.Assembly))
+                return null;
+
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
+            return (cust != null) ? cust.GetSmallIcon(member) : null;
         }
     }
 }

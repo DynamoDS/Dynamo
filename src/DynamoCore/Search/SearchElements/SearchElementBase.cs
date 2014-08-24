@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Dynamo.Nodes.Search;
 using Dynamo.Utilities;
 
@@ -40,6 +41,10 @@ namespace Dynamo.Search.SearchElements
         /// Higher = closer to the top of search results </value>
         public abstract double Weight { get; set; }
 
+        /// <summary>
+        /// Small icon property. Used to show icon of SearchElementBase in UI </summary>
+        //public abstract BitmapImage SmallIcon { get; set; }
+        
         public virtual void Execute()
         {
             this.OnExecuted();

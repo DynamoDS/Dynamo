@@ -31,7 +31,8 @@
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
                                Width="Auto"
-                               Source="..\..\Resources\Icons\Hue.png" />
+                               Source="{Binding SmallIcon}" />
+                        <!--"..\..\Resources\Icons\Hue.png"-->
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
@@ -65,7 +66,8 @@
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
                                Width="Auto"
-                               Source="..\..\Resources\Icons\Hue.png" />
+                               Source="{Binding SmallIcon}" />
+                        <!--Source="..\..\Resources\Icons\Hue.png"-->
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"

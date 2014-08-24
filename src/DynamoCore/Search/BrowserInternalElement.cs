@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using Dynamo.DSEngine;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
@@ -61,6 +64,13 @@ namespace Dynamo.Nodes.Search
 
         public BrowserItem Parent { get; set; }
         public BrowserItem OldParent { get; set; }
+
+        public virtual BitmapImage SmallIcon
+        {
+            //TODO: return BitmapImage for classes
+            get { return null; }
+            set { }
+        }
 
         public void ReturnToOldParent()
         {

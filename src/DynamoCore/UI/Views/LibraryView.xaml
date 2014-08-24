@@ -13,7 +13,8 @@
             <StackPanel Orientation="Vertical"
                         Width="66"
                         Height="66">
-                <Image Source="..\..\Resources\Icons\Saturation.png"
+                <!--"..\..\Resources\Icons\Saturation.png"-->
+                <Image Source="{Binding SmallIcon}"                       
                        Width="29"
                        Height="29"
                        Margin="8"

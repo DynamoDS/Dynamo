@@ -109,6 +109,18 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        //public override BitmapImage SmallIcon
+        //{
+        //    get
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //    set
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
+
         #endregion
 
         /// <summary>
@@ -174,7 +186,6 @@ namespace Dynamo.Search.SearchElements
         public bool Equals(NodeSearchElement other)
         {
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
-        }
+        }        
     }
-
 }

@@ -6,12 +6,11 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Windows.Media.Imaging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 
@@ -40,16 +39,16 @@ namespace Dynamo.PackageManager
             if (header.keywords != null && header.keywords.Count > 0)
             {
                 this.Keywords = String.Join(" ", header.keywords);
-            } 
+            }
             else
             {
                 this.Keywords = "";
             }
             this.Votes = header.votes;
             this.IsExpanded = false;
-            this.DownloadLatest = new DelegateCommand((Action) Execute);
-            this.UpvoteCommand = new DelegateCommand((Action) Upvote);
-            this.DownvoteCommand = new DelegateCommand((Action) Downvote);
+            this.DownloadLatest = new DelegateCommand((Action)Execute);
+            this.UpvoteCommand = new DelegateCommand((Action)Upvote);
+            this.DownvoteCommand = new DelegateCommand((Action)Downvote);
         }
 
         public void Upvote()
@@ -62,7 +61,7 @@ namespace Dynamo.PackageManager
                         this.Votes += 1;
                     }
                 }
-                , TaskScheduler.FromCurrentSynchronizationContext()); 
+                , TaskScheduler.FromCurrentSynchronizationContext());
 
         }
 
@@ -75,13 +74,13 @@ namespace Dynamo.PackageManager
                     {
                         this.Votes -= 1;
                     }
-                } , TaskScheduler.FromCurrentSynchronizationContext()); 
+                }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
             IEnumerable<PackageHeader> headers, PackageVersion version)
         {
-  
+
             return headers.Zip(
                 version.full_dependency_versions,
                 (header, v) => new Tuple<PackageHeader, string>(header, v))
@@ -90,13 +89,13 @@ namespace Dynamo.PackageManager
                         new Tuple<PackageHeader, PackageVersion>(
                         pair.Item1,
                         pair.Item1.versions.First(x => x.version == pair.Item2)));
-        } 
+        }
 
         public override void Execute()
         {
             var version = versionNumberToDownload ?? this.Header.versions.Last();
 
-            string message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
+            string message = "Are you sure you want to install " + this.Name + " " + version.version + "?";
 
             var result = MessageBox.Show(message, "Package Download Confirmation",
                             MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -104,11 +103,11 @@ namespace Dynamo.PackageManager
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
-                var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
+                var headers = version.full_dependency_ids.Select(dep => dep._id).Select((id) =>
                     {
                         PackageHeader pkgHeader;
                         var res = dynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
-                        
+
                         if (!res.Success)
                             MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
@@ -163,7 +162,7 @@ namespace Dynamo.PackageManager
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
-                foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
+                foreach (var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)))
                 {
                     if (localPkg == null) continue;
                     string msg;
@@ -179,100 +178,112 @@ namespace Dynamo.PackageManager
 
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
                     msg = "Dynamo has already installed " + this.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
-                    if ( MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    if (MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;
                 }
 
                 // form header version pairs and download and install all packages
                 allPackageVersions
-                        .Select( x => new PackageDownloadHandle(this.dynamoViewModel, x.Item1, x.Item2))
+                        .Select(x => new PackageDownloadHandle(this.dynamoViewModel, x.Item1, x.Item2))
                         .ToList()
-                        .ForEach(x=>x.Start());
+                        .ForEach(x => x.Start());
 
             }
 
         }
 
-        #region Properties 
+        #region Properties
 
-            private PackageVersion versionNumberToDownload = null;
+        private PackageVersion versionNumberToDownload = null;
 
-            public List<Tuple<PackageVersion, DelegateCommand>> Versions
+        public List<Tuple<PackageVersion, DelegateCommand>> Versions
+        {
+            get
             {
-                get
-                {
-                    return
-                        Header.versions.Select(
-                            x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
-                                {
-                                    this.versionNumberToDownload = x;
-                                    this.Execute();
-                                }, () => true))).ToList();
-                } 
+                return
+                    Header.versions.Select(
+                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
+                            {
+                                this.versionNumberToDownload = x;
+                                this.Execute();
+                            }, () => true))).ToList();
             }
-            public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
-            private int _votes;
-            public int Votes
-            {
-                get { return _votes; } 
-                set { _votes = value; RaisePropertyChanged("Votes"); }
-            }
-            public bool IsDeprecated { get { return this.Header.deprecated; } }
-            public int Downloads { get { return this.Header.downloads; } }
-            public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
-            public int UsedBy { get { return this.Header.used_by.Count; } } 
-            public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
-            
-            /// <summary>
-            /// Header property </summary>
-            /// <value>
-            /// The PackageHeader used to instantiate this object </value>
-            public Greg.Responses.PackageHeader Header { get; internal set; }
+        }
+        public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
+        private int _votes;
+        public int Votes
+        {
+            get { return _votes; }
+            set { _votes = value; RaisePropertyChanged("Votes"); }
+        }
+        public bool IsDeprecated { get { return this.Header.deprecated; } }
+        public int Downloads { get { return this.Header.downloads; } }
+        public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
+        public int UsedBy { get { return this.Header.used_by.Count; } }
+        public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
 
-            /// <summary>
-            /// Type property </summary>
-            /// <value>
-            /// A string describing the type of object </value>
-            public override string Type { get { return "Community Node"; } }
+        /// <summary>
+        /// Header property </summary>
+        /// <value>
+        /// The PackageHeader used to instantiate this object </value>
+        public Greg.Responses.PackageHeader Header { get; internal set; }
 
-            /// <summary>
-            /// Name property </summary>
-            /// <value>
-            /// The name of the node </value>
-            public override string Name { get { return Header.name; } }
+        /// <summary>
+        /// Type property </summary>
+        /// <value>
+        /// A string describing the type of object </value>
+        public override string Type { get { return "Community Node"; } }
 
-            /// <summary>
-            /// Description property </summary>
-            /// <value>
-            /// A string describing what the node does</value>
-            public override string Description { get { return Header.description ?? ""; } }
+        /// <summary>
+        /// Name property </summary>
+        /// <value>
+        /// The name of the node </value>
+        public override string Name { get { return Header.name; } }
 
-            /// <summary>
-            /// Weight property </summary>
-            /// <value>
-            /// Number defining the relative importance of the element in search. 
-            /// Higher = closer to the top of search results </value>
-            public override double Weight { get; set; }
+        /// <summary>
+        /// Description property </summary>
+        /// <value>
+        /// A string describing what the node does</value>
+        public override string Description { get { return Header.description ?? ""; } }
 
-            public override bool Searchable { get { return true; } }
+        /// <summary>
+        /// Weight property </summary>
+        /// <value>
+        /// Number defining the relative importance of the element in search. 
+        /// Higher = closer to the top of search results </value>
+        public override double Weight { get; set; }
 
-            /// <summary>
-            /// Guid property </summary>
-            /// <value>
-            /// A string that uniquely defines the CustomNodeDefinition </value>
-            public Guid Guid { get; internal set; }
+        public override bool Searchable { get { return true; } }
 
-            /// <summary>
-            /// Id property </summary>
-            /// <value>
-            /// A string that uniquely defines the Package on the server  </value>
-            public string Id { get { return Header._id; } }
+        /// <summary>
+        /// Guid property </summary>
+        /// <value>
+        /// A string that uniquely defines the CustomNodeDefinition </value>
+        public Guid Guid { get; internal set; }
 
-            public override string Keywords { get; set; }
+        /// <summary>
+        /// Id property </summary>
+        /// <value>
+        /// A string that uniquely defines the Package on the server  </value>
+        public string Id { get { return Header._id; } }
+
+        public override string Keywords { get; set; }
+
+        /// <summary>
+        /// No need to implement. The property is not used LibraryContainerView.
+        /// </summary>
+        //public override BitmapImage SmallIcon
+        //{
+        //    get
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //    set
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
         #endregion
-        
-
     }
-
 }
