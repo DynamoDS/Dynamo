@@ -103,7 +103,6 @@ namespace Dynamo.Models
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
-        public IUpdateManager UpdateManager { get; private set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -306,7 +305,7 @@ namespace Dynamo.Models
             }
 
             InitializePreferences(preferences);
-            InitializeUpdateManager(updateManager);
+            InitializeUpdateManager();
             InitializeInstrumentationLogger();
 
             SearchModel = new SearchModel(this);
@@ -345,10 +344,9 @@ namespace Dynamo.Models
             InstrumentationLogger.Start(this);
         }
 
-        private void InitializeUpdateManager(IUpdateManager updateManager)
+        private static void InitializeUpdateManager()
         {
-            UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), UpdateManager));
+            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
         }
 
         private void InitializeCurrentWorkspace()
@@ -359,7 +357,7 @@ namespace Dynamo.Models
             this.CurrentWorkspace.Y = 0;
         }
 
-        private void InitializePreferences(IPreferences preferences)
+        private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.LengthUnit = preferences.LengthUnit;
             BaseUnit.AreaUnit = preferences.AreaUnit;
@@ -371,7 +369,7 @@ namespace Dynamo.Models
 
         public string Version
         {
-            get { return UpdateManager.ProductVersion.ToString();  }
+            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)

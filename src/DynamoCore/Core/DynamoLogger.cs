@@ -97,7 +97,7 @@ namespace Dynamo
         /// </summary>
         public DynamoLogger(DynamoModel dynamoModel, string logDirectory)
         {
-            lock (this.guardMutex)
+            lock (guardMutex)
             {
                 this.dynamoModel = dynamoModel;
                 _isDisposed = false;
@@ -105,8 +105,15 @@ namespace Dynamo
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
+                UpdateManager.UpdateManager.Instance.Log += UpdateManager_Log;
+                
                 StartLogging(logDirectory);
             }
+        }
+
+        private void UpdateManager_Log(object sender, LogEventArgs args)
+        {
+            Log(args.Message, args.Level);
         }
 
         public void Log(string message, LogLevel level)
@@ -290,6 +297,8 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
+
+            UpdateManager.UpdateManager.Instance.Log -= UpdateManager_Log;
         }
 
         public void Dispose()

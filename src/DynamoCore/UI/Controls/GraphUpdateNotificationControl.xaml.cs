@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Dynamo;
-using Dynamo.Utilities;
+
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 
 namespace DynamoCore.UI.Controls
@@ -25,7 +24,7 @@ namespace DynamoCore.UI.Controls
                 var dvm = DataContext as DynamoViewModel;
 
                 dvm.Model.Logger.Log("UpdateNotificationControl-OnInstallButtonClicked","UpdateNotificationControl-OnInstallButtonClicked");
-                dvm.Model.UpdateManager.QuitAndInstallUpdate(); // Quit application
+                UpdateManager.Instance.QuitAndInstallUpdate(); // Quit application
             }
         }
     }

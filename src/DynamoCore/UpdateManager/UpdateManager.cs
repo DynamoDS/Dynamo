@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -8,8 +7,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
-using Dynamo.Interfaces;
-using Dynamo.Models;
+
 using Dynamo.UI;
 using System.Xml.Linq;
 
@@ -53,6 +51,7 @@ namespace Dynamo.UpdateManager
         bool CheckNewerDailyBuilds { get; set; }
         bool ForceUpdate { get; set; }
         string UpdateFileLocation { get; }
+        event LogEventHandler Log;
         void OnLog(object sender, LogEventArgs args);
     }
 
@@ -112,17 +111,15 @@ namespace Dynamo.UpdateManager
 
         public Uri Path { get; set; }
 
-        private readonly IUpdateManager manager;
-
         /// <summary>
         /// The constructor.
         /// </summary>
         /// <param name="onRequestCompleted">A callback which is invoked when data is returned from the request.</param>
         /// <param name="manager">The update manager which is making this request.</param>
-        public UpdateRequest(Uri path, IUpdateManager manager)
+        public UpdateRequest(Uri path)
         {
-            OnRequestCompleted = manager.UpdateDataAvailable;
-            
+            OnRequestCompleted = UpdateManager.Instance.UpdateDataAvailable;
+
             Error = string.Empty;
             Data = string.Empty;
             Path = path;
@@ -130,8 +127,6 @@ namespace Dynamo.UpdateManager
             var client = new WebClient();
             client.OpenReadAsync(path);
             client.OpenReadCompleted += ReadResult;
-
-            this.manager = manager;
         }
 
         /// <summary>
@@ -162,8 +157,8 @@ namespace Dynamo.UpdateManager
                 Error = string.Empty;
                 Data = string.Empty;
 
-                manager.OnLog(this, new LogEventArgs("The update request could not be completed.", LogLevel.File));
-                manager.OnLog(this, new LogEventArgs(ex.Message, LogLevel.File));
+                UpdateManager.Instance.OnLog(this, new LogEventArgs("The update request could not be completed.", LogLevel.File));
+                UpdateManager.Instance.OnLog(this, new LogEventArgs(ex.Message, LogLevel.File));
             }
 
             //regardless of the success of the above logic
@@ -188,7 +183,7 @@ namespace Dynamo.UpdateManager
         private bool forceUpdate;
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
-        private readonly DynamoModel dynamoModel;
+        private static UpdateManager instance;
 
         #endregion
 
@@ -246,9 +241,6 @@ namespace Dynamo.UpdateManager
             {
                 updateFileLocation = value;
                 RaisePropertyChanged("UpdateFileLocation");
-
-                // Save the last downloaded location to the preferences.
-                dynamoModel.PreferenceSettings.LastUpdateDownloadPath = updateFileLocation;
             }
         }
 
@@ -279,7 +271,7 @@ namespace Dynamo.UpdateManager
             {
                 if (!checkNewerDailyBuilds && value)
                 {
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
                 }
                 checkNewerDailyBuilds = value;
                 RaisePropertyChanged("CheckNewerDailyBuilds");
@@ -298,19 +290,22 @@ namespace Dynamo.UpdateManager
                 if (!forceUpdate && value)
                 {
                     // do a check
-                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this));
+                    CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
                 }
                 forceUpdate = value;
                 RaisePropertyChanged("ForceUpdate");
             }
         }
 
+        public static UpdateManager Instance
+        {
+            get { return instance ?? (instance = new UpdateManager()); }
+        }
+
         #endregion
 
-        public UpdateManager(DynamoModel dynamoModel)
+        private UpdateManager()
         {
-            this.dynamoModel = dynamoModel;
-
             PropertyChanged += UpdateManager_PropertyChanged;
         }
 
