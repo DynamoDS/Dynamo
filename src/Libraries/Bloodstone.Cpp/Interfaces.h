@@ -514,6 +514,24 @@ namespace Dynamo { namespace Bloodstone {
             texCoords[0] = texCoords[1] = texCoords[2] = texCoords[3] = 0.0f;
             colorRgba[0] = colorRgba[1] = colorRgba[2] = colorRgba[3] = 1.0f;
         }
+
+        BillboardVertex(const float* position, const float* texCoords,
+            const float* offset, const float* rgba)
+        {
+            this->position[0] = position[0];
+            this->position[1] = position[1];
+            this->position[2] = position[2];
+
+            this->texCoords[0] = texCoords[0];
+            this->texCoords[1] = texCoords[1];
+            this->texCoords[2] = offset[0];
+            this->texCoords[3] = offset[1];
+
+            this->colorRgba[0] = rgba[0];
+            this->colorRgba[1] = rgba[1];
+            this->colorRgba[2] = rgba[2];
+            this->colorRgba[3] = rgba[3];
+        }
     };
 
     class IBillboardVertexBuffer

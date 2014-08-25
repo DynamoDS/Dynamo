@@ -125,10 +125,20 @@ namespace Dynamo { namespace Bloodstone {
         TextId mTextId;
         FontId mFontId;
         std::vector<GlyphId> mTextContent;
-        float mForegroundRgba0[4]; // Top foreground color.
-        float mForegroundRgba1[4]; // Bottom foreground color.
-        float mBackgroundRgba[4];  // Background shadow color.
-        float mWorldPosition[4]; // 4th entry ignored by vertex shader.
+        float mForegroundRgba0[4];  // Top foreground color.
+        float mForegroundRgba1[4];  // Bottom foreground color.
+        float mBackgroundRgba[4];   // Background shadow color.
+        float mWorldPosition[4];    // 4th entry ignored by vertex shader.
+    };
+
+    struct BillboardQuadInfo
+    {
+        float position[3];          // Base point world position.
+        float offset[4];            // Left, top, right, bottom.
+        float texCoords[4];         // Left, top, right, bottom.
+        float foregroundRgba0[4];   // Top foreground color.
+        float foregroundRgba1[4];   // Bottom foreground color.
+        std::vector<BillboardVertex>& vertices;
     };
 
     class BillboardTextGroup
@@ -159,6 +169,9 @@ namespace Dynamo { namespace Bloodstone {
         void RegenerateTexture(void);
         void RegenerateVertexBuffer(void);
         void UpdateVertexBuffer(void);
+
+        // TODO: Move this to BillboardText class as private.
+        void FillQuad(const BillboardQuadInfo& quadInfo) const;
 
         TextId mCurrentTextId;
         std::map<TextId, BillboardText*> mBillboardTexts;

@@ -406,6 +406,8 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram);
 
     private:
+        void EnsureVertexBufferCreation(void);
+
         int mVertexCount;
         GLuint mVertexArrayId;
         GLuint mVertexBufferId;

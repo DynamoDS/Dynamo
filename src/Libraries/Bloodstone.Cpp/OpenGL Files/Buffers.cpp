@@ -146,9 +146,10 @@ void VertexBuffer::BindToShaderProgramCore(IShaderProgram* pShaderProgram)
     const auto locNormal = pProgram->GetAttributeLocation("inNormal");
     const auto locColor = pProgram->GetAttributeLocation("inColor");
 
-    GL::glVertexAttribPointer(locPosition, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(0));
-    GL::glVertexAttribPointer(locNormal,   3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
-    GL::glVertexAttribPointer(locColor,    4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
+    auto stride = sizeof(VertexData);
+    GL::glVertexAttribPointer(locPosition, 3, GL_FLOAT, GL_FALSE, stride, FC2O(0));
+    GL::glVertexAttribPointer(locNormal,   3, GL_FLOAT, GL_FALSE, stride, FC2O(3));
+    GL::glVertexAttribPointer(locColor,    4, GL_FLOAT, GL_FALSE, stride, FC2O(6));
 
     GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
     GL::glBindVertexArray(0);
@@ -222,8 +223,51 @@ void BillboardVertexBuffer::RenderCore(void) const
 
 void BillboardVertexBuffer::UpdateCore(const std::vector<BillboardVertex>& vertices)
 {
+    if (vertices.size() <= 0)
+        return;
+
+    EnsureVertexBufferCreation();
+
+    GL::glBindVertexArray(mVertexArrayId);
+    GL::glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
+
+    const auto bytes = vertices.size() * sizeof(BillboardVertex);
+    GL::glBufferData(GL_ARRAY_BUFFER, bytes, &vertices[0], GL_DYNAMIC_DRAW);
+
+    GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GL::glBindVertexArray(0);
 }
 
 void BillboardVertexBuffer::BindToShaderProgramCore(IShaderProgram* pShaderProgram)
 {
+    EnsureVertexBufferCreation();
+
+    GL::glBindVertexArray(mVertexArrayId);
+    GL::glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
+
+    GL::glEnableVertexAttribArray(0);   // Position
+    GL::glEnableVertexAttribArray(1);   // Color
+    GL::glEnableVertexAttribArray(2);   // Texture coordinates
+
+    const auto pProgram = dynamic_cast<ShaderProgram *>(pShaderProgram);
+    const auto locPosition = pProgram->GetAttributeLocation("inPosition");
+    const auto locColor = pProgram->GetAttributeLocation("inColor");
+    const auto locTexCoords = pProgram->GetAttributeLocation("inTextCoords");
+
+    auto stride = sizeof(BillboardVertex);
+    GL::glVertexAttribPointer(locPosition,  3, GL_FLOAT, GL_FALSE, stride, FC2O(0));
+    GL::glVertexAttribPointer(locColor,     4, GL_FLOAT, GL_FALSE, stride, FC2O(3));
+    GL::glVertexAttribPointer(locTexCoords, 4, GL_FLOAT, GL_FALSE, stride, FC2O(7));
+
+    GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GL::glBindVertexArray(0);
+}
+
+void BillboardVertexBuffer::EnsureVertexBufferCreation(void)
+{
+    if (mVertexArrayId == 0)
+        GL::glGenVertexArrays(1, &mVertexArrayId);
+
+    if (mVertexBufferId == 0)
+        GL::glGenBuffers(1, &mVertexBufferId);
 }

@@ -301,3 +301,49 @@ void BillboardTextGroup::RegenerateVertexBuffer(void)
 void BillboardTextGroup::UpdateVertexBuffer(void)
 {
 }
+
+void BillboardTextGroup::FillQuad(const BillboardQuadInfo& quadInfo) const
+{
+    const float* pos = &(quadInfo.position[0]);
+    const float* rgba0 = &(quadInfo.foregroundRgba0[0]);
+    const float* rgba1 = &(quadInfo.foregroundRgba1[0]);
+
+    float tc[] = 
+    {
+        quadInfo.texCoords[0], quadInfo.texCoords[1],
+        quadInfo.texCoords[2], quadInfo.texCoords[3]
+    };
+
+    float off[] = 
+    {
+        quadInfo.offset[0], quadInfo.offset[1],
+        quadInfo.offset[2], quadInfo.offset[3]
+    };
+
+    // Left-top vertex.
+    const float tc0[] = { tc[0], tc[1] };
+    const float off0[] = { off[0], off[1] };
+    BillboardVertex lt(pos, &tc0[0], &off0[0], rgba0);
+
+    // Right-top vertex.
+    const float tc1[] = { tc[2], tc[1] };
+    const float off1[] = { off[2], off[1] };
+    BillboardVertex rt(pos, &tc1[0], &off1[0], rgba0);
+
+    // Left-bottom vertex.
+    const float tc2[] = { tc[0], tc[3] };
+    const float off2[] = { off[0], off[3] };
+    BillboardVertex lb(pos, &tc2[0], &off2[0], rgba1);
+
+    // Right-bottom vertex.
+    const float tc3[] = { tc[2], tc[3] };
+    const float off3[] = { off[2], off[3] };
+    BillboardVertex rb(pos, &tc3[0], &off3[0], rgba1);
+
+    quadInfo.vertices.push_back(lt); // First triangle.
+    quadInfo.vertices.push_back(rt);
+    quadInfo.vertices.push_back(lb);
+    quadInfo.vertices.push_back(lb); // Second triangle.
+    quadInfo.vertices.push_back(rt);
+    quadInfo.vertices.push_back(rb);
+}
