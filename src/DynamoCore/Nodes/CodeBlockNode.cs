@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows for DesignScript code to be authored directly")]
     [IsDesignScriptCompatible]
-    public partial class CodeBlockNodeModel : NodeModel
+    public class CodeBlockNodeModel : NodeModel
     {
         private readonly List<Statement> codeStatements = new List<Statement>();
         private string code = string.Empty;

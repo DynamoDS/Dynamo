@@ -16,7 +16,7 @@ namespace Dynamo.Nodes
     /// </summary>
     [NodeName("Function Node w/ VarArgs"), NodeDescription("DesignScript Builtin Functions"),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
-    public class DSVarArgFunction : DSFunctionBase, IWpfNode
+    public class DSVarArgFunction : DSFunctionBase
     {
         public DSVarArgFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
 
@@ -79,10 +79,6 @@ namespace Dynamo.Nodes
         }
         #endregion
 
-        public void SetupCustomUIElements(dynNodeView view)
-        {
-            VarInputController.SetupNodeUI(view);
-        }
     }
 
     /// <summary>

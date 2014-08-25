@@ -107,6 +107,7 @@ namespace Dynamo.PackageManager
                                 }, () => true))).ToList();
                 } 
             }
+
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
             private int _votes;
             public int Votes

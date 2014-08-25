@@ -50,6 +50,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
@@ -57,6 +58,12 @@
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Interfaces\IWpfNode.cs" />
+    <Compile Include="NodeViewInjection\ViewInjectors\VariableInputViewInjector.cs" />
+    <Compile Include="NodeViewInjection\ViewInjectors\CodeBlockViewInjector.cs" />
+    <Compile Include="NodeViewInjection\ViewInjectors\DSVarArgFunctionViewInjector.cs" />
+    <Compile Include="NodeViewInjection\INodeViewInjectorInitializer.cs" />
+    <Compile Include="NodeViewInjection\INodeViewInjector.cs" />
+    <Compile Include="NodeViewInjection\NodeViewInjectorCreator.cs" />
     <Compile Include="Nodes\Watch.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

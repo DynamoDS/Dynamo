@@ -160,7 +160,7 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        public class ToggleIsExpandedCommand : ICommand
+        public class ToggleIsExpandedCommand
         {
             private BrowserItem item;
 
@@ -185,7 +185,7 @@ namespace Dynamo.Nodes.Search
                 var endState = !item.IsExpanded;
                 if (item is BrowserInternalElement)
                 {
-                    BrowserInternalElement element = (BrowserInternalElement) item;
+                    BrowserInternalElement element = (BrowserInternalElement)item;
                     foreach (var ele in element.Siblings)
                         ele.IsExpanded = false;
 
@@ -194,7 +194,7 @@ namespace Dynamo.Nodes.Search
                     if (element.Items.Count == 1)
                     {
                         BrowserItem subElement = element.Items[0];
-                        
+
                         while (subElement.Items.Count == 1)
                         {
                             subElement.IsExpanded = true;
@@ -232,11 +232,11 @@ namespace Dynamo.Nodes.Search
                 item.IsExpanded = endState;
             }
 
-            public event EventHandler CanExecuteChanged
-            {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
-            }
+            //public event EventHandler CanExecuteChanged
+            //{
+            //    add { CommandManager.RequerySuggested += value; }
+            //    remove { CommandManager.RequerySuggested -= value; }
+            //}
 
             public bool CanExecute(object parameters)
             {
