@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Xml;
-using Dynamo.UI;
 
 namespace Dynamo.Models
 {

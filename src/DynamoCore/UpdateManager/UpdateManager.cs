@@ -6,16 +6,9 @@ using System.Linq;
 using System.Net;
 using System.ComponentModel;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using System.Windows;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.UI;
 using System.Xml.Linq;
-using DynamoCrypto;
-using DynamoUtilities;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UpdateManager

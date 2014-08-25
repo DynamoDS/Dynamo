@@ -184,7 +184,6 @@ limitations under the License.
     <Compile Include="Models\PortModel.cs" />
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
-    <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Configurations.cs" />
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />

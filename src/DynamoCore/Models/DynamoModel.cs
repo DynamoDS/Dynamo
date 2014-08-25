@@ -19,7 +19,6 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Selection;
