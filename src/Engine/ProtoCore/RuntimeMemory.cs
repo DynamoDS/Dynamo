@@ -457,20 +457,6 @@ namespace ProtoCore
                 return sv;
             }
 
-            public StackValue GetPrimitive(StackValue op)
-            {
-                if (!op.IsPointer)
-                {
-                    return op;
-                }
-                int ptr = (int)op.opdata;
-                while (Heap.Heaplist[ptr].Stack[0].IsPointer)
-                {
-                    ptr = (int)Heap.Heaplist[ptr].Stack[0].opdata;
-                }
-                return Heap.Heaplist[ptr].Stack[0];
-            }
-
             public IEnumerable<StackValue> GetArrayElements(StackValue array)
             {
                 long ptr = array.opdata;
