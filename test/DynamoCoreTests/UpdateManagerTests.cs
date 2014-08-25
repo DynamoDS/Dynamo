@@ -9,13 +9,15 @@ namespace Dynamo.Tests
     /// <summary>
     /// Test cases to mock return values.
     /// </summary>
-    public class UpdateManagerTestNotUpToDate : DynamoViewModelUnitTest
+    public class UpdateManagerTestNotUpToDate
     {
         [Test]
         public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
+
+            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = false;
             UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
 
             Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
@@ -24,13 +26,11 @@ namespace Dynamo.Tests
         [Test]
         public void UpdateCheckReturnsInfoWhenNewerDailyBuildAvailable()
         {
-            var um = UpdateManager.UpdateManager.Instance;
-
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.dailyBuildAvailableData);
 
-            um.CheckNewerDailyBuilds = true;
-            um.UpdateDataAvailable(updateRequest.Object);
+            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = true;
+            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
             
             Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
         }
