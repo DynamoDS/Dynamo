@@ -316,6 +316,7 @@ namespace Dynamo.Nodes
             //Set style for Watermark
             this.SetResourceReference(TextBox.StyleProperty, "CodeBlockNodeTextBox");
             this.Tag = "Your code goes here";
+            
         }
 
 
@@ -403,13 +404,19 @@ namespace Dynamo.Nodes
 
         public CodeBlockNodeTextBox(string s = "")
         {
-            //Text = s;
+            Text = s;
+            BorderThickness = new Thickness(1);
+            Padding = new Thickness(3);
+            MinHeight = 20;
+
             this.TextArea.LostFocus += TextArea_LostFocus;
             this.Loaded += (obj, args) => this.TextArea.Focus();
             RequestReturnFocusToSearch += TryFocusSearch;
 
-            //this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeTextBox");
+            this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeAvalonTextEditor");
             this.Tag = "Your code goes here";
+            
+            
         }
 
         public event RequestReturnFocusToSearchHandler RequestReturnFocusToSearch;
@@ -426,6 +433,7 @@ namespace Dynamo.Nodes
             {
                 //return base.Text;
                 throw new NotImplementedException();
+               
             }
             set
             {
