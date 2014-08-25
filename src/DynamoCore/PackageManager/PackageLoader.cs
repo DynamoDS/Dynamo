@@ -47,15 +47,25 @@ namespace Dynamo.PackageManager
         public void LoadPackagesIntoDynamo()
         {
             this.ScanAllPackageDirectories();
-            LocalPackages.ToList().ForEach( (pkg) => pkg.LoadIntoDynamo(loader, logger) );
+
+            foreach (var pkg in LocalPackages)
+            {
+                DynamoPathManager.Instance.AddResolutionPath(pkg.BinaryDirectory);
+            }
+
+            foreach (var pkg in LocalPackages)
+            {
+                pkg.LoadIntoDynamo(loader, logger);
+            }
         }
 
-        private List<Package> ScanAllPackageDirectories()
-        {
-            return
-                Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly)
-                         .Select(ScanPackageDirectory)
-                         .ToList();
+        private void ScanAllPackageDirectories()
+        { 
+            foreach (var dir in 
+                Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
+            {
+                ScanPackageDirectory(dir);
+            }
         }
 
         public Package ScanPackageDirectory(string directory)
