@@ -435,8 +435,7 @@ namespace ProtoCore
                 // Not initialized yet
                 if (sv.IsInvalid)
                 {
-                    sv = StackValue.Null;
-                    return sv;
+                    return StackValue.Null;
                 }
                 else if (sv.IsArray)
                 {

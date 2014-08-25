@@ -1173,7 +1173,15 @@ namespace ProtoCore.Lang
                 return 0;
 
             var svArray = runtime.runtime.rmem.GetArrayElements(sv);
-            return svArray.Select(x => x.IsArray ? 0 : Rank(x, runtime)).Max() + 1;
+            if (svArray.Any())
+            {
+                return svArray.Select(x => x.IsArray ? Rank(x, runtime) : 0).Max() + 1;
+            }
+            else
+            {
+
+                return 1;
+            }
         }
 
         internal static StackValue Flatten(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
