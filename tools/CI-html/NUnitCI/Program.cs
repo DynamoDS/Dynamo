@@ -20,14 +20,14 @@ namespace NUnitCI
             //curPath and prePath are the current and previous paths of either directory or files
             try
             {
-                //string curPath = @args[0];
-                //string prePath = @args[1];
-                //string outPath = @args[2];
+                string curPath = @args[0];
+                string prePath = @args[1];
+                string outPath = @args[2];
 
 
-                string curPath = @"C:\Users\t_anhp\Downloads\xmlCUR";
-                string prePath = @"C:\Users\t_anhp\Downloads\xmlOLD";
-                string outPath = @"C:\Users\t_anhp\Downloads\compareXML\Compare.html";
+                //string curPath = @"C:\Users\t_anhp\Downloads\xmlCUR";
+                //string prePath = @"C:\Users\t_anhp\Downloads\xmlOLD";
+                //string outPath = @"C:\Users\t_anhp\Downloads\compareXML\Compare.html";
 
                 Console.WriteLine(curPath);
                 Console.WriteLine(prePath);
