@@ -1,6 +1,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
@@ -469,17 +471,11 @@ namespace ProtoCore
                 return Heap.Heaplist[ptr].Stack[0];
             }
 
-            public StackValue[] GetArrayElements(StackValue array)
+            public IEnumerable<StackValue> GetArrayElements(StackValue array)
             {
-                int ptr = (int)array.opdata;
-                HeapElement hs = Heap.Heaplist[ptr];
-                StackValue[] arrayElements = new StackValue[hs.VisibleSize];
-                for (int n = 0; n < hs.VisibleSize; ++n)
-                {
-                    arrayElements[n] = hs.Stack[n];
-                }
-
-                return arrayElements;
+                long ptr = array.opdata;
+                HeapElement hs = Heap.Heaplist[(int)ptr];
+                return hs.Stack.Take(hs.VisibleSize);
             }
 
             public int GetArraySize(StackValue array)
