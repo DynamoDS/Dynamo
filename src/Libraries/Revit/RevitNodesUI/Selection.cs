@@ -229,7 +229,7 @@ namespace Dynamo.Nodes
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
+                BorderThickness = new System.Windows.Thickness(0),
                 IsReadOnly = true,
                 IsReadOnlyCaretVisible = false
             };
@@ -471,7 +471,7 @@ namespace Dynamo.Nodes
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
+                BorderThickness = new System.Windows.Thickness(0),
                 IsReadOnly = true,
                 IsReadOnlyCaretVisible = false
             };
@@ -743,7 +743,7 @@ namespace Dynamo.Nodes
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
+                BorderThickness = new System.Windows.Thickness(0),
                 IsReadOnly = true,
                 IsReadOnlyCaretVisible = false,
                 MaxWidth = 200,

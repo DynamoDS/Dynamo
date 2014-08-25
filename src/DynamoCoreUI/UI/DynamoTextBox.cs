@@ -105,11 +105,11 @@ namespace Dynamo.Nodes
         {
             //turn off the border
             Background = clear;
-            BorderThickness = new Thickness(1);
+            BorderThickness = new System.Windows.Thickness(1);
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
-            Padding = new Thickness(3);
+            Padding = new System.Windows.Thickness(3);
             base.Text = initialText;
             this.Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];

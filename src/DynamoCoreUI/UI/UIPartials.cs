@@ -770,7 +770,7 @@ namespace Dynamo.Nodes
         public DynamoNodeButton()
         {
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
-            Margin = new Thickness(1, 0, 1, 0);
+            Margin = new System.Windows.Thickness(1, 0, 1, 0);
         }
 
         public DynamoNodeButton(ModelBase model, string eventName)

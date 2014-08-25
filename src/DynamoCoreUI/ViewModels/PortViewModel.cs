@@ -85,7 +85,7 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
-        public Thickness MarginThickness
+        public System.Windows.Thickness MarginThickness
         {
             get { return _port.MarginThickness; }
         }

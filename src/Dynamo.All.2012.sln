@@ -123,7 +123,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{398542
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBridgeTests", "..\test\Libraries\DataBridgeTests\DataBridgeTests.csproj", "{F0AF3C6E-0E59-4511-A057-79970EA9DC34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreUI", "DynamoCoreUI\DynamoCoreUI.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpf", "DynamoCoreUI\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

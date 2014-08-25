@@ -7,8 +7,8 @@
     <ProjectGuid>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamoCoreUI</RootNamespace>
-    <AssemblyName>DynamoCoreUI</AssemblyName>
+    <RootNamespace>DynamoCoreWpf</RootNamespace>
+    <AssemblyName>DynamoCoreWpf</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="UI\WebBrowserUtility.cs" />
     <Compile Include="UI\WPF.cs" />
     <Compile Include="UI\ZoomBorder.cs" />
+    <Compile Include="Utilities\Configurations.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="ViewModels\ConnectorViewModel.cs" />
     <Compile Include="ViewModels\DynamoViewModel.cs" />
@@ -899,6 +901,10 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -274,7 +274,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             double height = (double)value;
-            return new Thickness(0, -1 * height - 3, 0, 0);
+            return new System.Windows.Thickness(0, -1 * height - 3, 0, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -910,7 +910,7 @@ namespace Dynamo.Controls
             //    return new Thickness(-20, 0, 0, 0);
             //}
 
-            return new Thickness(0, 0, 0, 0);
+            return new System.Windows.Thickness(0, 0, 0, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -107,7 +107,7 @@ namespace Dynamo.Nodes
             textBoxExpanderGrid.Children.Add(valtb);
 
             var exp = new Expander();
-            exp.Padding = new Thickness(4, 0, 0, 0);
+            exp.Padding = new System.Windows.Thickness(4, 0, 0, 0);
             Grid.SetColumn(exp, 1);
             textBoxExpanderGrid.Children.Add(exp);
 

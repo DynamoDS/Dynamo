@@ -69,12 +69,12 @@ namespace Dynamo.UI.Prompts
 
                 if (button.Item3 != false)
                 {
-                    buttonElement.Margin = new Thickness(0, 0, 10, 0);
+                    buttonElement.Margin = new System.Windows.Thickness(0, 0, 10, 0);
                     LeftButtonStackPanel.Children.Add(buttonElement);
                 }
                 else
                 {
-                    buttonElement.Margin = new Thickness(10, 0, 0, 0);
+                    buttonElement.Margin = new System.Windows.Thickness(10, 0, 0, 0);
                     RightButtonStackPanel.Children.Add(buttonElement);
                 }
             }

@@ -63,8 +63,8 @@ namespace Dynamo.Controls
             set { contentMaxHeight = value; }
         }
 
-        private Thickness contentMargin;
-        public Thickness ContentMargin
+        private System.Windows.Thickness contentMargin;
+        public System.Windows.Thickness ContentMargin
         {
             get { return contentMargin; }
             set { contentMargin = value; }
@@ -468,7 +468,7 @@ namespace Dynamo.Controls
 
             textBox.Background      = Brushes.Transparent;
             textBox.IsReadOnly      = true;
-            textBox.BorderThickness = new Thickness(0);
+            textBox.BorderThickness = new System.Windows.Thickness(0);
 
             textBox.HorizontalAlignment = HorizontalAlignment.Center;
             textBox.VerticalAlignment   = VerticalAlignment.Center;
@@ -653,9 +653,9 @@ namespace Dynamo.Controls
             }
         }
 
-        private Thickness GetMargin_Error(double estimatedHeight, double estimatedWidth)
+        private System.Windows.Thickness GetMargin_Error(double estimatedHeight, double estimatedWidth)
         {
-            Thickness margin = new Thickness();
+            System.Windows.Thickness margin = new System.Windows.Thickness();
             double nodeWidth = ViewModel.TargetBotRight.X - ViewModel.TargetTopLeft.X;
             margin.Top = -(estimatedHeight) + ViewModel.TargetTopLeft.Y;
             margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
