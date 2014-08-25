@@ -44,10 +44,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
             // search for new name
-            var results = search.Search(newNodeName);
+            var results = search.Search(newNodeName).ToList();
 
             // results are correct
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
             var res1 = results[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
             var node1 = res1 as CustomNodeSearchElement;
@@ -57,7 +57,7 @@ namespace Dynamo.Tests
             var results1 = search.Search(nodeName);
 
             // results are correct
-            Assert.AreEqual(0, results1.Count);
+            Assert.AreEqual(0, results1.Count());
         }
 
         [Test]
@@ -75,10 +75,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
             // search for name
-            var results = search.Search(nodeName);
+            var results = search.Search(nodeName).ToList();
 
             // results are correct
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
             var res1 = results[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
             var node1 = res1 as CustomNodeSearchElement;
@@ -94,10 +94,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
             // search for name
-            var results1 = search.Search(nodeName);
+            var results1 = search.Search(nodeName).ToList();
 
             // description is updated
-            Assert.AreEqual(1,results1.Count);
+            Assert.AreEqual(1,results1.Count());
             var res2 = results1[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
             var node2 = res2 as CustomNodeSearchElement;
@@ -132,20 +132,20 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, search.SearchDictionary.NumElements);
 
             // search for new name
-            var results = search.Search(newNodeName);
+            var results = search.Search(newNodeName).ToList();
 
             // results are correct - only one result
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
             var res1 = results[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
             var node1 = res1 as CustomNodeSearchElement;
             Assert.AreEqual(node1.Guid, guid1);
 
             // search for old name
-            results = search.Search(nodeName);
+            results = search.Search(nodeName).ToList();
 
             // results are correct - the first nodes are returned
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
             var res2 = results[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
             var node2 = res2 as CustomNodeSearchElement;
@@ -238,8 +238,8 @@ namespace Dynamo.Tests
                 search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
             }
             search.MaxNumSearchResults = 100;
-            var results = search.Search(nodeName);
-            Assert.AreEqual(100, results.Count);
+            var results = search.Search(nodeName).ToList();
+            Assert.AreEqual(100, results.Count());
             Assert.AreEqual(nodeName, results[0].Name);
         }
 
@@ -293,7 +293,7 @@ namespace Dynamo.Tests
             }
 
             var nestedCat = search.GetCategoryByName(catName);
-            Assert.AreEqual(100, nestedCat.Items.Count);
+            Assert.AreEqual(100, nestedCat.Items.Count());
             Assert.AreEqual(nodeName, nestedCat.Items[0].Name);
         }
 
@@ -305,7 +305,7 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
 
             var results = search.Search("frog");
-            Assert.AreEqual(0, results.Count);
+            Assert.AreEqual(0, results.Count());
         }
 
         [Test]
@@ -316,7 +316,7 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
 
             var results = search.Search("hi");
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
         }
 
         [Test]
@@ -328,8 +328,8 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName1, catName, "des", ""));
             search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName2, catName, "des", ""));
 
-            var results = search.Search("wh");
-            Assert.AreEqual(2, results.Count);
+            var results = search.Search("wh").ToList();
+            Assert.AreEqual(2, results.Count());
             Assert.AreEqual(nodeName1, results[0].Name);
             Assert.AreEqual(nodeName2, results[1].Name);
         }
@@ -343,7 +343,7 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
             var results = search.Search("Category.Child");
-            Assert.AreEqual(3, results.Count);
+            Assert.AreEqual(3, results.Count());
         }
 
         #endregion
@@ -354,29 +354,29 @@ namespace Dynamo.Tests
         public void CanSplitCategoryNameWithValidInput()
         {
             var split = SearchModel.SplitCategoryName("this is a root category");
-            Assert.AreEqual(1, split.Count);
+            Assert.AreEqual(1, split.Count());
             Assert.AreEqual("this is a root category", split[0] );
 
             split = SearchModel.SplitCategoryName("this is a root category.and");
-            Assert.AreEqual(2, split.Count);
+            Assert.AreEqual(2, split.Count());
             Assert.AreEqual("this is a root category", split[0] );
             Assert.AreEqual("and", split[1]);
 
             split = SearchModel.SplitCategoryName("this is a root category.and.this is a sub");
-            Assert.AreEqual(3, split.Count);
+            Assert.AreEqual(3, split.Count());
             Assert.AreEqual("this is a root category", split[0]);
             Assert.AreEqual("and", split[1]);
             Assert.AreEqual("this is a sub", split[2]);
 
             split = SearchModel.SplitCategoryName("this is a root category.and.this is a sub. with noodles");
-            Assert.AreEqual(4, split.Count);
+            Assert.AreEqual(4, split.Count());
             Assert.AreEqual("this is a root category", split[0]);
             Assert.AreEqual("and", split[1]);
             Assert.AreEqual("this is a sub", split[2]);
             Assert.AreEqual(" with noodles", split[3]);
 
             split = SearchModel.SplitCategoryName("this is a root category.");
-            Assert.AreEqual(1,split.Count);
+            Assert.AreEqual(1,split.Count());
             Assert.AreEqual("this is a root category", split[0] );
         }
 
@@ -384,18 +384,18 @@ namespace Dynamo.Tests
         public void CanSplitCategoryNameWithInvalidInput()
         {
             var split = SearchModel.SplitCategoryName("");
-            Assert.AreEqual(0, split.Count);
+            Assert.AreEqual(0, split.Count());
 
             split = SearchModel.SplitCategoryName("this is a root category.");
-            Assert.AreEqual(1, split.Count);
+            Assert.AreEqual(1, split.Count());
             Assert.AreEqual("this is a root category", split[0]);
 
             split = SearchModel.SplitCategoryName(".this is a root category.");
-            Assert.AreEqual(1, split.Count);
+            Assert.AreEqual(1, split.Count());
             Assert.AreEqual("this is a root category", split[0]);
 
             split = SearchModel.SplitCategoryName("...");
-            Assert.AreEqual(0, split.Count);
+            Assert.AreEqual(0, split.Count());
         }
 
         #endregion
@@ -412,15 +412,15 @@ namespace Dynamo.Tests
 
             searchModel.Add(dummyInfo);
 
-            var res = searchModel.Search(nodeName);
-            Assert.AreNotEqual(0, res.Count);
+            var res = searchModel.Search(nodeName).ToList();
+            Assert.AreNotEqual(0, res.Count());
             Assert.AreEqual(res[0].Name, nodeName);
             Assert.IsTrue(searchModel.ContainsCategory(catName));
 
             searchModel.RemoveNodeAndEmptyParentCategory(nodeName);
-            res = searchModel.Search(nodeName);
+            res = searchModel.Search(nodeName).ToList();
 
-            Assert.AreEqual(0, res.Count);
+            Assert.AreEqual(0, res.Count());
             Assert.IsFalse(searchModel.ContainsCategory(catName));
         }
 
@@ -440,9 +440,9 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
-            var results = search.Search(nodeName);
+            var results = search.Search(nodeName).ToList();
 
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
 
             var res1 = results[0];
 
@@ -476,7 +476,7 @@ namespace Dynamo.Tests
             // it's gone
             Assert.AreEqual(0, search.SearchDictionary.NumElements);
             var results = search.Search(nodeName);
-            Assert.AreEqual(0, results.Count);
+            Assert.AreEqual(0, results.Count());
 
         }
 
@@ -497,9 +497,9 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(2, search.SearchDictionary.NumElements);
 
-            var results = search.Search(nodeName);
+            var results = search.Search(nodeName).ToList();
 
-            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual(2, results.Count());
 
             var res1 = results[0];
             var res2 = results[1];
@@ -560,7 +560,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
             var nestedCat = (BrowserInternalElement)search.GetCategoryByName("Category.Child");
             Assert.NotNull(nestedCat);
-            Assert.AreEqual(1, nestedCat.Parent.Items.Count);
+            Assert.AreEqual(1, nestedCat.Parent.Items.Count());
         }
 
         [Test]
@@ -634,7 +634,7 @@ namespace Dynamo.Tests
             search.RemoveNodeAndEmptyParentCategory("NonExistentName");
 
             var results = search.Search("NonExistentName");
-            Assert.AreEqual(0, results.Count);
+            Assert.AreEqual(0, results.Count());
         }
 
         [Test]
@@ -658,9 +658,9 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, search.SearchDictionary.NumElements);
 
-            var results = search.Search(nodeName);
+            var results = search.Search(nodeName).ToList();
 
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
 
             var res1 = results[0];
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
@@ -675,12 +675,12 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Turnip.Greens", "des", ""));
 
             var results = search.Search("Peter");
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
 
             search.RemoveNodeAndEmptyParentCategory("Peter");
             results = search.Search("Peter");
 
-            Assert.AreEqual(0, results.Count);
+            Assert.AreEqual(0, results.Count());
         }
 
         [Test]
@@ -689,12 +689,12 @@ namespace Dynamo.Tests
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Greens", "des", ""));
 
             var results = search.Search("Peter");
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Count());
 
             search.RemoveNodeAndEmptyParentCategory("Peter");
             results = search.Search("Peter");
 
-            Assert.AreEqual(0, results.Count);
+            Assert.AreEqual(0, results.Count());
         }
 
         #endregion
