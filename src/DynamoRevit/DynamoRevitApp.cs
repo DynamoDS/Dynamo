@@ -27,6 +27,8 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Dynamo.Applications
 {
+    
+
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic),
      Regeneration(RegenerationOption.Manual)]
     public class DynamoRevitApp : IExternalApplication
@@ -41,9 +43,9 @@ namespace Dynamo.Applications
         {
             try
             {
-                SetupDynamoPaths();
+                SetupDynamoPaths(application);
 
-                AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+                SubscribeAssemblyResolvingEvent();
 
                 ControlledApplication = application.ControlledApplication;
 
@@ -92,6 +94,8 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
+            UnsubscribeAssemblyResolvingEvent();
+
             return Result.Succeeded;
         }
 
@@ -119,12 +123,12 @@ namespace Dynamo.Applications
             Updaters.Add(sunUpdater);
         }
 
-        private static void SetupDynamoPaths()
+        private static void SetupDynamoPaths(UIControlledApplication application)
         {
             // The executing assembly will be in Revit_20xx, so 
             // we have to walk up one level. Unfortunately, we
             // can't use DynamoPathManager here because those are not
-            // initialized until the controller is constructed.
+            // initialized until the DynamoModel is constructed.
             string assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // Add the Revit_20xx folder for assembly resolution
@@ -139,6 +143,25 @@ namespace Dynamo.Applications
 
             //add an additional node processing folder
             DynamoPathManager.Instance.Nodes.Add(Path.Combine(assDir, "nodes"));
+
+            // Set the LibG folder based on the context.
+            // LibG is set to reference the libg_219 folder by default.
+            var versionInt = int.Parse(application.ControlledApplication.VersionNumber);
+            if (versionInt > 2014)
+            {
+                DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
+                DynamoPathManager.Instance.SetLibGPath(Path.Combine(DynamoPathManager.Instance.MainExecPath, "libg_220"));
+            }
+        }
+
+        private void SubscribeAssemblyResolvingEvent()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+        }
+
+        private void UnsubscribeAssemblyResolvingEvent()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
         }
     }
 }

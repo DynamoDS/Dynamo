@@ -213,11 +213,8 @@ c;
         }
 
         [Test]
-        [Category("Failing")]
         public void T08_FunctionPointerUpdateTest()
         {
-            string err = "MAGN-4039 Update does not work well with function pointers";
-
             string code = @"
 def foo1:int(x:int)
 {
@@ -230,7 +227,7 @@ def foo2:double(x:int, y:double = 2.0)
 a = foo1;
 b = a(3);
 a = foo2;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object b = 5.0;
             thisTest.Verify("b", b);
         }
@@ -441,7 +438,7 @@ c = foo1(a, 3);";
         }
 
         [Test]
-        [Category("ProtoGeometry")]
+        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void T19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
         {
             string code = @"
@@ -510,7 +507,25 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T22_FunctionPointer_Update()
         {
-            string code = @"class A{x;}def foo(x){    return = 2 * x;}def bar(x, f){    return = f(x);}x = 100;a = A.A();a.x = x;x = bar(x, foo);t = a.x;";
+            string code = @"
+class A
+{
+x;
+}
+def foo(x)
+{
+    return = 2 * x;
+}
+def bar(x, f)
+{
+    return = f(x);
+}
+x = 100;
+a = A.A();
+a.x = x;
+x = bar(x, foo);
+t = a.x;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("t", 200);
         }
@@ -520,7 +535,14 @@ a.x = foo2; //b = 4.0";
         public void T22_FunctionPointerArray()
         {
             string err = "MAGN-4040 Array indexing on array of function pointers causes crash";
-            string code = @"def foo(x){    return = 2 * x;}fs = {foo, foo};r = fs[0](100);";
+            string code = @"
+def foo(x)
+{
+    return = 2 * x;
+}
+fs = {foo, foo};
+r = fs[0](100);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("r", 200);
         }
@@ -528,7 +550,19 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T23_FunctionPointerAsReturnValue()
         {
-            string code = @"def foo(x){    return = 2 * x;}def bar(i){    return = foo;}fs = bar(0..1);f = fs[0];r = f(100);";
+            string code = @"
+def foo(x)
+{
+    return = 2 * x;
+}
+def bar(i)
+{
+    return = foo;
+}
+fs = bar(0..1);
+f = fs[0];
+r = f(100);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 200);
         }
@@ -536,7 +570,19 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T24_FunctionPointerAsReturnValue2()
         {
-            string code = @"def foo(x){    return = 2 * x;}def bar:function[](){    return = {foo, foo};}fs = bar();f = fs[0];r = f(100);";
+            string code = @"
+def foo(x)
+{
+    return = 2 * x;
+}
+def bar:function[]()
+{
+    return = {foo, foo};
+}
+fs = bar();
+f = fs[0];
+r = f(100);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 200);
         }
@@ -544,7 +590,19 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T25_FunctionPointerTypeConversion()
         {
-            string code = @"def foo:int(x){    return = 2 * x;}def bar:var[](){    return = {foo, foo};}fs = bar();f = fs[0];r = f(100);";
+            string code = @"
+def foo:int(x)
+{
+    return = 2 * x;
+}
+def bar:var[]()
+{
+    return = {foo, foo};
+}
+fs = bar();
+f = fs[0];
+r = f(100);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 200);
         }
@@ -552,7 +610,23 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T26_NestedFunctionPointer()
         {
-            string code = @"def foo(x){    return = 2 * x;}def bar(x){    return = 3 * x;}def ding(x, f1:var, f2:var){    return = f1(f2(x));}x = 1;r = ding(x, foo, bar);x = 2;";
+            string code = @"
+def foo(x)
+{
+    return = 2 * x;
+}
+def bar(x)
+{
+    return = 3 * x;
+}
+def ding(x, f1:var, f2:var)
+{
+    return = f1(f2(x));
+}
+x = 1;
+r = ding(x, foo, bar);
+x = 2;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 12);
         }
@@ -560,7 +634,17 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T27_FunctionPointerDefaultParameter()
         {
-            string code = @"def foo(x, y = 10, z = 100){    return = x + y + z;}def bar(x, f){    return = f(x);}r = bar(1, foo);";
+            string code = @"
+def foo(x, y = 10, z = 100)
+{
+    return = x + y + z;
+}
+def bar(x, f)
+{
+    return = f(x);
+}
+r = bar(1, foo);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 111);
         }
@@ -568,7 +652,22 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T28_FunctionPointerInInlineCond()
         {
-            string code = @"def foo(x, y = 10, z = 100){    return = x + y + z;}def bar(x, y = 2, z = 3){    return = x * y * z;}def ding(i, f, b){    return = (i > 0) ? f(i) : b(i);}r1 = ding(1, foo, bar);r2 = ding(-1, foo, bar);";
+            string code = @"
+def foo(x, y = 10, z = 100)
+{
+    return = x + y + z;
+}
+def bar(x, y = 2, z = 3)
+{
+    return = x * y * z;
+}
+def ding(i, f, b)
+{
+    return = (i > 0) ? f(i) : b(i);
+}
+r1 = ding(1, foo, bar);
+r2 = ding(-1, foo, bar);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 111);
             thisTest.Verify("r2", -6);
@@ -577,7 +676,18 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T29_FunctionPointerInInlineCond()
         {
-            string code = @"def foo(x, y = 10, z = 100){    return = x + y + z;}def ding(i, f){    return = (i > 0) ? f(i) : f;}r1 = ding(1, foo);r2 = ding(-1, 100);";
+            string code = @"
+def foo(x, y = 10, z = 100)
+{
+    return = x + y + z;
+}
+def ding(i, f)
+{
+    return = (i > 0) ? f(i) : f;
+}
+r1 = ding(1, foo);
+r2 = ding(-1, 100);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 111);
             thisTest.Verify("r2", 100);
@@ -586,7 +696,18 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T30_TypeConversion()
         {
-            string code = @"def foo(){    return = null;}t1:int = foo;t2:int[] = foo;t3:char = foo;t4:string = foo;t5:bool = foo; t6:function = foo;";
+            string code = @"
+def foo()
+{
+    return = null;
+}
+t1:int = foo;
+t2:int[] = foo;
+t3:char = foo;
+t4:string = foo;
+t5:bool = foo; 
+t6:function = foo;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("t1", null);
             thisTest.Verify("t2", new object[] { null });
@@ -600,7 +721,35 @@ a.x = foo2; //b = 4.0";
         public void T31_UsedAsMemberVariable()
         {
             string err = "MAGN-4039 Update does not work well with function pointers";
-            string code = @"class A{    f;    x;    constructor A(_x, _f)    {        x = _x;        f = _f;    }    def update()    {        x = f(x);        return = null;    }}def foo(x){    return = 2 * x;}def bar(x){    return = 3 * x;}a = A.A(2, foo);r = a.update1();a.f = bar;r = a.x;";
+            string code = @"
+class A
+{
+    f;
+    x;
+    constructor A(_x, _f)
+    {
+        x = _x;
+        f = _f;
+    }
+    def update()
+    {
+        x = f(x);
+        return = null;
+    }
+}
+def foo(x)
+{
+    return = 2 * x;
+}
+def bar(x)
+{
+    return = 3 * x;
+}
+a = A.A(2, foo);
+r = a.update1();
+a.f = bar;
+r = a.x;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("r", 12);
         }
@@ -608,7 +757,18 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T32_UseStaticMemberFunction()
         {
-            string code = @"class Foo{    static def foo(x:int, y:int)    {        return = x + y;    }}f = Foo.foo;r = f(3, 4);";
+            string code = @"
+class Foo
+{
+    static def foo(x:int, y:int)
+    {
+        return = x + y;
+    }
+}
+
+f = Foo.foo;
+r = f(3, 4);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 7);
         }
@@ -616,7 +776,18 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T33_UseStaticMemberFunction()
         {
-            string code = @"class Foo{    static def foo(x:int, y:int)    {        return = x + y;    }}f = Foo.foo;r = f({3, 5}, {7, 9});";
+            string code = @"
+class Foo
+{
+    static def foo(x:int, y:int)
+    {
+        return = x + y;
+    }
+}
+
+f = Foo.foo;
+r = f({3, 5}, {7, 9});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] {10, 14});
         }
@@ -624,7 +795,8 @@ a.x = foo2; //b = 4.0";
         [Test]
         public void T34_UseStaticMemberFunction()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     static def foo(x : int, y : int) 
     {
@@ -634,7 +806,8 @@ a.x = foo2; //b = 4.0";
 f = Foo.foo;
 a = { 3, 5 };
 b = { 7, 9 };
-r = f(a<1>, b<2>);";
+r = f(a<1>, b<2>);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { new object[] {10, 12}, new object[] {12, 14} });
         }
@@ -642,7 +815,8 @@ r = f(a<1>, b<2>);";
         [Test]
         public void T35_UseConstructor()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     i;
     constructor Foo(x, y)
@@ -651,7 +825,9 @@ r = f(a<1>, b<2>);";
     } 
 } 
 c = Foo.Foo;
-f = c(2, 3);r = f.i;";
+f = c(2, 3);
+r = f.i;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
         }
@@ -660,7 +836,8 @@ f = c(2, 3);r = f.i;";
         [Test]
         public void T36_UseConstructor()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     i;
     constructor Foo(x, y)
@@ -669,7 +846,9 @@ f = c(2, 3);r = f.i;";
     } 
 } 
 c = Foo.Foo;
-f = c({3,5}, {7, 9});r = f.i;";
+f = c({3,5}, {7, 9});
+r = f.i;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] {10, 14});
         }
@@ -677,7 +856,8 @@ f = c({3,5}, {7, 9});r = f.i;";
         [Test]
         public void T37_FunctionPointerToProperty()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -696,7 +876,8 @@ r = fx(c);
         [Test]
         public void T38_FunctionPointerToProperty()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -715,7 +896,8 @@ r = fx(cs);
         [Test]
         public void T39_FunctionPointerToMemberFunction()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -739,7 +921,8 @@ r = fx(c, 2);
         [Test]
         public void T40_FunctionPointerToMemberFunction()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -764,7 +947,8 @@ r = fx(cs, vs);
         [Test]
         public void T41_FunctionPointerToMemberFunction()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -790,7 +974,8 @@ r = fx(cs<1>, vs<2>);
         [Test]
         public void T42_FunctionPointerToProperty()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -809,7 +994,8 @@ r = Evaluate(fx, {c}, true);
         [Test]
         public void T43_FunctionPointerToProperty()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -828,7 +1014,8 @@ r = Evaluate(fx, {cs}, true);
         [Test]
         public void T44_FunctionPointerToMemberFunction()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)
@@ -852,7 +1039,8 @@ r = Evaluate(fx, {c, 100}, true);
         [Test]
         public void T45_FunctionPointerToMemberFunction()
         {
-            string code = @"class Foo 
+            string code = @"
+class Foo 
 { 
     X;
     constructor Foo(x)

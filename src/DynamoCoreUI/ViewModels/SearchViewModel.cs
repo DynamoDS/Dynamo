@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
@@ -188,7 +191,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Asynchronously performs a search and updates the observable SearchResults property.
+        ///     Performs a search and updates the observable SearchResults property.
         /// </summary>
         /// <param name="query"> The search query </param>
         public void SearchAndUpdateResults(string query)
@@ -196,74 +199,112 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            Task<IEnumerable<SearchElementBase>>.Factory.StartNew(() =>
+            //var sw = new Stopwatch();
+
+            //sw.Start();
+
+            var result = this.Model.Search(query).ToList();
+
+            //sw.Stop();
+            
+            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
+
+            // Remove old execute handler from old top result
+            if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
             {
-                lock (Model.SearchDictionary)
+                var oldTopResult = topResult.Items.First() as NodeSearchElement;
+                oldTopResult.Executed -= this.ExecuteElement;
+            }
+
+            // deselect the last selected item
+            if (visibleSearchResults.Count > SelectedIndex)
+            {
+                visibleSearchResults[SelectedIndex].IsSelected = false;
+            }
+
+            // clear visible results list
+            visibleSearchResults.Clear();
+
+            // if the search query is empty, go back to the default treeview
+            if (string.IsNullOrEmpty(query))
+            {
+                foreach (var ele in this.Model.BrowserRootCategories)
                 {
-                    return Model.Search(query);
+                    ele.CollapseToLeaves();
+                    ele.SetVisibilityToLeaves(true);
                 }
-            }).ContinueWith((t) =>
+
+                // hide the top result
+                topResult.Visibility = false;
+                return;
+            }
+
+            // otherwise, first collapse all
+            foreach (var root in this.Model.BrowserRootCategories)
             {
-                lock (visibleSearchResults)
+                root.CollapseToLeaves();
+                root.SetVisibilityToLeaves(false);
+            }
+
+            // if there are any results, add the top result 
+            if (result.Any() && result.ElementAt(0) is NodeSearchElement)
+            {
+                topResult.Items.Clear();
+
+                var firstRes = (result.ElementAt(0) as NodeSearchElement);
+
+                var copy = firstRes.Copy();
+                copy.Executed += this.ExecuteElement;
+
+                var catName = MakeShortCategoryString(firstRes.FullCategoryName);
+
+                var breadCrumb = new BrowserInternalElement(catName, topResult);
+                breadCrumb.AddChild(copy);
+                topResult.AddChild(breadCrumb);
+
+                topResult.SetVisibilityToLeaves(true);
+                copy.ExpandToRoot();
+            }
+
+            // for all of the other results, show them in their category
+            foreach (var ele in result)
+            {
+                ele.Visibility = true;
+                ele.ExpandToRoot();
+            }
+
+            // create an ordered list of visible search results
+            var baseBrowserItem = new BrowserRootElement("root");
+            foreach (var root in Model.BrowserRootCategories)
+            {
+                baseBrowserItem.Items.Add(root);
+            }
+
+            baseBrowserItem.GetVisibleLeaves(ref visibleSearchResults);
+
+            if (visibleSearchResults.Any())
+            {
+                this.SelectedIndex = 0;
+                visibleSearchResults[0].IsSelected = true;
+            }
+
+            SearchResults.Clear();
+            visibleSearchResults.ToList()
+                .ForEach(x => SearchResults.Add((NodeSearchElement)x));
+
+        }
+
+        private static string MakeShortCategoryString(string fullCategoryName)
+        {
+            var catName = fullCategoryName.Replace(".", " > ");
+
+            // if the category name is too long, we strip off the interior categories
+            if (catName.Length > 50)
+            {
+                var s = catName.Split('>').Select(x => x.Trim()).ToList();
+                if (s.Count() > 4)
                 {
-                    // Remove old execute handler from old top result
-                    if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
-                    {
-                        var oldTopResult = topResult.Items.First() as NodeSearchElement;
-                        oldTopResult.Executed -= this.ExecuteElement;
-                    }
-
-                    // deselect the last selected item
-                    if (visibleSearchResults.Count > SelectedIndex)
-                    {
-                        visibleSearchResults[SelectedIndex].IsSelected = false;
-                    }
-
-                    // clear visible results list
-                    visibleSearchResults.Clear();
-
-                    // if the search query is empty, go back to the default treeview
-                    if (string.IsNullOrEmpty(query))
-                    {
-
-                        foreach (var ele in this.Model.BrowserRootCategories)
-                        {
-                            ele.CollapseToLeaves();
-                            ele.SetVisibilityToLeaves(true);
-                        }
-
-                        // hide the top result
-                        topResult.Visibility = false;
-
-                        return;
-                    }
-
-                    // otherwise, first collapse all
-                    foreach (var root in this.Model.BrowserRootCategories)
-                    {
-                        root.CollapseToLeaves();
-                        root.SetVisibilityToLeaves(false);
-                    }
-
-                    // if there are any results, add the top result 
-                    if (t.Result.Any() && t.Result.ElementAt(0) is NodeSearchElement)
-                    {
-                        topResult.Items.Clear();
-
-                        var firstRes = (t.Result.ElementAt(0) as NodeSearchElement);
-
-                        var copy = firstRes.Copy();
-                        copy.Executed += this.ExecuteElement;
-
-                        var catName = firstRes.FullCategoryName.Replace(".", " > ");
-
-                        // if the category name is too long, we strip off the interior categories
-                        if (catName.Length > 50)
-                        {
-                            var s = catName.Split('>').Select(x => x.Trim()).ToList();
-                            if (s.Count() > 4)
-                            {
-                                s = new List<string>()
+                    s = new List<string>()
                                         {
                                             s[0],
                                             "...",
@@ -271,76 +312,11 @@ namespace Dynamo.ViewModels
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                                catName = String.Join(" > ", s);
-                            }
-                        }
-
-                        var breadCrumb = new BrowserInternalElement(catName, topResult);
-                        breadCrumb.AddChild(copy);
-                        topResult.AddChild(breadCrumb);
-
-                        topResult.SetVisibilityToLeaves(true);
-                        copy.ExpandToRoot();
-
-                    }
-
-                    // for all of the other results, show them in their category
-                    foreach (var ele in this.Model.SearchElements)
-                    {
-                        if (t.Result.Contains(ele))
-                        {
-                            ele.Visibility = true;
-                            ele.ExpandToRoot();
-                        }
-                    }
-
-                    // create an ordered list of visible search results
-                    var baseBrowserItem = new BrowserRootElement("root");
-                    foreach (var root in Model.BrowserRootCategories)
-                    {
-                        baseBrowserItem.Items.Add(root);
-                    }
-
-                    baseBrowserItem.GetVisibleLeaves(ref visibleSearchResults);
-
-                    if (visibleSearchResults.Any())
-                    {
-                        this.SelectedIndex = 0;
-                        visibleSearchResults[0].IsSelected = true;
-                    }
-
-                    SearchResults.Clear();
-                    visibleSearchResults.ToList().ForEach(x => SearchResults.Add((NodeSearchElement)x));
+                    catName = String.Join(" > ", s);
                 }
-
             }
-            , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-        }
 
-        /// <summary>
-        ///     Synchronously performs a search using the current SearchText
-        /// </summary>
-        /// <param name="query"> The search query </param>
-        public void SearchAndUpdateResultsSync()
-        {
-            SearchAndUpdateResultsSync(SearchText);
-        }
-
-        /// <summary>
-        ///     Synchronously Performs a search and updates the observable SearchResults property
-        ///     on the current thread.
-        /// </summary>
-        /// <param name="query"> The search query </param>
-        public void SearchAndUpdateResultsSync(string query)
-        {
-            var result = Model.Search(query);
-
-            SearchResults.Clear();
-            foreach (var node in result)
-            {
-                SearchResults.Add(node);
-            }
-            SelectedIndex = 0;
+            return catName;
         }
 
         #endregion

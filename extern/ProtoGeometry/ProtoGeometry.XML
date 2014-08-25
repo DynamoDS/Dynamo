@@ -304,29 +304,44 @@
             Create a Surface of revolution, sweeping the profile Curve around the axis Ray formed by the origin and the axis Vector, from the start angle in degrees to the sweep angle in degrees.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
             <summary>
             Union a collection of solids into one solid
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Centroid">
             <summary>
-            The centroid of the solid
+            The centroid of the Solid
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Union(Autodesk.DesignScript.Geometry.Solid)">
             <summary>
-            The boolean union of this solid and another.
+            The boolean union of this Solid and another.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
+            <summary>
+            Unions a list of Solids with this Solid.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid)">
             <summary>
-            The boolean difference of this solid with another
+            The boolean difference of this Solid with another
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.DifferenceAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
+            <summary>
+            The boolean difference of this Solid and the union of input Solids
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>
             Obtain a solid Shell from the Faces of this Solid
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Projects the input Geometry onto this Solid, in the direction of the input Vector
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
@@ -336,7 +351,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Volume">
             <summary>
-            The total volume of the solid
+            The total volume of the Solid
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
@@ -515,6 +530,11 @@
             Combines this Surface and input Surfaces into a PolySurface
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Projects the input Geometry onto this Surface in the input Vector direction
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>
             Returns the total surface area.
@@ -641,11 +661,6 @@
             Makes PolySurface by Loft through Curves.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>
-            Makes PolySurface by Loft through PolyCurves.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
             <summary>
             Makes PolySurface by Loft through PolyCurves.
@@ -666,11 +681,6 @@
             Make Polysurface by surfaces of Solid.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.PolyCurve)">
-            <summary>
-            Make Polysurface by sweeping Polycurve along rail.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make Polysurface by sweeping curves along rail.
@@ -684,11 +694,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
             <summary>
             Return new Surfaces representing the underlying Surfaces.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ProjectCurve(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Project curve on polysurface
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -842,6 +847,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
             Create a curve by pulling onto plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>
+            Pull this Curve onto the input Surface, in the direction of the Surface normals.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
@@ -1482,6 +1492,11 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Make PolyCurve by thickening a curve.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make PolyCurve by joining curves. Flips curve as needed for connectivity
@@ -1490,11 +1505,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
             <summary>
             Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Make PolyCurve by thickening a curve.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
@@ -2075,6 +2085,16 @@
             Get a string representation of the Rectangle
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>
+            Create a Rectangle by four corner Points.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Create a Rectangle by four corner Points.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
@@ -2091,16 +2111,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Create a Rectangle by four corner Points.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Create a Rectangle by four corner Points.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Width">
@@ -2260,6 +2270,21 @@
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByThreePoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Create a the Plane containing the three input Points.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Plane.XY">
+            <summary>
+            Creates a plane in the world XY
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Plane.XZ">
+            <summary>
+            Creates a plane in the world XZ plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Plane.YZ">
+            <summary>
+            Creates a plane in the world YZ
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem">

@@ -9,7 +9,6 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoUtilities;
@@ -22,6 +21,31 @@ namespace DynamoSandbox
         {
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            if (DynamoPathManager.Instance.FindAndSetASMHostPath())
+            {
+                if (DynamoPathManager.Instance.ASM219Host == null)
+                {
+                    DynamoPathManager.Instance.SetLibGPath("libg_220");
+                    DynamoPathManager.Instance.ASMVersion = DynamoPathManager.Asm.Version220;
+                }
+
+                var libG = Assembly.LoadFrom(DynamoPathManager.Instance.AsmPreloader);
+
+                Type preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
+
+                MethodInfo preloadMethod = preloadType.GetMethod("PreloadAsmLibraries", 
+                    BindingFlags.Public | BindingFlags.Static);
+
+                object[] methodParams = new object[1];
+
+                if (DynamoPathManager.Instance.ASM219Host == null)
+                    methodParams[0] = DynamoPathManager.Instance.ASM220Host;
+                else
+                    methodParams[0] = DynamoPathManager.Instance.ASM219Host;
+
+                preloadMethod.Invoke(null, methodParams);
+            }
 
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()

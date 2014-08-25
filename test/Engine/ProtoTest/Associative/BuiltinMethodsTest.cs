@@ -807,7 +807,131 @@ x = foo(5);
             // This case crashes nunit 
             //Assert.Fail("This test case crashes Nunit");
         }
+
+        [Test]
+        public void TestTryGetValueFromNestedDictionaries01()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+r = __TryGetValueFromNestedDictionaries(a, ""in"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 42);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary02()
+        {
+            string code = @"
+a = {};
+key = ""in"";
+a[key] = 42;
+r = __TryGetValueFromNestedDictionaries(a, key);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 42);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary03()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {a, b};
+r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
+r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 42, 24});
+            thisTest.Verify("r2", new object[] { 24, 42});
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary04()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {{a}, {b}};
+r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
+r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] {42}, new object[] {24}});
+            thisTest.Verify("r2", new object[] { new object[] {24}, new object[] {42}});
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary05()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {a, {b}};
+r1 = __TryGetValueFromNestedDictionaries(c, ""in"");
+r2 = __TryGetValueFromNestedDictionaries(c, ""out"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 42, new object[] { 24 } });
+            thisTest.Verify("r2", new object[] { 24, new object[] { 42 } });
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary06()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+b = {};
+b[""in""] = 24;
+b[""out""] = 42;
+c = {a, {b}};
+r = __TryGetValueFromNestedDictionaries(c, ""nonexist"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", null);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary07()
+        {
+            string code = @"
+a = {};
+a[""in""] = 42;
+a[""out""] = 24;
+r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", null);
+        }
+
+        [Test]
+        public void TestTryGetValuesFromDictionary08()
+        {
+            string code = @"
+a = 42;
+r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", null);
+        }
     }
+
     class MathematicalFunctionMethodsTest
     {
         public TestFrameWork thisTest = new TestFrameWork();
@@ -872,15 +996,15 @@ x = foo(5);
             public void TestStringFunction()
             {
                 String code =
-                @"import(""string.dll"");
-                a = String.StringLength(""designScripT"");
+                @"import(""DSCoreNodes.dll"");
+                a = String.Length(""designScripT"");
                 b = String.ToUpper(""DynaMo"");
                 c = String.ToLower(""DYNamO"");
                 d = String.ToNumber(""157.589"");
-                e = String.SplitString(""Star_Wars_1_The_Phantom_Menace"",""_"");
-                f = String.JoinStrings(e,""_"");
-                g = String.JoinStrings(e);
-                h = String.SubString(""DesignScript"",2,5);";
+                e = String.Split(""Star_Wars_1_The_Phantom_Menace"",""_"");
+                f = String.Join(""_"", e);
+                g = String.Concat(e);
+                h = String.Substring(""DesignScript"",2,5);";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
                 thisTest.Verify("a", 12);
                 thisTest.Verify("b", "DYNAMO");

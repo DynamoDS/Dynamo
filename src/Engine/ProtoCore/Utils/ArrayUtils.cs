@@ -1280,5 +1280,55 @@ namespace ProtoCore.Utils
 
             return StackValue.Null;
         }
+
+        /// <summary>
+        /// Try to get value for key from nested dictionaries. This function is
+        /// used in the case that indexing into dictionaries that returned from
+        /// a replicated function whose return type is dictionary.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static bool TryGetValueFromNestedDictionaries(StackValue array, StackValue key, out StackValue value, Core core)
+        {
+            if (!array.IsArray)
+            {
+                value = StackValue.Null;
+                return false;
+            }
+
+            HeapElement he = GetHeapElement(array, core);
+            if (he.Dict != null && he.Dict.TryGetValue(key, out value))
+            {
+                return true;
+            }
+
+            var values = new List<StackValue>();
+            bool hasValue = false;
+            for (int i = 0; i < he.VisibleSize; ++i)
+            {
+                StackValue valueInElement;
+                var element = he.Stack[i];
+
+                if (TryGetValueFromNestedDictionaries(element, key, out valueInElement, core))
+                {
+                    hasValue = true;
+                    values.Add(valueInElement);
+                }
+            }
+
+            if (hasValue)
+            {
+                value = HeapUtils.StoreArray(values.ToArray(), null, core);
+                return true;
+            }
+            else
+            {
+                value = StackValue.Null;
+                return false;
+            }
+        }
     }
 }

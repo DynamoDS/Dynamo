@@ -68,6 +68,7 @@ namespace Dynamo.Models
 
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
+        private bool runEnabled = true;
 
         #endregion
 
@@ -192,7 +193,15 @@ namespace Dynamo.Models
             get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
-        public bool RunEnabled { get; set; }
+        public bool RunEnabled
+        {
+            get { return runEnabled; }
+            set
+            {
+                runEnabled = value;
+                RaisePropertyChanged("RunEnabled");
+            }
+        }
         public bool RunInDebug { get; set; }
 
         /// <summary>
@@ -255,19 +264,31 @@ namespace Dynamo.Models
         public static DynamoModel Start(StartConfiguration configuration)
         {
             // where necessary, assign defaults
-            var context = configuration.Context ?? Core.Context.NONE;
-            var corePath = configuration.DynamoCorePath
-                ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var testMode = configuration.StartInTestMode;
-            var prefs = configuration.Preferences ?? new PreferenceSettings();
-            var runner = configuration.Runner ?? new DynamoRunner();
-            var updateManager = configuration.UpdateManager;
+            if (string.IsNullOrEmpty(configuration.Context))
+                configuration.Context = Core.Context.NONE;
+            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+            {
+                var asmLocation = Assembly.GetExecutingAssembly().Location;
+                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
+            }
 
-            return new DynamoModel(context, prefs, corePath, runner, updateManager, testMode);
+            if (configuration.Preferences == null)
+                configuration.Preferences = new PreferenceSettings();
+            if (configuration.Runner == null)
+                configuration.Runner = new DynamoRunner();
+
+            return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(string context, IPreferences preferences, string corePath, DynamoRunner runner, IUpdateManager updateManager, bool isTestMode)
+        protected DynamoModel(StartConfiguration configuration)
         {
+            string context = configuration.Context;
+            IPreferences preferences = configuration.Preferences;
+            string corePath = configuration.DynamoCorePath;
+            DynamoRunner runner = configuration.Runner;
+            IUpdateManager updateManager = configuration.UpdateManager;
+            bool isTestMode = configuration.StartInTestMode;
+
             DynamoPathManager.Instance.InitializeCore(corePath);
 
             Runner = runner;
@@ -298,7 +319,7 @@ namespace Dynamo.Models
 
             DisposeLogic.IsShuttingDown = false;
 
-            this.EngineController = new EngineController(this);
+            this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
             //This is necessary to avoid a race condition by causing a thread join
@@ -353,6 +374,8 @@ namespace Dynamo.Models
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
+            CleanWorkbench();
+
             EngineController.Dispose();
             EngineController = null;
 
@@ -387,7 +410,7 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
@@ -500,7 +523,6 @@ namespace Dynamo.Models
             this.SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");
-            HomeSpace.OnDisplayed();
         }
 
         internal bool CanDoPostUIActivation(object parameter)
@@ -579,6 +601,7 @@ namespace Dynamo.Models
             foreach (NodeModel el in elements)
             {
                 el.DisableReporting();
+                el.Destroy();
             }
 
             foreach (NodeModel el in elements)
@@ -614,7 +637,6 @@ namespace Dynamo.Models
         internal void ViewHomeWorkspace()
         {
             CurrentWorkspace = HomeSpace;
-            CurrentWorkspace.OnDisplayed();
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -1269,18 +1291,12 @@ namespace Dynamo.Models
         {
             OnWorkspaceClearing(this, EventArgs.Empty);
 
-            // KILLDYNSETTINGS
-            //Controller.IsUILocked = true;
-
             CleanWorkbench();
 
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
-
-            // KILLDYNSETTINGS
-            //Controller.IsUILocked = false;
 
             OnWorkspaceCleared(this, EventArgs.Empty);
         }

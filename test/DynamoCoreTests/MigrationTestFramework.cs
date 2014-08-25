@@ -1,16 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-
-using ProtoCore.Mirror;
-using Dynamo.Nodes;
-using DSCoreNodesUI;
-using Dynamo.Utilities;
-
 
 namespace Dynamo.Tests
 {
@@ -48,8 +39,6 @@ namespace Dynamo.Tests
         /// <returns></returns>
         static List<string> SetupMigrationTests()
         {
-            //dynSettings.DynamoLogger.Log("Setting up migration tests...", LogLevel.File);
-
             var testParameters = new List<string>();
 
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
@@ -57,15 +46,11 @@ namespace Dynamo.Tests
             string testsLoc = Path.Combine(assDir, @"..\..\..\test\core\migration\");
             var regTestPath = Path.GetFullPath(testsLoc);
 
-            //dynSettings.DynamoLogger.Log(string.Format("Using regression path: {0}", regTestPath), LogLevel.File);
-
             var di = new DirectoryInfo(regTestPath);
             var dyns = di.GetFiles("*.dyn");
             foreach (var fileInfo in dyns)
             {
-                testParameters.Add(fileInfo.FullName);
-
-                //dynSettings.DynamoLogger.Log(fileInfo.FullName.ToString(), LogLevel.File);                
+                testParameters.Add(fileInfo.FullName);        
             }
 
             return testParameters;

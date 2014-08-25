@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
@@ -34,12 +32,7 @@ namespace Dynamo.DSEngine
 
         private Object MacroMutex = new Object();
 
-        internal SyncDataManager SyncDataManager
-        {
-            get { return syncDataManager; }
-        }
-
-        public EngineController(DynamoModel dynamoModel)
+        public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
             this.dynamoModel = dynamoModel;
 
@@ -48,7 +41,7 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
-            liveRunnerServices = new LiveRunnerServices(dynamoModel, this);
+            liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(dynamoModel, this);
@@ -456,9 +449,6 @@ namespace Dynamo.DSEngine
         {
             syncDataManager.DeleteNodes(node.GUID);
         }
-
-
-
 
         #region N2C
 

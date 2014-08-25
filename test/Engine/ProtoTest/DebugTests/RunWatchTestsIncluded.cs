@@ -937,120 +937,6 @@ b = 2;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch31_test()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"
-class C
-{
-    x : var;
-    constructor C()
-    {
-        x = 10;
-    }
-}
-p = C.C();
-a = p.get_x();
-////////////////////////////////////////////
-class C
-{
-    mx : var;
-    constructor C(x : int)
-    {
-        mx = x;
-    }
-    def somemethod()
-    {
-        return = mx;
-    }
-}
-p = C.C({10,20});
-a = p.somemethod();
-/////////////////////////////////////////////
-class C
-{
-    mx : var;
-    my : var;
-    constructor C(x : int, y : int)
-    {
-        mx = x;
-        my = y;
-    }
-    def somemethod()
-    {
-        return = mx;
-    }
-}
-list = {10,20};
-p = C.C(list, 100);
-a = p.somemethod();
-/////////////////////////////////////////////
-class C
-{
-    y : var;
-    constructor C()
-    {
-        y = 10;
-    }
-}
-class D
-{
-    x : var;
-    constructor D()
-    {
-        x = C.C();
-    }
-}
-p = D.D();
-a = p.get_x().get_y();
-////////////////////////////////////////////
-class C
-{
-    y : var;
-    constructor C(i : int)
-    {
-        y = i;
-    }
-}
-class D
-{
-    x : var;
-    constructor D()
-    {
-        x = C.C({101,102});
-    }
-}
-p = D.D();
-a = p.get_x().get_y();
-///////////////////////////////////////////////////////
-class C
-{
-    x : var;
-    constructor C()
-    {
-        x = 101;
-    }
-    
-    def f(b:bool)
-    {
-        return = b;
-    }
-    def f(i:int)
-    {
-        x = i;
-        return = x;
-    }
-}
-p = C.C();
-a = p.f(102);
-a = p.f(true);
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch32_update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8327,7 +8213,7 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch327_Defect_Geo_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13911,7 +13797,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch460_T020_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13927,7 +13813,7 @@ result3 = resultData[3];
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch461_T021_Vector_ByCoordinates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20671,7 +20557,7 @@ l = tan(0); //0";
 
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch753_language_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20719,7 +20605,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch754_set_operation_functions_test_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20988,7 +20874,7 @@ b4 = Math.Ceiling(a4); //null
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch758_T80585_Count()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -22674,7 +22560,7 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")]
+        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void DebugWatch826_T058_Average_DataType_02()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25035,49 +24921,6 @@ x2 = A.x;
 }
 a = A.A();
 t1 = a.x1;
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch893_T43_Defect_1461479_3()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"class A
-{
-    static x:int=1;	
-	def foo1 ()
-	{
-	    x = 6;
-		return = x;
-	}
-}
-class B extends A
-{
-    static y:int=1;
-    constructor B ( )
-    {
-	    y = 4;
-    } 
-    def foo2 ()
-	{
-	    x = 7;
-		y = 8;
-		return = { x, y } ;
-	}	
-}
-x2 = A.x;
-x3 = B.B();
-t1 = x3.y;
-t2 = x3.x;
-x3.y = 2;
-x3.x = 3;
-t3 = x3.y;
-t4 = x3.x;
-t5 = x3.foo1();
-t6 = x3.foo2();
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);

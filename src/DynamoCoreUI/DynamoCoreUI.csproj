@@ -33,13 +33,18 @@
     <Reference Include="Greg">
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,20 +56,26 @@
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Interfaces\IWpfNode.cs" />
-    <Compile Include="Nodes\BaseTypes.cs" />
-    <Compile Include="Nodes\CodeBlockNode.cs" />
-    <Compile Include="Nodes\Files.cs" />
-    <Compile Include="Nodes\FunctionCallBase.cs" />
-    <Compile Include="Nodes\FunctionCallNodeController.cs" />
-    <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\Watch.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\UsageReportingManager.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CopyNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeCompatibilityMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\DirectoryPathMutator.cs" />
+    <Compile Include="TestInfrastructure\DoubleSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\FilePathMutator.cs" />
+    <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\ListMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
+    <Compile Include="TestInfrastructure\StringInputMutator.cs" />
     <Compile Include="UI\Commands\AutomationSettings.cs" />
     <Compile Include="UI\Commands\ConnectorCommands.cs" />
     <Compile Include="UI\Commands\DynamoCommands.cs" />
