@@ -20,14 +20,14 @@ namespace NUnitCI
             //curPath and prePath are the current and previous paths of either directory or files
             try
             {
-                string curPath = @args[0];
-                string prePath = @args[1];
-                string outPath = @args[2];
+                //string curPath = @args[0];
+                //string prePath = @args[1];
+                //string outPath = @args[2];
 
 
-                //string curPath = @"C:\Users\t_anhp\Downloads\xmlCUR";
-                //string prePath = @"C:\Users\t_anhp\Downloads\xmlOLD";
-                //string outPath = @"C:\Users\t_anhp\Downloads\compareXML\Compare.html";
+                string curPath = @"C:\Users\t_anhp\Downloads\xmlCUR";
+                string prePath = @"C:\Users\t_anhp\Downloads\xmlOLD";
+                string outPath = @"C:\Users\t_anhp\Downloads\compareXML\Compare.html";
 
                 Console.WriteLine(curPath);
                 Console.WriteLine(prePath);
@@ -97,9 +97,8 @@ namespace NUnitCI
         }
         /// <summary>
         /// this function is to build the summary dictionary of the test case results
-        /// path is the path of folder or files
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">path is the path of folder or files</param>
         /// <returns></returns>
         static Dictionary<string, int> GetResultSummaryForFile(string path)
         {
@@ -177,9 +176,8 @@ namespace NUnitCI
         }
         /// <summary>
         /// this fuction is to append the summary to the body of the comparison report
-        /// curPath and prePath are the paths of folder or xml files
         /// </summary>
-        /// <param name="curPath"></param>
+        /// <param name="curPath">curPath and prePath are the paths of folder or xml files</param>
         /// <param name="prePath"></param>
         /// <param name="body"></param>
         public static void AppendNunitSummary(string curPath, string prePath, ref StringBuilder body)
@@ -280,13 +278,13 @@ namespace NUnitCI
             {
                 if (result.result1 != null && result.result2 != null)
                 {
-                    if (result.result1.Result == NuintTestCaseResult.ResultType.SUCCESS && result.result2.Result == NuintTestCaseResult.ResultType.FAILURE)
+                    if (result.result1.Result == NuintTestCaseResult.ResultType.SUCCESS && (result.result2.Result == NuintTestCaseResult.ResultType.FAILURE || result.result2.Result == NuintTestCaseResult.ResultType.ERROR))
                         successToFailure++;
-                    if (result.result1.Result == NuintTestCaseResult.ResultType.FAILURE && result.result2.Result == NuintTestCaseResult.ResultType.SUCCESS)
+                    if ((result.result1.Result == NuintTestCaseResult.ResultType.FAILURE || result.result1.Result == NuintTestCaseResult.ResultType.ERROR) && result.result2.Result == NuintTestCaseResult.ResultType.SUCCESS)
                         failureToSuccess++;
                 }
             }
-            body.AppendLine("<h2>" + "Success to Failure: " + "<font color=\"red\"> <b>" + successToFailure + "</b> <font color=\"black\">" + " Failure to Success: " + "<font color=\"green\"> <b>" + failureToSuccess + "</b> </h2>");
+            body.AppendLine("<h2>" +"<b><u>Regression Summary</u></b>"+ ": Success and Error to Failure: " + "<font color=\"red\"> <b>" + successToFailure + "</b> <font color=\"black\">" + " Failure and Error to Success: " + "<font color=\"green\"> <b>" + failureToSuccess + "</b> </h2>");
             body.AppendLine("<table border=\"1\">");
             body.AppendLine("<tr><td  bgcolor=\"grey\">TestCase Name</td><td bgcolor=\"grey\">Directory</td><td bgcolor=\"grey\">Previous</td><td bgcolor=\"grey\">Current</td></tr>");
 
@@ -296,11 +294,11 @@ namespace NUnitCI
                 string testCaseName = ((result.result1 == null) ? result.result2.Name : result.result1.Name);
 
 
-                body.Append("<a href=\"" + testCaseName + "\">" + testCaseName + "</a>");
+                body.Append("<font color=\"blue\">" + testCaseName);
                 if (result.result1 != null)
-                    body.Append("<td align=\"left\"> From: " + result.result1.FileName + "</td>");
+                    body.Append("<td align=\"left\"> " + result.result1.FileName + "</td>");
                 else
-                    body.Append("<td align=\"left\"> From: " + result.result2.FileName + "</td>");
+                    body.Append("<td align=\"left\"> " + result.result2.FileName + "</td>");
                 body.AppendLine("</td><td>");
 
                 if (result.result1 == null)
@@ -387,10 +385,9 @@ namespace NUnitCI
         }
         /// <summary>
         /// this function is to do the comparison
-        /// result1 and result2 are from previous and current xml respectively
         /// </summary>
-        /// <param name="result1"></param>
-        /// <param name="result2"></param>
+        /// <param name="result1">result1 is from previous xml </param>
+        /// <param name="result2">result2 is from current xml </param>
         /// <returns></returns>
         public static List<NunitDiffResult> NuintDiff(NuintTestResult result1, NuintTestResult result2)
         {
@@ -453,7 +450,7 @@ namespace NUnitCI
                 foreach (var filePath in filePaths)
                 {
                     string fileName;
-                    fileName = Path.GetFileName(filePath);
+                    fileName = Path.GetFileNameWithoutExtension(filePath);
                     if (filePath == null || !File.Exists(filePath))
                         return;
 
