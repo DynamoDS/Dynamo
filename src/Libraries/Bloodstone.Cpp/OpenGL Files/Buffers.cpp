@@ -36,6 +36,9 @@ VertexBuffer::~VertexBuffer()
 
 void VertexBuffer::Render(void) const
 {
+    if (mVertexCount <= 0) // Nothing to render.
+        return;
+
     GL::glBindVertexArray(mVertexArrayId);
 
     switch (mPrimitiveType)
@@ -82,7 +85,7 @@ void VertexBuffer::LoadDataCore(const GeometryData& geometries)
         mPrimitiveType = Dynamo::Bloodstone::IVertexBuffer::PrimitiveType::LineStrip;
     else if (tgd != nullptr)
         mPrimitiveType = Dynamo::Bloodstone::IVertexBuffer::PrimitiveType::Triangle;
-
+ 
     mVertexCount = geometries.VertexCount();
     std::vector<VertexData> data(mVertexCount);
     for (int vertex = 0; vertex < mVertexCount; ++vertex)
@@ -188,16 +191,33 @@ void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
 // ================================================================================
 
 BillboardVertexBuffer::BillboardVertexBuffer(const IGraphicsContext* pGraphicsContext) : 
-    IBillboardVertexBuffer(pGraphicsContext)
+    IBillboardVertexBuffer(pGraphicsContext),
+    mVertexCount(0),
+    mVertexArrayId(0),
+    mVertexBufferId(0)
 {
 }
 
 BillboardVertexBuffer::~BillboardVertexBuffer(void)
 {
+    if (mVertexBufferId != 0) {
+        GL::glDeleteBuffers(1, &mVertexBufferId);
+        mVertexBufferId = 0;
+    }
+
+    if (mVertexArrayId != 0) {
+        GL::glDeleteVertexArrays(1, &mVertexArrayId);
+        mVertexArrayId = 0;
+    }
 }
 
 void BillboardVertexBuffer::RenderCore(void) const
 {
+    if (mVertexCount <= 0) // Nothing to render.
+        return;
+
+    GL::glBindVertexArray(mVertexArrayId);
+    GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
 }
 
 void BillboardVertexBuffer::UpdateCore(const std::vector<BillboardVertex>& vertices)

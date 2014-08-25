@@ -185,6 +185,11 @@ BillboardTextGroup::~BillboardTextGroup()
         delete ((BillboardText *)(iterator->second));
 
     mBillboardTexts.clear();
+
+    if (mpVertexBuffer != nullptr) {
+        delete mpVertexBuffer;
+        mpVertexBuffer = nullptr;
+    }
 }
 
 TextId BillboardTextGroup::CreateText(const FontSpecs& fontSpecs)

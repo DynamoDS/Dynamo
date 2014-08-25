@@ -404,6 +404,11 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual void RenderCore(void) const;
         virtual void UpdateCore(const std::vector<BillboardVertex>& vertices);
         virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram);
+
+    private:
+        int mVertexCount;
+        GLuint mVertexArrayId;
+        GLuint mVertexBufferId;
     };
 
 } } }

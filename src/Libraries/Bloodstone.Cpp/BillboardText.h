@@ -164,7 +164,7 @@ namespace Dynamo { namespace Bloodstone {
         std::map<TextId, BillboardText*> mBillboardTexts;
 
         RegenerationHints mRegenerationHints;
-        IVertexBuffer* mpVertexBuffer;
+        IBillboardVertexBuffer* mpVertexBuffer;
         IShaderProgram* mpShaderProgram;
         ITextBitmapGenerator* mpBitmapGenerator;
         IGraphicsContext* mpGraphicsContext;
