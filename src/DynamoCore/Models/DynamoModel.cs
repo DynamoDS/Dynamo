@@ -305,8 +305,9 @@ namespace Dynamo.Models
             }
 
             InitializePreferences(preferences);
-            InitializeUpdateManager();
             InitializeInstrumentationLogger();
+
+            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
 
             SearchModel = new SearchModel(this);
 
@@ -342,11 +343,6 @@ namespace Dynamo.Models
         private void InitializeInstrumentationLogger()
         {
             InstrumentationLogger.Start(this);
-        }
-
-        private static void InitializeUpdateManager()
-        {
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
         }
 
         private void InitializeCurrentWorkspace()
