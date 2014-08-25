@@ -68,6 +68,8 @@
 
                                                     <MenuItem Name="ContentsButton"  Command="{Binding Path=ToggleTypesVisibleInManagerCommand}" Margin="3" ToolTip="See the types loaded by this package" Header="Show Contents" /> 
                                                     <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="Check if there is a newer version of this package and download it." Header="Get Latest Version" />-->
+                                                    <MenuItem Name="GoToRoot"  Command="{Binding Path=GoToRootDirectoryCommand}" Margin="3" ToolTip="Go to the root folder of this package" Header="Show Root Directory" />
+                                                    <Separator></Separator>
                                                     <MenuItem Name="UninstallButton" Command="{Binding Path=UninstallCommand}" Margin="3" ToolTip="Uninstall this package, only allowed if none of the types are currently in use" Header="Uninstall..." />
                                                     <MenuItem Name="UnmarkUninstallButton" Command="{Binding Path=UnmarkForUninstallationCommand}" Margin="3" ToolTip="Remove the pending uninstall status" Header="Unmark for uninstall..." />
                                                     <Separator></Separator>

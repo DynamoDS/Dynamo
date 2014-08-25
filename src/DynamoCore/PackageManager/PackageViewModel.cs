@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -25,6 +26,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand DeprecateCommand { get; set; }
         public DelegateCommand UndeprecateCommand { get; set; }
         public DelegateCommand UnmarkForUninstallationCommand { get; set; }
+        public DelegateCommand GoToRootDirectoryCommand { get; set; }
 
         public PackageViewModel(DynamoViewModel dynamoViewModel, Package model)
         {
@@ -39,6 +41,7 @@ namespace Dynamo.ViewModels
             DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
             UnmarkForUninstallationCommand = new DelegateCommand(this.UnmarkForUninstallation, this.CanUnmarkForUninstallation);
+            GoToRootDirectoryCommand = new DelegateCommand(this.GoToRootDirectory, this.CanGoToRootDirectory);
 
             this.Model.PropertyChanged += ModelOnPropertyChanged;
             this.dynamoViewModel.Model.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
@@ -99,6 +102,16 @@ namespace Dynamo.ViewModels
         {
             return (!this.Model.InUse(this.dynamoViewModel.Model) || this.Model.LoadedAssemblies.Any()) 
                 && !this.Model.MarkedForUninstall;
+        }
+
+        private void GoToRootDirectory()
+        {
+            Process.Start(this.Model.RootDirectory);
+        }
+
+        private bool CanGoToRootDirectory()
+        {
+            return true;
         }
 
         private void Deprecate()
