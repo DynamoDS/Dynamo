@@ -2185,5 +2185,25 @@ a1;
             Object n1 = null;
             thisTest.Verify("a1", n1);
         }
+
+        [Test]
+        public void TestStringIndexing()
+        {
+
+            string code = @"
+a = {};
+x = 1;
+y = 2;
+a[""x""] = x;
+a[""y""] = y;
+x = 3;
+y = 4;
+r1 = a[""x""];
+r2 = a[""y""];
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", 3);
+            thisTest.Verify("r2", 4);
+        }
     }
 }

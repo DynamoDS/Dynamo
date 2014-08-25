@@ -327,6 +327,26 @@ namespace ProtoFFI
         }
 
         /// <summary>
+        /// Marshal an object to a StackValue
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="context"></param>
+        /// <param name="dsi"></param>
+        /// <returns></returns>
+        protected StackValue MarshalToStackValue(object obj, ProtoCore.Runtime.Context context, Interpreter dsi)
+        {
+            if (obj is StackValue)
+            {
+                return (StackValue)obj;
+            }
+            else
+            {
+                ProtoCore.Type dsType = GetApproxDSType(obj);
+                return primitiveMarshaler.Marshal(obj, context, dsi, dsType);
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="collection"></param>
@@ -341,9 +361,7 @@ namespace ProtoFFI
 
             foreach (var item in collection)
             {
-                ProtoCore.Type dsType = GetApproxDSType(item);
-                StackValue value = primitiveMarshaler.Marshal(item, context, dsi, dsType);
-                sv[index] = value;
+                sv[index] = MarshalToStackValue(item, context, dsi);
                 ++index;
             }
 
@@ -357,9 +375,7 @@ namespace ProtoFFI
 
             foreach (var item in enumerable)
             {
-                ProtoCore.Type dsType = GetApproxDSType(item);
-                StackValue value = primitiveMarshaler.Marshal(item, context, dsi, dsType);
-                svs.Add(value);
+                svs.Add(MarshalToStackValue(item, context, dsi));
             }
 
             var retVal = dsi.runtime.rmem.BuildArray(svs.ToArray());
@@ -378,12 +394,10 @@ namespace ProtoFFI
             {
                 var value = dictionary[key];
 
-                ProtoCore.Type keyType = GetApproxDSType(key);
-                StackValue dsKey = primitiveMarshaler.Marshal(key, context, dsi, keyType);
+                StackValue dsKey = MarshalToStackValue(key, context, dsi);
                 GCUtils.GCRetain(dsKey, core);
 
-                ProtoCore.Type valueType = GetApproxDSType(value);
-                StackValue dsValue = primitiveMarshaler.Marshal(value, context, dsi, valueType);
+                StackValue dsValue = MarshalToStackValue(value, context, dsi);
                 GCUtils.GCRetain(dsValue, core);
 
                 ho.Dict[dsKey] = dsValue;

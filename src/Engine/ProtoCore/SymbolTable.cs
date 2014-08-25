@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using ProtoCore.Namespace;
+
 namespace ProtoCore.DSASM
 { 
     /// <summary>
@@ -236,17 +238,19 @@ namespace ProtoCore.DSASM
             this.forArrayName = forArrayName;
         }
 
-        public bool IsEqual(SymbolNode rhs)
+        public override bool Equals(object obj)
         {
-            return functionIndex == rhs.functionIndex && name == rhs.name;
+            var rhs = obj as SymbolNode;
+            if (rhs == null)
+            {
+                return false;
+            }
+
+            return name.Equals(rhs.name) &&
+                   functionIndex == rhs.functionIndex && 
+                   classScope == rhs.classScope && 
+                   codeBlockId == rhs.codeBlockId;
         }
-
-        public bool IsEqualAtScope(SymbolNode rhs)
-        {
-            return functionIndex == rhs.functionIndex && name == rhs.name && classScope == rhs.classScope && codeBlockId == rhs.codeBlockId;
-        }
-
-
 
         public void SetStaticType(ProtoCore.Type newtype)
         {

@@ -75,41 +75,6 @@ namespace DynamoCoreUITests
 
         #endregion
 
-         //THIS WILL ALWAYS FAIL 
-
-        //[Test, RequiresSTA]
-        //[Category("DynamoUI")]
-        //public void CanOpenAllSampleFilesWithoutError()
-        //{
-        //    var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
-        //    int failCount = 0;
-
-        //    foreach (DirectoryInfo d in di.GetDirectories())
-        //    {
-
-        //        foreach (FileInfo fi in d.GetFiles())
-        //        {
-        //            try
-        //            {
-        //                dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
-        //                {
-        //                    ViewModel.CommandQueue.Enqueue(
-        //                        Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
-        //                    ViewModel.ProcessCommandQueue();
-        //                }));
-        //            }
-        //            catch(Exception e)
-        //            {
-        //                failCount++;
-        //                Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
-        //                Console.WriteLine(string.Format("Could not open {0}", e.Message));
-        //                Console.WriteLine(string.Format("Could not open {0}", e.StackTrace));
-        //            }
-        //        }
-        //    }
-        //    Assert.AreEqual(failCount, 0);
-        //}
-
         #region Zoom In and Out canvas
 
         [Test]
@@ -468,7 +433,7 @@ namespace DynamoCoreUITests
         public void PreferenceSetting()
         {
             // Test Case to ensure that the link for these persistent variable
-            // between DynamoViewModel, Controller is not broken or replaced.
+            // between DynamoViewModel, Model is not broken or replaced.
             #region FullscreenWatchShowing
             bool expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
             ViewModel.ToggleFullscreenWatchShowing(null);
