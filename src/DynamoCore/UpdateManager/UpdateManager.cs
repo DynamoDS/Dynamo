@@ -460,6 +460,8 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
+            OnLog(this, new LogEventArgs("UpdateNotificationControl-OnInstallButtonClicked", LogLevel.File));
+
             string message = string.Format("An update is available for {0}.\n\n" +
                 "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
 
