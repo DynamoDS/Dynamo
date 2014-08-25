@@ -7,7 +7,7 @@
 #include <vector>
 
 #define MAKEGLYPHID(fid, c) (((fid & 0x0000ffff) << 16) | (c & 0x0000ffff))
-#define ADDFLAG(c, n)       ((RegenerationHints)(c | n))
+#define ADDFLAG(c, n)       (c = ((RegenerationHints)(c | n)))
 #define HASFLAG(c, f)       ((c & f) != RegenerationHints::None)
 
 namespace Dynamo { namespace Bloodstone {
@@ -133,11 +133,16 @@ namespace Dynamo { namespace Bloodstone {
 
     struct BillboardQuadInfo
     {
-        float position[3];          // Base point world position.
-        float offset[4];            // Left, top, right, bottom.
-        float texCoords[4];         // Left, top, right, bottom.
-        float foregroundRgba0[4];   // Top foreground color.
-        float foregroundRgba1[4];   // Bottom foreground color.
+        BillboardQuadInfo(std::vector<BillboardVertex>& bvs) :
+            vertices(bvs)
+        {
+        }
+
+        const float* position3;         // Base point world position.
+        const float* offset4;           // Left, top, right, bottom.
+        const float* texCoords4;        // Left, top, right, bottom.
+        const float* foregroundRgba0;   // Top foreground color.
+        const float* foregroundRgba1;   // Bottom foreground color.
         std::vector<BillboardVertex>& vertices;
     };
 

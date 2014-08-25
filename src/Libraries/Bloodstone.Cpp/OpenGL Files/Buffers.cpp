@@ -146,7 +146,7 @@ void VertexBuffer::BindToShaderProgramCore(IShaderProgram* pShaderProgram)
     const auto locNormal = pProgram->GetAttributeLocation("inNormal");
     const auto locColor = pProgram->GetAttributeLocation("inColor");
 
-    auto stride = sizeof(VertexData);
+    auto stride = ((int) sizeof(VertexData));
     GL::glVertexAttribPointer(locPosition, 3, GL_FLOAT, GL_FALSE, stride, FC2O(0));
     GL::glVertexAttribPointer(locNormal,   3, GL_FLOAT, GL_FALSE, stride, FC2O(3));
     GL::glVertexAttribPointer(locColor,    4, GL_FLOAT, GL_FALSE, stride, FC2O(6));
@@ -254,7 +254,7 @@ void BillboardVertexBuffer::BindToShaderProgramCore(IShaderProgram* pShaderProgr
     const auto locColor = pProgram->GetAttributeLocation("inColor");
     const auto locTexCoords = pProgram->GetAttributeLocation("inTextCoords");
 
-    auto stride = sizeof(BillboardVertex);
+    auto stride = ((int) sizeof(BillboardVertex));
     GL::glVertexAttribPointer(locPosition,  3, GL_FLOAT, GL_FALSE, stride, FC2O(0));
     GL::glVertexAttribPointer(locColor,     4, GL_FLOAT, GL_FALSE, stride, FC2O(3));
     GL::glVertexAttribPointer(locTexCoords, 4, GL_FLOAT, GL_FALSE, stride, FC2O(7));

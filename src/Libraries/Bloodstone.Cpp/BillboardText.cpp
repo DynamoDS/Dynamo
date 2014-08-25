@@ -176,6 +176,7 @@ BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) :
     mpBitmapGenerator(nullptr)
 {
     mpBitmapGenerator = CreateTextBitmapGenerator();
+    mpVertexBuffer = pGraphicsContext->CreateBillboardVertexBuffer();
 }
 
 BillboardTextGroup::~BillboardTextGroup()
@@ -300,25 +301,31 @@ void BillboardTextGroup::RegenerateVertexBuffer(void)
 
 void BillboardTextGroup::UpdateVertexBuffer(void)
 {
+    const float position[] = { 10.0f, 10.0f, 10.0f };
+    const float texCoords[] = { 0.0f, 1.0f, 1.0f, 0.0f };
+    const float offset[] = { 0.0f, 16.0f, 52.0f, 0.0f };
+    const float rgba0[] = { 1.0f, 0.5f, 0.0f, 1.0f };
+    const float rgba1[] = { 0.0f, 0.5f, 1.0f, 1.0f };
+
+    std::vector<BillboardVertex> vertices;
+    BillboardQuadInfo quadInfo(vertices);
+    quadInfo.position3 = position;
+    quadInfo.offset4 = offset;
+    quadInfo.texCoords4 = texCoords;
+    quadInfo.foregroundRgba0 = rgba0;
+    quadInfo.foregroundRgba1 = rgba1;
+    FillQuad(quadInfo);
+
+    mpVertexBuffer->Update(vertices);
 }
 
 void BillboardTextGroup::FillQuad(const BillboardQuadInfo& quadInfo) const
 {
-    const float* pos = &(quadInfo.position[0]);
-    const float* rgba0 = &(quadInfo.foregroundRgba0[0]);
-    const float* rgba1 = &(quadInfo.foregroundRgba1[0]);
-
-    float tc[] = 
-    {
-        quadInfo.texCoords[0], quadInfo.texCoords[1],
-        quadInfo.texCoords[2], quadInfo.texCoords[3]
-    };
-
-    float off[] = 
-    {
-        quadInfo.offset[0], quadInfo.offset[1],
-        quadInfo.offset[2], quadInfo.offset[3]
-    };
+    const float* pos    = quadInfo.position3;
+    const float* rgba0  = quadInfo.foregroundRgba0;
+    const float* rgba1  = quadInfo.foregroundRgba1;
+    const float* tc     = quadInfo.texCoords4;
+    const float* off    = quadInfo.offset4;
 
     // Left-top vertex.
     const float tc0[] = { tc[0], tc[1] };
