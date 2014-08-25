@@ -73,58 +73,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(20, fec.ToElements().Count());
         }
 
-        /*
-
-        [Test]
-        public void ElementNodeReassociation()
-        {
-            var model = ViewModel.Model;
-
-            string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
-            model.Open(testPath);
-            Assert.AreEqual(3, ViewModel.Model.Nodes.Count);
-
-            var refPtNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ReferencePointByXyz>();
-            refPtNode.ArgumentLacing = LacingStrategy.Longest;
-
-            ViewModel.Model.RunExpression();
-
-            var oldVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
-            refPtNode.ResetOldValue();
-
-            var oldId = oldVal.Id;
-            var oldPos = oldVal.Position;
-
-            model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>().Value = "1";
-
-            ViewModel.Model.RunExpression();
-
-            var newVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
-
-            Assert.AreEqual(oldId, newVal.Id);
-            Assert.AreNotEqual(oldPos, newVal.Position);
-
-            refPtNode.ResetOldValue();
-
-            var numberNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>();
-            numberNode.Value = "0..10";
-
-            ViewModel.Model.RunExpression();
-
-            var multipleValues = ((FScheme.Value.List)refPtNode.OldValue).Item;
-            Assert.AreEqual(11, multipleValues.Length);
-            Assert.IsTrue(multipleValues.Any(x => ((ReferencePoint)((FScheme.Value.Container)x).Item).Id == oldId));
-
-            refPtNode.ResetOldValue();
-
-            numberNode.Value = "0";
-
-            ViewModel.Model.RunExpression();
-
-            var finalVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
-            Assert.AreEqual(oldId, finalVal.Id);
-        }
-        */
         [Test]
         [TestModel(@".\empty.rfa")]
         public void SwitchDocuments()
@@ -147,7 +95,7 @@ namespace Dynamo.Tests
             ((UIApplication)DocumentManager.Instance.CurrentUIApplication).OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
 
-            ////assert that the doc is set on the controller
+            ////assert that the doc is set on the DocumentManager
             Assert.IsNotNull((Document)DocumentManager.Instance.CurrentDBDocument);
 
             ////update the double node so the graph reevaluates
@@ -157,7 +105,7 @@ namespace Dynamo.Tests
 
             ////run the expression again
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
-            //fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            //fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             //fec.OfClass(typeof(ReferencePoint));
             //Assert.AreEqual(1, fec.ToElements().Count());
 
@@ -169,36 +117,36 @@ namespace Dynamo.Tests
 
         }
 
-        //[Test, TestCaseSource("SetupCopyPastes")]
-        //[TestModel(@".\empty.rfa")]
-        //public void CanCopyAndPasteAllNodesOnRevit(string typeName)
-        //{
-        //    var model = ViewModel.Model;
+        [Test, TestCaseSource("SetupCopyPastes")]
+        [TestModel(@".\empty.rfa")]
+        public void CanCopyAndPasteAllNodesOnRevit(string typeName)
+        {
+            var model = ViewModel.Model;
 
-        //    Assert.DoesNotThrow(() => model.CreateNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
+            Assert.DoesNotThrow(() => model.CurrentWorkspace.AddNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
 
-        //        var node = model.AllNodes.FirstOrDefault();
+            var node = model.AllNodes.FirstOrDefault();
 
-        //        DynamoSelection.Instance.ClearSelection();
-        //        DynamoSelection.Instance.Selection.Add(node);
-        //        Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node);
+            Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
 
-        //        Assert.DoesNotThrow(() => model.Copy(null), string.Format("Could not copy node : {0}", node.GetType()));
-        //        Assert.DoesNotThrow(() => model.Paste(null), string.Format("Could not paste node : {0}", node.GetType()));
+            Assert.DoesNotThrow(() => model.Copy(null), string.Format("Could not copy node : {0}", node.GetType()));
+            Assert.DoesNotThrow(() => model.Paste(null), string.Format("Could not paste node : {0}", node.GetType()));
 
-        //        model.Clear(null);    
-        //}
+            model.Clear(null);
+        }
 
-        //static List<string> SetupCopyPastes()
-        //{
-        //    var excludes = new List<string>();
-        //    excludes.Add("Dynamo.Nodes.DSFunction");
-        //    excludes.Add("Dynamo.Nodes.Symbol");
-        //    excludes.Add("Dynamo.Nodes.Output");
-        //    excludes.Add("Dynamo.Nodes.Function");
-        //    excludes.Add("Dynamo.Nodes.LacerBase");
-        //    excludes.Add("Dynamo.Nodes.FunctionWithRevit");
-        //    return dynSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
-        //}
+        private List<string> SetupCopyPastes()
+        {
+            var excludes = new List<string>();
+            excludes.Add("Dynamo.Nodes.DSFunction");
+            excludes.Add("Dynamo.Nodes.Symbol");
+            excludes.Add("Dynamo.Nodes.Output");
+            excludes.Add("Dynamo.Nodes.Function");
+            excludes.Add("Dynamo.Nodes.LacerBase");
+            excludes.Add("Dynamo.Nodes.FunctionWithRevit");
+            return ViewModel.Model.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
+        }
     }
 }

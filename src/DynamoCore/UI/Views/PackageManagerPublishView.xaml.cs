@@ -17,7 +17,6 @@ namespace Dynamo.PackageManager
             this.DataContext = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
-            //this.Owner = dynSettings.Bench;
             this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
