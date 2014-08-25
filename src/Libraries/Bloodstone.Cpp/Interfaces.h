@@ -519,7 +519,7 @@ namespace Dynamo { namespace Bloodstone {
     class IBillboardVertexBuffer
     {
     public:
-        IBillboardVertexBuffer(IGraphicsContext* pGraphicsContext) : 
+        IBillboardVertexBuffer(const IGraphicsContext* pGraphicsContext) : 
             mpGraphicsContext(pGraphicsContext)
         {
         }
@@ -549,7 +549,7 @@ namespace Dynamo { namespace Bloodstone {
         virtual void BindToShaderProgramCore(IShaderProgram* pShaderProgram) = 0;
 
     protected:
-        IGraphicsContext* mpGraphicsContext;
+        const IGraphicsContext* mpGraphicsContext;
     };
 
     enum class VertexBufferType
@@ -608,6 +608,11 @@ namespace Dynamo { namespace Bloodstone {
             return this->CreateVertexBufferCore();
         }
 
+        IBillboardVertexBuffer* CreateBillboardVertexBuffer(void) const
+        {
+            return this->CreateBillboardVertexBufferCore();
+        }
+
         void BeginRenderFrame(HDC deviceContext) const
         {
             this->BeginRenderFrameCore(deviceContext);
@@ -650,6 +655,7 @@ namespace Dynamo { namespace Bloodstone {
         virtual IShaderProgram* CreateShaderProgramCore(ShaderName shaderName) const = 0;
 
         virtual IVertexBuffer* CreateVertexBufferCore(void) const = 0;
+        virtual IBillboardVertexBuffer* CreateBillboardVertexBufferCore(void) const = 0;
         virtual void BeginRenderFrameCore(HDC deviceContext) const = 0;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const = 0;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const = 0;

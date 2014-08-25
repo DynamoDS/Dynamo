@@ -175,6 +175,11 @@ IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
     return new VertexBuffer();
 }
 
+IBillboardVertexBuffer* GraphicsContext::CreateBillboardVertexBufferCore(void) const
+{
+    return new BillboardVertexBuffer(this);
+}
+
 void GraphicsContext::BeginRenderFrameCore(HDC deviceContext) const
 {
     RECT rcClient;

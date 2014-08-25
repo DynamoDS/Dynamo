@@ -187,7 +187,7 @@ void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
 // BillboardVertexBuffer
 // ================================================================================
 
-BillboardVertexBuffer::BillboardVertexBuffer(IGraphicsContext* pGraphicsContext) : 
+BillboardVertexBuffer::BillboardVertexBuffer(const IGraphicsContext* pGraphicsContext) : 
     IBillboardVertexBuffer(pGraphicsContext)
 {
 }

@@ -206,6 +206,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
             const std::string& content) const;
         virtual IShaderProgram* CreateShaderProgramCore(ShaderName shaderName) const;
         virtual IVertexBuffer* CreateVertexBufferCore(void) const;
+        virtual IBillboardVertexBuffer* CreateBillboardVertexBufferCore(void) const;
         virtual void BeginRenderFrameCore(HDC deviceContext) const;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const;
@@ -396,7 +397,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
     class BillboardVertexBuffer : public Dynamo::Bloodstone::IBillboardVertexBuffer
     {
     public:
-        BillboardVertexBuffer(IGraphicsContext* pGraphicsContext);
+        BillboardVertexBuffer(const IGraphicsContext* pGraphicsContext);
         ~BillboardVertexBuffer(void);
 
     protected:
