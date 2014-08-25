@@ -346,7 +346,7 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return core.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
-            StackValue[] svArray = core.Rmem.GetArrayElements(sv);
+            var svArray = core.Rmem.GetArrayElements(sv);
             foreach (var item in svArray)
             {
                 if (item.IsArray && ContainsDoubleElement(item, core))
@@ -373,7 +373,7 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return true;
 
-            StackValue[] svArray = core.Rmem.GetArrayElements(sv);
+            var svArray = core.Rmem.GetArrayElements(sv);
             foreach (var item in svArray)
             {
                 if (ContainsNonArrayElement(item, core))

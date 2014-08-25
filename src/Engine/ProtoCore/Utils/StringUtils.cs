@@ -58,8 +58,8 @@ namespace ProtoCore.Utils
 
         public static StackValue ConcatString(StackValue op1, StackValue op2, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            StackValue[] v1 = op1.IsString ? rmem.GetArrayElements(op1) : new StackValue[] { op1 };
-            StackValue[] v2 = op2.IsString ? rmem.GetArrayElements(op2) : new StackValue[] { op2 };
+            StackValue[] v1 = op1.IsString ? rmem.GetArrayElements(op1).ToArray() : new StackValue[] { op1 };
+            StackValue[] v2 = op2.IsString ? rmem.GetArrayElements(op2).ToArray() : new StackValue[] { op2 };
             StackValue tmp = rmem.BuildArray(v1.Concat(v2).ToArray());
             return StackValue.BuildString(tmp.opdata);
         }
