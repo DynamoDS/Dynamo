@@ -183,7 +183,7 @@ namespace Dynamo.UpdateManager
         private bool forceUpdate;
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
-        private static UpdateManager instance;
+        private static IUpdateManager instance;
         private static readonly object lockingObject = new object();
 
         #endregion
@@ -298,7 +298,7 @@ namespace Dynamo.UpdateManager
             }
         }
 
-        public static UpdateManager Instance
+        public static IUpdateManager Instance
         {
             get
             {
