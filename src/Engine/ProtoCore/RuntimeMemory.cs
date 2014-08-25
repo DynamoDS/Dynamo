@@ -478,16 +478,6 @@ namespace ProtoCore
                 return hs.Stack.Take(hs.VisibleSize);
             }
 
-            public int GetArraySize(StackValue array)
-            {
-                if (!array.IsArray)
-                {
-                    return Constants.kInvalidIndex;
-                }
-                int ptr = (int)array.opdata;
-                return Heap.Heaplist[ptr].Stack.Length;
-            }
-
             public StackValue BuildArray(StackValue[] arrayElements)
             {
                 int size = arrayElements.Length;
