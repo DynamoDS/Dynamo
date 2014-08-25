@@ -5636,6 +5636,8 @@ namespace ProtoCore.DSASM
                 if (0 == dimensions)
                 {
                     StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
+                    GCRetain(coercedValue);
+
                     FX = coercedValue;
 
                     tempSvData = coercedValue;
