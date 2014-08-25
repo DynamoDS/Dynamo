@@ -170,7 +170,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    public class UpdateManager: NotificationObject, IUpdateManager
+    public sealed class UpdateManager: NotificationObject, IUpdateManager
     {
         #region Private Class Data Members
 
@@ -184,6 +184,7 @@ namespace Dynamo.UpdateManager
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private static UpdateManager instance;
+        private static readonly object lockingObject = new object();
 
         #endregion
 
@@ -299,7 +300,13 @@ namespace Dynamo.UpdateManager
 
         public static UpdateManager Instance
         {
-            get { return instance ?? (instance = new UpdateManager()); }
+            get
+            {
+                lock (lockingObject)
+                {
+                    return instance ?? (instance = new UpdateManager());
+                }
+            }
         }
 
         #endregion
