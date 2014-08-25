@@ -243,7 +243,6 @@ namespace Dynamo.Models
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
             public DynamoRunner Runner { get; set; }
         }
 
@@ -286,7 +285,6 @@ namespace Dynamo.Models
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
             DynamoRunner runner = configuration.Runner;
-            IUpdateManager updateManager = configuration.UpdateManager;
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);

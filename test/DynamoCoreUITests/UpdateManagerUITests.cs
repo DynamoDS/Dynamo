@@ -4,18 +4,15 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using Dynamo;
+
 using Dynamo.Controls;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.UpdateManager;
-using DynamoCore.UI.Controls;
 
-using DynamoUtilities;
+using DynamoCore.UI.Controls;
 
 using NUnit.Framework;
 using Moq;
@@ -36,7 +33,6 @@ namespace DynamoCoreUITests
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
-                    UpdateManager = updateManager,
                     DynamoCorePath = corePath
                 });
 
