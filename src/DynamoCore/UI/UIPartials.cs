@@ -436,7 +436,7 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var tb = new CodeBlockNodeTextBox()
+            var tb = new CodeBlockNodeTextBox(nodeUI.ViewModel)
             {
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
                 VerticalAlignment = System.Windows.VerticalAlignment.Stretch,

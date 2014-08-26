@@ -389,36 +389,21 @@ namespace Dynamo.Nodes
 
     public class CodeBlockNodeTextBox : ICSharpCode.AvalonEdit.TextEditor
     {
-        bool shift, enter;
-
         private NodeViewModel nodeViewModel;
-        private NodeViewModel NodeViewModel
+        private DynamoViewModel dynamoViewModel;
+        
+        public CodeBlockNodeTextBox(NodeViewModel nvm)
         {
-            get
-            {
-                if (this.nodeViewModel != null) return this.nodeViewModel;
-
-                var f = WPF.FindUpVisualTree<dynNodeView>(this);
-                if (f != null) this.nodeViewModel = f.ViewModel;
-
-                return this.nodeViewModel;
-            }
-        }
-
-        public CodeBlockNodeTextBox(string s = "")
-        {
-            Text = s;
+            this.nodeViewModel = nvm;
+            dynamoViewModel = nodeViewModel.DynamoViewModel;
             //BorderThickness = new Thickness(1);
             //Padding = new Thickness(3);
             //MinHeight = 20;
-
             this.TextArea.LostFocus += TextArea_LostFocus;
             this.Loaded += (obj, args) => this.TextArea.Focus();
-            RequestReturnFocusToSearch += TryFocusSearch;
 
             this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeAvalonTextEditor");
             //this.Tag = "Your code goes here";
-
 
             const string highlighting = "DesignScript.Resources.SyntaxHighlighting.xshd";
 
@@ -430,19 +415,17 @@ namespace Dynamo.Nodes
                 new XmlTextReader(elem), HighlightingManager.Instance);
         }
 
-        public event RequestReturnFocusToSearchHandler RequestReturnFocusToSearch;
-        public delegate void RequestReturnFocusToSearchHandler();
         protected void OnRequestReturnFocusToSearch()
         {
-            if (RequestReturnFocusToSearch != null)
-                RequestReturnFocusToSearch();
+            dynamoViewModel.ReturnFocusToSearch();
         }
 
         public string Code
         {
             get
             {
-                //return base.Text;
+                // Since this property a one way binding from source (CodeBlockNodeModel) to 
+                // target (this class), the getter should never be called
                 throw new NotImplementedException();
                
             }
@@ -460,13 +443,6 @@ namespace Dynamo.Nodes
             })
         );
 
-        private void TryFocusSearch()
-        {
-            if (this.NodeViewModel == null) return;
-
-            this.NodeViewModel.DynamoViewModel.ReturnFocusToSearch();
-        }
-
         /// <summary>
         /// Called when the CBN is committed and the underlying source data 
         /// needs to be updated with the text typed in the CBN
@@ -475,11 +451,9 @@ namespace Dynamo.Nodes
         /// <param name="e"></param>
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
-            NodeViewModel nvm = NodeViewModel;
-
-            nvm.DynamoViewModel.ExecuteCommand(
+            this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    nvm.NodeModel.GUID, "Code", this.Text));
+                    this.nodeViewModel.NodeModel.GUID, "Code", this.Text));
         }
 
         private void HandleEscape()
@@ -500,35 +474,19 @@ namespace Dynamo.Nodes
         #region Key Press Event Handlers
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            if(e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
             {
-                shift = true;
-            }
-            else if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                enter = true;
+                if (e.Key == Key.Enter || e.Key == Key.Return)
+                {
+                    OnRequestReturnFocusToSearch();
+                }
             }
             else if (e.Key == Key.Escape)
             {
                 HandleEscape();
             }
-            if (shift == true && enter == true)
-            {
-                OnRequestReturnFocusToSearch();
-                shift = enter = false;
-            }
         }
-        protected override void OnPreviewKeyUp(KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
-            {
-                shift = false;
-            }
-            else if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                enter = false;
-            }
-        }
+
         #endregion
 
     }
