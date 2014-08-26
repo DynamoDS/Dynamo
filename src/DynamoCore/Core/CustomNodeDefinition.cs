@@ -230,10 +230,16 @@ namespace Dynamo
 
             #endregion
 
+            var outputNodes = topMost.Select((x) =>
+            {
+                var n = x.Item2.GetAstIdentifierForOutputIndex(x.Item1);
+                return n as AssociativeNode;
+            }).ToList();
+
             controller.GenerateGraphSyncDataForCustomNode(
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
-                topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
+                outputNodes,
                 parameters);
 
             // Not update graph until Run 
