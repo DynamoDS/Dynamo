@@ -44,8 +44,9 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         Padding="{TemplateBinding Padding}">
-                    <Grid MinHeight="30"
-                          MinWidth="66">
+                    <Grid MinHeight="27"
+                          MinWidth="66"
+                          Margin="16,0,0,2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -60,7 +61,9 @@
                         <ContentPresenter x:Name="HeaderContent"
                                           Grid.Column="1"
                                           ContentSource="Content"
-                                          VerticalAlignment="Center" />
+                                          VerticalAlignment="Center"
+                                          TextBlock.FontSize="13"
+                                          TextBlock.Foreground="#989898" />
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>
@@ -90,6 +93,12 @@
                             <Setter Property="Source"
                                     TargetName="ExpandCollapseStateIcon"
                                     Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                            <Setter Property="TextBlock.FontWeight"
+                                    TargetName="HeaderContent"
+                                    Value="Semibold" />
+                            <Setter Property="TextBlock.Foreground"
+                                    TargetName="HeaderContent"
+                                    Value="#bbbbbb" />
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
@@ -104,6 +113,12 @@
                             <Setter Property="Source"
                                     TargetName="ExpandCollapseStateIcon"
                                     Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                            <Setter Property="TextBlock.FontWeight"
+                                    TargetName="HeaderContent"
+                                    Value="Semibold" />
+                            <Setter Property="TextBlock.Foreground"
+                                    TargetName="HeaderContent"
+                                    Value="#bbbbbb" />
                         </MultiTrigger.Setters>
                     </MultiTrigger>
 
