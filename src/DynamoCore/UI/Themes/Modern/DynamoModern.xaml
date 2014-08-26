@@ -1091,7 +1091,7 @@
                 Value="Center"/>
         <Setter Property="Padding"
                 Value="3" />
-        <Setter Property="Template">
+        <!--<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type nodes:CodeBlockNodeTextBox}">
                     <Border Name="borderText"
@@ -1108,12 +1108,12 @@
                                        Margin="4 0 4 0"
                                        IsHitTestVisible="False"
                                        Text="{TemplateBinding Tag}">
-                                <!--<TextBlock.Visibility>
+                                <TextBlock.Visibility>
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                              Path="Code."
                                              Converter="{StaticResource BooleanToVisibilityConverter}"
                                              ConverterParameter="Collapse" />
-                                </TextBlock.Visibility>-->
+                                </TextBlock.Visibility>
                             </TextBlock>
                         </Grid>
                     </Border>
@@ -1145,7 +1145,7 @@
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
-        </Setter>
+        </Setter>-->
     </Style>
 
     <!-- Port Model -->

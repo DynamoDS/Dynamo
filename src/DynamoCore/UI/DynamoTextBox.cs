@@ -19,6 +19,9 @@ using ProtoCore.DSASM;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace Dynamo.Nodes
 {
@@ -405,18 +408,26 @@ namespace Dynamo.Nodes
         public CodeBlockNodeTextBox(string s = "")
         {
             Text = s;
-            BorderThickness = new Thickness(1);
-            Padding = new Thickness(3);
-            MinHeight = 20;
+            //BorderThickness = new Thickness(1);
+            //Padding = new Thickness(3);
+            //MinHeight = 20;
 
             this.TextArea.LostFocus += TextArea_LostFocus;
             this.Loaded += (obj, args) => this.TextArea.Focus();
             RequestReturnFocusToSearch += TryFocusSearch;
 
             this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeAvalonTextEditor");
-            this.Tag = "Your code goes here";
+            //this.Tag = "Your code goes here";
+
+
+            const string highlighting = "DesignScript.Resources.SyntaxHighlighting.xshd";
+
+            string[] names = GetType().Assembly.GetManifestResourceNames();
+                var elem = GetType().Assembly.GetManifestResourceStream(
+                            names[2]);
             
-            
+            this.SyntaxHighlighting = HighlightingLoader.Load(
+                new XmlTextReader(elem), HighlightingManager.Instance);
         }
 
         public event RequestReturnFocusToSearchHandler RequestReturnFocusToSearch;
