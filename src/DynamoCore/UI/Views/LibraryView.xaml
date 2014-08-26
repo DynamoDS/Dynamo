@@ -37,7 +37,7 @@
                 </Grid>
             </DataTemplate>
 
-            <ControlTemplate x:Key="ExpanderButtonTemp"
+            <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
                              TargetType="{x:Type ToggleButton}">
                 <Border x:Name="ExpanderButtonBorder"
                         Background="{StaticResource WorkspaceBackgroundBrush}"
@@ -111,12 +111,12 @@
             </ControlTemplate>
 
             <!-- Expander Template-->
-            <ControlTemplate x:Key="ExpanderTemp"
+            <ControlTemplate x:Key="CategoryExpanderTemplate"
                              TargetType="{x:Type Expander}">
                 <DockPanel Background="#2F2F2F">
                     <ToggleButton x:Name="ExpanderButton"
                                   DockPanel.Dock="Top"
-                                  Template="{StaticResource ExpanderButtonTemp}"
+                                  Template="{StaticResource CategoryExpanderButtonTemplate}"
                                   Content="{TemplateBinding Header}"
                                   IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                   OverridesDefaultStyle="True">
@@ -161,7 +161,7 @@
                 <DataTemplate>
                     <Expander Header="{Binding Path=Name}"
                               OverridesDefaultStyle="True"
-                              Template="{StaticResource ExpanderTemp}"
+                              Template="{StaticResource CategoryExpanderTemplate}"
                               Foreground="#DDD"
                               FontSize="13">
                         <!-- This is inner list (showing subcategories) -->
