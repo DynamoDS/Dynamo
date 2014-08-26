@@ -67,8 +67,7 @@ namespace Dynamo.Nodes.Search
 
         public virtual BitmapImage SmallIcon
         {
-            //TODO: return BitmapImage for classes
-            get { return null; }
+            get { return GetSmallIcon(this); }
             set { }
         }
 
@@ -104,6 +103,15 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        /// <summary>
+        /// Assembly, where icon for class button can be found.
+        /// </summary>
+        private string _assembly;
+        public string Assembly
+        {
+            get { return _assembly; }
+        }
+
         public BrowserInternalElement()
         {
             this._name = "Default";
@@ -111,14 +119,24 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
-        public BrowserInternalElement(string name, BrowserItem parent)
+        public BrowserInternalElement(string name, BrowserItem parent, string assembly = "")
         {
             this._name = name;
+            this._assembly = assembly;
             this.Parent = parent;
             this.OldParent = null;
         }
 
         public string FullCategoryName { get; set; }
+
+        private BitmapImage GetSmallIcon(BrowserInternalElement member)
+        {
+            if (string.IsNullOrEmpty(member.Assembly))
+                return null;
+
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
+            return (cust != null) ? cust.GetSmallIcon(member.Name) : null;
+        }
     }
 
     public class ClassInformation : BrowserItem
