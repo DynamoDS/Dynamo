@@ -125,6 +125,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBridgeTests", "..\test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpf", "DynamoCoreUI\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCL", "DynamoCL\DynamoCL.csproj", "{6F6ED9C8-A423-4103-BA41-1214482DFBE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -335,6 +337,10 @@ Global
 		{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F6ED9C8-A423-4103-BA41-1214482DFBE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6ED9C8-A423-4103-BA41-1214482DFBE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F6ED9C8-A423-4103-BA41-1214482DFBE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F6ED9C8-A423-4103-BA41-1214482DFBE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

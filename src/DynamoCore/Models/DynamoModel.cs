@@ -324,9 +324,9 @@ namespace Dynamo.Models
             ////inside the vm exec
             this.Reset();
 
-            //Logger.Log(String.Format(
-            //    "Dynamo -- Build {0}",
-            //    Assembly.GetExecutingAssembly().GetName().Version));
+            Logger.Log(String.Format(
+                "Dynamo -- Build {0}",
+                Assembly.GetExecutingAssembly().GetName().Version));
 
             this.Loader.ClearCachedAssemblies();
             this.Loader.LoadNodeModels();

@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System.Drawing;
+using System.Windows;
 using System.Windows.Media;
 
 using Dynamo.Utilities;
+
+using Color = System.Windows.Media.Color;
 
 namespace Dynamo.UI
 {
