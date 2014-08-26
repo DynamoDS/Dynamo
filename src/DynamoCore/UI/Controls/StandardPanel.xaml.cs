@@ -38,30 +38,11 @@ namespace Dynamo.UI.Controls
             ListBoxItem fromSender = sender as ListBoxItem;
             libraryToolTipPopup.PlacementTarget = fromSender;
             libraryToolTipPopup.SetDataContext(fromSender.DataContext);
-            //libraryToolTipPopup.DataContext = fromSender.DataContext;
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (!libraryToolTipPopup.isMouseOver)
             libraryToolTipPopup.SetDataContext(null);
-        }
-
-        private void OnListBoxItemMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            Point point = Mouse.GetPosition(sender as IInputElement);
-            FrameworkElement nodeSearchButton = sender as FrameworkElement;
-            // We need to know whether mouse is inside tooltip.
-            // But we need to know it before mouse will leave nodeSearchButton, that's why
-            // we check where mouse pointer  is.
-            if (point.X >= (nodeSearchButton.ActualWidth - 50)) // 50 is transparent width of tooltip at the left side.
-            {
-                // Leave 3 pixels for case, when user move mouse to the bottom, not to the right.
-                if (point.Y <= (nodeSearchButton.ActualHeight - 3))
-                {
-                    libraryToolTipPopup.isMouseOver = true;
-                }
-            }
         }
 
     }

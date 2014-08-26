@@ -18,6 +18,7 @@ using ProtoCore.DSASM;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -465,8 +466,7 @@ namespace Dynamo.UI.Controls
     public class LibraryToolTipPopup : Popup
     {
         private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
-        // Variable for checking whether mouse is inside tooltip.
-        public bool isMouseOver = false;
+        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
 
         public static readonly DependencyProperty AttachmentSidePopupProperty =
             DependencyProperty.Register("AttachmentSidePopup",
@@ -487,19 +487,27 @@ namespace Dynamo.UI.Controls
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
-            this.MouseLeave += OnLibraryToolTipPopupMouseLeave;
             this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
             this.Child = tooltip;
+            this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
+            this.dispatcherTimer.Tick += new EventHandler(CloseLibraryToolTipPopup);
         }
 
         public void SetDataContext(object dataContext)
         {
+            if (dataContext == null)
+            {
+                dispatcherTimer.Start();
+                return;
+            }
+            dispatcherTimer.Stop();
             this.DataContext = dataContext;
         }
 
-        private void OnLibraryToolTipPopupMouseLeave(object sender, MouseEventArgs e)
+        private void CloseLibraryToolTipPopup(object sender, EventArgs e)
         {
-            this.isMouseOver = false;
+            if(!this.IsMouseOver)
+            this.DataContext = null;
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
@@ -519,7 +527,7 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
-                    x = target.Width + 3*gap - 50;
+                    x = target.Width + 7*gap;
                     var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)

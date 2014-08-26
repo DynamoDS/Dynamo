@@ -16,8 +16,6 @@
                TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="MouseEnter"
                          Handler="OnListBoxItemMouseEnter" />
-            <EventSetter Event="MouseMove"
-                         Handler="OnListBoxItemMouseMove" />
         </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding Path=ClassDetailsVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
