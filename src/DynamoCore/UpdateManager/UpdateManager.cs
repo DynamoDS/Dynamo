@@ -12,6 +12,8 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using System.Xml.Linq;
 
+using Dynamo.UI;
+
 namespace Dynamo.UpdateManager
 {
     public delegate void UpdateDownloadedEventHandler(object sender, UpdateDownloadedEventArgs e);

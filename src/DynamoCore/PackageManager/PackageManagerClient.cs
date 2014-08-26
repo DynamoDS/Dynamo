@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
-using System.Windows;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;

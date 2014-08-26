@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Threading;
+
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
     {
-        private DispatcherTimer runExpressionTimer;
-
         public HomeWorkspaceModel(DynamoModel dynamoModel)
             : this(dynamoModel, new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
@@ -27,6 +26,8 @@ namespace Dynamo.Models
 
             this.DynamoModel.RunExpression();
         }
+
+        private DispatcherTimer runExpressionTimer;
 
         public override void Modified()
         {

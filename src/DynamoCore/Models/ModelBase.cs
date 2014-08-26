@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows;
 using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Selection;
+using Dynamo.Utilities;
+
+using Point = System.Windows.Point;
 
 namespace Dynamo.Models
 {

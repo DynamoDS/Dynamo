@@ -19,6 +19,7 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Services;
+using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -302,7 +303,7 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
             InitializeUpdateManager(updateManager);
-            InitializeInstrumentationLogger();
+            //InitializeInstrumentationLogger();
 
             SearchModel = new SearchModel(this);
 
@@ -311,21 +312,21 @@ namespace Dynamo.Models
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
             this.Loader = new DynamoLoader(this);
 
-            this.Loader.PackageLoader.DoCachedPackageUninstalls();
-            this.Loader.PackageLoader.LoadPackages();
+            //this.Loader.PackageLoader.DoCachedPackageUninstalls();
+            //this.Loader.PackageLoader.LoadPackages();
 
             DisposeLogic.IsShuttingDown = false;
 
             this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
             this.CustomNodeManager.RecompileAllNodes(EngineController);
 
-            //This is necessary to avoid a race condition by causing a thread join
-            //inside the vm exec
+            ////This is necessary to avoid a race condition by causing a thread join
+            ////inside the vm exec
             this.Reset();
 
-            Logger.Log(String.Format(
-                "Dynamo -- Build {0}",
-                Assembly.GetExecutingAssembly().GetName().Version));
+            //Logger.Log(String.Format(
+            //    "Dynamo -- Build {0}",
+            //    Assembly.GetExecutingAssembly().GetName().Version));
 
             this.Loader.ClearCachedAssemblies();
             this.Loader.LoadNodeModels();

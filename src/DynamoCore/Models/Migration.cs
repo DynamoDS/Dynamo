@@ -322,7 +322,7 @@ namespace Dynamo.Models
                 throw new ArgumentException(message, "rootFolder");
             }
 
-            var backupFolderName = Dynamo.Configurations.BackupFolderName;
+            var backupFolderName = Dynamo.UI.Configurations.BackupFolderName;
 
             var subFolder = Path.Combine(baseFolder, backupFolderName);
             if (create && (Directory.Exists(subFolder) == false))

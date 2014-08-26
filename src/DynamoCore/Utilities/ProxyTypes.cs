@@ -30,4 +30,33 @@ namespace Dynamo.Utilities
             Bottom = bottom;
         }
     }
+
+    //public struct Point
+    //{
+    //    public double X { get; set; }
+    //    public double Y { get; set; }
+
+    //    public Point(double x, double y)
+    //        : this()
+    //    {
+    //        X = x;
+    //        Y = y;
+    //    }
+    //}
+    //public struct Rect
+    //{
+    //    public double X { get; set; }
+    //    public double Y { get; set; }
+    //    public double Width { get; set; }
+    //    public double Height { get; set; }
+
+    //    public Rect(double x, double y, double width, double height)
+    //        : this()
+    //    {
+    //        X = x;
+    //        Y = y;
+    //        Width = width;
+    //        Height = height;
+    //    }
+    //}
 }
