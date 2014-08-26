@@ -346,8 +346,8 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return core.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
-            var svArray = core.Rmem.GetArrayElements(sv);
-            foreach (var item in svArray)
+            var values = ArrayUtils.GetValues(sv, core); 
+            foreach (var item in values)
             {
                 if (item.IsArray && ContainsDoubleElement(item, core))
                     return true;
@@ -373,14 +373,8 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return true;
 
-            var svArray = core.Rmem.GetArrayElements(sv);
-            foreach (var item in svArray)
-            {
-                if (ContainsNonArrayElement(item, core))
-                    return true;
-            }
-
-            return false;
+            var values = ArrayUtils.GetValues(sv, core);
+            return values.Any(v => ContainsNonArrayElement(v, core)); 
         }
 
         /// <summary>
@@ -1024,15 +1018,15 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Get all values that stored in the array
+        /// Get all values that stored in the array, including in dictionary
         /// </summary>
         /// <param name="array"></param>
         /// <param name="core"></param>
         /// <returns></returns>
         public static IEnumerable<StackValue> GetValues(StackValue array, Core core)
         {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
+            Validity.Assert(array.IsArray || array.IsString);
+            if (!array.IsArray && !array.IsString)
             {
                 yield break;
             }

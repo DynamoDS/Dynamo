@@ -6025,7 +6025,7 @@ namespace ProtoCore.DSASM
             else if ((opdata1.IsChar || opdata1.IsString) &&
                      (opdata2.IsChar || opdata2.IsString))
             {
-                opdata2 = StringUtils.ConcatString(opdata2, opdata1, rmem);
+                opdata2 = StringUtils.ConcatString(opdata2, opdata1, core);
             }
             else if (opdata1.IsString || opdata2.IsString)
             {
@@ -6033,12 +6033,12 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata2, core, rmem);
-                    opdata2 = StringUtils.ConcatString(newSV, opdata1, rmem);
+                    opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
                 }
                 else if (opdata2.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata1, core, rmem);
-                    opdata2 = StringUtils.ConcatString(opdata2, newSV, rmem);
+                    opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
                 }
             }
             else if (opdata2.IsArrayKey && opdata1.IsInteger)

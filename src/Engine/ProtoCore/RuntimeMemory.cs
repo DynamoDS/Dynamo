@@ -456,19 +456,6 @@ namespace ProtoCore
                 return sv;
             }
 
-            /// <summary>
-            /// Return values in an array but not including values in the dictionary.
-            /// </summary>
-            /// <param name="array"></param>
-            /// <returns></returns>
-            [Obsolete("This funciton does not return values in dictionary. In most cases should use ArrayUtils.GetValues().")]
-            public IEnumerable<StackValue> GetArrayElements(StackValue array)
-            {
-                long ptr = array.opdata;
-                HeapElement hs = Heap.Heaplist[(int)ptr];
-                return hs.Stack.Take(hs.VisibleSize);
-            }
-
             public StackValue BuildArray(StackValue[] arrayElements)
             {
                 int size = arrayElements.Length;

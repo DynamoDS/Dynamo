@@ -419,7 +419,7 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            var dsElements = dsi.runtime.rmem.GetArrayElements(dsObject);
+            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.Core);
             var result = new List<T>();
             Type objType = typeof(T);
 
