@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -78,7 +77,7 @@ namespace DSRevitNodesTests
     [TestFixture]
     public class GeometricRevitNodeTest : RevitNodeTestBase
     {
-        IExtensionApplication application = Application.Instance as IExtensionApplication;
+        IExtensionApplication application = Application.Instance;
         TestExecutionSession session = new TestExecutionSession();
 
         [SetUp]
