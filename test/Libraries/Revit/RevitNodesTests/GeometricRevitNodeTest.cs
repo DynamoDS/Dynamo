@@ -100,8 +100,8 @@ namespace DSRevitNodesTests
         [TearDown]
         public void ShutDownHostFactory()
         {
-            application.OnEndExecution(session);
-            HostFactory.Instance.ShutDown();
+            //application.OnEndExecution(session);
+            //HostFactory.Instance.ShutDown();
         }
 
     }
