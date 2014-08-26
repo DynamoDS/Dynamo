@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Core.Threading
 {
@@ -20,7 +21,8 @@ namespace Dynamo.Core.Threading
 
             // The host implementation of ISchedulerThread can begin access the 
             // scheduler as soon as this method is invoked. It is important for 
-            // this call to be done at the very end of the constructor.
+            // this call to be made at the very end of the constructor so we are 
+            // sure everything in the scheduler is ready for access.
             this.schedulerThread.Initialize(this);
         }
 
@@ -49,6 +51,18 @@ namespace Dynamo.Core.Threading
         /// 
         internal void ScheduleForExecution(AsyncTask asyncTask)
         {
+            // When an AsyncTask is scheduled for execution during a test, it 
+            // executes on the context of the thread that runs the unit test 
+            // case (in a regular headless test case this is the unit test 
+            // background thread; in a recorded test this is the main ui thread).
+            // 
+            if (DynamoModel.IsTestMode)
+            {
+                asyncTask.MarkTaskAsScheduled();
+                ProcessTaskInternal(asyncTask);
+                return;
+            }
+
             lock (taskQueue)
             {
                 taskQueue.Add(asyncTask); // Append new task to the end
