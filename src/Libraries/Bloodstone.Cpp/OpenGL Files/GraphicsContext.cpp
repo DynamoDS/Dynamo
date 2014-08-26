@@ -157,7 +157,7 @@ IShaderProgram* GraphicsContext::CreateShaderProgramCore(ShaderName shaderName) 
 {
     GetResourceIdentifiersParam params;
     params.openGlVersion = GetOpenGLVersion(mMajorVersion, mMinorVersion);
-    params.shaderName = ShaderName::Phong;
+    params.shaderName = shaderName;
     GetResourceIdentifiers(&params);
 
     std::string vs, fs;

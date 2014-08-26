@@ -28,9 +28,11 @@ The following list represents what are to be implemented in Bloodstone for it to
 - [x] Implement pan operation
 - [x] Implement zoom operation
 - [x] Implement zoom extent with double-click
+- [ ] Replace ```IGraphicsContext::ActivateShaderProgram``` with ```IShaderProgram::Activate```
+- [ ] Replace ```IGraphicsContext::RenderVertexBuffer``` with ```IVertexBuffer::Render```
 - [ ] Encapsulate things like ```controlParams``` in impl-specific classes
 - [ ] Remove APIs to deal with vertex/fragment shader from IGraphicsContext
-- [ ] Remove "alpha" uniform from Phong fragment shader
+- [ ] Remove ```alpha``` uniform from Phong fragment shader
 - [ ] Set the background Cornflower blue to match the geometry contents
 - [ ] Output diagnostic information on Dynamo
 - [ ] Fix creation failure for Parallels
@@ -62,8 +64,8 @@ Color setting is now available on per-node basis
 Colored spheres in a grid
 ![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/colored-spheres.png)
 
-Render style settings on a per-node basis, with default set to "Phong Shading"
+Render style settings on a per-node basis, with default set to ```Phong Shading```
 ![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/render-style-phong-shading.png)
 
-Render style of "Primitive Color" allows color specified on triangles to show through without shading
+Render style of ```Primitive Color``` allows color specified on triangles to show through without shading
 ![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/render-style-primitive-color.png)

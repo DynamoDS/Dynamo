@@ -170,6 +170,7 @@ namespace Dynamo { namespace Bloodstone {
     private:
 
         BillboardText* GetBillboardText(TextId textId) const;
+        void Initialize(void);
         void RegenerateInternal(void);
         void RegenerateTexture(void);
         void RegenerateVertexBuffer(void);

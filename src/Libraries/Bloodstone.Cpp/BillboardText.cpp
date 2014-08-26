@@ -176,7 +176,6 @@ BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) :
     mpBitmapGenerator(nullptr)
 {
     mpBitmapGenerator = CreateTextBitmapGenerator();
-    mpVertexBuffer = pGraphicsContext->CreateBillboardVertexBuffer();
 }
 
 BillboardTextGroup::~BillboardTextGroup()
@@ -186,6 +185,11 @@ BillboardTextGroup::~BillboardTextGroup()
         delete ((BillboardText *)(iterator->second));
 
     mBillboardTexts.clear();
+
+    if (mpShaderProgram != nullptr) {
+        delete mpShaderProgram;
+        mpShaderProgram = nullptr;
+    }
 
     if (mpVertexBuffer != nullptr) {
         delete mpVertexBuffer;
@@ -219,10 +223,21 @@ void BillboardTextGroup::Destroy(TextId textId)
 
 void BillboardTextGroup::Render(void) const
 {
+    if (mBillboardTexts.size() <- 0) // Nothing to render, forget it.
+        return;
+
+    if (nullptr == mpVertexBuffer) {
+        auto pThis = const_cast<BillboardTextGroup *>(this);
+        pThis->Initialize();
+    }
+
     if (mRegenerationHints != RegenerationHints::None) {
         auto pThis = const_cast<BillboardTextGroup *>(this);
         pThis->RegenerateInternal();
     }
+
+    mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
+    mpVertexBuffer->Render();
 }
 
 void BillboardTextGroup::UpdateText(TextId textId, const std::wstring& text)
@@ -277,6 +292,19 @@ BillboardText* BillboardTextGroup::GetBillboardText(TextId textId) const
 {
     auto iterator = mBillboardTexts.find(textId);
     return ((iterator == mBillboardTexts.end()) ? nullptr : iterator->second);
+}
+
+void BillboardTextGroup::Initialize(void)
+{
+    if (nullptr == mpVertexBuffer)
+        mpVertexBuffer = mpGraphicsContext->CreateBillboardVertexBuffer();
+
+    if (nullptr == mpShaderProgram) {
+        auto name = ShaderName::BillboardText;
+        mpShaderProgram = mpGraphicsContext->CreateShaderProgram(name);
+    }
+
+    mpVertexBuffer->BindToShaderProgram(mpShaderProgram);
 }
 
 void BillboardTextGroup::RegenerateInternal(void)
