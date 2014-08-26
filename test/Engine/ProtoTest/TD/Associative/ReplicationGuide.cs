@@ -603,12 +603,13 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
+        [Category("Failing")]
         public void T034_Replication_Guides_Not_On_All_Arguments_9()
         {
             String code =
 @"import(""DSCoreNodes.dll"");def sum ( a, b, c ){    return = a + b + c;}temp1 = (Math.Sin(0..180..#2) * 2);temp2 = (Math.Sin(0..180..#3) * 1);zArray = temp1<1> + temp2<2>;zArray1 = zArray + 1;ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );// expected :  ceilingPoints = { { 1.000, 9.500, 16.000 }, { 11.000, 19.500, 26.000 } }// received :  ceilingPoints = null";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
+            String errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("test", new Object[] { new Object[] { 1.000, 9.500, 16.000 }, new Object[] { 11.000, 19.500, 26.000 } });
@@ -1054,11 +1055,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void T041_1467460_replication_guide_not_in_sequence_02()
         {
             string code =
 @"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<1>,y<3>,z).a; // expect this to be treated as :  A.A(x<1>,y<2>,z<1>).a;";
-            string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
+            string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } });
         }
@@ -1076,11 +1078,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void T041_1467460_replication_guide_not_in_sequence_04()
         {
             string code =
 @"class A{    a:int;    constructor A (x1,y1,z1)    {        a = y1;    }}x = {0,1};y = {2,3};z = {4,5 };test = A.A(x<1>, y, z<3>).a; // expect this to be treated as :  A.A(x<1>,y<1>,z<2>).a;";
-            string errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
+            string errmsg = "MAGN-1707 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new object[] { new Object[] { 2, 2 }, new Object[] { 3, 3 } });
         }
@@ -1331,11 +1334,12 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failing")]
         public void T0109_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
 @"def foo (x1,y1){    return = x1 + y1;}x = {{0, 1},{2,3}};y = {{4,5},{6,7}};test1 = foo(x<2><4>, y<3><1>) ;            ";
-            string errmsg = "DNL-1467581 NotImplemented Exception when multiple non-sequential replication guides are used on multidimensional arrays";
+            string errmsg = "MAGN-1708 NotImplemented Exception when multiple non-sequential replication guides are used on multidimensional arrays";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new object[] { new object[] { new object[] { new object[] { 4, 5 }, new object[] { 6, 7 } }, new object[] { new object[] { 5, 6 }, new object[] { 7, 8 } } }, new object[] { new object[] { new object[] { 6, 7 }, new object[] { 8, 9 } }, new object[] { new object[] { 7, 8 }, new object[] { 9, 10 } } } });
         }

@@ -25,7 +25,7 @@ namespace DSRevitNodesTests
             resolverSetup = true;
         }
 
-        private static string GetDynamoRootDirectory()
+        internal static string GetDynamoRootDirectory()
         {
             var assemPath = Assembly.GetExecutingAssembly().Location;
             var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));

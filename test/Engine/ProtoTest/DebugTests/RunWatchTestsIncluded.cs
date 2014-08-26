@@ -937,120 +937,6 @@ b = 2;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch31_test()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"
-class C
-{
-    x : var;
-    constructor C()
-    {
-        x = 10;
-    }
-}
-p = C.C();
-a = p.get_x();
-////////////////////////////////////////////
-class C
-{
-    mx : var;
-    constructor C(x : int)
-    {
-        mx = x;
-    }
-    def somemethod()
-    {
-        return = mx;
-    }
-}
-p = C.C({10,20});
-a = p.somemethod();
-/////////////////////////////////////////////
-class C
-{
-    mx : var;
-    my : var;
-    constructor C(x : int, y : int)
-    {
-        mx = x;
-        my = y;
-    }
-    def somemethod()
-    {
-        return = mx;
-    }
-}
-list = {10,20};
-p = C.C(list, 100);
-a = p.somemethod();
-/////////////////////////////////////////////
-class C
-{
-    y : var;
-    constructor C()
-    {
-        y = 10;
-    }
-}
-class D
-{
-    x : var;
-    constructor D()
-    {
-        x = C.C();
-    }
-}
-p = D.D();
-a = p.get_x().get_y();
-////////////////////////////////////////////
-class C
-{
-    y : var;
-    constructor C(i : int)
-    {
-        y = i;
-    }
-}
-class D
-{
-    x : var;
-    constructor D()
-    {
-        x = C.C({101,102});
-    }
-}
-p = D.D();
-a = p.get_x().get_y();
-///////////////////////////////////////////////////////
-class C
-{
-    x : var;
-    constructor C()
-    {
-        x = 101;
-    }
-    
-    def f(b:bool)
-    {
-        return = b;
-    }
-    def f(i:int)
-    {
-        x = i;
-        return = x;
-    }
-}
-p = C.C();
-a = p.f(102);
-a = p.f(true);
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch32_update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25042,49 +24928,6 @@ t1 = a.x1;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch893_T43_Defect_1461479_3()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"class A
-{
-    static x:int=1;	
-	def foo1 ()
-	{
-	    x = 6;
-		return = x;
-	}
-}
-class B extends A
-{
-    static y:int=1;
-    constructor B ( )
-    {
-	    y = 4;
-    } 
-    def foo2 ()
-	{
-	    x = 7;
-		y = 8;
-		return = { x, y } ;
-	}	
-}
-x2 = A.x;
-x3 = B.B();
-t1 = x3.y;
-t2 = x3.x;
-x3.y = 2;
-x3.x = 3;
-t3 = x3.y;
-t4 = x3.x;
-t5 = x3.foo1();
-t6 = x3.foo2();
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch894_T43_Defect_1461479_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37858,8 +37701,10 @@ y = foo ( -2 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1358_TV94_Method_Resolution_Nested_Language_Blocks_2()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4290
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo(  )
 {
@@ -42331,47 +42176,6 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(importpath, src, map);
-        }
-
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1551_T00016_Geometry_012_centroid_1()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""GeometryLibForLanguageTesting.ds"");
-// [1] create functions to calculate the centroid of a collection of points 
-def sumCollection(arr : double[]) = sumCollectionInternal(arr, Count(arr)-1);
-def sumCollectionInternal(arr : double[], i : int ) 
-{
-    return = [Imperative]
-    {
-        if( i > -1) 
-        {
-            return = arr[i] + sumCollectionInternal(arr, i-1);
-        }
-        else
-        {
-            return = 0;
-        }
-    }
-}
-def average(arr : double[]) = sumCollection(arr) / count(arr);
-def centroid(points : Point[]) = Point.ByCartesianCoordinates( average(points.X), average(points.Y),  average(points.Z) );
-// [2] create some points
-point_1 = Point.ByCartesianCoordinates( 30.0, 80.0, 0.0 );
-point_2 = Point.ByCartesianCoordinates( 10.0, 50.0, 0.0 );
-point_3 = Point.ByCartesianCoordinates( 50.0, 50.0, 0.0 );
-// [3] create centrePoint
-centrePoint = centroid( {point_1, point_2, point_3} );
-// [4] test with lines
-lineTest  = Line.ByStartPointEndPoint( centrePoint, { point_1, point_2, point_3 } );
-// [5] move a point
-point_1 = Point.ByCartesianCoordinates( 40.0, 80.0, 0.0 );
-x1 = lineTest[2].EndPoint.X;
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
         [Test]

@@ -111,7 +111,7 @@ namespace Dynamo.Search
         {
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
-            MaxNumSearchResults = 35;
+            MaxNumSearchResults = 15;
 
             // pre-populate the search categories
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -179,9 +179,9 @@ namespace Dynamo.Search
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal List<SearchElementBase> Search(string search)
+        internal IEnumerable<SearchElementBase> Search(string search)
         {
-            if (string.IsNullOrEmpty(search) || search == "Search...")
+            if (string.IsNullOrEmpty(search))
             {
                 return _searchElements;
             }
