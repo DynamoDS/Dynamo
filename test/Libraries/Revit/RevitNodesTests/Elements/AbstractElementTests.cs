@@ -5,7 +5,7 @@ using RTF.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class AbstractElementTests : RevitNodeTestBase
+    public class AbstractElementTests : GeometricRevitNodeTest
     {
         [Test, Ignore]
         [TestModel(@".\empty.rfa")]
