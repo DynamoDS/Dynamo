@@ -505,35 +505,6 @@ namespace ProtoCore.Utils
             return GetHeapElement(array, core).VisibleSize;
         }
 
-        public static int GetValueSize(StackValue array, Core core)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return Constants.kInvalidIndex;
-            }
-
-            HeapElement he = GetHeapElement(array, core);
-            if (null == he)
-            {
-                return 0;
-            }
-
-            var dict = he.Dict;
-            return (null == dict) ? 0 : dict.Count;
-        }
-
-        public static int GetFullSize(StackValue array, Core core)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return Constants.kInvalidIndex;
-            }
-
-            return GetElementSize(array, core) + GetValueSize(array, core);
-        }
-
         /// <summary>
         /// For an array we supporting zipped replicaiton for array indexing as 
         /// well. I.e., for the following expression:
@@ -1053,15 +1024,33 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Get all values from an array.
+        /// Get all values that stored in the array
         /// </summary>
         /// <param name="array"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static StackValue[] GetValues(StackValue array, Core core)
+        public static IEnumerable<StackValue> GetValues(StackValue array, Core core)
         {
-            List<StackValue> values = GetValues<StackValue>(array, core, (StackValue sv) => sv);
-            return values.ToArray();
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
+            {
+                yield break;
+            }
+
+            HeapElement he = GetHeapElement(array, core);
+            var values = he.Stack.Take(he.VisibleSize);
+            foreach (var item in values)
+            {
+                yield return item; 
+            }
+
+            if (he.Dict != null)
+            {
+                foreach (var item in he.Dict.Values)
+                {
+                    yield return item;
+                }
+            }
         }
 
         /// <summary>

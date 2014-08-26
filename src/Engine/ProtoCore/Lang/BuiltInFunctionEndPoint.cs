@@ -446,18 +446,18 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kGetValues:
                     {
                         StackValue array = formalParameters[0];
-                        StackValue[] result = ArrayUtils.GetValues(array, core);
-                        if (null == result)
+                        if (!array.IsArray)
                         {
                             ret = StackValue.Null;
                         }
                         else
                         {
+                            var result = ArrayUtils.GetValues(array, core);
                             foreach (var key in result)
                             {
                                 GCUtils.GCRetain(key, core);
                             }
-                            ret = HeapUtils.StoreArray(result, null, core);
+                            ret = HeapUtils.StoreArray(result.ToArray(), null, core);
                         }
                         break;
                     }
