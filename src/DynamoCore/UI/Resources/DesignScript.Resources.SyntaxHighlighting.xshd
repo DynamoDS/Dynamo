@@ -1,3 +1,4 @@
+<!-- syntaxdefinition for DesignScript -->
 <SyntaxDefinition name="DesignScript" extensions=".ds">
   <Environment>
     <Custom name="TypeReference" bold="false" italic="false" color="#04ABAB" />
@@ -18,78 +19,83 @@
   <Properties>
     <Property name="LineComment" value="//" />
   </Properties>
-  <Digits name="Digits" color="#AE81FF" />
+  <Digits name="Digits" color="#FFA52A2A" />
   <RuleSets>
     <RuleSet ignorecase="false">
-      <Delimiters>()[]{}@,:.`=;+-*/% &amp;|^&gt;&lt;</Delimiters>
-      <Span name="Char" stopateol="true" color="#E6DB74" escapecharacter="\">
+      <Delimiters>()[]{},:.`=;+-*/%!~#\ &amp;|^&gt;&lt;</Delimiters>
+      <Span name="Char" stopateol="true" color="#FFA52A2A" escapecharacter="\">
         <Begin>'</Begin>
         <End>'</End>
-      </Span>
-      <Span name="DocComment" color="#75715E">
-        <Begin>"""</Begin>
-        <End>"""</End>
-      </Span>
-      <Span name="LineComment" stopateol="true" color="#75715E">
+      </Span>      
+      <Span name="LineComment" stopateol="true" color="#FF008000">
         <Begin>//</Begin>
       </Span>
-      <Span name="String" stopateol="true" color="#E6DB74" escapecharacter="\">
+      <Span name="String" stopateol="true" color="#FFA52A2A" escapecharacter="\">
         <Begin>"</Begin>
         <End>"</End>
       </Span>
-      <MarkPrevious bold="true" color="White">(</MarkPrevious>
-      <KeyWords name="BuiltInStatements" bold="true" color="#F92672">
-        <Key word="assert" />
-        <Key word="del" />
-        <Key word="exec" />
-        <Key word="global" />
-        <Key word="lambda" />
-        <Key word="print" />
+      <MarkPrevious color="#2B91AF">(</MarkPrevious>
+      <KeyWords name="BuiltInStatements" color="#FF0000FF">
+        <Key word="local" />
+        <Key word="static" />
+        <Key word="this" />
       </KeyWords>
-      <KeyWords name="ClassStatement" color="#A6E22E" bold="true">
+      <KeyWords name="ClassStatement" color="#FF0000FF">
         <Key word="class" />
+        <Key word="extends" />
       </KeyWords>
-      <KeyWords name="ExceptionHandlingStatements" bold="true" color="#F92672">
-        <Key word="except" />
-        <Key word="finally" />
-        <Key word="raise" />
+      <KeyWords name="ExceptionHandlingStatements" color="#FF0000FF">
+        <Key word="throw" />
+        <Key word="catch" />
         <Key word="try" />
       </KeyWords>
-      <KeyWords name="FunctionDefinition" italic="true" color="#66D9EF">
+      <KeyWords name="Functions" color="#FF0000FF">
         <Key word="def" />
+        <Key word="function" />
+        <Key word="constructor" />
       </KeyWords>
-      <KeyWords name="Imports" bold="true" color="#F92672">
+      <KeyWords name="Imports" color="#FF0000FF">
         <Key word="import" />
         <Key word="from" />
       </KeyWords>
-      <KeyWords name="IterationStatements" bold="true" color="#F92672">
+      <KeyWords name="IterationStatements" color="#FF0000FF">
         <Key word="for" />
         <Key word="in" />
         <Key word="while" />
       </KeyWords>
-      <KeyWords name="JumpStatements" color="#F92672">
+      <KeyWords name="JumpStatements" color="#FF0000FF">
         <Key word="break" />
         <Key word="continue" />
-        <Key word="yield" />
         <Key word="return" />
       </KeyWords>
-      <KeyWords name="OperatorStatements" bold="true" color="#F92672">
-        <Key word="and" />
-        <Key word="as" />
-        <Key word="is" />
-        <Key word="not" />
-        <Key word="or" />
+      <KeyWords name="AccessSpecifiers" color="#FF0000FF">
+        <Key word="public" />
+        <Key word="private" />
+        <Key word="protected" />
       </KeyWords>
-      <KeyWords name="PassStatement" color="#F92672">
-        <Key word="pass" />
+      <KeyWords name="PrimitiveTypes" color="#FF0000FF">
+        <Key word="int" />
+        <Key word="double" />
+        <Key word="string" />
+        <Key word="bool" />
+        <Key word="var" />
+        <Key word="char" />
+        <Key word="void" />
       </KeyWords>
-      <KeyWords name="SelectionStatements" bold="true" color="#F92672">
-        <Key word="elif" />
+      <KeyWords name="Constants" color="#FF0000FF">
+        <Key word="true" />
+        <Key word="false" />
+        <Key word="null" />
+      </KeyWords>
+      <KeyWords name="LanguageBlocks" color="#FF0000FF">
+        <Key word="Associative" />
+        <Key word="Imperative" />
+        <Key word="Options" />
+      </KeyWords>
+      <KeyWords name="SelectionStatements" color="#FF0000FF">
+        <Key word="elseif" />
         <Key word="else" />
         <Key word="if" />
-      </KeyWords>
-      <KeyWords name="WithStatement" color="#F92672">
-        <Key word="with" />
       </KeyWords>
     </RuleSet>
   </RuleSets>

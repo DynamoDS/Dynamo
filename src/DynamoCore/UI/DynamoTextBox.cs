@@ -401,18 +401,19 @@ namespace Dynamo.Nodes
             //MinHeight = 20;
             this.TextArea.LostFocus += TextArea_LostFocus;
             this.Loaded += (obj, args) => this.TextArea.Focus();
+           
 
             this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeAvalonTextEditor");
             //this.Tag = "Your code goes here";
 
             const string highlighting = "DesignScript.Resources.SyntaxHighlighting.xshd";
 
-            string[] names = GetType().Assembly.GetManifestResourceNames();
-                var elem = GetType().Assembly.GetManifestResourceStream(
-                            names[2]);
-            
+            var elem = GetType().Assembly.GetManifestResourceStream(
+                "Dynamo.UI.Resources." + highlighting);
+                
             this.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
+            
         }
 
         protected void OnRequestReturnFocusToSearch()

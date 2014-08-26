@@ -146,15 +146,17 @@ namespace ProtoCore.DSASM
         public const string regLX = "_lx";
         public const string regTX = "_tx";
 
+        // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string cast = "cast";
         public const string throwexception = "throw";
 
-
+        // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
         public const string imperative = "Imperative";
         public const string options = "Options";
     }
 
+    // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
     public struct Literal
     {
         public const string True = "true";
