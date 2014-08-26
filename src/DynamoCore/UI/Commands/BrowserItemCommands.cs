@@ -121,7 +121,9 @@ namespace Dynamo.Nodes.Search
         }
 
         /// <summary>
-        /// Whether the item is focusable or not
+        /// Whether the item is focusable or not, used when creates LibraryView.
+        /// Used to make StandardPanel not clickable, i.e. ClassObjectTemplate.Focusable - true,
+        /// ClassDetailsTemplate.Focusable - false.
         /// </summary>
         private bool _focusable = false;
         public bool Focusable
