@@ -18,7 +18,7 @@ namespace Dynamo.Search.SearchElements
 
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
             base(displayString, functionItem.Summary, new List<string> { }, group,
-                    functionItem.DisplayName, functionItem.InputParameters, functionItem.ReturnType)
+                    functionItem.DisplayName, functionItem.Assembly, functionItem.InputParameters, functionItem.ReturnType)
         {
             _displayString = displayString;
             FunctionDescriptor = functionItem;
@@ -58,7 +58,7 @@ namespace Dynamo.Search.SearchElements
                 return null;
 
             LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
-            return (cust != null) ? cust.GetSmallIcon(member) : null;
+            return (cust != null) ? cust.GetSmallIcon(member.QualifiedName) : null;
         }
     }
 }

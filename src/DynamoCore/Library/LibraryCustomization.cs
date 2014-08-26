@@ -39,6 +39,15 @@ namespace Dynamo.DSEngine
                 return c;
             }
 
+            // For those, which don't have LibraryCustomization e.g. CoreNodesUI.dll
+            if (ResolveResourceAssembly(assemblyPath, ref resourceAssemblyPath))
+            {
+                var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath));
+                triedPaths.Add(assemblyPath, true);
+                cache.Add(assemblyPath, c);
+                return c;
+            }
+
             triedPaths.Add(assemblyPath, false);
             return null;
         }
@@ -100,6 +109,21 @@ namespace Dynamo.DSEngine
             resourcesReader = new ResourceReader(stream);
         }
 
+        internal LibraryCustomization(Assembly assembly)
+        {
+            this.XmlDocument = null;
+
+            cachedIcons = new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+
+            Stream stream =
+                assembly.GetManifestResourceStream(assembly.GetManifestResourceNames()[0]);
+
+            if (stream == null)
+                return;
+
+            resourcesReader = new ResourceReader(stream);
+        }
+
         public string GetNamespaceCategory(string namespaceName)
         {
             var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
@@ -107,9 +131,9 @@ namespace Dynamo.DSEngine
             return obj.ToString().Trim();
         }
 
-        internal BitmapImage GetSmallIcon(FunctionDescriptor descriptor)
+        internal BitmapImage GetSmallIcon(string qualifiedName)
         {
-            string iconKey = descriptor.QualifiedName + Configurations.SmallIconPostfix;
+            string iconKey = qualifiedName + Configurations.SmallIconPostfix;
             return LoadIconInternal(iconKey);
         }
 
