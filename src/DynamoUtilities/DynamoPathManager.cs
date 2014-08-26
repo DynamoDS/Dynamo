@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace DynamoUtilities
@@ -318,15 +319,22 @@ namespace DynamoUtilities
             LibG = path;
             var splits = LibG.Split('\\');
             GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
-            AsmPreloader = splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll";
+            AsmPreloader = Path.Combine(
+                MainExecPath,
+                splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll");
         }
 
         /// <summary>
         /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs
+        /// for the specified version.
         /// </summary>
-        /// <returns>True if it finds a directory, false if it can't find a directory</returns>
-        public bool FindAndSetASMHostPath()
+        /// <param name="version"> The version of ASM which you would like to find. Ex. "219" or "220"</param>
+        /// <param name="host"></param>
+        /// <returns>True if it finds the specified ASM version on the user's machine, false if it does not.</returns>
+        public bool FindAsm(string version, out string host)
         {
+            host = null;
+
             string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Autodesk");
 
             DirectoryInfo root = null;
@@ -337,8 +345,6 @@ namespace DynamoUtilities
             }
             catch (Exception e)
             {
-                // TODO: print to console
-
                 return false;
             }
 
@@ -368,30 +374,59 @@ namespace DynamoUtilities
 
                 files = dirInfo.GetFiles("*.*");
 
-                foreach (System.IO.FileInfo fi in files)
+                foreach (FileInfo fi in files)
                 {
-                    if (fi.Name.ToUpper() == "ASMAHL219A.DLL")
+                    if (fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL",version))
                     {
                         // we found a match for the ASM 219 dir
-                        ASM219Host = dirInfo.FullName;
-
-                        break;
-                    }
-
-                    if (fi.Name.ToUpper() == "ASMAHL220A.DLL")
-                    {
-                        // we found a match for the ASM 220 dir
-                        ASM220Host = dirInfo.FullName;
-
-                        break;
+                        host = dirInfo.FullName;
+                        return true;
                     }
                 }
-
-                if (ASM219Host != null && ASM220Host != null)
-                    return true;
             }
 
-            return ASM219Host != null || ASM220Host != null;
+            return false;
+        }
+
+        /// <summary>
+        /// Preload a specific version of ASM.
+        /// </summary>
+        /// <param name="version"></param>
+        public static void PreloadAsm(Asm version)
+        {
+            switch (version)
+            {
+                case Asm.Version219:
+                    Instance.SetLibGPath("libg_219");
+                    Instance.ASMVersion = Asm.Version219;
+                    break;
+                case Asm.Version220:
+                    Instance.SetLibGPath("libg_220");
+                    Instance.ASMVersion = Asm.Version220;
+                    break;
+            }
+
+            var libG = Assembly.LoadFrom(Instance.AsmPreloader);
+
+            Type preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
+
+            MethodInfo preloadMethod = preloadType.GetMethod(
+                "PreloadAsmLibraries",
+                BindingFlags.Public | BindingFlags.Static);
+
+            var methodParams = new object[1];
+
+            switch (version)
+            {
+                case Asm.Version219:
+                    methodParams[0] = Instance.ASM219Host;
+                    break;
+                case Asm.Version220:
+                    methodParams[0] = Instance.ASM220Host;
+                    break;
+            }
+
+            preloadMethod.Invoke(null, methodParams);
         }
     }
 }
