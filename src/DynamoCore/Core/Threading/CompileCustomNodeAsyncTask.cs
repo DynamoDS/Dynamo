@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -15,6 +16,7 @@ namespace Dynamo.Core.Threading
     {
         internal EngineController EngineController { get; set; }
         internal CustomNodeDefinition Definition { get; set; }
+        internal IEnumerable<NodeModel> Nodes { get; set; }
         internal IEnumerable<string> Parameters { get; set; }
         internal IEnumerable<AssociativeNode> Outputs { get; set; }
     }
