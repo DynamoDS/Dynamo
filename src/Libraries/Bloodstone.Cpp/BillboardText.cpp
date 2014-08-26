@@ -168,11 +168,12 @@ void BillboardText::UpdateBackground(const float* rgba)
 // ================================================================================
 
 BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) : 
+    mCamPositionParamIndex(-1),
     mRegenerationHints(RegenerationHints::None),
     mCurrentTextId(1024),
     mpGraphicsContext(pGraphicsContext),
     mpVertexBuffer(nullptr),
-    mpShaderProgram(nullptr),
+    mpBillboardShader(nullptr),
     mpBitmapGenerator(nullptr)
 {
     mpBitmapGenerator = CreateTextBitmapGenerator();
@@ -186,9 +187,9 @@ BillboardTextGroup::~BillboardTextGroup()
 
     mBillboardTexts.clear();
 
-    if (mpShaderProgram != nullptr) {
-        delete mpShaderProgram;
-        mpShaderProgram = nullptr;
+    if (mpBillboardShader != nullptr) {
+        delete mpBillboardShader;
+        mpBillboardShader = nullptr;
     }
 
     if (mpVertexBuffer != nullptr) {
@@ -236,7 +237,16 @@ void BillboardTextGroup::Render(void) const
         pThis->RegenerateInternal();
     }
 
-    mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
+    mpGraphicsContext->ActivateShaderProgram(mpBillboardShader);
+
+    auto pCamera = mpGraphicsContext->GetDefaultCamera();
+    mpBillboardShader->ApplyTransformation(pCamera);
+
+    CameraConfiguration configuration;
+    pCamera->GetConfiguration(&configuration);
+    auto position = &(configuration.cameraPosition[0]);
+    mpBillboardShader->SetParameter(mCamPositionParamIndex, position, 3);
+
     mpVertexBuffer->Render();
 }
 
@@ -299,12 +309,16 @@ void BillboardTextGroup::Initialize(void)
     if (nullptr == mpVertexBuffer)
         mpVertexBuffer = mpGraphicsContext->CreateBillboardVertexBuffer();
 
-    if (nullptr == mpShaderProgram) {
+    if (nullptr == mpBillboardShader) {
         auto name = ShaderName::BillboardText;
-        mpShaderProgram = mpGraphicsContext->CreateShaderProgram(name);
+        mpBillboardShader = mpGraphicsContext->CreateShaderProgram(name);
     }
 
-    mpVertexBuffer->BindToShaderProgram(mpShaderProgram);
+    mpBillboardShader->BindTransformMatrix(TransMatrix::Model, "model");
+    mpBillboardShader->BindTransformMatrix(TransMatrix::View, "view");
+    mpBillboardShader->BindTransformMatrix(TransMatrix::Projection, "proj");
+    mCamPositionParamIndex = mpBillboardShader->GetShaderParameterIndex("camPosition");
+    mpVertexBuffer->BindToShaderProgram(mpBillboardShader);
 }
 
 void BillboardTextGroup::RegenerateInternal(void)
