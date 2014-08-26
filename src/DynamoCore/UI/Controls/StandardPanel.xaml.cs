@@ -37,13 +37,14 @@ namespace Dynamo.UI.Controls
         {
             ListBoxItem fromSender = sender as ListBoxItem;
             libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.DataContext = fromSender.DataContext;
+            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            //libraryToolTipPopup.DataContext = fromSender.DataContext;
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (!libraryToolTipPopup.isMouseOver)
-            libraryToolTipPopup.DataContext = null;
+            libraryToolTipPopup.SetDataContext(null);
         }
 
         private void OnListBoxItemMouseMove(object sender, System.Windows.Input.MouseEventArgs e)

@@ -464,6 +464,7 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
+        private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
         // Variable for checking whether mouse is inside tooltip.
         public bool isMouseOver = false;
 
@@ -487,20 +488,18 @@ namespace Dynamo.UI.Controls
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
             this.MouseLeave += OnLibraryToolTipPopupMouseLeave;
-            this.DataContextChanged += OnPopupDataContextChanged;
             this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
+            this.Child = tooltip;
+        }
+
+        public void SetDataContext(object dataContext)
+        {
+            this.DataContext = dataContext;
         }
 
         private void OnLibraryToolTipPopupMouseLeave(object sender, MouseEventArgs e)
         {
             this.isMouseOver = false;
-        }
-
-        private void OnPopupDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
-            tooltip.DataContext = this.DataContext;
-            this.Child = tooltip;
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
