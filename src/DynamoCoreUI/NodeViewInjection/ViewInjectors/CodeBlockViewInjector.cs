@@ -7,10 +7,9 @@ namespace Dynamo.Wpf
 {
     internal class CodeBlockViewInjector : INodeViewInjector
     {
-        public void Inject(Models.NodeModel node, Controls.dynNodeView nodeView)
+        public void SetupCustomUIElements(Controls.dynNodeView nodeView)
         {
             // create node UI
-
 
             throw new NotImplementedException();
         }

@@ -4,7 +4,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using Microsoft.Practices.Prism.ViewModel;
+
+using Dynamo.Core;
 
 namespace Dynamo.Selection
 {

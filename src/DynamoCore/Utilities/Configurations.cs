@@ -17,6 +17,15 @@ namespace Dynamo
 
         #endregion
 
+        // Generic Constants
+        public static readonly double PortHeightInPixels = 26.0;
+
+        #region CodeBlockNode
+        public static readonly int CBNMaxPortNameLength = 24;
+        public static readonly double CBNMaxTextBoxWidth = 500;
+        public static readonly double CBNFontSize = 14.67;
+        #endregion
+
         #region Externally Visible Strings
 
         public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
@@ -33,7 +42,6 @@ namespace Dynamo
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3-us-west-2.amazonaws.com/";
 #endif
-
     }
 
 }

@@ -22,7 +22,7 @@ namespace Dynamo.Wpf
     {
         public Dictionary<Type, IEnumerable<INodeViewInjector>> GetInjectors()
         {
-            // TODO: this should just scan this assembly
+            // SEPARATECORE: this should just scan this assembly
 
             return new Dictionary<Type, IEnumerable<INodeViewInjector>>
             {

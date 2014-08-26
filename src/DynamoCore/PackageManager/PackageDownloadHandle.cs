@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -12,7 +13,6 @@ using DynamoUtilities;
 
 using Greg.Requests;
 using Greg.Responses;
-using Microsoft.Practices.Prism.ViewModel;
 using RestSharp;
 
 namespace Dynamo.PackageManager

@@ -13,7 +13,6 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
-using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 using ProtoCore.AST.AssociativeAST;
@@ -533,8 +532,6 @@ namespace Dynamo.Models
             }
 
             this.OnRequestNodeCentered(this, args);
-
-            node.EnableInteraction();
 
             if (DynamoModel.CurrentWorkspace == DynamoModel.HomeSpace)
                 node.SaveResult = true;

@@ -27,8 +27,6 @@ using DynamoUnits;
 
 using DynamoUtilities;
 
-using Microsoft.Practices.Prism;
-
 using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;

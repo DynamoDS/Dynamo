@@ -1,6 +1,4 @@
-﻿using Microsoft.Practices.Prism.ViewModel;
-
-namespace Dynamo.Core
+﻿namespace Dynamo.Core
 {
     public class DebugSettings : NotificationObject
     {

@@ -567,8 +567,10 @@ namespace Dynamo.Nodes
             args.Exception = exception;
 
             dynamoModel.OnRequestTaskDialog(null, args);
-            if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
-                DynamoViewModel.ReportABug(null);
+
+            //SEPARATECORE
+            //if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit){}
+            //    DynamoViewModel.ReportABug(null);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -615,7 +617,8 @@ namespace Dynamo.Nodes
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
                 // this should be an event on DynamoModel
-                DynamoViewModel.DownloadDynamo();
+                // SEPARATECORE
+                //DynamoViewModel.DownloadDynamo();
                 return false;
             }
 

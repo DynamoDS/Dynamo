@@ -12,6 +12,6 @@ namespace Dynamo.Wpf
 {
     public interface INodeViewInjector
     {
-        void Inject(NodeModel node, dynNodeView nodeView);
+        void SetupCustomUIElements( dynNodeView nodeView);
     }
 }

@@ -14,6 +14,18 @@ namespace Dynamo.Utilities
             public T Element;
         }
 
+        public static Collection<T> AddRange<T>(this Collection<T> collection, IEnumerable<T> items)
+        {
+            if (collection == null) throw new System.ArgumentNullException("collection");
+            if (items == null) throw new System.ArgumentNullException("items");
+
+            foreach (var each in items)
+            {
+                collection.Add(each);
+            }
+
+            return collection;
+        }
 
         public static IEnumerable<EnumerationIndex<T>> Enumerate<T>(this IEnumerable<T> seq)
         {

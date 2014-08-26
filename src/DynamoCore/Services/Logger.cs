@@ -92,7 +92,12 @@ namespace Dynamo.Services
 
         private static bool IsPIILoggingEnabled
         {
-            get { return UsageReportingManager.Instance.IsUsageReportingApproved; }
+            get
+            {
+                //SEPARATECORE
+                return false;
+                //return UsageReportingManager.Instance.IsUsageReportingApproved;
+            }
         }
 
         public static String GetUserID()

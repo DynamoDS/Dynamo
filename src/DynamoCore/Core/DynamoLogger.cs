@@ -5,11 +5,6 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
-
-using DynamoUtilities;
-
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {

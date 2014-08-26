@@ -1,4 +1,6 @@
-﻿using Dynamo.Models;
+﻿using System.Drawing;
+
+using Dynamo.Models;
 using Dynamo.Nodes;
 using System;
 using System.Collections.Generic;
@@ -178,22 +180,24 @@ namespace Dynamo.Utilities
             // 
             string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
             var uri = new Uri(pack + "://application:,,,/DynamoCore;component/");
-            var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
+            // SEPARATECORE
+            //var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
 
-            var typeface = new Typeface(textFontFamily, FontStyles.Normal,
-                FontWeights.Normal, FontStretches.Normal);
+            //var typeface = new Typeface(textFontFamily, FontStyles.Normal,
+            //    FontWeights.Normal, FontStretches.Normal);
 
             int totalVisualLinesSoFar = 0;
             foreach (var line in lines)
             {
-                FormattedText ft = new FormattedText(
-                    line, CultureInfo.CurrentCulture,
-                    System.Windows.FlowDirection.LeftToRight, typeface,
-                    Configurations.CBNFontSize, Brushes.Black)
-                {
-                    MaxTextWidth = Configurations.CBNMaxTextBoxWidth,
-                    Trimming = TextTrimming.None
-                };
+                // SEPARATECORE
+                //FormattedText ft = new FormattedText(
+                //    line, CultureInfo.CurrentCulture,
+                //    System.Windows.FlowDirection.LeftToRight, typeface,
+                //    Configurations.CBNFontSize, Brushes.Black)
+                //{
+                //    MaxTextWidth = Configurations.CBNMaxTextBoxWidth,
+                //    Trimming = TextTrimming.None
+                //};
 
                 logicalToVisualLines.Add(totalVisualLinesSoFar);
 
@@ -202,8 +206,9 @@ namespace Dynamo.Utilities
                 // visually. This is why we need to make sure "lineCount" cannot be 
                 // zero.
                 // 
-                var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
-                totalVisualLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
+                // SEPARATECORE
+                //var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
+                //totalVisualLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
             }
 
             return logicalToVisualLines;

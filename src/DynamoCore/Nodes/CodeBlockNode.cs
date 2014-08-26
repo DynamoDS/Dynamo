@@ -1097,7 +1097,6 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-
     public class Variable
     {
         public int Row { get; private set; }

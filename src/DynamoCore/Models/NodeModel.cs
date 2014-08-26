@@ -881,23 +881,6 @@ namespace Dynamo.Models
 
         #region UI Framework
 
-        /// <summary>
-        ///     Called back from the view to enable users to setup their own view elements
-        /// </summary>
-        /// <param name="view"></param>
-        internal void InitializeUI(dynamic view)
-        {
-            //Runtime dispatch
-            (this as dynamic).SetupCustomUIElements(view);
-        }
-
-        /// <summary>
-        /// Used as a catch-all if runtime dispatch for UI initialization is unimplemented.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
-        private void SetupCustomUIElements(object view) { }
-
         private void ClearTooltipText()
         {
             ToolTipText = "";
@@ -944,11 +927,6 @@ namespace Dynamo.Models
 
         #region Interaction
 
-        internal void DisableInteraction()
-        {
-            State = ElementState.Dead;
-            InteractionEnabled = false;
-        }
 
         internal void EnableInteraction()
         {

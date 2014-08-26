@@ -12,7 +12,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
 using Greg.Responses;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.PackageManager
 {
@@ -20,9 +19,10 @@ namespace Dynamo.PackageManager
     /// A search element representing an element from the package manager </summary>
     public class PackageManagerSearchElement : SearchElementBase
     {
-        public DelegateCommand DownloadLatest { get; set; }
-        public DelegateCommand UpvoteCommand { get; set; }
-        public DelegateCommand DownvoteCommand { get; set; }
+        // SEPARATECORE: Fix this
+        //public DelegateCommand DownloadLatest { get; set; }
+        //public DelegateCommand UpvoteCommand { get; set; }
+        //public DelegateCommand DownvoteCommand { get; set; }
 
         private readonly PackageManagerClient client;
 
@@ -46,9 +46,10 @@ namespace Dynamo.PackageManager
             }
             this.Votes = header.votes;
             this.IsExpanded = false;
-            this.DownloadLatest = new DelegateCommand((Action) Execute);
-            this.UpvoteCommand = new DelegateCommand((Action) Upvote);
-            this.DownvoteCommand = new DelegateCommand((Action) Downvote);
+
+            //this.DownloadLatest = new DelegateCommand((Action) Execute);
+            //this.UpvoteCommand = new DelegateCommand((Action) Upvote);
+            //this.DownvoteCommand = new DelegateCommand((Action) Downvote);
         }
 
         public void Upvote()
@@ -94,19 +95,19 @@ namespace Dynamo.PackageManager
 
             public PackageVersion VersionNumberToDownload = null;
 
-            public List<Tuple<PackageVersion, DelegateCommand>> Versions
-            {
-                get
-                {
-                    return
-                        Header.versions.Select(
-                            x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
-                                {
-                                    this.VersionNumberToDownload = x;
-                                    this.Execute();
-                                }, () => true))).ToList();
-                } 
-            }
+            //public List<Tuple<PackageVersion, DelegateCommand>> Versions
+            //{
+            //    get
+            //    {
+            //        return
+            //            Header.versions.Select(
+            //                x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
+            //                    {
+            //                        this.VersionNumberToDownload = x;
+            //                        this.Execute();
+            //                    }, () => true))).ToList();
+            //    } 
+            //}
 
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
             private int _votes;

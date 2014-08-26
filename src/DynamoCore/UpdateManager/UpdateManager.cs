@@ -6,10 +6,11 @@ using System.Linq;
 using System.Net;
 using System.ComponentModel;
 using System.Reflection;
+
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using System.Xml.Linq;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UpdateManager
 {
@@ -454,17 +455,19 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
-            string message = string.Format("An update is available for {0}.\n\n" +
-                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
 
-            MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
-            bool installUpdate = result == MessageBoxResult.OK;
+            //SEPARATECORE - fix this
+            //string message = string.Format("An update is available for {0}.\n\n" +
+            //    "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
 
-            if (installUpdate)
-            {
-                if (ShutdownRequested != null)
-                    ShutdownRequested(this, new EventArgs());
-            }
+            //MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
+            //bool installUpdate = result == MessageBoxResult.OK;
+
+            //if (installUpdate)
+            //{
+            //    if (ShutdownRequested != null)
+            //        ShutdownRequested(this, new EventArgs());
+            //}
             
         }
 

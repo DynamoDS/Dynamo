@@ -4,7 +4,6 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
 {

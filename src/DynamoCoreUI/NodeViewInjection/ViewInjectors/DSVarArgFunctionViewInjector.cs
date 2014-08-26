@@ -7,7 +7,7 @@ namespace Dynamo.Wpf
 {
     internal class DSVarArgFunctionViewInjector : INodeViewInjector
     {
-        public void Inject(Dynamo.Models.NodeModel node, Dynamo.Controls.dynNodeView nodeView)
+        public void SetupCustomUIElements(Dynamo.Controls.dynNodeView nodeView)
         {
             throw new NotImplementedException();
         }

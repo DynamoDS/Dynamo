@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
+using Dynamo.Core;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Greg.Responses;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {

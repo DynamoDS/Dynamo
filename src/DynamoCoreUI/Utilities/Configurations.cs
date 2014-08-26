@@ -40,9 +40,6 @@ namespace Dynamo.UI
         #region Canvas Configurations
         //public static readonly double Minimum
 
-        // Generic Constants
-        public static readonly double PortHeightInPixels = 26.0;
-
         // Grid Settings
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
@@ -163,14 +160,6 @@ namespace Dynamo.UI
 
         #endregion
 
-        #region CodeBlockNode
-
-        public static readonly int CBNMaxPortNameLength = 24;
-        public static readonly double CBNMaxTextBoxWidth = 500;
-        public static readonly double CBNFontSize = 14.67;
-
-        #endregion
-
         #region Externally Visible Strings
 
         public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
@@ -188,7 +177,6 @@ namespace Dynamo.UI
         public static readonly double MaxCondensedPreviewHeight = 64.0;
         public static readonly double DefCondensedContentWidth = 33.0;
         public static readonly double DefCondensedContentHeight = 28.0;
-
         #endregion
 
 #if DEBUG

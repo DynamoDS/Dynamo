@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Xml;
+
+using Dynamo.Core;
 using Dynamo.Selection;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Models
 {

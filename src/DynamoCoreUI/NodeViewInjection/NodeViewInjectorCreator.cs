@@ -23,15 +23,16 @@ namespace Dynamo.Wpf
             return new NodeViewInjectorCreator(initializer.GetInjectors());
         }
 
-        public void CreateInjector(NodeModel model, dynNodeView nodeView)
+        public void CreateInjector(dynNodeView nodeView)
         {
+            var model = nodeView.ViewModel.NodeModel;
             var injectors =
                 registeredInjectors.Where(pair => pair.Key.IsInstanceOfType(model))
                     .SelectMany(pair => pair.Value);
 
             foreach (var injector in injectors)
             {
-                injector.Inject(model, nodeView);
+                injector.SetupCustomUIElements(nodeView);
             }
         }
     }

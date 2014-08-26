@@ -11,8 +11,10 @@ namespace Dynamo.Wpf
 {
     internal class VariableInputViewInjector : INodeViewInjector
     {
-        public void Inject(Dynamo.Models.NodeModel model, Dynamo.Controls.dynNodeView view)
+        public void SetupCustomUIElements( Dynamo.Controls.dynNodeView view)
         {
+            var model = view.ViewModel.NodeModel;
+
             var addButton = new DynamoNodeButton(model, "AddInPort") { Content = "+", Width = 20 };
             //addButton.Height = 20;
 

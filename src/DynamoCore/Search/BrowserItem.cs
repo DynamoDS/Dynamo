@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
+
+using Dynamo.Core;
 using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
-using Microsoft.Practices.Prism.ViewModel;
+
 
 namespace Dynamo.Nodes.Search
 {

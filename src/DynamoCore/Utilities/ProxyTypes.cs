@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Dynamo
+namespace Dynamo.Utilities
 {
-    // SEPARATECORE: this needs to be remove completely
-
     public struct Thickness
     {
         public double Top { get; set; }
@@ -32,18 +30,4 @@ namespace Dynamo
             Bottom = bottom;
         }
     }
-
-    public struct FontWeight
-    {
-        
-    }
-
-    public static class FontWeights
-    {
-        public static int Light
-        {
-            get { return 300;  }
-        }
-    }
-
 }

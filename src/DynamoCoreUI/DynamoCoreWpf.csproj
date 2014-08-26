@@ -173,7 +173,6 @@
     <Compile Include="UI\WebBrowserUtility.cs" />
     <Compile Include="UI\WPF.cs" />
     <Compile Include="UI\ZoomBorder.cs" />
-    <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Configurations.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="ViewModels\ConnectorViewModel.cs" />
