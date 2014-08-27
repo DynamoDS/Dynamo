@@ -24,11 +24,6 @@ namespace NUnitCI
                 string prePath = @args[1];
                 string outPath = @args[2];
 
-
-                //string curPath = @"C:\Users\t_anhp\Downloads\xmlCUR";
-                //string prePath = @"C:\Users\t_anhp\Downloads\xmlOLD";
-                //string outPath = @"C:\Users\t_anhp\Downloads\compareXML\Compare.html";
-
                 Console.WriteLine(curPath);
                 Console.WriteLine(prePath);
                 AppendNunitSummary(curPath, prePath, ref body);
