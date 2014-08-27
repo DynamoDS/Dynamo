@@ -8,6 +8,8 @@ using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
 
+using ProtoScript.Runners;
+
 namespace Dynamo.Core.Threading
 {
 #if ENABLE_DYNAMO_SCHEDULER
@@ -23,6 +25,9 @@ namespace Dynamo.Core.Threading
 
     class CompileCustomNodeAsyncTask : AsyncTask
     {
+        private GraphSyncData graphSyncData;
+        private EngineController engineController;
+
         #region Public Class Operational Methods
 
         internal CompileCustomNodeAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
@@ -32,7 +37,17 @@ namespace Dynamo.Core.Threading
 
         internal bool Initialize(CompileCustomNodeParams initParams)
         {
-            return false;
+            engineController = initParams.EngineController;
+
+            try
+            {
+                graphSyncData = engineController.ComputeSyncData(initParams);
+                return graphSyncData != null;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         #endregion
@@ -41,10 +56,14 @@ namespace Dynamo.Core.Threading
 
         protected override void ExecuteCore()
         {
+            // Updating graph in the context of ISchedulerThread.
+            engineController.UpdateGraphImmediate(graphSyncData);
         }
 
         protected override void HandleTaskCompletionCore()
         {
+            // Nothing needs to be done here for now, unless we 
+            // want to display custom node execution related errors.
         }
 
         #endregion
