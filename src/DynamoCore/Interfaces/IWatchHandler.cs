@@ -99,7 +99,18 @@ namespace Dynamo.Interfaces
 
         private static string ToString(object obj)
         {
-            return obj != null ? obj.ToString() : "null";
+            if (object.ReferenceEquals(obj, null))
+            {
+                return "null";
+            }
+            else if (obj is bool)
+            {
+                return obj.ToString().ToLower();
+            }
+            else
+            {
+                return obj.ToString();
+            }
         }
 
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)

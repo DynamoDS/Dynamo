@@ -67,7 +67,7 @@ namespace Dynamo.Library
             if (DefaultValue != null)
             {
                 string strDefaultValue = DefaultValue.ToString();
-                if (DefaultValue.GetType().Equals(typeof(bool)))
+                if (DefaultValue is bool)
                 {
                     strDefaultValue = strDefaultValue.ToLower();
                 }
