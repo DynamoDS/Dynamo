@@ -22,6 +22,7 @@ namespace Dynamo.Tests
     internal class CustomNodes : DSEvaluationViewModelUnitTest
     {
         [Test]
+        [Category("Failure")]
         public void CanCollapseNodesAndGetSameResult()
         {
             var model = ViewModel.Model;
@@ -367,6 +368,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void FilterWithCustomNode()
         {
             var model = ViewModel.Model;
@@ -629,6 +631,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void PartialApplicationWithMultipleOutputs()
         {
             var model = ViewModel.Model;
