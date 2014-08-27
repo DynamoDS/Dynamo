@@ -7,22 +7,21 @@ attribute vec4 inTextCoords;
 varying vec4 vertColor;
 varying vec2 vertTexCoords;
 
-uniform vec3 camPosition;
-uniform vec3 camUpVector;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
+uniform vec2 screenSize;
 
 void main(void)
 {
-    vec3 at     = normalize(camPosition - inPosition);
-    vec3 right  = cross(vec3(0.0, 1.0, 0.0), at);
-    vec3 up     = cross(at, right);
+    vec2 spriteSize = vec2(
+        (inTextCoords.z / screenSize.x) * 2.0,
+        (inTextCoords.w / screenSize.y) * 2.0 );
 
-    vec4 r = vec4(inTextCoords.z * right, 0.0);
-    vec4 u = vec4(inTextCoords.w * up, 0.0);
-    vec4 direction = r + u;
-    gl_Position = proj * view * model * (inPosition + direction);
+    vec4 ndcPosition = proj * view * model * vec4(inPosition, 1.0);
+    vec4 ndcOffsetted = ndcPosition / ndcPosition.w;
+
+    gl_Position = vec4(ndcOffsetted.xy + spriteSize, 0.0, 1.0);
 
     // For downstream fragment shader.
     vertColor = inColor;

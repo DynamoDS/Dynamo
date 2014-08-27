@@ -34,7 +34,7 @@ bool CommonShaderBase::LoadFromContent(const std::string& content)
     GLint result = GL_FALSE;
     GL::glGetShaderiv(mShaderId, GL_COMPILE_STATUS, &result);
 
-    char buffer[128] = { 0 };
+    char buffer[2048] = { 0 };
     GL::glGetShaderInfoLog(mShaderId, sizeof(buffer), nullptr, buffer);
     return result == GL_TRUE;
 }
@@ -94,7 +94,7 @@ ShaderProgram::ShaderProgram(
     GLint result = GL_FALSE;
     GL::glGetProgramiv(mProgramId, GL_LINK_STATUS, &result);
 
-    char buffer[128] = { 0 };
+    char buffer[2048] = { 0 };
     GL::glGetProgramInfoLog(mProgramId, sizeof(buffer), nullptr, buffer);
 }
 

@@ -33,6 +33,7 @@ The following list represents what are to be implemented in Bloodstone for it to
 - [ ] Encapsulate things like ```controlParams``` in impl-specific classes
 - [ ] Remove APIs to deal with vertex/fragment shader from IGraphicsContext
 - [ ] Remove ```alpha``` uniform from Phong fragment shader
+- [ ] Introduce a notion of "inactive" shader program (those that fail compilation)
 - [ ] Set the background Cornflower blue to match the geometry contents
 - [ ] Output diagnostic information on Dynamo
 - [ ] Fix creation failure for Parallels

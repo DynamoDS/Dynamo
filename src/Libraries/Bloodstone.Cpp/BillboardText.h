@@ -183,8 +183,7 @@ namespace Dynamo { namespace Bloodstone {
         std::map<TextId, BillboardText*> mBillboardTexts;
 
         // Shader parameter indices.
-        int mCamPositionParamIndex;
-        int mCamUpVectorParamIndex;
+        int mScreenSizeParamIndex;
 
         RegenerationHints mRegenerationHints;
         IBillboardVertexBuffer* mpVertexBuffer;

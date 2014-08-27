@@ -168,8 +168,7 @@ void BillboardText::UpdateBackground(const float* rgba)
 // ================================================================================
 
 BillboardTextGroup::BillboardTextGroup(IGraphicsContext* pGraphicsContext) : 
-    mCamPositionParamIndex(-1),
-    mCamUpVectorParamIndex(-1),
+    mScreenSizeParamIndex(-1),
     mRegenerationHints(RegenerationHints::None),
     mCurrentTextId(1024),
     mpGraphicsContext(pGraphicsContext),
@@ -243,12 +242,10 @@ void BillboardTextGroup::Render(void) const
     auto pCamera = mpGraphicsContext->GetDefaultCamera();
     mpBillboardShader->ApplyTransformation(pCamera);
 
-    CameraConfiguration configuration;
-    pCamera->GetConfiguration(&configuration);
-    auto position = &(configuration.cameraPosition[0]);
-    auto upVector = &(configuration.cameraUpVector[0]);
-    mpBillboardShader->SetParameter(mCamPositionParamIndex, position, 3);
-    mpBillboardShader->SetParameter(mCamUpVectorParamIndex, upVector, 3);
+    int width = 0, height = 0;
+    mpGraphicsContext->GetDisplayPixelSize(width, height);
+    float screenSize[] = { ((float) width), ((float) height) };
+    mpBillboardShader->SetParameter(mScreenSizeParamIndex, screenSize, 2);
 
     mpVertexBuffer->Render();
 }
@@ -320,8 +317,7 @@ void BillboardTextGroup::Initialize(void)
     mpBillboardShader->BindTransformMatrix(TransMatrix::Model, "model");
     mpBillboardShader->BindTransformMatrix(TransMatrix::View, "view");
     mpBillboardShader->BindTransformMatrix(TransMatrix::Projection, "proj");
-    mCamPositionParamIndex = mpBillboardShader->GetShaderParameterIndex("camPosition");
-    mCamUpVectorParamIndex = mpBillboardShader->GetShaderParameterIndex("camUpVector");
+    mScreenSizeParamIndex = mpBillboardShader->GetShaderParameterIndex("screenSize");
     mpVertexBuffer->BindToShaderProgram(mpBillboardShader);
 }
 
@@ -347,11 +343,11 @@ void BillboardTextGroup::RegenerateVertexBuffer(void)
 
 void BillboardTextGroup::UpdateVertexBuffer(void)
 {
-    const float position[] = { 0.0f, 0.0f, 0.0f };
+    const float position[]  = { 0.0f, 0.0f, 0.0f };
     const float texCoords[] = { 0.0f, 1.0f, 1.0f, 0.0f };
-    const float offset[] = { 0.0f, 16.0f, 52.0f, 0.0f };
-    const float rgba0[] = { 1.0f, 0.5f, 0.0f, 1.0f };
-    const float rgba1[] = { 0.0f, 0.5f, 1.0f, 1.0f };
+    const float offset[]    = { 0.0f, 16.0f, 64.0f, 0.0f };
+    const float rgba0[]     = { 0.0f, 1.0f, 0.0f, 1.0f };
+    const float rgba1[]     = { 0.0f, 0.0f, 1.0f, 1.0f };
 
     std::vector<BillboardVertex> vertices;
     BillboardQuadInfo quadInfo(vertices);
