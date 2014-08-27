@@ -303,7 +303,7 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
             InitializeUpdateManager(updateManager);
-            //InitializeInstrumentationLogger();
+            InitializeInstrumentationLogger();
 
             SearchModel = new SearchModel(this);
 
