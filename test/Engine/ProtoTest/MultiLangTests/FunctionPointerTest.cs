@@ -213,11 +213,8 @@ c;
         }
 
         [Test]
-        [Category("Failing")]
         public void T08_FunctionPointerUpdateTest()
         {
-            string err = "MAGN-4039 Update does not work well with function pointers";
-
             string code = @"
 def foo1:int(x:int)
 {
@@ -230,7 +227,7 @@ def foo2:double(x:int, y:double = 2.0)
 a = foo1;
 b = a(3);
 a = foo2;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object b = 5.0;
             thisTest.Verify("b", b);
         }

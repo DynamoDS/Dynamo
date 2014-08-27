@@ -5473,7 +5473,6 @@ namespace ProtoCore.DSASM
                     GCRetain(coercedValue);
                 }
 
-                FX = coercedValue;
                 tempSvData = coercedValue;
                 EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
@@ -5541,7 +5540,6 @@ namespace ProtoCore.DSASM
 #endif
 
                 svData = rmem.Pop();
-                FX = svData;
                 tempSvData = svData;
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
 
@@ -5626,7 +5624,6 @@ namespace ProtoCore.DSASM
                 svData = rmem.Pop();
                 StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
                 GCRetain(coercedValue);
-                FX = coercedValue;
 
                 PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
             }
@@ -5641,7 +5638,6 @@ namespace ProtoCore.DSASM
                 }
 
                 svData = rmem.Pop();
-                FX = svData;
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
                 if (!instruction.op1.IsRegister)
                 {
@@ -5723,12 +5719,10 @@ namespace ProtoCore.DSASM
 
             if (instruction.op1.IsStaticVariableIndex)
             {
-                FX = svData;
-
                 if (0 == dimensions)
                 {
                     StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
-                    FX = coercedValue;
+                    GCRetain(coercedValue);
 
                     tempSvData = coercedValue;
 
@@ -5843,7 +5837,6 @@ namespace ProtoCore.DSASM
             {
                 lock (core.Heap.cslock)
                 {
-                    FX = svData;
                     EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
                     GCRelease(EX);
                 }

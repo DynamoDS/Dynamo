@@ -463,7 +463,12 @@ namespace Dynamo.Nodes
             Uri assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
             var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
-            return relativeUri.OriginalString.Replace('/', '\\');
+            var relativePath = relativeUri.OriginalString.Replace('/', '\\');
+            if (!HasPathInformation(relativePath))
+            {
+                relativePath = ".\\" + relativePath;
+            }
+            return relativePath;
         }
 
         /// <summary>
