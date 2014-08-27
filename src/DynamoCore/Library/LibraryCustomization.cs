@@ -50,6 +50,7 @@ namespace Dynamo.DSEngine
 
             triedPaths.Add(assemblyPath, false);
             return null;
+
         }
 
         public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)

@@ -13,7 +13,7 @@
             <StackPanel Orientation="Vertical"
                         Width="66"
                         Height="66">
-                <Image Source="{Binding SmallIcon}"                       
+                <Image Source="{Binding SmallIcon}"
                        Width="29"
                        Height="29"
                        Margin="8"

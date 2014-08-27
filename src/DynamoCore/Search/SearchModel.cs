@@ -202,7 +202,7 @@ namespace Dynamo.Search
         /// <param name="item">The item to add as a child of that category</param>
         internal void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
-            // When create category, give not only categoryname, 
+            // When create category, give not only category name, 
             //but also assembly, where icon for category could be found.
             var cat = this.AddCategory(category, (item as NodeSearchElement).Assembly);
             cat.AddChild(item);
