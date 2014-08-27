@@ -1549,7 +1549,6 @@ namespace Dynamo.Controls
 
             if (!(parameter is DynamoViewModel)) return "Could not get version";
 
-            var dvm = parameter as DynamoViewModel;
             var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
             return latest;
         }
