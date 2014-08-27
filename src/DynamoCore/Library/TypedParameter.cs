@@ -65,7 +65,14 @@ namespace Dynamo.Library
                 str = Name + ": " + Type.Split('.').Last();
 
             if (DefaultValue != null)
-                str = str + " = " + DefaultValue;
+            {
+                string strDefaultValue = DefaultValue.ToString();
+                if (DefaultValue.GetType().Equals(typeof(bool)))
+                {
+                    strDefaultValue = strDefaultValue.ToLower();
+                }
+                str = str + " = " + strDefaultValue;
+            }
 
             return str;
         }
