@@ -479,8 +479,6 @@ namespace Dynamo.Models
             {
                 NodeMap.Remove(n.GUID);
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         private void AddNodeToMap(NodeModel n)
