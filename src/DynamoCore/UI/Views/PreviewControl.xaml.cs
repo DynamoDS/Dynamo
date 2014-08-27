@@ -259,10 +259,6 @@ namespace Dynamo.UI.Controls
                 }
                 else
                 {
-                    // The following determines if we do get a CLR object before
-                    // trying to access it. For example, placing just a "+" node 
-                    // without any input will return a "null" here, in which case 
-                    // its display should remain "null".
                     var stringData = mirrorData.Data.ToString();
                     if (mirrorData.Data is bool)
                         stringData = stringData.ToLower();
