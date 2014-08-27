@@ -77,9 +77,6 @@ limitations under the License.
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NCalc">
-      <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
@@ -103,7 +100,6 @@ limitations under the License.
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -240,10 +236,6 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
-      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
-      <Name>DynamoCrypto</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
       <Project>{593be9fc-7482-4cd6-9f87-77e7ac5cdff2}</Project>
       <Name>GraphToDSCompiler</Name>
@@ -261,19 +253,9 @@ limitations under the License.
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
-      <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
-      <Name>GraphLayout</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
-      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
-      <Name>VMDataBridge</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>

@@ -91,7 +91,7 @@ namespace Dynamo.UI.Controls
 
         private BitmapImage LoadBitmapImage(string iconPath)
         {
-            var format = @"pack://application:,,,/DynamoCore;component/UI/Images/StartPage/{0}";
+            var format = @"pack://application:,,,/DynamoCoreWpf;component/UI/Images/StartPage/{0}";
             iconPath = string.Format(format, iconPath);
             return new BitmapImage(new Uri(iconPath, UriKind.Absolute));
         }

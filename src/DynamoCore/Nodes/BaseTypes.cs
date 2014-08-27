@@ -518,7 +518,7 @@ namespace Dynamo.Nodes
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
                 "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
 
-            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
+            var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new DynamoModel.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
@@ -559,7 +559,7 @@ namespace Dynamo.Nodes
                 description = exception.Message;
             }
 
-            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
+            var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new DynamoModel.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
@@ -605,7 +605,7 @@ namespace Dynamo.Nodes
             var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
                 "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
-            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_future_file.png";
+            var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new DynamoModel.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);

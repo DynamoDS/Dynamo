@@ -62,7 +62,7 @@ namespace Dynamo.Utilities
 
             foreach (KeyValuePair<CursorSet, string> resource in resources)
             {
-                //Uri uri = new Uri("/DynamoCore;component/UI/Images/" + resource.Value, UriKind.Relative);
+                //Uri uri = new Uri("/DynamoCoreWpf;component/UI/Images/" + resource.Value, UriKind.Relative);
                 Uri uri = new Uri(ResourceNames.ResourceBaseUri + resource.Value);
                 StreamResourceInfo cursorStream = Application.GetResourceStream(uri);
                 cursors.Add(new Cursor(cursorStream.Stream));

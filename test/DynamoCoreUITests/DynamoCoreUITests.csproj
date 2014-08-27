@@ -79,6 +79,10 @@
     <Compile Include="VisualizationManagerUITests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Name>DynamoCoreWpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>

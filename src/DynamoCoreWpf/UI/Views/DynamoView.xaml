@@ -31,7 +31,7 @@
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
-        Cursor="/DynamoCore;component/UI/Images/pointer.cur"
+        Cursor="/DynamoCoreWpf;component/UI/Images/pointer.cur"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.CommandBindings>
@@ -202,23 +202,23 @@
                         </MenuItem>
                         <MenuItem Header="_Open..." Command="{Binding ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl + O" Focusable="False">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/openHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/openHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
                         <MenuItem Header="_Save" Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}" Name="saveThisButton" InputGestureText="Ctrl + S" Focusable="False">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/saveHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl + Shift + S">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/saveHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
@@ -376,7 +376,7 @@
                     <MenuItem Header="Help" Focusable="False">
                         <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}" Focusable="False"/>
@@ -539,12 +539,12 @@
                                                                                                     <Trigger Property="IsMouseOver"
                                                                                                              Value="False">
                                                                                                         <Setter Property="Source"
-                                                                                                                Value="/DynamoCore;component/UI/Images/tabs_button_normal.png" />
+                                                                                                                Value="/DynamoCoreWpf;component/UI/Images/tabs_button_normal.png" />
                                                                                                     </Trigger>
                                                                                                     <Trigger Property="IsMouseOver"
                                                                                                              Value="True">
                                                                                                         <Setter Property="Source"
-                                                                                                                Value="/DynamoCore;component/UI/Images/tabs_button_hover.png" />
+                                                                                                                Value="/DynamoCoreWpf;component/UI/Images/tabs_button_hover.png" />
                                                                                                     </Trigger>
                                                                                                 </Style.Triggers>
                                                                                             </Style>
@@ -573,7 +573,7 @@
                                                                                          Value="true">
                                                                                     <Setter TargetName="TabMenuButtonImage"
                                                                                             Property="Source"
-                                                                                            Value="/DynamoCore;component/UI/Images/tabs_button_hover.png" />
+                                                                                            Value="/DynamoCoreWpf;component/UI/Images/tabs_button_hover.png" />
                                                                                 </Trigger>
                                                                             </ControlTemplate.Triggers>
                                                                         </ControlTemplate>
@@ -872,12 +872,12 @@
                                                                     <Trigger Property="IsMouseOver"
                                                                              Value="False">
                                                                         <Setter Property="Source"
-                                                                                Value="/DynamoCore;component/UI/Images/closetab_normal.png" />
+                                                                                Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
                                                                     </Trigger>
                                                                     <Trigger Property="IsMouseOver"
                                                                              Value="True">
                                                                         <Setter Property="Source"
-                                                                                Value="/DynamoCore;component/UI/Images/closetab_hover.png" />
+                                                                                Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
                                                                     </Trigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -1078,7 +1078,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="1" Source="/DynamoCore;component/UI/Images/expand_normal.png" Visibility="Visible" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5">
+                        <Image Grid.Column="1" Source="/DynamoCoreWpf;component/UI/Images/expand_normal.png" Visibility="Visible" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5">
                             <Image.RenderTransform>
                                 <RotateTransform Angle="90"/>
                             </Image.RenderTransform>
@@ -1203,7 +1203,7 @@
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
                         Margin="0" Background="#999"
-                        Cursor="/DynamoCore;component/UI/Images/resize_vertical.cur"/>
+                        Cursor="/DynamoCoreWpf;component/UI/Images/resize_vertical.cur"/>
 
             <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
@@ -1215,7 +1215,7 @@
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
                           Margin="0" Background="Transparent"
-                          Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur"/>
+                          Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur"/>
 
         <ItemsControl Name="startPageItemsControl"
                       Grid.Row="2"

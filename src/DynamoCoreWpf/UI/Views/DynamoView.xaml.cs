@@ -143,66 +143,66 @@ namespace Dynamo.Controls
             newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
             newScriptButton.ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand;
             newScriptButton.ShortcutCommandParameter = null;
-            newScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/new_normal.png";
-            newScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/new_disabled.png";
-            newScriptButton.ImgHoverSource = "/DynamoCore;component/UI/Images/new_hover.png";
+            newScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png";
+            newScriptButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png";
+            newScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png";
 
             ShortcutBarItem openScriptButton = new ShortcutBarItem();
             openScriptButton.ShortcutToolTip = "Open [Ctrl + O]";
             openScriptButton.ShortcutCommand = dynamoViewModel.ShowOpenDialogAndOpenResultCommand;
             openScriptButton.ShortcutCommandParameter = null;
-            openScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/open_normal.png";
-            openScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/open_disabled.png";
-            openScriptButton.ImgHoverSource = "/DynamoCore;component/UI/Images/open_hover.png";
+            openScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png";
+            openScriptButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png";
+            openScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png";
 
             ShortcutBarItem saveButton = new ShortcutBarItem();
             saveButton.ShortcutToolTip = "Save [Ctrl + S]";
             saveButton.ShortcutCommand = dynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
             saveButton.ShortcutCommandParameter = null;
-            saveButton.ImgNormalSource = "/DynamoCore;component/UI/Images/save_normal.png";
-            saveButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/save_disabled.png";
-            saveButton.ImgHoverSource = "/DynamoCore;component/UI/Images/save_hover.png";
+            saveButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png";
+            saveButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png";
+            saveButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png";
 
             ShortcutBarItem screenShotButton = new ShortcutBarItem();
             screenShotButton.ShortcutToolTip = "Export Workspace As Image";
             screenShotButton.ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand;
             screenShotButton.ShortcutCommandParameter = null;
-            screenShotButton.ImgNormalSource = "/DynamoCore;component/UI/Images/screenshot_normal.png";
-            screenShotButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/screenshot_disabled.png";
-            screenShotButton.ImgHoverSource = "/DynamoCore;component/UI/Images/screenshot_hover.png";
+            screenShotButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png";
+            screenShotButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png";
+            screenShotButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png";
 
             ShortcutBarItem undoButton = new ShortcutBarItem();
             undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
             undoButton.ShortcutCommand = dynamoViewModel.UndoCommand;
             undoButton.ShortcutCommandParameter = null;
-            undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
-            undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
-            undoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/undo_hover.png";
+            undoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png";
+            undoButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png";
+            undoButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png";
 
             ShortcutBarItem redoButton = new ShortcutBarItem();
             redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
             redoButton.ShortcutCommand = dynamoViewModel.RedoCommand;
             redoButton.ShortcutCommandParameter = null;
-            redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
-            redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
-            redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+            redoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png";
+            redoButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png";
+            redoButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_hover.png";
 
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
             //updateButton.ShortcutCommand = dynamoViewModel.CheckForUpdateCommand;
             //updateButton.ShortcutCommandParameter = null;
-            //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            //updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            //updateButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/Update/update_static.png";
+            //updateButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/Update/update_static.png";
+            //updateButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/Update/update_static.png";
 
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem runButton = new ShortcutBarItem();
             //runButton.ShortcutToolTip = "Run [Ctrl + R]";
             ////runButton.ShortcutCommand = viewModel.RunExpressionCommand; // Function implementation in progress
             //runButton.ShortcutCommandParameter = null;
-            //runButton.ImgNormalSource = "/DynamoCore;component/UI/Images/run_normal.png";
-            //runButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/run_disabled.png";
-            //runButton.ImgHoverSource = "/DynamoCore;component/UI/Images/run_hover.png";
+            //runButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/run_normal.png";
+            //runButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/run_disabled.png";
+            //runButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/run_hover.png";
 
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
             shortcutBar.ShortcutBarItems.Add(openScriptButton);
@@ -972,7 +972,7 @@ namespace Dynamo.Controls
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
             Image collapseIcon = (Image)g.Children[0];
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_hover.png");
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
 
             BitmapImage hover = new BitmapImage(imageUri);
             // hover.Rotation = Rotation.Rotate180;
@@ -1012,7 +1012,7 @@ namespace Dynamo.Controls
             Image collapseIcon = (Image)g.Children[0];
 
             // Change the collapse icon and rotate
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             BitmapImage hover = new BitmapImage(imageUri);
 
             collapseIcon.Source = hover;

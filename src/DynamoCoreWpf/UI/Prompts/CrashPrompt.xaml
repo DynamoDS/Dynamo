@@ -31,7 +31,7 @@
                    Margin="30,20,30,20"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
-                   Source="/DynamoCore;component/UI/Images/task_dialog_crash.png"></Image>
+                   Source="/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png"></Image>
             
             <StackPanel Grid.Row="0" Grid.Column="1"
                         Margin="0, 30, 30, 30">

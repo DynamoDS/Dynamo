@@ -25,7 +25,7 @@
                    Stroke="Transparent"
                    VerticalAlignment="Top">
             <Rectangle.Fill>
-                <ImageBrush ImageSource="/DynamoCore;component/UI/Images/consent_form_image.png" />
+                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/consent_form_image.png" />
             </Rectangle.Fill>
         </Rectangle>
         <StackPanel Grid.Row="1"

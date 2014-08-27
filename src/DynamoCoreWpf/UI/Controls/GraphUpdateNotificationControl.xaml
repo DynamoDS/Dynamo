@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="40">
     <Control.Resources>
-        <ImageBrush x:Key="ClickBox" ImageSource="/DynamoCore;component/UI/Images/Update/clickbox.png"/>
+        <ImageBrush x:Key="ClickBox" ImageSource="/DynamoCoreWpf;component/UI/Images/Update/clickbox.png"/>
         <Style x:Key="InstallButtonStyle" TargetType="Button">
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -34,7 +34,7 @@
     </Control.Resources>
     <Grid>
         <Button x:Name="InstallButton" OverridesDefaultStyle="True" Style="{StaticResource InstallButtonStyle}">
-            <Image Source="/DynamoCore;component/UI/Images/Update/update_static.png" 
+            <Image Source="/DynamoCoreWpf;component/UI/Images/Update/update_static.png" 
                        Width="40" Height="30" Margin="-3,-3,0,0"/>
             <Button.ToolTip>
                 <Label Content="A Dynamo update is available. Click to install."/>
