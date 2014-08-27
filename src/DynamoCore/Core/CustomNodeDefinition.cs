@@ -234,7 +234,7 @@ namespace Dynamo
             {
                 var n = x.Item2.GetAstIdentifierForOutputIndex(x.Item1);
                 return n as AssociativeNode;
-            }).ToList();
+            });
 
             controller.GenerateGraphSyncDataForCustomNode(
                 this,

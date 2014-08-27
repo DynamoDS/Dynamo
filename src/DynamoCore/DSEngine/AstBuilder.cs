@@ -244,7 +244,7 @@ namespace Dynamo.DSEngine
         public void CompileCustomNodeDefinition(
             CustomNodeDefinition def,
             IEnumerable<NodeModel> funcBody,
-            IEnumerable<AssociativeNode> outputs,
+            IEnumerable<AssociativeNode> outputNodes,
             IEnumerable<string> parameters)
         {
             OnAstNodeBuilding(def.FunctionId);
@@ -252,7 +252,8 @@ namespace Dynamo.DSEngine
             var functionBody = new CodeBlockNode();
             functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
 
-            if (outputs.Count() > 1)
+            var outputs = outputNodes.ToList();
+            if (outputs.Count > 1)
             {
                 /* rtn_array = {};
                  * rtn_array[key0] = out0;
@@ -271,7 +272,7 @@ namespace Dynamo.DSEngine
                 // indexers for each output
                 IEnumerable<AssociativeNode> indexers = def.ReturnKeys != null
                     ? def.ReturnKeys.Select(AstFactory.BuildStringNode) as IEnumerable<AssociativeNode>
-                    : Enumerable.Range(0, outputs.Count()).Select(AstFactory.BuildIntNode);
+                    : Enumerable.Range(0, outputs.Count).Select(AstFactory.BuildIntNode);
 
                 functionBody.Body.AddRange(
                     outputs.Zip(
@@ -286,8 +287,7 @@ namespace Dynamo.DSEngine
             else
             {
                 // For single output, directly return that identifier or null.
-                var filled = outputs.Count() == 1;
-                AssociativeNode returnValue = filled ? outputs.ElementAt(0) : new NullNode();
+                AssociativeNode returnValue = outputs.Count == 1 ? outputs[0] : new NullNode();
                 functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
 
