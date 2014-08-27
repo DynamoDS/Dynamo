@@ -12,6 +12,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Wpf;
+
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 using Autodesk.Revit.DB;
@@ -22,7 +24,7 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Returns the current Sun Path direction.")]
     [IsDesignScriptCompatible]
-    public class SunPathDirection : NodeModel, IWpfNode
+    public class SunPathDirection : NodeModel, INodeViewInjection
     {
         TextBox _tb;
         Button _sunPathButt;

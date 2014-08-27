@@ -10,6 +10,8 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Wpf;
+
 using ProtoCore.AST.AssociativeAST;
 using Color = DSCore.Color;
 
@@ -19,7 +21,7 @@ namespace DSCoreNodesUI
     [NodeName("Color Range")]
     [NodeCategory("Core.Color.Create")]
     [NodeDescription("Get a color given a color range.")]
-    public class ColorRange : NodeModel, IWpfNode
+    public class ColorRange : NodeModel, INodeViewInjection
     {
         public event EventHandler RequestChangeColorRange;
         protected virtual void OnRequestChangeColorRange(object sender, EventArgs e)

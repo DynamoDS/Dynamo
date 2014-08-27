@@ -9,13 +9,14 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
+using Dynamo.Wpf;
 
 namespace DSCoreNodesUI
 {
     /// <summary>
     /// Base class for all nodes allowing selection using a drop-down
     /// </summary>
-    public abstract class DSDropDownBase : NodeModel, IWpfNode
+    public abstract class DSDropDownBase : NodeModel, INodeViewInjection
     {
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items

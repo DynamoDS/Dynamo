@@ -17,6 +17,7 @@ using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -31,7 +32,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
-    public class Watch3D : NodeModel, IWatchViewModel, IWpfNode
+    public class Watch3D : NodeModel, IWatchViewModel, INodeViewInjection
     {
         private bool _canNavigateBackground = true;
         private double _watchWidth = 200;

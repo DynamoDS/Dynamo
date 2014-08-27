@@ -10,25 +10,24 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public interface INodeViewInjectorInitializer
+    public interface INodeViewInjectionInitializer
     {
-        Dictionary<Type, IEnumerable<INodeViewInjector>> GetInjectors();
+        Dictionary<Type, IEnumerable<INodeViewInjection>> GetInjections();
     }
 
     /// <summary>
     /// Enumerates the injectors for the core node types
     /// </summary>
-    internal class HardcodedInitializer : INodeViewInjectorInitializer
+    internal class HardcodedInitializer : INodeViewInjectionInitializer
     {
-        public Dictionary<Type, IEnumerable<INodeViewInjector>> GetInjectors()
+        public Dictionary<Type, IEnumerable<INodeViewInjection>> GetInjections()
         {
             // SEPARATECORE: this should just scan this assembly
 
-            return new Dictionary<Type, IEnumerable<INodeViewInjector>>
+            return new Dictionary<Type, IEnumerable<INodeViewInjection>>
             {
-                { typeof(DSVarArgFunction), new [] { new DSVarArgFunctionViewInjector() } },
-                { typeof(VariableInputNode), new [] { new VariableInputViewInjector() } },
-                { typeof(CodeBlockNodeModel), new [] { new CodeBlockViewInjector() } },
+                { typeof(Nodes.DSVarArgFunction), new [] { new DSVarArgFunction() } },
+                { typeof(CodeBlockNodeModel), new [] { new CodeBlock() } },
             };
         }
     }
@@ -36,7 +35,7 @@ namespace Dynamo.Wpf
     /// <summary>
     /// Allows node injectors to be loaded from a foreign assembly
     /// </summary>
-    public class ReflectionInitializer : INodeViewInjectorInitializer
+    public class ReflectionInitializer : INodeViewInjectionInitializer
     {
         /// <summary>
         /// Register an assembly to be scanned when GetInjectors is run
@@ -47,7 +46,7 @@ namespace Dynamo.Wpf
             throw new NotImplementedException();
         }
 
-        public Dictionary<Type, IEnumerable<INodeViewInjector>> GetInjectors()
+        public Dictionary<Type, IEnumerable<INodeViewInjection>> GetInjections()
         {
             throw new NotImplementedException();
         }

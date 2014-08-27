@@ -9,21 +9,21 @@ using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {
-    public class NodeViewInjectorCreator
+    public class NodeViewInjector
     {
-        private readonly Dictionary<Type, IEnumerable<INodeViewInjector>> registeredInjectors;
+        private readonly Dictionary<Type, IEnumerable<INodeViewInjection>> registeredInjectors;
 
-        private NodeViewInjectorCreator(Dictionary<Type, IEnumerable<INodeViewInjector>> injectors)
+        private NodeViewInjector(Dictionary<Type, IEnumerable<INodeViewInjection>> injectors)
         {
             registeredInjectors = injectors;
         }
 
-        public static NodeViewInjectorCreator Create(INodeViewInjectorInitializer initializer)
+        public static NodeViewInjector Create(INodeViewInjectionInitializer initializer)
         {
-            return new NodeViewInjectorCreator(initializer.GetInjectors());
+            return new NodeViewInjector(initializer.GetInjections());
         }
 
-        public void CreateInjector(dynNodeView nodeView)
+        public void Inject(dynNodeView nodeView)
         {
             var model = nodeView.ViewModel.NodeModel;
             var injectors =
@@ -33,7 +33,11 @@ namespace Dynamo.Wpf
             foreach (var injector in injectors)
             {
                 injector.SetupCustomUIElements(nodeView);
+
+                // SEPARATECORE
+                //nodeView.ViewModel.Deleted += injector.Dispose();
             }
         }
+
     }
 }

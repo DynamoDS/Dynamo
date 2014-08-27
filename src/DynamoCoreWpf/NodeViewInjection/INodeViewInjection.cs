@@ -10,7 +10,7 @@ using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {
-    public interface INodeViewInjector
+    public interface INodeViewInjection : IDisposable
     {
         void SetupCustomUIElements( dynNodeView nodeView);
     }

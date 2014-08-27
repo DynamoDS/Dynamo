@@ -15,6 +15,8 @@ using Dynamo.Applications;
 using Dynamo.Applications.Models;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
+using Dynamo.Wpf;
+
 using Revit.Elements;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -26,7 +28,7 @@ using Element = Revit.Elements.Element;
 
 namespace Dynamo.Nodes
 {
-    public abstract class DSSelectionBase : RevitNodeModel, IWpfNode
+    public abstract class DSSelectionBase : RevitNodeModel, INodeViewInjection
     {
         protected bool _canSelect = true;
         protected string _selectionText ="";

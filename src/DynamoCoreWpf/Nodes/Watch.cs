@@ -14,18 +14,12 @@ using VMDataBridge;
 
 namespace Dynamo.Nodes
 {
-    public interface WatchHandler
-    {
-        bool AcceptsValue(object o);
-        void ProcessNode(object value, WatchViewModel node, bool showRawData);
-    }
-
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
     [IsDesignScriptCompatible]
-    public partial class Watch : NodeModel
+    public class Watch : NodeModel
     {
         #region private members
 
@@ -37,7 +31,7 @@ namespace Dynamo.Nodes
 
         #region public properties
 
-        public new object CachedValue { get; private set; }
+        public new object CachedValue { get; internal set; }
 
         /// <summary>
         /// The root node of the watch's tree.
@@ -92,6 +86,11 @@ namespace Dynamo.Nodes
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
         /// <summary>
         /// Callback for port disconnection. Handles clearing the watch.
         /// </summary>
@@ -104,13 +103,13 @@ namespace Dynamo.Nodes
                 Root.Children.Clear();
         }
         
-        protected virtual void OnRequestBindingUnhook(EventArgs e)
+        internal virtual void OnRequestBindingUnhook(EventArgs e)
         {
             if (RequestBindingUnhook != null)
                 RequestBindingUnhook(this, e);
         }
 
-        protected virtual void OnRequestBindingRehook(EventArgs e)
+        internal virtual void OnRequestBindingRehook(EventArgs e)
         {
             if (RequestBindingRehook != null)
                 RequestBindingRehook(this, e);

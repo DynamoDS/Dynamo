@@ -14,13 +14,14 @@ using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 
 namespace UnitsUI
 {
-    public abstract class MeasurementInputBase : NodeModel, IWpfNode
+    public abstract class MeasurementInputBase : NodeModel, INodeViewInjection
     {
         protected SIUnit _measure;
 

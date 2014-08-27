@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 
+using Dynamo.Core;
 using Dynamo.UI;
 using Dynamo.Models;
 using Dynamo.Services;
@@ -635,6 +637,46 @@ namespace Dynamo.Nodes
         {
         }
 
+        private void RecordModels()
+        {
+            var connectors = InPorts[InPorts.Count - 1].Connectors;
+            if (connectors.Count != 0)
+            {
+                if (connectors.Count != 1)
+                {
+                    throw new InvalidOperationException(
+                        "There should be only one connection to an input port");
+                }
+                var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>
+                {
+                    { connectors[0], UndoRedoRecorder.UserAction.Deletion },
+                    { this, UndoRedoRecorder.UserAction.Modification }
+                };
+                Workspace.RecordModelsForUndo(models);
+            }
+            else
+                Workspace.RecordModelForModification(this);
+        }
+
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            switch (eventName)
+            {
+                case "AddInPort":
+                    AddInput();
+                    RegisterAllPorts();
+                    return true; // Handled here.
+                case "RemoveInPort":
+                    Workspace.UndoRecorder.PopFromUndoGroup();
+                    RecordModels();
+                    RemoveInput();
+                    RegisterAllPorts();
+                    return true; // Handled here.
+            }
+
+            return base.HandleModelEventCore(eventName);
+        }
+
         protected abstract string GetInputRootName();
         protected abstract string GetTooltipRootName();
 
@@ -765,6 +807,49 @@ namespace Dynamo.Nodes
             var idx = GetInputNameIndex();
             InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx));
             OutPortData.Add(new PortData(GetOutputRootName() + idx, GetTooltipRootName() + idx));
+        }
+
+        private void RecordModels()
+        {
+            var connectors = InPorts[InPorts.Count - 1].Connectors;
+            if (connectors.Count != 0)
+            {
+                if (connectors.Count != 1)
+                {
+                    throw new InvalidOperationException(
+                        "There should be only one connection to an input port");
+                }
+
+                var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>
+                {
+                    { connectors[0], UndoRedoRecorder.UserAction.Deletion },
+                    { this, UndoRedoRecorder.UserAction.Modification }
+                };
+                Workspace.RecordModelsForUndo(models);
+            }
+            else
+                Workspace.RecordModelForModification(this);
+        }
+
+        protected override bool HandleModelEventCore(string eventName)
+        {
+
+            switch (eventName)
+            {
+                case "AddInPort":
+                    AddInput();
+                    RegisterAllPorts();
+                    return true; // Handled here.
+                case "RemoveInPort":
+                    Workspace.UndoRecorder.PopFromUndoGroup();
+                    RecordModels();
+                    RemoveInput();
+                    RegisterAllPorts();
+                    return true; // Handled here.
+
+            }
+
+            return base.HandleModelEventCore(eventName);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -908,7 +993,18 @@ namespace Dynamo.Nodes
         protected override void LoadNode(XmlNode nodeElement)
         {
             base.LoadNode(nodeElement);
-            processTextForNewInputs();
+            ProcessTextForNewInputs();
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
         }
 
         #region Serialization/Deserialization Methods
@@ -926,7 +1022,7 @@ namespace Dynamo.Nodes
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called
-            processTextForNewInputs();
+            ProcessTextForNewInputs();
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
@@ -936,7 +1032,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        private void processTextForNewInputs()
+        internal void ProcessTextForNewInputs()
         {
             var parameters = new List<string>();
 
@@ -1258,6 +1354,11 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name));
         }
 
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
@@ -1366,6 +1467,17 @@ namespace Dynamo.Nodes
             return "\"" + base.PrintExpression() + "\"";
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = HttpUtility.HtmlEncode(value);
+                return true;
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -1413,6 +1525,21 @@ namespace Dynamo.Nodes
         {
             RegisterAllPorts();
             Value = "";
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = HttpUtility.HtmlEncode(value);
+                return true; // UpdateValueCore handled.
+            }
+
+            // There's another 'UpdateValueCore' method in 'String' base class,
+            // since they are both bound to the same property, 'StringInput' 
+            // should be given a chance to handle the property value change first
+            // before the base class 'String'.
+            return base.UpdateValueCore(name, value);
         }
 
         protected override string SerializeValue(string val)
@@ -1485,7 +1612,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a number.")]
     [IsDesignScriptCompatible]
-    public partial class DoubleInput : NodeModel
+    public class DoubleInput : NodeModel
     {
         public DoubleInput(WorkspaceModel ws)
             : base(ws)
@@ -1494,11 +1621,23 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             _convertToken = Convert;
+
+            ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
         public virtual double Convert(double value)
         {
             return value;
+        }
+
+        void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "NumberFormat":
+                    RaisePropertyChanged("Value");
+                    break;
+            }
         }
 
         private List<IDoubleSequence> _parsed;
@@ -1542,6 +1681,23 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("Value");
             }
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
 
         public override bool IsConvertible
         {
@@ -1590,56 +1746,6 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        /* disable the migration path from number node to CBN.
-
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            XmlElement original = data.MigratedNodes.ElementAt(0);
-
-            // Escape special characters for display in code block node.
-            string content = ExtensionMethods.GetChildNodeDoubleValue(original);
-
-            bool isValidContent = false;
-
-            try
-            {
-                var identifiers = new List<string>();
-                var doubleSequences = DoubleInput.ParseValue(content,
-                    new[] { '\n' }, identifiers, (x) => { return x; });
-
-                if (doubleSequences != null && (doubleSequences.Count == 1))
-                {
-                    IDoubleSequence sequence = doubleSequences[0];
-                    if (sequence is DoubleInput.Range) // A range expression.
-                        isValidContent = true;
-                    else if (sequence is DoubleInput.Sequence) // A sequence.
-                        isValidContent = true;
-                    else if (sequence is DoubleInput.OneNumber) // A number.
-                        isValidContent = true;
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            if (isValidContent == false)
-            {
-                // TODO(Ben): Convert into a dummy node here?
-            }
-            else
-            {
-                XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
-                newNode.SetAttribute("CodeText", content);
-                migrationData.AppendNode(newNode);
-            }
-
-            return migrationData;
-        }
-
-        */
-        
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
@@ -1742,17 +1848,6 @@ namespace Dynamo.Nodes
 
             throw new Exception("Bad identifier syntax: \"" + id + "\"");
         }
-
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    var paramDict = InPortData.Select(x => x.NickName)
-        //        .Zip(args, Tuple.Create)
-        //        .ToDictionary(x => x.Item1, x => ((Value.Number)x.Item2).Item);
-
-        //    return _parsed.Count == 1
-        //        ? _parsed[0].GetFSchemeValue(paramDict)
-        //        : FScheme.Value.NewList(_parsed.Select(x => x.GetFSchemeValue(paramDict)).ToFSharpList());
-        //}
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
@@ -2139,7 +2234,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for all nodes using a drop down
     /// </summary>
-    public abstract partial class DropDrownBase : NodeModel
+    public abstract class DropDrownBase : NodeModel
     {
         protected ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items

@@ -10,11 +10,13 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
+using Dynamo.Wpf;
+
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
-    public abstract class BasicInteractive<T> : NodeModel, IWpfNode
+    public abstract class BasicInteractive<T> : NodeModel, INodeViewInjection
     {
         private T _value;
         public T Value

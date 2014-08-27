@@ -5,13 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
+             xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:nodes1="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -29,8 +31,8 @@
 
             <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center"></Label>
             <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center"></Label>
-            <nodes:DynamoTextBox Name="MinTb" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>
-            <nodes:DynamoTextBox Name="MaxTb" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"/>
+            <nodes1:DynamoTextBox Name="MinTb" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>
+            <nodes1:DynamoTextBox Name="MaxTb" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"/>
         </Grid>
     </Grid>
 </UserControl>

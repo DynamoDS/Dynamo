@@ -11,6 +11,8 @@ using Dynamo.ViewModels;
 
 using ProtoCore.AST.AssociativeAST;
 
+using Thickness = System.Windows.Thickness;
+
 namespace DSCoreNodesUI
 {
     [NodeName("Boolean")]

@@ -11,6 +11,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Wpf;
+
 using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -23,7 +25,7 @@ namespace DSCoreNodesUI
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]
-    public class Formula : NodeModel, IWpfNode
+    public class Formula : NodeModel, INodeViewInjection
     {
         private string formulaString = "";
         public string FormulaString
