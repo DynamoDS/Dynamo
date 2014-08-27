@@ -1205,7 +1205,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, connector.End.Index);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         public void Defect_MAGN_775()
         {
             // The third undo operation should not crash.
@@ -2892,7 +2892,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void Defect_MAGN_491()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491

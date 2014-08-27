@@ -518,6 +518,36 @@ x = d.foo(c);
         }
 
         [Test]
+        public void Regression_MAGN336()
+        {
+            // Regression for defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-336
+            string code = @"
+class test
+            {
+                static a = { 1, 2, 3 };
+                static b = {""x"",""y""};
+                static def foo(c:int)
+                {
+                    a[b[0]] = c;
+                    a[b[1]] = c+1;
+                    return =a;
+                }
+            }
+            def foo(z:test)
+            {
+
+                y = z.foo(5);
+                x = y[z.b];
+                return =x;
+            }
+r = foo(test.test());
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { 5, 6});
+        }
+
+        [Test]
         public void TestStaticProperty02()
         {
             string code = @"class S{	public static a : int;}class C{    public x : int;    constructor C()    {        S.a = 2;    }}p = C.C();b = S.a;";
