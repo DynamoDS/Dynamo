@@ -232,13 +232,13 @@ namespace Dynamo
 
             #endregion
 
-#if ENABLE_DYNAMO_SCHEDULER
-
             var outputNodes = topMost.Select((x) =>
             {
-                var id = x.Item2.GetAstIdentifierForOutputIndex(x.Item1);
-                return id as AssociativeNode;
-            }).ToList();
+                var n = x.Item2.GetAstIdentifierForOutputIndex(x.Item1);
+                return n as AssociativeNode;
+            });
+
+#if ENABLE_DYNAMO_SCHEDULER
 
             var initParams = new CompileCustomNodeParams()
             {
@@ -261,8 +261,9 @@ namespace Dynamo
             controller.GenerateGraphSyncDataForCustomNode(
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
-                topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
+                outputNodes,
                 parameters);
+
 #endif
 
             // Not update graph until Run 
