@@ -518,6 +518,36 @@ x = d.foo(c);
         }
 
         [Test]
+        public void Regression_MAGN336()
+        {
+            // Regression for defect
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-336
+            string code = @"
+class test
+            {
+                static a = { 1, 2, 3 };
+                static b = {""x"",""y""};
+                static def foo(c:int)
+                {
+                    a[b[0]] = c;
+                    a[b[1]] = c+1;
+                    return =a;
+                }
+            }
+            def foo(z:test)
+            {
+
+                y = z.foo(5);
+                x = y[z.b];
+                return =x;
+            }
+r = foo(test.test());
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { 5, 6});
+        }
+
+        [Test]
         public void TestStaticProperty02()
         {
             string code = @"class S{	public static a : int;}class C{    public x : int;    constructor C()    {        S.a = 2;    }}p = C.C();b = S.a;";
@@ -1980,6 +2010,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestGCFFI001()
         {
             String code =
@@ -1989,6 +2022,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestGCRefCount002()
         {
             String code =
@@ -2009,6 +2045,9 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        [Ignore]
+        [Category("ProtoGeometry")]
+        [Category("PortToCodeBlocks")]
         public void TestNullFFI()
         {
             String code =
@@ -2957,19 +2996,16 @@ c = [Associative]
 
 
         [Test]
-        [Category("Failing")]
         public void TestNullsOnExpression01()
         {
             string code =
 @"
         a = 1 + null;
-        b = "" == null;
+        b = """" == null;
 ";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4157
-            string errmsg = "MAGN-4157: using null in an expression is crashing.";
-            thisTest.RunScriptSource(code, errmsg);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            thisTest.Verify("b", null);
+            thisTest.Verify("b", false);
         }
 
 

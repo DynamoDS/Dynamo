@@ -18,7 +18,7 @@ namespace Dynamo.UI.Prompts
         {
             InitializeComponent();
 
-            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
+            this.Owner = WPF.FindUpVisualTree<DynamoView>(Application.Current.MainWindow);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             this.editText.Focus();
 

@@ -1880,7 +1880,7 @@ namespace ProtoCore.DSASM
                 {
                     var dimSymbol1 = depDimNodes[dimIndex].symbol;
                     var dimSymbol2 = updateDimNodes[dimIndex].symbol;
-                    if (!dimSymbol1.IsEqualAtScope(dimSymbol2))
+                    if (!dimSymbol1.Equals(dimSymbol2))
                     {
                         return;
                     }
@@ -2040,7 +2040,7 @@ namespace ProtoCore.DSASM
                         if (graphNode.updateNodeRefList.Count == 1)
                         {
                             var updateNodeRef = graphNode.updateNodeRefList[0];
-                            if (depUpdateNodeRef.IsEqual(updateNodeRef))
+                            if (depUpdateNodeRef.Equals(updateNodeRef))
                             {
                                 continue;
                             }
@@ -2208,7 +2208,7 @@ namespace ProtoCore.DSASM
 
             for (int n = 0; n < executingNode.updateNodeRefList.Count; ++n)
             {
-                if (!gnode.updateNodeRefList[n].IsEqual(executingNode.updateNodeRefList[n]))
+                if (!gnode.updateNodeRefList[n].Equals(executingNode.updateNodeRefList[n]))
                 {
                     return;
                 }
@@ -4890,7 +4890,7 @@ namespace ProtoCore.DSASM
             {
                 SymbolNode symbolNode = GetSymbolNode(blockId, (int)instruction.op2.opdata, (int)instruction.op1.opdata);
                 AssociativeGraph.UpdateNode firstDepNode = Properties.executingGraphNode.dependentList[0].updateNodeRefList[0].nodeList[0];
-                elementBasedUpdate = firstDepNode.symbol.IsEqualAtScope(symbolNode);
+                elementBasedUpdate = firstDepNode.symbol.Equals(symbolNode);
             }
 
             if (0 == dimensions && !elementBasedUpdate || !objectIndexing)
@@ -5381,7 +5381,6 @@ namespace ProtoCore.DSASM
                     GCRetain(coercedValue);
                 }
 
-                FX = coercedValue;
                 tempSvData = coercedValue;
                 EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
@@ -5449,7 +5448,6 @@ namespace ProtoCore.DSASM
 #endif
 
                 svData = rmem.Pop();
-                FX = svData;
                 tempSvData = svData;
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
 
@@ -5534,7 +5532,6 @@ namespace ProtoCore.DSASM
                 svData = rmem.Pop();
                 StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
                 GCRetain(coercedValue);
-                FX = coercedValue;
 
                 PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
             }
@@ -5549,7 +5546,6 @@ namespace ProtoCore.DSASM
                 }
 
                 svData = rmem.Pop();
-                FX = svData;
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
                 if (!instruction.op1.IsRegister)
                 {
@@ -5631,12 +5627,10 @@ namespace ProtoCore.DSASM
 
             if (instruction.op1.IsStaticVariableIndex)
             {
-                FX = svData;
-
                 if (0 == dimensions)
                 {
                     StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
-                    FX = coercedValue;
+                    GCRetain(coercedValue);
 
                     tempSvData = coercedValue;
 
@@ -5751,7 +5745,6 @@ namespace ProtoCore.DSASM
             {
                 lock (core.Heap.cslock)
                 {
-                    FX = svData;
                     EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
                     GCRelease(EX);
                 }
@@ -7890,7 +7883,7 @@ namespace ProtoCore.DSASM
                 bool addNewModifiedRef = true;
                 for (int i = 0; i < istream.xUpdateList.Count; ++i)
                 {
-                    if (modifiedRef.IsEqual(istream.xUpdateList[i]))
+                    if (modifiedRef.Equals(istream.xUpdateList[i]))
                     {
                         istream.xUpdateList[i].symbolData = modifiedRef.symbolData;
                         addNewModifiedRef = false;

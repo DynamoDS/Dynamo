@@ -646,8 +646,8 @@ namespace ProtoCore
                 }
                 else
                 {
-                    ProtoCore.AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
-                    ProtoCore.DSASM.ProcedureNode procNodeDummy = new DSASM.ProcedureNode();
+                    AssociativeGraph.UpdateNode updateNode = new AssociativeGraph.UpdateNode();
+                    ProcedureNode procNodeDummy = new ProcedureNode();
                     procNodeDummy.name = functionName;
                     updateNode.procNode = procNodeDummy;
                     updateNode.nodeType = AssociativeGraph.UpdateNodeType.kMethod;
@@ -2237,9 +2237,13 @@ namespace ProtoCore
             EmitPush(op, cNode.line, cNode.col);
         }
        
-        protected void EmitStringNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone)
+        protected void EmitStringNode(
+            Node node, 
+            ref Type inferedType, 
+            AssociativeGraph.GraphNode graphNode = null,
+            AssociativeSubCompilePass subPass = AssociativeSubCompilePass.kNone)
         {
-            if (subPass == DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
+            if (subPass == AssociativeSubCompilePass.kUnboundIdentifier)
             {
                 return;
             }
@@ -2250,19 +2254,31 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeString;
             }
 
-            Byte[] utf8bytes = ProtoCore.Utils.EncodingUtils.UTF8StringToUTF8Bytes((String)sNode.value);
+            Byte[] utf8bytes = EncodingUtils.UTF8StringToUTF8Bytes((String)sNode.value);
             String value = Encoding.UTF8.GetString(utf8bytes);
 
             foreach (char ch in value)
             {
                 String strValue = "'" + ch + "'";
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, strValue);
+                EmitInstrConsole(kw.push, strValue);
 
-                StackValue op = ProtoCore.DSASM.StackValue.BuildChar(ch);
+                StackValue op = StackValue.BuildChar(ch);
                 EmitPush(op, node.line, node.col);
             }
 
-            EmitInstrConsole(ProtoCore.DSASM.kw.alloca, value.Length.ToString());
+            if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
+            {
+                SymbolNode literalSymbol = new SymbolNode();
+                literalSymbol.name = value;
+
+                var dimNode = new AssociativeGraph.UpdateNode();
+                dimNode.symbol = literalSymbol;
+                dimNode.nodeType = AssociativeGraph.UpdateNodeType.kLiteral;
+
+                graphNode.dimensionNodeList.Add(dimNode);
+            }
+
+            EmitInstrConsole(kw.alloca, value.Length.ToString());
             EmitPopString(value.Length);
         }
         

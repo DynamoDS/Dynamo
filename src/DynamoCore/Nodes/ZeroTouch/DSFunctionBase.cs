@@ -45,9 +45,7 @@ namespace Dynamo.Nodes
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             return Controller.ReturnKeys != null && Controller.ReturnKeys.Any()
-                ? AstFactory.BuildIdentifier(
-                    AstIdentifierForPreview.Name,
-                    AstFactory.BuildStringNode(Controller.ReturnKeys.ElementAt(outputIndex)))
+                ? base.GetAstIdentifierForOutputIndex(outputIndex)
                 : (OutPortData.Count == 1
                     ? AstIdentifierForPreview
                     : base.GetAstIdentifierForOutputIndex(outputIndex));

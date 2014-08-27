@@ -130,18 +130,21 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\AsyncTask.cs" />
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\DynamoRunner.cs" />
-    <Compile Include="Core\DynamoScheduler.cs" />
-    <Compile Include="Core\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Context.cs" />
-    <Compile Include="Core\TimeStampOrdering.cs" />
+    <Compile Include="Core\Threading\AsyncTask.cs" />
+    <Compile Include="Core\Threading\DynamoScheduler.cs" />
+    <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
+    <Compile Include="Core\Threading\SchedulerThread.cs" />
+    <Compile Include="Core\Threading\TimeStampGenerator.cs" />
+    <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
+    <Compile Include="Interfaces\ISchedulerThread.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
     <Compile Include="Library\FunctionDescriptor.cs" />
@@ -175,9 +178,21 @@ limitations under the License.
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="TestInfrastructure\AbstractMutator.cs" />
+    <Compile Include="TestInfrastructure\CopyNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeCompatibilityMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeMutator.cs" />
     <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
     <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\DirectoryPathMutator.cs" />
+    <Compile Include="TestInfrastructure\DoubleSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\FilePathMutator.cs" />
+    <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\ListMutator.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
+    <Compile Include="TestInfrastructure\StringInputMutator.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
