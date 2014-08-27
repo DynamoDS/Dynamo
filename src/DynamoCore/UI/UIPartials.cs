@@ -210,7 +210,13 @@ namespace Dynamo.Nodes
         {
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            var editWindowItem = new MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeUI.ViewModel.DynamoViewModel
+            };
+
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += editWindowItem_Click;
         }
@@ -672,7 +678,8 @@ namespace Dynamo.Nodes
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = this };
+            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
+            var editWindow = new EditWindow(viewModel) { DataContext = this };
             editWindow.BindToProperty(
                 null,
                 new Binding("Value")

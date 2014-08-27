@@ -141,7 +141,8 @@ namespace UnitsUI
 
         private void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow() { DataContext = this };
+            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
+            var editWindow = new EditWindow(viewModel) { DataContext = this };
             editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,

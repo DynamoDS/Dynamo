@@ -225,7 +225,8 @@ namespace DSCoreNodesUI
 
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = this };
+            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
+            var editWindow = new EditWindow(viewModel) { DataContext = this };
             editWindow.BindToProperty(
                 null,
                 new Binding("Value")
