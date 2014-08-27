@@ -1748,33 +1748,6 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        [Category("Design Issue")]
-        public void T058_Average_DataType_02()
-        {
-            string code = @"
-import(""ProtoGeometry.dll"");
-//WCS = CoordinateSystem.Identity();
-pt1=Point.ByCoordinates(1,1,1);
-a = {true};
-b = {{1},2,3};
-c = {""a"",0.2,0.3,1};
-d = {pt1, {}, 1};
-a1 = Average(a);
-b1 = Average(b);
-c1 = Average(c);
-d1 = Average(d);";
-
-            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            //Assert.Fail("11467164 - Sprint 25 - Rev 3125: Built-in function: Average() should ignore the elements which can't be converted to int/double in the array");
-            thisTest.Verify("a1", 0.0, 0);
-            thisTest.Verify("b1", 2.0, 0);
-            thisTest.Verify("c1", 0.5, 0);
-            thisTest.Verify("d1", 1.0, 0);//significant digits
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T059_Defect_Flatten_RangeExpression()
         {
@@ -3006,21 +2979,6 @@ d = { };
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { 1, -1, 3, 6, 0, new object[] { 1 } });
         }
 
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void BIM53_RemoveDuplicates_geoemtry_1467447()
-        {//1467446
-            String code =
-            @"
-            import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1, 1, 1);
-            input = { pt, pt};
-            removeDuplicatesSetInsert = RemoveDuplicates(input);
-            count = Count(removeDuplicatesSetInsert);
-            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("count", 1);
-        }
 
         [Test]
         public void BIM54_RemoveDuplicates_imperative_1467447()

@@ -655,46 +655,6 @@ a=5;";
             thisTest.Verify("a", 5);
         }
 
-        [Test]
-        [Category("SmokeTest")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void Comments_Nested()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-/*
-WCS=CoordinateSystem.Identity();
-/*
-p2 = Point.ByCoordinates(0,0,0);
-*/
-*/
-import(""ProtoGeometry.dll"");
-WCS=CoordinateSystem.Identity();
-p2 = Point.ByCoordinates(0,0,0);";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void Comments_Negative()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-/*
-WCS=CoordinateSystem.Identity();
-p2 = Point.ByCoordinates(0,0,0);
-*/
-/*
-import(""ProtoGeometry.dll"");
-WCS=CoordinateSystem.Identity();
-p2 = Point.ByCoordinates(0,0,0);";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
-            //Verification
-        }
 
         [Test]
         public void error_LineNumber_2()
@@ -928,24 +888,6 @@ return = t;
             //});
         }
 
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestKeyword_reserved_1467551_4()
-        {
-            String code =
-            @"
-                import(""ProtoGeometry.dll"");
-                wcs = CoordinateSystem.Identity();
-                base = Cylinder.ByRadiusHeight(wcs, 10, 5);
-            ";
-            string errmsg = "";
-            //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            //{
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
-            //});
-        }
 
         [Test]
         public void functionNotFound_1467444()

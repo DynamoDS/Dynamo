@@ -25,7 +25,8 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Ignore] 
+        [Category("ASTCompilerUtilsTests Need New testcases")]
         public void TestBuildAST_01()
         {
             //==============================================

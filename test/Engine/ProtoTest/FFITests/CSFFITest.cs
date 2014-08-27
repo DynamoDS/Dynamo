@@ -95,15 +95,6 @@ namespace ProtoFFITests
             ExecuteAndVerify(code, data);
         }
 
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestImportPointClass()
-        {
-            String code =
-            @"import(Point from ""ProtoGeometry.dll"");x;y;z;             [Associative]              {               point = Point.ByCoordinates(1,2,3);               x = point.X;               y = point.Y;               z = point.Z;             }            ";
-            ValidationData[] data = { new ValidationData { ValueName="x", ExpectedValue = 1.0, BlockIndex = 0},                                      new ValidationData { ValueName="y", ExpectedValue = 2.0, BlockIndex = 0},                                      new ValidationData { ValueName="z", ExpectedValue = 3.0, BlockIndex = 0}                                    };
-            ExecuteAndVerify(code, data);
-        }
 
         [Test]
         public void TestImportPointClassWithoutImportingVectorClass()
@@ -397,14 +388,6 @@ namespace ProtoFFITests
             ExecuteAndVerify(code, data);
         }
 
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestInheritanceAcrossLangauges_CS_DS()
-        {
-            string code = @"                import (Vector from ""ProtoGeometry.dll"");                class Vector2 extends Vector                {                    public constructor Vector2(x : double, y : double, z : double) : base ByCoordinates(x, y, z)                    {}                }                                vec2 = Vector2.Vector2(1,1,1);                x = vec2.GetLength();                ";
-            ValidationData[] data = { new ValidationData { ValueName = "x", ExpectedValue = Math.Sqrt(3.0), BlockIndex = 0 } };
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () => ExecuteAndVerify(code, data));
-        }
         /// <summary>
         /// This is to test Dispose method on IDisposable object. Dispose method 
         /// on IDisposable is renamed to _Dispose as DS destructor. Calling 
@@ -552,98 +535,6 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestPropertyAccessor()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");               pt = Point.ByCoordinates(1,2,3);               a = pt.X;            ";
-            double aa = 1;
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestAssignmentSingleton()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");               pt = Point.ByCoordinates(1,2,3);               a = { pt.X};            ";
-            object[] aa = new object[] { 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestAssignmentAsArray()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");               pt = Point.ByCoordinates(1,2,3);               a = { pt.X, pt.X};               def test (pt : Point)               {                  return = { pt.X, pt.X};               }               c = test(pt);            ";
-            object[] aa = new object[] { 1.0, 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestReturnFromFunctionSingle()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");            pt = Point.ByCoordinates(1,2,3);            a = { pt.X, pt.X};            def test (pt : Point)            {            return = {  pt.X};            }            b = test(pt);            ";
-            var b = new object[] { 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "b", ExpectedValue = b, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void Defect_1462300()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");            pt = Point.ByCoordinates(1,2,3);            def test (pt : Point)            {            return = {  pt.X,pt.Y};            }            b = test(pt);            ";
-            object[] b = new object[] { 1.0, 2.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "b", ExpectedValue = b, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void geometryinClass()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");               pt1=Point.ByCoordinates(1.0,1.0,1.0);               class baseClass               {                     val1 : Point  ;                    a:int;                    constructor baseClass()                    {                        a=1;                        val1=Point.ByCoordinates(1,1,1);                    }                           }                instance1= baseClass.baseClass();                a2=instance1.a;                b2=instance1.val1;                c2={b2.X,b2.Y,b2.Z};            ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a2", ExpectedValue = 1, BlockIndex = 0 }, new ValidationData { ValueName = "c2", ExpectedValue = c, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void geometryArrayAssignment()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");                             pt1=Point.ByCoordinates(1,1,1);               pt2=Point.ByCoordinates(2,2,2);               pt3=Point.ByCoordinates(3,3,3);               pt4=Point.ByCoordinates(4,4,4);               pt5=Point.ByCoordinates(5,5,5);               pt6=Point.ByCoordinates(6,6,6);a11;a12;b11;b12;               [Imperative]               {                    a    = { {pt1,pt2}, {pt3,pt4} };                    a11  = {a[0][0].X,a[0][0].Y,a[0][0].Z};                    a[1] = {pt5,pt6};                    a12  = {a[1][1].X,a[1][1].Y,a[1][1].Z};                    d    = a[0];                    b    = { pt1, pt2 };                    b11  = {b[0].X,b[0].Y,b[0].Z};                    b[0] = {pt3,pt4,pt5};                    b12  = {b[0][0].X,b[0][0].Y,b[0][0].Z};                    e    = b[0];                    e12  = {e[0].X,e[0].Y,e[0].Z};               }            ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            object[] d = new object[] { 4.0, 4.0, 4.0 };
-            object[] e = new object[] { 3.0, 3.0, 3.0 };
-            object[] f = new object[] { 6.0, 6.0, 6.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },                                      new ValidationData { ValueName = "a12", ExpectedValue = f, BlockIndex = 0 },                                      new ValidationData { ValueName = "b11", ExpectedValue = c, BlockIndex = 0 },                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 },                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 }};
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void geometryForLoop()
-        {
-            String code =
-            @"                import(""ProtoGeometry.dll"");                                pt1=Point.ByCoordinates(1,1,1);                pt2=Point.ByCoordinates(2,2,2);                pt3=Point.ByCoordinates(3,3,3);a11;a12;                [Imperative]                {                    a = { pt1, pt2, pt3 };                    a11={a[0].X,a[0].Y,a[0].Z};                    x = 0;                     for (y in a )                    {                                        a[x]=pt3;                    a12={a[0].X,a[0].Y,a[0].Z};                    x=x+1;                    }                                     }             ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            object[] e = new object[] { 3.0, 3.0, 3.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },                                      new ValidationData { ValueName = "a12", ExpectedValue = e, BlockIndex = 0 }                                    };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
         public void geometryFunction()
         {
             String code =
@@ -660,29 +551,6 @@ namespace ProtoFFITests
             @"               import(""FFITarget.dll"");         a1;ptcoords;                [Imperative]                {                pt1=DummyPoint.ByCoordinates(1,1,1);                  a1 = 10;                  if( a1>=10 )                 {                pt1=DummyPoint.ByCoordinates(2,2,2);                ptcoords={pt1.X,pt1.Y,pt1.Z};                a1=1;                 }                  elseif( a1<2 )                 {                 pt1=DummyPoint.ByCoordinates(3,3,3);                 }                 else                  {                pt1=DummyPoint.ByCoordinates(4,4,4);                 }                }                    ";
             object[] d = new object[] { 2.0, 2.0, 2.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a1", ExpectedValue = 1, BlockIndex = 0 } ,                                      new ValidationData { ValueName = "ptcoords", ExpectedValue = d, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void geometryInlineConditional()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");               WCS = CoordinateSystem.Identity();                pt1=Point.ByCoordinates(1,1,1);                pt2=Point.ByCoordinates(2,2,2);s11;l11;                [Imperative]                {                    def fo1 : int(a1 : int)                    {                        return = a1 * a1;                    }                    a	=	10;				                    b	=	20;                                    smallest   =   a	<   b   ?   pt1	:	pt2;                    largest	=   a	>   b   ?   pt1	:	pt2;                    s11={smallest.X,smallest.Y,smallest.Z};                    l11={largest.X,largest.Y,largest.Z};                 }                    ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            object[] d = new object[] { 2.0, 2.0, 2.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "s11", ExpectedValue = c, BlockIndex = 0 } ,                                      new ValidationData { ValueName = "l11", ExpectedValue = d, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void geometryRangeExpression()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");                                     a=1;a12;                    [Imperative]                    {                        a = 1/2..1/4..-1/4;                    }                    [Associative]                    {                    pt=Point.ByCoordinates(a[0],0,0);                    a12={pt.X,pt.Y,pt.Z};                    }                    ";
-            object[] c = new object[] { 0.5, 0.0, 0.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a12", ExpectedValue = c, BlockIndex = 0 }                                       };
             ExecuteAndVerify(code, data);
         }
 
@@ -706,42 +574,7 @@ namespace ProtoFFITests
             ValidationData[] data = { new ValidationData { ValueName = "v111", ExpectedValue = (Int64)111, BlockIndex = 0 },                                      new ValidationData { ValueName = "v123", ExpectedValue = (Int64)123, BlockIndex = 0 },                                      new ValidationData { ValueName = "v321", ExpectedValue = (Int64)321, BlockIndex = 0 }                                    };
             Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
         }
-        /*  
-[Test]          public void geometryUpdateAcrossMultipleLanguageBlocks()          {              String code =              @"                 import(""ProtoGeometry.dll"");                                     pt=Point.ByCoordinates(0,0,0);                    pt11={pt.X,pt.Y,pt.Z};                                     [Associative]                    {                          pt=Point.ByCoordinates(1,1,1);                          pt12={pt.X,pt.Y,pt.Z};                                                 [Imperative]                          {                              pt=Point.ByCoordinates(2,2,2);                              pt13={pt.X,pt.Y,pt.Z};                          }                          pt=Point.ByCoordinates(3,3,3);                          pt14={pt.X,pt.Y,pt.Z};                     }                      ";              object[] a = new object[] { 0.0, 0.0, 0.0 };              object[] b = new object[] { 1.0, 1.0, 1.0 };              object[] c = new object[] { 2.0, 2.0, 2.0 };              object[] d = new object[] { 3.0, 3.0, 3.0 };              ValidationData[] data = {   new ValidationData() { ValueName   = "p11", ExpectedValue = a, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p12", ExpectedValue = b, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p13", ExpectedValue = c, BlockIndex = 0 },                                          new ValidationData() { ValueName = "p14", ExpectedValue = d, BlockIndex = 0 }                                        };              ExecuteAndVerify(code, data);          }*/
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void geometryWhileLoop()
-        {
-            String code =
-            @"               import(""ProtoGeometry.dll"");               pt={0,0,0,0,0,0};p11;               [Imperative]               {                    i=0;                    temp=0;                    while( i <= 5 )                    {                         i = i + 1;                        pt[i]=Point.ByCoordinates(i,1,1);                        p11={pt[i].X,pt[i].Y,pt[i].Z};                    }                                    }            ";
-            object[] a = new object[] { 6.0, 1.0, 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "p11", ExpectedValue = a, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void properties()
-        {
-            String code =
-            @"              import(""ProtoGeometry.dll"");              pt1 = Point.ByCoordinates(10, 10, 10);              a=pt1.X;            ";
-            double a = 10.000000;
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = a, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("Replication")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void coercion_notimplmented()
-        {
-            String code =
-            @"               import (""ProtoGeometry.dll"");           vec =  Vector.ByCoordinates(1,0,0);           newVec=vec.Scale({1,null});//array           prop = VecGuarantedProperties(newVec);           def VecGuarantedProperties(vec :Vector)           {              return = {vec.Length };            }                    ";
-            object[] c = new object[] { new object[] { 1.0 }, new object[] { null } };
-            ValidationData[] data = { new ValidationData { ValueName = "prop", ExpectedValue = c, BlockIndex = 0 }                                       };
-            
-        }
+      
 
         [Test]
         [Category("Update")]
@@ -875,123 +708,6 @@ namespace ProtoFFITests
                 "import(AClass from \"FFITarget.dll\");", code);
             object[] b = new object[] { 1, 2, 3 };
             ValidationData[] data = { new ValidationData { ValueName = "c", ExpectedValue = 2, BlockIndex = 0 },                                      new ValidationData { ValueName = "b", ExpectedValue = b, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestNonBrowsableClass()
-        {
-            string code = @"                import(""ProtoGeometry.dll"");                ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Point") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestImportNonBrowsableClass()
-        {
-            string code = @"                import(DesignScriptEntity from ""ProtoGeometry.dll"");                ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Point") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestImportBrowsableClass()
-        {
-            string code = @"                import(NurbsCurve from ""ProtoGeometry.dll"");                ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            //This import must import BSplineCurve and related classes.
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Point") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Vector") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Solid") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Surface") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Plane") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("CoordinateSystem") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("CoordinateSystem") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Curve") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("NurbsCurve") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            //Non-browsable as well as unrelated class should not be imported.
-            Assert.IsTrue(theTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Circle") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("SubDivisionMesh") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestNonBrowsableInterfaces()
-        {
-            string code = @"                import(""ProtoGeometry.dll"");                ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IColor") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IDesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IDisplayable") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPersistentObject") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPersistencyManager") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICoordinateSystemEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IGeometryEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPointEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICurveEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ILineEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICircleEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IArcEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBSplineCurveEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBRepEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISurfaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBSplineSurfaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPlaneEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISolidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPrimitiveSolidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IConeEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICuboidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISphereEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPolygonEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISubDMeshEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBlockEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBlockHelper") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ITopologyEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IShellEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICellEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IFaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICellFaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IVertexEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IEdgeEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ITextEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IGeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestDefaultConstructorNotAvailableOnAbstractClass()
-        {
-            string code = @"                import(""ProtoGeometry.dll"");                ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            //Verify that Geometry.Geometry constructor deson't exists
-            theTest.VerifyMethodExists("Geometry", "Geometry", false);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestNestedClass()
-        {
-            string code =
-               @"import(NestedClass from ""FFITarget.dll"");                                 t = NestedClass.GetType(5);                success = NestedClass.CheckType(t, 5);                ";
-            ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 

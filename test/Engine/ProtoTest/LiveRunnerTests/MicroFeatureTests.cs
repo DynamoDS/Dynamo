@@ -576,15 +576,12 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_01()
         {
             ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
 
-            liveRunner.UpdateCmdLineInterpreter(@"import (""ProtoGeometry.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = Point.ByCoordinates(10,10,10);");
+            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
+            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -616,9 +613,6 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_02()
         {
             ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
@@ -626,8 +620,8 @@ namespace ProtoTest.LiveRunner
             //string code = @"class Point{ X : double; constructor ByCoordinates(x : double, y : double, z : double){X = x;} def Translate(x : double, y : double, z : double){return = Point.ByCoordinates(11,12,13);} }";
 
             //liveRunner.UpdateCmdLineInterpreter(code);
-            liveRunner.UpdateCmdLineInterpreter(@"import (""ProtoGeometry.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = Point.ByCoordinates(10,10,10);");
+            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
+            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -811,13 +805,12 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestAdd01()
         {
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "x = a; y = a; z = a; p = Point.ByCoordinates(x, y, z); px = p.X;",
+                "x = a; y = a; z = a; p = DummyPoint.ByCoordinates(x, y, z); px = p.X;",
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
@@ -828,7 +821,7 @@ namespace ProtoTest.LiveRunner
             for (int i = 0; i < shuffleCount; ++i)
             {
                 ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-                liveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll"});
+                liveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll"});
 
                 index = index.OrderBy(_ => randomGen.Next());
                 var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
@@ -844,16 +837,17 @@ namespace ProtoTest.LiveRunner
 
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestModify01()
         {
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "x = a; y = a; z = a; p = Point.ByCoordinates(x, y, z); px = p.X;",
+                "x = a; y = a; z = a; p = DummyPoint.ByCoordinates(x, y, z); px = p.X;",
             };
+
+
+            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll" });
+
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
             // add two nodes
@@ -987,17 +981,17 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void RegressMAGN753()
         {
             List<string> codes = new List<string>() 
             {
                 "t = 1..2;",
                 "x = t; a = x;",
-                "z = a; pts = Point.ByCoordinates(z, 10, 2); ptsx = pts.X;"
+                "z = a; pts = DummyPoint.ByCoordinates(z, 10, 2); ptsx = pts.X;"
             };
+
+
+            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll" });
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
             // add two nodes

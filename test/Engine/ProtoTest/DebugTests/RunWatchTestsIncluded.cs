@@ -8212,56 +8212,6 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/";
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
-        [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void DebugWatch327_Defect_Geo_Replication()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""ProtoGeometry.dll"");
-// create initialPoints
-diafac1 = 1;
-h1 = 15;
-hL1=10;
-pt0 = Point.ByCoordinates(-5*diafac1,-5*diafac1,0);
-pt1 = Point.ByCoordinates(5*diafac1,-5*diafac1,0);
-pt2 = Point.ByCoordinates(5*diafac1,5*diafac1,0);
-pt3 = Point.ByCoordinates(-5*diafac1,5*diafac1,0);
-pt4 = Point.ByCoordinates(-5*diafac1,-5*diafac1,hL1);
-pt5 = Point.ByCoordinates(5*diafac1,-5*diafac1,hL1);
-pt6 = Point.ByCoordinates(5*diafac1,5*diafac1,hL1);
-pt7 = Point.ByCoordinates(-5*diafac1,5*diafac1,hL1);
-pt8 = Point.ByCoordinates(-15,-15,h1);
-pt9 = Point.ByCoordinates(15,-15,h1);
-pt10= Point.ByCoordinates(15,15,h1);
-pt11 = Point.ByCoordinates(-15,15,h1);
-pointGroup = {pt0,pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11};
-facesIndices = {{0,1,5,4},{1,2,6,5},{2,3,7,6},{3,0,4,7},{4,5,9,8},{5,6,10,9},{6,7,11,10},{7,4,8,11}};
-groupOfPointGroups =  { { pt0, pt1, pt2 }, { pt3, pt4, pt5 }, { pt6, pt7, pt8 }, { pt9, pt10, pt11 } };
-simplePointGroup = {pt5, pt6, pt10, pt9};
-// note: Polygon.ByVertices expects a 1D array of points.. so let`s test this 
-controlPolyA = Polygon.ByVertices({pt0, pt1, pt5, pt4}); // OK with 1D collection
-controlPolyB = Polygon.ByVertices(simplePointGroup); // OK with 1D collection
-	controlPolyC = Polygon.ByVertices({{pt1, pt2, pt6, pt5},{pt2, pt3, pt7, pt6}}); // not OK with literal 2D collection
-														// get compiler error `unable to locate mamaged object for given dsObject`
-	controlPolyD = Polygon.ByVertices(pointGroup[3]);    // not OK with a 1D subcollection a a member indexed from a 2D collection
-														// controlPolyD = null
-	controlPolyE = Polygon.ByVertices(pointGroup[facesIndices]); // not OK with an array of indices
-																// controlPolyE = null
-controlPolyF = Polygon.ByVertices(groupOfPointGroups);
-// result = foo({ controlPolyA, controlPolyB, controlPolyC, controlPolyD, controlPolyE });
-/*def foo(x:Polygon)
-{
-	if (x!= null)
-	{
-	    return = true;
-	}
-	else return = false;
-}*/
-//a simple case
-c=2 * {{1},{2}};";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
 
         [Test]
         [Category("WatchFx Tests")]
@@ -13796,78 +13746,7 @@ result3 = resultData[3];
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
-        [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void DebugWatch460_T020_Vector_ByCoordinates()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (Vector from ""ProtoGeometry.dll"");
-	vec =  Vector.ByCoordinates(3.0,4.0,0.0); 
-	vec_X = vec.get_X(); 
-	vec_Y = vec.get_Y();
-	vec_Z = vec.get_Z();
-	
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
 
-        [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void DebugWatch461_T021_Vector_ByCoordinates()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (Vector from ""ProtoGeometry.dll"");
-	vec =  Vector.ByCoordinates(3.0,4.0,0.0,true); 
-	vec_X = vec.get_X();
-	vec_Y = vec.get_Y();
-	vec_Z = vec.get_Z();
-	vec_Normalised=vec.Normalize();
-	vec2 =  Vector.ByCoordinates(3.0,4.0,0.0,false);
-	
-	vec2 =  Vector.ByCoordinates(3.0,4.0,0.0,false);
-	vec2_X = vec2.get_X();
-	vec2_Y = vec2.get_Y();
-	vec2_Z = vec2.get_Z();
-	vec_len = vec2.GetLength();
-	vec1 =  Vector.ByCoordinates(3.0,4.0,0.0,null); 
-	vec4 =  Vector.ByCoordinateArrayN({3.0,4.0,0.0});
-	vec4_coord={vec4.get_X(),vec4.get_Y(),vec4.get_Z()};
-	vec5 =  Vector.ByCoordinateArrayN({3.0,4.0,0.0},true); 
-	vec5_coord={vec5.get_X(),vec5.get_Y(),vec5.get_Z()};
-	
-	is_same = vec.Equals(vec);// same vec
-	vec2=  Vector.ByCoordinates(1.0,2.0,0.0);
-	is_same2 = vec.Equals(vec2);// different vec
-	
-	
-	vec3 =  Vector.ByCoordinates(1.0,0.0,0.0,true); 
-	is_parallel1 = vec.IsParallel(vec); //same vec
-	vec4=  Vector.ByCoordinates(3.0,0.0,0.0);	
-	is_parallel2 = vec3.IsParallel(vec4);//parallel
-	vec5 =  Vector.ByCoordinates(3.0,4.0,5.0); //non parallel
-	is_parallel3 = vec.IsParallel(vec5);
-	vec6 =  Vector.ByCoordinates(0.0,1.0,0.0);
-	vec7 =  Vector.ByCoordinates(1.0,0.0,0.0);
-	is_perp1 = vec6.IsPerpendicular(vec7);//same vec
-	is_perp2 = vec6.IsPerpendicular(vec5);//diff vec
-	dotProduct=vec2.Dot(vec2);
-	vec8 =  Vector.ByCoordinates(1.0,0.0,0.0,false);
-	vec9 =  Vector.ByCoordinates(0.0,1.0,0.0,false);
-	crossProduct=vec8.Cross(vec9);
-	cross_X=crossProduct.get_X();
-	cross_Y=crossProduct.get_Y();
-	cross_Z=crossProduct.get_Z();
-	newVec=vec5.Scale(2.0);//single
-	newVec_X=newVec.get_X();
-	newVec_Y=newVec.get_Y();
-	newVec_Z=newVec.get_Z();
-	coord_Vec=    vec.ComputeGlobalCoords(1,2,3);
-	
-	";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
 
         [Test]
         [Category("WatchFx Tests")]
@@ -20555,91 +20434,6 @@ l = tan(0); //0";
         }
 
 
-
-        [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void DebugWatch753_language_functions_test_1()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""ProtoGeometry.dll"");
-import(""DSCoreNodes.dll"");
-raggedCollection = { 1, { 2, 3 } };
-isUniformDepthRagged = IsUniformDepth(raggedCollection);//false
-average = Average(raggedCollection);
-sum = Sum(raggedCollection); // works (=6), but complains that the ""Variable is over indexed""
-ragged0  = raggedCollection[0]; // (=1)
-ragged1  = raggedCollection[1]; // (={2,3})
-ragged00 = raggedCollection[0][0]; // (=null) this should and does fail
-ragged10 = raggedCollection[1][0]; // (=2)
-ragged11 = raggedCollection[1][1]; // (=3) 
-ragged2  = raggedCollection[2]; // (={null) // but reports ""Variable is over indexed"" for line 18
-raggedminus1  = raggedCollection[-1]; // (={2,3})
-raggedminus1minus1 = raggedCollection[-1][-1]; // (=3)
-rankRagged = Rank(raggedCollection);
-indexOf = IndexOf(raggedCollection, 1); // not sure what value should be returned here
-transposeRagged = Transpose(raggedCollection); // (={{1,2},{3}} is this expected?
-noramlisedDepthCollection = NormalizeDepth(raggedCollection);
-isUniformDepthNormalize = IsUniformDepth(noramlisedDepthCollection);
-transposeNormalize = Transpose(noramlisedDepthCollection);
-noramlised00 = noramlisedDepthCollection[0][0];
-rankNoramlised = Rank(noramlisedDepthCollection);
-flattenedCollection = Flatten(raggedCollection);
-rankFlattened = Rank(flattenedCollection);
-reverseCollection = Reverse(flattenedCollection);
-count = Count(reverseCollection);
-contains = Contains(reverseCollection, 2);
-indexOf = IndexOf(reverseCollection, 2);
-reordedCollection = Reorder(flattenedCollection, { 2, 0, 1 }); // (={3,1,2}
-indexByValue = SortIndexByValue(reordedCollection, true); // (={1,2,0}) not sure thsis is correct
-def sorterFunction(a:double, b:double)
-{
-    return = a < b ? 1 : 0;
-}
-sort = Sort(sorterFunction, reordedCollection);  // (=null) something wrong here
-newArray = noramlisedDepthCollection;
-newArray[0][1] = 6; // directly add a member to a 2D array.. good
-newArray[2] = { 7, 8, 9 }; // and good
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void DebugWatch754_set_operation_functions_test_1()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""ProtoGeometry.dll"");
-import(""DSCoreNodes.dll"");
-set = { true, { false, true } };
-allFalseSet = AllFalse(set);
-someFalseSet = SomeFalse(set);
-someTrueSet = SomeTrue(set);
-someNullsSet = SomeNulls(set);
-setInsert = Insert(set, null, -1);
-allFalseSetInsert = AllFalse(setInsert);
-someFalseSetInsert = SomeFalse(setInsert);
-someTrueSetInsert = SomeTrue(setInsert); // (=true).. which is correct, but gives 'Argument Type Mismatch' error
-someNullsSetInsert = SomeNulls(setInsert);
-countFalse = CountFalse(setInsert);
-countTrue = CountTrue(setInsert);
-containsNull = Contains(setInsert, null);
-removeSetInsert = Remove(setInsert, 2);
-removeNullsSetInsert = RemoveNulls(setInsert);
-removeDuplicatesSetInsert = RemoveDuplicates(setInsert);
-flattenSetInsert = Flatten(setInsert);
-removeDuplicatesSetInsertFalttened = RemoveDuplicates(flattenSetInsert);
-removeIfNotSetInsert = RemoveIfNot(flattenSetInsert, ""bool""); // (={})... this looks incorrect
-one1Dcollection = { 3, 1 };
-other1Dcollection = { 0, 1, 2, 3, 4 };
-setDifferenceA = SetDifference(one1Dcollection, other1Dcollection);
-setDifferenceB = SetDifference(other1Dcollection, one1Dcollection);
-setIntersection = SetIntersection(other1Dcollection, one1Dcollection);
-setUnion = SetUnion(other1Dcollection, one1Dcollection); ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
         [Test]
         [Category("WatchFx Tests")]
         public void DebugWatch755_T80580_BuiltinFunc_1()
@@ -20869,38 +20663,6 @@ b3 = Math.Ceiling(null); //null
 a4 = {};
 b4 = Math.Ceiling(a4); //null
 ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void DebugWatch758_T80585_Count()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"// testing Count()
-import(""ProtoGeometry.dll"");
-def ret_count(ee : int[]) 
-{
-return =  Count(ee[1..Count(ee)]);
-}
-a = {1,2,3,0};
-b = Count(a); //4
-c = {1.1,-1.2,3,4};
-d = Count(c) ; //4
-e1 = {{1,2},{3,4},{4,5}};
-f = Count(e1);//3
-g = ret_count(e1); //{2,2,2}
-h = Count(e1[1..Count(e1)-1]);//3
-i = Count(e1[0]); //2
-j = Count({{{{1,3},2},{1}},{2,3}}); //2
-//negative testing
-a1 = ""s"";
-b1 = Count(a1); //0
-b2 = Count(a2); //0
-b3 = Count(null); //null
-a4 = {};
-b4 = Count(a4); //0";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -22559,25 +22321,6 @@ d1 = Average(d);";
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
-        [Test]
-        [Category("WatchFx Tests"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void DebugWatch826_T058_Average_DataType_02()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""ProtoGeometry.dll"");
-import(""FFITarget.dll"");
-pt1=Point.ByCoordinates(1,1,1);
-a = {true};
-b = {{1},2,3};
-c = {""a"",0.2,0.3,1};
-d = {pt1, {}, 1};
-a1 = RegressionTargets.AverageList(a);
-b1 = RegressionTargets.AverageList(b);
-c1 = RegressionTargets.AverageList(c);
-d1 = RegressionTargets.AverageList(d);";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
 
         [Test]
         [Category("WatchFx Tests")]
