@@ -52,7 +52,7 @@ namespace Dynamo.UpdateManager
         bool ForceUpdate { get; set; }
         string UpdateFileLocation { get; }
         event LogEventHandler Log;
-        void OnLog(object sender, LogEventArgs args);
+        void OnLog(LogEventArgs args);
     }
 
     /// <summary>
@@ -157,8 +157,8 @@ namespace Dynamo.UpdateManager
                 Error = string.Empty;
                 Data = string.Empty;
 
-                UpdateManager.Instance.OnLog(this, new LogEventArgs("The update request could not be completed.", LogLevel.File));
-                UpdateManager.Instance.OnLog(this, new LogEventArgs(ex.Message, LogLevel.File));
+                UpdateManager.Instance.OnLog(new LogEventArgs("The update request could not be completed.", LogLevel.File));
+                UpdateManager.Instance.OnLog(new LogEventArgs(ex.Message, LogLevel.File));
             }
 
             //regardless of the success of the above logic
@@ -252,7 +252,7 @@ namespace Dynamo.UpdateManager
             {
                 if (value != null)
                 {
-                    OnLog(this, new LogEventArgs(string.Format("Update available: {0}", value.Version), LogLevel.Console));
+                    OnLog(new LogEventArgs(string.Format("Update available: {0}", value.Version), LogLevel.Console));
                 }
                 
                 updateInfo = value;
@@ -326,7 +326,7 @@ namespace Dynamo.UpdateManager
                         //When the UpdateInfo property changes, this will be reflected in the UI
                         //by the vsisibility of the download cloud. The most up to date version will
                         //be downloaded asynchronously.
-                        OnLog(this, new LogEventArgs("Update download started...", LogLevel.Console));
+                        OnLog(new LogEventArgs("Update download started...", LogLevel.Console));
 
                         var tempPath = Path.GetTempPath();
                         DownloadUpdatePackageAsynchronously(updateInfo.InstallerURL, updateInfo.Version, tempPath);
@@ -345,8 +345,8 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public void CheckForProductUpdate(IAsynchronousRequest request)
         {
-            OnLog(this, new LogEventArgs("RequestUpdateVersionInfo", LogLevel.File));
-            OnLog(this, new LogEventArgs("Requesting version update info...", LogLevel.Console));
+            OnLog(new LogEventArgs("RequestUpdateVersionInfo", LogLevel.File));
+            OnLog(new LogEventArgs("Requesting version update info...", LogLevel.Console));
 
             if (versionCheckInProgress)
                 return;
@@ -406,7 +406,7 @@ namespace Dynamo.UpdateManager
             }
             else
             {
-                OnLog(this, new LogEventArgs("The specified file path is not recognizable as a stable or a daily build", LogLevel.Console));
+                OnLog(new LogEventArgs("The specified file path is not recognizable as a stable or a daily build", LogLevel.Console));
                 versionCheckInProgress = false;
                 return;
             }
@@ -439,7 +439,7 @@ namespace Dynamo.UpdateManager
                     }
                     else
                     {
-                        OnLog(this, new LogEventArgs("Dynamo is up to date.",LogLevel.Console));
+                        OnLog(new LogEventArgs("Dynamo is up to date.",LogLevel.Console));
                     }
                 }
                 else // Check dailies
@@ -450,7 +450,7 @@ namespace Dynamo.UpdateManager
                     }
                     else
                     {
-                        OnLog(this, new LogEventArgs("Dynamo is up to date.", LogLevel.Console));
+                        OnLog(new LogEventArgs("Dynamo is up to date.", LogLevel.Console));
                     }
                 }
             }
@@ -460,7 +460,7 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
-            OnLog(this, new LogEventArgs("UpdateNotificationControl-OnInstallButtonClicked", LogLevel.File));
+            OnLog(new LogEventArgs("UpdateNotificationControl-OnInstallButtonClicked", LogLevel.File));
 
             string message = string.Format("An update is available for {0}.\n\n" +
                 "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
@@ -506,24 +506,25 @@ namespace Dynamo.UpdateManager
                 return;
 
             string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
-            OnLog(this, new LogEventArgs("UpdateManager-OnDownloadFileCompleted", LogLevel.File));
+            OnLog(new LogEventArgs("UpdateManager-OnDownloadFileCompleted", LogLevel.File));
+            OnLog(new LogEventArgs(errorMessage, LogLevel.File));
 
             UpdateFileLocation = string.Empty;
             if (e.Error == null)
             {
                 UpdateFileLocation = (string)e.UserState;
-                OnLog(this, new LogEventArgs("Update download complete.", LogLevel.Console));
+                OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
             }
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
         }
 
-        public void OnLog(object sender, LogEventArgs args)
+        public void OnLog(LogEventArgs args)
         {
             if (Log != null)
             {
-                Log(sender, args);
+                Log(args);
             }
         }
 
@@ -549,8 +550,8 @@ namespace Dynamo.UpdateManager
                 }
                 catch (Exception e)
                 {
-                    OnLog(this, new LogEventArgs(e.Message, LogLevel.Console));
-                    OnLog(this, new LogEventArgs(e.StackTrace, LogLevel.Console));
+                    OnLog(new LogEventArgs(e.Message, LogLevel.Console));
+                    OnLog(new LogEventArgs(e.StackTrace, LogLevel.Console));
                     return null;
                 }
             }
@@ -787,7 +788,7 @@ namespace Dynamo.UpdateManager
             if (e.ProgressPercentage % 10 == 0 && 
                 e.ProgressPercentage > currentDownloadProgress)
             {
-                OnLog(this, new LogEventArgs(string.Format("Update download progress: {0}%", e.ProgressPercentage), LogLevel.Console));
+                OnLog(new LogEventArgs(string.Format("Update download progress: {0}%", e.ProgressPercentage), LogLevel.Console));
                 currentDownloadProgress = e.ProgressPercentage;
             }
         }

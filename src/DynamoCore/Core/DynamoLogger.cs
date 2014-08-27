@@ -13,7 +13,7 @@ namespace Dynamo
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Error}
 
-    public delegate void LogEventHandler(object sender, LogEventArgs args);
+    public delegate void LogEventHandler(LogEventArgs args);
 
     public class LogEventArgs : EventArgs
     {
@@ -111,7 +111,7 @@ namespace Dynamo
             }
         }
 
-        private void UpdateManager_Log(object sender, LogEventArgs args)
+        private void UpdateManager_Log(LogEventArgs args)
         {
             Log(args.Message, args.Level);
         }
