@@ -32,6 +32,12 @@ namespace Dynamo
             Message = message;
             Level = level;
         }
+
+        public LogEventArgs(Exception e, LogLevel level)
+        {
+            Message = e.Message + "\n" + e.StackTrace;
+            Level = level;
+        }
     }
 
     public class DynamoLogger:NotificationObject, ILogger, IDisposable

@@ -158,7 +158,7 @@ namespace Dynamo.UpdateManager
                 Data = string.Empty;
 
                 UpdateManager.Instance.OnLog(new LogEventArgs("The update request could not be completed.", LogLevel.File));
-                UpdateManager.Instance.OnLog(new LogEventArgs(ex.Message, LogLevel.File));
+                UpdateManager.Instance.OnLog(new LogEventArgs(ex, LogLevel.File));
             }
 
             //regardless of the success of the above logic
@@ -550,8 +550,7 @@ namespace Dynamo.UpdateManager
                 }
                 catch (Exception e)
                 {
-                    OnLog(new LogEventArgs(e.Message, LogLevel.Console));
-                    OnLog(new LogEventArgs(e.StackTrace, LogLevel.Console));
+                    OnLog(new LogEventArgs(e, LogLevel.Console));
                     return null;
                 }
             }
