@@ -1047,41 +1047,6 @@ namespace ProtoCore.Utils
             }
         }
 
-        /// <summary>
-        /// Gets all array elements in a List of given type using the given converter to
-        /// convert the stackValue.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <param name="converter"></param>
-        /// <returns></returns>
-        public static List<T> GetValues<T>(StackValue array, Core core, Func<StackValue, T> converter)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return null;
-            }
-
-            HeapElement he = GetHeapElement(array, core);
-            List<T> values = new List<T>();
-            foreach (var sv in he.Stack)
-            {
-                values.Add(converter(sv));
-            }
-
-            if (he.Dict != null)
-            {
-                foreach (var sv in he.Dict.Values)
-                {
-                    values.Add(converter(sv));
-                }
-            }
-
-            return values;
-        }
-
         private static StackValue[] GetFlattenValue(StackValue array, Core core)
         {
             Queue<StackValue> workingSet = new Queue<StackValue>();
