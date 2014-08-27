@@ -18,7 +18,6 @@ namespace Dynamo.UI.Views
     {
         bool ignoreClose;
         ILogger logger;
-        private readonly DynamoViewModel dynamoViewModel;
 
         public AboutWindow(ILogger logger, DynamoViewModel dynamoViewModel)
         {
@@ -27,18 +26,14 @@ namespace Dynamo.UI.Views
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
-            this.dynamoViewModel = dynamoViewModel;
 
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
         }
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
         {
-            if (this.dynamoViewModel != null)
-            {
-                var um = UpdateManager.UpdateManager.Instance;
-                um.UpdateDownloaded -= OnUpdatePackageDownloaded;
-            }
+            var um = UpdateManager.UpdateManager.Instance;
+            um.UpdateDownloaded -= OnUpdatePackageDownloaded;
         }
 
         public bool InstallNewUpdate { get; private set; }
