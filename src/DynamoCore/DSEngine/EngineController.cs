@@ -248,7 +248,7 @@ namespace Dynamo.DSEngine
         public bool GenerateGraphSyncDataForCustomNode(
             CustomNodeDefinition def,
             IEnumerable<NodeModel> nodes,
-            List<AssociativeNode> outputs,
+            IEnumerable<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
             lock (MacroMutex)
