@@ -606,6 +606,11 @@ namespace Dynamo { namespace Bloodstone {
             return this->GetDefaultCameraCore();
         }
 
+        void GetDisplayPixelSize(int& width, int& height) const
+        {
+            this->GetDisplayPixelSizeCore(width, height);
+        }
+
         IVertexShader* CreateVertexShader(const std::string& content) const
         {
             return this->CreateVertexShaderCore(content);
@@ -665,6 +670,7 @@ namespace Dynamo { namespace Bloodstone {
         virtual bool InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
         virtual ICamera* GetDefaultCameraCore(void) const = 0;
+        virtual void GetDisplayPixelSizeCore(int& width, int& height) const = 0;
 
         virtual IVertexShader* CreateVertexShaderCore(
             const std::string& content) const = 0;

@@ -200,6 +200,7 @@ namespace Dynamo { namespace Bloodstone { namespace OpenGL {
         virtual bool InitializeCore(HWND hWndOwner);
         virtual void UninitializeCore(void);
         virtual ICamera* GetDefaultCameraCore(void) const;
+        virtual void GetDisplayPixelSizeCore(int& width, int& height) const;
         virtual IVertexShader* CreateVertexShaderCore(
             const std::string& content) const;
         virtual IFragmentShader* CreateFragmentShaderCore(

@@ -139,6 +139,18 @@ ICamera* GraphicsContext::GetDefaultCameraCore(void) const
     return mpDefaultCamera;
 }
 
+void GraphicsContext::GetDisplayPixelSizeCore(int& width, int& height) const
+{
+    width = height = 0;
+
+    if (::IsWindow(this->mRenderWindow)) {
+        RECT rcClient;
+        ::GetClientRect(this->mRenderWindow, &rcClient);
+        width  = rcClient.right - rcClient.left;
+        height = rcClient.bottom - rcClient.top;
+    }
+}
+
 IVertexShader* GraphicsContext::CreateVertexShaderCore(const std::string& content) const
 {
     VertexShader* pVertexShader = new VertexShader(this);
