@@ -29,14 +29,6 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-        <!--<Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" BorderBrush="#333" BorderThickness="0,0,0,1" Height="30" Background="#444">
-        </Border>
-
-        <Grid FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
-            <StackPanel Margin="0,5,0,0" Name="titleBarButtonsGrid" FlowDirection="LeftToRight" shell:WindowChrome.IsHitTestVisibleInChrome="True">
-            </StackPanel>
-        </Grid>-->
-
         <Grid Background="Black" Grid.Row="1" MinHeight="200">
 
             <Grid.RowDefinitions>
@@ -124,11 +116,11 @@
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                    <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="True">
                                                         <Setter Property="Background" Value="#222"/>
                                                     </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                         <Setter Property="Background" Value="#333"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -141,11 +133,11 @@
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                        <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="True">
                                                             <Setter Property="Visibility" Value="Visible"/>
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                        <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                             <Setter Property="Visibility" Value="Collapsed"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -157,9 +149,9 @@
 
                                             <Border Width="275" BorderThickness ="0,0,1,0" BorderBrush="#222" >
                                                 <VirtualizingStackPanel>
-                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="WhiteSmoke" Margin="5,5,0,5"/>
-                                                    <TextBlock FontSize="12" Text="{Binding Path=Maintainers}" Foreground="#AAA" Margin="5,5,0,5"/>
-                                                    <TextBlock FontSize="11" Margin="3" Foreground="#999" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Model.Name}" HorizontalAlignment="Left" Foreground="WhiteSmoke" Margin="5,5,0,5"/>
+                                                    <TextBlock FontSize="12" Text="{Binding Path=Model.Maintainers}" Foreground="#AAA" Margin="5,5,0,5"/>
+                                                    <TextBlock FontSize="11" Margin="3" Foreground="#999" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
                                                 </VirtualizingStackPanel>
                                             </Border>
                                     
@@ -170,11 +162,11 @@
 
                                                         <VirtualizingStackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="55">
                                                             <TextBlock FontSize="10" FontWeight="Bold" Text="Installs   " Foreground="Gray" />
-                                                            <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
+                                                            <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Model.Downloads}" Foreground="Gray"  />
                                                         </VirtualizingStackPanel>
 
                                                         <Border Margin="5,5,5,5" MinWidth="40" MaxWidth="40">
-                                                            <TextBlock FontSize="10" HorizontalAlignment="Right" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                                            <TextBlock FontSize="10" HorizontalAlignment="Right" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                                         </Border>
 
                                                         <VirtualizingStackPanel Orientation="Horizontal" >
@@ -197,11 +189,11 @@
 
                                         <VirtualizingStackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
 
-                                            <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
+                                            <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
 
-                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Model.Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                                                 <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                                <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
+                                                <TextBlock FontSize="11" Text="{Binding PathModel.=Keywords}" Foreground="WhiteSmoke" />
                                             </VirtualizingStackPanel>
 
                                             <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,10">

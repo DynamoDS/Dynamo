@@ -430,7 +430,7 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
-                                                Value="/UI/Images/collapsestate_normal.png" />
+                                                Value="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png" />
                                     </MultiDataTrigger>
 
                                 </ControlTemplate.Triggers>

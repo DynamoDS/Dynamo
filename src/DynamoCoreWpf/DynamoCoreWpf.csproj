@@ -294,8 +294,8 @@
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="UI\Images\cursors.psd" />
-    <None Include="UI\Images\cursors1.psd" />
+    <Resource Include="UI\Images\cursors.psd" />
+    <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="UI\Images\AboutWindow\aboutback.png" />
@@ -325,436 +325,436 @@
     <CodeAnalysisDictionary Include="UI\Images\AboutWindow\logo_about.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\add.png" />
+    <Resource Include="UI\Images\add.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\add_32.png" />
+    <Resource Include="UI\Images\add_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\add_32_white.png" />
+    <Resource Include="UI\Images\add_32_white.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon_white.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon_white_24.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Anonymous_Pencil_icon_white_32.png" />
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arc_add.cur" />
+    <Resource Include="UI\Images\arc_add.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arc_add.png" />
+    <Resource Include="UI\Images\arc_add.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arc_remove.cur" />
+    <Resource Include="UI\Images\arc_remove.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arc_remove.png" />
+    <Resource Include="UI\Images\arc_remove.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arc_select.cur" />
+    <Resource Include="UI\Images\arc_select.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arc_select.png" />
+    <Resource Include="UI\Images\arc_select.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arrow-left-black.png" />
+    <Resource Include="UI\Images\arrow-left-black.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arrow-left-white.png" />
+    <Resource Include="UI\Images\arrow-left-white.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arrow-right-black.png" />
+    <Resource Include="UI\Images\arrow-right-black.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\arrow-right-white.png" />
+    <Resource Include="UI\Images\arrow-right-white.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\back.png" />
+    <Resource Include="UI\Images\back.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\back_24.png" />
+    <Resource Include="UI\Images\back_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\back_32.png" />
+    <Resource Include="UI\Images\back_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-geom-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-check.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-geom-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-node-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-node-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-orbit-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-check.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-orbit-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-pan-check.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-check.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-pan-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Canvas\canvas-button-zoom-out-states.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-out-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\click_background.png" />
+    <Resource Include="UI\Images\click_background.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\closetab_hover.png" />
+    <Resource Include="UI\Images\closetab_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\closetab_normal.png" />
+    <Resource Include="UI\Images\closetab_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\closewindow_hover.png" />
+    <Resource Include="UI\Images\closewindow_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\closewindow_normal.png" />
+    <Resource Include="UI\Images\closewindow_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\cloud_download_arrow.png" />
+    <Resource Include="UI\Images\cloud_download_arrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\cloud_download_arrow_gray.png" />
+    <Resource Include="UI\Images\cloud_download_arrow_gray.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\cloud_download_arrow_white.png" />
+    <Resource Include="UI\Images\cloud_download_arrow_white.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\collapse_hover.png" />
+    <Resource Include="UI\Images\collapse_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\collapse_normal.png" />
+    <Resource Include="UI\Images\collapse_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\collapsestate_hover.png" />
+    <Resource Include="UI\Images\collapsestate_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\collapsestate_normal.png" />
+    <Resource Include="UI\Images\collapsestate_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\condense.cur" />
+    <Resource Include="UI\Images\condense.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\condense.png" />
+    <Resource Include="UI\Images\condense.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\consent_form_image.png" />
+    <Resource Include="UI\Images\consent_form_image.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\DocumentHS.png" />
+    <Resource Include="UI\Images\DocumentHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\expand.cur" />
+    <Resource Include="UI\Images\expand.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\expand.png" />
+    <Resource Include="UI\Images\expand.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\expand_hover.png" />
+    <Resource Include="UI\Images\expand_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\expand_normal.png" />
+    <Resource Include="UI\Images\expand_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\expandstate_hover.png" />
+    <Resource Include="UI\Images\expandstate_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\expandstate_normal.png" />
+    <Resource Include="UI\Images\expandstate_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand.cur" />
+    <Resource Include="UI\Images\hand.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand.png" />
+    <Resource Include="UI\Images\hand.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand_drag.cur" />
+    <Resource Include="UI\Images\hand_drag.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand_drag.png" />
+    <Resource Include="UI\Images\hand_drag.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand_pan.cur" />
+    <Resource Include="UI\Images\hand_pan.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand_pan.png" />
+    <Resource Include="UI\Images\hand_pan.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand_pan_active.cur" />
+    <Resource Include="UI\Images\hand_pan_active.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\hand_pan_active.png" />
+    <Resource Include="UI\Images\hand_pan_active.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\HomeHS.png" />
+    <Resource Include="UI\Images\HomeHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\librarycollapse_hover.png" />
+    <Resource Include="UI\Images\librarycollapse_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\librarycollapse_normal.png" />
+    <Resource Include="UI\Images\librarycollapse_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\maximizewindow_hover.png" />
+    <Resource Include="UI\Images\maximizewindow_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\maximizewindow_normal.png" />
+    <Resource Include="UI\Images\maximizewindow_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\minimizewindow_hover.png" />
+    <Resource Include="UI\Images\minimizewindow_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\minimizewindow_normal.png" />
+    <Resource Include="UI\Images\minimizewindow_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\move.png" />
+    <Resource Include="UI\Images\move.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\new_disabled.png" />
+    <Resource Include="UI\Images\new_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\new_hover.png" />
+    <Resource Include="UI\Images\new_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\new_normal.png" />
+    <Resource Include="UI\Images\new_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\open_disabled.png" />
+    <Resource Include="UI\Images\open_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\open_hover.png" />
+    <Resource Include="UI\Images\open_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\open_normal.png" />
+    <Resource Include="UI\Images\open_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\openHS.png" />
+    <Resource Include="UI\Images\openHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\OpenSelectedItemHS.png" />
+    <Resource Include="UI\Images\OpenSelectedItemHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\padlock-closed-black.png" />
+    <Resource Include="UI\Images\padlock-closed-black.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\padlock-closed-black24x24.png" />
+    <Resource Include="UI\Images\padlock-closed-black24x24.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\pause_disabled.png" />
+    <Resource Include="UI\Images\pause_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\pause_hover.png" />
+    <Resource Include="UI\Images\pause_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\pause_normal.png" />
+    <Resource Include="UI\Images\pause_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\pointer.cur" />
+    <Resource Include="UI\Images\pointer.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\pointer.png" />
+    <Resource Include="UI\Images\pointer.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\pointer_add.cur" />
+    <Resource Include="UI\Images\pointer_add.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\pointer_add.png" />
+    <Resource Include="UI\Images\pointer_add.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\rectangular_selection.cur" />
+    <Resource Include="UI\Images\rectangular_selection.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\rectangular_selection.png" />
+    <Resource Include="UI\Images\rectangular_selection.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\redo_disabled.png" />
+    <Resource Include="UI\Images\redo_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\redo_hover.png" />
+    <Resource Include="UI\Images\redo_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\redo_normal.png" />
+    <Resource Include="UI\Images\redo_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\resize_diagonal.cur" />
+    <Resource Include="UI\Images\resize_diagonal.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\resize_diagonal.png" />
+    <Resource Include="UI\Images\resize_diagonal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\resize_horizontal.cur" />
+    <Resource Include="UI\Images\resize_horizontal.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\resize_horizontal.png" />
+    <Resource Include="UI\Images\resize_horizontal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\resize_vertical.cur" />
+    <Resource Include="UI\Images\resize_vertical.cur" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\resize_vertical.png" />
+    <Resource Include="UI\Images\resize_vertical.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\restorewindow_hover.png" />
+    <Resource Include="UI\Images\restorewindow_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\restorewindow_normal.png" />
+    <Resource Include="UI\Images\restorewindow_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\run_disabled.png" />
+    <Resource Include="UI\Images\run_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\run_hover.png" />
+    <Resource Include="UI\Images\run_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\run_normal.png" />
+    <Resource Include="UI\Images\run_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\save_disabled.png" />
+    <Resource Include="UI\Images\save_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\save_hover.png" />
+    <Resource Include="UI\Images\save_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\save_normal.png" />
+    <Resource Include="UI\Images\save_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\saveHS.png" />
+    <Resource Include="UI\Images\saveHS.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\screenshot_disabled.png" />
+    <Resource Include="UI\Images\screenshot_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\screenshot_hover.png" />
+    <Resource Include="UI\Images\screenshot_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\screenshot_normal.png" />
+    <Resource Include="UI\Images\screenshot_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\search.png" />
+    <Resource Include="UI\Images\search.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\search_24.png" />
+    <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\search_hover.png" />
+    <Resource Include="UI\Images\search_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\search_normal.png" />
+    <Resource Include="UI\Images\search_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\searchcancel_hover.png" />
+    <Resource Include="UI\Images\searchcancel_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\searchcancel_normal.png" />
+    <Resource Include="UI\Images\searchcancel_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\sendfeedback_disabled.png" />
+    <Resource Include="UI\Images\sendfeedback_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\sendfeedback_hover.png" />
+    <Resource Include="UI\Images\sendfeedback_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\sendfeedback_normal.png" />
+    <Resource Include="UI\Images\sendfeedback_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\dynamo-logo.png" />
+    <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-discussion.png" />
+    <Resource Include="UI\Images\StartPage\icon-discussion.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-dynamobim.png" />
+    <Resource Include="UI\Images\StartPage\icon-dynamobim.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-email.png" />
+    <Resource Include="UI\Images\StartPage\icon-email.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-github.png" />
+    <Resource Include="UI\Images\StartPage\icon-github.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-issues.png" />
+    <Resource Include="UI\Images\StartPage\icon-issues.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-new.png" />
+    <Resource Include="UI\Images\StartPage\icon-new.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-open.png" />
+    <Resource Include="UI\Images\StartPage\icon-open.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-reference.png" />
+    <Resource Include="UI\Images\StartPage\icon-reference.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icon-video.png" />
+    <Resource Include="UI\Images\StartPage\icon-video.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\StartPage\icons-more-samples.png" />
+    <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\tabs_button_hover.png" />
+    <Resource Include="UI\Images\tabs_button_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\tabs_button_normal.png" />
+    <Resource Include="UI\Images\tabs_button_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\task_dialog_crash.png" />
+    <Resource Include="UI\Images\task_dialog_crash.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\task_dialog_future_file.png" />
+    <Resource Include="UI\Images\task_dialog_future_file.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\task_dialog_obsolete_file.png" />
+    <Resource Include="UI\Images\task_dialog_obsolete_file.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\tick_selected.png" />
+    <Resource Include="UI\Images\tick_selected.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\undo_disabled.png" />
+    <Resource Include="UI\Images\undo_disabled.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\undo_hover.png" />
+    <Resource Include="UI\Images\undo_hover.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\undo_normal.png" />
+    <Resource Include="UI\Images\undo_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Update\clickbox.png" />
+    <Resource Include="UI\Images\Update\clickbox.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Update\download_ani.png" />
+    <Resource Include="UI\Images\Update\download_ani.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Update\DownloadAnimation.png" />
+    <Resource Include="UI\Images\Update\DownloadAnimation.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Update\DownloadIcon.png" />
+    <Resource Include="UI\Images\Update\DownloadIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Update\update.png" />
+    <Resource Include="UI\Images\Update\update.png" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="UI\Images\Update\update_static.png" />
+    <Resource Include="UI\Images\Update\update_static.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Prompts\CrashPrompt.xaml">

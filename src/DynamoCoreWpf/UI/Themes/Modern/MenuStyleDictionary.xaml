@@ -270,7 +270,7 @@
                                    Width="8"
                                    Height="8"
                                    SnapsToDevicePixels="False"
-                                   Source="pack://application:,,,/DynamoCore;component/UI/Images/tick_selected.png"
+                                   Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png"
                                    Visibility="Hidden" />
                         </Border>
                         <ContentPresenter Name="HeaderHost"
@@ -320,7 +320,7 @@
                                 Value="{StaticResource ActiveForegroundBrush}" />
                         <Setter TargetName="CheckMark"
                                 Property="Source"
-                                Value="pack://application:,,,/DynamoCore;component/UI/Images/tick_selected.png" />
+                                Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png" />
                         <!--<Setter TargetName="HeaderHost" Property="TextBlock.FontWeight" Value="Bold"/>-->
                         <Setter TargetName="Border"
                                 Property="BorderBrush"

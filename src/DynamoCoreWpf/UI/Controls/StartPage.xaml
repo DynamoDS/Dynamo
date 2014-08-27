@@ -55,12 +55,12 @@
                             <Trigger Property="IsMouseOver"
                                      Value="False">
                                 <Setter Property="Source"
-                                        Value="/DynamoCore;component/UI/Images/closetab_normal.png" />
+                                        Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
                             </Trigger>
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Source"
-                                        Value="/DynamoCore;component/UI/Images/closetab_hover.png" />
+                                        Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -75,7 +75,7 @@
                Width="250"
                Margin="0,32,0,32"
                HorizontalAlignment="Center"
-               Source="/DynamoCore;component/UI/Images/StartPage/dynamo-logo.png" />
+               Source="/DynamoCoreWpf;component/UI/Images/StartPage/dynamo-logo.png" />
 
         <!-- Begin inner grid control for all other list boxes -->
 

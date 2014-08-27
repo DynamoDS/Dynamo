@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCore"
-                      xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCore" 
+                      xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
+                      xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf" 
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
-                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore">
+                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />

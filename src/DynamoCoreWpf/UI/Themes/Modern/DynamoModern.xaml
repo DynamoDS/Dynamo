@@ -1,10 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib" 
-                    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore" 
+                    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf" 
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore" 
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore"
-                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCore">
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -96,7 +96,7 @@
     </Style>
 
     <Image x:Key="ComboDownIcon_normal"
-           Source="pack://application:,,,/DynamoCore;component/UI/Images/tick_selected.png" />
+           Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png" />
     
     <ControlTemplate x:Key="ComboBoxToggleButton" 
                      TargetType="ToggleButton">
@@ -727,7 +727,7 @@
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center"
                                        Visibility="Hidden"
-                                       Source="pack://application:,,,/DynamoCore;component/UI/Images/tick_selected.png" />
+                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png" />
                             </Border>
                         </BulletDecorator.Bullet>
 
