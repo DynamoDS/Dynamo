@@ -217,8 +217,10 @@ void BillboardVertexBuffer::RenderCore(void) const
     if (mVertexCount <= 0) // Nothing to render.
         return;
 
+    GL::glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     GL::glBindVertexArray(mVertexArrayId);
     GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
+    GL::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void BillboardVertexBuffer::UpdateCore(const std::vector<BillboardVertex>& vertices)
@@ -226,6 +228,7 @@ void BillboardVertexBuffer::UpdateCore(const std::vector<BillboardVertex>& verti
     if (vertices.size() <= 0)
         return;
 
+    mVertexCount = ((int) vertices.size());
     EnsureVertexBufferCreation();
 
     GL::glBindVertexArray(mVertexArrayId);

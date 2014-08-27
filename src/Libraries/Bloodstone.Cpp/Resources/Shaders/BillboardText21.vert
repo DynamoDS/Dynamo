@@ -8,6 +8,7 @@ varying vec4 vertColor;
 varying vec2 vertTexCoords;
 
 uniform vec3 camPosition;
+uniform vec3 camUpVector;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
@@ -18,13 +19,10 @@ void main(void)
     vec3 right  = cross(vec3(0.0, 1.0, 0.0), at);
     vec3 up     = cross(at, right);
 
-    mat4 bbt = mat4( vec4( right,      0.0 ),
-                     vec4( up,         0.0 ),
-                     vec4( at,         0.0 ),
-                     vec4( inPosition, 0.0 ) );
-
-    vec4 offset = vec4(inTextCoords.zw, 0.0, 1.0);
-    gl_Position = proj * view * model * bbt * offset;
+    vec4 r = vec4(inTextCoords.z * right, 0.0);
+    vec4 u = vec4(inTextCoords.w * up, 0.0);
+    vec4 direction = r + u;
+    gl_Position = proj * view * model * (inPosition + direction);
 
     // For downstream fragment shader.
     vertColor = inColor;

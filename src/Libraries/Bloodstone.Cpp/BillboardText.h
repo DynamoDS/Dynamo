@@ -184,6 +184,7 @@ namespace Dynamo { namespace Bloodstone {
 
         // Shader parameter indices.
         int mCamPositionParamIndex;
+        int mCamUpVectorParamIndex;
 
         RegenerationHints mRegenerationHints;
         IBillboardVertexBuffer* mpVertexBuffer;
