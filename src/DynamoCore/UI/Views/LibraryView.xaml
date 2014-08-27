@@ -14,16 +14,27 @@
 
             <DataTemplate x:Key="ClassObjectDataTemplate">
                 <StackPanel Orientation="Vertical"
-                            Width="66"
-                            Height="66">
-                    <Image Source="{Binding Path=SmallIcon}"
-                           Width="29"
-                           Height="29"
-                           Margin="8"
-                           HorizontalAlignment="Center" />
-                    <TextBlock Text="{Binding Path=Name}"
+                            Width="96"
+                            Height="96">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="40" />
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding Path=SmallIcon}"
+                               Width="32"
+                               Height="32"
+                               Margin="8"
                                HorizontalAlignment="Center"
-                               Foreground="#DDD" />
+                               VerticalAlignment="Center"
+                               Grid.Row="0" />
+                        <TextBlock Text="{Binding Path=Name}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="#989898"
+                                   Grid.Row="1" />
+                    </Grid>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="ClassDetailsDataTemplate">
@@ -231,6 +242,18 @@
                                             <Setter Property="BorderThickness"
                                                     Value="0" />
                                         </Trigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsSelected"
+                                                           Value="False" />
+                                                <Condition Property="IsMouseOver"
+                                                           Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <MultiTrigger.Setters>
+                                                <Setter Property="Background"
+                                                        Value="#404040" />
+                                            </MultiTrigger.Setters>
+                                        </MultiTrigger>
                                     </Style.Triggers>
 
                                 </Style>
