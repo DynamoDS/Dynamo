@@ -488,11 +488,8 @@ namespace Dynamo.Models
             }
             else
             {
-                //NodeMap[n.GUID] = n;
                 throw new Exception("Duplicate node GUID in map!");
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         internal void OpenInternal(string xmlPath)
