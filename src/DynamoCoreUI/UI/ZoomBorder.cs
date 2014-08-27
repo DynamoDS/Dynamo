@@ -111,7 +111,7 @@ namespace Dynamo.Controls
                 double zoom = e.Delta > 0 ? 1 : -1;
                 Point mousePosition = e.GetPosition(child);
                 WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
-                vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition));
+                vm.OnRequestZoomToViewportPoint(this, new DynamoModel.ZoomEventArgs(zoom, mousePosition));
 
                 // Update WorkspaceModel without triggering property changed
                 vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());

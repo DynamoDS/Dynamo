@@ -719,7 +719,8 @@ namespace Dynamo.ViewModels
 
         private void SetupCustomUIElements(object nodeUI)
         {
-            nodeLogic.InitializeUI(nodeUI);
+            // SEPARATECORE
+            //nodeLogic.InitializeUI(nodeUI);
         }
 
         private bool CanSetupCustomUIElements(object NodeUI)

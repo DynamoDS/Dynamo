@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Dynamo.Nodes.Search
+namespace Dynamo.Search
 {
 
     public class BrowserRootElement : BrowserItem

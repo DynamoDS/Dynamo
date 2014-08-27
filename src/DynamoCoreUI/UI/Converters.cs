@@ -23,6 +23,8 @@ using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
 
+using RestSharp.Contrib;
+
 namespace Dynamo.Controls
 {
     public class TooltipLengthTruncater : IValueConverter

@@ -87,7 +87,7 @@ namespace Dynamo.ViewModels
 
         public System.Windows.Thickness MarginThickness
         {
-            get { return _port.MarginThickness; }
+            get { return _port.MarginThickness.AsWindowsThickness(); }
         }
 
         #endregion

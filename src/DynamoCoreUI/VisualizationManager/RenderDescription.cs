@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows.Media.Media3D;
+
+using Dynamo.Utilities;
+
 using HelixToolkit.Wpf;
 
 namespace Dynamo

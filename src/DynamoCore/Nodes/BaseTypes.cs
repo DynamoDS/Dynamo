@@ -4,9 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
+
+using Dynamo.UI;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using System.Globalization;
 
@@ -1046,50 +1047,6 @@ namespace Dynamo.Nodes
             return ranges;
         }
 
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    var list = ((Value.List)args[0]).Item;
-        //    var len = list.Length;
-        //    var offset = Convert.ToInt32(((Value.Number)args[1]).Item);
-
-        //    if (offset <= 0)
-        //        throw new Exception("\"" + InPortData[1].NickName + "\" argument must be greater than zero.");
-
-        //    //sublist creation semantics are as follows:
-        //    //EX. 1..2,5..8
-        //    //This expression says give me elements 1-2 then jump 3 and give me elements 5-8
-        //    //For a list 1,2,3,4,5,6,7,8,9,10, this will give us
-        //    //1,2,5,8,2,3,6,9
-
-        //    var paramLookup = args.Skip(2)
-        //                          .Select(
-        //                              (x, i) => new { Name = InPortData[i + 2].NickName, Argument = x })
-        //                          .ToDictionary(x => x.Name, x => ((Value.Number)x.Argument).Item);
-
-        //    var ranges = _parsed
-        //        .Select(x => x.GetValue(paramLookup).Select(Convert.ToInt32).ToList())
-        //        .ToList();
-
-        //    //move through the list, creating sublists
-        //    var finalList = new List<Value>();
-
-        //    for (int j = 0; j < len; j += offset)
-        //    {
-        //        var currList = new List<Value>();
-
-        //        var query = ranges.Where(r => r[0] + j <= len - 1 && r.Last() + j <= len - 1);
-        //        foreach (var range in query)
-        //        {
-        //            currList.AddRange(range.Select(i => list.ElementAt(j + i)));
-        //        }
-
-        //        if (currList.Any())
-        //            finalList.Add(FScheme.Value.NewList(currList.ToFSharpList()));
-        //    }
-
-        //    return FScheme.Value.NewList(finalList.ToFSharpList());
-        //}
-
         protected override string SerializeValue(string val)
         {
             return val;
@@ -1216,14 +1173,6 @@ namespace Dynamo.Nodes
         {
             return "Argument #";
         }
-
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    var f = ((Value.Function)args[0]).Item;
-        //    var fArgs = args.Tail;
-
-        //    return f.Invoke(fArgs);
-        //}
 
         protected internal override void RemoveInput()
         {

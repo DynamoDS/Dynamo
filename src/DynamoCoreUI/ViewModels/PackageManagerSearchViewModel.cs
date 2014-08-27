@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Nodes.Search;
+using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -128,7 +128,7 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     This property is observed by SearchView to see the search results
         /// </value>
-        public ObservableCollection<PackageManagerSearchElement> SearchResults { get; private set; }
+        public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; private set; }
 
         /// <summary>
         ///     MaxNumSearchResults property
@@ -209,7 +209,7 @@ namespace Dynamo.PackageManager
         {
             this.PackageManagerClientViewModel = client;
 
-            SearchResults = new ObservableCollection<PackageManagerSearchElement>();
+            SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
             MaxNumSearchResults = 35;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
@@ -363,7 +363,7 @@ namespace Dynamo.PackageManager
         /// Synchronously perform a refresh and then search
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<PackageManagerSearchElement> RefreshAndSearch()
+        public IEnumerable<PackageManagerSearchElementViewModel> RefreshAndSearch()
         {
             Refresh();
             return Search(SearchText);
@@ -374,7 +374,7 @@ namespace Dynamo.PackageManager
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.SYNCING;
 
-            Task<IEnumerable<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
+            Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
                 lock (SearchResults)
                 {
@@ -390,9 +390,9 @@ namespace Dynamo.PackageManager
 
         }
 
-        private void AddToSearchResults(PackageManagerSearchElement element)
+        private void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
-            element.Executed += this.PackageOnExecuted;
+            element.Model.Executed += this.PackageOnExecuted;
             this.SearchResults.Add(element);
         }
 
@@ -400,7 +400,7 @@ namespace Dynamo.PackageManager
         {
             foreach (var ele in this.SearchResults)
             {
-                ele.Executed -= PackageOnExecuted;
+                ele.Model.Executed -= PackageOnExecuted;
             }
 
             this.SearchResults.Clear();
@@ -555,7 +555,7 @@ namespace Dynamo.PackageManager
         {
             this.SearchText = query;
 
-            Task<IEnumerable<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
+            Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(() => Search(query)
 
             ).ContinueWith((t) =>
                 {
@@ -610,17 +610,21 @@ namespace Dynamo.PackageManager
         ///     the SearchResults object.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="search"> The search query </param>
-        internal IEnumerable<PackageManagerSearchElement> Search(string query)
+        /// <param name="query"> The search query </param>
+        internal IEnumerable<PackageManagerSearchElementViewModel> Search(string query)
         {
             if (!String.IsNullOrEmpty(query))
             {
-                return SearchDictionary.Search( query, MaxNumSearchResults);
+                return
+                    SearchDictionary.Search(query, MaxNumSearchResults)
+                        .Select(x => new PackageManagerSearchElementViewModel(x));
             }
             else
             {
                 // with null query, don't show deprecated packages
-                List<PackageManagerSearchElement> list = LastSync.Where(x => !x.IsDeprecated).ToList();
+                var list =
+                    LastSync.Where(x => !x.IsDeprecated)
+                        .Select(x => new PackageManagerSearchElementViewModel(x)).ToList();
                 Sort(list, this.SortingKey);
                 return list;
             }
@@ -632,7 +636,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal List<PackageManagerSearchElement> SearchOnline(string search)
+        internal List<PackageManagerSearchElementViewModel> SearchOnline(string search)
         {
             bool emptySearch = false;
             if (search == "")
@@ -645,7 +649,9 @@ namespace Dynamo.PackageManager
                 search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
             }
 
-            var results = PackageManagerClientViewModel.Search(search, MaxNumSearchResults);
+            var results =
+                PackageManagerClientViewModel.Search(search, MaxNumSearchResults)
+                    .Select(x => new PackageManagerSearchElementViewModel(x)).ToList();
 
             if (emptySearch)
             {
@@ -659,24 +665,24 @@ namespace Dynamo.PackageManager
         /// Sort a list of search results by the given key
         /// </summary>
         /// <param name="results"></param>
-        private static void Sort(List<PackageManagerSearchElement> results, PackageSortingKey key)
+        private static void Sort(List<PackageManagerSearchElementViewModel> results, PackageSortingKey key)
         {
             switch (key)
             {
                 case PackageSortingKey.NAME:
-                    results.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+                    results.Sort((e1, e2) => e1.Model.Name.ToLower().CompareTo(e2.Model.Name.ToLower()));
                     break;
                 case PackageSortingKey.DOWNLOADS:
-                    results.Sort((e1, e2) => e2.Downloads.CompareTo(e1.Downloads));
+                    results.Sort((e1, e2) => e2.Model.Downloads.CompareTo(e1.Model.Downloads));
                     break;
                 case PackageSortingKey.LAST_UPDATE:
                     results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
                     break;
                 case PackageSortingKey.VOTES:
-                    results.Sort((e1, e2) => e2.Votes.CompareTo(e1.Votes));
+                    results.Sort((e1, e2) => e2.Model.Votes.CompareTo(e1.Model.Votes));
                     break;
                 case PackageSortingKey.MAINTAINERS:
-                    results.Sort((e1, e2) => e1.Maintainers.ToLower().CompareTo(e2.Maintainers.ToLower()));
+                    results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
                     break;
             }
         }
@@ -715,7 +721,7 @@ namespace Dynamo.PackageManager
             if (SearchResults.Count <= SelectedIndex)
                 return;
 
-            SearchResults[SelectedIndex].Execute();
+            SearchResults[SelectedIndex].Model.Execute();
         }
         
     }

@@ -7,7 +7,7 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 
 
-namespace Dynamo.Nodes.Search
+namespace Dynamo.Search
 {
     public abstract class BrowserItem : NotificationObject
     {

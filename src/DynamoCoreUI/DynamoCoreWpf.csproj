@@ -41,9 +41,19 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoInterface">
+      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\..\extern\System.Windows.Interactivity\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -173,8 +183,8 @@
     <Compile Include="UI\WebBrowserUtility.cs" />
     <Compile Include="UI\WPF.cs" />
     <Compile Include="UI\ZoomBorder.cs" />
-    <Compile Include="Utilities\Configurations.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="ViewModels\ConnectorViewModel.cs" />
     <Compile Include="ViewModels\DynamoViewModel.cs" />
     <Compile Include="ViewModels\DynamoViewModelDelegateCommands.cs" />
@@ -192,6 +202,7 @@
     <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
     <Compile Include="ViewModels\PackageItemViewModel.cs" />
     <Compile Include="ViewModels\PackageManagerClientViewModel.cs" />
+    <Compile Include="ViewModels\PackageManagerSearchElementViewModel.cs" />
     <Compile Include="ViewModels\PackageManagerSearchViewModel.cs" />
     <Compile Include="ViewModels\PackageViewModel.cs" />
     <Compile Include="ViewModels\PortViewModel.cs" />
@@ -219,22 +230,22 @@
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Controls\GraphUpdateNotificationControl.xaml">
+    <Page Include="UI\Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Controls\ShortcutToolbar.xaml">
+    <Page Include="UI\Controls\ShortcutToolbar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Controls\StartPage.xaml">
+    <Page Include="UI\Controls\StartPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
@@ -730,40 +741,40 @@
     <CodeAnalysisDictionary Include="UI\Images\Update\update_static.png" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Prompts\CrashPrompt.xaml">
+    <Page Include="UI\Prompts\CrashPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Prompts\EditWindow.xaml">
+    <Page Include="UI\Prompts\EditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Prompts\FunctionNamePrompt.xaml">
+    <Page Include="UI\Prompts\FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Prompts\GenericTaskDialog.xaml">
+    <Page Include="UI\Prompts\GenericTaskDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Prompts\NodeHelpPrompt.xaml">
+    <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
+    <Page Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\Connectors.xaml">
@@ -828,90 +839,110 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\AboutWindow.xaml">
+    <Page Include="UI\Views\AboutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\DynamoView.xaml">
+    <Page Include="UI\Views\DynamoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\InfoBubbleView.xaml">
+    <Page Include="UI\Views\InfoBubbleView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\InstalledPackagesView.xaml">
+    <Page Include="UI\Views\InstalledPackagesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\NodeView.xaml">
+    <Page Include="UI\Views\NodeView.xaml">
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\NoteView.xaml">
+    <Page Include="UI\Views\NoteView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\PackageManagerPublishView.xaml">
+    <Page Include="UI\Views\PackageManagerPublishView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\PackageManagerSearchView.xaml">
+    <Page Include="UI\Views\PackageManagerSearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\PreviewControl.xaml">
+    <Page Include="UI\Views\PreviewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\SearchView.xaml">
+    <Page Include="UI\Views\SearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\Watch3DView.xaml">
+    <Page Include="UI\Views\Watch3DView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\WatchTree.xaml">
+    <Page Include="UI\Views\WatchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\Views\WorkspaceView.xaml">
+    <Page Include="UI\Views\WorkspaceView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
+      <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
+      <Name>GraphLayout</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+      <Name>ProtoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>Units</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NodeServices\NodeServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>NodeServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

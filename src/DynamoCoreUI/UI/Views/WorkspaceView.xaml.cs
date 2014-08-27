@@ -11,6 +11,8 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.UI;
 
+using ZoomEventArgs = Dynamo.Models.DynamoModel.ZoomEventArgs;
+
 namespace Dynamo.Views
 {
     /// <summary>
@@ -373,12 +375,12 @@ namespace Dynamo.Views
 
         void vm_ZoomChanged(object sender, EventArgs e)
         {
-            zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
+            zoomBorder.SetZoom((e as DynamoModel.ZoomEventArgs).Zoom);
         }
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
         {
-            double zoom = AdjustZoomForCurrentZoomAmount((e as ZoomEventArgs).Zoom);
+            double zoom = AdjustZoomForCurrentZoomAmount((e as DynamoModel.ZoomEventArgs).Zoom);
 
             // Limit Zoom
             double resultZoom = ViewModel.Model.Zoom + zoom;
@@ -416,8 +418,8 @@ namespace Dynamo.Views
 
         void vm_ZoomAtViewportPoint(object sender, EventArgs e)
         {
-            double zoom = AdjustZoomForCurrentZoomAmount((e as ZoomEventArgs).Zoom);
-            Point point = (e as ZoomEventArgs).Point;
+            double zoom = AdjustZoomForCurrentZoomAmount((e as DynamoModel.ZoomEventArgs).Zoom);
+            Point point = (e as DynamoModel.ZoomEventArgs).Point;
 
             ZoomAtViewportPoint(zoom, point);
         }

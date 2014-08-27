@@ -7,6 +7,8 @@ using System;
 using System.Windows;
 using Dynamo.UI;
 
+using NotificationObject = Dynamo.Core.NotificationObject;
+
 namespace Dynamo.Services
 {
     public class UsageReportingManager : NotificationObject

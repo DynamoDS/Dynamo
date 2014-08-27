@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
@@ -18,11 +19,6 @@ namespace Dynamo.PackageManager
     /// A search element representing an element from the package manager </summary>
     public class PackageManagerSearchElement : SearchElementBase
     {
-        // SEPARATECORE: Fix this
-        //public DelegateCommand DownloadLatest { get; set; }
-        //public DelegateCommand UpvoteCommand { get; set; }
-        //public DelegateCommand DownvoteCommand { get; set; }
-
         private readonly PackageManagerClient client;
 
         /// <summary>
@@ -45,10 +41,6 @@ namespace Dynamo.PackageManager
             }
             this.Votes = header.votes;
             this.IsExpanded = false;
-
-            //this.DownloadLatest = new DelegateCommand((Action) Execute);
-            //this.UpvoteCommand = new DelegateCommand((Action) Upvote);
-            //this.DownvoteCommand = new DelegateCommand((Action) Downvote);
         }
 
         public void Upvote()
@@ -93,20 +85,6 @@ namespace Dynamo.PackageManager
         #region Properties 
 
             public PackageVersion VersionNumberToDownload = null;
-
-            //public List<Tuple<PackageVersion, DelegateCommand>> Versions
-            //{
-            //    get
-            //    {
-            //        return
-            //            Header.versions.Select(
-            //                x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
-            //                    {
-            //                        this.VersionNumberToDownload = x;
-            //                        this.Execute();
-            //                    }, () => true))).ToList();
-            //    } 
-            //}
 
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
             private int _votes;
@@ -169,7 +147,6 @@ namespace Dynamo.PackageManager
             public override string Keywords { get; set; }
 
         #endregion
-        
 
     }
 

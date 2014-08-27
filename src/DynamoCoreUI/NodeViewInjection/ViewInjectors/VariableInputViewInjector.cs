@@ -13,23 +13,23 @@ namespace Dynamo.Wpf
     {
         public void SetupCustomUIElements( Dynamo.Controls.dynNodeView view)
         {
-            var model = view.ViewModel.NodeModel;
+            //var model = view.ViewModel.NodeModel;
 
-            var addButton = new DynamoNodeButton(model, "AddInPort") { Content = "+", Width = 20 };
-            //addButton.Height = 20;
+            //var addButton = new DynamoNodeButton(model, "AddInPort") { Content = "+", Width = 20 };
+            ////addButton.Height = 20;
 
-            var subButton = new DynamoNodeButton(model, "RemoveInPort") { Content = "-", Width = 20 };
-            //subButton.Height = 20;
+            //var subButton = new DynamoNodeButton(model, "RemoveInPort") { Content = "-", Width = 20 };
+            ////subButton.Height = 20;
 
-            var wp = new WrapPanel
-            {
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            wp.Children.Add(addButton);
-            wp.Children.Add(subButton);
+            //var wp = new WrapPanel
+            //{
+            //    VerticalAlignment = VerticalAlignment.Top,
+            //    HorizontalAlignment = HorizontalAlignment.Center
+            //};
+            //wp.Children.Add(addButton);
+            //wp.Children.Add(subButton);
 
-            view.inputGrid.Children.Add(wp);
+            //view.inputGrid.Children.Add(wp);
 
         }
     }

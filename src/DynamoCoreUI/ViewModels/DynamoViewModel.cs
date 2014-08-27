@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 using Dynamo.Controls;
+using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -1131,7 +1132,7 @@ namespace Dynamo.ViewModels
             //set the zoom and offsets events
             var vm = this.Model.Workspaces.First(x => x == newWs);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
-            vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
+            vm.OnZoomChanged(this, new DynamoModel.ZoomEventArgs(newWs.Zoom));
         }
 
         internal void ShowElement(NodeModel e)
@@ -1766,7 +1767,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-#if USE_DSENGINE
         public void ImportLibrary(object parameter)
         {
             string fileFilter = "Library Files (*.dll, *.ds)|*.dll;*.ds|"
@@ -1794,7 +1794,7 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-#endif
+
         internal void TogglePan(object parameter)
         {
             CurrentSpaceViewModel.RequestTogglePanMode();

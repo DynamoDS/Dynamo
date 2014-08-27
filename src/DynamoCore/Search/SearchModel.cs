@@ -5,7 +5,6 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;

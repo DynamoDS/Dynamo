@@ -8,6 +8,7 @@ using Color = System.Windows.Media.Color;
 
 namespace Dynamo.UI
 {
+    // SEPARATECORE: ugh ugh ugh
     public class Configurations
     {
         #region Dynamo Universal Constants

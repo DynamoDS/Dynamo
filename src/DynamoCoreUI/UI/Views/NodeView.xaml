@@ -5,6 +5,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:dynamo="clr-namespace:Dynamo;assembly=DynamoCore"
+             xmlns:dynamo1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -253,7 +254,7 @@
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   Canvas.ZIndex="21"
-                  IsEnabled="{Binding Path=IsInteractionEnabled}" MinHeight="{Binding Source={x:Static dynamo:Configurations.PortHeightInPixels}}">
+                  IsEnabled="{Binding Path=IsInteractionEnabled}" MinHeight="{Binding Source={x:Static dynamo1:Configurations.PortHeightInPixels}}">
             </Grid>
 
         </Grid>

@@ -17,6 +17,9 @@ using Dynamo.Controls;
 using System.Windows.Threading;
 using System.Windows.Input;
 using Dynamo.Core;
+using ZoomEventArgs = Dynamo.Models.DynamoModel.ZoomEventArgs;
+using ZoomEventHandler = Dynamo.Models.DynamoModel.ZoomEventHandler;
+using Function = Dynamo.Nodes.Function;
 
 namespace Dynamo.ViewModels
 {
@@ -36,11 +39,11 @@ namespace Dynamo.ViewModels
 
         private bool _canFindNodesFromElements = false;
 
-        public event ZoomEventHandler RequestZoomToViewportCenter;
-        public event ZoomEventHandler RequestZoomToViewportPoint;
-        public event ZoomEventHandler RequestZoomToFitView;
+        public event DynamoModel.ZoomEventHandler RequestZoomToViewportCenter;
+        public event DynamoModel.ZoomEventHandler RequestZoomToViewportPoint;
+        public event DynamoModel.ZoomEventHandler RequestZoomToFitView;
 
-        public event NodeEventHandler RequestCenterViewOnElement;
+        public event DynamoModel.NodeEventHandler RequestCenterViewOnElement;
 
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
@@ -51,7 +54,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToViewportCenter(object sender, ZoomEventArgs e)
+        public virtual void OnRequestZoomToViewportCenter(object sender, DynamoModel.ZoomEventArgs e)
         {
             if (RequestZoomToViewportCenter != null)
             {
@@ -64,7 +67,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToViewportPoint(object sender, ZoomEventArgs e)
+        public virtual void OnRequestZoomToViewportPoint(object sender, DynamoModel.ZoomEventArgs e)
         {
             if (RequestZoomToViewportPoint != null)
             {

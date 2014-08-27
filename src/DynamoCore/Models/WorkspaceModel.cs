@@ -1226,7 +1226,6 @@ namespace Dynamo.Models
                 }
             }
 
-#if USE_DSENGINE
             if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
                 typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
             {
@@ -1236,7 +1235,6 @@ namespace Dynamo.Models
                 // 
                 typeName = modelData.Attributes["name"].Value;
             }
-#endif
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {

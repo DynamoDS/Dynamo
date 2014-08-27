@@ -14,12 +14,12 @@ using System.Xml;
 using DSNodeServices;
 
 using Dynamo.Core;
+using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -312,8 +312,8 @@ namespace Dynamo.Models
             this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
             this.Loader = new DynamoLoader(this);
 
-            //this.Loader.PackageLoader.DoCachedPackageUninstalls();
-            //this.Loader.PackageLoader.LoadPackages();
+            this.Loader.PackageLoader.DoCachedPackageUninstalls();
+            this.Loader.PackageLoader.LoadPackages();
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -336,6 +336,7 @@ namespace Dynamo.Models
             PackageManagerClient = new PackageManagerClient(this);
         }
 
+        //SEPARATECORE: causes mono crash
         private void InitializeInstrumentationLogger()
         {
             InstrumentationLogger.Start(this);
@@ -1174,12 +1175,10 @@ namespace Dynamo.Models
 
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
-#if USE_DSENGINE
                 else if (node is DSFunction)
                     nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
                     nodeName = ((node as DSVarArgFunction).Controller.MangledName);
-#endif
 
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());

@@ -8,11 +8,10 @@ using System.ComponentModel;
 using System.Reflection;
 
 using Dynamo.Core;
+using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using System.Xml.Linq;
-
-using Dynamo.UI;
 
 namespace Dynamo.UpdateManager
 {

@@ -13,6 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
+
+using Dynamo.UI;
+
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
@@ -297,7 +300,7 @@ namespace Dynamo.Controls
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin;
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
             ContentMaxWidth = Configurations.ErrorContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
@@ -317,7 +320,7 @@ namespace Dynamo.Controls
             ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
             ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin;
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
             ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
@@ -335,7 +338,7 @@ namespace Dynamo.Controls
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin;
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
             ContentMaxWidth = Configurations.ErrorContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
@@ -355,7 +358,7 @@ namespace Dynamo.Controls
             ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
             ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin;
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
             ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
@@ -529,7 +532,7 @@ namespace Dynamo.Controls
             else if (ViewModel.TargetBotRight.X + estimatedWidth <= this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Top;
-                contentMargin = Configurations.NodeTooltipContentMarginLeft;
+                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsThickness();
                 //UpdateContent(Content);
 
                 pointCollection.Add(new Point(estimatedWidth, 0));
@@ -541,7 +544,7 @@ namespace Dynamo.Controls
             else
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.TopRight;
-                contentMargin = Configurations.NodeTooltipContentMarginRight;
+                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsThickness();
                 //UpdateContent(Content);
 
                 pointCollection.Add(new Point(estimatedWidth, 0));
@@ -559,7 +562,7 @@ namespace Dynamo.Controls
             if (ViewModel.TargetBotRight.X + estimatedWidth > this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Right;
-                contentMargin = Configurations.NodeTooltipContentMarginRight;
+                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsThickness();
 
                 return GeneratePointCollection_TooltipConnectRight(estimatedHeight, estimatedWidth);
             }
@@ -572,7 +575,7 @@ namespace Dynamo.Controls
             if (ViewModel.TargetTopLeft.X - estimatedWidth < 0)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Left;
-                contentMargin = Configurations.NodeTooltipContentMarginLeft;
+                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsThickness();
 
                 return GeneratePointCollection_TooltipConnectLeft(estimatedHeight, estimatedWidth);
             }

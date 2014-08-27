@@ -4,17 +4,18 @@
         xmlns:views="clr-namespace:Dynamo.Views"
         xmlns:utilities="clr-namespace:Dynamo.Utilities"
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
-        xmlns:models="clr-namespace:Dynamo.Models"
+        xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
         xmlns:commands="clr-namespace:Dynamo.UI.Commands"
         xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
-        d:DataContext="{d:DesignInstance ViewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
+        xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+        d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
         x:Name="_this"
         Height="768" 
         Width="1024"
@@ -804,7 +805,7 @@
 
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth"
-                                    Value="{Binding Source={x:Static ui:Configurations.TabDefaultWidth}}" />
+                                    Value="{Binding Source={x:Static ui1:Configurations.TabDefaultWidth}}" />
                             <Setter Property="Width">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource TabSizeConverter}">

@@ -2,13 +2,13 @@
 using System.Windows;
 using System.Windows.Media;
 
+using Dynamo.UI;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Dynamo.UI;
 
 using FontFamily = System.Drawing.FontFamily;
 

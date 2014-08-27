@@ -143,7 +143,7 @@ namespace Dynamo.ViewModels
         {
             this.CachedPackageList =
                     this.packageManagerClient.ListAll()
-                               .Select((header) => new PackageManagerSearchElement(this.DynamoViewModel, header))
+                               .Select((header) => new PackageManagerSearchElement(this.packageManagerClient, header))
                                .ToList();
 
             return CachedPackageList;
@@ -152,7 +152,7 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             return packageManagerClient.Search(search, maxNumSearchResults)
-                               .Select((header) => new PackageManagerSearchElement(this.DynamoViewModel, header))
+                               .Select((header) => new PackageManagerSearchElement(this.packageManagerClient, header))
                                .ToList();
         }
 
@@ -194,7 +194,7 @@ namespace Dynamo.ViewModels
                                 }
                             }
 
-                            if (packageDownloadHandle.Extract(out dynPkg))
+                            if (packageDownloadHandle.Extract(this.DynamoViewModel.Model, out dynPkg))
                             {
                                 var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.DynamoViewModel.Model);
                                 downloadPkg.Load();

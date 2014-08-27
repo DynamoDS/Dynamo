@@ -1,6 +1,4 @@
-﻿using Dynamo.Nodes.Search;
-
-namespace Dynamo.Search.SearchElements
+﻿namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A base class for elements found in search </summary>

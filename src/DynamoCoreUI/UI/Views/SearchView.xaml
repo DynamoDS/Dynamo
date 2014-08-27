@@ -1,15 +1,15 @@
 ﻿<UserControl x:Class="Dynamo.Search.SearchView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:search="clr-namespace:Dynamo.Nodes.Search"
-             xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:controls="clr-namespace:Dynamo.Controls" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+             xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
+             xmlns:search2="clr-namespace:Dynamo.Search;assembly=DynamoCore"
+             xmlns:searchElements1="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
+             d:DataContext="{d:DesignInstance viewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
@@ -430,7 +430,7 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Source"
                                                 TargetName="ExpandCollapseStateIcon"
-                                                Value="/DynamoCore;component/UI/Images/collapsestate_normal.png" />
+                                                Value="/UI/Images/collapsestate_normal.png" />
                                     </MultiDataTrigger>
 
                                 </ControlTemplate.Triggers>
@@ -439,7 +439,7 @@
                     </Setter>
                 </Style>
 
-                <Style TargetType="{x:Type TreeViewItem}" d:DataContext="{d:DesignInstance search:BrowserItem }">
+                <Style TargetType="{x:Type TreeViewItem}" d:DataContext="{d:DesignInstance search2:BrowserItem }">
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneWay}"></Setter>
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
@@ -589,7 +589,7 @@
 
                 <TreeView.Resources>
                     
-                    <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
+                    <HierarchicalDataTemplate DataType = "{x:Type search2:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
                         <Border Height="30" BorderThickness="0,0,0,2" BorderBrush="#2F2F2F">
                             <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
@@ -597,7 +597,7 @@
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
+                    <HierarchicalDataTemplate DataType = "{x:Type search2:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
                         <Border Height="30">
                             <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
@@ -605,7 +605,7 @@
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements1:NodeSearchElement}">
 
                         <StackPanel Orientation="Horizontal">
 
@@ -617,7 +617,7 @@
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements1:CustomNodeSearchElement}">
 
                         <StackPanel Orientation="Horizontal">
 
