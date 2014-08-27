@@ -78,14 +78,14 @@ namespace UnitsUI
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-
-            
-
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new System.Windows.Controls.MenuItem();
-            editWindowItem.Header = "Edit...";
-            editWindowItem.IsCheckable = false;
+            var editWindowItem = new System.Windows.Controls.MenuItem()
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeUI.ViewModel.DynamoViewModel
+            };
 
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
 

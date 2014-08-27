@@ -76,7 +76,13 @@ namespace DSCoreNodesUI
         {
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            var editWindowItem = new MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeUI.ViewModel.DynamoViewModel
+            };
+
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += editWindowItem_Click;
         }
