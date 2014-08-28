@@ -9,7 +9,7 @@
              d:DesignHeight="300"
              d:DesignWidth="450"
              Background="#01000000"
-             MaxWidth="370">
+             MaxWidth="320">
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
@@ -17,14 +17,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
         <Border CornerRadius="5"
                 Opacity=".95"
                 Background="#333333"
-                Grid.Column="1"
                 Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
