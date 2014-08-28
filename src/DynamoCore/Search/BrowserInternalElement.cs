@@ -114,6 +114,7 @@ namespace Dynamo.Nodes.Search
         public string ResourceAssembly
         {
             get { return resourceAssembly; }
+            set { resourceAssembly = value; }
         }
 
         public BrowserInternalElement()
@@ -141,7 +142,7 @@ namespace Dynamo.Nodes.Search
                 return string.Empty;
         }
 
-        private BitmapImage GetSmallIcon(BrowserInternalElement member)
+        protected BitmapImage GetSmallIcon(BrowserInternalElement member)
         {
             if (string.IsNullOrEmpty(member.ResourceAssembly))
                 return null;

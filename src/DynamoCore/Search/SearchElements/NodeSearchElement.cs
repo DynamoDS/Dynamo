@@ -109,20 +109,6 @@ namespace Dynamo.Search.SearchElements
                 RaisePropertyChanged("DescriptionVisibility");
             }
         }
-        private string _assembly;
-        public string Assembly
-        {
-            get { return _assembly; }
-            set
-            {
-                _assembly = value;
-            }
-        }
-
-        //public override BitmapImage SmallIcon
-        //{
-        //    //get { return GetSmallIcon(this); }
-        //}
 
         #endregion
 
@@ -147,17 +133,17 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
-			this._group = group;
-            if(inputParameters!=null)
-            this._inputParameters = inputParameters.ToList();
+            this._group = group;
+            if (inputParameters != null)
+                this._inputParameters = inputParameters.ToList();
             this._outputParameters = outputParameters;
-            this._assembly = assembly;
+            this.ResourceAssembly = assembly;
         }
 
         public virtual NodeSearchElement Copy()
         {
             var f = new NodeSearchElement(this.Name, this.Description, new List<string>(),
-                                          this._group, this._fullName, this._assembly,
+                                          this._group, this._fullName, this.ResourceAssembly,
                                           this._inputParameters, this._outputParameters);
             f.FullCategoryName = this.FullCategoryName;
             return f;
@@ -198,13 +184,16 @@ namespace Dynamo.Search.SearchElements
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
 
-        private BitmapImage GetSmallIcon(NodeSearchElement member)
+        protected override string GetResourceName(ResourceType resourceType)
         {
-            if (string.IsNullOrEmpty(member.Assembly))
-                return null;
+            if (resourceType == ResourceType.SmallIcon)
+                return this._fullName;
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
-            return (cust != null) ? cust.GetSmallIcon(member._fullName) : null;
-        }
+            //TODO: createLarge icons. Look how it works.
+            if (resourceType == ResourceType.LargeIcon)
+                return this._fullName;
+
+            return "";
+        }  
     }
 }
