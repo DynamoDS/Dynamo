@@ -224,6 +224,7 @@
             <summary>
             Mirror the object across the input Plane
             </summary>
+            <search>reflect</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double)">
             <summary>
@@ -1293,72 +1294,83 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Identity">
             <summary>
-            
+            Creates a CoordinateSystem as the World Coordinate System: origin at 
+            0, 0, 0; x axis at 1, 0, 0; y axis at 0, 1, 0; z axis at 0, 0, 1
             </summary>
+            <search>zero,wcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
             <summary>
-            
+            Deprecated -- DO NOT USE
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double)">
             <summary>
-            
+            Create a CoordinateSystem with origin at X and Y locations, with
+            X and Y Axes set as WCS X and Y Axes. Z defaults to 0.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double,System.Double)">
             <summary>
-            
+            Create a CoordinateSystem with origin at X, Y, and Z locations, with
+            X and Y Axes set as WCS X and Y Axes.
             </summary>
+            <search>translate</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(Autodesk.DesignScript.Geometry.Point)">
             <summary>
-            
+            Create a CoordinateSystem with origin at input Point, with X and Y Axes
+            set as WCS X and Y Axes.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
-            
+            Create a CoordinateSystem with origin equal to input Plane origin, and 
+            X and Y axes lying in the Plane, aligned with Plane X and Y axes.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
-            
+            Create a CoordinateSystem at the origin with X and Y axis. 
+            Input Vectors are normalized before creating the CoordinateSystem.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
-            
+            Create a CoordinateSystem at the origin with X and Y axis, with Z
+            axis ignored completely. Input Vectors are normalized before creating 
+            the CoordinateSystem. 
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>
-            
+            http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1407
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>
-            
+            http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1408
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse">
             <summary>
-            
+            Get the inverse of this CoordinateSystem - applying this CoordinateSystem to a piece of Geometry reverses the original.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Mirror(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
-            
+            Mirror the object across the input Plane
             </summary>
+            <search>reflect</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
-            
+            Apply the argument CoordinateSystem after this one - Result = this * other
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PreMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
-            
+            Apply the argument CoordinateSystem before this one - Result = other * this
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor">
@@ -1368,7 +1380,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.IsEqualTo(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
-            
+            Determine if two CoordinateSystems are equal
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(System.Double,System.Double,System.Double)">
@@ -1381,6 +1393,11 @@
             <param name="zTranslation">Displacement along Z-axis.</param>
             <returns>Transformed CoordinateSystem.</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Translate the object in the direction and magnitude of input Vector.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
             <summary>
             Translates any CoordinateSystem type by the given distance in the given 
@@ -1389,6 +1406,11 @@
             <param name="direction">Displacement direction.</param>
             <param name="distance">Displacement distance along given direction.</param>
             <returns>Transformed CoordinateSystem.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
+            <summary>
+            Transform the object by the input CoordinateSystem matrix.
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -1411,74 +1433,104 @@
             degree
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double)">
+            <summary>
+            Scale uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around a given Plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale uniformly around a given point, using 
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in two dimension by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsSingular">
             <summary>
-            
+            Determine whether it is possible to get the Inverse of this CoordinateSystem
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsScaledOrtho">
             <summary>
-            
+            Tests if the scaling orthogonal, i.e. does it have a shear component.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsUniscaledOrtho">
             <summary>
-            
+            Tests if the scaling orthogonal and are all the vectors normalized.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.Determinant">
             <summary>
-            
+            Obtain the Determinant of this CoordinateSystem
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.Origin">
             <summary>
-            
+            Creates a Point representing the CoordinateSystem origin. 
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XAxis">
             <summary>
-            
+            Returns X Axis of CoordinateSystem.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YAxis">
             <summary>
-            
+            Returns Y Axis of CoordinateSystem.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZAxis">
             <summary>
-            
+            Returns Z Axis of CoordinateSystem.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor">
             <summary>
-            
+            Returns the X Axis scaling of the CoordinateSystem: the length of the X Axis vector.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YScaleFactor">
             <summary>
-            
+            Returns the Y Axis scaling of the CoordinateSystem: the length of the Y Axis vector.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor">
             <summary>
-            
+            Returns the Z Axis scaling of the CoordinateSystem: the length of the Z Axis vector.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XYPlane">
             <summary>
-            
+            Returns the Plane the X and Y axes lie in, with root at the origin.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YZPlane">
             <summary>
-            
+            Returns the Plane the Y and Z axes lie in, with root at the origin.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZXPlane">
             <summary>
-            
+            Returns the Plane the Z and X axes lie in, with root at the origin.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.UV.ToString">
