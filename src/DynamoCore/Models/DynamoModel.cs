@@ -70,7 +70,6 @@ namespace Dynamo.Models
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
-
         #endregion
 
         #region Static properties
@@ -104,6 +103,7 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
         public IUpdateManager UpdateManager { get; private set; }
+        public bool ShutdownRequested { get; internal set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -376,6 +376,8 @@ namespace Dynamo.Models
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
+            ShutdownRequested = true;
+
             CleanWorkbench();
 
             EngineController.Dispose();

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Threading;
+
+using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
@@ -32,7 +34,10 @@ namespace Dynamo.Models
         {
             base.Modified();
 
-            if (this.DynamoModel.DynamicRunEnabled)
+            // When Dynamo is shut down, the workspace is cleared, which results
+            // in Modified() being called. But, we don't want to run when we are
+            // shutting down so we check that shutdown has not been requested.
+            if (this.DynamoModel.DynamicRunEnabled && !DynamoModel.ShutdownRequested)
             {
 
                 // This dispatch timer is to avoid updating graph too frequently.
