@@ -163,6 +163,8 @@ void BillboardText::UpdateBackground(const float* rgba)
         mBackgroundRgba[i] = rgba[i];
 }
 
+#ifdef BLOODSTONE_EXPORTS
+
 // ================================================================================
 // BillboardTextGroup
 // ================================================================================
@@ -396,3 +398,5 @@ void BillboardTextGroup::FillQuad(const BillboardQuadInfo& quadInfo) const
     quadInfo.vertices.push_back(rt);
     quadInfo.vertices.push_back(rb);
 }
+
+#endif // BLOODSTONE_EXPORTS

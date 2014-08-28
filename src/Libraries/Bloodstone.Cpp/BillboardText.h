@@ -2,9 +2,13 @@
 #ifndef _BILLBOARD_TEXT_H_
 #define _BILLBOARD_TEXT_H_
 
+#ifdef BLOODSTONE_EXPORTS
 #include "Interfaces.h"
+#endif
+
 #include <string>
 #include <vector>
+#include <map>
 
 #define MAKEGLYPHID(fid, c) (((fid & 0x0000ffff) << 16) | (c & 0x0000ffff))
 #define ADDFLAG(c, n)       (c = ((RegenerationHints)(c | n)))
@@ -131,6 +135,8 @@ namespace Dynamo { namespace Bloodstone {
         float mWorldPosition[4];    // 4th entry ignored by vertex shader.
     };
 
+#ifdef BLOODSTONE_EXPORTS
+
     struct BillboardQuadInfo
     {
         BillboardQuadInfo(std::vector<BillboardVertex>& bvs) :
@@ -191,6 +197,8 @@ namespace Dynamo { namespace Bloodstone {
         ITextBitmapGenerator* mpBitmapGenerator;
         IGraphicsContext* mpGraphicsContext;
     };
+
+#endif // BLOODSTONE_EXPORTS
 
 } }
 
