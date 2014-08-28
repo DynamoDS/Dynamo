@@ -122,7 +122,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="fullName"></param>
         public NodeSearchElement(string name, string description,
                                  IEnumerable<string> tags, SearchElementGroup group,
-                                 string fullName = "", string assembly = "",
+                                 string fullName = "", string resAssembly = "",
                                  IEnumerable<Tuple<string, string>> inputParameters = null,
                                  string outputParameters = "")
         {
@@ -137,7 +137,7 @@ namespace Dynamo.Search.SearchElements
             if (inputParameters != null)
                 this._inputParameters = inputParameters.ToList();
             this._outputParameters = outputParameters;
-            this.ResourceAssembly = assembly;
+            this.ResourceAssembly = resAssembly;
         }
 
         public virtual NodeSearchElement Copy()

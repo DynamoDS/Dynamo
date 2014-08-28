@@ -359,7 +359,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName, string assembly="")
+        internal BrowserItem AddCategory(string categoryName, string resourceAssembly = "")
         {
             if (string.IsNullOrEmpty(categoryName))
             {
@@ -398,7 +398,7 @@ namespace Dynamo.Search
 
             for (var i = 1; i < splitCat.Count; i++)
             {
-                currentCat = TryAddChildCategory(currentCat, splitCat[i], assembly);
+                currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
             }
 
             return currentCat;
@@ -412,7 +412,7 @@ namespace Dynamo.Search
         /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
         /// <param name="assembly">Assembly, where icon for class button can be found</param>
         /// <returns>The newly created category</returns>
-        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName, string assembly="")
+        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName, string resourceAssembly = "")
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
 
@@ -433,7 +433,7 @@ namespace Dynamo.Search
                 return GetCategoryByName(newCategoryName);
             }
 
-            var tempCat = new BrowserInternalElement(childCategoryName, parent, assembly);
+            var tempCat = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
             parent.AddChild(tempCat);
 
             return tempCat;
@@ -616,7 +616,8 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName,t.Assembly.GetName().Name+".dll");
+            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName,
+                                                  t.Assembly.GetName().Name + ".dll");
             searchEle.Executed += this.OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);

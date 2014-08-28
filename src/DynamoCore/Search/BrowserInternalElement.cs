@@ -70,6 +70,9 @@ namespace Dynamo.Nodes.Search
             SmallIcon, LargeIcon
         }
 
+        ///<summary>
+        /// Small icon for class and method buttons.
+        ///</summary>
         public BitmapImage SmallIcon
         {
             get
@@ -79,6 +82,9 @@ namespace Dynamo.Nodes.Search
             }
         }
 
+        ///<summary>
+        /// Large icon for tooltips.
+        ///</summary>
         public BitmapImage LargeIcon
         {
             get
@@ -127,6 +133,8 @@ namespace Dynamo.Nodes.Search
         public string ResourceAssembly
         {
             get { return resourceAssembly; }
+
+            // Note: we need setter, when we set resource assembly in NodeSearchElement.
             set { resourceAssembly = value; }
         }
 
