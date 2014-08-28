@@ -70,7 +70,6 @@ namespace Dynamo.Models
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
-
         #endregion
 
         #region Static properties
@@ -103,6 +102,7 @@ namespace Dynamo.Models
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
+        public bool ShutdownRequested { get; internal set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -368,6 +368,8 @@ namespace Dynamo.Models
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
+            ShutdownRequested = true;
+
             CleanWorkbench();
 
             EngineController.Dispose();
@@ -471,8 +473,6 @@ namespace Dynamo.Models
             {
                 NodeMap.Remove(n.GUID);
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         private void AddNodeToMap(NodeModel n)
@@ -488,11 +488,8 @@ namespace Dynamo.Models
             }
             else
             {
-                //NodeMap[n.GUID] = n;
                 throw new Exception("Duplicate node GUID in map!");
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         internal void OpenInternal(string xmlPath)
