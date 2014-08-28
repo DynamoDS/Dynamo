@@ -283,7 +283,7 @@ namespace Dynamo.UI.Controls
             if (largeContentGrid.Children.Count <= 0)
             {
                 var newWatchTree = new WatchTree();
-                newWatchTree.DataContext = new WatchViewModel(this.nodeViewModel.DynamoViewModel.VisualizationManager);
+                newWatchTree.DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.VisualizationManager);
                 largeContentGrid.Children.Add(newWatchTree);
             }
 
@@ -291,7 +291,9 @@ namespace Dynamo.UI.Controls
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
             // Associate the data context to the view before binding.
-            cachedLargeContent = Process(mirrorData, string.Empty, false);
+            cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.Process(
+                mirrorData, string.Empty, false);
+
             rootDataContext.Children.Add(cachedLargeContent);
 
             // Establish data binding between data context and the view.
@@ -301,52 +303,6 @@ namespace Dynamo.UI.Controls
                     Mode = BindingMode.TwoWay,
                     Source = rootDataContext
                 });
-        }
-
-        private const string NULL_STRING = "null";
-
-        /// <summary>
-        /// Update the watch content from the given MirrorData and returns WatchNode.
-        /// </summary>
-        /// <param name="data">The Mirror data for which watch content is needed.</param>
-        /// <param name="path"></param>
-        /// <param name="showRawData"></param>
-        private WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
-        {
-            WatchViewModel node;
-
-            if (data == null || data.IsNull)
-            {
-                node = new WatchViewModel(this.nodeViewModel.DynamoViewModel.VisualizationManager, NULL_STRING, path);
-            }
-            else if (data.IsCollection)
-            {
-                var list = data.GetElements();
-
-                node = new WatchViewModel(this.nodeViewModel.DynamoViewModel.VisualizationManager, list.Count == 0 ? "Empty List" : "List", path, true);
-
-                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
-                {
-                    node.Children.Add(Process(e.Element, path + ":" + e.Index, showRawData));
-                }
-            }
-            else
-            {
-                node = this.nodeViewModel.DynamoViewModel.WatchHandler.Process(data, path, showRawData);
-            }
-
-            return node ?? (new WatchViewModel(this.nodeViewModel.DynamoViewModel.VisualizationManager, "null", path));
-        }
-
-        private static object MarshalMirrorDataForWatch(MirrorData mirrorData)
-        {
-            if (mirrorData == null || mirrorData.IsNull)
-                return null;
-
-            if (mirrorData.IsCollection)
-                return mirrorData.GetElements().Select(MarshalMirrorDataForWatch).ToList();
-
-            return mirrorData.Data;
         }
 
         private Size ComputeSmallContentSize()
