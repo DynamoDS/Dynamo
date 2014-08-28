@@ -30,11 +30,11 @@ namespace Dynamo.Interfaces
         private const string NULL_STRING = "null";
 
         private readonly IPreferences preferences;
-        private readonly IVisualizationManager vizManager;
+        private readonly IVisualizationManager visualizationManager;
 
         public DefaultWatchHandler(IVisualizationManager manager, PreferenceSettings preferences)
         {
-            this.vizManager = manager;
+            this.visualizationManager = manager;
             this.preferences = preferences;
         }
 
@@ -46,7 +46,7 @@ namespace Dynamo.Interfaces
             {
                 var list = (value as IEnumerable).Cast<object>().ToList();
 
-                node = new WatchViewModel(vizManager, list.Count == 0 ? "Empty List" : "List", tag, true);
+                node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(ProcessThing(e.element, tag + ":" + e.idx, showRawData));
@@ -54,7 +54,7 @@ namespace Dynamo.Interfaces
             }
             else
             {
-                node = new WatchViewModel(vizManager, ToString(value), tag);
+                node = new WatchViewModel(visualizationManager, ToString(value), tag);
             }
 
             return node;
@@ -63,19 +63,19 @@ namespace Dynamo.Interfaces
         internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchViewModel(vizManager, unit.Value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
+                return new WatchViewModel(visualizationManager, unit.Value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
 
-            return new WatchViewModel(vizManager, unit.ToString(), tag);
+            return new WatchViewModel(visualizationManager, unit.ToString(), tag);
         }
 
         internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(vizManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(visualizationManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(vizManager, value, tag);
+            return new WatchViewModel(visualizationManager, value, tag);
         }
 
         internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData = true)
@@ -84,7 +84,7 @@ namespace Dynamo.Interfaces
             {
                 var list = data.GetElements();
 
-                var node = new WatchViewModel(vizManager, list.Count == 0 ? "Empty List" : "List", tag, true);
+                var node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(Process(e.element, tag + ":" + e.idx, showRawData));
@@ -97,7 +97,7 @@ namespace Dynamo.Interfaces
             // representation instead of casting it as dynamic (that leads to 
             // a crash).
             if (data.IsNull || data.Data == null)
-                return new WatchViewModel(vizManager, NULL_STRING, tag);
+                return new WatchViewModel(visualizationManager, NULL_STRING, tag);
 
             //If the input data is an instance of a class, create a watch node
             //with the class name and let WatchHandler process the underlying CLR data
@@ -121,7 +121,7 @@ namespace Dynamo.Interfaces
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
             if (System.Object.ReferenceEquals(value, null))
-                return new WatchViewModel(vizManager, "null", tag);
+                return new WatchViewModel(visualizationManager, "null", tag);
 
             return ProcessThing(value, tag, showRawData);
         }
