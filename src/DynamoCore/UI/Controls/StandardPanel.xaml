@@ -80,6 +80,7 @@
                                VerticalAlignment="Top"
                                Width="29"
                                Source="{Binding SmallIcon}" />
+
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
@@ -121,7 +122,7 @@
                                VerticalAlignment="Top"
                                Width="29"
                                Source="{Binding SmallIcon}" />
-                        
+
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
