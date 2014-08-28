@@ -11,12 +11,12 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public abstract class VariableInput : INodeViewInjection
+    public abstract class VariableInputNodeCustomization : INodeCustomization<Dynamo.Nodes.VariableInput>
     {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Nodes.VariableInput nodeModel, dynNodeView nodeView)
         {
-            var addButton = new DynamoNodeButton(nodeUI.ViewModel.NodeModel, "AddInPort") { Content = "+", Width = 20 };
-            var subButton = new DynamoNodeButton(nodeUI.ViewModel.NodeModel, "RemoveInPort") { Content = "-", Width = 20 };
+            var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort") { Content = "+", Width = 20 };
+            var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort") { Content = "-", Width = 20 };
 
             var wp = new WrapPanel
             {
@@ -27,7 +27,7 @@ namespace Dynamo.Wpf
             wp.Children.Add(addButton);
             wp.Children.Add(subButton);
 
-            nodeUI.inputGrid.Children.Add(wp);
+            nodeView.inputGrid.Children.Add(wp);
         }
 
         public void Dispose()

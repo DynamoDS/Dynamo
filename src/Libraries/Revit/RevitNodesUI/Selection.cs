@@ -28,7 +28,7 @@ using Element = Revit.Elements.Element;
 
 namespace Dynamo.Nodes
 {
-    public abstract class DSSelectionBase : RevitNodeModel, INodeViewInjection
+    public abstract class DSSelectionBase : RevitNodeModel, INodeCustomization<>
     {
         protected bool _canSelect = true;
         protected string _selectionText ="";

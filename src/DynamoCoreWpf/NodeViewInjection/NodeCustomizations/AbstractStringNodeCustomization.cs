@@ -1,13 +1,14 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Data;
+using System.Collections.Generic;
 
 using Dynamo.Controls;
 using Dynamo.UI.Prompts;
-using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class AbstractString : BasicInteractiveViewInjection
+    public abstract class AbstractStringNodeCustomization : BasicInteractiveCustomization<string>
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
@@ -29,10 +30,6 @@ namespace Dynamo.Wpf
         public void Dispose()
         {
 
-        }
-
-        public void SetupCustomUIElements(dynNodeView nodeView)
-        {
         }
     }
 }

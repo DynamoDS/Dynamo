@@ -23,6 +23,7 @@ using Dynamo.UI;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 
 using DynamoUtilities;
 

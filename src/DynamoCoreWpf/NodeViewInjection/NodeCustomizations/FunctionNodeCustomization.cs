@@ -7,15 +7,15 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class Function : INodeViewInjection
+    public class FunctionNodeCustomization : INodeCustomization<Dynamo.Nodes.Function>
     {
         private Dynamo.Nodes.Function functionNodeModel;
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Dynamo.Nodes.Function function, dynNodeView nodeView)
         {
-            this.functionNodeModel = nodeUI.ViewModel.NodeModel as Dynamo.Nodes.Function;
+            this.functionNodeModel = function;
 
-            nodeUI.MainContextMenu.Items.Add(new Separator());
+            nodeView.MainContextMenu.Items.Add(new Separator());
 
             // edit contents
             var editItem = new MenuItem
@@ -23,8 +23,8 @@ namespace Dynamo.Wpf
                 Header = "Edit Custom Node...",
                 IsCheckable = false
             };
-            nodeUI.MainContextMenu.Items.Add(editItem);
-            editItem.Click += (sender, args) => GoToWorkspace(nodeUI.ViewModel);
+            nodeView.MainContextMenu.Items.Add(editItem);
+            editItem.Click += (sender, args) => GoToWorkspace(nodeView.ViewModel);
 
             // edit properties
             var editPropertiesItem = new MenuItem
@@ -32,7 +32,7 @@ namespace Dynamo.Wpf
                 Header = "Edit Custom Node Properties...",
                 IsCheckable = false
             };
-            nodeUI.MainContextMenu.Items.Add(editPropertiesItem);
+            nodeView.MainContextMenu.Items.Add(editPropertiesItem);
             editPropertiesItem.Click += (sender, args) => EditCustomNodeProperties();
 
             // publish
@@ -41,18 +41,18 @@ namespace Dynamo.Wpf
                 Header = "Publish This Custom Node...",
                 IsCheckable = false
             };
-            nodeUI.MainContextMenu.Items.Add(publishCustomNodeItem);
+            nodeView.MainContextMenu.Items.Add(publishCustomNodeItem);
             publishCustomNodeItem.Click += (sender, args) =>
             {
-                GoToWorkspace(nodeUI.ViewModel);
+                GoToWorkspace(nodeView.ViewModel);
 
-                if (nodeUI.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
+                if (nodeView.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
                 {
-                    nodeUI.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
+                    nodeView.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
                 }
             };
 
-            nodeUI.UpdateLayout();
+            nodeView.UpdateLayout();
         }
 
         private void EditCustomNodeProperties()

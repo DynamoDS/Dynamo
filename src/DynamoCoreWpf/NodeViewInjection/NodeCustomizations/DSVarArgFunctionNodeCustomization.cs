@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Dynamo.Wpf
 {
-    internal class DSVarArgFunction : INodeViewInjection
+    internal class DSVarArgFunctionNodeCustomization : INodeCustomization<Dynamo.Nodes.DSVarArgFunction>
     {
-        public void SetupCustomUIElements(Dynamo.Controls.dynNodeView nodeView)
+        public void SetupCustomUIElements(Nodes.DSVarArgFunction nodeModel, Controls.dynNodeView nodeView)
         {
             throw new NotImplementedException();
         }

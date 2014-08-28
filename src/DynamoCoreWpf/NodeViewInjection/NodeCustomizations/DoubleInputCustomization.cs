@@ -11,13 +11,13 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class DoubleInput : INodeViewInjection
+    public class DoubleInputNodeCustomization : INodeCustomization<DoubleInput>
     {
-        private Dynamo.Nodes.DoubleInput doubleInput;
+        private DoubleInput doubleInput;
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(DoubleInput nodeModel, dynNodeView nodeView)
         {
-            doubleInput = nodeUI.ViewModel.NodeModel as Dynamo.Nodes.DoubleInput;
+            doubleInput = nodeView.ViewModel.NodeModel as Dynamo.Nodes.DoubleInput;
 
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(doubleInput.Value ?? "0.0")
@@ -28,7 +28,7 @@ namespace Dynamo.Wpf
                     new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
-            nodeUI.inputGrid.Children.Add(tb);
+            nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
@@ -42,7 +42,6 @@ namespace Dynamo.Wpf
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
-
         }
 
         public void Dispose()

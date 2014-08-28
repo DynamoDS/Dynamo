@@ -8,25 +8,25 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public class Output : INodeViewInjection
+    public class OutputNodeCustomization : INodeCustomization<Dynamo.Nodes.Output>
     {
         private Dynamo.Nodes.Output outputNodeModel;
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Nodes.Output outputNodeModel, dynNodeView nodeView)
         {
-            this.outputNodeModel = nodeUI.ViewModel.NodeModel as Dynamo.Nodes.Output;
+            this.outputNodeModel = outputNodeModel;
 
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(outputNodeModel.Symbol)
             {
-                DataContext = nodeUI.ViewModel,
+                DataContext = nodeView.ViewModel,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background =
                     new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
-            nodeUI.inputGrid.Children.Add(tb);
+            nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 

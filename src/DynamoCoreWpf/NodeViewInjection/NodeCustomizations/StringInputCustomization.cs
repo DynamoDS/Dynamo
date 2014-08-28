@@ -1,8 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
 
@@ -12,13 +15,13 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Wpf
 {
-    public class StringInput : AbstractString
+    public class StringInputNodeCustomization : AbstractStringNodeCustomization
     {
-        public void SetupCustomUIElements(dynNodeView ui)
+        public void SetupCustomUIElements(StringInput stringInput, dynNodeView ui)
         {
             var nodeUI = ui;
 
-            base.SetupCustomUIElements(nodeUI);
+            base.SetupCustomUIElements(stringInput, nodeUI);
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox

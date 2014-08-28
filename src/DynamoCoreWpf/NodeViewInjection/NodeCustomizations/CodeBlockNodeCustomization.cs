@@ -6,17 +6,16 @@ using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.UI;
-using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class CodeBlock : INodeViewInjection
+    public class CodeBlockNodeCustomization : INodeCustomization<CodeBlockNodeModel>
     {
         private CodeBlockNodeModel codeBlockNodeModel;
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(CodeBlockNodeModel model, dynNodeView nodeView)
         {
-            this.codeBlockNodeModel = nodeUI.ViewModel.NodeModel as CodeBlockNodeModel;
+            this.codeBlockNodeModel = model;
 
             var tb = new CodeNodeTextBox(this.codeBlockNodeModel.Code )
             {
@@ -29,11 +28,11 @@ namespace Dynamo.Wpf
                 TextWrapping = TextWrapping.Wrap
             };
 
-            nodeUI.inputGrid.Children.Add(tb);
+            nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
-            tb.DataContext = nodeUI.ViewModel;
+            tb.DataContext = nodeView.ViewModel;
             tb.BindToProperty(
                 new Binding("Code")
                 {

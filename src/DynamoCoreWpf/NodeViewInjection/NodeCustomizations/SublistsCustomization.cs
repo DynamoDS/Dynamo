@@ -9,13 +9,14 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class Sublists : INodeViewInjection
+    public class SublistsCustomization : INodeCustomization<Dynamo.Nodes.Sublists>
     {
         private Dynamo.Nodes.Sublists sublistsNodeModel;
+        private DynamoTextBox tb;
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Dynamo.Nodes.Sublists element, dynNodeView nodeView)
         {
-            this.sublistsNodeModel = nodeUI.ViewModel.NodeModel as Dynamo.Nodes.Sublists;
+            this.sublistsNodeModel = element;
 
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox
@@ -29,7 +30,7 @@ namespace Dynamo.Wpf
             tb.HorizontalAlignment = HorizontalAlignment.Stretch;
             tb.VerticalAlignment = VerticalAlignment.Top;
 
-            nodeUI.inputGrid.Children.Add(tb);
+            nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 
@@ -45,7 +46,7 @@ namespace Dynamo.Wpf
 
         public void Dispose()
         {
-
+            tb.OnChangeCommitted -= sublistsNodeModel.ProcessTextForNewInputs;
         }
     }
 }

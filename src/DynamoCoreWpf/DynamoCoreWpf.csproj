@@ -68,16 +68,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
-    <Compile Include="NodeViewInjection\DefaultNodeViewInjections.cs" />
+    <Compile Include="NodeViewInjection\CoreNodeCustomizations.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\WatchHandler.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\DSVarArgFunction.cs" />
-    <Compile Include="NodeViewInjection\INodeViewInjectionInitializer.cs" />
-    <Compile Include="NodeViewInjection\INodeViewInjection.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\WatchImage.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjector.cs" />
+    <Compile Include="NodeViewInjection\INodeCustomizations.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\DSVarArgFunctionNodeCustomization.cs" />
+    <Compile Include="NodeViewInjection\INodeCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\WatchImageNodeCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizer.cs" />
     <Compile Include="Nodes\Watch.cs" />
     <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,9 +98,9 @@
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
     <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
     <Compile Include="TestInfrastructure\StringInputMutator.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\AbstractString.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\BasicInteractive.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\CodeBlockNodeModel.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\AbstractStringNodeCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\BasicInteractiveCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\CodeBlockNodeCustomization.cs" />
     <Compile Include="Commands\AutomationSettings.cs" />
     <Compile Include="Commands\ConnectorCommands.cs" />
     <Compile Include="Commands\DynamoCommands.cs" />
@@ -123,15 +123,15 @@
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Converters.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\DoubleInput.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\DoubleInputCustomization.cs" />
     <Compile Include="Controls\DragCanvas.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\DropDrownBase.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\DropDrownBaseNodeCustomization.cs" />
     <Compile Include="Controls\DynamoNodeButton.cs" />
     <Compile Include="Controls\DynamoTextBox.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\Function.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\FunctionNodeCustomization.cs" />
     <Compile Include="UI\HandlingEventTrigger.cs" />
     <Compile Include="Utilities\MouseClickManager.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\Output.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\OutputNodeCustomization.cs" />
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
     </Compile>
@@ -152,11 +152,11 @@
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="ViewModels\StateMachine.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\Sublists.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\Symbol.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\StringInput.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\VariableInputAndOutput.cs" />
-    <Compile Include="NodeViewInjection\NodeViewInjections\VariableInputNode.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\SublistsCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\SymbolCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\StringInputCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\VariableInputAndOutputCustomization.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\VariableInputNodeCustomization.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -196,7 +196,7 @@
     <Compile Include="Views\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NodeViewInjection\NodeViewInjections\Watch.cs" />
+    <Compile Include="NodeViewInjection\NodeCustomizations\WatchNodeCustomization.cs" />
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />

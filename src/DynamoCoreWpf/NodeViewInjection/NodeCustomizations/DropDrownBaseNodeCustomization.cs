@@ -10,13 +10,13 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public abstract class DropDrownBase : INodeViewInjection
+    public class DropDrownBaseNodeCustomization : INodeCustomization<Dynamo.Nodes.DropDrownBase>
     {
         private Nodes.DropDrownBase dropDownNodeModel;
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Nodes.DropDrownBase nodeModel, dynNodeView nodeView)
         {
-            dropDownNodeModel = nodeUI.ViewModel.NodeModel as Nodes.DropDrownBase;
+            dropDownNodeModel = nodeModel;
 
             // Do not call 'NodeModel.InitializeUI' here since it will cause 
             // that method to dispatch the call back to 'SetupCustomUIElements'
@@ -33,7 +33,7 @@ namespace Dynamo.Wpf
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            nodeUI.inputGrid.Children.Add(combo);
+            nodeView.inputGrid.Children.Add(combo);
             Grid.SetColumn(combo, 0);
             Grid.SetRow(combo, 0);
 
@@ -82,5 +82,6 @@ namespace Dynamo.Wpf
         {
             throw new System.NotImplementedException();
         }
+
     }
 }

@@ -1,19 +1,22 @@
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
 using Dynamo.Controls;
+using Dynamo.Nodes;
 using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public abstract class BasicInteractiveViewInjection : INodeViewInjection
+    public abstract class BasicInteractiveCustomization<T> : INodeCustomization<BasicInteractive<T>>
     {
-        public virtual void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(BasicInteractive<T> nodeModel, dynNodeView nodeView)
         {
             //add an edit window option to the 
             //main context window
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
-            nodeUI.MainContextMenu.Items.Add(editWindowItem);
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += editWindowItem_Click;
         }
 

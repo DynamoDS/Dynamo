@@ -13,16 +13,16 @@ using VMDataBridge;
 
 namespace Dynamo.Wpf
 {
-    public class Watch : INodeViewInjection
+    public class WatchNodeCustomization : INodeCustomization<Dynamo.Nodes.Watch>
     {
         private DynamoViewModel dynamoViewModel;
         private Nodes.Watch watchNodeModel;
         private WatchTree watchTree;
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Nodes.Watch nodeModel, dynNodeView nodeView)
         {
-            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
-            this.watchNodeModel = nodeUI.ViewModel.NodeModel as Nodes.Watch;
+            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            this.watchNodeModel = nodeModel;
 
             watchTree = new WatchTree();
 
@@ -30,10 +30,10 @@ namespace Dynamo.Wpf
             // go too crazy on us. Note that this is only applied to regular watch 
             // node so it won't be limiting the size of image/3D watch nodes.
             // 
-            nodeUI.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
-            nodeUI.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
-            nodeUI.PresentationGrid.Children.Add(watchTree);
-            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
+            nodeView.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
+            nodeView.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
+            nodeView.PresentationGrid.Children.Add(watchTree);
+            nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
             if (watchNodeModel.Root == null)
                 watchNodeModel.Root = new WatchViewModel(this.dynamoViewModel.VisualizationManager);
@@ -68,7 +68,7 @@ namespace Dynamo.Wpf
             };
             rawDataMenuItem.SetBinding(MenuItem.IsCheckedProperty, checkedBinding);
 
-            nodeUI.MainContextMenu.Items.Add(rawDataMenuItem);
+            nodeView.MainContextMenu.Items.Add(rawDataMenuItem);
 
             watchNodeModel.Workspace.DynamoModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             watchNodeModel.Root.PropertyChanged += Root_PropertyChanged;
@@ -140,5 +140,6 @@ namespace Dynamo.Wpf
             watchNodeModel.Workspace.DynamoModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             watchNodeModel.Root.PropertyChanged -= Root_PropertyChanged;
         }
+
     }
 }

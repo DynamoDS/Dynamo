@@ -10,12 +10,10 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public class VariableInputAndOutput : INodeViewInjection
+    public class VariableInputAndOutputCustomization : INodeCustomization<Dynamo.Nodes.VariableInputAndOutput>
     {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Dynamo.Nodes.VariableInputAndOutput model, dynNodeView nodeView)
         {
-            var model = nodeUI.ViewModel.NodeModel;
-
             var addButton = new DynamoNodeButton(model, "AddInPort")
             {
                 Content = "+",
@@ -40,7 +38,7 @@ namespace Dynamo.Wpf
             wp.Children.Add(addButton);
             wp.Children.Add(subButton);
 
-            nodeUI.inputGrid.Children.Add(wp);
+            nodeView.inputGrid.Children.Add(wp);
         }
 
         public void Dispose()

@@ -21,7 +21,7 @@ namespace DSCoreNodesUI
     [NodeName("Color Range")]
     [NodeCategory("Core.Color.Create")]
     [NodeDescription("Get a color given a color range.")]
-    public class ColorRange : NodeModel, INodeViewInjection
+    public class ColorRange : NodeModel, INodeCustomization<>
     {
         public event EventHandler RequestChangeColorRange;
         protected virtual void OnRequestChangeColorRange(object sender, EventArgs e)

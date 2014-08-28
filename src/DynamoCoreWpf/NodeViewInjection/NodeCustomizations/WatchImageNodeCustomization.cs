@@ -16,15 +16,15 @@ using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Wpf
 {
-    internal class WatchImage : INodeViewInjection
+    internal class WatchImageNodeCustomization : INodeCustomization<Dynamo.Nodes.WatchImageCore>
     {
         private Image image;
         private NodeModel nodeModel;
         private dynNodeView nodeView;
 
-        public void SetupCustomUIElements(dynNodeView nodeUi)
+        public void SetupCustomUIElements(Nodes.WatchImageCore nodeModel, dynNodeView nodeView)
         {
-            this.nodeModel = nodeUi.ViewModel.NodeModel;
+            this.nodeModel = nodeModel;
 
             image = new Image
             {
@@ -37,8 +37,8 @@ namespace Dynamo.Wpf
 
             nodeModel.PropertyChanged += NodeModelOnPropertyChanged;
 
-            nodeUi.PresentationGrid.Children.Add(image);
-            nodeUi.PresentationGrid.Visibility = Visibility.Visible;
+            nodeView.PresentationGrid.Children.Add(image);
+            nodeView.PresentationGrid.Visibility = Visibility.Visible;
         }
 
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)

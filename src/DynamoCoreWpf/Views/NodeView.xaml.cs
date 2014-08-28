@@ -14,6 +14,9 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System.Windows.Media;
+
+using Dynamo.Wpf;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Threading;
 using Dynamo.Core;
@@ -259,10 +262,10 @@ namespace Dynamo.Controls
 
         void inputGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            //once the input grid is loaded, send a command
-            //to the view model, which will be pushed down
-            //to the model to ask for types to load custom UI elements
-            ViewModel.SetupCustomUIElementsCommand.Execute(this);
+            //SEPARATECORE - need to get this from a single place
+            var cn = NodeCustomizer.Create(new CoreNodeCustomizations());
+            
+            cn.Customize(this);
         }
 
         private Dictionary<UIElement, bool> enabledDict

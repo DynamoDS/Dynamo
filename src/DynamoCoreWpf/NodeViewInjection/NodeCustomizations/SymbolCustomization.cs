@@ -8,12 +8,10 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Wpf
 {
-    public class Symbol : INodeViewInjection
+    public class SymbolCustomization : INodeCustomization<Dynamo.Nodes.Symbol>
     {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(Dynamo.Nodes.Symbol symbol, dynNodeView nodeView)
         {
-            var symbol = nodeUI.ViewModel.NodeModel as Dynamo.Nodes.Symbol;
-
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(symbol.InputSymbol)
             {
@@ -23,7 +21,7 @@ namespace Dynamo.Wpf
                     new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
-            nodeUI.inputGrid.Children.Add(tb);
+            nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
 

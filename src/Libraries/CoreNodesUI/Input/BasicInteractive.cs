@@ -16,7 +16,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
-    public abstract class BasicInteractive<T> : NodeModel, INodeViewInjection
+    public abstract class BasicInteractive<T> : NodeModel, INodeCustomization<>
     {
         private T _value;
         public T Value

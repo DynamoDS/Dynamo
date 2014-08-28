@@ -21,7 +21,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace UnitsUI
 {
-    public abstract class MeasurementInputBase : NodeModel, INodeViewInjection
+    public abstract class MeasurementInputBase : NodeModel, INodeCustomization<>
     {
         protected SIUnit _measure;
 
