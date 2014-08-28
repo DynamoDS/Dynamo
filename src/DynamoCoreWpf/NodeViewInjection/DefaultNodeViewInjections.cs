@@ -7,7 +7,7 @@ using System.Text;
 namespace Dynamo.Wpf
 {
     /// <summary>
-    /// Enumerates the injectors for the node view injectors in the current assembly
+    /// Enumerates the injectors for the node view injectors in DynamoCoreWpf
     /// </summary>
     internal class CoreNodeViewInjectionInitializer : INodeViewInjectionInitializer
     {
