@@ -456,7 +456,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
         /// 
-        private static void OnUpdateGraphCompleted(AsyncTask task)
+        private void OnUpdateGraphCompleted(AsyncTask task)
         {
             var updateTask = task as UpdateGraphAsyncTask;
             var messages = new Dictionary<Guid, string>();
@@ -489,6 +489,9 @@ namespace Dynamo.Models
 
                 node.Warning(message.Value); // Update node warning message.
             }
+
+            // Notify listeners (optional) of completion.
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
 #endif
