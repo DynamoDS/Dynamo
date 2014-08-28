@@ -220,9 +220,9 @@
             degree
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Reflect(Autodesk.DesignScript.Geometry.Plane)">
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
-            Reflect the object across the input Plane
+            Mirror the object across the input Plane
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double)">
