@@ -303,10 +303,21 @@ namespace Dynamo.Controls
 
             #endregion
 
-            //PACKAGE MANAGER
+            #region Package manager
+
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
+
+            #endregion
+
+            #region Node view injection
+
+            // scan for node view overrides
+
+
+
+            #endregion
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
@@ -472,7 +483,7 @@ namespace Dynamo.Controls
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                var control = WPF.FindChild<DragCanvas>(this, null);
+                var control = WpfUtilities.FindChild<DragCanvas>(this, null);
 
                 double width = 1;
                 double height = 1;

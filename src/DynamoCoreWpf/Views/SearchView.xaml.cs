@@ -41,7 +41,7 @@ namespace Dynamo.Search
                 {
                     this.viewModel.SearchCommand.Execute(null);
                     Keyboard.Focus(this.SearchTextBox);
-                    var view = WPF.FindUpVisualTree<DynamoView>(this);
+                    var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };

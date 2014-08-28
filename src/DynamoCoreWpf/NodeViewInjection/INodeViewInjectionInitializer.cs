@@ -16,23 +16,6 @@ namespace Dynamo.Wpf
     }
 
     /// <summary>
-    /// Enumerates the injectors for the core node types
-    /// </summary>
-    internal class HardcodedInitializer : INodeViewInjectionInitializer
-    {
-        public Dictionary<Type, IEnumerable<INodeViewInjection>> GetInjections()
-        {
-            // SEPARATECORE: this should just scan this assembly
-
-            return new Dictionary<Type, IEnumerable<INodeViewInjection>>
-            {
-                { typeof(Nodes.DSVarArgFunction), new [] { new DSVarArgFunction() } },
-                { typeof(CodeBlockNodeModel), new [] { new CodeBlock() } },
-            };
-        }
-    }
-
-    /// <summary>
     /// Allows node injectors to be loaded from a foreign assembly
     /// </summary>
     public class ReflectionInitializer : INodeViewInjectionInitializer

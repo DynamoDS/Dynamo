@@ -316,7 +316,7 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null) return;
 
-            var view = WPF.FindUpVisualTree<DynamoView>(this);
+            var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
 
             this.ViewModel.DynamoViewModel.ReturnFocusToSearch();
 

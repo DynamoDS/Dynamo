@@ -187,7 +187,7 @@
                                              </Border>
                                         </VirtualizingStackPanel>
 
-                                        <VirtualizingStackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
+                                        <VirtualizingStackPanel Visibility="{Binding Path=Model.IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
 
                                             <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
 

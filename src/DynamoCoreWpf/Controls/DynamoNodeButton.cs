@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
             {
                 if (this.dynamoViewModel != null) return this.dynamoViewModel;
 
-                var f = WPF.FindUpVisualTree<dynNodeView>(this);
+                var f = WpfUtilities.FindUpVisualTree<dynNodeView>(this);
                 if (f != null) this.dynamoViewModel = f.ViewModel.DynamoViewModel;
 
                 return this.dynamoViewModel;

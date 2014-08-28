@@ -15,7 +15,7 @@ namespace Dynamo.Nodes
       {
          InitializeComponent();
 
-         this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
+         this.Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
          this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
          this.nameBox.Focus();

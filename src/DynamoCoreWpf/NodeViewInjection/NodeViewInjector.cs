@@ -9,7 +9,7 @@ using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {
-    public class NodeViewInjector
+    internal class NodeViewInjector
     {
         private readonly Dictionary<Type, IEnumerable<INodeViewInjection>> registeredInjectors;
 
@@ -18,12 +18,12 @@ namespace Dynamo.Wpf
             registeredInjectors = injectors;
         }
 
-        public static NodeViewInjector Create(INodeViewInjectionInitializer initializer)
+        internal static NodeViewInjector Create(INodeViewInjectionInitializer initializer)
         {
             return new NodeViewInjector(initializer.GetInjections());
         }
 
-        public void Inject(dynNodeView nodeView)
+        internal void Inject(dynNodeView nodeView)
         {
             var model = nodeView.ViewModel.NodeModel;
             var injectors =

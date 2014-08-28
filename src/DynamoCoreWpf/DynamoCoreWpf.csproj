@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
+    <Compile Include="NodeViewInjection\DefaultNodeViewInjections.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
@@ -100,36 +101,36 @@
     <Compile Include="NodeViewInjection\NodeViewInjections\AbstractString.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\BasicInteractive.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\CodeBlockNodeModel.cs" />
-    <Compile Include="UI\Commands\AutomationSettings.cs" />
-    <Compile Include="UI\Commands\ConnectorCommands.cs" />
-    <Compile Include="UI\Commands\DynamoCommands.cs" />
-    <Compile Include="UI\Commands\InfoBubbleCommand.cs" />
-    <Compile Include="UI\Commands\NodeCommands.cs" />
-    <Compile Include="UI\Commands\NodeSearchElementCommands.cs" />
-    <Compile Include="UI\Commands\NoteCommands.cs" />
-    <Compile Include="UI\Commands\PortCommands.cs" />
-    <Compile Include="UI\Commands\RecordableCommands.cs" />
-    <Compile Include="UI\Commands\SearchCommands.cs" />
-    <Compile Include="UI\Commands\WorkspaceCommands.cs" />
-    <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
+    <Compile Include="Commands\AutomationSettings.cs" />
+    <Compile Include="Commands\ConnectorCommands.cs" />
+    <Compile Include="Commands\DynamoCommands.cs" />
+    <Compile Include="Commands\InfoBubbleCommand.cs" />
+    <Compile Include="Commands\NodeCommands.cs" />
+    <Compile Include="Commands\NodeSearchElementCommands.cs" />
+    <Compile Include="Commands\NoteCommands.cs" />
+    <Compile Include="Commands\PortCommands.cs" />
+    <Compile Include="Commands\RecordableCommands.cs" />
+    <Compile Include="Commands\SearchCommands.cs" />
+    <Compile Include="Commands\WorkspaceCommands.cs" />
+    <Compile Include="Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Controls\ImageBasedControls.cs" />
-    <Compile Include="UI\Controls\ShortcutToolbar.xaml.cs">
+    <Compile Include="Controls\ImageBasedControls.cs" />
+    <Compile Include="Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Controls\StartPage.xaml.cs">
+    <Compile Include="Controls\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Converters.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\DoubleInput.cs" />
-    <Compile Include="UI\DragCanvas.cs" />
+    <Compile Include="Controls\DragCanvas.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\DropDrownBase.cs" />
-    <Compile Include="UI\DynamoNodeButton.cs" />
-    <Compile Include="UI\DynamoTextBox.cs" />
+    <Compile Include="Controls\DynamoNodeButton.cs" />
+    <Compile Include="Controls\DynamoTextBox.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\Function.cs" />
     <Compile Include="UI\HandlingEventTrigger.cs" />
-    <Compile Include="UI\MouseClickManager.cs" />
+    <Compile Include="Utilities\MouseClickManager.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\Output.cs" />
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
@@ -150,55 +151,54 @@
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
-    <Compile Include="UI\StateMachine.cs" />
+    <Compile Include="ViewModels\StateMachine.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\Sublists.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\Symbol.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\StringInput.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\VariableInputAndOutput.cs" />
     <Compile Include="NodeViewInjection\NodeViewInjections\VariableInputNode.cs" />
-    <Compile Include="UI\Views\AboutWindow.xaml.cs">
+    <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\DynamoView.xaml.cs">
+    <Compile Include="Views\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
+    <Compile Include="Views\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\InstalledPackagesView.xaml.cs">
+    <Compile Include="Views\InstalledPackagesView.xaml.cs">
       <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\NodeView.xaml.cs">
+    <Compile Include="Views\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\NoteView.xaml.cs">
+    <Compile Include="Views\NoteView.xaml.cs">
       <DependentUpon>NoteView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\PackageManagerPublishView.xaml.cs">
+    <Compile Include="Views\PackageManagerPublishView.xaml.cs">
       <DependentUpon>PackageManagerPublishView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\PackageManagerSearchView.xaml.cs">
+    <Compile Include="Views\PackageManagerSearchView.xaml.cs">
       <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\PreviewControl.xaml.cs">
+    <Compile Include="Views\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\SearchView.xaml.cs">
+    <Compile Include="Views\SearchView.xaml.cs">
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\Watch3DView.xaml.cs">
+    <Compile Include="Views\Watch3DView.xaml.cs">
       <DependentUpon>Watch3DView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\WatchTree.xaml.cs">
+    <Compile Include="Views\WatchTree.xaml.cs">
       <DependentUpon>WatchTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\WorkspaceView.xaml.cs">
+    <Compile Include="Views\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="NodeViewInjection\NodeViewInjections\Watch.cs" />
-    <Compile Include="UI\WebBrowserUtility.cs" />
-    <Compile Include="UI\WPF.cs" />
-    <Compile Include="UI\ZoomBorder.cs" />
+    <Compile Include="Utilities\WpfUtilities.cs" />
+    <Compile Include="Controls\ZoomBorder.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="ViewModels\ConnectorViewModel.cs" />
@@ -246,19 +246,19 @@
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Controls\GraphUpdateNotificationControl.xaml">
+    <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Controls\ShortcutToolbar.xaml">
+    <Page Include="Controls\ShortcutToolbar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Controls\StartPage.xaml">
+    <Page Include="Controls\StartPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -855,78 +855,78 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\AboutWindow.xaml">
+    <Page Include="Views\AboutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\DynamoView.xaml">
+    <Page Include="Views\DynamoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\InfoBubbleView.xaml">
+    <Page Include="Views\InfoBubbleView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\InstalledPackagesView.xaml">
+    <Page Include="Views\InstalledPackagesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\NodeView.xaml">
+    <Page Include="Views\NodeView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\NoteView.xaml">
+    <Page Include="Views\NoteView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\PackageManagerPublishView.xaml">
+    <Page Include="Views\PackageManagerPublishView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\PackageManagerSearchView.xaml">
+    <Page Include="Views\PackageManagerSearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\PreviewControl.xaml">
+    <Page Include="Views\PreviewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\SearchView.xaml">
+    <Page Include="Views\SearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\Watch3DView.xaml">
+    <Page Include="Views\Watch3DView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\WatchTree.xaml">
+    <Page Include="Views\WatchTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Views\WorkspaceView.xaml">
+    <Page Include="Views\WorkspaceView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
