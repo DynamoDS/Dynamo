@@ -72,7 +72,20 @@ namespace Dynamo.Nodes.Search
 
         public BitmapImage SmallIcon
         {
-            get { return GetSmallIcon(this); }
+            get
+            {
+                return GetIcon(this.GetResourceName(ResourceType.SmallIcon)
+                              + Dynamo.UI.Configurations.SmallIconPostfix);
+            }
+        }
+
+        public BitmapImage LargeIcon
+        {
+            get
+            {
+                return GetIcon(this.GetResourceName(ResourceType.LargeIcon)
+                              + Dynamo.UI.Configurations.LargeIconPostfix);
+            }
         }
 
         public void ReturnToOldParent()
@@ -142,13 +155,13 @@ namespace Dynamo.Nodes.Search
                 return string.Empty;
         }
 
-        protected BitmapImage GetSmallIcon(BrowserInternalElement member)
+        protected BitmapImage GetIcon(string fullNameOfIcon)
         {
-            if (string.IsNullOrEmpty(member.ResourceAssembly))
+            if (string.IsNullOrEmpty(this.ResourceAssembly))
                 return null;
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.ResourceAssembly);
-            return (cust != null) ? cust.GetSmallIcon(member.GetResourceName(ResourceType.SmallIcon)) : null;
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(this.ResourceAssembly);
+            return (cust != null) ? cust.LoadIconInternal(fullNameOfIcon) : null;
         }
     }
 

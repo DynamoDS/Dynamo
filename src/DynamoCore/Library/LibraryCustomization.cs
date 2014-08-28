@@ -132,19 +132,7 @@ namespace Dynamo.DSEngine
             return obj.ToString().Trim();
         }
 
-        internal BitmapImage GetSmallIcon(string qualifiedName)
-        {
-            string iconKey = qualifiedName + Configurations.SmallIconPostfix;
-            return LoadIconInternal(iconKey);
-        }
-
-        internal BitmapImage GetLargeIcon(FunctionDescriptor descriptor)
-        {
-            string iconKey = descriptor.QualifiedName + Configurations.LargeIconPostfix;
-            return LoadIconInternal(iconKey);
-        }
-
-        private BitmapImage LoadIconInternal(string iconKey)
+        internal BitmapImage LoadIconInternal(string iconKey)
         {
             if (cachedIcons.ContainsKey(iconKey))
                 return cachedIcons[iconKey];
