@@ -10,11 +10,10 @@ namespace Dynamo.Search.SearchElements
         internal readonly FunctionDescriptor FunctionDescriptor;
         private string _displayString;
 
-        public override BitmapImage SmallIcon
-        {
-            get { return GetSmallIcon(FunctionDescriptor); }
-            set { }
-        }
+        //public BitmapImage SmallIcon
+        //{
+        //    get { return GetSmallIcon(FunctionDescriptor); }
+        //}
 
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
             base(displayString, functionItem.Summary, new List<string> { }, group,

@@ -65,7 +65,12 @@ namespace Dynamo.Nodes.Search
         public BrowserItem Parent { get; set; }
         public BrowserItem OldParent { get; set; }
 
-        public virtual BitmapImage SmallIcon
+        protected enum ResourceType
+        {
+            SmallIcon, LargeIcon
+        }
+
+        public BitmapImage SmallIcon
         {
             get { return GetSmallIcon(this); }
             set { }
@@ -106,10 +111,10 @@ namespace Dynamo.Nodes.Search
         /// <summary>
         /// Assembly, where icon for class button can be found.
         /// </summary>
-        private string _assembly;
-        public string Assembly
+        private string resourceAssembly;
+        public string ResourceAssembly
         {
-            get { return _assembly; }
+            get { return resourceAssembly; }
         }
 
         public BrowserInternalElement()
@@ -119,23 +124,31 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
-        public BrowserInternalElement(string name, BrowserItem parent, string assembly = "")
+        public BrowserInternalElement(string name, BrowserItem parent, string resAssembly = "")
         {
             this._name = name;
-            this._assembly = assembly;
+            this.resourceAssembly = resAssembly;
             this.Parent = parent;
             this.OldParent = null;
         }
 
         public string FullCategoryName { get; set; }
 
+        protected virtual string GetResourceName(ResourceType resourceType)
+        {
+            if (resourceType == ResourceType.SmallIcon)
+                return this.Name;
+            else
+                return string.Empty;
+        }
+
         private BitmapImage GetSmallIcon(BrowserInternalElement member)
         {
-            if (string.IsNullOrEmpty(member.Assembly))
+            if (string.IsNullOrEmpty(member.ResourceAssembly))
                 return null;
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
-            return (cust != null) ? cust.GetSmallIcon(member.Name) : null;
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.ResourceAssembly);
+            return (cust != null) ? cust.GetSmallIcon(member.GetResourceName(ResourceType.SmallIcon)) : null;
         }
     }
 

@@ -119,11 +119,10 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        public override BitmapImage SmallIcon
-        {
-            get { return GetSmallIcon(this); }
-            set { }
-        }
+        //public override BitmapImage SmallIcon
+        //{
+        //    //get { return GetSmallIcon(this); }
+        //}
 
         #endregion
 
