@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -11,6 +12,7 @@
              MinWidth="100">
     <UserControl.Resources>
         <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <Style x:Key="ListBoxItemStyle"
                TargetType="{x:Type ListBoxItem}">
             <Setter Property="Background"
@@ -44,6 +46,10 @@
             </Setter>
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
+            <EventSetter Event="MouseEnter"
+                         Handler="OnListBoxItemMouseEnter" />
+            <EventSetter Event="MouseLeave"
+                         Handler="OnPopupMouseLeave" />
         </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding Path=ClassDetailsVisibility,
@@ -127,5 +133,17 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        AttachmentSide="Right"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True"
+                                        MouseLeave="OnPopupMouseLeave">
+            <uicontrols:LibraryToolTipPopup.IsOpen>
+                <Binding ElementName="libraryToolTipPopup"
+                         Path="DataContext"
+                         Mode="OneWay"
+                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+            </uicontrols:LibraryToolTipPopup.IsOpen>
+        </uicontrols:LibraryToolTipPopup>
     </Grid>
 </UserControl>
