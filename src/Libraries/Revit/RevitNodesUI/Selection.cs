@@ -330,21 +330,13 @@ namespace Dynamo.Nodes
             // When there's no selection, this returns an invalid ID.
             var selectedElementId = selectedUniqueId ?? "";
 
-            AssociativeNode node;
-            if (string.IsNullOrEmpty(selectedElementId))
-            {
-                node = AstFactory.BuildNullNode();
-            }
-            else
-            {
-                node = AstFactory.BuildFunctionCall(
+            var node = AstFactory.BuildFunctionCall(
                 new Func<string, bool, Element>(ElementSelector.ByUniqueId),
                 new List<AssociativeNode>
                 {
                     AstFactory.BuildStringNode(selectedElementId),
                     AstFactory.BuildBooleanNode(true)
                 });
-            }
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
@@ -570,21 +562,17 @@ namespace Dynamo.Nodes
                 }
 
                 stableRep = SelectedElement.ConvertToStableRepresentation(dbDocument);
+            }
 
-                var args = new List<AssociativeNode>
-                {
-                    AstFactory.BuildStringNode(stableRep)
-                };
+            var args = new List<AssociativeNode>
+            {
+                AstFactory.BuildStringNode(stableRep)
+            };
 
-                node = AstFactory.BuildFunctionCall(
+            node = AstFactory.BuildFunctionCall(
                     "GeometryObjectSelector",
                     "ByReferenceStableRepresentation",
                     args);
-            }
-            else
-            {
-                node = AstFactory.BuildNullNode();
-            }
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
@@ -837,7 +825,7 @@ namespace Dynamo.Nodes
         {
             AssociativeNode node;
 
-            if (SelectedElement == null || !SelectedElement.Any())
+            if (SelectedElement == null)
             {
                 node = AstFactory.BuildNullNode();
             }
