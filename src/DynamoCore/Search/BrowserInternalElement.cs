@@ -73,7 +73,6 @@ namespace Dynamo.Nodes.Search
         public BitmapImage SmallIcon
         {
             get { return GetSmallIcon(this); }
-            set { }
         }
 
         public void ReturnToOldParent()
