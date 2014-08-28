@@ -8,24 +8,18 @@ using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Threading;
 
-using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.PackageManager;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Commands;
-using Dynamo.Utilities;
 using Dynamo.Services;
 using DynamoUnits;
 
 using Autodesk.DesignScript.Interfaces;
 using DynamoUtilities;
+using Dynamo.UpdateManager;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
@@ -353,7 +347,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var um = model.UpdateManager;
+                var um = UpdateManager.UpdateManager.Instance;
                 if (um.ForceUpdate)
                 {
                     return true;
@@ -512,14 +506,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeUpdateManagerHandlers()
         {
-            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
+            UpdateManager.UpdateManager.Instance.UpdateDownloaded += Instance_UpdateDownloaded;
+            UpdateManager.UpdateManager.Instance.ShutdownRequested += updateManager_ShutdownRequested;
         }
 
         private void UnsubscribeUpdateManagerEvents()
         {
-            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested -= updateManager_ShutdownRequested;
+            UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
+            UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
         }
 
         private void SubscribeModelChangedHandlers()
@@ -696,7 +690,7 @@ namespace Dynamo.ViewModels
         void updateManager_ShutdownRequested(object sender, EventArgs e)
         {
             Exit(true, true);
-            Model.UpdateManager.HostApplicationBeginQuit();
+            UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
         }
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

@@ -227,7 +227,7 @@ namespace Dynamo.Controls
 
             e.Handled = true;
 
-            var editWindow = new EditWindow
+            var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
                 Title = "Edit Node Name"

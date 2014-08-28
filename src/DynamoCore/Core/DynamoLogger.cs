@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Dynamo.Core;
+
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
-
-using DynamoUtilities;
 
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -15,6 +12,33 @@ namespace Dynamo
 {
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Error}
+
+    public delegate void LogEventHandler(LogEventArgs args);
+
+    public class LogEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The message to be logged.
+        /// </summary>
+        public string Message { get; set; }
+    
+        /// <summary>
+        /// The log level at which to log the message.
+        /// </summary>
+        public LogLevel Level { get; set; }
+
+        public LogEventArgs(string message, LogLevel level)
+        {
+            Message = message;
+            Level = level;
+        }
+
+        public LogEventArgs(Exception e, LogLevel level)
+        {
+            Message = e.Message + "\n" + e.StackTrace;
+            Level = level;
+        }
+    }
 
     public class DynamoLogger:NotificationObject, ILogger, IDisposable
     {
@@ -79,7 +103,7 @@ namespace Dynamo
         /// </summary>
         public DynamoLogger(DynamoModel dynamoModel, string logDirectory)
         {
-            lock (this.guardMutex)
+            lock (guardMutex)
             {
                 this.dynamoModel = dynamoModel;
                 _isDisposed = false;
@@ -87,8 +111,15 @@ namespace Dynamo
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
+                UpdateManager.UpdateManager.Instance.Log += UpdateManager_Log;
+                
                 StartLogging(logDirectory);
             }
+        }
+
+        private void UpdateManager_Log(LogEventArgs args)
+        {
+            Log(args.Message, args.Level);
         }
 
         public void Log(string message, LogLevel level)
@@ -272,6 +303,8 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
+
+            UpdateManager.UpdateManager.Instance.Log -= UpdateManager_Log;
         }
 
         public void Dispose()
