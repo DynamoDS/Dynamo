@@ -145,7 +145,15 @@ namespace Dynamo.Nodes
                 else
                 {
                     selectionOwner = DocumentManager.Instance.CurrentDBDocument;
-                    selectedUniqueId = selectionOwner.GetElement(selectedElement).UniqueId;
+                    var el = selectionOwner.GetElement(selectedElement);
+                    if (el != null)
+                    {
+                        selectedUniqueId = el.UniqueId;
+                    }
+                    else
+                    {
+                        selectedUniqueId = string.Empty;
+                    }
                 }
 
                 if (dirty)
