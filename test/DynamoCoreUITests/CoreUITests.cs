@@ -20,7 +20,7 @@ namespace DynamoCoreUITests
         #region SaveImageCommand
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanSaveImage()
         {
             string path = Path.Combine(TempFolder, "output.png");
@@ -33,7 +33,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CannotSaveImageWithBadPath()
         {
             string path = "W;\aelout put.png";
@@ -78,7 +78,7 @@ namespace DynamoCoreUITests
         #region Zoom In and Out canvas
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanZoom()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -171,7 +171,7 @@ namespace DynamoCoreUITests
         #region Pan Left, Right, Top, Down Canvas
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanLeft()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -193,7 +193,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanRight()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -215,7 +215,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanUp()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -237,7 +237,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanDown()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -263,7 +263,7 @@ namespace DynamoCoreUITests
         #region Fit to View
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void FitViewWithNoNodes()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -283,7 +283,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitView()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -307,7 +307,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewTwiceForActualZoom()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -331,7 +331,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void FitViewStressTest()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -356,7 +356,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewResetByZoom()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -384,7 +384,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewResetByPan()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -558,7 +558,7 @@ namespace DynamoCoreUITests
         #region InfoBubble
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void UpdateInfoBubble_ErrorBubble()
         {
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel(this.ViewModel);
@@ -605,7 +605,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanDeleteANote()
         {
             ViewModel.AddNoteCommand.Execute(null);

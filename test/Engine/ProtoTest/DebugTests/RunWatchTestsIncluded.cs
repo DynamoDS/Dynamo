@@ -37701,8 +37701,10 @@ y = foo ( -2 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("Failing")]
         public void DebugWatch1358_TV94_Method_Resolution_Nested_Language_Blocks_2()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4290
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"def foo(  )
 {
@@ -42174,47 +42176,6 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(importpath, src, map);
-        }
-
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1551_T00016_Geometry_012_centroid_1()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""GeometryLibForLanguageTesting.ds"");
-// [1] create functions to calculate the centroid of a collection of points 
-def sumCollection(arr : double[]) = sumCollectionInternal(arr, Count(arr)-1);
-def sumCollectionInternal(arr : double[], i : int ) 
-{
-    return = [Imperative]
-    {
-        if( i > -1) 
-        {
-            return = arr[i] + sumCollectionInternal(arr, i-1);
-        }
-        else
-        {
-            return = 0;
-        }
-    }
-}
-def average(arr : double[]) = sumCollection(arr) / count(arr);
-def centroid(points : Point[]) = Point.ByCartesianCoordinates( average(points.X), average(points.Y),  average(points.Z) );
-// [2] create some points
-point_1 = Point.ByCartesianCoordinates( 30.0, 80.0, 0.0 );
-point_2 = Point.ByCartesianCoordinates( 10.0, 50.0, 0.0 );
-point_3 = Point.ByCartesianCoordinates( 50.0, 50.0, 0.0 );
-// [3] create centrePoint
-centrePoint = centroid( {point_1, point_2, point_3} );
-// [4] test with lines
-lineTest  = Line.ByStartPointEndPoint( centrePoint, { point_1, point_2, point_3 } );
-// [5] move a point
-point_1 = Point.ByCartesianCoordinates( 40.0, 80.0, 0.0 );
-x1 = lineTest[2].EndPoint.X;
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
         [Test]
