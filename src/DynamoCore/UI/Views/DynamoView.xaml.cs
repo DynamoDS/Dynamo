@@ -767,7 +767,7 @@ namespace Dynamo.Controls
                         Header = "Show In Folder",
                         Tag = dirPaths[0]
                     };
-                    showInFolder.Click += showInFolderClick;
+                    showInFolder.Click += OnShowInFolder;
                     SamplesMenu.Items.Add(new Separator());
                     SamplesMenu.Items.Add(showInFolder);
                 }
@@ -777,7 +777,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void showInFolderClick(object sender, RoutedEventArgs e)
+        private void OnShowInFolder(object sender, RoutedEventArgs e)
         {
             var folderPath = (string)((MenuItem) sender).Tag;
             Process.Start("explorer.exe", "/select," + folderPath);
