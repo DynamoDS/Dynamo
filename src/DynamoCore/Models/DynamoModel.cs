@@ -105,7 +105,6 @@ namespace Dynamo.Models
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
-        public IUpdateManager UpdateManager { get; private set; }
         public DynamoScheduler Scheduler { get { return scheduler; } }
 
         // KILLDYNSETTINGS: wut am I!?!
@@ -247,7 +246,6 @@ namespace Dynamo.Models
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
             public DynamoRunner Runner { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
         }
@@ -291,7 +289,6 @@ namespace Dynamo.Models
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
             DynamoRunner runner = configuration.Runner;
-            IUpdateManager updateManager = configuration.UpdateManager;
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
@@ -315,8 +312,9 @@ namespace Dynamo.Models
             }
 
             InitializePreferences(preferences);
-            InitializeUpdateManager(updateManager);
             InitializeInstrumentationLogger();
+
+            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
 
             SearchModel = new SearchModel(this);
 
@@ -354,12 +352,6 @@ namespace Dynamo.Models
             InstrumentationLogger.Start(this);
         }
 
-        private void InitializeUpdateManager(IUpdateManager updateManager)
-        {
-            UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this.Logger, UpdateManager.UpdateDataAvailable));
-        }
-
         private void InitializeCurrentWorkspace()
         {
             this.AddHomeWorkspace();
@@ -368,7 +360,7 @@ namespace Dynamo.Models
             this.CurrentWorkspace.Y = 0;
         }
 
-        private void InitializePreferences(IPreferences preferences)
+        private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.LengthUnit = preferences.LengthUnit;
             BaseUnit.AreaUnit = preferences.AreaUnit;
@@ -380,7 +372,7 @@ namespace Dynamo.Models
 
         public string Version
         {
-            get { return UpdateManager.ProductVersion.ToString();  }
+            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
