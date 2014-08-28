@@ -647,9 +647,10 @@ namespace Dynamo.Nodes
                     selectionOwner = DocumentManager.Instance.CurrentDBDocument;
                     
                     selectedUniqueIds.Clear();
-                    var elements = selectedElements.Select(id => selectionOwner.GetElement(id))
-                        .Where(el => el != null).Select(el=>el.UniqueId);
-                    selectedUniqueIds.AddRange(elements);
+
+                    foreach (var el in selectedElements.Select(id => selectionOwner.GetElement(id)).Where(el => el != null)) {
+                        selectedUniqueIds.Add(el.UniqueId);
+                    }
                 }
 
                 if (dirty)
