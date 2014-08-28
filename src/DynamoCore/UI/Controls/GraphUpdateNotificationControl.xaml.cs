@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Dynamo;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
+
+using Dynamo.UpdateManager;
 
 namespace DynamoCore.UI.Controls
 {
@@ -20,12 +18,9 @@ namespace DynamoCore.UI.Controls
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (DataContext is DynamoViewModel)
+            if (DataContext is UpdateManager)
             {
-                var dvm = DataContext as DynamoViewModel;
-
-                dvm.Model.Logger.Log("UpdateNotificationControl-OnInstallButtonClicked","UpdateNotificationControl-OnInstallButtonClicked");
-                dvm.Model.UpdateManager.QuitAndInstallUpdate(); // Quit application
+                UpdateManager.Instance.QuitAndInstallUpdate();
             }
         }
     }
