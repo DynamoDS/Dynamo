@@ -27,6 +27,15 @@ namespace RevitServices.Materials
 
         private MaterialsManager()
         {
+            
+        }
+
+        /// <summary>
+        /// Finds or creates materials and graphics styles
+        /// required by the material manager in the active document.
+        /// </summary>
+        public void InitializeForActiveDocument()
+        {
             FindorCreateDynamoMaterial();
             FindDynamoGraphicsStyle();
         }

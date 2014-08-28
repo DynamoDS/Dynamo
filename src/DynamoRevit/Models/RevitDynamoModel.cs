@@ -26,6 +26,7 @@ using ProtoCore;
 using Revit.Elements;
 
 using RevitServices.Elements;
+using RevitServices.Materials;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -142,6 +143,8 @@ namespace Dynamo.Applications.Models
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 this.Logger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+
+                MaterialsManager.Instance.InitializeForActiveDocument();
             }
         }
 
@@ -355,6 +358,11 @@ namespace Dynamo.Applications.Models
             {
                 DocumentManager.Instance.CurrentUIDocument =
                     DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+
+                // Ensure that the active document has the needed
+                // materials and graphic styles to support visualization
+                // in Revit.
+                MaterialsManager.Instance.InitializeForActiveDocument();
 
                 this.RunEnabled = true;
             }
