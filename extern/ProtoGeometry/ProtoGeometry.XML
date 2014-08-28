@@ -220,6 +220,74 @@
             degree
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Reflect(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>
+            Reflect the object across the input Plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double)">
+            <summary>
+            Scale uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around a given Plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale uniformly around a given point, using two pick points as scalars
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in two dimension by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Obtain the distance from this Geometry to another
+            </summary>
+            <param name="entity">The other Geometry</param>
+            <returns>The distance</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Obtain the closest Point on this Geometry to the other
+            </summary>
+            <search>NearestPoint, GetClosestPoint</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Determine if another Geometry object intersects with this one
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Intersect(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Get the intersection Geometry for this object and another
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
+            <summary>
+            Get the intersection of Geometry for this object and a collection of other Geometries. Finds common geometry of all participants.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Split this Geometry using another Geometry as a cutting "tool"
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Trim(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Removes elements of the entity closest to the pick point
@@ -238,6 +306,11 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
             WARNING: non-ascii characters are not supported in file nams.
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Geometry.BoundingBox">
+            <summary>
+            Get the BoundingBox containing the given piece of Geometry
+            </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
             <summary>
