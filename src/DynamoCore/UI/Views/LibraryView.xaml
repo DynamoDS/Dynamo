@@ -11,6 +11,7 @@
              d:DesignWidth="350">
     <UserControl.Resources>
         <ResourceDictionary>
+            
             <DataTemplate x:Key="ClassObjectDataTemplate">
                 <StackPanel Orientation="Vertical"
                             Width="96"

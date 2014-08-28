@@ -75,10 +75,10 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Image HorizontalAlignment="Left"
-                               Height="32"
+                               Height="29"
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="32"
+                               Width="29"
                                Source="{Binding SmallIcon}" />
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
@@ -116,11 +116,12 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Image HorizontalAlignment="Left"
-                               Height="32"
+                               Height="29"
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="32"
+                               Width="29"
                                Source="{Binding SmallIcon}" />
+                        
                         <TextBlock HorizontalAlignment="Left"
                                    TextWrapping="Wrap"
                                    Text="{Binding Name}"
