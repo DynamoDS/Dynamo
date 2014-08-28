@@ -10,11 +10,6 @@ namespace Dynamo.Search.SearchElements
         internal readonly FunctionDescriptor FunctionDescriptor;
         private string _displayString;
 
-        //public BitmapImage SmallIcon
-        //{
-        //    get { return GetSmallIcon(FunctionDescriptor); }
-        //}
-
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem, SearchElementGroup group) :
             base(displayString, functionItem.Summary, new List<string> { }, group,
                     functionItem.DisplayName, functionItem.Assembly, functionItem.InputParameters, functionItem.ReturnType)
@@ -51,13 +46,16 @@ namespace Dynamo.Search.SearchElements
             return this.FunctionDescriptor == other.FunctionDescriptor;
         }
 
-        private BitmapImage GetSmallIcon(FunctionDescriptor member)
+        protected override string GetResourceName(ResourceType resourceType)
         {
-            if (string.IsNullOrEmpty(member.Assembly))
-                return null;
+            if (resourceType == ResourceType.SmallIcon)
+                return this.FunctionDescriptor.QualifiedName;
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(member.Assembly);
-            return (cust != null) ? cust.GetSmallIcon(member.QualifiedName) : null;
+            //TODO: createLarge icons. Look how it works.
+            if (resourceType == ResourceType.LargeIcon)
+                return this.FunctionDescriptor.QualifiedName;
+
+            return "";
         }
     }
 }
