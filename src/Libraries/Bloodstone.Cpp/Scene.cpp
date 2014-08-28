@@ -55,7 +55,9 @@ void Scene::Initialize(int width, int height)
 #if 1 // Temporary demo code section.
 
     auto flags = FontFlags::Bold | FontFlags::Underline;
-    FontSpecs fontSpecs = { L"Consolas", 12, ((FontFlags) flags) };
+    FontSpecs fontSpecs(L"Consolas");
+    fontSpecs.height = 12;
+    fontSpecs.flags = ((FontFlags) flags);
 
     float worldPosition[] = { 10.0f, 10.0f, 10.0f };
     auto textId = mpBillboardTextGroup->CreateText(fontSpecs);

@@ -24,21 +24,21 @@ unsigned char* GlyphBitmap::Data() const
 }
 
 // ================================================================================
-// ITextBitmapGenerator
+// TextBitmapGenerator
 // ================================================================================
 
-ITextBitmapGenerator::ITextBitmapGenerator() :
+TextBitmapGenerator::TextBitmapGenerator() :
     mContentUpdated(false),
     mCurrentFontId(1024),
     mpGlyphBitmap(nullptr)
 {
 }
 
-ITextBitmapGenerator::~ITextBitmapGenerator()
+TextBitmapGenerator::~TextBitmapGenerator()
 {
 }
 
-FontId ITextBitmapGenerator::CacheFont(const FontSpecs& fontSpecs)
+FontId TextBitmapGenerator::CacheFont(const FontSpecs& fontSpecs)
 {
     auto iterator = mFontSpecs.begin();
     for (; iterator != mFontSpecs.end(); ++iterator)
@@ -48,14 +48,14 @@ FontId ITextBitmapGenerator::CacheFont(const FontSpecs& fontSpecs)
     }
 
     auto fontId = mCurrentFontId++;
-    auto pair = std::pair<FontId, FontSpecs>(fontId, fontSpecs);
+    std::pair<FontId, FontSpecs> pair(fontId, fontSpecs);
     mFontSpecs.insert(pair);
 
     mContentUpdated = true;
     return pair.first;
 }
 
-void ITextBitmapGenerator::CacheGlyphs(const std::vector<GlyphId>& glyphs)
+void TextBitmapGenerator::CacheGlyphs(const std::vector<GlyphId>& glyphs)
 {
     auto iterator = glyphs.begin();
     for (; iterator != glyphs.end(); ++iterator)
@@ -69,7 +69,7 @@ void ITextBitmapGenerator::CacheGlyphs(const std::vector<GlyphId>& glyphs)
     }
 }
 
-const GlyphBitmap* ITextBitmapGenerator::GenerateBitmap()
+const GlyphBitmap* TextBitmapGenerator::GenerateBitmap()
 {
     if (mContentUpdated == false)
         return mpGlyphBitmap;
@@ -94,7 +94,7 @@ GlyphBitmap* TextBitmapGeneratorWin32::GenerateBitmapCore() const
     return nullptr;
 }
 
-static ITextBitmapGenerator* CreateTextBitmapGenerator(void)
+TextBitmapGenerator* CreateTextBitmapGenerator(void)
 {
     return new TextBitmapGeneratorWin32();
 }
@@ -207,7 +207,7 @@ TextId BillboardTextGroup::CreateText(const FontSpecs& fontSpecs)
     auto pBillboardText = new BillboardText(textId, fontId);
 
     // Insert the newly created billboard text into the internal list.
-    auto pair = std::pair<TextId, BillboardText*>(textId, pBillboardText);
+    std::pair<TextId, BillboardText*> pair(textId, pBillboardText);
     mBillboardTexts.insert(pair);
     ADDFLAG(mRegenerationHints, RegenerationHints::TextureContent);
     return textId;

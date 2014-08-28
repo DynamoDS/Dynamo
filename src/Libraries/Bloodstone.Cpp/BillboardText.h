@@ -31,9 +31,16 @@ namespace Dynamo { namespace Bloodstone {
 
     struct FontSpecs
     {
-        std::wstring face;
         int height;
         FontFlags flags;
+        std::wstring face;
+
+        FontSpecs(const wchar_t* face)
+        {
+            this->height = 72;
+            this->flags = ((FontFlags) 0);
+            this->face = face;
+        }
 
         inline bool operator==(const FontSpecs& other) const
         {
@@ -66,11 +73,11 @@ namespace Dynamo { namespace Bloodstone {
         unsigned char* mpBitmapData;
     };
 
-    class ITextBitmapGenerator
+    class TextBitmapGenerator
     {
     public:
-        ITextBitmapGenerator();
-        virtual ~ITextBitmapGenerator();
+        TextBitmapGenerator();
+        virtual ~TextBitmapGenerator();
 
         FontId CacheFont(const FontSpecs& fontSpecs);
         void CacheGlyphs(const std::vector<GlyphId>& glyphs);
@@ -90,7 +97,7 @@ namespace Dynamo { namespace Bloodstone {
 
 #ifdef _WIN32
 
-    class TextBitmapGeneratorWin32 : public ITextBitmapGenerator
+    class TextBitmapGeneratorWin32 : public TextBitmapGenerator
     {
     public:
         TextBitmapGeneratorWin32();
@@ -194,7 +201,7 @@ namespace Dynamo { namespace Bloodstone {
         RegenerationHints mRegenerationHints;
         IBillboardVertexBuffer* mpVertexBuffer;
         IShaderProgram* mpBillboardShader;
-        ITextBitmapGenerator* mpBitmapGenerator;
+        TextBitmapGenerator* mpBitmapGenerator;
         IGraphicsContext* mpGraphicsContext;
     };
 
