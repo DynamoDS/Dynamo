@@ -21,8 +21,6 @@ using Dynamo.Models;
 using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 using Revit.Interactivity;
-
-using RevitServices.Elements;
 using RevitServices.Persistence;
 using Element = Revit.Elements.Element;
 
@@ -626,11 +624,8 @@ namespace Dynamo.Nodes
                 if (selectedElements != null)
                 {
                     selectionOwner = DocumentManager.Instance.CurrentDBDocument;
-                    
-                    selectedUniqueIds.Clear();
-                    foreach (var el in selectedElements.Select(id => selectionOwner.GetElement(id)).Where(el => el != null)) {
-                        selectedUniqueIds.Add(el.UniqueId);
-                    }
+                    selectedUniqueIds =
+                        selectedElements.Select(x => selectionOwner.GetElement(x).UniqueId).ToList();
                 }
 
                 if (dirty)
