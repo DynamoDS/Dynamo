@@ -2,7 +2,6 @@
 using System.Linq;
 using Dynamo.Nodes;
 using DynamoWebServer;
-using DynamoWebServer.Interfaces;
 using DynamoWebServer.Messages;
 
 using Moq;
@@ -18,7 +17,6 @@ namespace Dynamo.Tests
         private const string GUID = "b43c1f0e-d88f-bfd7-8dd8-dc5536c18390";
         private WebServer webServer;
         private Mock<IWebSocket> mock;
-        private Mock<ISessionManager> sessionManager;
 
         [SetUp]
         public override void Init()
@@ -29,9 +27,7 @@ namespace Dynamo.Tests
             mock.Setup(ws => ws.Setup(It.IsAny<IRootConfig>(), It.IsAny<IServerConfig>())).Returns(true);
             mock.Setup(ws => ws.Start()).Returns(true);
 
-            sessionManager = new Mock<ISessionManager>();
-
-            webServer = new WebServer(mock.Object, sessionManager.Object);
+            webServer = new WebServer(ViewModel, mock.Object);
             webServer.Start();
         }
 
@@ -40,7 +36,7 @@ namespace Dynamo.Tests
         {
             var testDir = Path.Combine(GetTestDirectory(), @"core\commands");
             var commandPaths = Directory.GetFiles(testDir, "*.txt");
-            var messageHandler = new MessageHandler(ViewModel, "test");
+            var messageHandler = new MessageHandler(ViewModel);
             Assert.NotNull(commandPaths);
             Assert.Greater(commandPaths.Length, 0);
             foreach (var path in commandPaths)
@@ -56,7 +52,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\createNode.txt");
-            string createCommand = File.ReadAllLines(commandPath)[0];
+            string createCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(createCommand, "");
 
@@ -70,7 +66,7 @@ namespace Dynamo.Tests
             CanExecuteCreateCommand();
 
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\updateNode.txt");
-            string updateCommand = File.ReadAllLines(commandPath)[0];
+            string updateCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(updateCommand, "");
 
@@ -89,7 +85,7 @@ namespace Dynamo.Tests
             CanExecuteCreateCommand();
 
             string commandPath = Path.Combine(GetTestDirectory(), @"core\commands\deleteNode.txt");
-            string deleteCommand = File.ReadAllLines(commandPath)[0];
+            string deleteCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(deleteCommand, "");
             Assert.IsFalse(model.Nodes.Any(node => node.GUID.ToString() == GUID));

@@ -14,13 +14,13 @@ namespace DynamoWebServer.Messages
 {
     public class MessageHandler
     {
-        public DynamoViewModel DynamoViewModel { get; private set; }
-        public string SessionId { get; private set; }
         public event ResultReadyEventHandler ResultReady;
 
         private readonly JsonSerializerSettings jsonSettings;
+        private readonly DynamoViewModel dynamoViewModel;
+        private RenderCompleteEventHandler RenderCompleteHandler;
 
-        public MessageHandler(DynamoViewModel dynamoViewModel, string sessionId)
+        public MessageHandler(DynamoViewModel dynamoViewModel)
         {
             jsonSettings = new JsonSerializerSettings
             {
@@ -28,8 +28,7 @@ namespace DynamoWebServer.Messages
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            DynamoViewModel = dynamoViewModel;
-            SessionId = sessionId;
+            this.dynamoViewModel = dynamoViewModel;
         }
 
         /// <summary>
@@ -63,18 +62,18 @@ namespace DynamoWebServer.Messages
         /// </summary>
         /// <param name="dynamo">DynamoViewModel</param>
         /// <param name="message">Message</param>
-        internal void Execute(DynamoViewModel dynamo, Message message)
+        internal void Execute(DynamoViewModel dynamo, Message message, string sessionId)
         {
             if (message is RunCommandsMessage)
             {
-                ExecuteCommands(dynamo, message);
+                ExecuteCommands(dynamo, message, sessionId);
             }
             else if (message is GetLibraryItemsMessage)
             {
                 OnResultReady(this, new ResultReadyEventArgs(new LibraryItemsListResponse
                 {
-                    LibraryItems = dynamo.SearchViewModel.GetAllLibraryItemsByCategory(),
-                }, SessionId));
+                    LibraryItems = dynamo.SearchViewModel.GetAllLibraryItemsByCategory()
+                }, sessionId));
             }
         }
 
@@ -91,7 +90,7 @@ namespace DynamoWebServer.Messages
 
         #region Private Class Helper Methods
 
-        private void ExecuteCommands(DynamoViewModel dynamo, Message message)
+        private void ExecuteCommands(DynamoViewModel dynamo, Message message, string sessionId)
         {
             var recordableCommandMsg = (RunCommandsMessage)message;
 
@@ -102,7 +101,8 @@ namespace DynamoWebServer.Messages
             {
                 if (command is DynamoViewModel.RunCancelCommand)
                 {
-                    manager.RenderComplete += NodesDataModified;
+                    RenderCompleteHandler = (sender, e) => NodesDataModified(sender, e, sessionId);
+                    manager.RenderComplete += RenderCompleteHandler;
                 }
 
                 dynamo.ExecuteCommand(command);
@@ -131,10 +131,10 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void NodesDataModified(object sender, RenderCompletionEventArgs e)
+        private void NodesDataModified(object sender, RenderCompletionEventArgs e, string sessionId)
         {
             var nodes = new List<ExecutedNode>();
-            foreach (var node in DynamoViewModel.Model.CurrentWorkspace.Nodes)
+            foreach (var node in dynamoViewModel.Model.CurrentWorkspace.Nodes)
             {
                 string data;
                 var codeBlock = node as CodeBlockNodeModel;
@@ -181,9 +181,9 @@ namespace DynamoWebServer.Messages
             OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
             {
                 Nodes = nodes
-            },SessionId));
+            }, sessionId));
 
-            DynamoViewModel.VisualizationManager.RenderComplete -= NodesDataModified;
+            dynamoViewModel.VisualizationManager.RenderComplete -= RenderCompleteHandler;
         }
 
         #endregion

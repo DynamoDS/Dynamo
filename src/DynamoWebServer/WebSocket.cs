@@ -41,38 +41,26 @@ namespace DynamoWebServer
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
-            WebServer.ExecuteWithDispatcher(() =>
-            {
-                if (NewSessionConnected != null)
-                    NewSessionConnected(session);
-            });
+            if (NewSessionConnected != null)
+                NewSessionConnected(session);
         }
 
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
         {
-            WebServer.ExecuteWithDispatcher(() =>
-            {
-                if (NewMessageReceived != null)
-                    NewMessageReceived(session, message);
-            });
+            if (NewMessageReceived != null)
+                NewMessageReceived(session, message);
         }
 
         void socketServer_NewDataReceived(WebSocketSession session, byte[] value)
         {
-            WebServer.ExecuteWithDispatcher(() =>
-            {
-                if (NewDataReceived != null)
-                    NewDataReceived(session, value);
-            });
+            if (NewDataReceived != null)
+                NewDataReceived(session, value);
         }
 
         void socketServer_SessionClosed(WebSocketSession session, CloseReason reason)
         {
-            WebServer.ExecuteWithDispatcher(() =>
-            {
-                if (SessionClosed != null)
-                    SessionClosed(session, reason);
-            });
+            if (SessionClosed != null)
+                SessionClosed(session, reason);
         }
     }
 }
