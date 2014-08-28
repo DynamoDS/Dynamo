@@ -18,6 +18,7 @@ using ProtoCore.DSASM;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
+using ICSharpCode.AvalonEdit;
 
 namespace Dynamo.Nodes
 {
@@ -380,6 +381,98 @@ namespace Dynamo.Nodes
             else
                 (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;
         }
+    }
+
+    public class CodeBlockNodeTextBox : ICSharpCode.AvalonEdit.TextEditor
+    {
+        private NodeViewModel nodeViewModel;
+        private DynamoViewModel dynamoViewModel;
+        
+        public CodeBlockNodeTextBox(NodeViewModel nvm)
+        {
+            this.nodeViewModel = nvm;
+            dynamoViewModel = nodeViewModel.DynamoViewModel;
+
+            this.TextArea.LostFocus += TextArea_LostFocus;
+            this.Loaded += (obj, args) => this.TextArea.Focus();
+
+            //this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeTextBox");
+            this.Tag = "Your code goes here";
+        }
+
+        protected void OnRequestReturnFocusToSearch()
+        {
+            dynamoViewModel.ReturnFocusToSearch();
+        }
+
+        public string Code
+        {
+            get
+            {
+                // Since this property a one way binding from source (CodeBlockNodeModel) to 
+                // target (this class), the getter should never be called
+                throw new NotImplementedException();
+            }
+            set
+            {
+                base.Text = value;
+            }
+        }
+
+        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register("Code", typeof(string),
+            typeof(CodeBlockNodeTextBox), new PropertyMetadata((obj, args) =>
+            {
+                var target = (CodeBlockNodeTextBox)obj;
+                target.Code = (string)args.NewValue;
+            })
+        );
+
+        /// <summary>
+        /// Called when the CBN is committed and the underlying source data 
+        /// needs to be updated with the text typed in the CBN
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void TextArea_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.nodeViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    this.nodeViewModel.NodeModel.GUID, "Code", this.Text));
+        }
+
+        private void HandleEscape()
+        {
+            var text = base.Text;
+            var cb = DataContext as CodeBlockNodeModel;
+
+            if (cb == null || cb.Code != null && text.Equals(cb.Code))
+                OnRequestReturnFocusToSearch();
+            else
+                base.Text = (DataContext as CodeBlockNodeModel).Code;
+        }
+
+        /// <summary>
+        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
+        /// and sets them when pressed/released
+        /// </summary>
+        #region Key Press Event Handlers
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if(e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                if (e.Key == Key.Enter || e.Key == Key.Return)
+                {
+                    OnRequestReturnFocusToSearch();
+                }
+            }
+            else if (e.Key == Key.Escape)
+            {
+                HandleEscape();
+            }
+        }
+
+        #endregion
+
     }
 }
 

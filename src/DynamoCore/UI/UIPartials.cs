@@ -436,30 +436,28 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var tb = new CodeNodeTextBox(Code)
+            var tb = new CodeBlockNodeTextBox(nodeUI.ViewModel)
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
-                AcceptsReturn = true,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                VerticalAlignment = System.Windows.VerticalAlignment.Stretch,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
                 MaxWidth = Configurations.CBNMaxTextBoxWidth,
-                TextWrapping = TextWrapping.Wrap
+                WordWrap = true
             };
 
             nodeUI.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
-
-            tb.DataContext = nodeUI.ViewModel;
-            tb.BindToProperty(
+            
+            tb.DataContext = this;
+            tb.SetBinding(CodeBlockNodeTextBox.CodeProperty,
                 new Binding("Code")
                 {
-                    Mode = BindingMode.TwoWay,
+                    Mode = BindingMode.OneWay,
                     NotifyOnValidationError = false,
                     Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
+
 
             if (shouldFocus)
             {
