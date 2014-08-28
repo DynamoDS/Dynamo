@@ -412,7 +412,8 @@ namespace Dynamo.Search
         /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
         /// <param name="assembly">Assembly, where icon for class button can be found</param>
         /// <returns>The newly created category</returns>
-        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName, string resourceAssembly = "")
+        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName,
+                                                 string resourceAssembly = "")
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
 
