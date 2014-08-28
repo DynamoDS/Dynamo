@@ -491,6 +491,10 @@ namespace Dynamo.UI.Controls
             this.Child = tooltip;
             this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
             this.dispatcherTimer.Tick += new EventHandler(CloseLibraryToolTipPopup);
+
+            // If window is no longer on top, then we can hide tooltip.
+            // It's used, when we switch to another program.
+            Application.Current.MainWindow.Deactivated += CloseLibraryToolTipPopupImmediately;
         }
 
         public void SetDataContext(object dataContext)
@@ -506,7 +510,16 @@ namespace Dynamo.UI.Controls
 
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
         {
-            if(!this.IsMouseOver)
+            if (!this.IsMouseOver)
+                this.DataContext = null;
+        }
+
+        // We can not use CloseLibraryToolTipPopup, 
+        // because it waits for 1 sec to close itself,
+        // and we need to close tooltip immediately, 
+        // at the same moment when we switch to another program. 
+        private void CloseLibraryToolTipPopupImmediately(object sender, EventArgs e)
+        {
             this.DataContext = null;
         }
 
