@@ -4,24 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-using Autodesk.DesignScript.Interfaces;
-
 namespace Dynamo.Models
 {
-#if BLOODSTONE
-
-    public class UpdateBloodstoneVisualEventArgs : EventArgs
-    {
-        public UpdateBloodstoneVisualEventArgs(Dictionary<Guid, IRenderPackage> geometries)
-        {
-            this.Geometries = geometries;
-        }
-
-        public Dictionary<Guid, IRenderPackage> Geometries { get; private set; }
-    }
-
-#endif
-
     public class DynamoModelUpdateArgs : EventArgs
     {
         public object Item { get; set; }
