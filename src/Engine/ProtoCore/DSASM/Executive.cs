@@ -623,10 +623,7 @@ namespace ProtoCore.DSASM
                 {
                     HeapElement he = rmem.Heap.Heaplist[(int)svArrayPtrDimesions.opdata];
                     Validity.Assert(he.VisibleSize == svDimensionCount.opdata);
-                    for (int n = 0; n < he.VisibleSize; ++n)
-                    {
-                        dotCallDimensions.Add(he.Stack[n] /*(int)he.Stack[n].opdata*/);
-                    }
+                    dotCallDimensions.AddRange(he.VisibleItems);
                 }
             }
             else
@@ -1319,12 +1316,13 @@ namespace ProtoCore.DSASM
             HeapElement hs = rmem.Heap.Heaplist[pointer];
 
             string str = "";
-            for (int n = 0; n < hs.VisibleSize; ++n)
+            foreach (var item in hs.VisibleItems)
             {
-                if (!hs.Stack[n].IsChar)
+                if (!item.IsChar)
                     return null;
-                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(hs.Stack[n].opdata);
+                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(item.opdata);
             }
+
             if (str == "")
                 return null;
 
@@ -4259,9 +4257,11 @@ namespace ProtoCore.DSASM
                         {
                             paramType.rank++;
                             int arrayHeapPtr = (int)paramSv.opdata;
-                            if (core.Heap.Heaplist[arrayHeapPtr].VisibleSize > 0)
+                            var he = core.Heap.Heaplist[arrayHeapPtr];
+
+                            if (he.VisibleItems.Any())
                             {
-                                paramSv = core.Heap.Heaplist[arrayHeapPtr].Stack[0];
+                                paramSv = he.VisibleItems.First();
                                 paramType.UID = (int)paramSv.metaData.type;
                             }
                             else
@@ -5295,7 +5295,7 @@ namespace ProtoCore.DSASM
             HeapElement he = ArrayUtils.GetHeapElement(array, core);
             if (he != null)
             {
-                if (he.VisibleSize > 0 || (he.Dict != null && he.Dict.Count > 0))
+                if (he.VisibleItems.Any() || (he.Dict != null && he.Dict.Count > 0))
                 {
                     key = StackValue.BuildArrayKey(array, 0);
                 }

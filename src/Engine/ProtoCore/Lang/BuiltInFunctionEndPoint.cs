@@ -554,13 +554,8 @@ namespace ProtoCore.Lang
             int functionArgs = (int)argumentCount.opdata;
 
             // Build the function arguments
-            var arguments = new List<StackValue>();
             HeapElement heapElem = rmem.Heap.Heaplist[(int)functionArguments.opdata];
-            for (int n = 0; n < heapElem.VisibleSize; ++n)
-            {
-                StackValue arg = heapElem.Stack[n];
-                arguments.Add(arg);
-            }
+            var arguments = heapElem.VisibleItems.ToList();
 
             if (arguments.Count > 0)
             {
@@ -1753,9 +1748,9 @@ namespace ProtoCore.Lang
             if (EqualsInValue(sv1, sv2, runtime)) 
                 return true;
 
-            for (int i = 0; i < runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata].VisibleSize; ++i)
+            var he = runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata];
+            foreach (var op in he.VisibleItems)
             {
-                StackValue op = runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata].Stack[i];
                 if (!sv2.IsArray)
                 {
                     if (!op.IsArray)

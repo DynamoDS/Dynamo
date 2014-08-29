@@ -186,11 +186,9 @@ namespace ProtoCore.Utils
             Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
                 if (!usageFreq.ContainsKey(sv.metaData.type))
                     usageFreq.Add(sv.metaData.type, sv);
             }
@@ -217,17 +215,14 @@ namespace ProtoCore.Utils
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode,int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
                 ClassNode cn = core.ClassTable.ClassNodes[sv.metaData.type];
                 if (!usageFreq.ContainsKey(cn))
                     usageFreq.Add(cn, 0);
 
                 usageFreq[cn] = usageFreq[cn] + 1;
-
             }
 
             return usageFreq;
@@ -251,12 +246,9 @@ namespace ProtoCore.Utils
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode, int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
-
                 if (sv.IsArray)
                 {
                     //Recurse
@@ -295,16 +287,12 @@ namespace ProtoCore.Utils
 
             int ret = 1;
 
-            //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-
-
             int largestSub = 0;
 
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
+            //This is the element on the heap that manages the data structure
+            HeapElement heapElement = GetHeapElement(array, core);
+            foreach (var sv in heapElement.VisibleItems)
             {
-                StackValue sv = heapElement.Stack[i];
-
                 if (sv.IsArray)
                 {
                     int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
@@ -394,46 +382,6 @@ namespace ProtoCore.Utils
             return true;
         }
     
-        /*
-        [Obsolete]
-        public static StackValue CoerceArray(StackValue array, Type typ, Core core)
-        {
-            //@TODO(Luke) handle array rank coersions
-
-            Validity.Assert(IsArray(array), "Argument needs to be an array {99FB71A6-72AD-4C93-8F1E-0B1F419C1A6D}");
-
-            //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, core); 
-            StackValue[] newSVs = new StackValue[heapElement.VisibleSize];
-
-            for (int i = 0; i < heapElement.VisibleSize; ++i)
-            {
-                StackValue sv = heapElement.Stack[i];
-                StackValue coercedValue;
-
-                if (IsArray(sv))
-                {
-                    Type typ2 = new Type();
-                    typ2.UID = typ.UID;
-                    typ2.rank = typ.rank - 1;
-                    typ2.IsIndexable = (typ2.rank == -1 || typ2.rank > 0);
-
-                    coercedValue = CoerceArray(sv, typ2, core);
-                }
-                else
-                {
-                    coercedValue = TypeSystem.Coerce(sv, typ, core);
-                }
-
-                GCUtils.GCRetain(coercedValue, core);
-                newSVs[i] = coercedValue;
-            }
-            
-            return HeapUtils.StoreArray(newSVs, core);
-        }
-        */
-
-        
         /// <summary>
         /// Retrieve the first non-array element in an array 
         /// </summary>
@@ -1039,10 +987,8 @@ namespace ProtoCore.Utils
             {
                 array = workingSet.Dequeue();
                 HeapElement he = GetHeapElement(array, core);
-
-                for (int i = 0; i < he.VisibleSize; ++i)
+                foreach (var value in he.VisibleItems)
                 {
-                    StackValue value = he.Stack[i];
                     if (value.IsArray)
                     {
                         workingSet.Enqueue(value);
@@ -1087,19 +1033,10 @@ namespace ProtoCore.Utils
             }
 
             HeapElement he = GetHeapElement(array, core);
-            List<StackValue> keys = new List<StackValue>();
-
-            for (int i = 0; i < he.VisibleSize; ++i)
-            {
-                keys.Add(StackValue.BuildInt(i));
-            }
-
+            var keys = Enumerable.Range(0, he.VisibleSize).Select(i => StackValue.BuildInt(i)).ToList(); 
             if (he.Dict != null)
             {
-                foreach (var key in he.Dict.Keys)
-                {
-                    keys.Add(key);
-                }
+                keys.AddRange(he.Dict.Keys);
             }
 
             return keys.ToArray();
@@ -1232,11 +1169,9 @@ namespace ProtoCore.Utils
 
             var values = new List<StackValue>();
             bool hasValue = false;
-            for (int i = 0; i < he.VisibleSize; ++i)
+            foreach (var element in he.VisibleItems)
             {
                 StackValue valueInElement;
-                var element = he.Stack[i];
-
                 if (TryGetValueFromNestedDictionaries(element, key, out valueInElement, core))
                 {
                     hasValue = true;

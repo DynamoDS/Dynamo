@@ -474,7 +474,6 @@ namespace ProtoFFI
 
             int ptr = (int)dsObject.opdata;
             HeapElement hs = dsi.runtime.rmem.Heap.Heaplist[ptr];
-            int count = hs.VisibleSize;
 
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
@@ -483,9 +482,9 @@ namespace ProtoFFI
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
-            for (int idx = 0; idx < count; ++idx)
+            foreach (var sv in hs.VisibleItems)
             {
-                object obj = primitiveMarshaler.UnMarshal(hs.Stack[idx], context, dsi, elementType);
+                object obj = primitiveMarshaler.UnMarshal(sv, context, dsi, elementType);
                 arrList.Add(obj);
             }
 
