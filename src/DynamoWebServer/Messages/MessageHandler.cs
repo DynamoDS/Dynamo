@@ -129,8 +129,8 @@ namespace DynamoWebServer.Messages
 
         private void SaveFile(DynamoViewModel dynamo, Message message, string sessionId)
         {
-            var currentWorkspace = dynamo.Model.CurrentWorkspace;
-            var allWorkspacesToSave = new List<WorkspaceModel> { currentWorkspace };
+            var homeWorkspace = dynamo.Model.HomeSpace;
+            var allWorkspacesToSave = new List<WorkspaceModel> { homeWorkspace };
 
             byte[] fileContent;
             try
