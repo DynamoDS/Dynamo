@@ -1152,7 +1152,7 @@ result =
 return = f;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { false, false, false, false, false };
+            Object[] v1 = new Object[] { false, false, false };
             thisTest.Verify("result", v1, 0);
             //Assert.Fail("1467074 - Sprint23 : rev :2650 : Built-in function AllFalse() doesn't behave as expected ");
         }
@@ -1185,7 +1185,7 @@ result =
 return = f;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { false, false, false, false };
+            Object[] v1 = new Object[] { false, false};
             thisTest.Verify("result", v1, 0);
             //Assert.Fail("1467071 - Sprint23 : rev 2635 : Build-in function AllFalse issue : When the array is empty,it returns true");
         }
