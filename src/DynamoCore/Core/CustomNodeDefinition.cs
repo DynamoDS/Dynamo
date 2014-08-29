@@ -298,5 +298,15 @@ namespace Dynamo
         }
 
         #endregion
+
+        #region IFunctionDescriptor Members
+
+
+        public string MangledName
+        {
+            get { return FunctionId.ToString(); }
+        }
+
+        #endregion
     }
 }

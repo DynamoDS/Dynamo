@@ -488,7 +488,8 @@ namespace Dynamo.Models
         /// 
         public NodeModel AddNode(
             Guid nodeId, string nodeName, double x, double y,
-            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
+            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null, 
+			string nickName = null, int inputs = -1, int outputs = -1)
         {
             if (nodeId == Guid.Empty)
                 throw new ArgumentException("Node ID must be specified", "nodeId");
@@ -500,7 +501,12 @@ namespace Dynamo.Models
             if (query.Any())
                 return query.First();
 
-            NodeModel node = this.NodeFactory.CreateNodeInstance(nodeName);
+            NodeModel node;
+            if (nickName != null && inputs > -1 && outputs > -1)
+                node = this.NodeFactory.CreateProxyNodeInstance(nodeId, nodeName, nickName, inputs, outputs);
+            else
+                node = this.NodeFactory.CreateNodeInstance(nodeName);
+
             if (node == null)
             {
                 string format = "Failed to create node '{0}' (GUID: {1})";

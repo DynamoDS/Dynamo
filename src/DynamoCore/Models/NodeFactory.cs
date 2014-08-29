@@ -52,6 +52,19 @@ namespace Dynamo.Models
             return node;
         }
 
+        internal NodeModel CreateProxyNodeInstance(Guid id, string name, string nickName, int inputs, int outputs)
+        {
+            Guid guid;
+            if (!Guid.TryParse(name, out guid))
+            {
+                return null;
+            }
+
+            Function result = CreateNodeInstance(typeof(Function), nickName, null, id) as Function;
+            result.LoadNode(guid, inputs, outputs);
+            return result;
+        }
+
         /// <summary>
         ///     Create a NodeModel from a type object
         /// </summary>
@@ -104,8 +117,9 @@ namespace Dynamo.Models
         private NodeModel GetCustomNodeByName(string name)
         {
             CustomNodeDefinition def;
+            Guid guid;
 
-            if (dynamoModel.CustomNodeManager.GetDefinition(Guid.Parse(name), out def))
+            if (Guid.TryParse(name, out guid) && dynamoModel.CustomNodeManager.GetDefinition(guid, out def))
             {
                 return new Function(this.workspaceModel, def)
                 {

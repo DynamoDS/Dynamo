@@ -16,5 +16,6 @@
         void Start();
         void SendResponse(Response response, string sessionId);
         void ExecuteMessageFromSocket(string message, string sessionId);
+        void ExecuteFileFromSocket(byte[] file, string sessionId);
     }
 }

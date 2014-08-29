@@ -83,6 +83,8 @@ namespace Dynamo.Models
 
         public bool HasRenderPackages { get; set; }
 
+        public virtual string CreatingName { get { return this.Name; } }
+
         #endregion
 
         #region events
