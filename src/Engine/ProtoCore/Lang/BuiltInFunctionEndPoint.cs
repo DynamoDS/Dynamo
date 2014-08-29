@@ -1230,7 +1230,7 @@ namespace ProtoCore.Lang
             List<StackValue> svList = new List<StackValue>();
             foreach (var item1 in svArray1)
             {
-                if (svArray2.All(item2 => !EqualsInValue(item1, item2, runtime)))
+                if (svArray2.All(item2 => !StackUtils.CompareStackValues(item1, item2, runtime.runtime.Core)))
                 {
                     svList.Add(item1);
                 }
@@ -1271,7 +1271,7 @@ namespace ProtoCore.Lang
             List<StackValue> svList = new List<StackValue>();
             foreach (var item1 in svArray1)
             {
-                if (svArray2.Any(item2 => EqualsInValue(item1, item2, runtime)))
+                if (svArray2.Any(item2 => StackUtils.CompareStackValues(item1, item2, runtime.runtime.Core)))
                 {
                     svList.Add(item1);
                 }
@@ -1283,62 +1283,7 @@ namespace ProtoCore.Lang
             //That means an empty array
             else return DSASM.StackValue.Null;
         }
-        //*//
-        internal static bool EqualsInValue(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
-        {
-            if (sv1.IsArray && sv2.IsArray)
-            {
-                var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
-                var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
-
-                if (svArray1.Count() != svArray2.Count())
-                {
-                    return false;
-                }
-
-                var tuples = svArray1.Zip(svArray2, (x1, x2) => new {x1, x2});
-                foreach (var ts in tuples)
-                {
-                    var item1 = ts.x1;
-                    var item2 = ts.x2;
-
-                    if (item1.IsArray || item2.IsArray)
-                    {
-                        if (!EqualsInValue(item1, item2, runtime))
-                            return false;
-                    }
-                    else
-                    {
-                        if (item1.IsDouble && item2.IsDouble)
-                        {
-                            double value1 = item1.RawDoubleValue;
-                            double value2 = item2.RawDoubleValue;
-                            if (!value1.Equals(value2))
-                                return false;
-                        }
-                        else if (!item1.Equals(item2))
-                        {
-                            return false;
-                        }
-                    }
-                }
-                
-                return true;
-            }
-            else if (!sv1.IsArray && !sv2.IsArray)
-            {
-                if (sv1.IsDouble && sv2.IsDouble)
-                {
-                    double value1 = sv1.RawDoubleValue;
-                    double value2 = sv2.RawDoubleValue;
-                    if (!value1.Equals(value2))
-                        return false;
-                }
-
-                return sv1.Equals(sv2);
-            }
-            else return false;
-        }
+       
         //CountFalse
         internal static int CountFalse(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
@@ -1405,7 +1350,7 @@ namespace ProtoCore.Lang
             {
                 // Type mismatch.
                 runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArguments);
-                return false;
+                return true;
             }
 
             var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
@@ -1709,7 +1654,7 @@ namespace ProtoCore.Lang
                 return false;
             }
 
-            if (EqualsInValue(sv1, sv2, runtime))
+            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core))
             {
                 return true;
             }
@@ -1745,7 +1690,7 @@ namespace ProtoCore.Lang
                 return false;
             }
             bool contains = false;
-            if (EqualsInValue(sv1, sv2, runtime)) 
+            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core)) 
                 return true;
 
             var he = runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata];
@@ -1768,7 +1713,7 @@ namespace ProtoCore.Lang
                 {
                     if (op.IsArray)
                     {
-                        contains = EqualsInValue(op, sv2, runtime);
+                        contains = StackUtils.CompareStackValues(op, sv2, runtime.runtime.Core);
                         if (!contains)
                         {
                             contains = ContainsArray(op, sv2, runtime);
@@ -1791,7 +1736,7 @@ namespace ProtoCore.Lang
             }
             var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
             int sv1Length = svArray.Count();
-            if ((sv1Length == 1) && (EqualsInValue(sv1, sv2, runtime))) return 0;
+            if ((sv1Length == 1) && StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core)) return 0;
             int index = 0; //index for sv1
             foreach (StackValue op in svArray)
             {
@@ -1811,11 +1756,12 @@ namespace ProtoCore.Lang
             }
             var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
             int sv1Length = svArray.Count();
-            if ((sv1Length == 1) && (EqualsInValue(sv1, sv2, runtime))) return 0;
+            if ((sv1Length == 1) && StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core)) return 0;
             int index = 0; //index for sv2
             foreach (StackValue op in svArray)
             {
-                if (EqualsInValue(sv2, op, runtime)) return index;
+                if (StackUtils.CompareStackValues(sv2, op, runtime.runtime.Core)) 
+                    return index;
                 index++;
             }
             return notExist;
