@@ -500,13 +500,9 @@ namespace Dynamo.UI.Controls
         {
             var mainDynamoWindow = WPF.FindUpVisualTree<DynamoView>(this);
 
-            /*If window is no longer on top, then we can hide tooltip.
-             It's used, when we switch to another program.
-             We can not use CloseLibraryToolTipPopup, 
-             because it waits for 1 sec to close itself,
-             and we need to close tooltip immediately, 
-             at the same moment when we switch to another program.*/
-
+            // When Dynamo window goes behind another app, the tool-tip should be hidden right 
+            // away. We cannot use CloseLibraryToolTipPopup because it only hides the tool-tip 
+            // window after a pause.
             mainDynamoWindow.Deactivated += (Sender, args) =>
             {
                 this.DataContext = null;
