@@ -30,7 +30,7 @@ namespace Dynamo.DSEngine
             var customizationPath = "";
             var resourceAssemblyPath = "";
             if (ResolveForAssembly(assemblyPath, ref customizationPath) &&
-                ResolveResourceAssembly(assemblyPath, ref resourceAssemblyPath))
+                ResolveResourceAssembly(assemblyPath, out resourceAssemblyPath))
             {
                 var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath),
                     XDocument.Load(customizationPath));
@@ -40,7 +40,7 @@ namespace Dynamo.DSEngine
             }
 
             // For those, which don't have LibraryCustomization e.g. CoreNodesUI.dll
-            if (ResolveResourceAssembly(assemblyPath, ref resourceAssemblyPath))
+            if (ResolveResourceAssembly(assemblyPath, out resourceAssemblyPath))
             {
                 var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath));
                 triedPaths.Add(assemblyPath, true);
@@ -73,13 +73,13 @@ namespace Dynamo.DSEngine
 
         public static bool ResolveResourceAssembly(
             string assemblyLocation,
-            ref string resourceAssemblyPath)
+            out string resourceAssemblyPath)
         {
             var qualifiedPath = Path.GetFullPath(assemblyLocation);
             var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
             var dir = Path.GetDirectoryName(qualifiedPath);
 
-            fn = fn + ".resources.dll";
+            fn = fn + Configurations.ResourcesDLL;
 
             resourceAssemblyPath = Path.Combine(dir, fn);
 
