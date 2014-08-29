@@ -191,6 +191,35 @@ namespace ProtoCore
             }
 
             /// <summary>
+            /// Return string representation of data
+            /// </summary>
+            public string StringData
+            {
+                get
+                {
+                    if (object.ReferenceEquals(Data, null))
+                    {
+                        return "null";
+                    }
+                    else
+                    {
+                        if (this.IsNull)
+                        {
+                            return "null";
+                        }
+                        else if (Data is bool)
+                        {
+                            return Data.ToString().ToLower();
+                        }
+                        else
+                        {
+                            return Data.ToString();
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
             /// Gets the CLR object for all the value type or FFI objects, else null
             /// </summary>
             public object Data
