@@ -62,12 +62,12 @@ namespace Dynamo.Applications
 
             if (value is IEnumerable)
             {
-                var list = (value as IEnumerable).Cast<object>().ToList();
+                var list = (value as IEnumerable).Cast<dynamic>().ToList();
 
                 node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
-                    node.Children.Add(ProcessThing(e.element, tag + ":" + e.idx, showRawData));
+                    node.Children.Add(Process(e.element, tag + ":" + e.idx, showRawData));
                 }
             }
             else
