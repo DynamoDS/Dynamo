@@ -13,6 +13,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
+using Dynamo.Bloodstone;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -22,6 +23,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using System.Windows.Media;
 
 namespace Dynamo.Models
 {
@@ -31,6 +33,8 @@ namespace Dynamo.Models
 
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
+        private Color nodeColor = Colors.Transparent;
+        private RenderMode renderStyle = RenderMode.Shaded;
         private bool displayLabels;
         private bool interactionEnabled = true;
         private bool isUpstreamVisible;
@@ -253,6 +257,26 @@ namespace Dynamo.Models
                     RequiresRecalc = true;
                     RaisePropertyChanged("ArgumentLacing");
                 }
+            }
+        }
+
+        public RenderMode RenderStyle
+        {
+            get { return this.renderStyle; }
+            set
+            {
+                this.renderStyle = value;
+                RaisePropertyChanged("RenderStyle");
+            }
+        }
+
+        public Color NodeColor
+        {
+            get { return this.nodeColor; }
+            set
+            {
+                this.nodeColor = value;
+                RaisePropertyChanged("NodeColor");
             }
         }
 
@@ -633,6 +657,10 @@ namespace Dynamo.Models
         /// <param name="context">The context of this save operation.</param>
         public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
+            XmlElementHelper helper = new XmlElementHelper(dynEl);
+            helper.SetAttribute("nodeColor", NodeColor);
+            helper.SetAttribute("renderStyle", RenderStyle.ToString());
+
             SaveNode(xmlDoc, dynEl, context);
             
             var portsWithDefaultValues = 
@@ -658,6 +686,10 @@ namespace Dynamo.Models
 
         public void Load(XmlNode elNode)
         {
+            var helper = new XmlElementHelper(elNode as XmlElement);
+            nodeColor = helper.ReadColor("nodeColor", Colors.Transparent);
+            renderStyle = helper.ReadEnum("renderStyle", Dynamo.Bloodstone.RenderMode.Shaded);
+
             LoadNode(elNode);
 
             var portInfoProcessed = new HashSet<int>();
@@ -1386,6 +1418,8 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
+            helper.SetAttribute("nodeColor", NodeColor);
+            helper.SetAttribute("renderStyle", RenderStyle.ToString());
 
             if (context == SaveContext.Undo)
             {
@@ -1418,6 +1452,8 @@ namespace Dynamo.Models
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+            nodeColor = helper.ReadColor("nodeColor", Colors.Transparent);
+            renderStyle = helper.ReadEnum("renderStyle", Dynamo.Bloodstone.RenderMode.Shaded);
 
             if (context == SaveContext.Undo)
             {
@@ -1527,6 +1563,11 @@ namespace Dynamo.Models
                 count++;
             }
 
+#if BLOODSTONE
+            var p = new RenderPackage(true);
+            RenderPackages.Add(p);
+#endif
+
             count = 0;
             List<IRenderPackage> newRenderPackages = new List<IRenderPackage>();
             foreach (var varName in drawableIds)
@@ -1535,6 +1576,12 @@ namespace Dynamo.Models
                 if (graphItems == null)
                     continue;
 
+#if BLOODSTONE
+                foreach (var gi in graphItems)
+                    MergeGraphicItemIntoPackage(gi, p, maxTesselationDivisions);
+
+                newRenderPackages.Add(p);
+#else
                 foreach (var gItem in graphItems)
                 {
                     var package = new RenderPackage(IsSelected, DisplayLabels);
@@ -1549,6 +1596,7 @@ namespace Dynamo.Models
                     newRenderPackages.Add(package);
                     count++;
                 }
+#endif
             }
 
             RenderPackages = newRenderPackages;
@@ -1582,6 +1630,18 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine("PushGraphicItemIntoPackage: " + e);
+            }
+        }
+
+        private void MergeGraphicItemIntoPackage(IGraphicItem gi,
+            IRenderPackage p, int maxTesselationDivisions)
+        {
+            try
+            {
+                gi.Tessellate(p, -1.0, maxTesselationDivisions);
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -1679,7 +1739,7 @@ namespace Dynamo.Models
         {
             var size = -1.0;
 
-            var entity = obj as Geometry;
+            var entity = obj as Autodesk.DesignScript.Geometry.Geometry;
             if (entity != null)
             {
                 size = entity.BoundingBox.MinPoint.DistanceTo(entity.BoundingBox.MaxPoint);

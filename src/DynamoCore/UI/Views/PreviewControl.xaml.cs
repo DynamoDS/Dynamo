@@ -253,9 +253,16 @@ namespace Dynamo.UI.Controls
                     // when it is multi-dimensional array)?
                     cachedSmallContent = "Array";
                 }
-                else 
+                else if (mirrorData.IsNull)
                 {
-                    cachedSmallContent = mirrorData.StringData;
+                    cachedSmallContent = "null";
+                }
+                else
+                {
+                    var stringData = mirrorData.Data.ToString();
+                    if (mirrorData.Data is bool)
+                        stringData = stringData.ToLower();
+                    cachedSmallContent = stringData;
                 }
             }
 

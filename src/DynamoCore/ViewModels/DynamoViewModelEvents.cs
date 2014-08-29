@@ -10,6 +10,15 @@ namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
+#if BLOODSTONE
+        public event UpdateBloodstoneVisualHandler RequestUpdateBloodstoneVisual;
+        public void OnUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
+        {
+            if (RequestUpdateBloodstoneVisual != null)
+                RequestUpdateBloodstoneVisual(sender, e);
+        }
+#endif
+
         public event EventHandler RequestManagePackagesDialog;
         public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
         {

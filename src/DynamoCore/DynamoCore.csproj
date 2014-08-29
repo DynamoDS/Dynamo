@@ -65,7 +65,7 @@ limitations under the License.
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
-    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
+    <DefineConstants>$(DefineConstants);USE_DSENGINE;BLOODSTONE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSharpAnalytics.WinForms, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -494,6 +494,14 @@ limitations under the License.
       <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
       <Name>GraphLayout</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\Bloodstone.Cpp\Bloodstone.vcxproj">
+      <Project>{c1e084ab-af20-4d56-b9e3-e606c4df6ecf}</Project>
+      <Name>Bloodstone.Cpp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\Bloodstone.Net\Bloodstone.Net.csproj">
+      <Project>{54c12d23-b989-45f4-9681-3a8716f30050}</Project>
+      <Name>Bloodstone.Net</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>

@@ -16,6 +16,9 @@ using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Services;
 using DynamoUnits;
+
+using Autodesk.DesignScript.Interfaces;
+using DynamoUtilities;
 using Dynamo.UpdateManager;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -462,6 +465,14 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
 
             SubscribeDispatcherHandlers();
+
+#if BLOODSTONE
+            this.VisualizationManager.RenderComplete += (sender, args) =>
+            {
+                var action = new Action(() => GetBranchVisualization(null));
+                UIDispatcher.BeginInvoke(action);
+            };
+#endif
         }
 
         #region Event handler destroy/create
@@ -2016,8 +2027,30 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
+#if BLOODSTONE
+            var packages = new Dictionary<Guid, IRenderPackage>();
+            foreach (var node in this.Model.Nodes)
+            {
+                if (node.HasRenderPackages == false)
+                    continue;
+
+                lock (node.RenderPackagesMutex)
+                {
+                    var p = node.RenderPackages[0] as Dynamo.DSEngine.RenderPackage;
+                    if (p.IsNotEmpty())
+                        packages.Add(node.GUID, p);
+                }
+            }
+
+            if (packages.Any())
+            {
+                var args = new UpdateBloodstoneVisualEventArgs(packages);
+                OnUpdateBloodstoneVisual(this, args);
+            }
+#else
             var taskId = (long) parameters;
             this.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId,null));
+#endif
         }
 
         public bool CanGetBranchVisualization(object parameter)

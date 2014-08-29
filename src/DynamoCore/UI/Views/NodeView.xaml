@@ -70,6 +70,52 @@
                               CommandParameter="CrossProduct"
                               Header="Cross Product" />
                 </MenuItem>
+                <MenuItem Header="Render Style">
+                    <MenuItem Header="Phong Shading"
+                              IsCheckable="True"
+                              Command="{Binding Path=SetNodeRenderStyleCommand}"
+                              CommandParameter="Shaded">
+                        <MenuItem.IsChecked>
+                            <Binding Path="RenderStyle"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource RenderStyleToCheckedConverter}"
+                                     ConverterParameter="Shaded" />
+                        </MenuItem.IsChecked>
+                    </MenuItem>
+                    <MenuItem Header="Primitive Color"
+                              IsCheckable="True"
+                              Command="{Binding Path=SetNodeRenderStyleCommand}"
+                              CommandParameter="Primitive">
+                        <MenuItem.IsChecked>
+                            <Binding Path="RenderStyle"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource RenderStyleToCheckedConverter}"
+                                     ConverterParameter="Primitive" />
+                        </MenuItem.IsChecked>
+                    </MenuItem>
+                </MenuItem>
+                <ListBox Style="{StaticResource ColorSelectorListBox}"
+                         ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
+                         SelectionChanged="OnNodeColorSelectionChanged">
+                    <ListBox.Items>
+                        <Rectangle Fill="#d4b6db" />
+                        <Rectangle Fill="#ffb8d8" />
+                        <Rectangle Fill="#ffc999" />
+                        <Rectangle Fill="#e8f7ad" />
+                        <Rectangle Fill="#b9f9e1" />
+                        <Rectangle Fill="#a4e1ff" />
+                        <Rectangle Fill="#b5b5b5" />
+                        <Rectangle Fill="#FFFFFF" />
+                        <Rectangle Fill="#bb87c6" />
+                        <Rectangle Fill="#ff7bac" />
+                        <Rectangle Fill="#ffaa45" />
+                        <Rectangle Fill="#c1d676" />
+                        <Rectangle Fill="#71c6a8" />
+                        <Rectangle Fill="#48b9ff" />
+                        <Rectangle Fill="#848484" />
+                        <Rectangle Fill="#d8d8d8" />
+                    </ListBox.Items>
+                </ListBox>
                 <MenuItem Name="isVisible_cm"
                           Header="Preview"
                           IsChecked="{Binding Path=IsVisible}"

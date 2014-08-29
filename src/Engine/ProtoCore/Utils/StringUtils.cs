@@ -56,11 +56,11 @@ namespace ProtoCore.Utils
             return returnSV;
         }
 
-        public static StackValue ConcatString(StackValue op1, StackValue op2, ProtoCore.Core core)
+        public static StackValue ConcatString(StackValue op1, StackValue op2, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            var v1 = op1.IsString ? ArrayUtils.GetValues(op1, core) : new StackValue[] { op1 };
-            var v2 = op2.IsString ? ArrayUtils.GetValues(op2, core) : new StackValue[] { op2 };
-            StackValue tmp = core.Rmem.BuildArray(v1.Concat(v2).ToArray());
+            StackValue[] v1 = op1.IsString ? rmem.GetArrayElements(op1) : new StackValue[] { op1 };
+            StackValue[] v2 = op2.IsString ? rmem.GetArrayElements(op2) : new StackValue[] { op2 };
+            StackValue tmp = rmem.BuildArray(v1.Concat(v2).ToArray());
             return StackValue.BuildString(tmp.opdata);
         }
     }

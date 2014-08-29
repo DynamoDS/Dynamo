@@ -194,6 +194,33 @@ namespace Dynamo.Controls
         }
     }
 
+    public class RenderStyleToCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var renderStyle = ((Dynamo.Bloodstone.RenderMode)value);
+            string param = parameter as string;
+
+            switch (renderStyle)
+            {
+                case Dynamo.Bloodstone.RenderMode.Shaded:
+                    return param.Equals("Shaded");
+                    break;
+                case Dynamo.Bloodstone.RenderMode.Primitive:
+                    return param.Equals("Primitive");
+                    break;
+            }
+
+            var message = "RenderStyleToCheckedConverter first argument is invalid";
+            throw new ArgumentException(message);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

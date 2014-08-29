@@ -9,6 +9,7 @@ namespace Dynamo.DSEngine
     {
         private IntPtr nativeRenderPackage;
 
+        private bool disableClearData = false;
         private List<double> lineStripVertices = new List<double>();
         private List<byte> lineStripVertexColors = new List<byte>();
         private List<int> lineStripVertexCounts = new List<int>();
@@ -83,6 +84,12 @@ namespace Dynamo.DSEngine
             ItemsCount = 0;
         }
 
+        public RenderPackage(bool disableClearData)
+            : this()
+        {
+            this.disableClearData = disableClearData;
+        }
+
         public RenderPackage(bool selected, bool displayLabels)
         {
             //nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
@@ -94,6 +101,9 @@ namespace Dynamo.DSEngine
 
         public void Clear()
         {
+            if (disableClearData)
+                return;
+
             lineStripVertices.Clear();
             lineStripVertexColors.Clear();
             lineStripVertexCounts.Clear();
