@@ -8,12 +8,6 @@ using Dynamo.PackageManager;
 
 namespace Dynamo.ViewModels
 {
-#if BLOODSTONE
-
-    public delegate void UpdateBloodstoneVisualHandler(object sender, UpdateBloodstoneVisualEventArgs e);
-
-#endif
-
     public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
 
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);

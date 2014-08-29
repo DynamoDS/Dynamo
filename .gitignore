@@ -65,5 +65,3 @@ Dynamo.sln.DotSettings
 extern/DynamoAsm/
 extern/ASM/
 
-*.ipch
-*.aps

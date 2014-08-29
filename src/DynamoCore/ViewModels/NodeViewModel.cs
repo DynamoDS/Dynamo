@@ -6,7 +6,6 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
-using Dynamo.Bloodstone;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -68,11 +67,6 @@ namespace Dynamo.ViewModels
                 nodeLogic.ArgumentLacing = value;
                 RaisePropertyChanged("ArgumentLacing");
             }
-        }
-
-        public RenderMode RenderStyle
-        {
-            get { return nodeLogic.RenderStyle; }
         }
 
         public NodeModel NodeLogic
@@ -495,10 +489,6 @@ namespace Dynamo.ViewModels
                 case "Position":
                     UpdateErrorBubblePosition();
                     break;
-                case "RenderStyle":
-                case "NodeColor":
-                    RaisePropertyChanged(e.PropertyName);
-                    break;
             }
         }
 
@@ -594,27 +584,6 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("ArgumentLacing");
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        private void SetNodeRenderStyle(object param)
-        {
-            RenderMode renderStyle = RenderMode.Shaded;
-            switch (param as string)
-            {
-                case "Shaded":
-                    renderStyle = RenderMode.Shaded;
-                    break;
-                case "Primitive":
-                    renderStyle = RenderMode.Primitive;
-                    break;
-            }
-
-            nodeLogic.RenderStyle = renderStyle;
-        }
-
-        private bool CanSetNodeRenderStyle(object param)
-        {
-            return true;
         }
 
         private bool CanSetLacingType(object param)
