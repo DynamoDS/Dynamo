@@ -150,6 +150,9 @@ namespace Dynamo.DSEngine
 
         internal BitmapImage LoadIconInternal(string iconKey)
         {
+            //If there is no icons, there is no need to go further.
+            if (cachedIcons == null) return null;
+
             if (cachedIcons.ContainsKey(iconKey))
                 return cachedIcons[iconKey];
 
