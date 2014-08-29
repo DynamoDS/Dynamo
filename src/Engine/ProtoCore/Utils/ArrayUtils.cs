@@ -346,19 +346,9 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return core.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
-            var values = ArrayUtils.GetValues(sv, core); 
-            foreach (var item in values)
-            {
-                if (item.IsArray && ContainsDoubleElement(item, core))
-                    return true;
-
-                if (core.TypeSystem.GetType(item) == (int)PrimitiveType.kTypeDouble)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return ArrayUtils.GetValues(sv, core).Any(
+                        v => (v.IsArray && ContainsDoubleElement(v, core)) ||
+                             (core.TypeSystem.GetType(v) == (int)PrimitiveType.kTypeDouble));
         }
 
         /// <summary>
@@ -1025,26 +1015,13 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static IEnumerable<StackValue> GetValues(StackValue array, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
             if (!array.IsArray && !array.IsString)
             {
-                yield break;
+                return Enumerable.Empty<StackValue>();
             }
 
             HeapElement he = GetHeapElement(array, core);
-            var values = he.Stack.Take(he.VisibleSize);
-            foreach (var item in values)
-            {
-                yield return item; 
-            }
-
-            if (he.Dict != null)
-            {
-                foreach (var item in he.Dict.Values)
-                {
-                    yield return item;
-                }
-            }
+            return (he.Dict == null) ? he.VisibleItems : he.VisibleItems.Concat(he.Dict.Values);
         }
 
         private static StackValue[] GetFlattenValue(StackValue array, Core core)

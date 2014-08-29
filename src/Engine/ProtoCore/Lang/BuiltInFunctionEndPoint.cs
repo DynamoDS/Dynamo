@@ -1199,13 +1199,9 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray || !sv2.IsArray)
                 return DSASM.StackValue.Null;
 
-            List<StackValue> svList = new List<StackValue>();
             var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
             var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
-            svList.AddRange(svArray1);
-            svList.AddRange(svArray2);
-
-            return runtime.runtime.rmem.BuildArray(svList.ToArray());
+            return runtime.runtime.rmem.BuildArray(svArray1.Concat(svArray2).ToArray());
         }
 
         private static void GetFlattenedArrayElements(StackValue sv, ProtoCore.DSASM.Interpreter runtime, ref List<StackValue> list)
