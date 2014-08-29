@@ -100,6 +100,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestScopedNodeModel02()
         {
             //                n5
@@ -135,6 +136,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestScopedNodeModel03()
         {
             //         n5       
