@@ -86,6 +86,24 @@ namespace Dynamo.Nodes
             }
         }
 
+        private void EvaluationCompleted(object o)
+        {
+            CachedValue = o;
+            DispatchOnUIThread(
+                delegate
+                {
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
+                    Root.Children.Add(GetWatchNode());
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
+                }
+            );
+        }
+
         public override void Destroy()
         {
             base.Destroy();
@@ -121,6 +139,12 @@ namespace Dynamo.Nodes
             return outputIndex == 0
                 ? AstIdentifierForPreview
                 : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
+        protected override void OnBuilt()
+        {
+            base.OnBuilt();
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(

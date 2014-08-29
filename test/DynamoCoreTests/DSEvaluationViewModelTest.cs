@@ -252,7 +252,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Regress618()
         {
             // a=0..10;
@@ -269,7 +269,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Regress586()
         {
             RunModel(@"core\dsevaluation\regress586.dyn");
@@ -705,7 +705,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void UsingFunctionObject01()
         {
             RunModel(@"core\dsevaluation\FunctionObject.dyn");
@@ -832,7 +832,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Defect_MAGN_3264()
         {
             // Function object to property method and used in apply 
@@ -958,6 +958,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("Failure")]
         public void TestNestedIFNORecursion_4058()
         {
             var model = ViewModel.Model;
