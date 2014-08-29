@@ -59,35 +59,53 @@ namespace Dynamo.DSEngine
 
         public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)
         {
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
+            try
             {
+                if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
+                {
+                    return false;
+                }
+
+                var qualifiedPath = Path.GetFullPath(assemblyLocation);
+                var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+                var dir = Path.GetDirectoryName(qualifiedPath);
+
+                fn = fn + "_DynamoCustomization.xml";
+
+                customizationPath = Path.Combine(dir, fn);
+
+                return File.Exists(customizationPath);
+            }
+            catch
+            {
+                // Just to be sure, that nothing will be crashed.
+                customizationPath = "";
                 return false;
             }
-
-            var qualifiedPath = Path.GetFullPath(assemblyLocation);
-            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
-            var dir = Path.GetDirectoryName(qualifiedPath);
-
-            fn = fn + "_DynamoCustomization.xml";
-
-            customizationPath = Path.Combine(dir, fn);
-
-            return File.Exists(customizationPath);
         }
 
         public static bool ResolveResourceAssembly(
             string assemblyLocation,
             out string resourceAssemblyPath)
         {
-            var qualifiedPath = Path.GetFullPath(assemblyLocation);
-            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
-            var dir = Path.GetDirectoryName(qualifiedPath);
+            try
+            {
+                var qualifiedPath = Path.GetFullPath(assemblyLocation);
+                var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+                var dir = Path.GetDirectoryName(qualifiedPath);
 
-            fn = fn + Configurations.ResourcesDLL;
+                fn = fn + Configurations.ResourcesDLL;
 
-            resourceAssemblyPath = Path.Combine(dir, fn);
+                resourceAssemblyPath = Path.Combine(dir, fn);
 
-            return File.Exists(resourceAssemblyPath);
+                return File.Exists(resourceAssemblyPath);
+            }
+            catch
+            {
+                // Just to be sure, that nothing will be crashed.
+                resourceAssemblyPath = "";
+                return false;
+            }
         }
     }
 
