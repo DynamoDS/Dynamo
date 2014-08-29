@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 
 using Dynamo.Interfaces;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
 using ProtoCore.Mirror;
@@ -35,8 +34,8 @@ namespace Dynamo.Applications
 
         public RevitWatchHandler(IVisualizationManager vizManager, IPreferences prefs)
         {
-            this.preferences = prefs;
-            this.visualizationManager = vizManager;
+            preferences = prefs;
+            visualizationManager = vizManager;
         }
 
         internal WatchViewModel ProcessThing(Element element, string tag, bool showRawData = true)
@@ -83,7 +82,7 @@ namespace Dynamo.Applications
         {
             if (showRawData)
                 return new WatchViewModel(visualizationManager, 
-                    unit.Value.ToString(this.preferences.NumberFormat, CultureInfo.InvariantCulture), 
+                    unit.Value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), 
                     tag);
 
             return new WatchViewModel(visualizationManager, unit.ToString(), tag);
@@ -91,7 +90,7 @@ namespace Dynamo.Applications
 
         internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchViewModel(visualizationManager, value.ToString(this.preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(visualizationManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)
@@ -110,7 +109,7 @@ namespace Dynamo.Applications
                     var node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
                     foreach (var e in list.Select((element, idx) => new { element, idx }))
                     {
-                        node.Children.Add(Process(e.element, tag + ":" + e.idx, showRawData));
+                        node.Children.Add(ProcessThing(e.element, tag + ":" + e.idx, showRawData));
                     }
 
                     return node;
@@ -129,11 +128,11 @@ namespace Dynamo.Applications
                 {
                     if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
                         return ProcessThing(classMirror.ClassName, tag); //just show the class name.
-                    return ProcessThing(data.Data as dynamic, tag, showRawData);
+                    return Process(data.Data, tag, showRawData);
                 }
 
                 //Finally for all else get the string representation of data as watch content.
-                return ProcessThing(data.Data as dynamic, tag, showRawData);
+                return Process(data.Data, tag, showRawData);
             }
             catch (Exception)
             {
@@ -149,10 +148,9 @@ namespace Dynamo.Applications
 
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
-            if (Object.ReferenceEquals(value, null))
-                return new WatchViewModel(visualizationManager, "null", tag);
-
-            return ProcessThing(value, tag, showRawData);
+            return Object.ReferenceEquals(value, null)
+                ? new WatchViewModel(visualizationManager, "null", tag)
+                : ProcessThing(value, tag, showRawData);
         }
     }
 }
