@@ -111,7 +111,7 @@ namespace Dynamo.Search
         {
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
-            MaxNumSearchResults = 35;
+            MaxNumSearchResults = 15;
 
             // pre-populate the search categories
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -179,9 +179,9 @@ namespace Dynamo.Search
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal List<SearchElementBase> Search(string search)
+        internal IEnumerable<SearchElementBase> Search(string search)
         {
-            if (string.IsNullOrEmpty(search) || search == "Search...")
+            if (string.IsNullOrEmpty(search))
             {
                 return _searchElements;
             }
@@ -202,8 +202,9 @@ namespace Dynamo.Search
         /// <param name="item">The item to add as a child of that category</param>
         internal void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
-
-            var cat = this.AddCategory(category);
+            // When create category, give not only category name, 
+            //but also assembly, where icon for category could be found.
+            var cat = this.AddCategory(category, (item as NodeSearchElement).Assembly);
             cat.AddChild(item);
 
             item.FullCategoryName = category;
@@ -358,7 +359,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName)
+        internal BrowserItem AddCategory(string categoryName, string resourceAssembly = "")
         {
             if (string.IsNullOrEmpty(categoryName))
             {
@@ -397,7 +398,7 @@ namespace Dynamo.Search
 
             for (var i = 1; i < splitCat.Count; i++)
             {
-                currentCat = TryAddChildCategory(currentCat, splitCat[i]);
+                currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
             }
 
             return currentCat;
@@ -409,8 +410,10 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="parent">The parent category </param>
         /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
+        /// <param name="assembly">Assembly, where icon for class button can be found</param>
         /// <returns>The newly created category</returns>
-        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
+        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName,
+                                                 string resourceAssembly = "")
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
 
@@ -431,7 +434,7 @@ namespace Dynamo.Search
                 return GetCategoryByName(newCategoryName);
             }
 
-            var tempCat = new BrowserInternalElement(childCategoryName, parent);
+            var tempCat = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
             parent.AddChild(tempCat);
 
             return tempCat;
@@ -614,7 +617,8 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName);
+            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName,
+                                                  t.Assembly.GetName().Name + ".dll");
             searchEle.Executed += this.OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);

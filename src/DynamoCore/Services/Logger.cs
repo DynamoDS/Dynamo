@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
 
 using CSharpAnalytics;
 using CSharpAnalytics.Protocols.Measurement;
 
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 using Microsoft.Win32;
 using net.riversofdata.dhlogger;
@@ -45,9 +40,8 @@ namespace Dynamo.Services
         //Service start
         public static void Start(DynamoModel dynamoModel)
         {
-
             string appVersion = Process.GetCurrentProcess().ProcessName + "-"
-                                + dynamoModel.UpdateManager.ProductVersion.ToString();
+                                + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
 
 
             CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,

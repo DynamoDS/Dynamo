@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using Dynamo.DSEngine;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
@@ -62,6 +65,35 @@ namespace Dynamo.Nodes.Search
         public BrowserItem Parent { get; set; }
         public BrowserItem OldParent { get; set; }
 
+        protected enum ResourceType
+        {
+            SmallIcon, LargeIcon
+        }
+
+        ///<summary>
+        /// Small icon for class and method buttons.
+        ///</summary>
+        public BitmapImage SmallIcon
+        {
+            get
+            {
+                return GetIcon(this.GetResourceName(ResourceType.SmallIcon)
+                              + Dynamo.UI.Configurations.SmallIconPostfix);
+            }
+        }
+
+        ///<summary>
+        /// Large icon for tooltips.
+        ///</summary>
+        public BitmapImage LargeIcon
+        {
+            get
+            {
+                return GetIcon(this.GetResourceName(ResourceType.LargeIcon)
+                              + Dynamo.UI.Configurations.LargeIconPostfix);
+            }
+        }
+
         public void ReturnToOldParent()
         {
             if (this.OldParent == null) return;
@@ -94,6 +126,18 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        /// <summary>
+        /// Assembly, from which we can get icon for class button.
+        /// </summary>
+        private string assembly;
+        public string Assembly
+        {
+            get { return assembly; }
+
+            // Note: we need setter, when we set resource assembly in NodeSearchElement.
+            set { assembly = value; }
+        }
+
         public BrowserInternalElement()
         {
             this._name = "Default";
@@ -102,15 +146,33 @@ namespace Dynamo.Nodes.Search
             this.Focusable = true;
         }
 
-        public BrowserInternalElement(string name, BrowserItem parent)
+        public BrowserInternalElement(string name, BrowserItem parent, string _assembly = "")
         {
             this._name = name;
+            this.assembly = _assembly;
             this.Parent = parent;
             this.OldParent = null;
             this.Focusable = true;
         }
 
         public string FullCategoryName { get; set; }
+
+        protected virtual string GetResourceName(ResourceType resourceType)
+        {
+            if (resourceType == ResourceType.SmallIcon)
+                return this.Name;
+            else
+                return string.Empty;
+        }
+
+        private BitmapImage GetIcon(string fullNameOfIcon)
+        {
+            if (string.IsNullOrEmpty(this.Assembly))
+                return null;
+
+            var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
+            return (cust != null) ? cust.LoadIconInternal(fullNameOfIcon) : null;
+        }
     }
 
     public class ClassInformation : BrowserItem

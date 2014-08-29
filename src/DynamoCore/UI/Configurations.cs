@@ -189,6 +189,14 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Icon Resources Strings
+
+        public const string SmallIconPostfix = ".Small";
+        public const string LargeIconPostfix = ".Large";
+        public const string ResourcesDLL = ".resources.dll";
+
+        #endregion
+
 #if DEBUG
         public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";

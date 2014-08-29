@@ -2658,7 +2658,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		if (la.kind == 2) {
 			Get();
 			Int64 value;
-			if (Int64.TryParse(t.val, out value))
+			if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.AssociativeAST.IntNode(value * sign);
 			}
@@ -2680,7 +2680,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (la.kind == 3) {
 			Get();
 			double value;
-			if (Double.TryParse(t.val, out value))
+			if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.AssociativeAST.DoubleNode(value * sign);
 			}
@@ -4103,7 +4103,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		if (la.kind == 2) {
 			Get();
 			Int64 value;
-			if (Int64.TryParse(t.val, out value))
+            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.ImperativeAST.IntNode(value * sign);
 			}
@@ -4124,7 +4124,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (la.kind == 3) {
 			Get();
 			double value;
-			if (Double.TryParse(t.val, out value))
+            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.ImperativeAST.DoubleNode(value * sign);
 			}

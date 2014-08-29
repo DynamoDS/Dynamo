@@ -1549,8 +1549,7 @@ namespace Dynamo.Controls
 
             if (!(parameter is DynamoViewModel)) return "Could not get version";
 
-            var dvm = parameter as DynamoViewModel;
-            var latest = dvm.Model.UpdateManager.AvailableVersion;
+            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
             return latest;
         }
 
@@ -1600,7 +1599,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string text = value.ToString();
-            if (text.Length > 40)
+            if (text.Length > 35)
                 return text.Insert(text.LastIndexOf(".")+1, "\n");
 
             return text;
