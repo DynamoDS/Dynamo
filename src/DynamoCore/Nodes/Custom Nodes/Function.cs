@@ -105,6 +105,46 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
+        internal void LoadNode(Guid funcID, int inputs, int outputs)
+        {
+            Controller.LoadNode(funcID, this.NickName);
+            
+            PortData data;
+            if (outputs > -1)
+                for (int i = 0; i < outputs; i++)
+                {
+                    data = new PortData("", "Output #" + (i + 1));
+                    if (OutPortData.Count > i)
+                        OutPortData[i] = data;
+                    else
+                        OutPortData.Add(data);
+                }
+            
+            if (inputs > -1)
+                for (int i = 0; i < inputs; i++)
+                {
+                    data = new PortData("", "Input #" + (i + 1));
+                    if (InPortData.Count > i)
+                        InPortData[i] = data;
+                    else
+                        InPortData.Add(data);
+                }
+
+            if (!Controller.IsInSyncWithNode(this))
+            {
+                Controller.SyncNodeWithDefinition(this);
+            }
+            else
+            {
+                RegisterAllPorts();
+            }
+
+            //argument lacing on functions should be set to disabled
+            //by default in the constructor, but for any workflow saved
+            //before this was the case, we need to ensure it here.
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         protected override void LoadNode(XmlNode nodeElement)
         {
             Controller.LoadNode(nodeElement);

@@ -290,12 +290,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The delegate used for sending the result of executing command to subscriber. 
-        /// </summary>
-        /// <param name="message">Result message</param>
-        public delegate void ShowMessage(string message);
-
-        /// <summary>
         /// This class is base for those RecordableCommands that should have 
         /// Guid NodeId that causes the problems during deserialization
         /// </summary>
@@ -515,13 +509,6 @@ namespace Dynamo.ViewModels
                 return new RunCancelCommand(showErrors, cancelRun);
             }
 
-            internal static RecordableCommand DeserializeCoreFromDynamic(dynamic jsonObj)
-            {
-                bool ShowErrors = Convert.ToBoolean(jsonObj["ShowErrors"]);
-                bool CancelRun = Convert.ToBoolean(jsonObj["CancelRun"]);
-                return new RunCancelCommand(ShowErrors, CancelRun);
-            }
-
             #endregion
 
             #region Public Command Properties
@@ -659,6 +646,71 @@ namespace Dynamo.ViewModels
                 helper.SetAttribute("Y", Y);
                 helper.SetAttribute("DefaultPosition", DefaultPosition);
                 helper.SetAttribute("TransformCoordinates", TransformCoordinates);
+            }
+
+            #endregion
+        }
+
+        [DataContract]
+        public class CreateProxyNodeCommand : CreateNodeCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public CreateProxyNodeCommand(string nodeId, string nodeName,
+                double x, double y,
+                bool defaultPosition, bool transformCoordinates,
+                string nickName, int inputs, int outputs)
+                : base(nodeId, nodeName, x, y, defaultPosition, transformCoordinates)
+            {
+                this.NickName = nickName;
+                this.Inputs = inputs;
+                this.Outputs = outputs;
+            }
+
+            internal static CreateProxyNodeCommand DeserializeCore(XmlElement element)
+            {
+                var baseCommand = CreateNodeCommand.DeserializeCore(element);
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string nickName = helper.ReadString("NickName");
+                int inputs = helper.ReadInteger("Inputs");
+                int outputs = helper.ReadInteger("Outputs");
+
+                return new CreateProxyNodeCommand(baseCommand.NodeIdAsString,
+                    baseCommand.NodeName,
+                    baseCommand.X,
+                    baseCommand.Y,
+                    baseCommand.DefaultPosition,
+                    baseCommand.TransformCoordinates,
+                    nickName,
+                    inputs,
+                    outputs);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string NickName { get; private set; }
+
+            [DataMember]
+            internal int Inputs { get; private set; }
+
+            [DataMember]
+            internal int Outputs { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NickName", NickName);
+                helper.SetAttribute("Inputs", Inputs);
+                helper.SetAttribute("Outputs", Outputs);
             }
 
             #endregion
