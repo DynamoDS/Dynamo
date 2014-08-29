@@ -758,10 +758,27 @@ namespace Dynamo.Controls
                         SamplesMenu.Items.Add(dirItem);
                     }
                 }
+                if (dirPaths.Any())
+                {
+                    var showInFolder = new MenuItem
+                    {
+                        Header = "Show In Folder",
+                        Tag = dirPaths[0]
+                    };
+                    showInFolder.Click += OnShowInFolder;
+                    SamplesMenu.Items.Add(new Separator());
+                    SamplesMenu.Items.Add(showInFolder);
+                }
 
                 if (this.startPage != null)
                     this.startPage.PopulateSampleFileList(sampleFiles);
             }
+        }
+
+        private void OnShowInFolder(object sender, RoutedEventArgs e)
+        {
+            var folderPath = (string)((MenuItem) sender).Tag;
+            Process.Start("explorer.exe", "/select," + folderPath);
         }
 #endif
 
