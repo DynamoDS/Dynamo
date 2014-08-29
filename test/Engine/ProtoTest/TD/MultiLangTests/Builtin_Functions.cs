@@ -1467,7 +1467,7 @@ result =
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T047_Sum_ForLoop()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
@@ -1497,7 +1497,7 @@ result =
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T048_Sum_WhileLoop()
         {
             string code = @"
@@ -1557,7 +1557,7 @@ result = foo(c);
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T050_Sum_Class()
         {
             string code = @"
@@ -1631,7 +1631,7 @@ result = Sum(a)==0&& b==-1.00? b :c;
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T052_Sum_RangeExpression()
         {
             string code = @"
@@ -1675,7 +1675,7 @@ result = Sum(a);//12.0";
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T055_Sum_ModifierStack()
         {
             string code = @"
@@ -1693,7 +1693,7 @@ result = Sum({a1,a2,a3,a});//6";
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T056_Sum_AssociativeImperative()
         {
             string code = @"
@@ -1724,7 +1724,7 @@ b1 = {b,1};
         //datatype
 
         [Test]
-        [Category("Design Issue"), Category("Failing")]
+        [Category("Design Issue"), Category("Failure")]
         public void T057_Average_DataType_01()
         {
             string code = @"
@@ -1804,7 +1804,7 @@ d = Flatten(c);";
         }
 
         [Test]
-        [Category("Design Issue"), Category("Failing")]
+        [Category("Design Issue"), Category("Failure")]
         public void T060_Average_ForLoop()
         {
             string code = @"
