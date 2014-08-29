@@ -2168,7 +2168,7 @@ namespace ProtoCore.DSASM
                                 executingGraphNode.lastGraphNode.reExecuteExpression = false;
                                 //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                                 {
-                                    var firstGraphNode = GetFirstSSAGraphnode(i - 1, graphNode.exprUID);
+                                    var firstGraphNode = GetFirstSSAGraphnode(graphNode.UID, graphNode.exprUID);
                                     firstGraphNode.isDirty = true;
                                 }
                             }
