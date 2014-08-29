@@ -244,25 +244,25 @@ namespace Dynamo.UI.Controls
                 return;
 
             cachedSmallContent = "null";
-            if (mirrorData != null && (mirrorData.IsNull == false))
+            if (mirrorData != null)
             {
-                if (mirrorData.IsCollection == false)
-                {
-                    // The following determines if we do get a CLR object before
-                    // trying to access it. For example, placing just a "+" node 
-                    // without any input will return a "null" here, in which case 
-                    // its display should remain "null".
-                    // 
-                    var clrData = mirrorData.Data;
-                    if (clrData != null)
-                        cachedSmallContent = clrData.ToString();
-                }
-                else
+                if (mirrorData.IsCollection)
                 {
                     // TODO(Ben): Can we display details of the array and 
                     // probably display the first element of the array (even 
                     // when it is multi-dimensional array)?
                     cachedSmallContent = "Array";
+                }
+                else if (mirrorData.IsNull)
+                {
+                    cachedSmallContent = "null";
+                }
+                else
+                {
+                    var stringData = mirrorData.Data.ToString();
+                    if (mirrorData.Data is bool)
+                        stringData = stringData.ToLower();
+                    cachedSmallContent = stringData;
                 }
             }
 
