@@ -875,6 +875,9 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="Resources\Icons\Hue.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Tooltip\code.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
