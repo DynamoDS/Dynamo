@@ -58,10 +58,11 @@ namespace DynamoWebServer.Messages
         }
 
         /// <summary>
-        /// Execute Message on selected ViewModel
+        /// Execute Message on selected ViewModel and session
         /// </summary>
         /// <param name="dynamo">DynamoViewModel</param>
         /// <param name="message">Message</param>
+        /// <param name="sessionId">string</param>
         internal void Execute(DynamoViewModel dynamo, Message message, string sessionId)
         {
             if (message is RunCommandsMessage)
