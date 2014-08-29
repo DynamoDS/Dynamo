@@ -7,7 +7,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using Dynamo.Interfaces;
 using Dynamo.UpdateManager;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
@@ -19,7 +18,6 @@ namespace Dynamo.UI.Views
     {
         bool ignoreClose;
         ILogger logger;
-        private readonly DynamoViewModel dynamoViewModel;
 
         public AboutWindow(ILogger logger, DynamoViewModel dynamoViewModel)
         {
@@ -28,18 +26,14 @@ namespace Dynamo.UI.Views
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
-            this.dynamoViewModel = dynamoViewModel;
 
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
         }
 
         void Dispatcher_ShutdownStarted(object sender, EventArgs e)
         {
-            if (this.dynamoViewModel != null)
-            {
-                var um = this.dynamoViewModel.Model.UpdateManager;
-                um.UpdateDownloaded -= OnUpdatePackageDownloaded;
-            }
+            var um = UpdateManager.UpdateManager.Instance;
+            um.UpdateDownloaded -= OnUpdatePackageDownloaded;
         }
 
         public bool InstallNewUpdate { get; private set; }
@@ -48,10 +42,10 @@ namespace Dynamo.UI.Views
         {
             //Request a check for update version info
             DisplayVersionInformation(null);
-            var um = this.dynamoViewModel.Model.UpdateManager;
+            var um = UpdateManager.UpdateManager.Instance;
             um.UpdateDownloaded += OnUpdatePackageDownloaded;
-            this.dynamoViewModel.Model.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), 
-                this.dynamoViewModel.Model.Logger, um.UpdateDataAvailable));
+            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(
+                new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -106,7 +100,7 @@ namespace Dynamo.UI.Views
 
         private void AboutWindow_OnClosed(object sender, EventArgs e)
         {
-            var um = this.dynamoViewModel.Model.UpdateManager;
+            var um = UpdateManager.UpdateManager.Instance;
             um.UpdateDownloaded -= OnUpdatePackageDownloaded;
         }
     }

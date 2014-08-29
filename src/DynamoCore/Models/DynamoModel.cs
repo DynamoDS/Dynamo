@@ -69,7 +69,7 @@ namespace Dynamo.Models
 
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
-
+        private bool runEnabled = true;
         #endregion
 
         #region Static properties
@@ -102,7 +102,7 @@ namespace Dynamo.Models
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
-        public IUpdateManager UpdateManager { get; private set; }
+        public bool ShutdownRequested { get; internal set; }
 
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
@@ -193,7 +193,15 @@ namespace Dynamo.Models
             get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
-        public bool RunEnabled { get; set; }
+        public bool RunEnabled
+        {
+            get { return runEnabled; }
+            set
+            {
+                runEnabled = value;
+                RaisePropertyChanged("RunEnabled");
+            }
+        }
         public bool RunInDebug { get; set; }
 
         /// <summary>
@@ -235,7 +243,6 @@ namespace Dynamo.Models
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
             public DynamoRunner Runner { get; set; }
         }
 
@@ -278,7 +285,6 @@ namespace Dynamo.Models
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
             DynamoRunner runner = configuration.Runner;
-            IUpdateManager updateManager = configuration.UpdateManager;
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
@@ -297,8 +303,9 @@ namespace Dynamo.Models
             }
 
             InitializePreferences(preferences);
-            InitializeUpdateManager(updateManager);
             InitializeInstrumentationLogger();
+
+            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation)));
 
             SearchModel = new SearchModel(this);
 
@@ -336,12 +343,6 @@ namespace Dynamo.Models
             InstrumentationLogger.Start(this);
         }
 
-        private void InitializeUpdateManager(IUpdateManager updateManager)
-        {
-            UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this.Logger, UpdateManager.UpdateDataAvailable));
-        }
-
         private void InitializeCurrentWorkspace()
         {
             this.AddHomeWorkspace();
@@ -350,7 +351,7 @@ namespace Dynamo.Models
             this.CurrentWorkspace.Y = 0;
         }
 
-        private void InitializePreferences(IPreferences preferences)
+        private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.LengthUnit = preferences.LengthUnit;
             BaseUnit.AreaUnit = preferences.AreaUnit;
@@ -362,11 +363,13 @@ namespace Dynamo.Models
 
         public string Version
         {
-            get { return UpdateManager.ProductVersion.ToString();  }
+            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
         public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
+            ShutdownRequested = true;
+
             CleanWorkbench();
 
             EngineController.Dispose();
@@ -470,8 +473,6 @@ namespace Dynamo.Models
             {
                 NodeMap.Remove(n.GUID);
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         private void AddNodeToMap(NodeModel n)
@@ -487,11 +488,8 @@ namespace Dynamo.Models
             }
             else
             {
-                //NodeMap[n.GUID] = n;
                 throw new Exception("Duplicate node GUID in map!");
             }
-
-            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
         }
 
         internal void OpenInternal(string xmlPath)

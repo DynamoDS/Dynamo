@@ -27,6 +27,7 @@ namespace Dynamo.PackageManager.UI
 
         public InstalledPackagesView(InstalledPackagesViewModel viewModel)
         {
+            this.viewModel = viewModel;
             this.DataContext = viewModel;
             InitializeComponent();
         }

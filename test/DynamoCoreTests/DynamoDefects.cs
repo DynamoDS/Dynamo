@@ -111,6 +111,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void Defect_MAGN_2566()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2566
