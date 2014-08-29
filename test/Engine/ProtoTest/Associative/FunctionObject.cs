@@ -23,7 +23,7 @@ def add(x,y) { return = x + y;}
 
 // fo = add(?, 42);
 fo = _SingleFunctionObject(add, 2, {1}, {null, 42}, true);
-r = Apply(fo, 3);
+r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 45);
@@ -41,9 +41,9 @@ def add(x,y,z) { return = x + y + z;}
 fo1 = _SingleFunctionObject(add, 3, {1}, {null, 42, null}, true);
 
 // foo2 = add(100, 42, ?);
-fo2 = Apply(fo1, 100);
+fo2 = __Apply(fo1, 100);
 
-r = Apply(fo2, 3);
+r = __Apply(fo2, 3);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 145);
@@ -59,7 +59,7 @@ def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
 fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
-r = Apply(fo, {1, 2});
+r = __Apply(fo, {1, 2});
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { 101, 202 });
@@ -75,7 +75,7 @@ def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
 fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
-r = Apply(fo, 1);
+r = __Apply(fo, 1);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { 101, 201 });
@@ -91,7 +91,7 @@ def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
 fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
-r = Apply(fo, {1});
+r = __Apply(fo, {1});
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { 101 });
@@ -113,7 +113,7 @@ def getFunctionObject()
 
 fo = getFunctionObject();
 
-r = Apply(fo, 42);
+r = __Apply(fo, 42);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 142);
@@ -135,9 +135,9 @@ def getFunctionObject(f:function)
 }
 
 fo1 = getFunctionObject(add);
-r1 = Apply(fo1, 42);
+r1 = __Apply(fo1, 42);
 fo2 = getFunctionObject(mul);
-r2 = Apply(fo2, 3);
+r2 = __Apply(fo2, 3);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 142);
@@ -159,7 +159,7 @@ def getFunctionObject(f:function)
 }
 
 fo = getFunctionObject({add, mul});
-r = Apply(fo, 3);
+r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] {103, 300});
@@ -179,7 +179,7 @@ fo2 = _SingleFunctionObject(mul, 2, {0}, {3, null}, true);
 fo3 = _ComposedFunctionObject({fo1, fo2});
 
 // r = 2 * 3 + 100
-r = Apply(fo3, 2);
+r = __Apply(fo3, 2);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 106);
@@ -198,7 +198,7 @@ fo1 = _SingleFunctionObject(add, 2, {1}, {null, 100}, true);
 fo2 = _ComposedFunctionObject({fo1, fo1});
 
 // r = 42 + 100 + 100
-r = Apply(fo2, 42);
+r = __Apply(fo2, 42);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 242);
@@ -219,17 +219,17 @@ def mul(x, y) { return = x * y; }
 fo1 = _SingleFunctionObject(add, 2, { 1 }, { null, 3}, true);
 fo2 = _SingleFunctionObject(mul, 2, { 0 }, { 5, null }, true);
 
-r1 = Apply(fo1, 7);     // 3 + 7
-r2 = Apply(fo2, 11);    // 5 * 11
+r1 = __Apply(fo1, 7);     // 3 + 7
+r2 = __Apply(fo2, 11);    // 5 * 11
 
 comp1 = __Compose({ fo1, fo2 }); 
-r3 = Apply(comp1, 11);  // (5 * 11) + 3
+r3 = __Apply(comp1, 11);  // (5 * 11) + 3
 
 comp2 = __Compose({ fo2, fo1 });
-r4 = Apply(comp2, 7);         // 5 * (3 + 7)
+r4 = __Apply(comp2, 7);         // 5 * (3 + 7)
 
 comp3 = __Compose({ comp1, fo1, fo2 });
-r5 = Apply(comp3, 9);
+r5 = __Apply(comp3, 9);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 10);
@@ -254,7 +254,7 @@ class Foo
 }
 
 fo = _SingleFunctionObject(Foo.foo, 2, { 1 }, { null, 100 }, true);
-r = Apply(fo, 3);
+r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 103);
@@ -276,7 +276,7 @@ class Foo
 }
 
 c = _SingleFunctionObject(Foo.Foo, 2, { 1 }, { null, 100 }, true);
-f = Apply(c, 3);
+f = __Apply(c, 3);
 r = f.i;
 ";
             thisTest.RunScriptSource(code);

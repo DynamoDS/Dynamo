@@ -122,7 +122,7 @@ class _ComposedFunctionObject extends _FunctionObject
     }
 }
 
-def Apply(functionObject: _FunctionObject, param: var[]..[])
+def __Apply(functionObject: _FunctionObject, param: var[]..[])
 {
     return = functionObject.DoEvaluation(param);
 }
@@ -134,7 +134,7 @@ def __ApplyList(functionObject: _FunctionObject, params: var[]..[])
         _result = functionObject;
         for(p in params)
         {
-            _result = Apply(_result, p);
+            _result = __Apply(_result, p);
         }
         return = _result;
     }
@@ -156,13 +156,13 @@ def __ComposeBuffered(funcs: _FunctionObject[], amt: int, arg: var[]..[])
     {
         if (amt <= 1)
         {
-            return = Apply(_ComposedFunctionObject(funcs), arg);
+            return = __Apply(_ComposedFunctionObject(funcs), arg);
         }
         else
         {
             i = Count(funcs)-1;
             first = funcs[i];
-            funcs[i] = Apply(first, arg);
+            funcs[i] = __Apply(first, arg);
             return = _SingleFunctionObject(__ComposeBuffered, 3, { 0, 1 }, { funcs, amt-1, null }, true);
         }
     };
@@ -182,7 +182,7 @@ def MinimumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(keyProjector, list[_index]);
         }
         return = Sorting.minByKey(list, _keys);
     }
@@ -202,7 +202,7 @@ def MaximumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(keyProjector, list[_index]);
         }
         return = Sorting.maxByKey(list, _keys);
     }
@@ -212,7 +212,7 @@ def __Replace(list: var, with: var, predicate: _FunctionObject)
 {
     return = [Imperative]
     {
-        if (Apply(predicate, list))
+        if (__Apply(predicate, list))
         {
             return = with;
         }
@@ -247,7 +247,7 @@ def __Filter(list: var[]..[], predicate: _FunctionObject)
         for (_index in 0..(_count - 1))
         {
             _value = list[_index];
-            if (Apply(predicate, _value))
+            if (__Apply(predicate, _value))
             {
                 _filteredList[_currentIn] = _value;
                 _currentIn = _currentIn + 1;
@@ -354,7 +354,7 @@ def __ApplyNested(fs: var[]..[], xs: var[]..[], amt: int)
         {
             for(x in xs)
             {
-                result[Count(result)] = Apply(fs, x);
+                result[Count(result)] = __Apply(fs, x);
             }
         }
         else
@@ -477,7 +477,7 @@ def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(keyProjector, list[_index]);
         }
         return = Sorting.sortByKey(list, _keys);
     };
@@ -501,7 +501,7 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
         _groupedList = { };
         for (_index in 0..(Count(list) - 1))
         {
-            _key = Apply(keyProjector, list[_index]);
+            _key = __Apply(keyProjector, list[_index]);
             if (!ContainsKey(_groupedList, _key))
             {
                 _groupedList[_key] = { };
@@ -551,7 +551,7 @@ def TrueForAll(list: var[]..[], predicate: _FunctionObject)
         for (_index in 0..(_count - 1))
         {
             _value = list[_index];
-            if (!Apply(predicate, _value))
+            if (!__Apply(predicate, _value))
             {
                 return = false;
             }
@@ -581,7 +581,7 @@ def TrueForAny(list: var[]..[], predicate: _FunctionObject)
         for (_i in 0..(_count - 1))
         {
             _value = list[_i];
-            if (Apply(predicate, _value))
+            if (__Apply(predicate, _value))
             {
                 return = true;
             }
