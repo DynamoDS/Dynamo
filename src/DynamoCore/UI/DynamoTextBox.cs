@@ -487,10 +487,10 @@ namespace Dynamo.UI.Controls
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
-            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
+            this.CustomPopupPlacementCallback = PlacementCallback;
             this.Child = tooltip;
             this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
-            this.dispatcherTimer.Tick += new EventHandler(CloseLibraryToolTipPopup);
+            this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
 
             // If window is no longer on top, then we can hide tooltip.
             // It's used, when we switch to another program.
