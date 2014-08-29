@@ -319,7 +319,7 @@ c = b;";
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T12_Update_Undefined_Variables()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1527
@@ -985,7 +985,7 @@ b = foo ( a ) ;
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T20_Defect_1461391_4()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
@@ -1026,7 +1026,7 @@ t2 = y2[1];
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T20_Defect_1461391_5()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4086
@@ -1270,7 +1270,7 @@ a1.a = true;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T23_Update_Class_Instance_Using_Set_Method_6()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1553
@@ -3188,7 +3188,7 @@ a = {
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4087
@@ -3734,7 +3734,7 @@ z2 = z;
         }
         [Test, Ignore]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T51_Defect_1461388()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
@@ -4069,7 +4069,7 @@ z = 2;";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T56_Defect_1467342_Inline_Condition_replication()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
@@ -4084,7 +4084,7 @@ x = a > 1 ? a : null; ";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T57_Defect_1467399()
         {
             String code = @"
@@ -4955,7 +4955,7 @@ b;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T63_NoInfiniteLoop_3_1467519()
         {
             String code = @"
@@ -5429,7 +5429,7 @@ pt3 = pt1.XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T66_1467513_RighthandsideUpdate_innerassociative()
         {
             String code = @"
@@ -5957,7 +5957,7 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T74_TestUpdate_1467533()
         {
             String code = @"
@@ -6355,7 +6355,7 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T84_TestUpdate_Crosslangauge_1467513_3()
         {
             String code = @"
@@ -6380,7 +6380,7 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T84_TestUpdate_Crosslangauge_1467513_4()
         {
             String code = @"
@@ -6469,7 +6469,7 @@ x1 = 4;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T85_1467452_update_using_class_methods_3()
         {
             String code = @"
@@ -6500,7 +6500,7 @@ x1 = 4;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T85_1467452_update_using_class_methods_4()
         {
             String code = @"
@@ -6851,7 +6851,7 @@ test = b1.y;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T91_1467547()
         {
             String code = @"
@@ -6880,7 +6880,7 @@ test = b1.y;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T91_1467547_2()
         {
             String code = @"
