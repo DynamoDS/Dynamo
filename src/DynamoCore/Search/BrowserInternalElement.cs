@@ -127,15 +127,15 @@ namespace Dynamo.Nodes.Search
         }
 
         /// <summary>
-        /// Assembly, where icon for class button can be found.
+        /// Assembly, from which we can get icon for class button.
         /// </summary>
-        private string resourceAssembly;
-        public string ResourceAssembly
+        private string assembly;
+        public string Assembly
         {
-            get { return resourceAssembly; }
+            get { return assembly; }
 
             // Note: we need setter, when we set resource assembly in NodeSearchElement.
-            set { resourceAssembly = value; }
+            set { assembly = value; }
         }
 
         public BrowserInternalElement()
@@ -146,10 +146,10 @@ namespace Dynamo.Nodes.Search
             this.Focusable = true;
         }
 
-        public BrowserInternalElement(string name, BrowserItem parent, string resAssembly = "")
+        public BrowserInternalElement(string name, BrowserItem parent, string _assembly = "")
         {
             this._name = name;
-            this.resourceAssembly = resAssembly;
+            this.assembly = _assembly;
             this.Parent = parent;
             this.OldParent = null;
             this.Focusable = true;
@@ -167,10 +167,10 @@ namespace Dynamo.Nodes.Search
 
         protected BitmapImage GetIcon(string fullNameOfIcon)
         {
-            if (string.IsNullOrEmpty(this.ResourceAssembly))
+            if (string.IsNullOrEmpty(this.Assembly))
                 return null;
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(this.ResourceAssembly);
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
             return (cust != null) ? cust.LoadIconInternal(fullNameOfIcon) : null;
         }
     }
