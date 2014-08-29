@@ -491,10 +491,26 @@ namespace Dynamo.UI.Controls
             this.Child = tooltip;
             this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
+            this.Loaded += LoadMainDynamoWindow;
+        }
 
-            // If window is no longer on top, then we can hide tooltip.
-            // It's used, when we switch to another program.
-            Application.Current.MainWindow.Deactivated += CloseLibraryToolTipPopupImmediately;
+        // We should load main window after Popup has been initialized.
+        // If we try to load it before, we will get null.
+        private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
+        {
+            var mainDynamoWindow = WPF.FindUpVisualTree<DynamoView>(this);
+
+            /*If window is no longer on top, then we can hide tooltip.
+             It's used, when we switch to another program.
+             We can not use CloseLibraryToolTipPopup, 
+             because it waits for 1 sec to close itself,
+             and we need to close tooltip immediately, 
+             at the same moment when we switch to another program.*/
+
+            mainDynamoWindow.Deactivated += (Sender, args) =>
+            {
+                this.DataContext = null;
+            };
         }
 
         public void SetDataContext(object dataContext)
@@ -512,15 +528,6 @@ namespace Dynamo.UI.Controls
         {
             if (!this.IsMouseOver)
                 this.DataContext = null;
-        }
-
-        // We can not use CloseLibraryToolTipPopup, 
-        // because it waits for 1 sec to close itself,
-        // and we need to close tooltip immediately, 
-        // at the same moment when we switch to another program. 
-        private void CloseLibraryToolTipPopupImmediately(object sender, EventArgs e)
-        {
-            this.DataContext = null;
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
