@@ -42,7 +42,7 @@ namespace Dynamo.DSEngine
             // For those, which don't have LibraryCustomization e.g. CoreNodesUI.dll
             if (ResolveResourceAssembly(assemblyPath, out resourceAssemblyPath))
             {
-                var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath));
+                var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath), null);
                 triedPaths.Add(assemblyPath, true);
                 cache.Add(assemblyPath, c);
                 return c;
@@ -98,26 +98,19 @@ namespace Dynamo.DSEngine
         internal LibraryCustomization(Assembly assembly, XDocument document)
         {
             this.XmlDocument = document;
-
-            cachedIcons = new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
-
-            Stream stream =
-                assembly.GetManifestResourceStream(assembly.GetManifestResourceNames()[0]);
-
-            if (stream == null)
-                return;
-            
-            resourcesReader = new ResourceReader(stream);
+            this.LoadResourceStream(assembly);
         }
 
-        internal LibraryCustomization(Assembly assembly)
+        private void LoadResourceStream(Assembly assembly)
         {
-            this.XmlDocument = null;
-
             cachedIcons = new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
 
+            var rsrcNames = assembly.GetManifestResourceNames();
+            if (rsrcNames == null || (rsrcNames.Length <= 0))
+                return; // Ensure we won't crash.
+
             Stream stream =
-                assembly.GetManifestResourceStream(assembly.GetManifestResourceNames()[0]);
+                assembly.GetManifestResourceStream(rsrcNames[0]);
 
             if (stream == null)
                 return;
