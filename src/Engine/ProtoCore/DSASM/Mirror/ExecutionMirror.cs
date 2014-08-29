@@ -184,13 +184,13 @@ namespace ProtoCore.DSASM.Mirror
         private string GetStringTrace(int strptr, Heap heap)
         {
             string str = "";
-            for (int n = 0; n < heap.Heaplist[strptr].VisibleSize; ++n)
+            foreach (var sv in heap.Heaplist[strptr].VisibleItems)
             {
-                if (!heap.Heaplist[strptr].Stack[n].IsChar)
+                if (!sv.IsChar)
                 {
                     break;
                 }
-                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(heap.Heaplist[strptr].Stack[n].opdata);
+                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
             }
             return str;
         }
@@ -406,23 +406,6 @@ namespace ProtoCore.DSASM.Mirror
             formatParams.RestoreOutputTraceDepth();
             return arrayElements.ToString();
         }
-
-        /*
-        private string GetArrayTrace(int pointer, Heap heap, int langblock)
-        {
-            StringBuilder arrayelements = new StringBuilder();
-            HeapElement hs = heap.heaplist[pointer];
-            for (int n = 0; n < hs.visibleSize; ++n)
-            {
-                arrayelements.Append(GetStringValue(hs.stack[n], heap, langblock));
-                if (n < hs.visibleSize - 1)
-                {
-                    arrayelements.Append(", ");
-                }
-            }
-            return arrayelements.ToString();
-        }
-        */
 
         private string GetGlobalVarTrace(List<string> variableTraces)
         {
@@ -1136,7 +1119,6 @@ namespace ProtoCore.DSASM.Mirror
 
                         StackValue[] nodes = hs.Stack;
                         ret.members = new Obj[hs.VisibleSize];
-
                         for (int i = 0; i < ret.members.Length; i++)
                         {
                             ret.members[i] = Unpack(nodes[i], heap, core, type);
