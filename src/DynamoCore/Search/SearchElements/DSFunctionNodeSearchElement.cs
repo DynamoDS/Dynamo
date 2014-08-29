@@ -49,14 +49,14 @@ namespace Dynamo.Search.SearchElements
 
         protected override string GetResourceName(ResourceType resourceType)
         {
-            if (resourceType == ResourceType.SmallIcon)
-                return this.FunctionDescriptor.QualifiedName;
+            switch (resourceType)
+            {
+                case ResourceType.SmallIcon: return FunctionDescriptor.QualifiedName;
+                //TODO: try to load large icon, look how it works.
+                case ResourceType.LargeIcon: return FunctionDescriptor.QualifiedName;
+            }
 
-            //TODO: createLarge icons. Look how it works.
-            if (resourceType == ResourceType.LargeIcon)
-                return this.FunctionDescriptor.QualifiedName;
-
-            return "";
+            throw new InvalidOperationException("Unhandled resourceType");
         }
     }
 }
