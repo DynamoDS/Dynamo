@@ -62,7 +62,7 @@ namespace DynamoWebServer.Messages
         /// </summary>
         /// <param name="dynamo">DynamoViewModel</param>
         /// <param name="message">Message</param>
-        /// <param name="sessionId">string</param>
+        /// <param name="sessionId">The identifier string that represents the current session</param>
         internal void Execute(DynamoViewModel dynamo, Message message, string sessionId)
         {
             if (message is RunCommandsMessage)
