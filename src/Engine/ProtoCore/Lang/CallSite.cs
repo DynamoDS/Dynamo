@@ -1393,7 +1393,7 @@ namespace ProtoCore
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core).ToArray();
+                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core);
                     }
                     else
                     {
@@ -1510,7 +1510,7 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core).ToArray();
+                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core);
                     retSize = parameters.Length;
                 }
                 else

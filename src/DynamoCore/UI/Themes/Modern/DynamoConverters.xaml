@@ -71,6 +71,7 @@
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter"/>
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
+    <controls:RenderStyleToCheckedConverter x:Key="RenderStyleToCheckedConverter" />
     <controls:PackageDownloadStateToStringConverter x:Key="PackageDownloadStateToStringConverter"/>
     <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter"/>
     <controls:PortTypeToMarginConverter x:Key="PortTypeToMarginConverter"/>

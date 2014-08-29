@@ -6,6 +6,7 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand _deleteCommand1;
         private DelegateCommand _setLacingTypeCommand;
+        private DelegateCommand _setRenderStyleCommand;
         private DelegateCommand _setStateCommand;
         private DelegateCommand _selectCommand;
         private DelegateCommand _showHelpCommand;
@@ -52,6 +53,20 @@ namespace Dynamo.ViewModels
                         = new DelegateCommand(SetLacingType, CanSetLacingType);
 
                 return _setLacingTypeCommand;
+            }
+        }
+
+        public DelegateCommand SetNodeRenderStyleCommand
+        {
+            get
+            {
+                if (_setRenderStyleCommand == null)
+                {
+                    _setRenderStyleCommand = new DelegateCommand(
+                        SetNodeRenderStyle, CanSetNodeRenderStyle);
+                }
+
+                return _setRenderStyleCommand;
             }
         }
 

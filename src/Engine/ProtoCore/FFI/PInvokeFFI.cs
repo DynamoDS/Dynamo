@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -105,9 +104,12 @@ namespace ProtoFFI
             size = 0;
             int ptr = (int)o.opdata;
             HeapElement hs = dsi.runtime.rmem.Heap.Heaplist[ptr];
+            size = hs.VisibleSize;
 
-            if (!hs.VisibleItems.Any())
+            if (size == 0)
+            {
                 return null;
+            }
 
             IList elements = null;
             var opType = hs.Stack[0].optype;
@@ -132,8 +134,9 @@ namespace ProtoFFI
                 throw new ArgumentException(string.Format("Argument of type {0} is not supported for FFI Marshalling", opType.ToString()));
             }
 
-            foreach (var op in hs.VisibleItems)
+            for (int idx = 0; idx < size; ++idx)
             {
+                var op = hs.Stack[idx];
                 if (opType == AddressType.Double)
                 {
                     elements.Add(op.RawDoubleValue);

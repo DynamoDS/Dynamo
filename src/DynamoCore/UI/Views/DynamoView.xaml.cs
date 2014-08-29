@@ -32,6 +32,11 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.UI.Commands;
+using Autodesk.DesignScript.Interfaces;
+using System.Collections.Generic;
+using Dynamo.Bloodstone;
+using System.Collections.Specialized;
 
 namespace Dynamo.Controls
 {
@@ -46,6 +51,7 @@ namespace Dynamo.Controls
         internal DynamoViewModel dynamoViewModel = null;
         private Stopwatch _timer = null;
         private StartPageViewModel startPage = null;
+        private VisualizerHwndHost visualizer = null;
 
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
@@ -207,7 +213,6 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            //shortcutBar.ShortcutBarItems.Add(runButton);            
 
             //shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
@@ -250,6 +255,7 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestViewOperation(ViewOperationEventArgs e)
         {
+#if !BLOODSTONE
             if (dynamoViewModel.CanNavigateBackground == false)
                 return;
 
@@ -269,6 +275,7 @@ namespace Dynamo.Controls
                     camera2.Zoom(0.5 * background_preview.View.ZoomSensitivity);
                     break;
             }
+#endif
         }
 
         private void DynamoView_Loaded(object sender, EventArgs e)
@@ -281,6 +288,7 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation += DynamoViewModelRequestViewOperation;
             dynamoViewModel.PostUiActivationCommand.Execute(null);
+            dynamoViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
@@ -309,6 +317,20 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
+#if BLOODSTONE
+            dynamoViewModel.RequestUpdateBloodstoneVisual += OnRequestUpdateBloodstoneVisual;
+            dynamoViewModel.Model.NodeDeleted += OnModelNodeDeleted;
+            dynamoViewModel.Model.WorkspaceCleared += OnWorkspaceCleared;
+
+            if (this.visualizer == null)
+            {
+                var b = this.visualizerHostElement;
+                this.visualizer = new VisualizerHwndHost(b.ActualWidth, b.ActualHeight);
+                this.visualizer.Visibility = System.Windows.Visibility.Collapsed;
+                this.visualizerHostElement.Child = this.visualizer;
+            }
+#endif
+
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
             dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
@@ -329,9 +351,96 @@ namespace Dynamo.Controls
             dynamoViewModel.BeginCommandPlayback(this);
         }
 
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (this.visualizer != null && (e.PropertyName == "ShowStartPage"))
+            {
+                var visibility = Visibility.Visible;
+                if ((sender as DynamoViewModel).ShowStartPage)
+                    visibility = Visibility.Collapsed;
+
+                this.visualizer.Visibility = visibility;
+            }
+        }
+
+#if BLOODSTONE
+
+        private void OnRequestUpdateBloodstoneVisual(object sender, UpdateBloodstoneVisualEventArgs e)
+        {
+            if (this.visualizer == null)
+                return;
+
+            var geometries = e.Geometries.ToDictionary(
+                    item => item.Key.ToString(), item => item.Value);
+
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            if (scene == null)
+                return;
+
+            scene.UpdateNodeGeometries(geometries);
+
+            var renderModes = new Dictionary<string, RenderMode>();
+            var nodeColors = new Dictionary<string, Dynamo.Bloodstone.NodeColor>();
+
+            foreach (var node in dynamoViewModel.Model.Nodes)
+            {
+                var nodeId = node.GUID.ToString();
+                renderModes.Add(nodeId, node.RenderStyle);
+
+                var c = node.NodeColor;
+                nodeColors.Add(nodeId, new NodeColor(c.R, c.G, c.B, c.A));
+            }
+
+            scene.SetNodeRenderMode(renderModes);
+            scene.SetNodeColor(nodeColors);
+        }
+
+        private void OnModelNodeDeleted(NodeModel node)
+        {
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            if (scene != null)
+            {
+                var identifiers = new List<string>();
+                identifiers.Add(node.GUID.ToString());
+                scene.RemoveNodeGeometries(identifiers);
+            }
+        }
+
+        private void OnWorkspaceCleared(object sender, EventArgs e)
+        {
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            if (scene != null)
+                scene.ClearAllGeometries();
+        }
+
+        internal void OnNodePropertyUpdated(NodeModel node)
+        {
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            if (scene != null)
+            {
+                var renderModes = new Dictionary<string, RenderMode>();
+                renderModes.Add(node.GUID.ToString(), node.RenderStyle);
+                scene.SetNodeRenderMode(renderModes);
+
+                var c = node.NodeColor;
+                var nodeColors = new Dictionary<string, NodeColor>();
+                var color = new NodeColor(c.R, c.G, c.B, c.A);
+                nodeColors.Add(node.GUID.ToString(), color);
+                scene.SetNodeColor(nodeColors);
+            }
+        }
+
+#endif
+
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
         {
-            
+#if BLOODSTONE
+            if (this.visualizer != null)
+            {
+                this.visualizer.Dispose();
+                this.visualizer = null;
+            }
+#endif
         }
 
         private UI.Views.AboutWindow _aboutWindow;
@@ -401,7 +510,7 @@ namespace Dynamo.Controls
             _installedPkgsView.Focus();
         }
 
-        void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ClipBoard_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
@@ -448,8 +557,33 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+#if BLOODSTONE
+            var scene = visualizer.CurrentVisualizer.GetScene();
+            if (scene != null)
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        var list = e.NewItems.OfType<NodeModel>().ToList();
+                        var nodes = list.Select(n => n.GUID.ToString());
+                        scene.SelectNodes(nodes, Dynamo.Bloodstone.SelectMode.AddToExisting);
+                        break;
+
+                    case NotifyCollectionChangedAction.Remove:
+                        var old = e.OldItems.OfType<NodeModel>().ToList();
+                        var removed = old.Select(n => n.GUID.ToString());
+                        scene.SelectNodes(removed, Dynamo.Bloodstone.SelectMode.RemoveFromExisting);
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        var empty = new List<string>(); // Empty node list.
+                        scene.SelectNodes(empty, Dynamo.Bloodstone.SelectMode.ClearExisting);
+                        break;
+                }
+            }
+#endif
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
         }
@@ -640,6 +774,12 @@ namespace Dynamo.Controls
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
+
+#if BLOODSTONE
+            dynamoViewModel.RequestUpdateBloodstoneVisual -= OnRequestUpdateBloodstoneVisual;
+            dynamoViewModel.Model.NodeDeleted -= OnModelNodeDeleted;
+            dynamoViewModel.Model.WorkspaceCleared -= OnWorkspaceCleared;
+#endif
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;

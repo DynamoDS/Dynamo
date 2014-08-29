@@ -51,6 +51,13 @@ namespace Dynamo.Utilities
             internalElement.SetAttribute(name, value.ToString());
         }
 
+        public void SetAttribute(string name, System.Windows.Media.Color value)
+        {
+            var converter = new System.Windows.Media.BrushConverter();
+            var attribValue = converter.ConvertToString(value);
+            internalElement.SetAttribute(name, attribValue);
+        }
+
         #endregion
 
         #region Attributes - Read Methods
@@ -127,6 +134,33 @@ namespace Dynamo.Utilities
             XmlAttribute attrib = internalElement.Attributes[attribName];
             if (null == attrib || (!Guid.TryParse(attrib.Value, out result)))
                 return defaultValue;
+
+            return result;
+        }
+
+        public System.Windows.Media.Color ReadColor(string attribName)
+        {
+            XmlAttribute attrib = GetGuaranteedAttribute(attribName);
+            var converter = new System.Windows.Media.BrushConverter();
+            var brush = converter.ConvertFromString(attrib.Value);
+            return (brush as System.Windows.Media.SolidColorBrush).Color;
+        }
+
+        public System.Windows.Media.Color ReadColor(string attribName,
+            System.Windows.Media.Color defaultValue)
+        {
+            System.Windows.Media.Color result = defaultValue;
+            XmlAttribute attrib = internalElement.Attributes[attribName];
+            if (null == attrib)
+                return defaultValue;
+
+            try
+            {
+                var converter = new System.Windows.Media.BrushConverter();
+                var brush = converter.ConvertFromString(attrib.Value);
+                result = (brush as System.Windows.Media.SolidColorBrush).Color;
+            }
+            catch (Exception) { }
 
             return result;
         }

@@ -18,6 +18,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Threading;
 using Dynamo.Core;
 using Dynamo.UI.Controls;
+using System.Windows.Shapes;
 
 namespace Dynamo.Controls
 {
@@ -161,6 +162,12 @@ namespace Dynamo.Controls
 
                 case "IsUpdated":
                     HandleCacheValueUpdated();
+                    break;
+
+                case "RenderStyle":
+                case "NodeColor":
+                    var view = WPF.FindUpVisualTree<DynamoView>(this);
+                    view.OnNodePropertyUpdated(viewModel.NodeLogic);
                     break;
             }
         }
@@ -442,5 +449,19 @@ namespace Dynamo.Controls
         }
 
         #endregion
+
+        private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems == null || (e.AddedItems.Count <= 0))
+                return;
+
+            var rectangle = e.AddedItems[0] as Rectangle;
+            if (rectangle != null)
+            {
+                var brush = rectangle.Fill as SolidColorBrush;
+                if (brush != null)
+                    this.viewModel.NodeLogic.NodeColor = brush.Color;
+            }
+        }
     }
 }

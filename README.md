@@ -1,133 +1,72 @@
-![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
-Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
+Feature Comparison
+-----
+The following table gives comparisons among more prominent features between ```Helix 3D``` and ```Bloodstone``` viewers. There may be more functionalities provided by ```Helix 3D``` but here we only outline those that are more user facing.
 
-## Get Dynamo ##
+| Feature Name | Helix 3D | Bloodstone |
+| ------------ |:--------:|:----------:|
+| Zoom to fit | Yes | Yes |
+| Zoom with mouse | Yes | Yes |
+| Pan | Yes | Yes |
+| Rotate | Yes | Yes |
+| Off-centered rotation | No | Yes |
+| Grid lines | Yes | No |
+| UCS icon | Yes | No |
+| Text support | Yes | No |
+| Selection highlight | Deferred | Real-time |
+| Phong shading | Yes | Yes |
+| Phong shading light sources | 3 | 1 |
+| Flat shading | No | Yes |
+| Per-vertex color | No | Yes |
+| Per-node color | No | Yes |
+| Anti-aliasing | Yes | Yes |
 
-Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim.org/learn/)!
+Prioritized Task List
+-----
+The following list represents what are to be implemented in Bloodstone for it to reach feature parity with that of ```Helix 3D``` viewer. These tasks are not exhaustive and will grow as demanded:
 
+- [x] Implement pan operation
+- [x] Implement zoom operation
+- [x] Implement zoom extent with double-click
+- [ ] Replace ```IGraphicsContext::ActivateShaderProgram``` with ```IShaderProgram::Activate```
+- [ ] Replace ```IGraphicsContext::RenderVertexBuffer``` with ```IVertexBuffer::Render```
+- [ ] Encapsulate things like ```controlParams``` in impl-specific classes
+- [ ] Remove APIs to deal with vertex/fragment shader from IGraphicsContext
+- [ ] Remove ```alpha``` uniform from Phong fragment shader
+- [ ] Introduce a notion of "inactive" shader program (those that fail compilation)
+- [ ] Set the background Cornflower blue to match the geometry contents
+- [ ] Output diagnostic information on Dynamo
+- [ ] Fix creation failure for Parallels
+- [ ] Only zoom-to-fit when geometries arrive for the first time
+- [ ] Make Z-axis as up vector instead of Y-axis
+- [ ] Align view operations with that of Revit (i.e. mouse actions etc.)
+- [ ] Integrate zoom operation with mouse wheel
+- [ ] Performance: Merge the two-pass conversion from IRenderPackage to VB
+- [ ] Update Phong shader to include 3 light sources, and increase the saturation
+- [x] Perform [proper OpenGL context creation](http://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#Proper_Context_Creation)
+- [x] Implement anti-aliasing for better visual quality
+- [x] Implement geometry clearing when document is opened/closed/created
+- [x] Implement geometry clearing when nodes are deleted
 
-## Build ###
+Screenshots
+-----
+Stadium designed by @elayabharath
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/eb-stadium-v0.png)
 
-You'll need Visual Studio and a git client to build Dynamo.  Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
+Another stadium designed by @elayabharath
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/eb-stadium-v1.png)
 
+The graphics system always chooses the best anti-aliasing mode if the hardware allows it. If the default of 8x MSAA fails, the graphics context will fall back to 4x MSAA (or no anti-aliasing if even that fails). The following image makes the comparison among these settings (click on the image to display the original size for better comparisons):
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/multisample-anti-aliasing.png)
 
-## Contribute ##
+Color setting is now available on per-node basis
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/node-and-primitive-colors.png)
 
-Dynamo is an open-source project and would be nothing without its community.  You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues).  You can submit your own code to the Dynamo project via a Github [pull request](https://help.github.com/articles/using-pull-requests).  
+Colored spheres in a grid
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/colored-spheres.png)
 
+Render style settings on a per-node basis, with default set to ```Phong Shading```
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/render-style-phong-shading.png)
 
-## Releases ##
-
-###0.7.1 ###
-- Package Manager is back
-- [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
-- Library Loading (Experimental)
-- Stability Improvments
-- Revit Elements created and Selected during a session will be rememebered in later sessions.
-- Visualization Performance improvments
-- 3d/Graph Navigation Improvements
-- Automated graph organization
-- Node UI Enhancements
-- Preview Bubble overhaul
-- New Sample content and better first experience- 
-
-
-###Older Releases###
-[Archive of Release Fixes and Improvements](https://github.com/DynamoDS/Dynamo/wiki/Archive-of-Release-Fixes-and-Improvements)
-
-
-## Dynamo License ##
-
-Those portions created by Ian are provided with the following copyright:
-
-Copyright 2014 Ian Keough
-
-Those portions created by Autodesk employees are provided with the following copyright:
-
-Copyright 2014 Autodesk
-
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-## Instrumentation ##
-Dynamo contains an instrumentation system that anonymously reports usage data to the Dynamo team. This data will be used to enhance the usability of the product. Aggregated summaries of the data will be shared back with the Dynamo community.
-
-An example of the data communicated is:
-
-"DateTime: 2013-08-22 19:17:21, AppIdent: Dynamo, Tag: Heartbeat-Uptime-s, Data: MTMxMjQxLjY3MzAyMDg=, Priority: Info, SessionID: 3fd39f21-1c3f-4cf3-8cdd-f46ca5dde636, UserID: 2ac95f29-a912-49a8-8fb5-e2d287683d94"
-
-The Data is Base64 encoded. For example, the data field above ('MTMxMjQxLjY3MzAyMDg=') decodes to: '131241.6730208' This represents the number of seconds that the instance of Dynamo has been running. 
-
-The UserID is randomly generated when the application is first run. The SessionID is randomly generated each time Dynamo is opened.
-
-
-## Third Party Licenses ##
-
-###Avalon Edit###
-http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor  
-http://opensource.org/licenses/lgpl-3.0.html  
-
-###CSharpAnalytics###
-https://github.com/AttackPattern/CSharpAnalytics  
-http://www.apache.org/licenses/LICENSE-2.0
-
-###Helix3D###
-https://helixtoolkit.codeplex.com/  
-https://helixtoolkit.codeplex.com/license  
-
-###Iron Python###
-http://ironpython.net/  
-http://opensource.org/licenses/apache2.0.php  
-
-###Kinect for Windows###
-http://www.microsoft.com/en-us/kinectforwindows/  
-http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx 
-
-###Microsoft 2012 C Runtime DLLS, msvcp110.dll and msvcr110.dll###
-http://msdn.microsoft.com/en-us/vstudio/dn501987
-
-###Moq###
-http://www.nuget.org/packages/Moq/  
-http://opensource.org/licenses/bsd-license.php
-
-###MiConvexHull###
-http://miconvexhull.codeplex.com/  
-http://miconvexhull.codeplex.com/license  
-
-###NCalc###
-http://ncalc.codeplex.com/  
-http://ncalc.codeplex.com/license  
-
-###NDesk Options###
-http://ndesk.org/Options#License
-
-###Newtonsoft JSON###
-https://github.com/JamesNK/Newtonsoft.Json  
-https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
-
-###NUnit####
-http://www.nunit.org/  
-http://www.nunit.org/index.php?p=license&r=2.6.2  
-
-###OpenSans font from Google###
-http://www.google.com/fonts/specimen/Open+Sans  
-http://www.apache.org/licenses/LICENSE-2.0.html
-
-###Prism###
-http://msdn.microsoft.com/en-us/library/gg406140.aspx  
-http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
-
-###Revit Test Framework###
-https://github.com/DynamoDS/RevitTestFramework  
-http://opensource.org/licenses/MIT
+Render style of ```Primitive Color``` allows color specified on triangles to show through without shading
+![Image](https://raw.githubusercontent.com/DynamoDS/Dynamo/Bloodstone/doc/img/render-style-primitive-color.png)

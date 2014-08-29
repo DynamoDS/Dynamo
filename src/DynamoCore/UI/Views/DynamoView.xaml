@@ -437,11 +437,13 @@
                     <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
+            <!--
             <controls:Watch3DView x:Name="background_preview"
                                   Margin="0,20,0,0"
                                   Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   IsHitTestVisible="{Binding WatchPreviewHitTest}">
             </controls:Watch3DView>
+            -->
         </Grid>
 
         <!--
@@ -450,13 +452,20 @@
             Please ensure that mouse events will be able to pass through this layer,
             when Navigate Background 3D Preview is set to true.
         -->
-        <!--Workspace-->
+        
+        <Grid Name="contentAreaGrid"
+              Grid.Row="2"
+              Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+                <!--Workspace-->
         <Border Margin="0"
                 BorderBrush="Black"
                 BorderThickness="0"
                 Name="border"
-                Grid.Row="2"
-                Grid.Column="2"
                 SizeChanged="Workspace_SizeChanged">
 
             <Grid AllowDrop="True" Drop="DynamoView_OnDrop">
@@ -1051,6 +1060,23 @@
             </Grid>
 
         </Border>
+        
+        <GridSplitter Name="contentAreaSplitter"
+                      ResizeDirection="Rows" 
+                      Grid.Row="1" 
+                      Height="5"
+                      Width="Auto"
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch"
+                      Margin="0"
+                      Background="Gray"
+                      Cursor="/DynamoCore;component/UI/Images/resize_vertical.cur"/>
+
+        <Border Name="visualizerHostElement"
+                Grid.Row="2"
+                Background="CornflowerBlue" />
+
+        </Grid>
         
         <!--Collapsed Sidebar-->
         <StackPanel Grid.Row="2"
