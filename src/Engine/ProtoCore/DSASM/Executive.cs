@@ -623,7 +623,10 @@ namespace ProtoCore.DSASM
                 {
                     HeapElement he = rmem.Heap.Heaplist[(int)svArrayPtrDimesions.opdata];
                     Validity.Assert(he.VisibleSize == svDimensionCount.opdata);
-                    dotCallDimensions.AddRange(he.VisibleItems);
+                    for (int n = 0; n < he.VisibleSize; ++n)
+                    {
+                        dotCallDimensions.Add(he.Stack[n] /*(int)he.Stack[n].opdata*/);
+                    }
                 }
             }
             else
@@ -1316,13 +1319,12 @@ namespace ProtoCore.DSASM
             HeapElement hs = rmem.Heap.Heaplist[pointer];
 
             string str = "";
-            foreach (var item in hs.VisibleItems)
+            for (int n = 0; n < hs.VisibleSize; ++n)
             {
-                if (!item.IsChar)
+                if (!hs.Stack[n].IsChar)
                     return null;
-                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(item.opdata);
+                str += ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(hs.Stack[n].opdata);
             }
-
             if (str == "")
                 return null;
 
@@ -2166,7 +2168,7 @@ namespace ProtoCore.DSASM
                                 executingGraphNode.lastGraphNode.reExecuteExpression = false;
                                 //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                                 {
-                                    var firstGraphNode = GetFirstSSAGraphnode(graphNode.UID, graphNode.exprUID);
+                                    var firstGraphNode = GetFirstSSAGraphnode(i - 1, graphNode.exprUID);
                                     firstGraphNode.isDirty = true;
                                 }
                             }
@@ -4257,11 +4259,9 @@ namespace ProtoCore.DSASM
                         {
                             paramType.rank++;
                             int arrayHeapPtr = (int)paramSv.opdata;
-                            var he = core.Heap.Heaplist[arrayHeapPtr];
-
-                            if (he.VisibleItems.Any())
+                            if (core.Heap.Heaplist[arrayHeapPtr].VisibleSize > 0)
                             {
-                                paramSv = he.VisibleItems.First();
+                                paramSv = core.Heap.Heaplist[arrayHeapPtr].Stack[0];
                                 paramType.UID = (int)paramSv.metaData.type;
                             }
                             else
@@ -5295,7 +5295,7 @@ namespace ProtoCore.DSASM
             HeapElement he = ArrayUtils.GetHeapElement(array, core);
             if (he != null)
             {
-                if (he.VisibleItems.Any() || (he.Dict != null && he.Dict.Count > 0))
+                if (he.VisibleSize > 0 || (he.Dict != null && he.Dict.Count > 0))
                 {
                     key = StackValue.BuildArrayKey(array, 0);
                 }
@@ -6018,7 +6018,7 @@ namespace ProtoCore.DSASM
             else if ((opdata1.IsChar || opdata1.IsString) &&
                      (opdata2.IsChar || opdata2.IsString))
             {
-                opdata2 = StringUtils.ConcatString(opdata2, opdata1, core);
+                opdata2 = StringUtils.ConcatString(opdata2, opdata1, rmem);
             }
             else if (opdata1.IsString || opdata2.IsString)
             {
@@ -6026,12 +6026,12 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata2, core, rmem);
-                    opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
+                    opdata2 = StringUtils.ConcatString(newSV, opdata1, rmem);
                 }
                 else if (opdata2.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata1, core, rmem);
-                    opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
+                    opdata2 = StringUtils.ConcatString(opdata2, newSV, rmem);
                 }
             }
             else if (opdata2.IsArrayKey && opdata1.IsInteger)

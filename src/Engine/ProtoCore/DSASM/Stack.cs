@@ -217,18 +217,6 @@ namespace ProtoCore.DSASM
     
     public static class StackUtils
     {
-        /// <summary>
-        /// Deep comparison for two StackValue. 
-        /// </summary>
-        /// <param name="sv1"></param>
-        /// <param name="sv2"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core core)
-        {
-            return CompareStackValues(sv1, sv2, core, core);
-        }
-
         //this method compares the values of the stack variables passed
         public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core c1, Core c2, ProtoCore.Runtime.Context context = null)
         {

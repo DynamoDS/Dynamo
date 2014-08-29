@@ -605,6 +605,26 @@ namespace Dynamo.Nodes
             ((PreferenceSettings)this.Workspace.DynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
+
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
+        }
+
+        private void EvaluationCompleted(object o)
+        {
+            CachedValue = o;
+            DispatchOnUIThread(
+                delegate
+                {
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
+                    Root.Children.Add(GetWatchNode());
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
+                }
+            );
         }
 
         void Root_PropertyChanged(object sender, PropertyChangedEventArgs e)
