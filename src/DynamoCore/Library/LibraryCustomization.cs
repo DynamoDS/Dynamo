@@ -136,7 +136,10 @@ namespace Dynamo.DSEngine
                 return cachedIcons[iconKey];
 
             if (resourcesReader == null)
+            {
+                cachedIcons.Add(iconKey, null);
                 return null;
+            }
 
             // Gets all images from resReader where they are saved as DictionaryEntries and
             // choose one of them with correct key.
@@ -145,7 +148,10 @@ namespace Dynamo.DSEngine
                 .Where(i => i.Key.ToString() == iconKey).FirstOrDefault();
 
             if (iconData.Key == null || iconData.Value == null)
+            {
+                cachedIcons.Add(iconKey, null);
                 return null;
+            }
 
             MemoryStream memory = new MemoryStream();
             Bitmap bitmap;
