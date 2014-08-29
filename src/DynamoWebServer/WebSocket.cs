@@ -9,7 +9,7 @@ namespace DynamoWebServer
 {
     public class WebSocket : IWebSocket
     {
-        private WebSocketServer webSocketServer = new WebSocketServer();
+        private readonly WebSocketServer webSocketServer = new WebSocketServer();
 
         public event Action<WebSocketSession> NewSessionConnected;
         public event Action<WebSocketSession, string> NewMessageReceived;

@@ -4,9 +4,9 @@ using System.Net;
 using System.Windows;
 using System.Windows.Threading;
 
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
-using DynamoWebServer.Interfaces;
 using DynamoWebServer.Messages;
 using DynamoWebServer.Responses;
 
@@ -25,14 +25,12 @@ namespace DynamoWebServer
         private readonly DynamoViewModel dynamoViewModel;
         private readonly JsonSerializerSettings jsonSettings;
         private readonly IWebSocket webSocket;
-        private readonly ISessionManager sessionManager;
 
         private readonly MessageHandler messageHandler;
 
-        public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket, ISessionManager manager)
+        public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket)
         {
             webSocket = socket;
-            sessionManager = manager;
             this.dynamoViewModel = dynamoViewModel;
             messageHandler = new MessageHandler(dynamoViewModel);
             messageHandler.ResultReady += SendAnswerToWebSocket;
@@ -101,10 +99,7 @@ namespace DynamoWebServer
         public void ExecuteMessageFromSocket(string message, string sessionId)
         {
             var msg = messageHandler.DeserializeMessage(message);
-            //Save session in session manager
-            sessionManager.SetSession(sessionId);
-
-            ExecuteMessageFromSocket(msg);
+            ExecuteMessageFromSocket(msg, sessionId);
         }
 
         #endregion
@@ -125,7 +120,7 @@ namespace DynamoWebServer
 
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
         {
-            LogInfo("Web socket: recived [" + message + "]");
+            LogInfo("Web socket: received [" + message + "]");
             SendResponse(new ContentResponse
             {
                 Message = DateTime.Now.ToShortDateString() + " Message received"
@@ -156,7 +151,7 @@ namespace DynamoWebServer
 
         void SendAnswerToWebSocket(object sender, ResultReadyEventArgs e)
         {
-            SendResponse(e.Response, sessionManager.GetSession(dynamoViewModel));
+            SendResponse(e.Response, e.SessionId);
         }
 
         void BindEvents()
@@ -173,10 +168,10 @@ namespace DynamoWebServer
             webSocket.SessionClosed -= socketServer_SessionClosed;
         }
 
-        void ExecuteMessageFromSocket(Message message)
+        void ExecuteMessageFromSocket(Message message, string sessionId)
         {
             (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
-                .Invoke(new Action(() => messageHandler.Execute(dynamoViewModel, message)));
+                .Invoke(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
         }
 
         void LogInfo(string info)

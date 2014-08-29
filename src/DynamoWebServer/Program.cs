@@ -29,8 +29,7 @@ namespace DynamoWebServer
             // Comment out if we do not need a view.
             var view = new DynamoView(viewModel);
 
-            var webSocketServer = new WebServer(viewModel,
-                new WebSocket(), new SessionManager());
+            var webSocketServer = new WebServer(viewModel, new WebSocket());
 
             webSocketServer.Start();
 
