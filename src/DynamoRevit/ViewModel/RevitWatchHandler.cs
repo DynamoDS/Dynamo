@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Globalization;
+using System.Linq;
+
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -26,6 +28,8 @@ namespace Dynamo.Applications
     /// </summary>
     public class RevitWatchHandler : IWatchHandler
     {
+        private const string NULL_STRING = "null";
+
         private readonly IVisualizationManager visualizationManager;
         private readonly IPreferences preferences;
 
@@ -58,12 +62,12 @@ namespace Dynamo.Applications
 
             if (value is IEnumerable)
             {
-                node = new WatchViewModel(visualizationManager, "List", tag);
+                var list = (value as IEnumerable).Cast<object>().ToList();
 
-                var enumerable = value as IEnumerable;
-                foreach (var obj in enumerable)
+                node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
+                foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
-                    node.Children.Add(ProcessThing(obj, tag));
+                    node.Children.Add(ProcessThing(e.element, tag + ":" + e.idx, showRawData));
                 }
             }
             else
@@ -98,6 +102,25 @@ namespace Dynamo.Applications
         {
             try
             {
+                if (data.IsCollection)
+                {
+                    var list = data.GetElements();
+
+                    var node = new WatchViewModel(visualizationManager, list.Count == 0 ? "Empty List" : "List", tag, true);
+                    foreach (var e in list.Select((element, idx) => new { element, idx }))
+                    {
+                        node.Children.Add(Process(e.element, tag + ":" + e.idx, showRawData));
+                    }
+
+                    return node;
+                }
+
+                // MAGN-3494: If "data.Data" is null, then return a "null" string 
+                // representation instead of casting it as dynamic (that leads to 
+                // a crash).
+                if (data.IsNull || data.Data == null)
+                    return new WatchViewModel(visualizationManager, NULL_STRING, tag);
+
                 //If the input data is an instance of a class, create a watch node
                 //with the class name and let WatchHandler process the underlying CLR data
                 var classMirror = data.Class;
@@ -109,7 +132,7 @@ namespace Dynamo.Applications
                 }
 
                 //Finally for all else get the string representation of data as watch content.
-                return ProcessThing(data.Data as dynamic, tag);
+                return ProcessThing(data.Data as dynamic, tag, showRawData);
             }
             catch (Exception)
             {

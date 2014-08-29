@@ -257,6 +257,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("Failure")]
         public void Defect_MAGN_4024()
         {
             var model = ViewModel.Model;
