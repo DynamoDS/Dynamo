@@ -165,12 +165,12 @@ namespace Dynamo.Nodes.Search
                 return string.Empty;
         }
 
-        protected BitmapImage GetIcon(string fullNameOfIcon)
+        private BitmapImage GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(this.Assembly))
                 return null;
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
+            var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
             return (cust != null) ? cust.LoadIconInternal(fullNameOfIcon) : null;
         }
     }
