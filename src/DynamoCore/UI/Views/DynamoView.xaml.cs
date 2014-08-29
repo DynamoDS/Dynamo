@@ -128,8 +128,6 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
-
-            Debug.WriteLine("Resetting window location to {0}:{1}", Left, Top);
         }
 
         void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
