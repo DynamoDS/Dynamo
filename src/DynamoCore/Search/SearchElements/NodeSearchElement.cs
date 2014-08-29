@@ -10,6 +10,7 @@ using Dynamo.ViewModels;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Media.Imaging;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -119,7 +120,11 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, SearchElementGroup group, string fullName = "", IEnumerable<Tuple<string, string>> inputParameters = null, string outputParameters = "")
+        public NodeSearchElement(string name, string description,
+                                 IEnumerable<string> tags, SearchElementGroup group,
+                                 string fullName = "", string _assembly = "",
+                                 IEnumerable<Tuple<string, string>> inputParameters = null,
+                                 string outputParameters = "")
         {
             this.Node = null;
             this._name = name;
@@ -128,15 +133,18 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this._fullName = fullName;
-			this._group = group;
-            if(inputParameters!=null)
-            this._inputParameters = inputParameters.ToList();
+            this._group = group;
+            if (inputParameters != null)
+                this._inputParameters = inputParameters.ToList();
             this._outputParameters = outputParameters;
+            this.Assembly = _assembly;
         }
 
         public virtual NodeSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this._group, this._fullName, this._inputParameters, this._outputParameters);
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(),
+                                          this._group, this._fullName, this.Assembly,
+                                          this._inputParameters, this._outputParameters);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }
@@ -175,6 +183,17 @@ namespace Dynamo.Search.SearchElements
         {
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
-    }
 
+        protected override string GetResourceName(ResourceType resourceType)
+        {
+            switch (resourceType)
+            {
+                case ResourceType.SmallIcon: return this._fullName;
+                //TODO: try to load large icon, look how it works.
+                case ResourceType.LargeIcon: return this._fullName;
+            }
+
+            throw new InvalidOperationException("Unhandled resourceType");
+        }  
+    }
 }
