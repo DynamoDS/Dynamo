@@ -527,7 +527,7 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
-                    x = target.Width + 7*gap;
+                    x = target.Width + 2.5*gap;
                     var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)

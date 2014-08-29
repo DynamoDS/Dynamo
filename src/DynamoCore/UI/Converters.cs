@@ -1600,7 +1600,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string text = value.ToString();
-            if (text.Length > 40)
+            if (text.Length > 35)
                 return text.Insert(text.LastIndexOf(".")+1, "\n");
 
             return text;
