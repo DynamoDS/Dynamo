@@ -29,20 +29,24 @@ namespace Dynamo.DSEngine
 
             var customizationPath = "";
             var resourceAssemblyPath = "";
-            if (ResolveForAssembly(assemblyPath, ref customizationPath) &&
-                ResolveResourceAssembly(assemblyPath, out resourceAssemblyPath))
+
+            XDocument xDocument = null;
+            Assembly resAssembly = null;
+
+            if (ResolveForAssembly(assemblyPath, ref customizationPath))
             {
-                var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath),
-                    XDocument.Load(customizationPath));
-                triedPaths.Add(assemblyPath, true);
-                cache.Add(assemblyPath, c);
-                return c;
+                xDocument = XDocument.Load(customizationPath);
             }
 
-            // For those, which don't have LibraryCustomization e.g. CoreNodesUI.dll
             if (ResolveResourceAssembly(assemblyPath, out resourceAssemblyPath))
             {
-                var c = new LibraryCustomization(Assembly.LoadFrom(resourceAssemblyPath), null);
+                resAssembly = Assembly.LoadFrom(resourceAssemblyPath);
+            }
+
+            // We need 'LibraryCustomization' if either one is not 'null'
+            if (xDocument != null || (resAssembly != null))
+            {
+                var c = new LibraryCustomization(resAssembly, xDocument);
                 triedPaths.Add(assemblyPath, true);
                 cache.Add(assemblyPath, c);
                 return c;
@@ -98,7 +102,8 @@ namespace Dynamo.DSEngine
         internal LibraryCustomization(Assembly assembly, XDocument document)
         {
             this.XmlDocument = document;
-            this.LoadResourceStream(assembly);
+            if (assembly != null)
+                this.LoadResourceStream(assembly);
         }
 
         private void LoadResourceStream(Assembly assembly)
