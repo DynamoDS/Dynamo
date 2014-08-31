@@ -13,6 +13,7 @@ using ProtoCore.Mirror;
 using Revit.GeometryConversion;
 
 using RevitServices.Elements;
+using RevitServices.Materials;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -26,6 +27,7 @@ namespace Dynamo
     {
         private ElementId keeperId = ElementId.InvalidElementId;
         private ElementId directShapeId = ElementId.InvalidElementId;
+        private MethodInfo method;
 
         public ElementId KeeperId
         {
@@ -108,15 +110,17 @@ namespace Dynamo
 
         private void Draw(IEnumerable<GeometryObject> geoms)
         {
-            Type geometryElementType = typeof(GeometryElement);
-            MethodInfo[] geometryElementTypeMethods =
-                geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-
-            MethodInfo method =
-                geometryElementTypeMethods.FirstOrDefault(x => x.Name == "SetForTransientDisplay");
-
             if (method == null)
-                return;
+            {
+                Type geometryElementType = typeof(GeometryElement);
+                MethodInfo[] geometryElementTypeMethods =
+                    geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+                method = geometryElementTypeMethods.FirstOrDefault(x => x.Name == "SetForTransientDisplay");
+
+                if (method == null)
+                    return;
+            }
 
             RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
                 () =>
@@ -124,7 +128,7 @@ namespace Dynamo
                     TransactionManager.Instance.EnsureInTransaction(
                         DocumentManager.Instance.CurrentDBDocument);
 
-                    if (keeperId != ElementId.InvalidElementId && 
+                    if (keeperId != ElementId.InvalidElementId &&
                         DocumentManager.Instance.CurrentDBDocument.GetElement(keeperId) != null)
                     {
                         DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
@@ -138,6 +142,7 @@ namespace Dynamo
                     argsM[3] = ElementId.InvalidElementId;
 
                     keeperId = (ElementId)method.Invoke(null, argsM);
+
 
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
