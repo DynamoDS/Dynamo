@@ -1128,7 +1128,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
+        [Category("Failure")]
 		public void LaceLongest_ListWith10000Element()
 		{
 			var model = ViewModel.Model;
@@ -1305,7 +1305,7 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test, Category("Failing")]
+        [Test, Category("Failure")]
 		public void NumberRange_LacingCrossProduct()
 		{
 			var model = ViewModel.Model;
@@ -1594,6 +1594,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
+        [Category("Failure")]
 		public void SplitList_ComplexAnotherExample()
 		{
 			var model = ViewModel.Model;

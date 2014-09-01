@@ -420,7 +420,7 @@ inputBool = true;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DynamicReferenceResolving_Complex_Case()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4138
@@ -554,7 +554,7 @@ testFoo1 = t.foo1(6); // foo1 does not exist in A, function not found warning; t
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void DynamicReference_FunctionCall_With_Default_Arg()
         {
             string err = "MAGN-4137 Method resolution error with default arguments in member function";
@@ -780,7 +780,7 @@ n = Count(arr);
             thisTest.Verify("n", 4);
         }
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void imperative_Replication_1467070()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
@@ -807,7 +807,7 @@ return = t;
             thisTest.Verify("t", new Object[] { null, null, 3, 4, 5 });
         }
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void imperative_Replication_1467070_2()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092

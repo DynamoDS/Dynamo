@@ -210,7 +210,13 @@ namespace Dynamo.Nodes
         {
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            var editWindowItem = new MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeUI.ViewModel.DynamoViewModel
+            };
+
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += editWindowItem_Click;
         }
@@ -597,26 +603,6 @@ namespace Dynamo.Nodes
             ((PreferenceSettings)this.Workspace.DynamoModel.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
-
-            DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
-        }
-
-        private void EvaluationCompleted(object o)
-        {
-            CachedValue = o;
-            DispatchOnUIThread(
-                delegate
-                {
-                    //unhook the binding
-                    OnRequestBindingUnhook(EventArgs.Empty);
-
-                    Root.Children.Clear();
-                    Root.Children.Add(GetWatchNode());
-
-                    //rehook the binding
-                    OnRequestBindingRehook(EventArgs.Empty);
-                }
-            );
         }
 
         void Root_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -670,7 +656,8 @@ namespace Dynamo.Nodes
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = this };
+            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
+            var editWindow = new EditWindow(viewModel) { DataContext = this };
             editWindow.BindToProperty(
                 null,
                 new Binding("Value")
