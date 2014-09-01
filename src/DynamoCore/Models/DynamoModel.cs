@@ -447,6 +447,15 @@ namespace Dynamo.Models
         /// 
         public void RunExpression()
         {
+            var traceData = HomeSpace.PreloadedTraceData;
+            if ((traceData != null) && traceData.Any())
+            {
+                // If we do have preloaded trace data, set it here first.
+                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler, null);
+                if (setTraceDataTask.Initialize(EngineController, HomeSpace))
+                    scheduler.ScheduleForExecution(setTraceDataTask);
+            }
+
             var task = new UpdateGraphAsyncTask(scheduler, OnUpdateGraphCompleted);
             if (task.Initialize(EngineController, HomeSpace))
                 scheduler.ScheduleForExecution(task);
