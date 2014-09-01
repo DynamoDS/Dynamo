@@ -90,16 +90,18 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <StackPanel Orientation="Horizontal"
+        <StackPanel x:Name="addCategoryHeaders"
+                    Orientation="Horizontal"
                     Grid.Row="2">
-            <TextBlock Name="query"
+            <!-- Headers will be added in code -->
+            <!--<TextBlock Name="query"
                        PreviewMouseLeftButtonDown="OnQueryMouseLeftButtonDown"
                        FontWeight="UltraBold"
                        Foreground="#DDD">QUERY</TextBlock>
             <TextBlock Name="action"
                        Margin="10,0,0,0"
                        PreviewMouseLeftButtonDown="OnActionMouseLeftButtonDown"
-                       Foreground="#DDD">ACTION</TextBlock>
+                       Foreground="#DDD">ACTION</TextBlock>-->
         </StackPanel>
         <ListBox x:Name="addCategoryList"
                  Grid.Row="3"
