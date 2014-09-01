@@ -1243,7 +1243,7 @@ namespace ProtoTest.LiveRunner
 
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestFunctionModification04()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4161
@@ -2170,7 +2170,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestPersistentValuesOnUpdate()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3789
@@ -2262,7 +2262,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestCodeblockModification08()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4160
@@ -2626,7 +2626,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestCodeBlockDeleteLine01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4159
@@ -2831,7 +2831,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestCachingSSA02()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4158
@@ -4566,7 +4566,9 @@ r = func_1(x);
         public void TestNestedLanguageBlockReExecution05()
         {
             string code = @"
-def foo()
+
+
+def foo()
 {
     x2 = 5;
     v1 = [Associative]

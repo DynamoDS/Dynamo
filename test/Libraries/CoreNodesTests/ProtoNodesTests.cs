@@ -17,7 +17,7 @@ namespace DSCoreNodesTests
     internal static class ProtoNodesTests
     {
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public static void CanDoSimpleLoft()
         {
             HostFactory.Instance.StartUp();
