@@ -168,6 +168,12 @@
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                                   ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                                   ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
+            <!--Select not more than one category-->
+            <Style TargetType="{x:Type Expander}">
+                <Setter Property="IsExpanded"
+                        Value="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}" />
+            </Style>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
@@ -181,7 +187,8 @@
                   Background="{StaticResource WorkspaceBackgroundBrush}"
                   BorderThickness="0"
                   ItemsSource="{Binding Model.BrowserRootCategories}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                  SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Expander Header="{Binding Path=Name}"
