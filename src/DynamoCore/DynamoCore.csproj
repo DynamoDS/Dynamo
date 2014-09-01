@@ -558,6 +558,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
     <None Include="UI\Themes\Modern\Connectors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

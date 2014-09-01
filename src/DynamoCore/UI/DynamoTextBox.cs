@@ -19,6 +19,9 @@ using ProtoCore.DSASM;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace Dynamo.Nodes
 {
@@ -316,6 +319,7 @@ namespace Dynamo.Nodes
             //Set style for Watermark
             this.SetResourceReference(TextBox.StyleProperty, "CodeBlockNodeTextBox");
             this.Tag = "Your code goes here";
+            
         }
 
 
@@ -392,12 +396,22 @@ namespace Dynamo.Nodes
         {
             this.nodeViewModel = nvm;
             dynamoViewModel = nodeViewModel.DynamoViewModel;
-
+            //BorderThickness = new Thickness(1);
+            //Padding = new Thickness(3);
+            //MinHeight = 20;
             this.TextArea.LostFocus += TextArea_LostFocus;
             this.Loaded += (obj, args) => this.TextArea.Focus();
+           
 
-            //this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeTextBox");
-            this.Tag = "Your code goes here";
+            this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeAvalonTextEditor");
+            //this.Tag = "Your code goes here";
+
+            var stream = GetType().Assembly.GetManifestResourceStream(
+                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
+                
+            this.SyntaxHighlighting = HighlightingLoader.Load(
+                new XmlTextReader(stream), HighlightingManager.Instance);
+            
         }
 
         protected void OnRequestReturnFocusToSearch()
@@ -412,6 +426,7 @@ namespace Dynamo.Nodes
                 // Since this property a one way binding from source (CodeBlockNodeModel) to 
                 // target (this class), the getter should never be called
                 throw new NotImplementedException();
+               
             }
             set
             {

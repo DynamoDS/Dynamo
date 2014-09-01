@@ -88,7 +88,8 @@ namespace Dynamo.Nodes
         private void editItem_Click(object sender, RoutedEventArgs e)
         {
             // Setup a binding with the edit window's text field
-            var editWindow = new EditWindow(true);
+            var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
+            var editWindow = new EditWindow(dynamoViewModel, true);
             editWindow.BindToProperty(DataContext, new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,

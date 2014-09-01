@@ -2,6 +2,8 @@
 {
     public struct Keyword
     {
+        // TODO: Add 
+        // local, Imperative, Associative, try, catch, throw, cast, Options
         public const string Native = "native";
         public const string Class = "class";
         public const string Constructor = "constructor";
