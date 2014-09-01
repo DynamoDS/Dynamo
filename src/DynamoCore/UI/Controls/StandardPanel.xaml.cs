@@ -16,21 +16,21 @@ namespace Dynamo.UI.Controls
         }
         private void OnActionMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            queryActionMethods.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+            addCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
             action.FontWeight = FontWeights.UltraBold;
             query.FontWeight = FontWeights.Normal;
         }
 
         private void OnQueryMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            queryActionMethods.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+            addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
             action.FontWeight = FontWeights.Normal;
             query.FontWeight = FontWeights.UltraBold;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            queryActionMethods.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+            addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -50,6 +50,5 @@ namespace Dynamo.UI.Controls
         {
             libraryToolTipPopup.SetDataContext(null);
         }
-
     }
 }

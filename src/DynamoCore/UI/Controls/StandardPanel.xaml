@@ -65,7 +65,7 @@
                                         Converter={StaticResource BoolToVisibilityConverter},
                                         ConverterParameter='Collapse'}"
                    Foreground="#DDD">CREATE</TextBlock>
-        <ListBox x:Name="creationMethods"
+        <ListBox x:Name="topCategoryList"
                  Grid.Row="1"
                  ItemsSource="{Binding Path=CreateMembers}"
                  Background="Transparent"
@@ -106,7 +106,7 @@
                        PreviewMouseLeftButtonDown="OnActionMouseLeftButtonDown"
                        Foreground="#DDD">ACTION</TextBlock>
         </StackPanel>
-        <ListBox x:Name="queryActionMethods"
+        <ListBox x:Name="addCategoryList"
                  Grid.Row="3"
                  Grid.ColumnSpan="2"
                  DataContextChanged="OnDataContextChanged"
