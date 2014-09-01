@@ -23,7 +23,7 @@ namespace DSCoreNodesTests
     class NodeWithUITests
     {
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void SliderASTGeneration()
         {
             var sliderNode = new DoubleSlider(null) { Value = 10 };
