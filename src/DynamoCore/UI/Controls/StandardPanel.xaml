@@ -52,7 +52,8 @@
                          Handler="OnPopupMouseLeave" />
         </Style>
     </UserControl.Resources>
-    <Grid Visibility="{Binding Path=ClassDetailsVisibility,
+    <Grid DataContextChanged="GridDataContextChanged"
+          Visibility="{Binding Path=ClassDetailsVisibility,
                                Converter={StaticResource BoolToVisibilityConverter},
                                ConverterParameter='Collapse'}">
         <Grid.RowDefinitions>
@@ -61,13 +62,10 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock Visibility="{Binding Path=ClassDetailsVisibility,
-                                        Converter={StaticResource BoolToVisibilityConverter},
-                                        ConverterParameter='Collapse'}"
+        <TextBlock x:Name="topCategoryHeader"
                    Foreground="#DDD">CREATE</TextBlock>
         <ListBox x:Name="topCategoryList"
                  Grid.Row="1"
-                 ItemsSource="{Binding Path=CreateMembers}"
                  Background="Transparent"
                  BorderBrush="Transparent"
                  ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
@@ -93,10 +91,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="2"
-                    Visibility="{Binding Path=ClassDetailsVisibility,
-                                        Converter={StaticResource BoolToVisibilityConverter},
-                                        ConverterParameter='Collapse'}">
+                    Grid.Row="2">
             <TextBlock Name="query"
                        PreviewMouseLeftButtonDown="OnQueryMouseLeftButtonDown"
                        FontWeight="UltraBold"

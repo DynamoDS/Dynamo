@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
@@ -49,6 +50,18 @@ namespace Dynamo.UI.Controls
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             libraryToolTipPopup.SetDataContext(null);
+        }
+
+        private void GridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var classInfo = this.DataContext as ClassInformation;
+            if ((classInfo.CreateMembers as List<BrowserInternalElement>).Count > 0)
+                topCategoryList.ItemsSource = (this.DataContext as ClassInformation).CreateMembers;
+            else
+            {
+                topCategoryHeader.Text = "ACTION";
+                topCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+            }
         }
     }
 }
