@@ -1,0 +1,73 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
+
+using Dynamo.DSEngine;
+using Dynamo.Models;
+
+using ProtoCore.AST.AssociativeAST;
+
+using ProtoScript.Runners;
+
+namespace Dynamo.Core.Threading
+{
+#if ENABLE_DYNAMO_SCHEDULER
+
+    class CompileCustomNodeParams
+    {
+        internal EngineController EngineController { get; set; }
+        internal CustomNodeDefinition Definition { get; set; }
+        internal IEnumerable<NodeModel> Nodes { get; set; }
+        internal IEnumerable<string> Parameters { get; set; }
+        internal IEnumerable<AssociativeNode> Outputs { get; set; }
+    }
+
+    class CompileCustomNodeAsyncTask : AsyncTask
+    {
+        private GraphSyncData graphSyncData;
+        private EngineController engineController;
+
+        #region Public Class Operational Methods
+
+        internal CompileCustomNodeAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
+            : base(scheduler, callback)
+        {
+        }
+
+        internal bool Initialize(CompileCustomNodeParams initParams)
+        {
+            engineController = initParams.EngineController;
+
+            try
+            {
+                graphSyncData = engineController.ComputeSyncData(initParams);
+                return graphSyncData != null;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region Protected Overridable Methods
+
+        protected override void ExecuteCore()
+        {
+            // Updating graph in the context of ISchedulerThread.
+            engineController.UpdateGraphImmediate(graphSyncData);
+        }
+
+        protected override void HandleTaskCompletionCore()
+        {
+            // Nothing needs to be done here for now, unless we 
+            // want to display custom node execution related errors.
+        }
+
+        #endregion
+    }
+
+#endif
+}

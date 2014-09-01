@@ -135,6 +135,7 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
+    <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
     <Compile Include="Core\Threading\DynamoScheduler.cs" />
     <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Threading\SchedulerThread.cs" />
