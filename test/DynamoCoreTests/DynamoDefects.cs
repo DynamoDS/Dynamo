@@ -11,7 +11,7 @@ namespace Dynamo.Tests
     {
         // Note: Pelase only add test cases those are related to defects.
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void T01_Defect_MAGN_110()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_110.dyn");
@@ -24,7 +24,7 @@ namespace Dynamo.Tests
             SelectivelyAssertPreviewValues("339dd778-8d2c-4ae2-9fdc-26c1572f8eb6", validationData);
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_Equal()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_Equal.dyn");
@@ -40,7 +40,7 @@ namespace Dynamo.Tests
             SelectivelyAssertPreviewValues("3806c656-56bd-4878-9082-b2d27644abd1", validationData);
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_GreaterThan()
         {
             DynamoModel model = ViewModel.Model;
@@ -59,7 +59,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_GreaterThanOrEqual()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_GreaterThanOrEqual.dyn");
@@ -76,8 +76,8 @@ namespace Dynamo.Tests
             SelectivelyAssertPreviewValues("3806c656-56bd-4878-9082-b2d27644abd1", validationData);
 
         }
-        
-        [Test]
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_LessThan()
         {
             DynamoModel model = ViewModel.Model;
@@ -87,7 +87,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("7ec8271d-be03-4d53-ae78-b94c4db484e1", new int[] { 1, 1, 1, 1, 1 });
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_LessThanOrEqual()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_LessThanOrEqual.dyn");
@@ -97,7 +97,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_1206()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1206
@@ -110,7 +110,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(20, add.CachedValue.Data);
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         [Category("Failure")]
         public void Defect_MAGN_2566()
         {
@@ -139,7 +139,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_3256()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3256
@@ -157,7 +157,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_3646()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3646
@@ -175,7 +175,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.0000000000000001);
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_3648()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3648
@@ -201,7 +201,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_3726()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3726
