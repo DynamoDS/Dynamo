@@ -13,6 +13,9 @@
         <ResourceDictionary>
 
             <DataTemplate x:Key="ClassObjectDataTemplate">
+                <DataTemplate.Resources>
+                    <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+                </DataTemplate.Resources>
                 <StackPanel Orientation="Vertical"
                             Width="96"
                             Height="96">
@@ -29,11 +32,17 @@
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Grid.Row="0" />
-                        <TextBlock Text="{Binding Path=Name}"
-                                   HorizontalAlignment="Center"
+                        <TextBlock HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Center"
                                    Foreground="#989898"
-                                   Grid.Row="1" />
+                                   Grid.Row="1">
+                            <TextBlock.Text>
+                                <Binding Path="Name"
+                                         Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                         ConverterParameter="ClassButton"/>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </Grid>
                 </StackPanel>
             </DataTemplate>
