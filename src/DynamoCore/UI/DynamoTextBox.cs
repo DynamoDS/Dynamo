@@ -406,13 +406,11 @@ namespace Dynamo.Nodes
             this.SetResourceReference(TextEditor.StyleProperty, "CodeBlockNodeAvalonTextEditor");
             //this.Tag = "Your code goes here";
 
-            const string highlighting = "DesignScript.Resources.SyntaxHighlighting.xshd";
-
-            var elem = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.UI.Resources." + highlighting);
+            var stream = GetType().Assembly.GetManifestResourceStream(
+                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
                 
             this.SyntaxHighlighting = HighlightingLoader.Load(
-                new XmlTextReader(elem), HighlightingManager.Instance);
+                new XmlTextReader(stream), HighlightingManager.Instance);
             
         }
 
