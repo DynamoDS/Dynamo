@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
-using ProtoCore.Mirror;
 using Dynamo.Nodes;
 
 namespace Dynamo.Tests
