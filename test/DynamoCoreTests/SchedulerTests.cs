@@ -1,5 +1,7 @@
 ﻿using Dynamo.Core;
 using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
+
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,20 @@ using System.Threading.Tasks;
 namespace Dynamo
 {
     #region Mock Classes for Test Cases
+
+    class SampleSchedulerThread : ISchedulerThread
+    {
+        private DynamoScheduler scheduler;
+
+        public void Initialize(DynamoScheduler owningScheduler)
+        {
+            scheduler = owningScheduler;
+        }
+
+        public void Shutdown()
+        {
+        }
+    }
 
     class SampleAsyncTask : AsyncTask
     {
@@ -60,7 +76,7 @@ namespace Dynamo
         [Test]
         public void TimeStampGenerator00()
         {
-            var scheduler = new DynamoScheduler();
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
             Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
@@ -89,7 +105,7 @@ namespace Dynamo
             }
 
             // Start all time-stamp grabbers "at one go".
-            var scheduler = new DynamoScheduler();
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
             Parallel.For(0, EventCount, ((index) =>
             {
                 grabbers[index].GrabTimeStamp(scheduler);
