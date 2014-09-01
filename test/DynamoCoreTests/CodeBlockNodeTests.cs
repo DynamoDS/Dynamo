@@ -241,6 +241,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_1045()
         {
             // Create the initial code block node.
@@ -258,6 +259,7 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_4024()
         {
             var model = ViewModel.Model;
@@ -290,6 +292,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_784()
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
@@ -300,6 +303,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3244()
         {
             // Create the initial code block node.
@@ -317,6 +321,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3244_extended()
         {
             //This is to test if the code block node has errors, the connectors are still
@@ -351,6 +356,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3580()
         {
             // Create the initial code block node.
@@ -410,6 +416,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3599()
         {
             // Create the initial code block node.
