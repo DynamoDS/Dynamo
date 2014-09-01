@@ -2022,7 +2022,7 @@ x4 = 0..#5..10;
         public void TestGCRefCount002()
         {
             String code =
-                @"def CreatePoint : Point(x : int, y : int, z : int){	return = DummyPoint.ByCoordinates(x, y, z);}def getx : double(p : Point){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                ";
+                @"def CreatePoint : DummyPoint(x : int, y : int, z : int){	return = DummyPoint.ByCoordinates(x, y, z);}def getx : double(p : DummyPoint){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                ";
             code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetFirstValue("x");
