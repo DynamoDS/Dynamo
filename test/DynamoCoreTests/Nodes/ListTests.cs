@@ -1069,7 +1069,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
 		public void LaceShortest_WithSingleValueInput()
 		{
 			// details are given in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2464
