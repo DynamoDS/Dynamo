@@ -1431,7 +1431,7 @@ result = Count(a);";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T046_Sum_IfElse()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
@@ -1467,7 +1467,7 @@ result =
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T047_Sum_ForLoop()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
@@ -1497,7 +1497,7 @@ result =
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T048_Sum_WhileLoop()
         {
             string code = @"
@@ -1532,7 +1532,7 @@ result =
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("SmokeTest")]
         public void T049_Sum_Function()
         {
@@ -1557,7 +1557,7 @@ result = foo(c);
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T050_Sum_Class()
         {
             string code = @"
@@ -1631,7 +1631,7 @@ result = Sum(a)==0&& b==-1.00? b :c;
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T052_Sum_RangeExpression()
         {
             string code = @"
@@ -1675,7 +1675,7 @@ result = Sum(a);//12.0";
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T055_Sum_ModifierStack()
         {
             string code = @"
@@ -1693,7 +1693,7 @@ result = Sum({a1,a2,a3,a});//6";
         }
 
         [Test]
-        [Category("SmokeTest"), Category("Failing")]
+        [Category("SmokeTest"), Category("Failure")]
         public void T056_Sum_AssociativeImperative()
         {
             string code = @"
@@ -1724,7 +1724,7 @@ b1 = {b,1};
         //datatype
 
         [Test]
-        [Category("Design Issue"), Category("Failing")]
+        [Category("Design Issue"), Category("Failure")]
         public void T057_Average_DataType_01()
         {
             string code = @"
@@ -1804,7 +1804,7 @@ d = Flatten(c);";
         }
 
         [Test]
-        [Category("Design Issue"), Category("Failing")]
+        [Category("Design Issue"), Category("Failure")]
         public void T060_Average_ForLoop()
         {
             string code = @"
@@ -2239,7 +2239,7 @@ a4 = Rank({ { { 1 } } });
 
         [Test]
         [Category("Built in Functions")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV_1467350_Flatten()
         {
             String code =
@@ -2612,7 +2612,7 @@ sort = Sort(sorterFunction, a);
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void BIM32_Sort_class()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4099
@@ -2641,7 +2641,7 @@ y=z.create();
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void BIM33_Sort_class_2()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4099
@@ -4169,7 +4169,7 @@ import (""DSCoreNodes.dll"");
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T068_Rand_1()
         {
             String code =
@@ -4506,7 +4506,7 @@ b = Sort(sorterFunction, a);
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T072_defect_1467577()
         {
             String code =
@@ -4519,7 +4519,7 @@ index= IndexOf(1..10..1 , {1,2});
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T072_defect_1467577_2()
         {
             String code =
