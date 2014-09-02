@@ -1,8 +1,0 @@
-<Workspace Version="0.6.3.7993" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <Elements>
-    <Dynamo.Nodes.Now type="Dynamo.Nodes.Now" guid="755a9cbf-5974-42a9-b8b1-0c1439326a4e" nickname="Now" x="241" y="197.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.Future type="Dynamo.Nodes.Future" guid="39c7f250-ae2c-4f41-8e3a-af62241e0cde" nickname="Future" x="246" y="342.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-  </Elements>
-  <Connectors />
-  <Notes />
-</Workspace>

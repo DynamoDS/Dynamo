@@ -138,7 +138,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("Class")]
         public void TestClasses01()
         {
@@ -1180,7 +1180,7 @@ r2 = ContainsKey(a, true);
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestDictionary22()
         {
             // Test builtin functions RemoveKey() for array
@@ -2010,26 +2010,20 @@ x4 = 0..#5..10;
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestGCFFI001()
         {
             String code =
                 @"def foo : int(){	p = Point.ByCoordinates(10, 20, 30);	p2 = Point.ByCoordinates(12, 22, 32);	p3 = Point.ByCoordinates(14, 24, 34);	return = 10;}p = Point.ByCoordinates(15, 25, 35);x = p.X;y = foo();                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
+            code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestGCRefCount002()
         {
             String code =
-                @"def CreatePoint : Point(x : int, y : int, z : int){	return = Point.ByCoordinates(x, y, z);}def getx : double(p : Point){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
+                @"def CreatePoint : DummyPoint(x : int, y : int, z : int){	return = DummyPoint.ByCoordinates(x, y, z);}def getx : double(p : DummyPoint){	return = p.X;}p = CreatePoint(5, 6, 7);x = getx(p);                ";
+            code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetFirstValue("x");
             Assert.IsTrue((Double)o.Payload == 5.0);
@@ -2045,14 +2039,11 @@ x4 = 0..#5..10;
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestNullFFI()
         {
             String code =
-                @"class Test{    X : int;    constructor Test(x : int)    {        X = x;    }        def Equals : bool (other : Test)    {        return = (other.X == this.X);    }}x = {1001,2001};t = Point.ByCoordinates(x, 0, 0);s = t;s[1] = null;check = s.Equals(t);value = check[1];Print(check);                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
+                @"class Test{    X : int;    constructor Test(x : int)    {        X = x;    }        def Equals : bool (other : Test)    {        return = (other.X == this.X);    }}x = {1001,2001};t = DummyPoint.ByCoordinates(x, 0, 0);s = t;s[1] = null;check = s.Equals(t);value = check[1];Print(check);                ";
+            code = string.Format("{0}\n{1}", "import(\"FFITarget.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
         }

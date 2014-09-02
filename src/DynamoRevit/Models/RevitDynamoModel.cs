@@ -31,6 +31,12 @@ namespace Dynamo.Applications.Models
 {
     public class RevitDynamoModel : DynamoModel
     {
+        /// <summary>
+        ///     Flag for syncing up document switches between Application.DocumentClosing and
+        ///     Application.DocumentClosed events.
+        /// </summary>
+        private bool updateCurrentUIDoc;
+
         #region Events
 
         public event EventHandler RevitDocumentChanged;
@@ -172,6 +178,8 @@ namespace Dynamo.Applications.Models
 
         private void SubscribeDocumentManagerEvents()
         {
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosing +=
+                Application_DocumentClosing;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
                 Application_DocumentClosed;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
@@ -183,6 +191,8 @@ namespace Dynamo.Applications.Models
 
         private void UnsubscribeDocumentManagerEvents()
         {
+            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosing -=
+                Application_DocumentClosing;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed -=
                 Application_DocumentClosed;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened -=
@@ -301,6 +311,21 @@ namespace Dynamo.Applications.Models
         }
 
         /// <summary>
+        /// Handler for Revit's DocumentClosing event.
+        /// This handler is called when a document is closing.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Application_DocumentClosing(object sender, DocumentClosingEventArgs e)
+        {
+            // ReSharper disable once PossibleUnintendedReferenceComparison
+            if (DocumentManager.Instance.CurrentDBDocument.Equals(e.Document))
+            {
+                updateCurrentUIDoc = true;
+            }
+        }
+
+        /// <summary>
         /// Handler for Revit's DocumentClosed event.
         /// This handler is called when a document is closed.
         /// </summary>
@@ -323,8 +348,9 @@ namespace Dynamo.Applications.Models
             {
                 // If Dynamo's active UI document's document is the one that was just closed
                 // then set Dynamo's active UI document to whatever revit says is active.
-                if (DocumentManager.Instance.CurrentUIDocument.Document == null)
+                if (updateCurrentUIDoc)
                 {
+                    updateCurrentUIDoc = false;
                     DocumentManager.Instance.CurrentUIDocument =
                         DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 }
