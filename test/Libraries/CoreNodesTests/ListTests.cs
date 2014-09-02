@@ -173,7 +173,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        [Category("UnitTests")
+        [Category("UnitTests")]
         public static void FilterListByMask()
         {
             Assert.AreEqual(
