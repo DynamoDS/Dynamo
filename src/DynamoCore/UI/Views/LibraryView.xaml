@@ -168,7 +168,6 @@
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                                   ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                                   ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
