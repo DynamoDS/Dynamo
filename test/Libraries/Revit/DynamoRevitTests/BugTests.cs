@@ -30,7 +30,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [Category("RegressionTests")]
         [TestModel(@".\empty.rfa")]
         public void MAGN_102()
@@ -116,7 +116,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [Category("RegressionTests")]
         [TestModel(@".\Bugs\MAGN_2576_DataImport.rvt")]
         public void MAGN_2576()
