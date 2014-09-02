@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -106,20 +107,23 @@ namespace Dynamo.UI.Controls
         List<StartPageListItem> communityLinks = new List<StartPageListItem>();
         List<StartPageListItem> references = new List<StartPageListItem>();
         List<StartPageListItem> contributeLinks = new List<StartPageListItem>();
+        string folderPathForShowInFolder = null;
 
         // Dynamic lists that update views on the fly.
-        ObservableCollection<StartPageListItem> sampleFiles = null;
+        ObservableCollection<SampleFileProperty> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
-
+        TreeView internalTreeView = null;
         internal readonly DynamoViewModel DynamoViewModel;
 
         internal StartPageViewModel(DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
 
-            this.sampleFiles = new ObservableCollection<StartPageListItem>();
+            this.internalTreeView = new TreeView();
             this.recentFiles = new ObservableCollection<StartPageListItem>();
-
+            sampleFiles = new ObservableCollection<SampleFileProperty>();
+            
+            
             #region File Operations
 
             fileOperations.Add(new StartPageListItem("New", "icon-new.png")
@@ -194,25 +198,48 @@ namespace Dynamo.UI.Controls
             RefreshRecentFileList(dvm.RecentFiles);
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
-
-        internal void PopulateSampleFileList(IEnumerable<string> filePaths)
+        internal void WalkDirectoryTree(System.IO.DirectoryInfo root, SampleFileProperty rootProperty)
         {
-            if (filePaths == null || (filePaths.Count() <= 0))
-                return;
-
-            sampleFiles.Clear();
-            foreach (var filePath in filePaths)
+            string firstFilePath=null;
+            try
             {
-                var path = Path.GetFileNameWithoutExtension(filePath);
-                sampleFiles.Add(new StartPageListItem(path)
+                // First try to get all the sub-directories before the files themselves.
+                System.IO.DirectoryInfo[] directories = root.GetDirectories();
+                if (null != directories && (directories.Length > 0))
                 {
-                    ContextData = filePath,
-                    ToolTip = filePath,
-                    ClickAction = StartPageListItem.Action.FilePath
-                });
+                    foreach (System.IO.DirectoryInfo directory in directories)
+                    {
+                        // Resursive call for each subdirectory.
+                        SampleFileProperty subProperty = new SampleFileProperty(directory.Name, directory.FullName);
+                        WalkDirectoryTree(directory,subProperty);
+                        rootProperty.AddChildProperty(subProperty);
+                    }
+                }
+
+                // Secondly, process all the files directly under this folder 
+                System.IO.FileInfo[] dynamoFiles = null;
+                dynamoFiles = root.GetFiles("*.dyn", System.IO.SearchOption.TopDirectoryOnly);
+
+                if (null != dynamoFiles && (dynamoFiles.Length > 0))
+                {
+                    foreach (System.IO.FileInfo file in dynamoFiles)
+                    {
+                        if (firstFilePath == null)
+                        {
+                            firstFilePath = file.FullName;
+                            folderPathForShowInFolder = Path.GetDirectoryName(firstFilePath);
+                        }
+                        // Add each file under the root directory property list.
+                        rootProperty.AddChildProperty(new SampleFileProperty(file.Name, file.FullName));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Perhaps some permission problems?
             }
         }
-
+        
         internal void HandleListItemClicked(StartPageListItem clicked)
         {
             if (clicked != null)
@@ -232,6 +259,10 @@ namespace Dynamo.UI.Controls
                         break;
                 }
             }
+        }
+
+        public string FolderPathForShowInFolder {
+            get { return this.folderPathForShowInFolder; }
         }
 
         #region Public Class Properties (Static Lists)
@@ -259,11 +290,7 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Public Class Properties (Dynamic Lists)
-
-        public ObservableCollection<StartPageListItem> SampleFiles
-        {
-            get { return this.sampleFiles; }
-        }
+      
 
         public ObservableCollection<StartPageListItem> RecentFiles
         {
@@ -271,6 +298,16 @@ namespace Dynamo.UI.Controls
         }
 
         #endregion
+
+        public ObservableCollection<SampleFileProperty> SampleFiles
+        {
+            get { return this.sampleFiles; }
+        }
+
+        public TreeView InternalTreeView
+        {
+            get { return this.internalTreeView; }
+        }
 
         #region Private Class Event Handlers
 
@@ -371,7 +408,7 @@ namespace Dynamo.UI.Controls
             this.referenceListBox.ItemsSource = startPageViewModel.References;
             this.codeListBox.ItemsSource = startPageViewModel.ContributeLinks;
             this.recentListBox.ItemsSource = startPageViewModel.RecentFiles;
-            this.samplesListBox.ItemsSource = startPageViewModel.SampleFiles;
+            this.internalTreeView.ItemsSource = startPageViewModel.SampleFiles;
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -395,5 +432,72 @@ namespace Dynamo.UI.Controls
         }
 
         #endregion
+
+        private void OnSampleFileClick(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = VisualUpwardSearch<TreeViewItem>(e.OriginalSource as DependencyObject) as TreeViewItem;
+            if (treeViewItem != null) treeViewItem.IsExpanded = !treeViewItem.IsExpanded;
+
+            string filePath = null;
+
+            if (null != internalTreeView.SelectedItem)
+                filePath = ((SampleFileProperty)internalTreeView.SelectedItem).FilePath;
+
+            if (string.IsNullOrEmpty(filePath) || !filePath.Contains(".dyn"))
+                return;
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                MessageBox.Show(string.Format("File '{0}' cannot be found!", filePath));
+                return;
+            }
+            if (string.IsNullOrEmpty(filePath) || (File.Exists(filePath) == false))
+            {
+                MessageBox.Show(string.Format("File not found: {0}", filePath));
+                return;
+            }
+
+            var dvm = this.dynamoViewModel;
+            if (dvm.OpenCommand.CanExecute(filePath))
+                dvm.OpenCommand.Execute(filePath);
+        }
+
+        static DependencyObject VisualUpwardSearch<T>(DependencyObject source)
+        {
+            while (source != null && source.GetType() != typeof(T))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source;
+        }
+
+        private void showSampleInFolderLabel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var startPageViewModel = this.DataContext as StartPageViewModel;
+            Process.Start("explorer.exe", "/select," + startPageViewModel.FolderPathForShowInFolder);
+        }
+
     }
+
+    public class SampleFileProperty
+    {
+        ObservableCollection<SampleFileProperty> childProperties = null;
+
+        public SampleFileProperty(string name, string path)
+        {
+            this.FileName = name;
+            this.FilePath = path;
+        }
+        public void AddChildProperty(SampleFileProperty childProperty)
+        {
+            if (null == childProperties)
+                childProperties = new ObservableCollection<SampleFileProperty>();
+
+            childProperties.Add(childProperty);
+        }
+
+        public string FileName { get; private set; }
+        public string FilePath { get; private set; }
+        public ObservableCollection<SampleFileProperty> Children { get { return childProperties; } }
+    }
+
 }

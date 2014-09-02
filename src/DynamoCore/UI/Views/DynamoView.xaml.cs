@@ -760,10 +760,33 @@ namespace Dynamo.Controls
                         SamplesMenu.Items.Add(dirItem);
                     }
                 }
+                if (dirPaths.Any())
+                {
+                    var showInFolder = new MenuItem
+                    {
+                        Header = "Show In Folder",
+                        Tag = dirPaths[0]
+                    };
+                    showInFolder.Click += OnShowInFolder;
+                    SamplesMenu.Items.Add(new Separator());
+                    SamplesMenu.Items.Add(showInFolder);
+                }
 
-                if (this.startPage != null)
-                    this.startPage.PopulateSampleFileList(sampleFiles);
+                if (this.startPage != null) { }
+                string rootPath = Path.GetDirectoryName(Path.GetDirectoryName(sampleFiles.ToArray()[0]));
+                DirectoryInfo root = new DirectoryInfo(rootPath);
+                SampleFileProperty rootProperty = new SampleFileProperty("Samples", "Path");
+                this.startPage.WalkDirectoryTree(root,rootProperty);
+    
+                this.startPage.SampleFiles.Add(rootProperty);
+                    //this.startPage.PopulateSampleFileList(sampleFiles);
             }
+        }
+
+        private void OnShowInFolder(object sender, RoutedEventArgs e)
+        {
+            var folderPath = (string)((MenuItem) sender).Tag;
+            Process.Start("explorer.exe", "/select," + folderPath);
         }
 #endif
 
