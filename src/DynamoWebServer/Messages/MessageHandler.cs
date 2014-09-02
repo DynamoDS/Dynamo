@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
 using Dynamo;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using DynamoWebServer.Responses;
@@ -76,6 +78,14 @@ namespace DynamoWebServer.Messages
                     LibraryItems = dynamo.SearchViewModel.GetAllLibraryItemsByCategory()
                 }, sessionId));
             }
+            else if (message is SaveFileMessage)
+            {
+                SaveFile(dynamo, message, sessionId);
+            }
+            else if (message is GetNodeGeometryMessage)
+            {
+                RetrieveGeometry(((GetNodeGeometryMessage)message).NodeID, sessionId);
+            }
         }
 
         /// <summary>
@@ -90,6 +100,65 @@ namespace DynamoWebServer.Messages
         }
 
         #region Private Class Helper Methods
+
+
+        private void SaveFile(DynamoViewModel dynamo, Message message, string sessionId)
+        {
+            var homeWorkspace = dynamo.Model.HomeSpace;
+            var allWorkspacesToSave = new List<WorkspaceModel> { homeWorkspace };
+
+            byte[] fileContent;
+            try
+            {
+                string fileName, fullFileName;
+
+                var customNodes = dynamo.Model.CustomNodeManager.GetLoadedDefinitions()
+                    .Select(cnd => cnd.WorkspaceModel);
+                allWorkspacesToSave.AddRange(customNodes);
+
+                foreach (var ws in allWorkspacesToSave)
+                {
+                    if (!string.IsNullOrEmpty(ws.FileName))
+                    {
+                        fileName = Path.GetFileName(ws.FileName);
+                        fullFileName = ws.FileName;
+                    }
+                    else
+                    {
+                        if (ws is CustomNodeWorkspaceModel)
+                        {
+                            fileName = (ws.Name != null ? ws.Name : "MyCustomNode") + ".dyf";
+                        }
+                        else
+                        {
+                            fileName = (ws.Name != null ? ws.Name : "MyWorkspace") + ".dyn";
+                        }
+
+                        fullFileName = Directory.GetCurrentDirectory() + "\\" + fileName;
+                    }
+
+                    if (!ws.SaveAs(fullFileName))
+                        throw new Exception();
+
+                    fileContent = File.ReadAllBytes(fullFileName);
+                    File.Delete(fullFileName);
+
+                    OnResultReady(this, new ResultReadyEventArgs(new SavedFileResponse
+                    {
+                        Status = ResponceStatuses.Success,
+                        FileContent = fileContent,
+                        FileName = fileName
+                    }, sessionId));
+                }
+            }
+            catch
+            {
+                OnResultReady(this, new ResultReadyEventArgs(new SavedFileResponse
+                {
+                    Status = ResponceStatuses.Error
+                }, sessionId));
+            }
+        }
 
         private void ExecuteCommands(DynamoViewModel dynamo, Message message, string sessionId)
         {
@@ -124,10 +193,13 @@ namespace DynamoWebServer.Messages
                 {
                     var name = dynamo.Model.CustomNodeManager.LoadedCustomNodes[guid]
                         .WorkspaceModel.Name;
-                    var workspace = dynamo.Workspaces.First(elem => elem.Name == name);
-                    var index = dynamo.Workspaces.IndexOf(workspace);
+                    var workspace = dynamo.Workspaces.FirstOrDefault(elem => elem.Name == name);
+                    if (workspace != null)
+                    {
+                        var index = dynamo.Workspaces.IndexOf(workspace);
 
-                    dynamo.CurrentWorkspaceIndex = index;
+                        dynamo.CurrentWorkspaceIndex = index;
+                    }
                 }
             }
         }
@@ -135,7 +207,9 @@ namespace DynamoWebServer.Messages
         private void NodesDataModified(object sender, RenderCompletionEventArgs e, string sessionId)
         {
             var nodes = new List<ExecutedNode>();
-            foreach (var node in dynamoViewModel.Model.CurrentWorkspace.Nodes)
+            var currentWorkspace = dynamoViewModel.Model.CurrentWorkspace;
+
+            foreach (var node in currentWorkspace.Nodes)
             {
                 string data;
                 var codeBlock = node as CodeBlockNodeModel;
@@ -175,8 +249,12 @@ namespace DynamoWebServer.Messages
                     }
                 }
 
-                var execNode = new ExecutedNode(node, data);
-                nodes.Add(execNode);
+                // send only updated nodes back
+                if (node.IsUpdated)
+                {
+                    var execNode = new ExecutedNode(node, data);
+                    nodes.Add(execNode);
+                }
             }
 
             OnResultReady(this, new ResultReadyEventArgs(new ComputationResponse
@@ -185,6 +263,21 @@ namespace DynamoWebServer.Messages
             }, sessionId));
 
             dynamoViewModel.VisualizationManager.RenderComplete -= RenderCompleteHandler;
+        }
+
+        private void RetrieveGeometry(string nodeId, string sessionId)
+        {
+            Guid guid;
+            var nodeMap = dynamoViewModel.Model.NodeMap;
+            if (Guid.TryParse(nodeId, out guid) && nodeMap.ContainsKey(guid))
+            {
+                NodeModel model = nodeMap[guid];
+
+                OnResultReady(this, new ResultReadyEventArgs(new GeometryDataResponse
+                {
+                    GeometryData = new GeometryData(nodeId, model.RenderPackages)
+                }, sessionId));
+            }
         }
 
         #endregion

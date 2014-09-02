@@ -533,7 +533,7 @@ namespace Dynamo.ViewModels
 
         public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory()
         {
-            if (allLibraryItems == null)
+            if (allLibraryItems == null || !allLibraryItems.Any())
             {
                 allLibraryItems = new List<LibraryItem>();
                 foreach (var elem in Model.BrowserRootCategories)

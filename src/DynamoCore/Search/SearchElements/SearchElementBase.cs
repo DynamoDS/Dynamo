@@ -87,6 +87,9 @@ namespace Dynamo.Search.SearchElements
         public string CreatingName { get; private set; }
 
         [DataMember]
+        public string DisplayedName { get; private set; }
+
+        [DataMember]
         public string Description { get; private set; }
 
         [DataMember]
@@ -108,7 +111,7 @@ namespace Dynamo.Search.SearchElements
         {
             Category = node.FullCategoryName;
             Type = node.Type;
-            Name = node.Name;
+            DisplayedName = Name = node.Name;
             CreatingName = node.CreatingName;
             Description = node.Description;
             Searchable = node.Searchable;
@@ -122,18 +125,14 @@ namespace Dynamo.Search.SearchElements
         {
             var controller = dynamoModel.EngineController;
             var functionItem = (controller.GetFunctionDescriptor(CreatingName));
+            NodeModel newElement = null;
             if (functionItem != null)
             {
-                Parameters = functionItem.Parameters.Select(elem => elem.Name);
-
-                if (functionItem.ReturnKeys != null && functionItem.ReturnKeys.Any())
-                {
-                    ReturnKeys = functionItem.ReturnKeys;
-                }
+                DisplayedName = functionItem.DisplayName;
+                if (functionItem.IsVarArg)
+                    newElement = new DSVarArgFunction(dynamoModel.CurrentWorkspace, functionItem);
                 else
-                {
-                    ReturnKeys = new[] { functionItem.Type == FunctionType.Constructor ? functionItem.UnqualifedClassName : functionItem.ReturnType };
-                }
+                    newElement = new DSFunction(dynamoModel.CurrentWorkspace, functionItem);
             }
             else
             {
@@ -150,16 +149,19 @@ namespace Dynamo.Search.SearchElements
 
                 if (tld != null)
                 {
-                    var newElement = (NodeModel)Activator.CreateInstance(tld.Type, dynamoModel.CurrentWorkspace);
+                    newElement = (NodeModel)Activator.CreateInstance(tld.Type, dynamoModel.CurrentWorkspace);
+                }
+            }
 
-                    Parameters = newElement.InPorts.Select(elem => elem.PortName);
-                    ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
-                }
-                else
-                {
-                    Parameters = new[] { "Input" };
-                    ReturnKeys = new[] { "Output" };
-                }
+            if (newElement != null)
+            {
+                Parameters = newElement.InPorts.Select(elem => elem.PortName);
+                ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
+            }
+            else
+            {
+                Parameters = new[] { "Input" };
+                ReturnKeys = new[] { "Output" };
             }
         }
     }
