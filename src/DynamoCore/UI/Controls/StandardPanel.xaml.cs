@@ -12,6 +12,8 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class StandardPanel : UserControl
     {
+        private bool areAllListsPresented = false;
+
         public StandardPanel()
         {
             InitializeComponent();
@@ -19,16 +21,26 @@ namespace Dynamo.UI.Controls
 
         private void OnHeaderMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if ((sender as FrameworkElement).Tag == "actionHeader")
+            int ultraBoldIndex;
+
+            if (((sender as FrameworkElement).Tag as string) == "queryHeader")
             {
-                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+
+                ultraBoldIndex = 0;
             }
             else
             {
-                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+
+                ultraBoldIndex = 1;
             }
-            //action.FontWeight = FontWeights.UltraBold;
-            //query.FontWeight = FontWeights.Normal;
+
+            if (areAllListsPresented)
+            {
+                (addCategoryHeaders.Children[ultraBoldIndex] as TextBlock).FontWeight = FontWeights.UltraBold;
+                (addCategoryHeaders.Children[1 - ultraBoldIndex] as TextBlock).FontWeight = FontWeights.Normal;
+            }
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -57,20 +69,22 @@ namespace Dynamo.UI.Controls
             bool isActionListEmpty = (classInfo.ActionMembers as List<BrowserInternalElement>).Count == 0;
             bool isQueryListEmpty = (classInfo.QueryMembers as List<BrowserInternalElement>).Count == 0;
 
+            areAllListsPresented = !isCreateListEmpty && !isActionListEmpty && !isQueryListEmpty;
+
             if (!isCreateListEmpty)
             {
                 topCategoryList.ItemsSource = classInfo.CreateMembers;
 
                 if (!isQueryListEmpty)
                 {
-                    createAndPlaceQueryHeader();
+                    createAndPlaceQueryHeader(true);
 
                     addCategoryList.ItemsSource = classInfo.QueryMembers;
                 }
 
                 if (!isActionListEmpty)
                 {
-                    createAndPlaceActionHeader();
+                    createAndPlaceActionHeader(isQueryListEmpty);
 
                     if (isQueryListEmpty)
                         addCategoryList.ItemsSource = classInfo.ActionMembers;
@@ -108,23 +122,27 @@ namespace Dynamo.UI.Controls
             topCategoryHeader.Visibility = Visibility.Collapsed;
         }
 
-        private void createAndPlaceActionHeader()
+        private void createAndPlaceActionHeader(bool makeUltraBold = false)
         {
             TextBlock actionHeader = new TextBlock();
             actionHeader.Tag = "actionHeader";
             actionHeader.Text = "ACTIONS";
             actionHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
+            if (makeUltraBold)
+                actionHeader.FontWeight = FontWeights.UltraBold;
             actionHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
 
             addCategoryHeaders.Children.Add(actionHeader);
         }
 
-        private void createAndPlaceQueryHeader()
+        private void createAndPlaceQueryHeader(bool makeUltraBold = false)
         {
             TextBlock queryHeader = new TextBlock();
             queryHeader.Tag = "queryHeader";
             queryHeader.Text = "QUERY";
             queryHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
+            if (makeUltraBold)
+                queryHeader.FontWeight = FontWeights.UltraBold;
             queryHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
 
             addCategoryHeaders.Children.Add(queryHeader);
