@@ -170,8 +170,12 @@
                                                   ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
             <!--Select not more than one category-->
             <Style TargetType="{x:Type Expander}">
-                <Setter Property="IsExpanded"
-                        Value="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}" />
+                <Setter Property="IsExpanded">
+                    <Setter.Value>
+                        <Binding Path="IsSelected"
+                                 RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <ResourceDictionary.MergedDictionaries>
