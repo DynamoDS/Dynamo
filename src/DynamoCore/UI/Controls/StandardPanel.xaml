@@ -73,10 +73,10 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Image HorizontalAlignment="Left"
-                               Height="29"
+                               Height="32"
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="29"
+                               Width="32"
                                Source="{Binding SmallIcon}" />
 
                         <TextBlock HorizontalAlignment="Left"
@@ -93,20 +93,10 @@
         <StackPanel x:Name="addCategoryHeaders"
                     Orientation="Horizontal"
                     Grid.Row="2">
-            <!-- Headers will be added in code -->
-            <!--<TextBlock Name="query"
-                       PreviewMouseLeftButtonDown="OnQueryMouseLeftButtonDown"
-                       FontWeight="UltraBold"
-                       Foreground="#DDD">QUERY</TextBlock>
-            <TextBlock Name="action"
-                       Margin="10,0,0,0"
-                       PreviewMouseLeftButtonDown="OnActionMouseLeftButtonDown"
-                       Foreground="#DDD">ACTION</TextBlock>-->
         </StackPanel>
         <ListBox x:Name="addCategoryList"
                  Grid.Row="3"
                  Grid.ColumnSpan="2"
-                 DataContextChanged="OnDataContextChanged"
                  Background="Transparent"
                  BorderBrush="Transparent"
                  ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
@@ -114,10 +104,10 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Image HorizontalAlignment="Left"
-                               Height="29"
+                               Height="32"
                                Margin="5,5,0,0"
                                VerticalAlignment="Top"
-                               Width="29"
+                               Width="32"
                                Source="{Binding SmallIcon}" />
 
                         <TextBlock HorizontalAlignment="Left"

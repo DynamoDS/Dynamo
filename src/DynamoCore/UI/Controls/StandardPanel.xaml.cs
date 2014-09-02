@@ -16,27 +16,19 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
         }
-        private void OnActionMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+
+        private void OnHeaderMouseDown(object sender, MouseButtonEventArgs e)
         {
-            // TODO: change style to correct one. 
-            // For now it is about bold font for selected collection.
-            addCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+            if ((sender as FrameworkElement).Tag == "actionHeader")
+            {
+                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
+            }
+            else
+            {
+                addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+            }
             //action.FontWeight = FontWeights.UltraBold;
             //query.FontWeight = FontWeights.Normal;
-        }
-
-        private void OnQueryMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // TODO: change style to correct one. 
-            // For now it is about bold font for selected collection.
-            addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
-            //action.FontWeight = FontWeights.Normal;
-            //query.FontWeight = FontWeights.UltraBold;
-        }
-
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -60,43 +52,82 @@ namespace Dynamo.UI.Controls
         private void GridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var classInfo = this.DataContext as ClassInformation;
-            if ((classInfo.CreateMembers as List<BrowserInternalElement>).Count > 0)
+
+            bool isCreateListEmpty = (classInfo.CreateMembers as List<BrowserInternalElement>).Count == 0;
+            bool isActionListEmpty = (classInfo.ActionMembers as List<BrowserInternalElement>).Count == 0;
+            bool isQueryListEmpty = (classInfo.QueryMembers as List<BrowserInternalElement>).Count == 0;
+
+            if (!isCreateListEmpty)
             {
-                // Case when we have Create members.
-                topCategoryList.ItemsSource = (this.DataContext as ClassInformation).CreateMembers;
-                if ((classInfo.QueryMembers as List<BrowserInternalElement>).Count > 0)
+                topCategoryList.ItemsSource = classInfo.CreateMembers;
+
+                if (!isQueryListEmpty)
                 {
-                    // Case when we have Query members.
-                    // Here we should add Query textblock dynamically. 
-                    TextBlock queryHeader = new TextBlock();
-                    queryHeader.Text = "QUERY";
-                    queryHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
-                    queryHeader.PreviewMouseLeftButtonDown += OnQueryMouseLeftButtonDown;
-                    addCategoryHeaders.Children.Add(queryHeader);
+                    createAndPlaceQueryHeader();
+
+                    addCategoryList.ItemsSource = classInfo.QueryMembers;
                 }
 
-                if ((classInfo.ActionMembers as List<BrowserInternalElement>).Count > 0)
+                if (!isActionListEmpty)
                 {
-                    // Case when we have Action members.
-                    // Here we should add Action textblock dynamically.
-                    TextBlock actionHeader = new TextBlock();
-                    actionHeader.Text = "ACTIONS";
-                    actionHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
-                    actionHeader.Margin = new Thickness(10, 0, 0, 0);
-                    actionHeader.PreviewMouseLeftButtonDown += OnActionMouseLeftButtonDown;
-                    addCategoryHeaders.Children.Add(actionHeader);
+                    createAndPlaceActionHeader();
+
+                    if (isQueryListEmpty)
+                        addCategoryList.ItemsSource = classInfo.ActionMembers;
                 }
+
+                if (addCategoryHeaders.Children.Count > 1)
+                    (addCategoryHeaders.Children[1] as FrameworkElement).Margin = new Thickness(10, 0, 0, 0);
+
+                return;
             }
-            else
+
+            if (!isActionListEmpty)
             {
-                // Case when we don't have Create members.
-                // Header text should be changed for correct value.
-                // ActionMembers items are shown.
                 topCategoryHeader.Text = "ACTIONS";
                 topCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
 
-                // TODO: find out should we show QueryMembers collection with header.
+                if (!isQueryListEmpty)
+                {
+                    createAndPlaceQueryHeader();
+
+                    addCategoryList.ItemsSource = classInfo.QueryMembers;
+                }
+
+                return;
             }
+
+            if (!isQueryListEmpty)
+            {
+                topCategoryHeader.Text = "QUERY";
+                topCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
+
+                return;
+            }
+
+            topCategoryHeader.Visibility = Visibility.Collapsed;
+        }
+
+        private void createAndPlaceActionHeader()
+        {
+            TextBlock actionHeader = new TextBlock();
+            actionHeader.Tag = "actionHeader";
+            actionHeader.Text = "ACTIONS";
+            actionHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
+            actionHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
+
+            addCategoryHeaders.Children.Add(actionHeader);
+        }
+
+        private void createAndPlaceQueryHeader()
+        {
+            TextBlock queryHeader = new TextBlock();
+            queryHeader.Tag = "queryHeader";
+            queryHeader.Text = "QUERY";
+            queryHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
+            queryHeader.PreviewMouseLeftButtonDown += OnHeaderMouseDown;
+
+            addCategoryHeaders.Children.Add(queryHeader);
         }
     }
 }
