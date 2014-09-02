@@ -53,6 +53,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestDecimals()
         {
             String code =

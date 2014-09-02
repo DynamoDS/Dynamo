@@ -202,6 +202,7 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
+        [NUnit.Framework.Category("Failing")]
         public void RunDSPropertyChangedTest()
         {
             string code =

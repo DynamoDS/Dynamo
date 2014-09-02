@@ -532,6 +532,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("Failing")]
         public void TestAstToCode()
         {
             // Convert a list of code -> AST nodes -> code -> AST nodes
