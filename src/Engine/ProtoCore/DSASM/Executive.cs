@@ -1644,10 +1644,10 @@ namespace ProtoCore.DSASM
             SetGraphNodeStackValue(graphNode, svNull);
         }
 
-        private ProtoCore.AssociativeGraph.GraphNode GetFirstSSAGraphnode(int index, int exprID)
+        private ProtoCore.AssociativeGraph.GraphNode GetFirstSSAGraphnode(int index, List<AssociativeGraph.GraphNode> nodesInScope)
         {
             //while (istream.dependencyGraph.GraphList[index].exprUID == exprID)
-            while (istream.dependencyGraph.GraphList[index].IsSSANode())
+            while (nodesInScope[index].IsSSANode())
             {
                 --index;
                 if (index < 0)
@@ -1656,19 +1656,9 @@ namespace ProtoCore.DSASM
                     break;
                 }
 
-                //// This check will be deprecated on full SSA
-                //if (core.Options.FullSSA)
-                //{
-                //    if (!istream.dependencyGraph.GraphList[index].IsSSANode())
-                //    {
-                //        // The next graphnode is nolonger part of the current statement 
-                //        break;
-                //    }
-                //}
-
                 Validity.Assert(index >= 0);
             }
-            return istream.dependencyGraph.GraphList[index + 1];
+            return nodesInScope[index + 1];
         }
 
         private bool UpdatePropertyChangedGraphNode()
@@ -2166,7 +2156,8 @@ namespace ProtoCore.DSASM
                                 executingGraphNode.lastGraphNode.reExecuteExpression = false;
                                 //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                                 {
-                                    var firstGraphNode = GetFirstSSAGraphnode(graphNode.UID, graphNode.exprUID);
+                                    // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
+                                    var firstGraphNode = GetFirstSSAGraphnode(i - 1, graphNodes);
                                     firstGraphNode.isDirty = true;
                                 }
                             }
