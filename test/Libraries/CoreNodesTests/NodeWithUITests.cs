@@ -24,6 +24,7 @@ namespace DSCoreNodesTests
     {
         [Test]
         [Category("Failure")]
+        [Category("UnitTests")]
         public void SliderASTGeneration()
         {
             var sliderNode = new DoubleSlider(null) { Value = 10 };

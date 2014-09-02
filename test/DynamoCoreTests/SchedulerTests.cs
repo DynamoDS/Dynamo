@@ -58,6 +58,7 @@ namespace Dynamo
         /// </summary>
         /// 
         [Test]
+        [Category("UnitTests")]
         public void TimeStampGenerator00()
         {
             var scheduler = new DynamoScheduler();
@@ -75,6 +76,7 @@ namespace Dynamo
         /// </summary>
         /// 
         [Test, RequiresMTA]
+        [Category("UnitTests")]
         public void TimeStampGenerator01()
         {
             const int EventCount = 16;
@@ -110,6 +112,7 @@ namespace Dynamo
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TimeStampGenerator02()
         {
             var generator = new TimeStampGenerator();
@@ -146,6 +149,7 @@ namespace Dynamo
         #region AsyncTask Related Test Cases
 
         [Test]
+        [Category("UnitTests")]
         public void AsyncTask00()
         {
             Assert.Throws<ArgumentNullException>(() =>
