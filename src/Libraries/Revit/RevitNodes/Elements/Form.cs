@@ -177,7 +177,7 @@ namespace Revit.Elements
         {
             if (curves == null || curves.SelectMany(x=>x).Any(x=>x==null))
             {
-                throw new ArgumentNullException("curves");    
+                throw new ArgumentNullException("Some of the input curves are null.");    
             }
 
             var refArrArr = new ReferenceArrayArray();

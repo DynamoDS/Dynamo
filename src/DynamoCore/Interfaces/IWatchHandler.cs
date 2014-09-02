@@ -124,7 +124,7 @@ namespace Dynamo.Interfaces
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
             return Object.ReferenceEquals(value, null)
-                ? new WatchViewModel(visualizationManager, "null", tag)
+                ? new WatchViewModel(visualizationManager, NULL_STRING, tag)
                 : ProcessThing(value, tag, showRawData);
         }
     }

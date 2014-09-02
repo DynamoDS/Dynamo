@@ -1069,6 +1069,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
+        [Category("RegressionTests")]
 		public void LaceShortest_WithSingleValueInput()
 		{
 			// details are given in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2464
@@ -1128,7 +1129,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
+        [Category("Failure")]
 		public void LaceLongest_ListWith10000Element()
 		{
 			var model = ViewModel.Model;
@@ -1305,7 +1306,7 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test, Category("Failing")]
+        [Test, Category("Failure")]
 		public void NumberRange_LacingCrossProduct()
 		{
 			var model = ViewModel.Model;
@@ -1594,6 +1595,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
+        [Category("Failure")]
 		public void SplitList_ComplexAnotherExample()
 		{
 			var model = ViewModel.Model;
