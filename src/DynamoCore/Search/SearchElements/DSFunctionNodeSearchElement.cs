@@ -60,7 +60,7 @@ namespace Dynamo.Search.SearchElements
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected override string ShortenParameterType()
+        public override string ShortenParameterType()
         {
             string iconName = this.GetResourceName(ResourceType.SmallIcon)+".";
             IEnumerable<Tuple<string, string>> inputParameters = this.FunctionDescriptor.InputParameters;
@@ -85,11 +85,8 @@ namespace Dynamo.Search.SearchElements
                     typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
                 }
                 if (i != 0)
-                {
-                    iconName += "-" + typeOfParameter;
-                }
-                else
-                    iconName += typeOfParameter;
+                    iconName += "-";
+                iconName += typeOfParameter;
             }
             return iconName;
         }

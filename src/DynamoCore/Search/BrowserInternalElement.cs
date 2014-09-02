@@ -183,7 +183,7 @@ namespace Dynamo.Nodes.Search
             return icon;
         }
 
-        protected virtual string ShortenParameterType()
+        public virtual string ShortenParameterType()
         {
             return "";
         }

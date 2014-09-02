@@ -95,5 +95,37 @@ namespace Dynamo.Tests
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 10);
         }
+
+        [Test]
+        public void LoadingIconsForoOverriddenMethods()
+        {
+            IEnumerable<string> tags = new List<string>();
+            //1. Foo(x: double, y : double) -> Foo.double-double
+            //2. Foo(point : Point) -> Foo.Point
+            //3. Foo(a : bool[][], b : var[], c : double[][]) -> Foo.bool2-var1-double2
+
+
+            // 1 case
+            List<Dynamo.Library.TypedParameter> parameters1 = new List<Dynamo.Library.TypedParameter>();
+            parameters1.Add(new Dynamo.Library.TypedParameter("x", "double"));
+            parameters1.Add(new Dynamo.Library.TypedParameter("y", "double"));
+
+            FunctionDescriptor functionItem1 = new FunctionDescriptor("Foo", parameters1, FunctionType.Constructor);
+
+            var dsFunctionNodeSearchElement1 =
+                new Dynamo.Search.SearchElements.
+                    DSFunctionNodeSearchElement("Foo(x: double, y : double)", functionItem1, Dynamo.Search.SearchElementGroup.Create);
+            Assert.AreEqual("Foo.double-double", dsFunctionNodeSearchElement1.ShortenParameterType());
+
+            //2 case
+            List<Tuple<string, string>> inputs2 = new List<Tuple<string, string>>();
+            inputs2.Add(Tuple.Create<string, string>("point", "Point"));
+
+            //3 case
+            List<Tuple<string, string>> inputs3 = new List<Tuple<string, string>>();
+            inputs3.Add(Tuple.Create<string, string>("a", "bool[][]"));
+            inputs3.Add(Tuple.Create<string, string>("b", "var[]"));
+            inputs3.Add(Tuple.Create<string, string>("c", "double[][]"));
+        }
     }
 }
