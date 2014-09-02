@@ -13,7 +13,6 @@ using ProtoCore.Mirror;
 using Revit.GeometryConversion;
 
 using RevitServices.Elements;
-using RevitServices.Materials;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -68,17 +67,6 @@ namespace Dynamo
                         keeperId = ElementId.InvalidElementId;
                     }
 
-                    DirectShape directShape;
-                    DocumentManager.Instance.CurrentDBDocument.TryGetElement(
-                        directShapeId,
-                        out directShape);
-                    if (directShape != null)
-                    {
-                        // Set the direct shape to empty.
-                        DocumentManager.Instance.CurrentDBDocument.Delete(directShapeId);
-                        directShapeId = ElementId.InvalidElementId;
-                    }
-
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
         }
@@ -128,67 +116,30 @@ namespace Dynamo
                     TransactionManager.Instance.EnsureInTransaction(
                         DocumentManager.Instance.CurrentDBDocument);
 
-                    if (keeperId != ElementId.InvalidElementId &&
-                        DocumentManager.Instance.CurrentDBDocument.GetElement(keeperId) != null)
-                    {
-                        DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                        keeperId = ElementId.InvalidElementId;
-                    }
+                    //if (keeperId != ElementId.InvalidElementId &&
+                    //    DocumentManager.Instance.CurrentDBDocument.GetElement(keeperId) != null)
+                    //{
+                    //    DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                    //    keeperId = ElementId.InvalidElementId;
+                    //}
 
                     var argsM = new object[4];
                     argsM[0] = DocumentManager.Instance.CurrentUIDocument.Document;
-                    argsM[1] = ElementId.InvalidElementId;
+                    if (keeperId == ElementId.InvalidElementId)
+                    {
+                        argsM[1] = ElementId.InvalidElementId;
+                    }
+                    else
+                    {
+                        argsM[1] = keeperId;
+                    }
+                    
                     argsM[2] = geoms;
                     argsM[3] = ElementId.InvalidElementId;
-
                     keeperId = (ElementId)method.Invoke(null, argsM);
-
 
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
-        }
-
-        private void DrawSurfsAndSolids(List<GeometryObject> geoms)
-        {
-            Type dsType = typeof(DirectShape);
-            MethodInfo[] dsStaticTypeMethods =
-                dsType.GetMethods(BindingFlags.Static | BindingFlags.Public);
-
-            MethodInfo[] dsInstanceTypeMethods =
-                dsType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
-
-            MethodInfo createMethod =
-                dsStaticTypeMethods.FirstOrDefault(x => x.Name == "CreateElement");
-            MethodInfo setMethod =
-                dsInstanceTypeMethods.FirstOrDefault(x => x.Name == "SetShape" && x.GetParameters().Count() == 1);
-
-            if (setMethod == null || createMethod == null)
-                return;
-
-            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(
-            () =>
-            {
-                TransactionManager.Instance.EnsureInTransaction(
-                DocumentManager.Instance.CurrentDBDocument);
-
-                Element directShape;
-                DocumentManager.Instance.CurrentDBDocument.TryGetElement(
-                        directShapeId,
-                        out directShape);
-                if (directShape == null)
-                {
-                    var categoryId = new ElementId(BuiltInCategory.OST_GenericModel);
-
-                    directShape = (DirectShape)createMethod.Invoke(null, new object[] {DocumentManager.Instance.CurrentDBDocument, categoryId, "A", "B" });
-                    directShapeId = directShape.Id;
-                }
-
-                setMethod.Invoke(
-                    directShape,
-                    new object[] { geoms });
-                
-                TransactionManager.Instance.ForceCloseTransaction();
-            });
         }
 
         /// <summary>
@@ -198,6 +149,11 @@ namespace Dynamo
         /// <param name="geoms"></param>
         private void RevitGeometryFromMirrorData(MirrorData data, ref List<GeometryObject> geoms)
         {
+            if (data.Data == null)
+            {
+                return;
+            }
+
             if (data.IsCollection)
             {
                 foreach (var md in data.GetElements())
