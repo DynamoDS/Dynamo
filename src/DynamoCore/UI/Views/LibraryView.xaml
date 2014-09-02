@@ -168,15 +168,6 @@
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                                   ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                                   ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-            <!--Select not more than one category-->
-            <Style TargetType="{x:Type Expander}">
-                <Setter Property="IsExpanded">
-                    <Setter.Value>
-                        <Binding Path="IsSelected"
-                                 RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
@@ -200,6 +191,17 @@
                               Template="{StaticResource CategoryExpanderTemplate}"
                               Foreground="#DDD"
                               FontSize="13">
+                        <Expander.Style>
+                            <!--Select not more than one category-->
+                            <Style TargetType="{x:Type Expander}">
+                                <Setter Property="IsExpanded">
+                                    <Setter.Value>
+                                        <Binding Path="IsSelected"
+                                                 RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Expander.Style>
                         <!-- This is inner list (showing subcategories) -->
                         <ListView Name="SubCategoryListView"
                                   ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
