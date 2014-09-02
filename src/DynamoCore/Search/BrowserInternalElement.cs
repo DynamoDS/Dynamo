@@ -171,7 +171,21 @@ namespace Dynamo.Nodes.Search
                 return null;
 
             var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
-            return (cust != null) ? cust.LoadIconInternal(fullNameOfIcon) : null;
+            BitmapImage icon = null;
+            if (cust != null)
+            {
+                icon = cust.LoadIconInternal(fullNameOfIcon);
+                // Try to load image with using incoming parameters.
+                // It's used in overridden methods.
+                if (icon == null)
+                    icon = cust.LoadIconInternal(this.ShortenParameterType());
+            }
+            return icon;
+        }
+
+        protected virtual string ShortenParameterType()
+        {
+            return "";
         }
     }
 
