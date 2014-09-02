@@ -648,9 +648,9 @@ namespace Dynamo.Nodes
                     
                     selectedUniqueIds.Clear();
 
-                    foreach (var el in selectedElements.Select(id => selectionOwner.GetElement(id)).Where(el => el != null)) {
-                        selectedUniqueIds.Add(el.UniqueId);
-                    }
+                    var elements = selectedElements.Select(id => selectionOwner.GetElement(id))
+                        .Where(el => el != null).Select(el=>el.UniqueId);
+                    selectedUniqueIds.AddRange(elements);
                 }
 
                 if (dirty)
