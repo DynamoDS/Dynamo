@@ -6989,11 +6989,11 @@ b : int;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("Debugger")]
         public void Numeric_Associative()
         {
             String code =
-        @"import(""ProtoGeometry.dll"");
+        @"
 
 a : int;
 b : int;
@@ -7044,11 +7044,11 @@ b : int;
         }
 
         [Test]
-        [Category("Debugger"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("Debugger")]
         public void Numeric_Imperative()
         {
             String code =
-        @"import(""ProtoGeometry.dll"");
+        @"
 
 a : int;
 b : int;
