@@ -17,6 +17,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;
 using System.Web;
+using System.Text;
 
 namespace Dynamo.Nodes
 {
@@ -623,6 +624,28 @@ namespace Dynamo.Nodes
             }
 
             return args.ClickedButtonId == (int)Utilities.ButtonId.Proceed;
+        }
+
+        /// <summary>
+        /// Add spaces to string before capital letters e.g. CoordinateSystem to Coordinate System.
+        /// </summary>
+        /// <param name="original">incoming string</param>
+        internal static string InsertSpacesToString(string original)
+        {
+            if (string.IsNullOrWhiteSpace(original))
+                return "";
+            StringBuilder newText = new StringBuilder(original.Length * 2);
+            newText.Append(original[0]);
+            for (int i = 1; i < original.Length; i++)
+            {
+                if (
+                    (char.IsUpper(original[i]) || original[i].Equals('(')) 
+                    &&
+                    ((original[i - 1] != ' ') && (!char.IsUpper(original[i-1]))))
+                    newText.Append(' ');
+                newText.Append(original[i]);
+            }
+            return newText.ToString();
         }
     }
 

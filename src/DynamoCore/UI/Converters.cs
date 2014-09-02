@@ -1607,20 +1607,7 @@ namespace Dynamo.Controls
                         return text.Insert(text.LastIndexOf(".") + 1, "\n");
                     return text;
                 case "ClassButton":
-                    string tempText = text[0].ToString();
-                    // First add to title spaces, e.g. CoordinateSystem to Coordinate System
-                    for (int i = 1; i < text.Length; i++)
-                    {
-                        char c = text[i];
-                        // But we also have to check was previous character capital letter, e.g. Import From CSV
-                        // TODO: in future there won't be "Method(parA : int)",
-                        // this additional check will be removed.
-                        if ((Char.IsUpper(c) || c.Equals('(')) && (!Char.IsUpper(text[i - 1])))
-                            tempText+=" ";
-                        tempText += c;
-                    }
-                    text = tempText;
-                    
+                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
                     if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
                     {
                         text = text.Insert(text.IndexOf(" ") + 1, "\n");
