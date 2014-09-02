@@ -116,24 +116,16 @@ namespace Dynamo
                     TransactionManager.Instance.EnsureInTransaction(
                         DocumentManager.Instance.CurrentDBDocument);
 
-                    //if (keeperId != ElementId.InvalidElementId &&
-                    //    DocumentManager.Instance.CurrentDBDocument.GetElement(keeperId) != null)
-                    //{
-                    //    DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
-                    //    keeperId = ElementId.InvalidElementId;
-                    //}
+                    if (keeperId != ElementId.InvalidElementId &&
+                        DocumentManager.Instance.CurrentDBDocument.GetElement(keeperId) != null)
+                    {
+                        DocumentManager.Instance.CurrentUIDocument.Document.Delete(keeperId);
+                        keeperId = ElementId.InvalidElementId;
+                    }
 
                     var argsM = new object[4];
                     argsM[0] = DocumentManager.Instance.CurrentUIDocument.Document;
-                    if (keeperId == ElementId.InvalidElementId)
-                    {
-                        argsM[1] = ElementId.InvalidElementId;
-                    }
-                    else
-                    {
-                        argsM[1] = keeperId;
-                    }
-                    
+                    argsM[1] = ElementId.InvalidElementId;
                     argsM[2] = geoms;
                     argsM[3] = ElementId.InvalidElementId;
                     keeperId = (ElementId)method.Invoke(null, argsM);
