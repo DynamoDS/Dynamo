@@ -3,10 +3,8 @@ using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
-<<<<<<< Updated upstream
+using Dynamo.Nodes;
 using ProtoCore.Mirror;
-=======
->>>>>>> Stashed changes
 using Dynamo.Nodes;
 
 namespace Dynamo.Tests
@@ -230,22 +228,14 @@ namespace Dynamo.Tests
             DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_847.dyn");
             RunModel(openPath);
-
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 4);
             DoubleInput doubleInput = model.CurrentWorkspace.NodeFromWorkspace
                 ("7eba96c0-4715-47f0-a874-01f1887ac465") as DoubleInput;
-<<<<<<< Updated upstream
             doubleInput.Value ="6..8";
-=======
-            doubleInput.Value = "6..8";
->>>>>>> Stashed changes
             RunCurrentModel();
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 3);
 
         }
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
     }
 }
