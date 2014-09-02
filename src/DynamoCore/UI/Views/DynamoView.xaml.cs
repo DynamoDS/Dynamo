@@ -772,14 +772,14 @@ namespace Dynamo.Controls
                     SamplesMenu.Items.Add(showInFolder);
                 }
 
-                if (this.startPage != null) { }
-                string rootPath = Path.GetDirectoryName(Path.GetDirectoryName(sampleFiles.ToArray()[0]));
-                DirectoryInfo root = new DirectoryInfo(rootPath);
-                SampleFileProperty rootProperty = new SampleFileProperty("Samples", "Path");
-                this.startPage.WalkDirectoryTree(root,rootProperty);
-    
-                this.startPage.SampleFiles.Add(rootProperty);
-                    //this.startPage.PopulateSampleFileList(sampleFiles);
+                if (this.startPage != null)
+                {
+	                string rootPath = Path.GetDirectoryName(Path.GetDirectoryName(sampleFiles.ToArray()[0]));
+	                DirectoryInfo root = new DirectoryInfo(rootPath);
+	                SampleFileProperty rootProperty = new SampleFileProperty("Samples", "Path");
+	                this.startPage.WalkDirectoryTree(root,rootProperty);
+	                this.startPage.SampleFiles.Add(rootProperty);
+                }
             }
         }
 
