@@ -141,11 +141,6 @@ namespace Dynamo
         /// <param name="geoms"></param>
         private void RevitGeometryFromMirrorData(MirrorData data, ref List<GeometryObject> geoms)
         {
-            if (data.Data == null)
-            {
-                return;
-            }
-
             if (data.IsCollection)
             {
                 foreach (var md in data.GetElements())
@@ -164,6 +159,11 @@ namespace Dynamo
             {
                 try
                 {
+                    if (data.Data == null)
+                    {
+                        return;
+                    }
+
                     var geom = data.Data as PolyCurve;
                     if (geom != null)
                     {
