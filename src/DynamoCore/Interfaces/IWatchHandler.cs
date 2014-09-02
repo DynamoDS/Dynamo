@@ -22,22 +22,22 @@ namespace Dynamo.Interfaces
     }
 
     /// <summary>
-    /// The default watch handler.
+    ///     The default watch handler.
     /// </summary>
     public class DefaultWatchHandler : IWatchHandler
     {
-        private const string NULL_STRING = "null";
+        public const string NULL_STRING = "null";
 
         private readonly IPreferences preferences;
         private readonly IVisualizationManager visualizationManager;
 
-        public DefaultWatchHandler(IVisualizationManager manager, PreferenceSettings preferences)
+        public DefaultWatchHandler(IVisualizationManager manager, IPreferences preferences)
         {
             visualizationManager = manager;
             this.preferences = preferences;
         }
 
-        internal WatchViewModel ProcessThing(object value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(object value, string tag, bool showRawData)
         {
             WatchViewModel node;
 
@@ -59,7 +59,7 @@ namespace Dynamo.Interfaces
             return node;
         }
 
-        internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData)
         {
             return showRawData
                 ? new WatchViewModel(
@@ -69,17 +69,17 @@ namespace Dynamo.Interfaces
                 : new WatchViewModel(visualizationManager, unit.ToString(), tag);
         }
 
-        internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(double value, string tag, bool showRawData)
         {
             return new WatchViewModel(visualizationManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
-        internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(string value, string tag, bool showRawData)
         {
             return new WatchViewModel(visualizationManager, value, tag);
         }
 
-        internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData)
         {
             if (data.IsCollection)
             {
@@ -106,7 +106,7 @@ namespace Dynamo.Interfaces
             if (null != classMirror)
             {
                 if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
-                    return ProcessThing(classMirror.ClassName, tag); //just show the class name.
+                    return ProcessThing(classMirror.ClassName, tag, showRawData); //just show the class name.
                 return Process(data.Data, tag, showRawData);
             }
 
@@ -117,14 +117,14 @@ namespace Dynamo.Interfaces
         private static string ToString(object obj)
         {
             return ReferenceEquals(obj, null)
-                ? "null"
+                ? NULL_STRING
                 : (obj is bool ? obj.ToString().ToLower() : obj.ToString());
         }
 
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
             return Object.ReferenceEquals(value, null)
-                ? new WatchViewModel(visualizationManager, "null", tag)
+                ? new WatchViewModel(visualizationManager, NULL_STRING, tag)
                 : ProcessThing(value, tag, showRawData);
         }
     }
