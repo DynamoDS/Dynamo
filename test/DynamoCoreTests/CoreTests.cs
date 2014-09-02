@@ -667,6 +667,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
             // Create the node with given information.
