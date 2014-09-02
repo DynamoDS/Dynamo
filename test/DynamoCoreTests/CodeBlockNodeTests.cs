@@ -196,6 +196,7 @@ b = c[w][x][y][z];";
         }
 #endif
         [Test]
+        [Category("UnitTests")]
         public void TestSemiColonAddition()
         {
             string userText, compilableText;
@@ -221,6 +222,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestFormatTextScenarios()
         {
             var before = "1;2;";
@@ -448,6 +450,7 @@ b = c[w][x][y][z];";
         #region CodeBlockUtils Specific Tests
 
         [Test]
+        [Category("UnitTests")]
         public void GenerateInputPortData00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -458,6 +461,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GenerateInputPortData01()
         {
             // Empty list of input should return empty result.
@@ -468,6 +472,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GenerateInputPortData02()
         {
             var unboundIdentifiers = new List<string>();
@@ -488,6 +493,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetStatementVariables00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -498,6 +504,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetStatementVariables01()
         {
             // Create a statement of "Value = 1234".
@@ -522,6 +529,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void StatementRequiresOutputPort00()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -547,6 +555,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void StatementRequiresOutputPort01()
         {
             var svs = new List<List<string>>(); // An empty list should return false.
@@ -585,6 +594,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices00()
         {
             var firstResult = CodeBlockUtils.MapLogicalToVisualLineIndices(null);
@@ -597,6 +607,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices01()
         {
             var code = "point = Point.ByCoordinates(1, 2, 3);";
@@ -608,6 +619,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices02()
         {
             var code = "start = Point.ByCoordinates(1, 2, 3);\n" +
@@ -622,6 +634,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices03()
         {
             var code = "firstLine = Line.ByStartPointEndPoint(" +
@@ -643,6 +656,7 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestMapLogicalToVisualLineIndices04()
         {
             var code = "firstLine = Line.ByStartPointEndPoint(" +
