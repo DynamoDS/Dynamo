@@ -20,6 +20,8 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
+
+using Revit.GeometryObjects;
 using Revit.Interactivity;
 
 using RevitServices.Elements;
@@ -576,10 +578,7 @@ namespace Dynamo.Nodes
                     AstFactory.BuildStringNode(stableRep)
                 };
 
-                node = AstFactory.BuildFunctionCall(
-                    "GeometryObjectSelector",
-                    "ByReferenceStableRepresentation",
-                    args);
+                node = AstFactory.BuildFunctionCall(new Func<string, object>(GeometryObjectSelector.ByReferenceStableRepresentation),args);
             }
             else
             {
