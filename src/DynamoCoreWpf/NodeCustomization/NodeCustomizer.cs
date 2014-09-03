@@ -10,15 +10,18 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
+using ProtoCore.AST.AssociativeAST;
+
 namespace Dynamo.Wpf
 {
     internal class NodeViewCustomizer
     {
-        private readonly Dictionary<Type, List<InternalNodeCustomization>> lookupDict =
+        private Dictionary<Type, List<InternalNodeCustomization>> lookupDict =
             new Dictionary<Type, List<InternalNodeCustomization>>();
 
-        internal void Apply(NodeModel model, dynNodeView view)
+        internal void Apply(dynNodeView view)
         {
+            var model = view.ViewModel.NodeModel;
             Type t = model.GetType();
             do
             {
