@@ -22,6 +22,8 @@ namespace Dynamo.UI.Controls
 
         #endregion
 
+        // Specifies if all Lists (CreateMembers, QueryMembers and ActionMembers) are not empty
+        // and should be presented on StandardPanel.
         private bool areAllListsPresented;
 
         public StandardPanel()
@@ -31,6 +33,8 @@ namespace Dynamo.UI.Controls
 
         private void OnHeaderMouseDown(object sender, MouseButtonEventArgs e)
         {
+            // In this cases at addCetgoryList will be situated not more one
+            // list. We don't need switch between lists.
             if (!areAllListsPresented)
                 return;
 
@@ -49,6 +53,7 @@ namespace Dynamo.UI.Controls
                 ultraBoldIndex = 1;
             }
 
+            // Setting styles. 
             if (areAllListsPresented)
             {
                 (addCategoryHeaders.Children[ultraBoldIndex] as TextBlock).FontWeight = FontWeights.UltraBold;
@@ -84,6 +89,10 @@ namespace Dynamo.UI.Controls
 
             areAllListsPresented = !isCreateListEmpty && !isActionListEmpty && !isQueryListEmpty;
 
+            // Case when CreateMembers list is not empty.
+            // We should present CreateMembers in topCategoryList.
+            // Depending on availibility of QueryMembers and ActionMembers
+            // new TextBlock will be added to addCategoryList.
             if (!isCreateListEmpty)
             {
                 topCategoryList.ItemsSource = classInfo.CreateMembers;
@@ -103,12 +112,16 @@ namespace Dynamo.UI.Controls
                         addCategoryList.ItemsSource = classInfo.ActionMembers;
                 }
 
+                // gap should be added between bottom two categories 
                 if (addCategoryHeaders.Children.Count > 1)
                     (addCategoryHeaders.Children[1] as FrameworkElement).Margin = new Thickness(10, 0, 0, 0);
 
                 return;
             }
 
+            // Case when CreateMembers list is empty and ActionMembers list isn't empty.
+            // ActionMembers will be presented in topCategoryList.
+            // Depending on availibility of QueryMembers it will be added to addCategoryList.
             if (!isActionListEmpty)
             {
                 topCategoryHeader.Text = ActionHeaderString;
@@ -124,6 +137,8 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
+            // Case when CreateMembers and ActionMembers lists are empty.
+            // If QueryMembers is not empty the list will be presented in topCategoryList. 
             if (!isQueryListEmpty)
             {
                 topCategoryHeader.Text = QueryHeaderString;
@@ -132,6 +147,7 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
+            // All lists are empty. We should hide topCategoryHeader TextBlock
             topCategoryHeader.Visibility = Visibility.Collapsed;
         }
 
