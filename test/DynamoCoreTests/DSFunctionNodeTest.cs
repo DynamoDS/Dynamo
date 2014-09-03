@@ -110,7 +110,7 @@ namespace Dynamo.Tests
             parameters1.Add(new Dynamo.Library.TypedParameter("x", "double"));
             parameters1.Add(new Dynamo.Library.TypedParameter("y", "double"));
 
-            FunctionDescriptor functionItem1 = new FunctionDescriptor("Foo", parameters1, FunctionType.Constructor);
+            FunctionDescriptor functionItem1 = new FunctionDescriptor("Foo", parameters1, FunctionType.GenericFunction);
 
             var dsFunctionNodeSearchElement1 =
                 new Dynamo.Search.SearchElements.
@@ -122,13 +122,13 @@ namespace Dynamo.Tests
             List<Dynamo.Library.TypedParameter> parameters2 = new List<Dynamo.Library.TypedParameter>();
             parameters2.Add(new Dynamo.Library.TypedParameter("point", "Point"));
 
-            FunctionDescriptor functionItem2 = new FunctionDescriptor("Foo", parameters2, FunctionType.Constructor);
+            FunctionDescriptor functionItem2 = new FunctionDescriptor("Foo", parameters2, FunctionType.GenericFunction);
 
             var dsFunctionNodeSearchElement2 =
                 new Dynamo.Search.SearchElements.
                     DSFunctionNodeSearchElement("Foo(x: double, y : double)", functionItem2, 
                                                  Dynamo.Search.SearchElementGroup.Create);
-            Assert.AreEqual("Foo.point", dsFunctionNodeSearchElement2.ShortenParameterType());
+            Assert.AreEqual("Foo.Point", dsFunctionNodeSearchElement2.ShortenParameterType());
 
             //3 case
             List<Dynamo.Library.TypedParameter> parameters3 = new List<Dynamo.Library.TypedParameter>();
@@ -136,7 +136,7 @@ namespace Dynamo.Tests
             parameters3.Add(new Dynamo.Library.TypedParameter("b", "var[]"));
             parameters3.Add(new Dynamo.Library.TypedParameter("c", "double[][]"));
 
-            FunctionDescriptor functionItem3 = new FunctionDescriptor("Foo", parameters3, FunctionType.Constructor);
+            FunctionDescriptor functionItem3 = new FunctionDescriptor("Foo", parameters3, FunctionType.GenericFunction);
 
             var dsFunctionNodeSearchElement3 =
                 new Dynamo.Search.SearchElements.

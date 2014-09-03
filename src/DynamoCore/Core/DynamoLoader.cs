@@ -72,58 +72,67 @@ namespace Dynamo.Utilities
 
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
-            List<string> allDynamoAssemblyPaths =
-                DynamoPathManager.Instance.Nodes.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
-
-            // add the core assembly to get things like code block nodes and watches.
-            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
-
-            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
+            try
             {
-                Assembly result;
-                allLoadedAssemblies.TryGetValue(args.Name, out result);
-                return result;
-            });
+                List<string> allDynamoAssemblyPaths =
+                    DynamoPathManager.Instance.Nodes.SelectMany(
+                        path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
+                        .ToList();
 
-            AppDomain.CurrentDomain.AssemblyResolve += resolver;
+                // add the core assembly to get things like code block nodes and watches.
+                allDynamoAssemblyPaths.Add(
+                    Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
 
-            foreach (var assemblyPath in allDynamoAssemblyPaths)
-            {
-                var fn = Path.GetFileName(assemblyPath);
+                var resolver =
+                    new ResolveEventHandler(
+                        delegate(object sender, ResolveEventArgs args)
+                        {
+                            Assembly result;
+                            allLoadedAssemblies.TryGetValue(args.Name, out result);
+                            return result;
+                        });
 
-                if (fn == null)
-                    continue;
+                AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
-                // if the assembly has already been loaded, then
-                // skip it, otherwise cache it.
-                if (LoadedAssemblyNames.Contains(fn))
-                    continue;
-
-                LoadedAssemblyNames.Add(fn);
-
-                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-                else
+                foreach (var assemblyPath in allDynamoAssemblyPaths)
                 {
-                    try
+                    var fn = Path.GetFileName(assemblyPath);
+
+                    if (fn == null)
+                        continue;
+
+                    // if the assembly has already been loaded, then
+                    // skip it, otherwise cache it.
+                    if (LoadedAssemblyNames.Contains(fn))
+                        continue;
+
+                    LoadedAssemblyNames.Add(fn);
+
+                    if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
+                        LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
+                    else
                     {
-                        var assembly = Assembly.LoadFrom(assemblyPath);
-                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
-                        LoadNodesFromAssembly(assembly);
-                    }
-                    catch (BadImageFormatException)
-                    {
-                        //swallow these warnings.
-                    }
-                    catch (Exception e)
-                    {
-                        dynamoModel.Logger.Log(e);
+                        try
+                        {
+                            var assembly = Assembly.LoadFrom(assemblyPath);
+                            allLoadedAssemblies[assembly.GetName().Name] = assembly;
+                            LoadNodesFromAssembly(assembly);
+                        }
+                        catch (BadImageFormatException)
+                        {
+                            //swallow these warnings.
+                        }
+                        catch (Exception e)
+                        {
+                            dynamoModel.Logger.Log(e);
+                        }
                     }
                 }
-            }
 
-            dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
-            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+                dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
+                AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+            }
+            catch { }
         }
 
         /// <summary>

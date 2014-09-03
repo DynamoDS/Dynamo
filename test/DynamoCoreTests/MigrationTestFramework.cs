@@ -48,10 +48,13 @@ namespace Dynamo.Tests
             var regTestPath = Path.GetFullPath(testsLoc);
 
             var di = new DirectoryInfo(regTestPath);
-            var dyns = di.GetFiles("*.dyn");
-            foreach (var fileInfo in dyns)
+            if (di.Exists)
             {
-                testParameters.Add(fileInfo.FullName);        
+                var dyns = di.GetFiles("*.dyn");
+                foreach (var fileInfo in dyns)
+                {
+                    testParameters.Add(fileInfo.FullName);
+                }
             }
 
             return testParameters;
