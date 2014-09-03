@@ -86,15 +86,22 @@
     <Compile Include="Messages\GetLibraryItemsMessage.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
+    <Compile Include="Messages\NodeToCreate.cs" />
+    <Compile Include="Messages\UploadFileMessage.cs" />
+    <Compile Include="Messages\FileUploader.cs" />
+    <Compile Include="Messages\ConnectorToCreate.cs" />
     <Compile Include="Messages\RunCommandsMessage.cs" />
     <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Responses\GeometryDataResponse.cs" />
+    <Compile Include="Responses\UpdateProxyNodesResponse.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Responses\ComputationResponse.cs" />
     <Compile Include="Responses\ContentResponse.cs" />
     <Compile Include="Responses\LibraryItemsListResponse.cs" />
+    <Compile Include="Responses\NodeCreationDataResponse.cs" />
+    <Compile Include="Responses\UploadFileResponse.cs" />
     <Compile Include="Interfaces\IWebServer.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>
