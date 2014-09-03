@@ -215,18 +215,21 @@ namespace Dynamo
                     if (geom != null)
                     {
                         geoms.AddRange(geom.ToRevitType());
+                        return;
                     }
 
                     var point = data.Data as Point;
                     if (point != null)
                     {
                         geoms.Add(DocumentManager.Instance.CurrentUIApplication.Application.Create.NewPoint(point.ToXyz()));
+                        return;
                     }
 
                     var curve = data.Data as Curve;
                     if (curve != null)
                     {
                         geoms.Add(curve.ToRevitType());
+                        return;
                     }
 
                     var surf = data.Data as Surface;

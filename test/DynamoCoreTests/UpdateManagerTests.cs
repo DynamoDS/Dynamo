@@ -12,6 +12,7 @@ namespace Dynamo.Tests
     public class UpdateManagerTestNotUpToDate
     {
         [Test]
+        [Category("UnitTests")]
         public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -24,6 +25,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateCheckReturnsInfoWhenNewerDailyBuildAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -36,6 +38,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -47,6 +50,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateCheckReturnsNothingWhenNoNewerVersionAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -57,6 +61,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateCheckReturnsNothingWhenNoVersionsAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -67,6 +72,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateCheckReturnsNothingWhenNotConnected()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -78,6 +84,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ShouldRecognizeStableInstallerWithProperName()
         {
             var test =
@@ -86,6 +93,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ShouldRecognizeOldDailyBuilds()
         {
             var test =
@@ -94,6 +102,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ShouldRecognizeDailyInstallerWithProperName()
         {
             var test =
@@ -105,6 +114,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ShouldGetBinaryVersionFromInstaller()
         {
             var version = UpdateManager.UpdateManager.GetBinaryVersionFromFilePath("DynamoInstall", "DynamoInstall0.7.1.exe");
@@ -118,6 +128,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ShouldGetDateTimeFromDailyInstaller()
         {
             var dateTime = UpdateManager.UpdateManager.GetBuildTimeFromFilePath("DynamoInstall", "DynamoInstall0.7.1.20140625T0009.exe");

@@ -68,6 +68,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateButtonNotCollapsedIfNotUpToDate()
         {
             var um_mock = new Mock<IUpdateManager>();
@@ -85,6 +86,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateButtonCollapsedIfUpToDate()
         {
             var um_mock = new Mock<IUpdateManager>();
@@ -102,6 +104,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void UpdateButtonCollapsedIfNotConnected()
         {
             var um_mock = new Mock<IUpdateManager>();

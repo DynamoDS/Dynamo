@@ -432,6 +432,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void UsingDefaultValue()
         {
             var model = ViewModel.Model;
@@ -462,6 +463,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void Formula()
         {
             var model = ViewModel.Model;
