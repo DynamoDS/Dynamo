@@ -1611,22 +1611,6 @@ namespace Dynamo.Controls
         }
     }
 
-    // Converter used to hide scrollbar for LibraryWrapPanel.
-    public class LibraryWrapPanelWidthConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            double doubleVal = System.Convert.ToDouble(value);
-
-            return doubleVal - 50;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     /// This converter is used to format the display string for both input and output 
     /// parameters on the "TooltipWindow.xaml". If "parameter" here is "inputParam", 
     /// then this converter is invoked by input parameter related binding. A colon 
