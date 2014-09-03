@@ -72,7 +72,7 @@ namespace Dynamo.Search.SearchElements
 
         public override string ShortenParameterType()
         {
-            string shortIconName = this.GetResourceName(ResourceType.SmallIcon) + ".";
+            string shortIconName = this.GetResourceName(ResourceType.SmallIcon);
             IEnumerable<Tuple<string, string>> inputParameters =
                 this.FunctionDescriptor.InputParameters;
             if (inputParameters == null) return "";

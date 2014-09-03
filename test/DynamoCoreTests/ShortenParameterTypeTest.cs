@@ -11,7 +11,7 @@ namespace Dynamo
     class ShortenParameterTypeTest
     {
         [Test]
-        public void TestShortenParameterTypeTest()
+        public void TestShortenParameterType()
         {
             // Dummy variables to create dsFunctionNodeSearchElement.
             IEnumerable<string> tags = new List<string>();
