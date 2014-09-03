@@ -15,6 +15,7 @@ using Autodesk.Revit.UI.Events;
 using Dynamo.Applications.Models;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -31,6 +32,58 @@ using RevitServices.Threading;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 #endregion
+
+namespace RevitServices.Threading
+{
+    public static class IdlePromise
+    {
+        [ThreadStatic]
+        private static bool idle;
+        public static bool InIdleThread
+        {
+            get { return idle; }
+            set { idle = value; }
+        }
+
+        // This is a temporary measure to allow for access to RevitDynamoModel
+        // in a static class IdlePromise. As soon as IdlePromise is completely 
+        // removed, this will go with it.
+        // 
+        private static RevitDynamoModel revitDynamoModel;
+        internal static void AssociateWithRevitDynamoModel(RevitDynamoModel rdm)
+        {
+            revitDynamoModel = rdm;
+        }
+
+        public static void ClearPromises()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RegisterIdle(UIApplication uIApplication)
+        {
+            // SCHEDULER: No-op, method to be removed eventually.
+        }
+
+        public static void ExecuteOnIdleAsync(Action p)
+        {
+            var scheduler = revitDynamoModel.Scheduler;
+            var task = new DelegateBasedAsyncTask(scheduler, null);
+            task.Initialize(p);
+            scheduler.ScheduleForExecution(task);
+        }
+
+        public static void ExecuteOnShutdown(Action p)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void Shutdown()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
 
 namespace Dynamo.Applications
 {

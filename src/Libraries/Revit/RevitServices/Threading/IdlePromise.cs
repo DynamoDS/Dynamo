@@ -12,6 +12,8 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,58 +21,12 @@ using System.Threading;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
+using Dynamo.Core.Threading;
+
 namespace RevitServices.Threading
 {
+
     public delegate T IdlePromiseDelegate<out T>();
-
-#if ENABLE_DYNAMO_SCHEDULER
-
-    public static class IdlePromise
-    {
-        [ThreadStatic]
-        private static bool idle;
-        public static bool InIdleThread
-        {
-            get { return idle; }
-            set { idle = value; }
-        }
-
-        public static void ClearPromises()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void RegisterIdle(UIApplication uIApplication)
-        {
-            // SCHEDULER: No-op, method to be removed eventually.
-        }
-
-        public static IdlePromise<object> ExecuteOnIdleAsync(Action p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static IdlePromise<T> ExecuteOnIdleAsync<T>(IdlePromiseDelegate<T> p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void ExecuteOnShutdown(Action p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void Shutdown()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class IdlePromise<T>
-    {
-    }
-
-#else
 
     /// <summary>
     /// Dispatches delegates in the Revit Idle thread.
@@ -308,6 +264,6 @@ namespace RevitServices.Threading
             return value;
         }
     }
+}
 
 #endif
-}
