@@ -12,7 +12,17 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class StandardPanel : UserControl
     {
-        private bool areAllListsPresented = false;
+        #region Constants
+
+        private const string CreateHeaderString = "CREATE";
+        private const string ActionHeaderString = "ACTIONS";
+        private const string QueryHeaderString = "QUERY";
+        private const string ActionHeaderTag = "actionHeader";
+        private const string QueryHeaderTag = "queryHeader";
+
+        #endregion
+
+        private bool areAllListsPresented;
 
         public StandardPanel()
         {
@@ -21,9 +31,12 @@ namespace Dynamo.UI.Controls
 
         private void OnHeaderMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (!areAllListsPresented)
+                return;
+
             int ultraBoldIndex;
 
-            if (((sender as FrameworkElement).Tag as string) == "queryHeader")
+            if ((sender as FrameworkElement).Tag.ToString() == QueryHeaderTag)
             {
                 addCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
 
@@ -98,7 +111,7 @@ namespace Dynamo.UI.Controls
 
             if (!isActionListEmpty)
             {
-                topCategoryHeader.Text = "ACTIONS";
+                topCategoryHeader.Text = ActionHeaderString;
                 topCategoryList.ItemsSource = (this.DataContext as ClassInformation).ActionMembers;
 
                 if (!isQueryListEmpty)
@@ -113,7 +126,7 @@ namespace Dynamo.UI.Controls
 
             if (!isQueryListEmpty)
             {
-                topCategoryHeader.Text = "QUERY";
+                topCategoryHeader.Text = QueryHeaderString;
                 topCategoryList.ItemsSource = (this.DataContext as ClassInformation).QueryMembers;
 
                 return;
@@ -125,8 +138,8 @@ namespace Dynamo.UI.Controls
         private void createAndPlaceActionHeader(bool makeUltraBold = false)
         {
             TextBlock actionHeader = new TextBlock();
-            actionHeader.Tag = "actionHeader";
-            actionHeader.Text = "ACTIONS";
+            actionHeader.Tag = ActionHeaderTag;
+            actionHeader.Text = ActionHeaderString;
             actionHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
             if (makeUltraBold)
                 actionHeader.FontWeight = FontWeights.UltraBold;
@@ -138,8 +151,8 @@ namespace Dynamo.UI.Controls
         private void createAndPlaceQueryHeader(bool makeUltraBold = false)
         {
             TextBlock queryHeader = new TextBlock();
-            queryHeader.Tag = "queryHeader";
-            queryHeader.Text = "QUERY";
+            queryHeader.Tag = QueryHeaderTag;
+            queryHeader.Text = QueryHeaderString;
             queryHeader.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(221, 221, 221));
             if (makeUltraBold)
                 queryHeader.FontWeight = FontWeights.UltraBold;
