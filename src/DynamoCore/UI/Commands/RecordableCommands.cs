@@ -664,6 +664,74 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
+        /// <summary>
+        /// Contains additional information needed for creating proxy custom node
+        /// </summary>
+        [DataContract]
+        public class CreateProxyNodeCommand : CreateNodeCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public CreateProxyNodeCommand(string nodeId, string nodeName,
+                double x, double y,
+                bool defaultPosition, bool transformCoordinates,
+                string nickName, int inputs, int outputs)
+                : base(nodeId, nodeName, x, y, defaultPosition, transformCoordinates)
+            {
+                this.NickName = nickName;
+                this.Inputs = inputs;
+                this.Outputs = outputs;
+            }
+
+            internal static CreateProxyNodeCommand DeserializeCore(XmlElement element)
+            {
+                var baseCommand = CreateNodeCommand.DeserializeCore(element);
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string nickName = helper.ReadString("NickName");
+                int inputs = helper.ReadInteger("Inputs");
+                int outputs = helper.ReadInteger("Outputs");
+
+                return new CreateProxyNodeCommand(baseCommand.NodeIdAsString,
+                    baseCommand.NodeName,
+                    baseCommand.X,
+                    baseCommand.Y,
+                    baseCommand.DefaultPosition,
+                    baseCommand.TransformCoordinates,
+                    nickName,
+                    inputs,
+                    outputs);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string NickName { get; private set; }
+
+            [DataMember]
+            internal int Inputs { get; private set; }
+
+            [DataMember]
+            internal int Outputs { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NickName", NickName);
+                helper.SetAttribute("Inputs", Inputs);
+                helper.SetAttribute("Outputs", Outputs);
+            }
+
+            #endregion
+        }
+
         [DataContract]
         public class CreateNoteCommand : HasNodeIDCommand
         {

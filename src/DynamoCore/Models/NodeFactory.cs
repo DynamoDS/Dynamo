@@ -53,6 +53,31 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Create a custom node that doesn't have its definition in the Dynamo
+        /// using all needed information for creating
+        /// </summary>
+        /// <param name="id">ID of the node instance</param>
+        /// <param name="name">The name that is used for creating the node instance</param>
+        /// <param name="nickName">The name that will be displayed on the node itself</param>
+        /// <param name="inputs">Number of inputs</param>
+        /// <param name="outputs">Number of outputs</param>
+        /// <returns></returns>
+        internal NodeModel CreateProxyNodeInstance(Guid id, string name, string nickName, int inputs, int outputs)
+        {
+            Guid guid;
+            if (!Guid.TryParse(name, out guid))
+            {
+                return null;
+            }
+
+            // create an instance of Function node 
+            Function result = CreateNodeInstance(typeof(Function), nickName, null, id) as Function;
+            // create its definition and add inputs and outputs
+            result.LoadNode(guid, inputs, outputs);
+            return result;
+        }
+
+        /// <summary>
         ///     Create a NodeModel from a type object
         /// </summary>
         /// <param name="elementType"> The Type object from which the node can be activated </param>
