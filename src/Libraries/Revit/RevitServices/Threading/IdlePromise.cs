@@ -21,11 +21,8 @@ using System.Threading;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
-using Dynamo.Core.Threading;
-
 namespace RevitServices.Threading
 {
-
     public delegate T IdlePromiseDelegate<out T>();
 
     /// <summary>

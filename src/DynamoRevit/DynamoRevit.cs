@@ -1,3 +1,5 @@
+using Dynamo.Applications;
+
 #region
 using System;
 using System.Diagnostics;
@@ -33,8 +35,14 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 #endregion
 
+#if ENABLE_DYNAMO_SCHEDULER
+
 namespace RevitServices.Threading
 {
+    // SCHEDULER: This class will be removed once DynamoScheduler work is 
+    // tested working. When that happens, all the callers will be redirected
+    // to use RevitDynamoModel.DynamoScheduler directly for task scheduling.
+    // 
     public static class IdlePromise
     {
         [ThreadStatic]
@@ -43,16 +51,6 @@ namespace RevitServices.Threading
         {
             get { return idle; }
             set { idle = value; }
-        }
-
-        // This is a temporary measure to allow for access to RevitDynamoModel
-        // in a static class IdlePromise. As soon as IdlePromise is completely 
-        // removed, this will go with it.
-        // 
-        private static RevitDynamoModel revitDynamoModel;
-        internal static void AssociateWithRevitDynamoModel(RevitDynamoModel rdm)
-        {
-            revitDynamoModel = rdm;
         }
 
         public static void ClearPromises()
@@ -67,7 +65,7 @@ namespace RevitServices.Threading
 
         public static void ExecuteOnIdleAsync(Action p)
         {
-            var scheduler = revitDynamoModel.Scheduler;
+            var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
             var task = new DelegateBasedAsyncTask(scheduler, null);
             task.Initialize(p);
             scheduler.ScheduleForExecution(task);
@@ -85,12 +83,15 @@ namespace RevitServices.Threading
     }
 }
 
+#endif
+
 namespace Dynamo.Applications
 {
     [Transaction(TransactionMode.Manual),
      Regeneration(RegenerationOption.Manual)]
     public class DynamoRevit : IExternalCommand
     {
+        private static ExternalCommandData extCommandData;
         private static DynamoViewModel dynamoViewModel;
         private static RevitDynamoModel revitDynamoModel;
         private static bool handledCrash;
@@ -103,6 +104,11 @@ namespace Dynamo.Applications
 
             try
             {
+#if ENABLE_DYNAMO_SCHEDULER
+                extCommandData = commandData;
+                commandData.Application.Idling += OnRevitIdleOnce;
+#else
+
                 IdlePromise.ExecuteOnIdleAsync(
                     delegate
                     {
@@ -116,7 +122,7 @@ namespace Dynamo.Applications
                         TryOpenWorkspaceInCommandData(commandData);
                         SubscribeViewActivating(commandData);
                     });
-
+#endif
                 // Disable the Dynamo button to prevent a re-run
                 DynamoRevitApp.DynamoButton.Enabled = false;
             }
@@ -135,6 +141,31 @@ namespace Dynamo.Applications
 
             return Result.Succeeded;
         }
+
+#if ENABLE_DYNAMO_SCHEDULER
+
+        internal static RevitDynamoModel RevitDynamoModel
+        {
+            get { return revitDynamoModel; }
+        }
+
+        private static void OnRevitIdleOnce(object sender, IdlingEventArgs e)
+        {
+            // We only need to initialize this once, unregister.
+            extCommandData.Application.Idling -= OnRevitIdleOnce;
+
+            // create core data models
+            revitDynamoModel = InitializeCoreModel(extCommandData);
+            dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
+
+            // show the window
+            InitializeCoreView().Show();
+
+            TryOpenWorkspaceInCommandData(extCommandData);
+            SubscribeViewActivating(extCommandData);
+        }
+
+#endif
 
         #region Initialization
 
