@@ -18,6 +18,7 @@ namespace DSCoreNodesTests
     {
         [Test]
         [Category("Failure")]
+        [Category("UnitTests")]
         public static void CanDoSimpleLoft()
         {
             HostFactory.Instance.StartUp();
