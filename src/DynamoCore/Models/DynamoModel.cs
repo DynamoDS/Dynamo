@@ -292,8 +292,8 @@ namespace Dynamo.Models
             Runner = runner;
             Context = context;
             IsTestMode = isTestMode;
-            Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             DebugSettings = new DebugSettings();
+            Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
 
             if (preferences is PreferenceSettings)
             {
