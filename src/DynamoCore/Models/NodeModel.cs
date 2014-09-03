@@ -83,6 +83,11 @@ namespace Dynamo.Models
 
         public bool HasRenderPackages { get; set; }
 
+        /// <summary>
+        /// The unique name that was created the node by
+        /// </summary>
+        public virtual string CreatingName { get { return this.Name; } }
+
         #endregion
 
         #region events

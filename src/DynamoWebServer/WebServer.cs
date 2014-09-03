@@ -102,6 +102,12 @@ namespace DynamoWebServer
             ExecuteMessageFromSocket(msg, sessionId);
         }
 
+        public void ExecuteFileFromSocket(byte[] file, string sessionId)
+        {
+            UploadFileMessage msg = new UploadFileMessage(file);
+            ExecuteMessageFromSocket(msg, sessionId);
+        }
+
         #endregion
 
         #region Private methods
@@ -138,7 +144,22 @@ namespace DynamoWebServer
                     Message = "Received command was not executed, reason: " + ex.Message
                 }, session.SessionID);
             }
+        }
 
+        void socketServer_NewDataReceived(WebSocketSession session, byte[] value)
+        {
+            LogInfo("Web socket: received file");
+            try
+            {
+                ExecuteFileFromSocket(value, session.SessionID);
+            }
+            catch (Exception ex)
+            {
+                SendResponse(new ContentResponse()
+                {
+                    Message = "Received file was incorrect: " + ex.Message
+                }, session.SessionID);
+            }
         }
 
         void socketServer_SessionClosed(WebSocketSession session, CloseReason reason)
@@ -159,6 +180,7 @@ namespace DynamoWebServer
             webSocket.NewSessionConnected += socketServer_NewSessionConnected;
             webSocket.NewMessageReceived += socketServer_NewMessageReceived;
             webSocket.SessionClosed += socketServer_SessionClosed;
+            webSocket.NewDataReceived += socketServer_NewDataReceived;
         }
 
         void UnBindEvents()
@@ -166,6 +188,7 @@ namespace DynamoWebServer
             webSocket.NewSessionConnected -= socketServer_NewSessionConnected;
             webSocket.NewMessageReceived -= socketServer_NewMessageReceived;
             webSocket.SessionClosed -= socketServer_SessionClosed;
+            webSocket.NewDataReceived -= socketServer_NewDataReceived;
         }
 
         void ExecuteMessageFromSocket(Message message, string sessionId)
