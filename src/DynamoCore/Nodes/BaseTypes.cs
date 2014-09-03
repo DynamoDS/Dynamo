@@ -641,13 +641,13 @@ namespace Dynamo.Nodes
                 // We also have to check was previous character capital letter, e.g. Import From CSV
                 // In future there won't be "Method(parA : int)",
                 // TODO: this additional check Equals('(') will be removed.
-                if (
-                    (char.IsUpper(original[i]) || original[i].Equals('('))
-                    &&
-                    ((original[i - 1] != ' ') && (!char.IsUpper(original[i - 1]))
-                    )
-                   )
-                    newText.Append(' ');
+                var curr = original[i];
+                var prev = original[i - 1];
+                if ((Char.IsUpper(curr) || curr.Equals('(')) &&
+                    ((prev != ' ') && (!Char.IsUpper(prev))))
+                {
+                    newText.Append(" ");
+                }
                 newText.Append(original[i]);
             }
             return newText.ToString();
