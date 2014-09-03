@@ -75,7 +75,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(20, fec.ToElements().Count());
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\empty.rfa")]
         public void SwitchDocuments()
         {
