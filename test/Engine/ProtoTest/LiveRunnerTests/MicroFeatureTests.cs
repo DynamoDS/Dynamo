@@ -4867,8 +4867,10 @@ v = foo(t);
 
 
         [Test]
-        public void TestComplexUpdateReExecution()
+        public void TestComplexAssociativeUpdateReExecution()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4434
+            // Test passes but must be simplified to use FFITarget
             List<string> codes = new List<string>() 
             {
                 
@@ -4883,12 +4885,14 @@ a = 12;
 "
 ,
 @"
+
+a = 8;
 x = a;
 t0 = 90;
 t1 = -90;
 t2 = null;
 t3 = null;
-t4 = Autodesk.DesignScript.Geometry.Vector.ZAxis();
+t4 = Vector.ZAxis();
 t5 = true;
 t6 = t5;
 t7 = 1.5;
@@ -4903,16 +4907,16 @@ t15 = t13;
 t16 = -t13;
 t17 = t14;
 t18 = -t14;
-t19 = Autodesk.DesignScript.Geometry.Vector.ZAxis();
+t19 = Vector.ZAxis();
 t20 = 251.78;
 t21 = 110.78;
 t22 = 283.15;
 t23 = 189.22;
 t24 = 96.94;
 t25 = 283.15;
-t26 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(t20, t21, t22);
-t27 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(t23, t24, t25);
-t28 = Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(t27, t26);
+t26 = Point.ByCoordinates(t20, t21, t22);
+t27 = Point.ByCoordinates(t23, t24, t25);
+t28 = Vector.ByTwoPoints(t27, t26);
 t29 = t28.Reverse();
 t30 = t28.Length;
 t31 = t28.Normalized();
@@ -4945,11 +4949,11 @@ t57 = (t55) > (t56);
 t58 = t29.Rotate(t35, t49);
 t59 = t58;
 t60 = Vector.ByCoordinates(t59.X, t59.Y, ((t59.Z) < 0 ? t59.Z : -t59.Z));
-t61 = Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(t26, t60, t30);
+t61 = Line.ByStartPointDirectionLength(t26, t60, t30);
 t62 = t28.Rotate(t35, t48);
 t63 = t62;
 t64 = Vector.ByCoordinates(t63.X, t63.Y, ((t63.Z) < 0 ? t63.Z : -t63.Z));
-t65 = Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(t27, t64, t30);
+t65 = Line.ByStartPointDirectionLength(t27, t64, t30);
 t66 = t65.Intersect(t61);
 t67 = DSCore.List.FirstItem(t66);
 t68 = t67.Add(t40);
@@ -4968,17 +4972,17 @@ t80 = t75;
 t81 = (((t77) < (t78) ? t77 : t78));
 t82 = Point.ByCoordinates(t79.X, t79.Y, t81);
 t83 = Point.ByCoordinates(t80.X, t80.Y, t81);
-t84 = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(t83, t75);
+t84 = Line.ByStartPointEndPoint(t83, t75);
 t85 = t54;
 t86 = t84;
 t87 = t3;
 t88 = ((t85 ? t86 : t87));
-t89 = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(t74, t82);
+t89 = Line.ByStartPointEndPoint(t74, t82);
 t90 = t57;
 t91 = t89;
 t92 = t2;
 t93 = ((t90 ? t91 : t92));
-t94 = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(t82, t83);
+t94 = Line.ByStartPointEndPoint(t82, t83);
 t95 = {t94, t88, t93};
 t96 = t95;
 t97 = DSCore.Object.IsNull(t95);
@@ -4986,29 +4990,29 @@ t98 = DSCore.List.FilterByBoolMask(t95, t97);
 //t99 = __TryGetValueFromNestedDictionaries(t98, ""in"");
 //t100 = __TryGetValueFromNestedDictionaries(t98, ""out"");
 t101 = t74.Add(t37);
-t102 = Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(t67, t26);
+t102 = Vector.ByTwoPoints(t67, t26);
 t103 = t102.Normalized();
 t104 = t103.Cross(t35);
 t105 = t104.Scale(t18);
 t106 = t26.Add(t105);
 t107 = t104.Scale(t15);
 t108 = t26.Add(t107);
-t109 = Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(t67, t27);
+t109 = Vector.ByTwoPoints(t67, t27);
 t110 = t109.Normalized();
 t111 = t110.Cross(t35);
 t112 = t111.Scale(t17);
 t113 = t27.Add(t112);
 t114 = t111.Scale(t16);
 t115 = t27.Add(t114);
-t116 = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(t67, t27);
+t116 = Line.ByStartPointEndPoint(t67, t27);
 t117 = t116.Translate(t114);
-t118 = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(t67, t26);
+t118 = Line.ByStartPointEndPoint(t67, t26);
 t119 = t118.Translate(t107);
-t120 = Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle(t76, t75, t47, t35);
+t120 = Arc.ByCenterPointStartPointSweepAngle(t76, t75, t47, t35);
 t121 = t120.EndPoint;
 t122 = t46;
 t123 = -t122;
-t124 = Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle(t101, t74, t123, t35);
+t124 = Arc.ByCenterPointStartPointSweepAngle(t101, t74, t123, t35);
 t125 = t124.StartPoint;
 t126 = t103.Scale(t45);
 t127 = t67.Add(t126);
@@ -5023,12 +5027,12 @@ t135 = ((t132 ? t133 : -t133));
 t136 = ((t132 ? -t134 : t134));
 t137 = t104.Scale(t136);
 t138 = t128.Add(t137);
-t139 = Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle(t138, t128, t1, t35);
+t139 = Arc.ByCenterPointStartPointSweepAngle(t138, t128, t1, t35);
 t140 = t139.ClosestPointTo(t121);
 t141 = t139.ParameterAtPoint(t140);
 t142 = t111.Scale(t135);
 t143 = t131.Add(t142);
-t144 = Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle(t143, t131, t0, t35);
+t144 = Arc.ByCenterPointStartPointSweepAngle(t143, t131, t0, t35);
 t145 = t144.ClosestPointTo(t125);
 t146 = t144.ParameterAtPoint(t145);
 t147 = t146;
@@ -5036,12 +5040,21 @@ t148 = t141;
 t149 = (t147) / 2;
 t150 = (1 + (t148)) / 2;
 t151 = t139.PointAtParameter(t150);
-t152 = Autodesk.DesignScript.Geometry.Arc.ByThreePoints(t121, t151, t128);
+t152 = Arc.ByThreePoints(t121, t151, t128);
 t153 = t144.PointAtParameter(t149);
-t154 = Autodesk.DesignScript.Geometry.Arc.ByThreePoints(t131, t153, t125);
-t155 = Autodesk.DesignScript.Geometry.Arc.ByFillet(t119, t117, t41);
+t154 = Arc.ByThreePoints(t131, t153, t125);
+t155 = Arc.ByFillet(t119, t117, t41);
 t156 = t155.EndPoint;
 t157 = t155.StartPoint;
+
+x1 = t156.X;
+y1 = t156.Y;
+z1 = t156.Z;
+
+x2 = t157.X;
+y2 = t157.Y;
+z2 = t157.Z;
+
 "
             };
 
@@ -5049,17 +5062,16 @@ t157 = t155.StartPoint;
             Guid guid2 = System.Guid.NewGuid();
             Guid guid3 = System.Guid.NewGuid();
 
-            // = 8
+            // a = 8
             List<Subtree> added = new List<Subtree>();
             added.Add(CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(CreateSubTreeFromCode(guid2, codes[1]));
             added.Add(CreateSubTreeFromCode(guid3, codes[3]));
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            //AssertValue("r", 1);
 
 
-            // = 12
+            // a = 12
             List<Subtree> modified = new List<Subtree>();
             Subtree subtree = CreateSubTreeFromCode(guid2, codes[2]);
             modified.Add(subtree);
@@ -5067,12 +5079,20 @@ t157 = t155.StartPoint;
             astLiveRunner.UpdateGraph(syncData);
 
 
-            // = 8
+            // a = 8
             modified = new List<Subtree>();
             subtree = CreateSubTreeFromCode(guid2, codes[1]);
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x1", 228.19587612091331);
+            AssertValue("y1", 105.56254036946036);
+            AssertValue("z1", 266.18207825882848);
+
+            AssertValue("x2", 219.24758668548554);
+            AssertValue("y2", 103.58293158131586);
+            AssertValue("z2", 265.70177951843084);
         }
 
     }
