@@ -22,7 +22,7 @@ namespace Dynamo.Wpf
         private NodeModel nodeModel;
         private dynNodeView nodeView;
 
-        public void SetupCustomUIElements(Nodes.WatchImageCore nodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.WatchImageCore nodeModel, dynNodeView nodeView)
         {
             this.nodeModel = nodeModel;
 

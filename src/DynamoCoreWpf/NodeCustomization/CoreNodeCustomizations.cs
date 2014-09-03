@@ -2,18 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Documents;
-
-using Dynamo.Models;
-using Dynamo.Utilities;
-
-using RestSharp.Extensions;
 
 namespace Dynamo.Wpf
 {
-    //<summary>
-    // Enumerates the injectors for the NodeCustomizations in this assembly
-    //</summary>
     internal class CoreNodeCustomizations : INodeCustomizations
     {
         private static Dictionary<Type, IEnumerable<Type>> cache;
@@ -84,5 +75,6 @@ namespace Dynamo.Wpf
             }
             return false;
         }
+
     }
 }

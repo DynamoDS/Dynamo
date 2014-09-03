@@ -19,7 +19,7 @@ namespace Dynamo.Wpf
         private Nodes.Watch watchNodeModel;
         private WatchTree watchTree;
 
-        public void SetupCustomUIElements(Nodes.Watch nodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.Watch nodeModel, dynNodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watchNodeModel = nodeModel;

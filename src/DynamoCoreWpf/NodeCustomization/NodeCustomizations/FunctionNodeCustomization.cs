@@ -11,7 +11,7 @@ namespace Dynamo.Wpf
     {
         private Dynamo.Nodes.Function functionNodeModel;
 
-        public void SetupCustomUIElements(Dynamo.Nodes.Function function, dynNodeView nodeView)
+        public void CustomizeView(Dynamo.Nodes.Function function, dynNodeView nodeView)
         {
             this.functionNodeModel = function;
 
@@ -103,7 +103,6 @@ namespace Dynamo.Wpf
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
         }
     }
 }

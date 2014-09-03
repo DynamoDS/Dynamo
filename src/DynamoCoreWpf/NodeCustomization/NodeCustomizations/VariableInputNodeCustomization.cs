@@ -13,7 +13,7 @@ namespace Dynamo.Wpf
 {
     public abstract class VariableInputNodeCustomization : INodeCustomization<Dynamo.Nodes.VariableInput>
     {
-        public void SetupCustomUIElements(Nodes.VariableInput nodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.VariableInput nodeModel, dynNodeView nodeView)
         {
             var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort") { Content = "+", Width = 20 };
             var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort") { Content = "-", Width = 20 };

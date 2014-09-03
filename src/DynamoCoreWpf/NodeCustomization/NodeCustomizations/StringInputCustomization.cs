@@ -17,11 +17,11 @@ namespace Dynamo.Wpf
 {
     public class StringInputNodeCustomization : AbstractStringNodeCustomization
     {
-        public void SetupCustomUIElements(StringInput stringInput, dynNodeView ui)
+        public void CustomizeView(StringInput stringInput, dynNodeView ui)
         {
             var nodeUI = ui;
 
-            base.SetupCustomUIElements(stringInput, nodeUI);
+            base.CustomizeView(stringInput, nodeUI);
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox

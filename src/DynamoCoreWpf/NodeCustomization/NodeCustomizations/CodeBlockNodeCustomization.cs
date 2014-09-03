@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -11,13 +12,9 @@ namespace Dynamo.Wpf
 {
     public class CodeBlockNodeCustomization : INodeCustomization<CodeBlockNodeModel>
     {
-        private CodeBlockNodeModel codeBlockNodeModel;
-
-        public void SetupCustomUIElements(CodeBlockNodeModel model, dynNodeView nodeView)
+        public void CustomizeView(CodeBlockNodeModel model, dynNodeView nodeView)
         {
-            this.codeBlockNodeModel = model;
-
-            var tb = new CodeNodeTextBox(this.codeBlockNodeModel.Code )
+            var tb = new CodeNodeTextBox(model.Code )
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -42,10 +39,10 @@ namespace Dynamo.Wpf
                     UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
 
-            if (this.codeBlockNodeModel.ShouldFocus)
+            if (model.ShouldFocus)
             {
                 tb.Focus();
-                this.codeBlockNodeModel.ShouldFocus = false;
+                model.ShouldFocus = false;
             }
         }
 

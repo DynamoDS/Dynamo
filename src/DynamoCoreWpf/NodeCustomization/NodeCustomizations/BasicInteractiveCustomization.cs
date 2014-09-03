@@ -11,7 +11,7 @@ namespace Dynamo.Wpf
 {
     public abstract class BasicInteractiveCustomization<T> : INodeCustomization<BasicInteractive<T>>
     {
-        public void SetupCustomUIElements(BasicInteractive<T> nodeModel, dynNodeView nodeView)
+        public void CustomizeView(BasicInteractive<T> nodeModel, dynNodeView nodeView)
         {
             //add an edit window option to the 
             //main context window

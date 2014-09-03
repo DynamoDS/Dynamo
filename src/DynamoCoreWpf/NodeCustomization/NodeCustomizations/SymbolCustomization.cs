@@ -1,34 +1,25 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
 using Dynamo.Controls;
 using Dynamo.Nodes;
-using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public class SublistsCustomization : INodeCustomization<Dynamo.Nodes.Sublists>
+    public class SymbolCustomization : INodeCustomization<Dynamo.Nodes.Symbol>
     {
-        private Dynamo.Nodes.Sublists sublistsNodeModel;
-        private DynamoTextBox tb;
-
-        public void SetupCustomUIElements(Dynamo.Nodes.Sublists element, dynNodeView nodeView)
+        public void CustomizeView(Dynamo.Nodes.Symbol symbol, dynNodeView nodeView)
         {
-            this.sublistsNodeModel = element;
-
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox
+            var tb = new DynamoTextBox(symbol.InputSymbol)
             {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
                 Background =
                     new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
-
-            tb.OnChangeCommitted += sublistsNodeModel.ProcessTextForNewInputs;
-
-            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = VerticalAlignment.Top;
 
             nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -36,17 +27,16 @@ namespace Dynamo.Wpf
 
             tb.DataContext = this;
             tb.BindToProperty(
-                new Binding("Value")
+                new Binding("InputSymbol")
                 {
                     Mode = BindingMode.TwoWay,
-                    Source = this,
                     UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
         }
 
         public void Dispose()
         {
-            tb.OnChangeCommitted -= sublistsNodeModel.ProcessTextForNewInputs;
+
         }
     }
 }

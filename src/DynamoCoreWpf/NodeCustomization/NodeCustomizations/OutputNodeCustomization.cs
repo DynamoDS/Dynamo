@@ -12,7 +12,7 @@ namespace Dynamo.Wpf
     {
         private Dynamo.Nodes.Output outputNodeModel;
 
-        public void SetupCustomUIElements(Nodes.Output outputNodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.Output outputNodeModel, dynNodeView nodeView)
         {
             this.outputNodeModel = outputNodeModel;
 

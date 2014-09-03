@@ -14,7 +14,7 @@ namespace Dynamo.Wpf
     {
         private Nodes.DropDrownBase dropDownNodeModel;
 
-        public void SetupCustomUIElements(Nodes.DropDrownBase nodeModel, dynNodeView nodeView)
+        public void CustomizeView(Nodes.DropDrownBase nodeModel, dynNodeView nodeView)
         {
             dropDownNodeModel = nodeModel;
 
@@ -80,7 +80,6 @@ namespace Dynamo.Wpf
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
         }
 
     }

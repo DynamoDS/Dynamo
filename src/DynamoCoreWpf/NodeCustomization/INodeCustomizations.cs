@@ -9,7 +9,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Wpf
 {
-    internal interface INodeCustomizations
+    public interface INodeCustomizations
     {
         IDictionary<Type, IEnumerable<Type>> GetCustomizations();
     }

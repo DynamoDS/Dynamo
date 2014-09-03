@@ -15,7 +15,7 @@ namespace Dynamo.Wpf
     {
         private DoubleInput doubleInput;
 
-        public void SetupCustomUIElements(DoubleInput nodeModel, dynNodeView nodeView)
+        public void CustomizeView(DoubleInput nodeModel, dynNodeView nodeView)
         {
             doubleInput = nodeView.ViewModel.NodeModel as Dynamo.Nodes.DoubleInput;
 
