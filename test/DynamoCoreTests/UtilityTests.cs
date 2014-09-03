@@ -543,5 +543,31 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(expected, result);
         }
+
+        [Test]
+        public void InsertSpacesToStringTest()
+        {
+            string testingSTR = string.Empty;
+            //1. When original is null
+            //2. When original is empty string
+            //3. When original is whitespaces (\n, \t or space)
+            //4. When original is AaaBbbbCDE
+
+            // case 1
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("");
+            Assert.AreEqual("", testingSTR);
+
+            // case 2
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString(null);
+            Assert.AreEqual("", testingSTR);
+
+            // case 3
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("    ");
+            Assert.AreEqual("", testingSTR);
+
+            //case 4
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("AaaBbbbCDE");
+            Assert.AreEqual("Aaa Bbbb CDE", testingSTR);
+        }
     }
 }
