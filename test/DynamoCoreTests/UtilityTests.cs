@@ -548,8 +548,8 @@ namespace Dynamo.Tests
         public void InsertSpacesToStringTest()
         {
             string testingSTR = string.Empty;
-            //1. When original is null
-            //2. When original is empty string
+            //1. When original is empty string
+            //2. When original is null
             //3. When original is whitespaces (\n, \t or space)
             //4. When original is AaaBbbbCDE
 
