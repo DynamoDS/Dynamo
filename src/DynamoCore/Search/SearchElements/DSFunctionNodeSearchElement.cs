@@ -48,13 +48,23 @@ namespace Dynamo.Search.SearchElements
             return this.FunctionDescriptor == other.FunctionDescriptor;
         }
 
-        protected override string GetResourceName(ResourceType resourceType)
+        protected override string GetResourceName(ResourceType resourceType, bool addInputs = false)
         {
             switch (resourceType)
             {
-                case ResourceType.SmallIcon: return FunctionDescriptor.QualifiedName;
+                case ResourceType.SmallIcon:
+                {
+                    if (!addInputs)
+                        return FunctionDescriptor.QualifiedName;
+                    return this.ShortenParameterType();
+                }
                 //TODO: try to load large icon, look how it works.
-                case ResourceType.LargeIcon: return FunctionDescriptor.QualifiedName;
+                case ResourceType.LargeIcon:
+                {
+                    if (!addInputs)
+                        return FunctionDescriptor.QualifiedName;
+                    return this.ShortenParameterType();
+                }
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
@@ -62,17 +72,30 @@ namespace Dynamo.Search.SearchElements
 
         public override string ShortenParameterType()
         {
-            string iconName = this.GetResourceName(ResourceType.SmallIcon)+".";
-            IEnumerable<Tuple<string, string>> inputParameters = this.FunctionDescriptor.InputParameters;
+            string shortIconName = this.GetResourceName(ResourceType.SmallIcon) + ".";
+            IEnumerable<Tuple<string, string>> inputParameters =
+                this.FunctionDescriptor.InputParameters;
             if (inputParameters == null) return "";
+            return this.GetFullIconName(shortIconName, inputParameters);
+        }
 
-            List<Tuple<string, string>> listInputs = new List<Tuple<string,string>>();
-            foreach(var parameter in inputParameters)
+        public string GetFullIconName(
+            string shortIconName, IEnumerable<Tuple<string, string>> inputParameters)
+        {
+            string iconName = shortIconName + ".";
+            List<Tuple<string, string>> listInputs = new List<Tuple<string, string>>();
+            foreach (var parameter in inputParameters)
                 listInputs.Add(parameter);
 
             for (int i = 0; i < listInputs.Count; i++)
             {
                 string typeOfParameter = listInputs[i].Item2;
+
+                // Check if there simbols like "[]..[]".
+                // And remove it.
+                // e.g. bool[]..[] -> boolN
+                typeOfParameter = typeOfParameter.Replace("[]..[]", "N");
+
                 // Check if there simbols like "[]".
                 // And remove them, according how much we found.
                 // e.g. bool[][] -> bool2
@@ -80,13 +103,15 @@ namespace Dynamo.Search.SearchElements
                 if (squareBrackets > 0)
                 {
                     // Remove square brackets.
-                    typeOfParameter = typeOfParameter.Remove(typeOfParameter.Length - squareBrackets * 2);
+                    typeOfParameter =
+                        typeOfParameter.Remove(typeOfParameter.Length - squareBrackets*2);
                     // Add number of them.
                     typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
                 }
                 if (i != 0)
-                    iconName += "-";
-                iconName += typeOfParameter;
+                    iconName += "-" + typeOfParameter;
+                else
+                    iconName += typeOfParameter;
             }
             return iconName;
         }

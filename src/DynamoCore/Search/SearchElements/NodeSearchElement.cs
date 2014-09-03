@@ -184,8 +184,9 @@ namespace Dynamo.Search.SearchElements
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
 
-        protected override string GetResourceName(ResourceType resourceType)
+        protected override string GetResourceName(ResourceType resourceType, bool addInputs = false)
         {
+            // We don't check addInputs, because now there is no any overloaded method among NodeSearchElements.
             switch (resourceType)
             {
                 case ResourceType.SmallIcon: return this._fullName;

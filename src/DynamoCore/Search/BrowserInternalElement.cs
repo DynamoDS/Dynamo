@@ -77,8 +77,16 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                return GetIcon(this.GetResourceName(ResourceType.SmallIcon)
-                              + Dynamo.UI.Configurations.SmallIconPostfix);
+                BitmapImage icon;
+                icon = GetIcon(
+                    this.GetResourceName(ResourceType.SmallIcon, false)
+                        + Dynamo.UI.Configurations.SmallIconPostfix);
+                if (icon != null) return icon;
+
+                // Try to load image with using incoming parameters.
+                // It's used in overridden methods.
+                return icon = GetIcon(this.GetResourceName(ResourceType.SmallIcon, true)
+                        + Dynamo.UI.Configurations.SmallIconPostfix);
             }
         }
 
@@ -89,7 +97,7 @@ namespace Dynamo.Nodes.Search
         {
             get
             {
-                return GetIcon(this.GetResourceName(ResourceType.LargeIcon)
+                return GetIcon(this.GetResourceName(ResourceType.LargeIcon, false)
                               + Dynamo.UI.Configurations.LargeIconPostfix);
             }
         }
@@ -157,10 +165,12 @@ namespace Dynamo.Nodes.Search
 
         public string FullCategoryName { get; set; }
 
-        protected virtual string GetResourceName(ResourceType resourceType)
+        protected virtual string GetResourceName(ResourceType resourceType, bool addInputs = false)
         {
-            if (resourceType == ResourceType.SmallIcon)
+            if ((resourceType == ResourceType.SmallIcon) && !addInputs)
                 return this.Name;
+            if ((resourceType == ResourceType.SmallIcon) && addInputs)
+                return this.ShortenParameterType();
             else
                 return string.Empty;
         }
@@ -173,18 +183,13 @@ namespace Dynamo.Nodes.Search
             var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
             BitmapImage icon = null;
             if (cust != null)
-            {
                 icon = cust.LoadIconInternal(fullNameOfIcon);
-                // Try to load image with using incoming parameters.
-                // It's used in overridden methods.
-                if (icon == null)
-                    icon = cust.LoadIconInternal(this.ShortenParameterType());
-            }
             return icon;
         }
 
         public virtual string ShortenParameterType()
         {
+            // Maybe, in future we have overloaded classes or any other overloaded items.
             return "";
         }
     }
