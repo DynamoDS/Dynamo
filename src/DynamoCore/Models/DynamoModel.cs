@@ -333,7 +333,7 @@ namespace Dynamo.Models
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            PackageManagerClient = new PackageManagerClient(this);
+            PackageManagerClient = new PackageManagerClient(Loader.PackageLoader.RootPackagesDirectory, CustomNodeManager);
         }
 
         private void InitializeInstrumentationLogger()

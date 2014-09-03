@@ -51,7 +51,8 @@ namespace Dynamo.PackageManager
 
         #region Properties/Fields
 
-        private readonly DynamoModel dynamoModel;
+        private readonly string rootPkgDir;
+        private readonly CustomNodeManager customNodeManager;
 
         /// <summary>
         ///     Client property
@@ -105,10 +106,12 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        public PackageManagerClient(DynamoModel dynamoModel)
+        public PackageManagerClient(string rootPkgDir,  CustomNodeManager customNodeManager)
         {
-            this.dynamoModel = dynamoModel;
-            Client = new Client(null, "http://www.dynamopackages.com"); 
+            this.rootPkgDir = rootPkgDir;
+            this.customNodeManager = customNodeManager;
+
+            Client = new Client(null, "http://www.dynamopackages.com");
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
@@ -243,12 +246,12 @@ namespace Dynamo.PackageManager
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
-                        var pkg = PackageUploadBuilder.NewPackageVersion(this.dynamoModel, l, files, packageUploadHandle);
+                        var pkg = PackageUploadBuilder.NewPackageVersion(rootPkgDir, customNodeManager, l, files, packageUploadHandle);
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
-                        var pkg = PackageUploadBuilder.NewPackage(this.dynamoModel, l, files, packageUploadHandle);
+                        var pkg = PackageUploadBuilder.NewPackage(rootPkgDir, customNodeManager, l, files, packageUploadHandle);
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     if (ret == null)

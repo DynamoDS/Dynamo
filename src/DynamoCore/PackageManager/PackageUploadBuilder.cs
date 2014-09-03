@@ -14,7 +14,6 @@ namespace Dynamo.PackageManager
 {
     static class PackageUploadBuilder
     {
-
         public static PackageUploadRequestBody NewPackageHeader( Package l )
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -24,32 +23,32 @@ namespace Dynamo.PackageManager
                                                          engineVersion, engineMetadata, l.Group, l.Dependencies );
         }
 
-        public static PackageUpload NewPackage(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageUpload NewPackage(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
-            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
+            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, pkg, files, uploadHandle);
             return BuildPackageUpload(pkg.Header, zipPath);
         }
 
-        public static PackageVersionUpload NewPackageVersion(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageVersionUpload NewPackageVersion(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
-            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, pkg, files, uploadHandle);
+            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, pkg, files, uploadHandle);
             return BuildPackageVersionUpload(pkg.Header, zipPath);
         }
 
 
     #region Utility methods
 
-        private static string DoPackageFileOperationsAndZip(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        private static string DoPackageFileOperationsAndZip(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
         {
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 
             DirectoryInfo rootDir, dyfDir, binDir, extraDir;
-            FormPackageDirectory(dynamoModel.Loader.PackageLoader.RootPackagesDirectory, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
+            FormPackageDirectory(rootPkgDir, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
             pkg.RootDirectory = rootDir.FullName;
             WritePackageHeader(pkg.Header, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
             RemoveDyfFiles(files, dyfDir); 
-            RemapCustomNodeFilePaths(dynamoModel.CustomNodeManager, files, dyfDir.FullName);
+            RemapCustomNodeFilePaths(customNodeManager, files, dyfDir.FullName);
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
