@@ -3000,7 +3000,7 @@ c = [Associative]
         }
 
         [Test]
-        public void ComplexAssociativeUpdateTest()
+        public void TestComplexAssociativeUpdate()
         {
             string code =
 @"

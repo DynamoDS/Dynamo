@@ -1644,23 +1644,6 @@ namespace ProtoCore.DSASM
             SetGraphNodeStackValue(graphNode, svNull);
         }
 
-        private ProtoCore.AssociativeGraph.GraphNode GetFirstSSAGraphnode(int index, List<AssociativeGraph.GraphNode> nodesInScope)
-        {
-            //while (istream.dependencyGraph.GraphList[index].exprUID == exprID)
-            while (nodesInScope[index].IsSSANode())
-            {
-                --index;
-                if (index < 0)
-                {
-                    // In this case, the first SSA statemnt is the first graphnode
-                    break;
-                }
-
-                Validity.Assert(index >= 0);
-            }
-            return nodesInScope[index + 1];
-        }
-
         private bool UpdatePropertyChangedGraphNode()
         {
             bool propertyChanged = false;
@@ -2098,34 +2081,6 @@ namespace ProtoCore.DSASM
                         }
                         else if (!graphNode.isDirty)
                         {
-                            // If the graphnode is not cyclic, then it can be safely marked as dirty, in preparation of its execution
-                            if (core.Options.EnableVariableAccumulator
-                                && !isSSAAssign
-                                && graphNode.IsSSANode())
-                            {
-                                //
-                                // Comment Jun: Backtrack and firt the first graphnode of this SSA transform and mark it dirty. 
-                                //              We want to execute the entire statement, not just the partial SSA nodes
-                                //
-
-                                // TODO Jun: Optimization - Statically determine the index of the starting graphnode of this SSA expression
-
-                                // Looks we should partially execuate graph
-                                // nodes otherwise we will get accumulative
-                                // update. - Yu Ke 
-
-                                /*
-                                int graphNodeIndex = 0;
-                                for (; graphNodeIndex < graph.GraphList.Count; graphNodeIndex++)
-                                {
-                                    if (graph.GraphList[graphNodeIndex].UID == graphNode.UID)
-                                        break;
-                                }
-                                var firstGraphNode = GetFirstSSAGraphnode(graphNodeIndex - 1, graphNode.exprUID);
-                                firstGraphNode.isDirty = true;
-                                */
-                            }
-
                             if (core.Options.ElementBasedArrayUpdate)
                             {
                                 UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
@@ -2157,7 +2112,7 @@ namespace ProtoCore.DSASM
                                 //if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                                 {
                                     // TODO Jun: Perform reachability analysis at compile time so the first node can  be determined statically at compile time
-                                    var firstGraphNode = GetFirstSSAGraphnode(i - 1, graphNodes);
+                                    var firstGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstSSAGraphnode(i - 1, graphNodes);
                                     firstGraphNode.isDirty = true;
                                 }
                             }
