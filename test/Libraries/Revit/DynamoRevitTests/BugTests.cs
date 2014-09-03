@@ -14,6 +14,7 @@ namespace Dynamo.Tests
     class BugTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [Category("RegressionTests")]
         [TestModel(@".\Bugs\MAGN_66.rfa")]
         public void MAGN_66()
         {
@@ -30,6 +31,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         [TestModel(@".\empty.rfa")]
         public void MAGN_102()
         {
@@ -52,6 +54,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         [TestModel(@".\Bugs\MAGN-122_wallsAndFloorsAndLevels.rvt")]
         public void MAGN_122()
         {
@@ -92,6 +95,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         [TestModel(@".\Bugs\MAGN-438_structuralFraming_simple.rvt")]
         public void MAGN_438()
         {
@@ -113,6 +117,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         [TestModel(@".\Bugs\MAGN_2576_DataImport.rvt")]
         public void MAGN_2576()
         {
@@ -140,6 +145,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         [TestModel(@".\Bugs\MAGN-3620_topo.rvt")]
         public void MAGN_3620()
         {
@@ -178,6 +184,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         [TestModel(@".\empty.rfa")]
         public void MAGN_3784()
         {

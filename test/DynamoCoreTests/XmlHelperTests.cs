@@ -27,6 +27,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestIntegerAttributes()
         {
             XmlElement element = xmlDocument.CreateElement("element");
@@ -50,6 +51,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestDoubleAttributes()
         {
             XmlElement element = xmlDocument.CreateElement("element");
@@ -73,6 +75,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestBooleanAttributes()
         {
             XmlElement element = xmlDocument.CreateElement("element");
@@ -97,6 +100,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestStringAttributes()
         {
             XmlElement element = xmlDocument.CreateElement("element");
@@ -120,6 +124,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestGuidAttributes()
         {
             XmlElement element = xmlDocument.CreateElement("element");
@@ -145,6 +150,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestTypeAttributes()
         {
             XmlElement element = xmlDocument.CreateElement("element");
@@ -159,6 +165,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestEnumAttributes()
         {
             XmlElement element = xmlDocument.CreateElement("element");
