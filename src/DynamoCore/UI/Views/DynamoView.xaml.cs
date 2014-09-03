@@ -773,9 +773,10 @@ namespace Dynamo.Controls
 
                 if (this.startPage != null)
                 {
-                    string rootPath = Path.GetDirectoryName(Path.GetDirectoryName(sampleFiles.ToArray()[0]));
+                    string rootPath = Path.GetDirectoryName(
+                        Path.GetDirectoryName(sampleFiles.ToArray()[0]));
                     DirectoryInfo root = new DirectoryInfo(rootPath);
-                    SampleFileProperty rootProperty = new SampleFileProperty("Samples", "Path");
+                    SampleFileEntry rootProperty = new SampleFileEntry("Samples", "Path");
                     this.startPage.WalkDirectoryTree(root, rootProperty);
 
                     this.startPage.SampleFiles.Add(rootProperty);

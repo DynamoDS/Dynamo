@@ -140,23 +140,29 @@
                                    HorizontalAlignment="Right" />
                     </Border>
 
-                    <TreeView x:Name="internalTreeView" Background="#FFFFFF" Grid.Row="3" 
-                              Grid.ColumnSpan="2" BorderThickness="0" FontSize="15" 
+                    <TreeView x:Name="sampleFileTreeView"
+                              Background="#FFFFFF"
+                              Grid.Row="3"
+                              Grid.ColumnSpan="2"
+                              BorderThickness="0"
+                              FontSize="15"
                               ItemContainerStyle="{StaticResource StartPageTreeViewItem}"
                               Style="{StaticResource StartPageTreeView}">
                         <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type l:SampleFileProperty}" ItemsSource="{Binding Path=Children}">
-                                <TextBlock Text="{Binding Path=FileName}" MouseLeftButtonUp="OnSampleFileClick" Cursor="Hand" />
+                            <HierarchicalDataTemplate DataType="{x:Type l:SampleFileEntry}"
+                                                      ItemsSource="{Binding Path=Children}">
+                                <TextBlock Text="{Binding Path=FileName}"
+                                           MouseLeftButtonUp="OnSampleFileSelected"
+                                           Cursor="Hand" />
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
 
-                    <Label                              
-                                   FontFamily="{StaticResource OpenSansRegular}"
-                                   Margin="0,0,12,0"
-                                   HorizontalAlignment="Left"
-                                   Style="{StaticResource StartPageLabel}"
-                                   MouseLeftButtonUp="showSampleInFolderLabel_MouseLeftButtonUp"/>
+                    <Label FontFamily="{StaticResource OpenSansRegular}"
+                           Margin="0,0,12,0"
+                           HorizontalAlignment="Left"
+                           Style="{StaticResource StartPageLabel}"
+                           MouseLeftButtonUp="ShowSamplesInFolder" />
 
                 </StackPanel>
 
