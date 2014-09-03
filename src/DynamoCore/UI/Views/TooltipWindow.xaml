@@ -162,7 +162,7 @@
                         </Image>
                     </StackPanel>
 
-                    <TextBlock Grid.Row="3"
+                    <!--<TextBlock Grid.Row="3"
                                Grid.Column="0"
                                FontSize="10"
                                Margin="0,0,0,10">
@@ -187,7 +187,7 @@
                                    RequestNavigate="RequestNavigate">
                             Web Reference
                         </Hyperlink>
-                    </TextBlock>
+                    </TextBlock>-->
 
                 </Grid>
             </Grid>

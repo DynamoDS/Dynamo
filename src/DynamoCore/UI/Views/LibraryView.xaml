@@ -183,112 +183,120 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
+        <ScrollViewer CanContentScroll="True"
+                      PreviewMouseWheel="OnPreviewMouseWheel"
+                      Background="{StaticResource WorkspaceBackgroundBrush}">
+            <!-- This is the outer list (showing categories) -->
+            <ListView Name="CategoryListView"
+                      ScrollViewer.CanContentScroll="False"
+                      Background="{StaticResource WorkspaceBackgroundBrush}"
+                      BorderThickness="0"
+                      ItemsSource="{Binding Model.BrowserRootCategories}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Header="{Binding Path=Name}"
+                                  OverridesDefaultStyle="True"
+                                  Template="{StaticResource CategoryExpanderTemplate}"
+                                  Foreground="#DDD"
+                                  FontSize="13">
+                            <!--Select not more than one category-->
+                            <Expander.IsExpanded>
+                                <Binding Path="IsSelected"
+                                         RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
+                            </Expander.IsExpanded>
+                            <!-- This is inner list (showing subcategories) -->
+                            <ListView Name="SubCategoryListView"
+                                      ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                                      Background="#2F2F2F"
+                                      BorderThickness="0"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      ScrollViewer.CanContentScroll="False"
+                                      ScrollViewer.IsDeferredScrollingEnabled="False"
+                                      ItemsSource="{Binding Path=Items}">
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <controls:LibraryWrapPanel Background="Transparent"
+                                                                   Margin="0,10,0,10">
+                                            <controls:LibraryWrapPanel.Width>
+                                                <Binding Path="ActualWidth"
+                                                         ElementName="CategoryListView" />
+                                            </controls:LibraryWrapPanel.Width>
+                                        </controls:LibraryWrapPanel>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Style.Resources>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                             Color="#00000000" />
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                             Color="#00000000" />
+                                        </Style.Resources>
 
-        <!-- This is the outer list (showing categories) -->
-        <ListView Name="CategoryListView"
-                  ScrollViewer.CanContentScroll="False"
-                  Background="{StaticResource WorkspaceBackgroundBrush}"
-                  BorderThickness="0"
-                  ItemsSource="{Binding Model.BrowserRootCategories}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Expander Header="{Binding Path=Name}"
-                              OverridesDefaultStyle="True"
-                              Template="{StaticResource CategoryExpanderTemplate}"
-                              Foreground="#DDD"
-                              FontSize="13">
-                        <!-- This is inner list (showing subcategories) -->
-                        <ListView Name="SubCategoryListView"
-                                  ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                                  Background="#2F2F2F"
-                                  BorderThickness="0"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                  ScrollViewer.CanContentScroll="False"
-                                  ScrollViewer.IsDeferredScrollingEnabled="False"
-                                  ItemsSource="{Binding Path=Items}">
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <controls:LibraryWrapPanel Background="Transparent"
-                                                               Margin="0,10,0,10">
-                                        <controls:LibraryWrapPanel.Width>
-                                            <Binding Path="ActualWidth"
-                                                     ElementName="CategoryListView" />
-                                        </controls:LibraryWrapPanel.Width>
-                                    </controls:LibraryWrapPanel>
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}">
-                                    <Style.Resources>
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                                         Color="#00000000" />
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                         Color="#00000000" />
-                                    </Style.Resources>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            BorderBrush="Transparent"
+                                                            BorderThickness="0">
+                                                        <ContentPresenter />
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
 
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="Transparent"
-                                                        BorderThickness="0">
-                                                    <ContentPresenter />
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
+                                        <Setter Property="Focusable"
+                                                Value="{Binding Path=Focusable}" />
 
-                                    <Setter Property="Focusable"
-                                            Value="{Binding Path=Focusable}" />
-
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected"
-                                                 Value="true">
-                                            <Setter Property="Background"
-                                                    Value="{StaticResource WorkspaceBackgroundBrush}" />
-                                            <Setter Property="BorderThickness"
-                                                    Value="0" />
-                                        </Trigger>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsSelected"
-                                                           Value="False" />
-                                                <Condition Property="IsMouseOver"
-                                                           Value="True" />
-                                            </MultiTrigger.Conditions>
-                                            <MultiTrigger.Setters>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected"
+                                                     Value="true">
                                                 <Setter Property="Background"
-                                                        Value="#404040" />
-                                            </MultiTrigger.Setters>
-                                        </MultiTrigger>
-                                    </Style.Triggers>
+                                                        Value="{StaticResource WorkspaceBackgroundBrush}" />
+                                                <Setter Property="BorderThickness"
+                                                        Value="0" />
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected"
+                                                               Value="False" />
+                                                    <Condition Property="IsMouseOver"
+                                                               Value="True" />
+                                                </MultiTrigger.Conditions>
+                                                <MultiTrigger.Setters>
+                                                    <Setter Property="Background"
+                                                            Value="#404040" />
+                                                </MultiTrigger.Setters>
+                                            </MultiTrigger>
+                                        </Style.Triggers>
 
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                        </ListView>
-                    </Expander>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                            </ListView>
+                        </Expander>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
 
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Background"
-                            Value="Transparent" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                <Border BorderThickness="0,0,0,2"
-                                        BorderBrush="#2F2F2F">
-                                    <ContentPresenter />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
-
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border BorderThickness="0,0,0,2"
+                                            BorderBrush="#2F2F2F">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </ScrollViewer>
     </Grid>
 </UserControl>
