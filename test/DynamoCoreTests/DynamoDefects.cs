@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
+using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -218,5 +219,22 @@ namespace Dynamo.Tests
             AssertPreviewValue("02985f61-2ece-4fe2-b78a-dfb21aa589ff",
                 new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
         }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_847()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_847.dyn");
+            RunModel(openPath);
+            AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 4);
+            DoubleInput doubleInput = model.CurrentWorkspace.NodeFromWorkspace
+                ("7eba96c0-4715-47f0-a874-01f1887ac465") as DoubleInput;
+            doubleInput.Value = "6..8";
+            RunCurrentModel();
+            AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 3);
+
+        }
+
     }
 }
