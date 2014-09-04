@@ -95,54 +95,5 @@ namespace Dynamo.Tests
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 10);
         }
-
-        [Test]
-        public void LoadingIconsForoOverriddenMethods()
-        {
-            IEnumerable<string> tags = new List<string>();
-            //1. Foo(x: double, y : double) -> Foo.double-double
-            //2. Foo(point : Point) -> Foo.Point
-            //3. Foo(a : bool[][], b : var[], c : double[][]) -> Foo.bool2-var1-double2
-
-
-            // 1 case
-            List<Dynamo.Library.TypedParameter> parameters1 = new List<Dynamo.Library.TypedParameter>();
-            parameters1.Add(new Dynamo.Library.TypedParameter("x", "double"));
-            parameters1.Add(new Dynamo.Library.TypedParameter("y", "double"));
-
-            FunctionDescriptor functionItem1 = new FunctionDescriptor("Foo", parameters1, FunctionType.Constructor);
-
-            var dsFunctionNodeSearchElement1 =
-                new Dynamo.Search.SearchElements.
-                    DSFunctionNodeSearchElement("Foo(x: double, y : double)", functionItem1, 
-                                                 Dynamo.Search.SearchElementGroup.Create);
-            Assert.AreEqual("Foo.double-double", dsFunctionNodeSearchElement1.ShortenParameterType());
-
-            //2 case
-            List<Dynamo.Library.TypedParameter> parameters2 = new List<Dynamo.Library.TypedParameter>();
-            parameters2.Add(new Dynamo.Library.TypedParameter("point", "Point"));
-
-            FunctionDescriptor functionItem2 = new FunctionDescriptor("Foo", parameters2, FunctionType.Constructor);
-
-            var dsFunctionNodeSearchElement2 =
-                new Dynamo.Search.SearchElements.
-                    DSFunctionNodeSearchElement("Foo(x: double, y : double)", functionItem2, 
-                                                 Dynamo.Search.SearchElementGroup.Create);
-            Assert.AreEqual("Foo.point", dsFunctionNodeSearchElement2.ShortenParameterType());
-
-            //3 case
-            List<Dynamo.Library.TypedParameter> parameters3 = new List<Dynamo.Library.TypedParameter>();
-            parameters3.Add(new Dynamo.Library.TypedParameter("a", "bool[][]"));
-            parameters3.Add(new Dynamo.Library.TypedParameter("b", "var[]"));
-            parameters3.Add(new Dynamo.Library.TypedParameter("c", "double[][]"));
-
-            FunctionDescriptor functionItem3 = new FunctionDescriptor("Foo", parameters3, FunctionType.Constructor);
-
-            var dsFunctionNodeSearchElement3 =
-                new Dynamo.Search.SearchElements.
-                    DSFunctionNodeSearchElement("Foo(x: double, y : double)", functionItem3, 
-                                                 Dynamo.Search.SearchElementGroup.Create);
-            Assert.AreEqual("Foo.bool2-var1-double2", dsFunctionNodeSearchElement3.ShortenParameterType());
-        }
     }
 }
