@@ -202,7 +202,7 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
-        [NUnit.Framework.Category("Failing")]
+        [NUnit.Framework.Category("Failure")]
         public void RunDSPropertyChangedTest()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4391
