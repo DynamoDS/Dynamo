@@ -118,26 +118,70 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="DSOffice.Excel.Read.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAEc0lEQVR4Xu2aT2tVVxTF8xHy
+        EfwI/Qh2WGjAoZ0FSqfFTh2JUHBm6ax0kIwyapGiA6EVEbTiSKEihNKkUKlIQ6yNxCCV273PW/dyss96
+        J+/lXfpu3ls/WPLyztr3btaR++ectyKEEEIIIYQQQgghhBBCCCGEEEIIIYQQk3Dv44+aaYSyBBuvCWUJ
+        Nl4TyhJsPArW4cOarwllCTZeE8oSbLwmlCXYeBSsw4c1XxPKEmy8JpQl2HhNKEuw8ShYhw9rviaUJdh4
+        TShLsPGaUJZg41GwDh/WfE0oS7DxmlCWYOM1oSzBxqNgHT6s+ZpQlmDjNaEswcZrQlmCjUfBKoQQQggh
+        hsmHX283JwnWAuaNgrWAeaNgLWDeKFiHD2s+CtYC5o2CtYB5o2AtYN4oWIcPaz4K1gLmjXJf0zQfmK6Y
+        bpjuup48P2xc9387aDYf7TWfbf1OaxnRxwTr8mIhr5oumXZNk+Jer1nFYcRpsAAvIMzT4rUXcDgxDRbc
+        9RRhyUPTt6bLQf6djzGu47BiEiywjVFuHW9MW6aLprUT5B73ek3OBg4vanhQo7w6dkyfmljYNXmN1+Zo
+        EmpYQH7jzPnJxMKdRn6MnEs43WLBHuGiYC3wsU82d5qDo/fIyP7r7h01l28+72SwcNdyzzgZv/g/4JXp
+        XHvek5QaPAuw5qNgLfCx289ej+Ix3r5731y9/WcMcZYJ8PtCfk9Il6LYH1Nq8CzAmo+CtWDtm1+Ry4jv
+        nuyzEGeZAPd+5R8yVlmPUWhxsbEw8mv/S1MRdE/yY7cs5r3gNFgYvqzQ4s/zLLw+5MduuYHTCwvDb4wt
+        n5tYeH3Ij93yCqdfbiwIX+vJYcH1qQ60sNxYDudHcST8xYmF1qfy+8B5tLG8eAijLBL+vM5C61P5O8Hi
+        TAB7hIuC9RgWgq/xJ/YP/6WPkS6DhTnNY2ir7n2A7R1Eoc3hw5qPgrUAeSRYgC4jD7ET80aFmg7WYxRa
+        HD6s+ShYC168fodI7Dnx578mCbET80Zl/i/9D7DLeoxCi4uNhZGvgPaxADdO+cKcVkZbLAzf+Wrxa/Qk
+        6/7TKq4HaacsxwLJtx5/MLEQZ5Efs2UXpxUtFkrcC+jzjdi3LHPWcVqRY8E8HuWT8MtFH5Pgx8gvPY9x
+        OhGxcLp3AjDrJMTwnSs43WLBHuGiYC3IPdd+fIGcRvjmzK2nf/tHFvDYx1Cv8doxpEtQft5xSg2eBVjz
+        UbAWRF+cBOBrOL6pcuwJKQ/dd9F8M8ffqAnx90Xr8bxMaHH4sOajYC1g3i++/+PYHnHA13P8qWbrzvY/
+        zYOdg7SHzMBLnq83+aprfo9JE83OnQstLieWkYc27gdak+C13c8T/bPp2CQYeiI6CQvpnMnDnORniu7x
+        H/CmXz5E7HtNwixYWD4Z/ubsIefy72joEfNpEuaNBa5JmDcWuCZh3ljgmoR5Y4FrEuaNBa5JmDcWuCZh
+        3ljgcRK0c/Z/Y6G3k6Dw54VPAj4KIYQQQgghhBBCCCGEEEIIIaZgZeU/2Q7vSifIDWQAAAAASUVORK5C
+        YII=
+</value>
+  </data>
   <data name="DSOffice.Excel.Read.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABKklEQVRYR+2UsWpCMRSG7yP4
-        CD7K7Sh4wbFjn0BwdfINKqVL6dCtk06dRXTQ8Q6lgzi2ILRQoRSEQon/X08kXqJDetzOBx8kJ8k5Se4l
-        mWEYxikmzYYLTY2xn0SYxCdKibFvJHFxs3BeCR3EQA3mneGrK+6WR+dJSA8p/MAdgGeRMFaTaeeBBWAJ
-        5/ASFiLbjHFMZxOxaxyUn+5ltXHdpzfU2RVn2wu4iV5srQpIvoZt6E9elWNrma4PkpNY4VCdU8eukcmD
-        6/4rWPkE/Bf268K1KiA3f7I+rJ7ay7FSpuuD5C34DWP/AWMcu5Lp/yN2jWzfTt/d5ucXddwj7N7PPtxo
-        8eVjY1j6hylcqwqK5JAPDwtStnMZY1vvPUjBNuFB8WtYl65hGBWybAsVOwa++8RAqgAAAABJRU5ErkJg
-        gg==
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEqSURBVFhH7ZSxakIxFIbvI/gIPsrtKHjBsWOfQHB1
+        8g0qpUvp0K2TTp1FdNDxDqWDOLYgtFChFIRCif9fTyReokN63M4HHyQnyTlJ7iWZYRjGKSbNhgtNjbGf
+        RJjEJ0qJsW8kcXGzcF4JHcRADead4asr7pZH50lIDyn8wB2AZ5EwVpNp54EFYAnn8BIWItuMcUxnE7Fr
+        HJSf7mW1cd2nN9TZFWfbC7iJXmytCki+hm3oT16VY2uZrg+Sk1jhUJ1Tx66RyYPr/itY+QT8F/brwrUq
+        IDd/sj6sntrLsVKm64PkLfgNY/8BYxy7kun/I3aNbN9O393m5xd13CPs3s8+3Gjx5WNjWPqHKVyrCork
+        kA8PC1K2cxljW+89SME24UHxa1iXrmEYFbJsCxU7Br77xECqAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="DSOffice.Excel.Write.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAC1UlEQVR4Xu3aPW5TURDFcS8h
+        S8gSWAKUSCBlCTT0LIMOiY7KHS0LoGIF1CgNHQVFCpo0yMy9nGeFmeNrW/jjRf7/pCMQ9wx5zEXmCWUB
+        AAAAAAAAAAAAAAAAALv48uL5ap9orHPno2isc+ejaKxz5zmqzp97+FE01rnzUTTWufNRNNa58xxV5889
+        /Cga69z5KBrr3PkoGuvceY6q8+cefhSNde58FI117nwUjXXuPEfV+XMPP4rGOnc+isY6dz6Kxjp3nqPq
+        /LmHH0VjnTsfRWOdOx9FY507z1EVuACr1eqpfopTi+W/ijRL/RJOJZY+LX/yKXKlYxxTLDovf/I1wiUc
+        Uyx40/Inj+cSnr3/ttoWVQvXzVG1cN0cVf8Ri922/MnjuAT3B89RtXDdHFUL181RdS0Wuuvym7vItUbn
+        y/3Bc1QtXDdH1cJ1c1TtYpk7L//X/e/2wxON4n/FMvf9m8/yDyWWyfLPJZbJ8s8llsnyzyWWyfLPJZZ5
+        Wct3r385qhaum6Nq4bpvP//4u9YdtFfN1x+/l99jir7M/LmHz1G1cN0cVYvcO+TyW/Rl5s89fI6qhevm
+        qFo87Oyz/HC3bfkt+jLYJhbKP7jnEsu86WvdDcs/tFjoVaT9r+U2LP9YYrHbLoHlH1sseNMlsPxTiUXn
+        S7iM5btXuBxVC9fNUbUt+Dqy/s4F13354XZ1+/N+/Z6vauFmc1SdP/fwOaoWrpujaruAN5GmX4LrtrRL
+        mN7z+6CRZ1xUnT/38DmqFq6bo2q7gIcfL0vXzdFo4bo5qqKJhbePn4xvpDqVWPb08ZNxCacQix69579T
+        DccQC3YfP+0Vcxm5UQ3HEkuePn5Y+jnEwtsFsPRN3CtcjqqF6+aoWrhujqqF6+aoOn/u4XNULVw3R9XC
+        dXNULVw3R9X5cw+fo2rhujmqFq6bo2rhujmqAgAAAAAAAAAAAAAAAAAAAACSxeIPKSfM7bXzV20AAAAA
+        SUVORK5CYII=
 </value>
   </data>
   <data name="DSOffice.Excel.Write.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAyElEQVRYR+2SQQrCMBBFc4Qe
-        xSu4FBQ8gkfoTQRx46rXcKsXcCeIN3DnCcb/7aSEqEXTNG7mwdDMb8gL0zrDMIw+DvOZhJWasU8iPMQf
-        lJKx/wsistJleSBvUOSEqjT+jenmIr40+iqD0Ms99XNjCSCL5Y2+Gh/KWmfHMHk8WvIp25/v6mxhH+8b
-        DfjqVttRbuwEwgrFv53kk/sRhmMMM7CkkOvF7irb4633U2WHct6CT43KAjHHvkZNNMrLuzEOyQzDMIxX
-        nHsAwzBS4PCtyzsAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADISURBVFhH7ZJBCsIwEEVzhB7FK7gUFDyCR+hNBHHj
+        qtdwqxdwJ4g3cOcJxv/tpISoRdM0bubB0MxvyAvTOsMwjD4O85mElZqxTyI8xB+UkrH/CyKy0mV5IG9Q
+        5ISqNP6N6eYivjT6KoPQyz31c2MJIIvljb4aH8paZ8cweTxa8inbn+/qbGEf7xsN+OpW21Fu7ATCCsW/
+        neST+xGGYwwzsKSQ68XuKtvjrfdTZYdy3oJPjcoCMce+Rk00ysu7MQ7JDMMwjFecewDDMFLg8K3LOwAA
+        AABJRU5ErkJggg==
 </value>
   </data>
 </root>

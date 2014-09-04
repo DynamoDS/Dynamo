@@ -63,9 +63,29 @@ namespace Dynamo {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_CodeBlockNodeModel_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.CodeBlockNodeModel.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Dynamo_Nodes_CodeBlockNodeModel_Small {
             get {
                 object obj = ResourceManager.GetObject("Dynamo.Nodes.CodeBlockNodeModel.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_DoubleInput_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.DoubleInput.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +103,29 @@ namespace Dynamo {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_Output_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.Output.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Dynamo_Nodes_Output_Small {
             get {
                 object obj = ResourceManager.GetObject("Dynamo.Nodes.Output.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_StringInput_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.StringInput.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,6 +143,16 @@ namespace Dynamo {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_Symbol_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.Symbol.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Dynamo_Nodes_Symbol_Small {
             get {
                 object obj = ResourceManager.GetObject("Dynamo.Nodes.Symbol.Small", resourceCulture);
@@ -113,9 +163,29 @@ namespace Dynamo {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_Watch_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.Watch.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Dynamo_Nodes_Watch_Small {
             get {
                 object obj = ResourceManager.GetObject("Dynamo.Nodes.Watch.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_WatchImageCore_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.WatchImageCore.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

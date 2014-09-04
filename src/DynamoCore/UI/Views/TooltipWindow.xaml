@@ -101,7 +101,8 @@
                        Grid.Column="2"
                        Grid.ColumnSpan="2"
                        Height="96"
-                       Width="96" />
+                       Width="96"
+                       Source="{Binding Path=LargeIcon}"/>
                 <Grid Grid.Row="5"
                       Grid.ColumnSpan="3">
                     <Grid.RowDefinitions>
