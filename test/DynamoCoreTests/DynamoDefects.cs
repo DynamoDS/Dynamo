@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
+using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -217,6 +218,24 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("02985f61-2ece-4fe2-b78a-dfb21aa589ff",
                 new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
+        }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_4046()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4046
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_4046.dyn");
+            RunModel(openPath);
+            AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
+            IntegerSlider integerInput = model.CurrentWorkspace.NodeFromWorkspace
+                ("65d226ea-cfb5-4c5a-940e-a5c4eab1915d") as IntegerSlider;
+            for (int i = 0; i <= 10; i++)
+            {
+                integerInput.Value = 5+i;
+                RunCurrentModel();
+                AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
+            }
         }
     }
 }
