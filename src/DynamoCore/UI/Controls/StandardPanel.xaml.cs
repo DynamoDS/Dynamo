@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Nodes.Search;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.UI.Controls
 {
@@ -35,8 +36,9 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //TODO: Execute node class.
-            MessageBox.Show("test");
+            ListBoxItem fromSender = (ListBoxItem)sender;
+            SearchElementBase searchEle = fromSender.DataContext as SearchElementBase;
+            searchEle.Execute();
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
