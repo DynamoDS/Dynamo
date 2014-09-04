@@ -101,7 +101,8 @@
                        Grid.Column="2"
                        Grid.ColumnSpan="2"
                        Height="96"
-                       Width="96" />
+                       Width="96"
+                       Source="{Binding Path=LargeIcon}"/>
                 <Grid Grid.Row="5"
                       Grid.ColumnSpan="3">
                     <Grid.RowDefinitions>
@@ -129,11 +130,15 @@
                                 Margin="0,10,0,0">
                         <Image Source="/DynamoCore;component/UI/Images/Tooltip/code.png"/>
                         <TextBlock Name="code"
-                                   Text="{Binding Path=FullName, Converter={StaticResource FullyQualifiedNameToDisplayConverter}}"
                                    FontSize="13"
                                    FontFamily="Consolas Regular"
                                    Foreground=" #777777"
                                    Margin="3,0,10,0">
+                            <TextBlock.Text>
+                                <Binding Path="FullName"
+                                         Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                         ConverterParameter="ToolTip" />
+                            </TextBlock.Text>
                         </TextBlock>
                         <Image Height="13"
                                Width="13"

@@ -190,7 +190,6 @@ namespace Dynamo.Search.SearchElements
             switch (resourceType)
             {
                 case ResourceType.SmallIcon: return this._fullName;
-                //TODO: try to load large icon, look how it works.
                 case ResourceType.LargeIcon: return this._fullName;
             }
 

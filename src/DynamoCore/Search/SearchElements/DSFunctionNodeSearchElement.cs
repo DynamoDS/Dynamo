@@ -58,7 +58,6 @@ namespace Dynamo.Search.SearchElements
                         return FunctionDescriptor.QualifiedName;
                     return this.ShortenParameterType();
                 }
-                //TODO: try to load large icon, look how it works.
                 case ResourceType.LargeIcon:
                 {
                     if (!addInputs)

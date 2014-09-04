@@ -73,9 +73,29 @@ namespace DSCoreNodesUI {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSCore_File_Directory_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCore.File.Directory.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSCore_File_Directory_Small {
             get {
                 object obj = ResourceManager.GetObject("DSCore.File.Directory.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DSCore_File_Filename_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCore.File.Filename.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,6 +113,16 @@ namespace DSCoreNodesUI {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_BoolSelector_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.BoolSelector.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSCoreNodesUI_BoolSelector_Small {
             get {
                 object obj = ResourceManager.GetObject("DSCoreNodesUI.BoolSelector.Small", resourceCulture);
@@ -103,9 +133,29 @@ namespace DSCoreNodesUI {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_ColorRange_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.ColorRange.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSCoreNodesUI_ColorRange_Small {
             get {
                 object obj = ResourceManager.GetObject("DSCoreNodesUI.ColorRange.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_CreateList_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.CreateList.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +183,29 @@ namespace DSCoreNodesUI {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_HigherOrder_ApplyFunction_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.HigherOrder.ApplyFunction.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSCoreNodesUI_HigherOrder_ApplyFunction_Small {
             get {
                 object obj = ResourceManager.GetObject("DSCoreNodesUI.HigherOrder.ApplyFunction.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_HigherOrder_ComposeFunctions_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.HigherOrder.ComposeFunctions.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +223,29 @@ namespace DSCoreNodesUI {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_NumberRange_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.NumberRange.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSCoreNodesUI_NumberRange_Small {
             get {
                 object obj = ResourceManager.GetObject("DSCoreNodesUI.NumberRange.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_NumberSeq_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.NumberSeq.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,6 +263,16 @@ namespace DSCoreNodesUI {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSCoreNodesUI_WebRequest_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSCoreNodesUI.WebRequest.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSCoreNodesUI_WebRequest_Small {
             get {
                 object obj = ResourceManager.GetObject("DSCoreNodesUI.WebRequest.Small", resourceCulture);
@@ -183,9 +283,29 @@ namespace DSCoreNodesUI {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_DoubleSlider_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.DoubleSlider.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Dynamo_Nodes_DoubleSlider_Small {
             get {
                 object obj = ResourceManager.GetObject("Dynamo.Nodes.DoubleSlider.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Dynamo_Nodes_IntegerSlider_Large {
+            get {
+                object obj = ResourceManager.GetObject("Dynamo.Nodes.IntegerSlider.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
