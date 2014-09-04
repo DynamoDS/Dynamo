@@ -177,45 +177,45 @@ namespace Dynamo.ViewModels
             bool isInPort = portType == PortType.INPUT;
 
             NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node != null)
+            if (node == null)
+                return;
+
+            PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
+            ConnectorModel connectorToRemove = null;
+
+            // Remove connector if one already exists
+            if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
             {
-                PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
-                ConnectorModel connectorToRemove = null;
-
-                // Remove connector if one already exists
-                if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
-                {
-                    connectorToRemove = portModel.Connectors[0];
-                    Model.Connectors.Remove(connectorToRemove);
-                    portModel.Disconnect(connectorToRemove);
-                    var startPort = connectorToRemove.Start;
-                    startPort.Disconnect(connectorToRemove);
-                }
-
-                // Create the new connector model
-                var start = this.activeConnector.ActiveStartPort;
-                var end = portModel;
-
-                // We could either connect from an input port to an output port, or 
-                // another way around (in which case we swap first and second ports).
-                PortModel firstPort = start, second = end;
-                if (portModel.PortType != PortType.INPUT)
-                {
-                    firstPort = end;
-                    second = start;
-                }
-
-                ConnectorModel newConnectorModel = this.Model.AddConnection(firstPort.Owner,
-                    second.Owner, firstPort.Index, second.Index, PortType.INPUT);
-
-                // Record the creation of connector in the undo recorder.
-                var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
-                if (connectorToRemove != null)
-                    models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
-                models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
-                Model.RecordModelsForUndo(models);
-                this.SetActiveConnector(null);
+                connectorToRemove = portModel.Connectors[0];
+                Model.Connectors.Remove(connectorToRemove);
+                portModel.Disconnect(connectorToRemove);
+                var startPort = connectorToRemove.Start;
+                startPort.Disconnect(connectorToRemove);
             }
+
+            // Create the new connector model
+            var start = this.activeConnector.ActiveStartPort;
+            var end = portModel;
+
+            // We could either connect from an input port to an output port, or 
+            // another way around (in which case we swap first and second ports).
+            PortModel firstPort = start, second = end;
+            if (portModel.PortType != PortType.INPUT)
+            {
+                firstPort = end;
+                second = start;
+            }
+
+            ConnectorModel newConnectorModel = this.Model.AddConnection(firstPort.Owner,
+                second.Owner, firstPort.Index, second.Index, PortType.INPUT);
+
+            // Record the creation of connector in the undo recorder.
+            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            if (connectorToRemove != null)
+                models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
+            models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
+            Model.RecordModelsForUndo(models);
+            this.SetActiveConnector(null);
         }
 
         internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)

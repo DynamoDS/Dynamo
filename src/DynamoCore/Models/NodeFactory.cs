@@ -105,7 +105,7 @@ namespace Dynamo.Models
         {
             CustomNodeDefinition def;
             Guid guid;
-
+            // Check name is correct guid
             if (Guid.TryParse(name, out guid) && dynamoModel.CustomNodeManager.GetDefinition(guid, out def))
             {
                 return new Function(this.workspaceModel, def)

@@ -104,45 +104,57 @@ namespace DynamoWebServer.Messages
 
         private void SaveFile(DynamoViewModel dynamo, Message message, string sessionId)
         {
+            // Put into this list all workspaces that should be saved as files
             var homeWorkspace = dynamo.Model.HomeSpace;
+
+            // Add home workspace into it
             var allWorkspacesToSave = new List<WorkspaceModel> { homeWorkspace };
 
             byte[] fileContent;
             try
             {
-                string fileName, fullFileName;
+                string fileName, filePath;
 
                 var customNodes = dynamo.Model.CustomNodeManager.GetLoadedDefinitions()
                     .Select(cnd => cnd.WorkspaceModel);
+
+                // Add workspaces of all loaded custom nodes into saving list
                 allWorkspacesToSave.AddRange(customNodes);
 
                 foreach (var ws in allWorkspacesToSave)
                 {
+                    // If workspace has its own filename use it during saving
                     if (!string.IsNullOrEmpty(ws.FileName))
                     {
                         fileName = Path.GetFileName(ws.FileName);
-                        fullFileName = ws.FileName;
+                        filePath = ws.FileName;
                     }
                     else
                     {
+                        // Add to file name a correct extension 
+                        // dependently on its type (custom node or home)
                         if (ws is CustomNodeWorkspaceModel)
                         {
                             fileName = (ws.Name != null ? ws.Name : "MyCustomNode") + ".dyf";
                         }
                         else
                         {
-                            fileName = (ws.Name != null ? ws.Name : "MyWorkspace") + ".dyn";
+                            fileName = "Home.dyn";
                         }
 
-                        fullFileName = Directory.GetCurrentDirectory() + "\\" + fileName;
+                        filePath = Path.GetTempPath() + "\\" + fileName;
                     }
 
-                    if (!ws.SaveAs(fullFileName))
+                    // Temporarily save workspace into a drive 
+                    // using existing functionality for saving
+                    if (!ws.SaveAs(filePath))
                         throw new Exception();
 
-                    fileContent = File.ReadAllBytes(fullFileName);
-                    File.Delete(fullFileName);
+                    // Get the file as byte array and after that delete it
+                    fileContent = File.ReadAllBytes(filePath);
+                    File.Delete(filePath);
 
+                    // Send to the Flood the file as byte array and its name
                     OnResultReady(this, new ResultReadyEventArgs(new SavedFileResponse
                     {
                         Status = ResponceStatuses.Success,
@@ -153,6 +165,7 @@ namespace DynamoWebServer.Messages
             }
             catch
             {
+                // If there was something wrong
                 OnResultReady(this, new ResultReadyEventArgs(new SavedFileResponse
                 {
                     Status = ResponceStatuses.Error
