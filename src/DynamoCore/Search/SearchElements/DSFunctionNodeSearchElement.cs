@@ -51,7 +51,12 @@ namespace Dynamo.Search.SearchElements
         {
             switch (resourceType)
             {
-                case ResourceType.SmallIcon: return FunctionDescriptor.QualifiedName;
+                case ResourceType.SmallIcon:
+                {
+                    if (this.FullCategoryName == "Operators")
+                        return FunctionDescriptor.Name;
+                    return FunctionDescriptor.QualifiedName;
+                }
                 case ResourceType.LargeIcon: return FunctionDescriptor.QualifiedName;
             }
 
