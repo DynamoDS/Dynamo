@@ -67,7 +67,7 @@ namespace DynamoUnits
         private static DynamoLengthUnit _hostApplicationInternalLengthUnit = DynamoLengthUnit.Meter;
         private static DynamoAreaUnit _hostApplicationInternalAreaUnit = DynamoAreaUnit.SquareMeter;
         private static DynamoVolumeUnit _hostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicMeter;
-        private static string _numberFormat = "f3";
+        private static string _numberFormat = "f4";
         private static DynamoLengthUnit _lengthUnit;
         private static DynamoAreaUnit _areaUnit;
         private static DynamoVolumeUnit _volumeUnit;
