@@ -14,9 +14,19 @@
              Visibility="Visible"
              d:DesignWidth="300"
              d:DesignHeight="300"
-             x:Name="SearchControl"
-             MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}"
-             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualWidth}">
+             x:Name="SearchControl">
+    <UserControl.MaxHeight>
+        <Binding Path="ActualHeight"
+                 RelativeSource="{RelativeSource FindAncestor, 
+                                                 AncestorLevel=1, 
+                                                 AncestorType={x:Type Grid}}" />
+    </UserControl.MaxHeight>
+    <UserControl.Width>
+        <Binding Path="ActualWidth"
+                 RelativeSource="{RelativeSource FindAncestor, 
+                                                 AncestorLevel=1, 
+                                                 AncestorType={x:Type Grid}}" />
+    </UserControl.Width>
 
     <UserControl.Resources>
         <ResourceDictionary>
