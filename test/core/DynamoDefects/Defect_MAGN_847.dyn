@@ -1,0 +1,33 @@
+<Workspace Version="0.7.1.17276" X="477.488712145446" Y="211.010399498759" zoom="1.18900232884671" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="3599a2da-c801-4c51-8036-09ca0cd24d9a" nickname="Number" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..2" />
+    </Dynamo.Nodes.DoubleInput>
+    <DSCore.Combine type="DSCore.Combine" guid="2ea813c4-7729-45b5-b23b-d7a3377f0b31" nickname="List.Combine" x="274.961130742049" y="202.420494699647" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="4" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="5209546f-facb-4074-b81d-533588bae8aa" nickname="Create List" x="464.519434628975" y="6.48998822143695" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="cffd2040-8900-431b-a018-8222bc2e4193" nickname="Number" x="0" y="97" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3..5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7eba96c0-4715-47f0-a874-01f1887ac465" nickname="Number" x="0" y="193" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="6..9" />
+    </Dynamo.Nodes.DoubleInput>
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="853ebb75-ed5c-4b20-a789-c0f7a5f3815b" nickname="Create List" x="0" y="290" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e9644e22-e3f9-4cae-b020-90a4358af19e" nickname="Watch" x="489" y="181" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3599a2da-c801-4c51-8036-09ca0cd24d9a" start_index="0" end="5209546f-facb-4074-b81d-533588bae8aa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3599a2da-c801-4c51-8036-09ca0cd24d9a" start_index="0" end="2ea813c4-7729-45b5-b23b-d7a3377f0b31" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2ea813c4-7729-45b5-b23b-d7a3377f0b31" start_index="0" end="e9644e22-e3f9-4cae-b020-90a4358af19e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cffd2040-8900-431b-a018-8222bc2e4193" start_index="0" end="5209546f-facb-4074-b81d-533588bae8aa" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cffd2040-8900-431b-a018-8222bc2e4193" start_index="0" end="2ea813c4-7729-45b5-b23b-d7a3377f0b31" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7eba96c0-4715-47f0-a874-01f1887ac465" start_index="0" end="5209546f-facb-4074-b81d-533588bae8aa" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7eba96c0-4715-47f0-a874-01f1887ac465" start_index="0" end="2ea813c4-7729-45b5-b23b-d7a3377f0b31" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="853ebb75-ed5c-4b20-a789-c0f7a5f3815b" start_index="0" end="2ea813c4-7729-45b5-b23b-d7a3377f0b31" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Extract sortable information from a piece of data" x="126.297180068605" y="1847.63556073556" />
+    <Dynamo.Models.NoteModel text="Sort data into different buckets" x="618.44268077601" y="1016.17635327635" />
+    <Dynamo.Models.NoteModel text="Operate on data inside of lists" x="624.84268077601" y="1251.25327635327" />
+    <Dynamo.Models.NoteModel text="Passing functions to other functions allows for a &quot;do this to all these things&quot; set of operations" x="152.217925989351" y="894.559570059568" />
+  </Notes>
+</Workspace>
