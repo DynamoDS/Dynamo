@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#if ENABLE_DYNAMO_SCHEDULER
+
+using System;
 
 namespace Dynamo.Core.Threading
 {
+    /// <summary>
+    /// DelegateBasedAsyncTask allows for a delegate or System.Action object 
+    /// to be scheduled for asynchronous execution on the ISchedulerThread. 
+    /// </summary>
+    /// 
     internal class DelegateBasedAsyncTask : AsyncTask
     {
         private Action actionToPerform;
@@ -35,8 +39,11 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskCompletionCore()
         {
+            // Does nothing here after invocation of the Action.
         }
 
         #endregion
     }
 }
+
+#endif
