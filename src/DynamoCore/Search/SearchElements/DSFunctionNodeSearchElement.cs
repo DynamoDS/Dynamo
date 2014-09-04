@@ -57,7 +57,12 @@ namespace Dynamo.Search.SearchElements
                         return FunctionDescriptor.Name;
                     return FunctionDescriptor.QualifiedName;
                 }
-                case ResourceType.LargeIcon: return FunctionDescriptor.QualifiedName;
+                case ResourceType.LargeIcon:
+                {
+                    if (this.FullCategoryName == "Operators")
+                        return FunctionDescriptor.Name;
+                    return FunctionDescriptor.QualifiedName;
+                }
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
