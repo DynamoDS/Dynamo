@@ -118,6 +118,7 @@ namespace Dynamo.Nodes
             
             PortData data;
             if (outputs > -1)
+            {
                 // create outputs for the node
                 for (int i = 0; i < outputs; i++)
                 {
@@ -127,8 +128,10 @@ namespace Dynamo.Nodes
                     else
                         OutPortData.Add(data);
                 }
-            
+            }
+
             if (inputs > -1)
+            {
                 // create inputs for the node
                 for (int i = 0; i < inputs; i++)
                 {
@@ -138,6 +141,7 @@ namespace Dynamo.Nodes
                     else
                         InPortData.Add(data);
                 }
+            }
 
             // make the custom node instance be in sync 
             // with its definition if it's needed
