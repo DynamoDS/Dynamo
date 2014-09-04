@@ -23,6 +23,9 @@ namespace Dynamo.Core.Threading
         internal IEnumerable<AssociativeNode> Outputs { get; set; }
     }
 
+    /// <summary>
+    /// Schedule this task to compile a CustomNodeDefinition asynchronously.
+    /// </summary>
     class CompileCustomNodeAsyncTask : AsyncTask
     {
         private GraphSyncData graphSyncData;
@@ -35,6 +38,17 @@ namespace Dynamo.Core.Threading
         {
         }
 
+        /// <summary>
+        /// Call this method to intialize a CompileCustomNodeAsyncTask with an 
+        /// EngineController, nodes from the corresponding CustomNodeWorkspaceModel,
+        /// and inputs/outputs of the CustomNodeDefinition.
+        /// </summary>
+        /// <param name="initParams">Input parameters required for compilation of 
+        /// the CustomNodeDefinition.</param>
+        /// <returns>Returns true if GraphSyncData is generated successfully and 
+        /// that the CompileCustomNodeAsyncTask should be scheduled for execution.
+        /// Returns false otherwise.</returns>
+        /// 
         internal bool Initialize(CompileCustomNodeParams initParams)
         {
             engineController = initParams.EngineController;
