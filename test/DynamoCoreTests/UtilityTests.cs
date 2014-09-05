@@ -569,5 +569,30 @@ namespace Dynamo.Tests
             testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("AaaBbbbCDE");
             Assert.AreEqual("Aaa Bbbb CDE", testingSTR);
         }
+
+        [Test]
+        public void NormalizeAsResourceNameTest()
+        {
+            string testingSTR = string.Empty;
+            //1. When resource is empty string
+            //2. When resource is null
+            //3. When resource is whitespaces (\n, \t or space)
+            //4. When resource is %Aaa2Bb**CDE
+            // case 1
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("");
+            Assert.AreEqual("", testingSTR);
+
+            // case 2
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName(null);
+            Assert.AreEqual("", testingSTR);
+
+            // case 3
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("   ");
+            Assert.AreEqual("", testingSTR);
+
+            //case 4
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("%Aaa2Bb**CDE");
+            Assert.AreEqual("Aaa2BbCDE", testingSTR);
+        }
     }
 }
