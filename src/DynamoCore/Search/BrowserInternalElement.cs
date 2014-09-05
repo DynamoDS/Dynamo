@@ -143,7 +143,6 @@ namespace Dynamo.Nodes.Search
             this._name = "Default";
             this.Parent = null;
             this.OldParent = null;
-            this.Focusable = true;
         }
 
         public BrowserInternalElement(string name, BrowserItem parent, string _assembly = "")
@@ -152,7 +151,6 @@ namespace Dynamo.Nodes.Search
             this.assembly = _assembly;
             this.Parent = parent;
             this.OldParent = null;
-            this.Focusable = true;
         }
 
         public string FullCategoryName { get; set; }
@@ -209,7 +207,6 @@ namespace Dynamo.Nodes.Search
             createMembers = new List<BrowserInternalElement>();
             actionMembers = new List<BrowserInternalElement>();
             queryMembers = new List<BrowserInternalElement>();
-            Focusable = false;
         }
 
         private List<BrowserInternalElement> createMembers;

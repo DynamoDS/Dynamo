@@ -1667,4 +1667,20 @@ namespace Dynamo.Controls
         }
     }
 
+    // It's used for ClassDetails and ClassObject itself. ClassDetails should be not focusable,
+    // in contrast to ClassObject. 
+    public class DataContextToBool : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Dynamo.Nodes.Search.BrowserInternalElement) return true;
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

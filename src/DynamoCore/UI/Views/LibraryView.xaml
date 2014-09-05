@@ -177,6 +177,7 @@
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                                   ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                                   ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
+            <controls:DataContextToBool x:Key="DataContextToBool" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
@@ -248,8 +249,14 @@
                                             </Setter.Value>
                                         </Setter>
 
-                                        <Setter Property="Focusable"
-                                                Value="{Binding Path=Focusable}" />
+                                        <!--Make class details not focusable-->
+                                        <Setter Property="Focusable">
+                                            <Setter.Value>
+                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                         Path="DataContext"
+                                                         Converter="{StaticResource DataContextToBool}" />
+                                            </Setter.Value>
+                                        </Setter>
 
                                         <Style.Triggers>
                                             <Trigger Property="IsSelected"
