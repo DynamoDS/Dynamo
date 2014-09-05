@@ -652,6 +652,15 @@ namespace Dynamo.Nodes
             }
             return newText.ToString();
         }
+        /// <summary>
+        ///  Remove "bad" characters for resource name, like "%","+",">" etc.
+        /// </summary>
+        internal static string NormalizeAsResourceName(string resource)
+        {
+            if (string.IsNullOrWhiteSpace(resource))
+                return "";
+            return "";
+        }
     }
 
     public abstract partial class VariableInput : NodeModel
