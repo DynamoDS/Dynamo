@@ -660,7 +660,7 @@ namespace Dynamo.Nodes
             if (string.IsNullOrWhiteSpace(resource))
                 return "";
 
-            // Check if string consusts of only letters, numbers, dots.
+            // Check if string consists of only letters, numbers, dots.
             if (Regex.IsMatch(resource, @"^[a-zA-Z0-9.]+$"))
                 return resource;
 
