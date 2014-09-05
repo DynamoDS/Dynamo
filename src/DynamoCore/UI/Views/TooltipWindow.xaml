@@ -1,0 +1,192 @@
+﻿<UserControl x:Class="Dynamo.UI.Views.ToolTipWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="450"
+             Background="#01000000"
+             MaxWidth="320">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+            <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Border CornerRadius="5"
+                Opacity=".95"
+                Background="#333333"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="202*"></ColumnDefinition>
+                    <ColumnDefinition Width="65*"></ColumnDefinition>
+                    <ColumnDefinition Width="133*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Path=Description}"
+                           Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           FontSize="13"
+                           Foreground="#cccccc"
+                           Margin="0,0,10,0"
+                           TextWrapping="WrapWithOverflow" />
+                <TextBlock Text="INPUT"
+                           Grid.Row="1"
+                           FontSize="10"
+                           Foreground="#50b5a3"
+                           Margin="0,3,0,0" />
+                <ListBox ItemsSource="{Binding InputParameters}"
+                         Grid.Row="2"
+                         Grid.ColumnSpan="3"
+                         Background="Transparent"
+                         BorderBrush="Transparent">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock FontSize="13"
+                                       Margin="-1">
+                            <Run Foreground="#cccccc"
+                                 Text="{Binding Item1, Mode=OneWay}" /> 
+                            <Run Foreground="#777777">
+                                <Run.Text>
+                                <Binding Path="Item2"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource InOutParamTypeConverter}"
+                                         ConverterParameter="inputParam"/>
+                                </Run.Text>
+                            </Run>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Text="OUTPUT"
+                           Grid.Row="3"
+                           FontSize="10"
+                           Foreground="#50b5a3"
+                           Margin="0,10,0,0" />
+                <TextBlock Grid.Row="4"
+                           Grid.ColumnSpan="3"
+                           FontSize="13"
+                           Foreground="#777777">
+                    <TextBlock.Text>
+                        <Binding Path="OutputParameters"
+                                 Mode="OneWay"
+                                 Converter="{StaticResource InOutParamTypeConverter}"/>
+                    </TextBlock.Text>
+                </TextBlock>
+
+                <Image Grid.Row="0"
+                       Grid.Column="2"
+                       Grid.ColumnSpan="2"
+                       Height="96"
+                       Width="96" />
+                <Grid Grid.Row="5"
+                      Grid.ColumnSpan="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type Hyperlink}">
+                            <Setter Property="Foreground"
+                                    Value="#4192d9" />
+                            <Setter Property="TextBlock.TextDecorations"
+                                    Value="{x:Null}" />
+                        </Style>
+                    </Grid.Resources>
+                    <StackPanel Grid.Row="1"
+                                Grid.ColumnSpan="4"
+                                Orientation="Horizontal"
+                                Margin="0,10,0,0">
+                        <Image Source="/DynamoCore;component/UI/Images/Tooltip/code.png"/>
+                        <TextBlock Name="code"
+                                   Text="{Binding Path=FullName, Converter={StaticResource FullyQualifiedNameToDisplayConverter}}"
+                                   FontSize="13"
+                                   FontFamily="Consolas Regular"
+                                   Foreground=" #777777"
+                                   Margin="3,0,10,0">
+                        </TextBlock>
+                        <Image Height="13"
+                               Width="13"
+                               MouseDown="CopyIconMouseClick"
+                               HorizontalAlignment="Right">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="False">
+                                            <Setter Property="Source"
+                                                    Value="/DynamoCore;component/UI/Images/Tooltip/copy.png" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Source"
+                                                    Value="/DynamoCore;component/UI/Images/Tooltip/copy_hover.png" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="0"
+                               FontSize="10"
+                               Margin="0,0,0,10">
+                        <Hyperlink Name="Packegs"
+                                   NavigateUri="http://www.google.com"
+                                   RequestNavigate="RequestNavigate">
+                            Packegs using this
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Text=" | "
+                               Grid.Row="3"
+                               Grid.Column="1"
+                               FontSize="10"
+                               Foreground="#4192d9"
+                               Margin="0,0,0,10" />
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="2"
+                               FontSize="10"
+                               Margin="0,0,0,10">
+                        <Hyperlink Name="WebReference"
+                                   NavigateUri="http://dynamobim.org"
+                                   RequestNavigate="RequestNavigate">
+                            Web Reference
+                        </Hyperlink>
+                    </TextBlock>
+
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

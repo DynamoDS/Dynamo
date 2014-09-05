@@ -18,6 +18,7 @@ using ProtoCore.DSASM;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -460,5 +461,104 @@ namespace Dynamo.UI.Controls
             get { return ((Side)GetValue(AttachmentSideProperty)); }
             set { SetValue(AttachmentSideProperty, value); }
         }
+    }
+
+    public class LibraryToolTipPopup : Popup
+    {
+        private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
+        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
+
+        public static readonly DependencyProperty AttachmentSidePopupProperty =
+            DependencyProperty.Register("AttachmentSidePopup",
+            typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
+            new PropertyMetadata(LibraryToolTipPopup.Side.Left));
+
+        public enum Side
+        {
+            Left, Top, Right, Bottom
+        }
+
+        public Side AttachmentSide
+        {
+            get { return ((Side)GetValue(AttachmentSidePopupProperty)); }
+            set { SetValue(AttachmentSidePopupProperty, value); }
+        }
+        public LibraryToolTipPopup()
+        {
+            this.Placement = PlacementMode.Custom;
+            this.AllowsTransparency = true;
+            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
+            this.Child = tooltip;
+            this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
+            this.dispatcherTimer.Tick += new EventHandler(CloseLibraryToolTipPopup);
+        }
+
+        public void SetDataContext(object dataContext)
+        {
+            if (dataContext == null)
+            {
+                dispatcherTimer.Start();
+                return;
+            }
+            dispatcherTimer.Stop();
+            this.DataContext = dataContext;
+        }
+
+        private void CloseLibraryToolTipPopup(object sender, EventArgs e)
+        {
+            if(!this.IsMouseOver)
+            this.DataContext = null;
+        }
+
+        private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
+        {
+            double x = 0, y = 0;
+            double gap = Configurations.ToolTipTargetGapInPixels;
+            PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
+            Point targetLocation = this.PlacementTarget.TransformToAncestor(Application.Current.MainWindow)
+                                        .Transform(new Point(0, 0));
+
+            switch (this.AttachmentSide)
+            {
+                case Side.Left:
+                    x = -(popup.Width + gap);
+                    y = (target.Height - popup.Height) * 0.5;
+                    primaryAxis = PopupPrimaryAxis.Horizontal;
+                    break;
+
+                case Side.Right:
+                    x = target.Width + 2.5*gap;
+                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
+                        - (targetLocation.Y + Configurations.NodeButtonHeight);
+                    if (availableHeight < Configurations.BottomPanelHeight)
+                        y = availableHeight - (Configurations.BottomPanelHeight+gap*4);
+                    primaryAxis = PopupPrimaryAxis.Horizontal;
+                    break;
+
+                case Side.Top:
+                    x = (target.Width - popup.Width) * 0.5;
+                    y = -(popup.Height + gap);
+                    primaryAxis = PopupPrimaryAxis.Vertical;
+                    break;
+
+                case Side.Bottom:
+                    x = (target.Width - popup.Width) * 0.5;
+                    y = target.Height + gap;
+                    primaryAxis = PopupPrimaryAxis.Vertical;
+                    break;
+            }
+
+            return new CustomPopupPlacement[]
+            {
+                new CustomPopupPlacement()
+                {
+                    Point = new Point(x, y),
+                    PrimaryAxis = primaryAxis
+                }
+            };
+        }
+
+
+        
     }
 }
