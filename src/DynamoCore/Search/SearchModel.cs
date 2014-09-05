@@ -202,9 +202,8 @@ namespace Dynamo.Search
         /// <param name="item">The item to add as a child of that category</param>
         internal void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
-            // When create category, give not only category name, 
-            //but also assembly, where icon for category could be found.
-            var cat = this.AddCategory(category, (item as NodeSearchElement).Assembly);
+
+            var cat = this.AddCategory(category);
             cat.AddChild(item);
 
             item.FullCategoryName = category;
@@ -359,7 +358,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="categoryName">The comma delimited name </param>
         /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName, string resourceAssembly = "")
+        internal BrowserItem AddCategory(string categoryName)
         {
             if (string.IsNullOrEmpty(categoryName))
             {
@@ -398,7 +397,7 @@ namespace Dynamo.Search
 
             for (var i = 1; i < splitCat.Count; i++)
             {
-                currentCat = TryAddChildCategory(currentCat, splitCat[i], resourceAssembly);
+                currentCat = TryAddChildCategory(currentCat, splitCat[i]);
             }
 
             return currentCat;
@@ -410,10 +409,8 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="parent">The parent category </param>
         /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
-        /// <param name="assembly">Assembly, where icon for class button can be found</param>
         /// <returns>The newly created category</returns>
-        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName,
-                                                 string resourceAssembly = "")
+        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
 
@@ -434,7 +431,7 @@ namespace Dynamo.Search
                 return GetCategoryByName(newCategoryName);
             }
 
-            var tempCat = new BrowserInternalElement(childCategoryName, parent, resourceAssembly);
+            var tempCat = new BrowserInternalElement(childCategoryName, parent);
             parent.AddChild(tempCat);
 
             return tempCat;
@@ -542,8 +539,7 @@ namespace Dynamo.Search
                     //      | nValue: int    |
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
-                    var group = SearchElementGroup.None;
-                    var category = ProcessNodeCategory(function.Category, ref group);
+                    var category = function.Category;
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -559,7 +555,7 @@ namespace Dynamo.Search
                             displayString = displayString + "(" + args + ")";
                     }
 
-                    var searchElement = new DSFunctionNodeSearchElement(displayString, function, group);
+                    var searchElement = new DSFunctionNodeSearchElement(displayString, function);
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
                     searchElement.Executed += this.OnExecuted;
@@ -595,12 +591,10 @@ namespace Dynamo.Search
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-            var group = SearchElementGroup.None;
             var cat = "";
             if (attribs.Length > 0)
             {
                 cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                cat = ProcessNodeCategory(cat, ref group);
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -617,8 +611,7 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName,
-                                                  t.Assembly.GetName().Name + ".dll");
+            var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
             searchEle.Executed += this.OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
@@ -671,10 +664,7 @@ namespace Dynamo.Search
 
         public bool Add(CustomNodeInfo nodeInfo)
         {
-            var group = SearchElementGroup.None;
-            nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
-
-            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
+            var nodeEle = new CustomNodeSearchElement(nodeInfo);
             nodeEle.Executed += this.OnExecuted;
 
             if (SearchDictionary.Contains(nodeEle))
@@ -782,49 +772,6 @@ namespace Dynamo.Search
         }
 
         #endregion
-
-        private const string CATEGORY_GROUP_CREATE = "Create";
-        private const string CATEGORY_GROUP_ACTIONS = "Actions";
-        private const string CATEGORY_GROUP_QUERY = "Query";
-
-        /// <summary>
-        /// Call this method to assign a default grouping information if a given category 
-        /// does not have any. A node category's group can either be "Create", "Query" or
-        /// "Actions". If none of the group names above is assigned to the category, it 
-        /// will be assigned a default one that is "Actions".
-        /// 
-        /// For examples:
-        /// 
-        ///     "Core.Evaluate" will be renamed as "Core.Evaluate.Actions"
-        ///     "Core.List.Create" will remain as "Core.List.Create"
-        /// 
-        /// </summary>
-        public string ProcessNodeCategory(string category, ref SearchElementGroup group)
-        {
-            if (string.IsNullOrEmpty(category))
-                return category;
-
-            int index = category.LastIndexOf(CATEGORY_DELIMITER);
-
-            // If "index" is "-1", then the whole "category" will be used as-is.            
-            switch (category.Substring(index + 1))
-            {
-                case CATEGORY_GROUP_ACTIONS:
-                    group = SearchElementGroup.Action;
-                    break;
-                case CATEGORY_GROUP_CREATE:
-                    group = SearchElementGroup.Create;
-                    break;
-                case CATEGORY_GROUP_QUERY:
-                    group = SearchElementGroup.Query;
-                    break;
-                default:
-                    group = SearchElementGroup.Action;
-                    return category;
-            }
-
-            return category.Substring(0, index);
-        }
     }
 }
 
