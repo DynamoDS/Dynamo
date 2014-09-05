@@ -4,6 +4,7 @@ using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
 using Dynamo.Nodes;
+using DSCoreNodesUI;
 
 namespace Dynamo.Tests
 {
@@ -200,6 +201,21 @@ namespace Dynamo.Tests
 
             AssertPreviewValue(nodeID, 1);
 
+        }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_1905()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1905
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1905.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("c4b9077d-3e6c-40b9-a715-078083e29655", 11);
+            BoolSelector b = model.CurrentWorkspace.NodeFromWorkspace
+                ("c9da5b60-9d52-453b-836d-0682687728bf") as BoolSelector;
+            b.Value = true;
+            RunCurrentModel();
+            AssertPreviewValue("c4b9077d-3e6c-40b9-a715-078083e29655", 3);
         }
 
         [Test, Category("RegressionTests")]
