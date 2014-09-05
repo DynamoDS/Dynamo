@@ -122,8 +122,6 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
-
-            Debug.WriteLine("Resetting window location to {0}:{1}", Left, Top);
         }
 
         void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -295,9 +293,15 @@ namespace Dynamo.Controls
 #endif
             #region Search initialization
 
+#if ENABLE_NEW_LIBRARY_VIEW
+            var search = new LibraryView(
+                this.dynamoViewModel.SearchViewModel,
+                this.dynamoViewModel);
+#else
             var search = new SearchView(
                 this.dynamoViewModel.SearchViewModel,
                 this.dynamoViewModel);
+#endif
             sidebarGrid.Children.Add(search);
             this.dynamoViewModel.SearchViewModel.Visible = true;
 
@@ -761,9 +765,27 @@ namespace Dynamo.Controls
                     }
                 }
 
+                if (dirPaths.Any())
+                {
+                    var showInFolder = new MenuItem
+                    {
+                        Header = "Show In Folder",
+                        Tag = dirPaths[0]
+                    };
+                    showInFolder.Click += OnShowInFolder;
+                    SamplesMenu.Items.Add(new Separator());
+                    SamplesMenu.Items.Add(showInFolder);
+                }
+
                 if (this.startPage != null)
                     this.startPage.PopulateSampleFileList(sampleFiles);
             }
+        }
+
+        private static void OnShowInFolder(object sender, RoutedEventArgs e)
+        {
+            var folderPath = (string)((MenuItem)sender).Tag;
+            Process.Start("explorer.exe", "/select," + folderPath);
         }
 #endif
 

@@ -7,6 +7,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using ProtoCore.Utils;
+using System.Globalization;
 
 namespace GraphToDSCompiler
 {
@@ -62,9 +63,9 @@ namespace GraphToDSCompiler
                         int intResult1 = 0;
                         bool boolResult1 = false;
                         double dblResult1 = 0;
-                        if (Int32.TryParse(caption1, out intResult1))
+                        if (Int32.TryParse(caption1, NumberStyles.Number, CultureInfo.InvariantCulture, out intResult1))
                             parameter1 = intResult1;
-                        else if (Double.TryParse(caption1, out dblResult1))
+                        else if (Double.TryParse(caption1, NumberStyles.Number, CultureInfo.InvariantCulture, out dblResult1))
                             parameter1 = dblResult1;
                         else if (Boolean.TryParse(caption1, out boolResult1))
                             parameter1 = boolResult1;
@@ -192,9 +193,9 @@ namespace GraphToDSCompiler
                                 int intResult = 0;
                                 bool boolResult = false;
                                 double dblResult = 0;
-                                if (Int32.TryParse(caption, out intResult))
+                                if (Int32.TryParse(caption, NumberStyles.Number, CultureInfo.InvariantCulture, out intResult))
                                     parameter = intResult;
-                                else if (Double.TryParse(caption, out dblResult))
+                                else if (Double.TryParse(caption, NumberStyles.Number, CultureInfo.InvariantCulture, out dblResult))
                                     parameter = dblResult;
                                 else if (Boolean.TryParse(caption, out boolResult))
                                     parameter = boolResult;

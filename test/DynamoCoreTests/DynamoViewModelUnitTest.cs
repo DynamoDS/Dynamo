@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using Dynamo.Interfaces;
+
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UpdateManager;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using DynamoUtilities;
 
 using NUnit.Framework;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -64,6 +65,23 @@ namespace Dynamo.ViewModels
             {
                 searchText = value;
                 RaisePropertyChanged("SearchText");
+            }
+        }
+
+        /// <summary>
+        ///     SearchIconAlignment property
+        /// </summary>
+        /// <value>
+        ///     This is used for aligment search icon and text.
+        /// </value>
+        private System.Windows.HorizontalAlignment searchIconAlignment;
+        public System.Windows.HorizontalAlignment SearchIconAlignment
+        {
+            get { return searchIconAlignment; }
+            set
+            {
+                searchIconAlignment = value;
+                RaisePropertyChanged("SearchIconAlignment");
             }
         }
 
@@ -155,6 +173,7 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<SearchElementBase>();
             Visible = false;
             searchText = "";
+            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             topResult = this.Model.AddRootCategoryToStart("Top Result");
             
@@ -198,7 +217,15 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            var result = this.Model.Search(query);
+            //var sw = new Stopwatch();
+
+            //sw.Start();
+
+            var result = this.Model.Search(query).ToList();
+
+            //sw.Stop();
+            
+            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
             // Remove old execute handler from old top result
             if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
@@ -255,7 +282,6 @@ namespace Dynamo.ViewModels
 
                 topResult.SetVisibilityToLeaves(true);
                 copy.ExpandToRoot();
-
             }
 
             // for all of the other results, show them in their category
@@ -283,6 +309,7 @@ namespace Dynamo.ViewModels
             SearchResults.Clear();
             visibleSearchResults.ToList()
                 .ForEach(x => SearchResults.Add((NodeSearchElement)x));
+
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)

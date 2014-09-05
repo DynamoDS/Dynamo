@@ -19,6 +19,57 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+###0.7.2 ###
+####Incremental Release with:####
+- Significant Stability Improvements
+- More robust interaction with Revit elements
+- Fixes to many small geometry tools
+- Installer overhaul
+
+####Some specifics####
+- Preview Geometry in Revit (2015 Sundial Release only)
+- Smaller download
+- Directly open Samples folder from Help menu
+- Object type is properly labeled on nodes for geometry outputs
+- Improved documentation for 3rd party developers
+- Advanced Tutorial Content
+- Vast Regression Testing overhaul
+- Solid.DifferenceAll(take one solid and get the Boolean difference with it versus a list of other solids0
+- Copy Lacing and Nickname settings when copy/pasting
+- List.UniquItems now works for geometry elements
+- Improved handling of large numbers of geometric elements
+- Improved Align Selection
+- Improved converting Revit Walls to Dynamo geometry
+- Improvements to search speed
+- Improved handling of updates to 0.6.3 packages
+- Improvements to If node uses in custom nodes
+- Fixed Model Line creations from Dynamo curves
+- Fixed Surface.ByPatch error with closed polycurve
+- Fixed Solid.ThinShell
+- Fixed crashes in Revit document switching
+- Fixed Mesh improperly scaled when extracted from Topography
+- Fixed Curve.TangentAtParameter on curve from offset Polycurve crashes Dynamo
+- Fixed crash using PolyCurve.Offset
+- Fixes to Curve.Project behavior
+- Fixes to Curve.PullOntoPlane behavior
+- Fixed StructuralFraming.Location
+- Fixed CBN not being parsed as a culturally invariant string
+- Fixed Background preview level of detail for curves
+- Fixed Copy/Paste of Code Block node problems
+- Fixed nested List.Map
+- Fixed Lacing issues on many nodes
+- Fixed for Integer/Double interactions
+- Fixed negative values in range expressions
+- Fixes to multi-output nodes (Raybounce node and others)
+- For more fixes, see https://github.com/DynamoDS/Dynamo/issues?q=is%3Aclosed+is%3Aissue+sort%3Aupdated-desc
+
+####Back office Improvements:####
+- Installer can now run silently for custom deployments
+- MVVM refactoring: Standard Code separation and formatting for greater legibility and code reusability  
+- Separation from Revit dependencies for easier porting of Dynamo to new applications
+- Recursion:  ScopeIf node for use in recursive custom node workflows (experimental)
+
+
 ###0.7.1 ###
 - Package Manager is back
 - [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
