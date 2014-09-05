@@ -44,5 +44,16 @@ namespace Dynamo.Search.SearchElements
         {
             return this.FunctionDescriptor == other.FunctionDescriptor;
         }
+
+        protected override string GetResourceName(ResourceType resourceType)
+        {
+            switch (resourceType)
+            {
+                case ResourceType.SmallIcon: return FunctionDescriptor.QualifiedName;
+                case ResourceType.LargeIcon: return FunctionDescriptor.QualifiedName;
+            }
+
+            throw new InvalidOperationException("Unhandled resourceType");
+        }
     }
 }

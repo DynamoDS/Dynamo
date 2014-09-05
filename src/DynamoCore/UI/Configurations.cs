@@ -137,6 +137,9 @@ namespace Dynamo.UI
         public static double NodeTooltipArrowHeight_SideConnecting = 12;
 
         public static double ToolTipTargetGapInPixels = 3.0;
+        public static double NodeButtonHeight = 32; // Height of node button.
+        public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
+        public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
         #endregion
 
         #region Library Item Tooltip
@@ -185,6 +188,20 @@ namespace Dynamo.UI
         public static readonly double DefCondensedContentWidth = 33.0;
         public static readonly double DefCondensedContentHeight = 28.0;
 
+        #endregion
+
+        #region Icon Resources Strings
+
+        public const string SmallIconPostfix = ".Small";
+        public const string LargeIconPostfix = ".Large";
+        public const string ResourcesDLL = ".resources.dll";
+
+        #endregion
+
+        #region Class button
+        public const int MaxLengthClassButtonTitle = 22;
+        public const int MaxLengthRowClassButtonTitle = 8; // How many characters can be in one row.
+        public const string TwoDots = "..";
         #endregion
 
 #if DEBUG

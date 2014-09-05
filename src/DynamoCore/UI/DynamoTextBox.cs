@@ -461,4 +461,119 @@ namespace Dynamo.UI.Controls
             set { SetValue(AttachmentSideProperty, value); }
         }
     }
+
+    public class LibraryToolTipPopup : Popup
+    {
+        private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
+        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
+
+        public static readonly DependencyProperty AttachmentSidePopupProperty =
+            DependencyProperty.Register("AttachmentSidePopup",
+            typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
+            new PropertyMetadata(LibraryToolTipPopup.Side.Left));
+
+        public enum Side
+        {
+            Left, Top, Right, Bottom
+        }
+
+        public Side AttachmentSide
+        {
+            get { return ((Side)GetValue(AttachmentSidePopupProperty)); }
+            set { SetValue(AttachmentSidePopupProperty, value); }
+        }
+        public LibraryToolTipPopup()
+        {
+            this.Placement = PlacementMode.Custom;
+            this.AllowsTransparency = true;
+            this.CustomPopupPlacementCallback = PlacementCallback;
+            this.Child = tooltip;
+            this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
+            this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
+            this.Loaded += LoadMainDynamoWindow;
+        }
+
+        // We should load main window after Popup has been initialized.
+        // If we try to load it before, we will get null.
+        private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
+        {
+            var mainDynamoWindow = WPF.FindUpVisualTree<DynamoView>(this);
+
+            // When Dynamo window goes behind another app, the tool-tip should be hidden right 
+            // away. We cannot use CloseLibraryToolTipPopup because it only hides the tool-tip 
+            // window after a pause.
+            mainDynamoWindow.Deactivated += (Sender, args) =>
+            {
+                this.DataContext = null;
+            };
+        }
+
+        public void SetDataContext(object dataContext)
+        {
+            if (dataContext == null)
+            {
+                dispatcherTimer.Start();
+                return;
+            }
+            dispatcherTimer.Stop();
+            this.DataContext = dataContext;
+        }
+
+        private void CloseLibraryToolTipPopup(object sender, EventArgs e)
+        {
+            if (!this.IsMouseOver)
+                this.DataContext = null;
+        }
+
+        private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
+        {
+            double x = 0, y = 0;
+            double gap = Configurations.ToolTipTargetGapInPixels;
+            PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
+            Point targetLocation = this.PlacementTarget.TransformToAncestor(Application.Current.MainWindow)
+                                        .Transform(new Point(0, 0));
+
+            switch (this.AttachmentSide)
+            {
+                case Side.Left:
+                    x = -(popup.Width + gap);
+                    y = (target.Height - popup.Height) * 0.5;
+                    primaryAxis = PopupPrimaryAxis.Horizontal;
+                    break;
+
+                case Side.Right:
+                    x = target.Width + 2.5*gap;
+                    var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
+                        - (targetLocation.Y + Configurations.NodeButtonHeight);
+                    if (availableHeight < Configurations.BottomPanelHeight)
+                        y = availableHeight - (Configurations.BottomPanelHeight+gap*4);
+                    primaryAxis = PopupPrimaryAxis.Horizontal;
+                    break;
+
+                case Side.Top:
+                    x = (target.Width - popup.Width) * 0.5;
+                    y = -(popup.Height + gap);
+                    primaryAxis = PopupPrimaryAxis.Vertical;
+                    break;
+
+                case Side.Bottom:
+                    x = (target.Width - popup.Width) * 0.5;
+                    y = target.Height + gap;
+                    primaryAxis = PopupPrimaryAxis.Vertical;
+                    break;
+            }
+
+            return new CustomPopupPlacement[]
+            {
+                new CustomPopupPlacement()
+                {
+                    Point = new Point(x, y),
+                    PrimaryAxis = primaryAxis
+                }
+            };
+        }
+
+
+        
+    }
 }

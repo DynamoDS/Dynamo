@@ -1,0 +1,302 @@
+﻿<UserControl x:Class="Dynamo.UI.Views.LibraryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="525"
+             d:DesignWidth="350">
+    <UserControl.Resources>
+        <ResourceDictionary>
+
+            <DataTemplate x:Key="ClassObjectDataTemplate">
+                <DataTemplate.Resources>
+                    <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+                </DataTemplate.Resources>
+                <StackPanel Orientation="Vertical"
+                            Width="96"
+                            Height="96">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="40" />
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding Path=SmallIcon}"
+                               Width="32"
+                               Height="32"
+                               Margin="8"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="0" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Center"
+                                   Foreground="#989898"
+                                   Grid.Row="1">
+                            <TextBlock.Text>
+                                <Binding Path="Name"
+                                         Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                         ConverterParameter="ClassButton"/>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="ClassDetailsDataTemplate">
+                <Grid Background="{StaticResource WorkspaceBackgroundBrush}">
+                    <Grid.Width>
+                        <Binding Path="ActualWidth"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
+                    </Grid.Width>
+                    <uicontrols:StandardPanel Name="standardPanel" />
+                </Grid>
+            </DataTemplate>
+
+            <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
+                             TargetType="{x:Type ToggleButton}">
+                <Border x:Name="ExpanderButtonBorder"
+                        Background="{StaticResource WorkspaceBackgroundBrush}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid MinHeight="27"
+                          MinWidth="66"
+                          Margin="16,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image x:Name="ExpandCollapseStateIcon"
+                               Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                               Width="16"
+                               Height="16"
+                               VerticalAlignment="Center"
+                               Margin="0" />
+                        <ContentPresenter x:Name="HeaderContent"
+                                          Grid.Column="1"
+                                          ContentSource="Content"
+                                          VerticalAlignment="Center"
+                                          TextBlock.FontSize="13"
+                                          TextBlock.Foreground="#989898" />
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="True" />
+                            <Condition Property="IsChecked"
+                                       Value="False" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="True" />
+                            <Condition Property="IsChecked"
+                                       Value="True" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                            <Setter Property="TextBlock.FontWeight"
+                                    TargetName="HeaderContent"
+                                    Value="Semibold" />
+                            <Setter Property="TextBlock.Foreground"
+                                    TargetName="HeaderContent"
+                                    Value="#bbbbbb" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="False" />
+                            <Condition Property="IsChecked"
+                                       Value="True" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                            <Setter Property="TextBlock.FontWeight"
+                                    TargetName="HeaderContent"
+                                    Value="Semibold" />
+                            <Setter Property="TextBlock.Foreground"
+                                    TargetName="HeaderContent"
+                                    Value="#bbbbbb" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <!-- Expander Template-->
+            <ControlTemplate x:Key="CategoryExpanderTemplate"
+                             TargetType="{x:Type Expander}">
+                <DockPanel Background="#2F2F2F">
+                    <ToggleButton x:Name="ExpanderButton"
+                                  DockPanel.Dock="Top"
+                                  Template="{StaticResource CategoryExpanderButtonTemplate}"
+                                  Content="{TemplateBinding Header}"
+                                  IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                  OverridesDefaultStyle="True">
+                    </ToggleButton>
+                    <ContentPresenter x:Name="ExpanderContent"
+                                      Visibility="Collapsed"
+                                      DockPanel.Dock="Bottom">
+                        <ContentPresenter.Width>
+                            <Binding Path="ActualWidth"
+                                     RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
+                        </ContentPresenter.Width>
+                    </ContentPresenter>
+                </DockPanel>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsExpanded"
+                             Value="True">
+                        <Setter TargetName="ExpanderContent"
+                                Property="Visibility"
+                                Value="Visible" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
+                                                  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
+                                                  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Name="LibraryGrid">
+        <ScrollViewer CanContentScroll="True"
+                      PreviewMouseWheel="OnPreviewMouseWheel"
+                      Background="{StaticResource WorkspaceBackgroundBrush}">
+            <!-- This is the outer list (showing categories) -->
+            <ListView Name="CategoryListView"
+                      ScrollViewer.CanContentScroll="False"
+                      Background="{StaticResource WorkspaceBackgroundBrush}"
+                      BorderThickness="0"
+                      ItemsSource="{Binding Model.BrowserRootCategories}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Header="{Binding Path=Name}"
+                                  OverridesDefaultStyle="True"
+                                  Template="{StaticResource CategoryExpanderTemplate}"
+                                  Foreground="#DDD"
+                                  FontSize="13">
+                            <!--Select not more than one category-->
+                            <Expander.IsExpanded>
+                                <Binding Path="IsSelected"
+                                         RelativeSource="{RelativeSource AncestorType={x:Type ListViewItem}}" />
+                            </Expander.IsExpanded>
+                            <!-- This is inner list (showing subcategories) -->
+                            <ListView Name="SubCategoryListView"
+                                      ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                                      Background="#2F2F2F"
+                                      BorderThickness="0"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      ScrollViewer.CanContentScroll="False"
+                                      ScrollViewer.IsDeferredScrollingEnabled="False"
+                                      ItemsSource="{Binding Path=Items}">
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <controls:LibraryWrapPanel Background="Transparent"
+                                                                   Margin="0,10,0,10">
+                                            <controls:LibraryWrapPanel.Width>
+                                                <Binding Path="ActualWidth"
+                                                         ElementName="CategoryListView" />
+                                            </controls:LibraryWrapPanel.Width>
+                                        </controls:LibraryWrapPanel>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Style.Resources>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                             Color="#00000000" />
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                             Color="#00000000" />
+                                        </Style.Resources>
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            BorderBrush="Transparent"
+                                                            BorderThickness="0">
+                                                        <ContentPresenter />
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <Setter Property="Focusable"
+                                                Value="{Binding Path=Focusable}" />
+
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected"
+                                                     Value="true">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource WorkspaceBackgroundBrush}" />
+                                                <Setter Property="BorderThickness"
+                                                        Value="0" />
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected"
+                                                               Value="False" />
+                                                    <Condition Property="IsMouseOver"
+                                                               Value="True" />
+                                                </MultiTrigger.Conditions>
+                                                <MultiTrigger.Setters>
+                                                    <Setter Property="Background"
+                                                            Value="#404040" />
+                                                </MultiTrigger.Setters>
+                                            </MultiTrigger>
+                                        </Style.Triggers>
+
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                            </ListView>
+                        </Expander>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border BorderThickness="0,0,0,2"
+                                            BorderBrush="#2F2F2F">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

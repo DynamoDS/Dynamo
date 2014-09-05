@@ -143,6 +143,17 @@ namespace Dynamo.Search.SearchElements
         {
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
+
+        protected override string GetResourceName(ResourceType resourceType)
+        {
+            switch (resourceType)
+            {
+                case ResourceType.SmallIcon: return this._fullName;
+                case ResourceType.LargeIcon: return this._fullName;
+            }
+
+            throw new InvalidOperationException("Unhandled resourceType");
+        }  
     }
 
 }
