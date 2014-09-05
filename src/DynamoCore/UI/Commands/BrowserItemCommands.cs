@@ -70,7 +70,8 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         /// <param name="elem">The element in question</param>
         internal void AddChild(BrowserInternalElement elem)
-        {            
+        {
+
             elem.OldParent = elem.Parent;
             if (elem.Parent != null)
                 elem.Parent.Items.Remove(elem);
@@ -117,24 +118,6 @@ namespace Dynamo.Nodes.Search
             {
                 _visibility = value;
                 RaisePropertyChanged("Visibility");
-            }
-        }
-
-        /// <summary>
-        /// Whether the item is focusable or not, used when creates LibraryView.
-        /// Used to make StandardPanel not clickable, i.e. ClassObjectTemplate.Focusable - true,
-        /// ClassDetailsTemplate.Focusable - false.
-        /// </summary>
-        private bool _focusable = false;
-        public bool Focusable
-        {
-            get
-            {
-                return _focusable;
-            }
-            set
-            {
-                _focusable = value;
             }
         }
 

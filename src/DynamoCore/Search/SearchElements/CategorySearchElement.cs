@@ -32,7 +32,7 @@ namespace Dynamo.Search.SearchElements
         public override string Description
         {
             get { return _description; }
-        }  
+        }
 
         public override bool Searchable { get { return true; } }
 

@@ -557,36 +557,6 @@ namespace Dynamo.Tests
             var catName = "TheCat.TheInnerCat";
             AssertAddAndRemoveCustomNode(search, nodeName, catName);
         }
-
-        [Test]
-        public void ProcessNodeCategoryTests()
-        {
-            SearchElementGroup group = SearchElementGroup.None;
-            string category = null;
-            Assert.AreEqual(null, search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual(SearchElementGroup.None, group);
-
-            group = SearchElementGroup.None;
-            category = "";
-            Assert.AreEqual("", search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual(SearchElementGroup.None, group);
-
-            group = SearchElementGroup.None;
-            category = "Builtin Functions";
-            Assert.AreEqual("Builtin Functions", search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual(SearchElementGroup.Action, group);
-
-            group = SearchElementGroup.None;
-            category = "Core.Evaluate";
-            Assert.AreEqual("Core.Evaluate", search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual(SearchElementGroup.Action, group);
-
-            group = SearchElementGroup.None;
-            category = "Core.List.Create";
-            Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
-            Assert.AreEqual(SearchElementGroup.Create, group);
-        }
-		
         #endregion
 
         #region Add Categories
