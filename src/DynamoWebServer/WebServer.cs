@@ -149,8 +149,7 @@ namespace DynamoWebServer
                             searchModel.RemoveNodeAndEmptyParentCategory(guid);
 
                             var name = nodeInfos[guid].Name;
-                            var workspaceModel = dynamoModel.Workspaces
-                                .RemoveAll(elem => 
+                            dynamoModel.Workspaces.RemoveAll(elem => 
                                 {
                                     // To avoid deleting home workspace 
                                     // because of coincidence in the names
