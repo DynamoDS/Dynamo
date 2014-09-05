@@ -447,6 +447,15 @@ namespace Dynamo.Models
         /// 
         public void RunExpression()
         {
+            var traceData = HomeSpace.PreloadedTraceData;
+            if ((traceData != null) && traceData.Any())
+            {
+                // If we do have preloaded trace data, set it here first.
+                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler, null);
+                if (setTraceDataTask.Initialize(EngineController, HomeSpace))
+                    scheduler.ScheduleForExecution(setTraceDataTask);
+            }
+
             var task = new UpdateGraphAsyncTask(scheduler, OnUpdateGraphCompleted);
             if (task.Initialize(EngineController, HomeSpace))
                 scheduler.ScheduleForExecution(task);
@@ -458,7 +467,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
         /// 
-        private static void OnUpdateGraphCompleted(AsyncTask task)
+        private void OnUpdateGraphCompleted(AsyncTask task)
         {
             var updateTask = task as UpdateGraphAsyncTask;
             var messages = new Dictionary<Guid, string>();
@@ -491,6 +500,21 @@ namespace Dynamo.Models
 
                 node.Warning(message.Value); // Update node warning message.
             }
+
+            // This method is guaranteed to be called on a background thread 
+            // (for Revit's case, it is the idle thread). Here we schedule the
+            // message to show up when the UI gets around and handle it.
+            // 
+            if (task.Exception != null && (DynamoModel.IsTestMode == false))
+            {
+                Action showFailureMessage = () => 
+                    Utils.DisplayEngineFailureMessage(this, task.Exception);
+
+                OnRequestDispatcherBeginInvoke(showFailureMessage);
+            }
+
+            // Notify listeners (optional) of completion.
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
 #endif
