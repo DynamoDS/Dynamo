@@ -7,6 +7,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 
 using Dynamo.UI;
 using System.Xml.Linq;
@@ -224,12 +225,7 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public BinaryVersion AvailableVersion
         {
-            get
-            {
-                return updateInfo == null ? 
-                    ProductVersion : 
-                    updateInfo.Version;
-            }
+            get { return updateInfo == null ? ProductVersion : updateInfo.Version; }
         }
 
         /// <summary>
@@ -510,11 +506,12 @@ namespace Dynamo.UpdateManager
             OnLog(new LogEventArgs(errorMessage, LogLevel.File));
 
             UpdateFileLocation = string.Empty;
-            if (e.Error == null)
-            {
-                UpdateFileLocation = (string)e.UserState;
-                OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
-            }
+            
+            if (e.Error != null) 
+                return;
+            
+            UpdateFileLocation = (string)e.UserState;
+            OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
