@@ -62,9 +62,12 @@ namespace Dynamo.Search.SearchElements
                 }
                 case ResourceType.LargeIcon:
                 {
-                    if (this.FullCategoryName == "Operators")
-                        return FunctionDescriptor.Name;
-                    return FunctionDescriptor.QualifiedName;
+                    var name = Dynamo.Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
+
+                    // This case for operators. Operators should use FunctionDescriptor.Name property.
+                    if (string.IsNullOrEmpty(name))
+                        name = Dynamo.Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
+                    return name;
                 }
             }
 
