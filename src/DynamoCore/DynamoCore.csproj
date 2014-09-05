@@ -47,7 +47,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USE_DSENGINE;ENABLE_NEW_LIBRARY_VIEW</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,7 +58,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;USE_DSENGINE;ENABLE_NEW_LIBRARY_VIEW</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
@@ -142,11 +142,6 @@ limitations under the License.
     <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
-    <Compile Include="images.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>images.resx</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\ISchedulerThread.cs" />
@@ -179,7 +174,6 @@ limitations under the License.
     <Compile Include="PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="PackageManager\PackageManagerClientViewModel.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
-    <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="PackageManager\PackageViewModel.cs" />
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
@@ -196,7 +190,6 @@ limitations under the License.
     <Compile Include="TestInfrastructure\ListMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
-    <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
     <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
@@ -205,13 +198,9 @@ limitations under the License.
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Controls\ImageBasedControls.cs" />
-    <Compile Include="UI\Controls\StandardPanel.xaml.cs">
-      <DependentUpon>StandardPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Controls\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
@@ -274,14 +263,8 @@ limitations under the License.
     <Compile Include="UI\Commands\RecordableCommands.cs" />
     <Compile Include="UI\DynamoTextBox.cs" />
     <Compile Include="UI\StateMachine.cs" />
-    <Compile Include="UI\Views\LibraryView.xaml.cs">
-      <DependentUpon>LibraryView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Views\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Views\ToolTipWindow.xaml.cs">
-      <DependentUpon>ToolTipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
@@ -442,10 +425,6 @@ limitations under the License.
     <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
-    <EmbeddedResource Include="images.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>images.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -564,10 +543,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Controls\StandardPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UI\Controls\StartPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -641,10 +616,6 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\LibraryView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UI\Views\PackageManagerPublishView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -683,10 +654,6 @@ limitations under the License.
     <Page Include="UI\Views\NoteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\ToolTipWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Views\WorkspaceView.xaml">
       <SubType>Designer</SubType>
@@ -867,19 +834,6 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Tooltip\copy.png" />
-    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\Saturation.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\Hue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Tooltip\code.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
@@ -898,9 +852,7 @@ xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
-call "$(DevEnvDir)..\Tools\vsvars32.bat"
-resgen /usesourcepath "$(ProjectDir)images.resx" "$(ProjectDir)images.resources"
-al /target:lib /embed:"$(ProjectDir)images.resources" /out:"$(OutDir)$(TargetName).resources.dll"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

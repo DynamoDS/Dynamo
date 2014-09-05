@@ -137,8 +137,6 @@ namespace Dynamo.UI
         public static double NodeTooltipArrowHeight_SideConnecting = 12;
 
         public static double ToolTipTargetGapInPixels = 3.0;
-        public static double NodeButtonHeight = 32; // Height of node button.
-        public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
         #endregion
 
         #region Library Item Tooltip
@@ -189,20 +187,12 @@ namespace Dynamo.UI
 
         #endregion
 
-        #region Icon Resources Strings
-
-        public const string SmallIconPostfix = ".Small";
-        public const string LargeIconPostfix = ".Large";
-        public const string ResourcesDLL = ".resources.dll";
-
-        #endregion
-
 #if DEBUG
         public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";
 #else
-        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
-        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3-us-west-2.amazonaws.com/";
+        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3.amazonaws.com/";
+        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3.amazonaws.com/";
 #endif
 
     }
