@@ -578,6 +578,8 @@ namespace Dynamo.Tests
             //2. When resource is null
             //3. When resource is whitespaces (\n, \t or space)
             //4. When resource is %Aaa2Bb**CDE
+            //5. When resource is Ab/b.double-int
+
             // case 1
             testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("");
             Assert.AreEqual("", testingSTR);
@@ -593,6 +595,10 @@ namespace Dynamo.Tests
             //case 4
             testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("%Aaa2Bb**CDE");
             Assert.AreEqual("Aaa2BbCDE", testingSTR);
+
+            // case 5
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("Ab/b.double-int");
+            Assert.AreEqual("Abb.double-int", testingSTR);
         }
     }
 }

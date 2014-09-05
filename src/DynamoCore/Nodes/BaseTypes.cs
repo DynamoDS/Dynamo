@@ -666,11 +666,16 @@ namespace Dynamo.Nodes
 
             StringBuilder newText = new StringBuilder(resource.Length);
             // Create new string without "bad" characters.
+            // Dots and minus we add, they are for overloaded methods.
             foreach (char character in resource)
             {
-                if (Char.IsLetterOrDigit(character) || character == '.')
+                if (Char.IsLetterOrDigit(character) || character == '.' || character == '-')
                 newText.Append(character);
             }
+
+            //Last case for "-".
+            if (newText.ToString() == "-") return "";
+
             return newText.ToString();
         }
     }
