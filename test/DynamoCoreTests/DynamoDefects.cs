@@ -4,6 +4,7 @@ using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
 using Dynamo.Nodes;
+using DSCoreNodesUI;
 
 namespace Dynamo.Tests
 {
@@ -203,6 +204,21 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("RegressionTests")]
+        public void Defect_MAGN_1905()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1905
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1905.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("c4b9077d-3e6c-40b9-a715-078083e29655", 11);
+            BoolSelector b = model.CurrentWorkspace.NodeFromWorkspace
+                ("c9da5b60-9d52-453b-836d-0682687728bf") as BoolSelector;
+            b.Value = true;
+            RunCurrentModel();
+            AssertPreviewValue("c4b9077d-3e6c-40b9-a715-078083e29655", 3);
+        }
+
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_3726()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3726
@@ -244,6 +260,24 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_4105.dyn");
             RunModel(openPath);
             AssertPreviewCount("1499d976-e7d5-486f-89bf-bc050eac4489", 4);
+        }
+
+        [Test, Category("RegressionTests")]
+        public void Defect_MAGN_4046()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4046
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_4046.dyn");
+            RunModel(openPath);
+            AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
+            IntegerSlider integerInput = model.CurrentWorkspace.NodeFromWorkspace
+                ("65d226ea-cfb5-4c5a-940e-a5c4eab1915d") as IntegerSlider;
+            for (int i = 0; i <= 10; i++)
+            {
+                integerInput.Value = 5 + i;
+                RunCurrentModel();
+                AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
+            }
         }
     }
 }
