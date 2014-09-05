@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Net;
-using System.Windows;
-using System.Windows.Threading;
 
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoWebServer.Messages;
@@ -27,6 +24,7 @@ namespace DynamoWebServer
         private readonly IWebSocket webSocket;
 
         private readonly MessageHandler messageHandler;
+        private SocketMessageQueue messageQueue;
 
         public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket)
         {
@@ -34,7 +32,7 @@ namespace DynamoWebServer
             this.dynamoViewModel = dynamoViewModel;
             messageHandler = new MessageHandler(dynamoViewModel);
             messageHandler.ResultReady += SendAnswerToWebSocket;
-
+            messageQueue = new SocketMessageQueue();
             jsonSettings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Objects,
@@ -115,6 +113,7 @@ namespace DynamoWebServer
                 return;
             }
 
+            ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID);
             LogInfo("Web socket: connected");
         }
 
@@ -144,7 +143,10 @@ namespace DynamoWebServer
         void socketServer_SessionClosed(WebSocketSession session, CloseReason reason)
         {
             if (reason == CloseReason.ServerShutdown)
+            {
+                messageQueue.Shutdown();
                 return;
+            }
 
             LogInfo("Web socket: disconnected");
         }
@@ -170,8 +172,7 @@ namespace DynamoWebServer
 
         void ExecuteMessageFromSocket(Message message, string sessionId)
         {
-            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
-                .Invoke(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
+            messageQueue.EnqueueItem(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
         }
 
         void LogInfo(string info)
