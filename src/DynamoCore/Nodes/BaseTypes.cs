@@ -659,7 +659,19 @@ namespace Dynamo.Nodes
         {
             if (string.IsNullOrWhiteSpace(resource))
                 return "";
-            return "";
+
+            // Check if string consusts of only letters, numbers, dots and "-".
+            if (Regex.IsMatch(resource, @"^[a-zA-Z0-9.-]+$"))
+                return resource;
+
+            StringBuilder newText = new StringBuilder(resource.Length);
+            // Create new string without "bad" characters.
+            foreach (char character in resource)
+            {
+                if (Char.IsLetterOrDigit(character) || character == '-' || character == '.')
+                newText.Append(character);
+            }
+            return newText.ToString();
         }
     }
 
