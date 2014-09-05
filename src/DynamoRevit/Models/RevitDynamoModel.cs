@@ -22,6 +22,7 @@ using Dynamo.Utilities;
 using Revit.Elements;
 using RevitServices.Elements;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 using Element = Autodesk.Revit.DB.Element;
@@ -220,15 +221,19 @@ namespace Dynamo.Applications.Models
             {
                 // this method cannot be called without Revit 2014
                 var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-
                 UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-                if (uiapp.CanPostCommand(exitCommand))
-                    uiapp.PostCommand(exitCommand);
-                else
-                {
-                    MessageBox.Show(
-                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                }
+
+                IdlePromise.ExecuteOnIdleAsync(
+                    () =>
+                    {
+                        if (uiapp.CanPostCommand(exitCommand))
+                            uiapp.PostCommand(exitCommand);
+                        else
+                        {
+                            MessageBox.Show(
+                                "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+                        }
+                    });
             }
         }
 
