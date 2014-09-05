@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -115,7 +118,7 @@ namespace Dynamo.DSEngine
 
         // resourcesReader is a storage of our icons.
         private ResourceReader resourcesReader;
-        private Dictionary<string, BitmapImage> cachedIcons;
+        private Dictionary<string, BitmapSource> cachedIcons;
 
         internal LibraryCustomization(Assembly assembly, XDocument document)
         {
@@ -126,7 +129,7 @@ namespace Dynamo.DSEngine
 
         private void LoadResourceStream(Assembly assembly)
         {
-            cachedIcons = new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+            cachedIcons = new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
 
             var rsrcNames = assembly.GetManifestResourceNames();
             if (rsrcNames == null || (rsrcNames.Length <= 0))
@@ -148,7 +151,7 @@ namespace Dynamo.DSEngine
             return obj.ToString().Trim();
         }
 
-        internal BitmapImage LoadIconInternal(string iconKey)
+        internal BitmapSource LoadIconInternal(string iconKey)
         {
             //If there is no icons, there is no need to go further.
             if (cachedIcons == null) return null;
@@ -174,7 +177,7 @@ namespace Dynamo.DSEngine
                 return null;
             }
 
-            MemoryStream memory = new MemoryStream();
+            /*MemoryStream memory = new MemoryStream();
             Bitmap bitmap;
             BitmapImage bitmapImage = new BitmapImage();
             bitmap = iconData.Value as Bitmap;
@@ -183,11 +186,29 @@ namespace Dynamo.DSEngine
             bitmapImage.BeginInit();
             bitmapImage.StreamSource = memory;
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
+            bitmapImage.EndInit();*/
 
-            cachedIcons.Add(iconKey, bitmapImage);
+            BitmapSource bitSrc = null;
 
-            return bitmapImage;
+            Bitmap source = iconData.Value as Bitmap;
+            var hBitmap = source.GetHbitmap();
+
+            try
+            {
+                bitSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                    hBitmap,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+            }
+            catch (Win32Exception)
+            {
+                bitSrc = null;
+            }
+
+            cachedIcons.Add(iconKey, bitSrc);
+
+            return bitSrc;
         }
     }
 }

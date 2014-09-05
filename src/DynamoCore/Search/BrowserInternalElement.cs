@@ -73,7 +73,7 @@ namespace Dynamo.Nodes.Search
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
-        public BitmapImage SmallIcon
+        public BitmapSource SmallIcon
         {
             get
             {
@@ -85,7 +85,7 @@ namespace Dynamo.Nodes.Search
         ///<summary>
         /// Large icon for tooltips.
         ///</summary>
-        public BitmapImage LargeIcon
+        public BitmapSource LargeIcon
         {
             get
             {
@@ -165,7 +165,7 @@ namespace Dynamo.Nodes.Search
                 return string.Empty;
         }
 
-        private BitmapImage GetIcon(string fullNameOfIcon)
+        private BitmapSource GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(this.Assembly))
                 return null;
