@@ -51,8 +51,24 @@ namespace Dynamo.Search.SearchElements
         {
             switch (resourceType)
             {
-                case ResourceType.SmallIcon: return FunctionDescriptor.QualifiedName;
-                case ResourceType.LargeIcon: return FunctionDescriptor.QualifiedName;
+                case ResourceType.SmallIcon:
+                {
+                    var name = Dynamo.Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
+
+                    // This case for operators. Operators should use FunctionDescriptor.Name property.
+                    if (string.IsNullOrEmpty(name))
+                        name = Dynamo.Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
+                    return name; 
+                }
+                case ResourceType.LargeIcon:
+                {
+                    var name = Dynamo.Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.QualifiedName);
+
+                    // This case for operators. Operators should use FunctionDescriptor.Name property.
+                    if (string.IsNullOrEmpty(name))
+                        name = Dynamo.Nodes.Utilities.NormalizeAsResourceName(FunctionDescriptor.Name);
+                    return name;
+                }
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
