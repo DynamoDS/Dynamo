@@ -24,6 +24,7 @@ namespace Dynamo.Tests
         #region Refactoring
 
         [Test]
+        [Category("UnitTests")]
         public void CanRefactorCustomNodeName()
         {
             var nodeName = "TheNoodle";
@@ -61,6 +62,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRefactorCustomNodeDescription()
         {
             var nodeName = "TheNoodle";
@@ -107,6 +109,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRefactorCustomNodeWhilePreservingDuplicates()
         {
             var nodeName = "TheNoodle";
@@ -157,6 +160,7 @@ namespace Dynamo.Tests
         #region Obtaining Stored Categories
 
         [Test]
+        [Category("UnitTests")]
         public void GetCategoryByNameWithValidInput()
         {
             const string catName = "Category.Child";
@@ -168,6 +172,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetCategoryByNameWithInvalidInput()
         {
             const string catName = "Category.Child";
@@ -179,6 +184,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ContainsCategoryWithValidInput()
         {
             const string catName = "Category.Child";
@@ -187,6 +193,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ContainsCategoryWithInvalidInput()
         {
             const string catName = "Category.Child";
@@ -196,6 +203,7 @@ namespace Dynamo.Tests
 
 
         [Test]
+        [Category("UnitTests")]
         public void TryGetSubCategoryWithValidInput()
         {
             const string catName = "Category";
@@ -205,6 +213,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TryGetSubCategoryWithInvalidInput()
         {
             const string catName = "Category";
@@ -218,6 +227,7 @@ namespace Dynamo.Tests
         #region Search
 
         [Test]
+        [Category("UnitTests")]
         public void CanSearchForPartOfTextAndGetResult()
         {
             const string catName = "Category.Child";
@@ -229,6 +239,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanDuplicateAddedNodesInSearch()
         {
             const string catName = "Category.Child.Thing.That";
@@ -244,6 +255,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddMultiplyNestedCategory()
         {
             const string catName = "Category.Child.Thing.That";
@@ -252,6 +264,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddAndRemoveMultiplyNestedCategory()
         {
             const string catName = "Category.Child.Thing.That";
@@ -262,6 +275,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRemoveRootAndRestOfChildrenOfNestedCategory()
         {
             const string catName = "Category.Child.Thing.That";
@@ -272,6 +286,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddMultiplyNestedCategoryMultipleTimes()
         {
             const string catName = "Category.Child.Thing.That";
@@ -283,6 +298,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanDuplicateAddedNodesInBrowser()
         {
             const string catName = "Category.Child.Thing.That";
@@ -298,6 +314,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void DoNotGetResultsWhenNoElementsMatch()
         {
             const string catName = "Category.Child.Thing.That";
@@ -309,6 +326,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void GetResultsWhenTheresIsPartialMatch()
         {
             const string catName = "Category.Child.Thing.That";
@@ -320,6 +338,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ResultsAreOrderProperlyForPartialMatch()
         {
             const string catName = "Category.Child.Thing.That";
@@ -335,6 +354,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void SearchingForACategoryReturnsAllItsChildren()
         {
             const string catName = "Category.Child";
@@ -351,6 +371,7 @@ namespace Dynamo.Tests
         #region Split categories
 
         [Test]
+        [Category("UnitTests")]
         public void CanSplitCategoryNameWithValidInput()
         {
             var split = SearchModel.SplitCategoryName("this is a root category");
@@ -381,6 +402,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanSplitCategoryNameWithInvalidInput()
         {
             var split = SearchModel.SplitCategoryName("");
@@ -425,6 +447,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CannotAddCustomNodesWithSameGuids()
         {
             var nodeName = "TheNoodle";
@@ -455,6 +478,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRemoveNodeAndCategoryByFunctionId()
         {
             var nodeName = "TheNoodle";
@@ -481,6 +505,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddDuplicateCustomNodeWithDifferentGuidsAndGetBothInResults()
         {
             var nodeName = "TheNoodle";
@@ -516,6 +541,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddCustomNodeWithSinglyNestedCategoryValidInput()
         {
             var nodeName = "TheNode";
@@ -524,6 +550,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddCustomNodeWithDoublyNestedCategoryValidInput()
         {
             var nodeName = "TheNode";
@@ -565,6 +592,7 @@ namespace Dynamo.Tests
         #region Add Categories
 
         [Test]
+        [Category("UnitTests")]
         public void AddingARootCategoryMultipleTimesOnlyCreatesOneCategory()
         {
             const string catName = "Category";
@@ -578,6 +606,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void AddingANestedCategoryMultipleTimesDoeNotDuplicateParentCategories()
         {
             const string catName = "Category.Child";
@@ -594,6 +623,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddCategory()
         {
             var root = search.TryAddRootCategory("Peter");
@@ -607,6 +637,7 @@ namespace Dynamo.Tests
 
 
         [Test]
+        [Category("UnitTests")]
         public void CanAddCategoryWithDelimiters()
         {
             search.AddCategory("Peter.Boyer");
@@ -618,6 +649,7 @@ namespace Dynamo.Tests
         #region Remove Categories
 
         [Test]
+        [Category("UnitTests")]
         public void CanRemoveRootCategoryWithInternalElements()
         {
             var root = (BrowserRootElement)search.TryAddRootCategory("Peter");
@@ -632,6 +664,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRemoveCategoryWithDelimiters()
         {
             search.AddCategory("Peter.Boyer");
@@ -644,6 +677,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRunRemoveCategoryIfCategoryDoesntExist()
         {
             var search = new SearchModel();
@@ -659,6 +693,7 @@ namespace Dynamo.Tests
         #region Remove Nodes
 
         [Test]
+        [Category("UnitTests")]
         public void CanTryToRemoveElementFromSearchWithNonexistentName()
         {
             search.RemoveNodeAndEmptyParentCategory("NonExistentName");
@@ -668,6 +703,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRemoveSingleCustomNodeByIdWhereThereAreDuplicatesWithDifferentIds()
         {
             var nodeName = "TheNoodle";
@@ -699,6 +735,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRemoveElementCustomNodeByNameWithNestedCategory()
         {
 
@@ -714,6 +751,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void CanRemoveElementCustomNodeByNameWithSingleCategory()
         {
             search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Greens", "des", ""));

@@ -32,8 +32,8 @@ namespace Dynamo.Search
             this.dynamoViewModel = dynamoViewModel;
 
             InitializeComponent();
-            Loaded += SearchView_Loaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Loaded += OnSearchViewLoaded;
+            Dispatcher.ShutdownStarted += OnDispatcherShutdownStarted;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
@@ -47,40 +47,39 @@ namespace Dynamo.Search
             };
         }
 
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        private void OnDispatcherShutdownStarted(object sender, EventArgs e)
         {
-            this.viewModel.RequestFocusSearch -= SearchViewModel_RequestFocusSearch;
-            this.viewModel.RequestReturnFocusToSearch -= SearchViewModel_RequestReturnFocusToSearch;
+            this.viewModel.RequestFocusSearch -= OnSearchViewModelRequestFocusSearch;
+            this.viewModel.RequestReturnFocusToSearch -= OnSearchViewModelRequestReturnFocusToSearch;
         }
 
-        void SearchView_Loaded(object sender, RoutedEventArgs e)
+        private void OnSearchViewLoaded(object sender, RoutedEventArgs e)
         {
             DataContext = this.viewModel;
 
-            this.MouseEnter += SearchView_MouseEnter;
-            this.MouseLeave += SearchView_MouseLeave;
+            this.MouseEnter += OnSearchViewMouseEnter;
+            this.MouseLeave += OnSearchViewMouseLeave;
 
             PreviewKeyDown += KeyHandler;
             this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
             this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
 
-            this.viewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
-            this.viewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
-
+            this.viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
+            this.viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
 
         }
 
-        void SearchView_MouseLeave(object sender, MouseEventArgs e)
+        private void OnSearchViewMouseLeave(object sender, MouseEventArgs e)
         {
             viewModel.SearchScrollBarVisibility = false;
         }
 
-        void SearchView_MouseEnter(object sender, MouseEventArgs e)
+        private void OnSearchViewMouseEnter(object sender, MouseEventArgs e)
         {
             viewModel.SearchScrollBarVisibility = true;
         }
 
-        void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
+        private void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
         {
             bool handleIt = false;
             e.Handled = handleIt;
@@ -91,7 +90,7 @@ namespace Dynamo.Search
             }
         }
 
-        void OnSearchBoxPreviewKeyDown(object sender, KeyEventArgs e)
+        private void OnSearchBoxPreviewKeyDown(object sender, KeyEventArgs e)
         {
             bool handleIt = false;
             e.Handled = handleIt;
@@ -196,7 +195,7 @@ namespace Dynamo.Search
             }
         }
 
-        void SearchViewModel_RequestReturnFocusToSearch(object sender, EventArgs e)
+        private void OnSearchViewModelRequestReturnFocusToSearch(object sender, EventArgs e)
         {
             if (this.Visibility != Visibility.Collapsed)
                 Keyboard.Focus(SearchTextBox);
@@ -204,7 +203,7 @@ namespace Dynamo.Search
                 MoveFocusToNextUIElement();
         }
 
-        void MoveFocusToNextUIElement()
+        private void MoveFocusToNextUIElement()
         {
             // Gets the element with keyboard focus.
             UIElement elementWithFocus = Keyboard.FocusedElement as UIElement;
@@ -214,12 +213,12 @@ namespace Dynamo.Search
                 elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         }
 
-        void SearchViewModel_RequestFocusSearch(object sender, EventArgs e)
+        private void OnSearchViewModelRequestFocusSearch(object sender, EventArgs e)
         {
             SearchTextBox.Focus();
         }
 
-        public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        public void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
@@ -228,37 +227,34 @@ namespace Dynamo.Search
             this.viewModel.SearchCommand.Execute(null);
         }
 
+        // Not used anywhere.
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ((SearchViewModel) DataContext).Execute();
         }
 
+        // Not used anywhere.
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
         {
             ((ListBoxItem) sender).IsSelected = true;
             Keyboard.Focus(this.SearchTextBox);
         }
 
+        // Not used anywhere.
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
             Keyboard.Focus(this.SearchTextBox);
         }
 
-        public void ibtnServiceController_MouseLeftButtonUp(object sender, RoutedEventArgs e)
-        {
-            //RegionMenu.PlacementTarget = (UIElement) sender;
-            //RegionMenu.IsOpen = true;
-        }
-
-        private void TreeViewScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void OnTreeViewScrollViewerPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
 
-		private void OnLibraryClick(object sender, RoutedEventArgs e)
+		private void OnLibraryExpanderClick(object sender, RoutedEventArgs e)
         {
             //this.Width = 5;
             //if (this.Visibility == Visibility.Collapsed)
@@ -271,7 +267,7 @@ namespace Dynamo.Search
             this.dynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
         }
 
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
+        private void OnLibraryExpanderMouseEnter(object sender, MouseEventArgs e)
         {
             Button b = (Button)sender;
             Grid g = (Grid)b.Parent;
@@ -287,7 +283,7 @@ namespace Dynamo.Search
             this.Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
         }
 
-        private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
+        private void OnLibraryExpanderMouseLeave(object sender, MouseEventArgs e)
         {
             Button b = (Button)sender;
             Grid g = (Grid)b.Parent;
@@ -301,36 +297,19 @@ namespace Dynamo.Search
             this.Cursor = null;
         }
 
-        private void SearchTextBoxGrid_MouseEnter(object sender, MouseEventArgs e)
+        private void OnSearchTextBoxGridMouseEnter(object sender, MouseEventArgs e)
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
         }
 
-        private void SearchTextBoxGrid_MouseLeave(object sender, MouseEventArgs e)
+        private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
         }
 
-        private void TextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (viewModel != null)
-                viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
-        }
-
-        private void TextBoxLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (viewModel != null)
-            {
-                if (string.IsNullOrEmpty(viewModel.SearchText))
-                    viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Center;
-                else
-                    viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
-            }
-        }
-
-        private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
+        private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)
         {
             ClearSearchBox();
         }
@@ -339,18 +318,6 @@ namespace Dynamo.Search
         {
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
-        }
-
-        private void nodeButton_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Button from_sender = sender as Button;
-            libraryToolTipPopup.PlacementTarget = from_sender;
-            libraryToolTipPopup.DataContext = from_sender.DataContext;
-        }
-
-        private void libraryToolTipPopup_MouseLeave(object sender, MouseEventArgs e)
-        {
-            libraryToolTipPopup.DataContext = null;
         }
 
     }
