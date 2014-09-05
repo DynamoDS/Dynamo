@@ -45,11 +45,11 @@ namespace Dynamo.TestInfrastructure
                 {
                     Assembly assembly = Assembly.GetExecutingAssembly();
 
-                    List<AbstractMutator> mutators = new List<AbstractMutator>();
+                    var mutators = new List<AbstractMutator>();
 
                     foreach (Type type in assembly.GetTypes())
                     {
-                        MutationTestAttribute attribute = (MutationTestAttribute)Attribute.GetCustomAttribute(type, typeof(MutationTestAttribute));
+                        var attribute = Attribute.GetCustomAttribute(type, typeof(MutationTestAttribute));
                         if (attribute != null)
                         {
                             object[] args = new object[] { dynamoViewModel };
@@ -60,7 +60,6 @@ namespace Dynamo.TestInfrastructure
 
                     foreach (var mutator in mutators)
                         InvokeTest(mutator, writer);
-
                 }
                 finally
                 {
@@ -71,8 +70,7 @@ namespace Dynamo.TestInfrastructure
                     writer.Dispose();
                 }
 
-            }).
-                Start();
+            }).Start();
         }
 
         private void InvokeTest(AbstractMutator mutator, StreamWriter writer)
@@ -83,8 +81,10 @@ namespace Dynamo.TestInfrastructure
             if (type == null)
                 return;
 
-            MutationTestAttribute att = (MutationTestAttribute)Attribute.GetCustomAttribute(mutator.GetType(), typeof(MutationTestAttribute));
-            List<NodeModel> nodes = dynamoViewModel.Model.Nodes;
+            var att = (MutationTestAttribute)Attribute.GetCustomAttribute(mutator.GetType(), 
+                typeof(MutationTestAttribute));
+
+            var nodes = dynamoViewModel.Model.Nodes;
             if (type != typeof(NodeModel))
                 nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
 
@@ -125,6 +125,10 @@ namespace Dynamo.TestInfrastructure
                         break;
                     }
                 }
+            }
+            catch(Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log(att.Caption + ": FAILED: " + ex.Message);
             }
             finally
             {

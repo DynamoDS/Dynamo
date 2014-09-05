@@ -35,7 +35,7 @@ namespace Dynamo.TestInfrastructure
         {
             bool pass = false;
 
-            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+            var valueMap = new Dictionary<Guid, String>();
             if (node.OutPorts.Count > 0)
             {
                 Guid guid = node.GUID;
@@ -136,7 +136,8 @@ namespace Dynamo.TestInfrastructure
             int returnCode = 0;
             Random rand = new Random(1);
 
-            if (double.TryParse(propertyMin.ToString(), out min) && double.TryParse(propertyMax.ToString(), out max))
+            if (double.TryParse(propertyMin.ToString(), out min) &&
+                double.TryParse(propertyMax.ToString(), out max))
             {
                 string value = (min + (max - min) * rand.NextDouble()).ToString();
 

@@ -23,6 +23,7 @@ namespace Dynamo.TestInfrastructure
         /// </summary>
         /// <returns></returns>
         public abstract int Mutate(NodeModel node);
+                                                                                                   
 
         public abstract bool RunTest(NodeModel node, StreamWriter writer);
 

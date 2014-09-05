@@ -29,9 +29,9 @@ namespace Dynamo.TestInfrastructure
 
             int workspaceIndex = DynamoViewModel.CurrentWorkspaceIndex;
 
-            List<ConnectorModel> firstNodeConnectors = node.AllConnectors.ToList();
+            var firstNodeConnectors = node.AllConnectors.ToList();
 
-            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+            var valueMap = new Dictionary<Guid, String>();
             foreach (ConnectorModel connector in firstNodeConnectors)
             {
                 if (connector.End.Owner.GUID != node.GUID)
@@ -62,8 +62,13 @@ namespace Dynamo.TestInfrastructure
                 }));
                 Thread.Sleep(100);
 
-                List<NodeModel> nodesInCustomNodeBeforeMutation = workspaces.FirstOrDefault(t => t.Name == ((Function)node).Definition.WorkspaceModel.Name).Nodes.ToList();
-                Dictionary<Guid, String> customNodeStructureBeforeMutation = GetDictionaryOfConnectedNodes(nodesInCustomNodeBeforeMutation);
+                var nodesInCustomNodeBeforeMutation = workspaces.FirstOrDefault((t) => 
+                    {
+                        return (t.Name == ((Function)node).Definition.WorkspaceModel.Name);
+                    }).Nodes.ToList();
+
+                var customNodeStructureBeforeMutation = 
+                    GetDictionaryOfConnectedNodes(nodesInCustomNodeBeforeMutation);
 
                 int numberOfUndosNeeded = Mutate(node);
                 Thread.Sleep(100);
@@ -104,8 +109,13 @@ namespace Dynamo.TestInfrastructure
                 }));
                 Thread.Sleep(100);
 
-                List<NodeModel> nodesInCustomNodeAfterMutation = workspaces.FirstOrDefault(t => t.Name == ((Function)node).Definition.WorkspaceModel.Name).Nodes.ToList();
-                Dictionary<Guid, String> customNodeStructureAfterMutation = GetDictionaryOfConnectedNodes(nodesInCustomNodeAfterMutation);
+                var nodesInCustomNodeAfterMutation = workspaces.FirstOrDefault((t) =>
+                    {
+                        return (t.Name == ((Function)node).Definition.WorkspaceModel.Name);
+                    }).Nodes.ToList();
+
+                var customNodeStructureAfterMutation = 
+                    GetDictionaryOfConnectedNodes(nodesInCustomNodeAfterMutation);
 
                 writer.WriteLine("### - Beginning test of CustomNode structure");
                 if (customNodeStructureBeforeMutation.Count == customNodeStructureAfterMutation.Count)
@@ -132,7 +142,10 @@ namespace Dynamo.TestInfrastructure
                 {
                     try
                     {
-                        NodeModel nodeAfterUndo = workspaces.FirstOrDefault(t => t.GetType() == node.Workspace.GetType()).Nodes.ToList().FirstOrDefault(t => t.GUID.Equals(node.GUID));
+                        NodeModel nodeAfterUndo = workspaces.FirstOrDefault((t) =>
+                            { 
+                                return (t.GetType() == node.Workspace.GetType());
+                            }).Nodes.ToList().FirstOrDefault(t => t.GUID.Equals(node.GUID));
 
                         if (nodeAfterUndo == null)
                         {
@@ -141,7 +154,7 @@ namespace Dynamo.TestInfrastructure
                             return pass;
                         }
 
-                        List<ConnectorModel> firstNodeConnectorsAfterUndo = nodeAfterUndo.AllConnectors.ToList();
+                        var firstNodeConnectorsAfterUndo = nodeAfterUndo.AllConnectors.ToList();
 
                         foreach (ConnectorModel connector in firstNodeConnectorsAfterUndo)
                         {
@@ -156,7 +169,8 @@ namespace Dynamo.TestInfrastructure
                                     writer.WriteLine(node.GUID);
 
                                     writer.WriteLine("Was: " + nodeVal);
-                                    writer.WriteLine("Should have been: " + valueMap[connector.End.Owner.GUID]);
+                                    writer.WriteLine("Should have been: " + 
+                                        valueMap[connector.End.Owner.GUID]);
                                     writer.Flush();
                                     return pass;
                                 }
@@ -170,7 +184,10 @@ namespace Dynamo.TestInfrastructure
                         return pass;
                     }
                 }
-                var workspacesOfCustomNodes = DynamoViewModel.Workspaces.Where(t => t.Model is CustomNodeWorkspaceModel).ToList();
+                var workspacesOfCustomNodes = DynamoViewModel.Workspaces.Where((t) =>
+                    {
+                        return (t.Model is CustomNodeWorkspaceModel);
+                    }).ToList();
 
                 if (workspacesOfCustomNodes != null)
                 {
@@ -218,7 +235,10 @@ namespace Dynamo.TestInfrastructure
             }));
             
             var workspaces = DynamoModel.Workspaces;
-            List<NodeModel> outputsInCustomNode = workspaces.FirstOrDefault(t => t.Name == ((Function)node).Definition.WorkspaceModel.Name).Nodes.Where(t => t.GetType() == typeof(Output)).ToList();
+            var outputsInCustomNode = workspaces.FirstOrDefault((t) =>
+                {
+                    return (t.Name == ((Function)node).Definition.WorkspaceModel.Name);
+                }).Nodes.Where(t => t.GetType() == typeof(Output)).ToList();
 
             Guid numberGuid = Guid.NewGuid();
             double coordinatesX = rand.NextDouble() * node.X;
@@ -227,7 +247,8 @@ namespace Dynamo.TestInfrastructure
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoViewModel.CreateNodeCommand createCommand =
-                    new DynamoViewModel.CreateNodeCommand(numberGuid, "Number", coordinatesX, coordinatesY, false, false);
+                    new DynamoViewModel.CreateNodeCommand(numberGuid, "Number", 
+                        coordinatesX, coordinatesY, false, false);
                 DynamoViewModel.ExecuteCommand(createCommand);
             }));
 
@@ -236,9 +257,11 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoViewModel.MakeConnectionCommand connToAnother1 =
-                        new DynamoViewModel.MakeConnectionCommand(numberGuid, 0, PortType.OUTPUT, DynamoViewModel.MakeConnectionCommand.Mode.Begin);
+                        new DynamoViewModel.MakeConnectionCommand(numberGuid, 0, PortType.OUTPUT, 
+                            DynamoViewModel.MakeConnectionCommand.Mode.Begin);
                     DynamoViewModel.MakeConnectionCommand connToAnother2 =
-                        new DynamoViewModel.MakeConnectionCommand(output.GUID, 0, PortType.INPUT, DynamoViewModel.MakeConnectionCommand.Mode.End);
+                        new DynamoViewModel.MakeConnectionCommand(output.GUID, 0, PortType.INPUT, 
+                            DynamoViewModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connToAnother1);
                     DynamoViewModel.ExecuteCommand(connToAnother2);
@@ -252,10 +275,10 @@ namespace Dynamo.TestInfrastructure
 
         private Dictionary<Guid, String> GetDictionaryOfConnectedNodes(List<NodeModel> list)
         {
-            Dictionary<Guid, String> dictionary = new Dictionary<Guid, string>();
+            var dictionary = new Dictionary<Guid, string>();
             foreach (NodeModel node in list)
             {
-                List<ConnectorModel> nodeConnectors = node.AllConnectors.ToList();
+                var nodeConnectors = node.AllConnectors.ToList();
                 string connectorGuids = string.Empty;
 
                 foreach (ConnectorModel connector in nodeConnectors)

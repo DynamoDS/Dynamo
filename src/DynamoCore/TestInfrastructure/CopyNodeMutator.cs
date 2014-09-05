@@ -25,7 +25,7 @@ namespace Dynamo.TestInfrastructure
         {
             bool pass = false;
 
-            List<NodeModel> nodes = DynamoViewModel.Model.Nodes.ToList();
+            var nodes = DynamoViewModel.Model.Nodes.ToList();
             if (nodes.Count == 0)
                 return pass;
 

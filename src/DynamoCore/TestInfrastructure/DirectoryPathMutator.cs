@@ -33,7 +33,7 @@ namespace Dynamo.TestInfrastructure
         {
             bool pass = false;
 
-            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+            var valueMap = new Dictionary<Guid, String>();
             if (node.OutPorts.Count > 0)
             {
                 Guid guid = node.GUID;
@@ -88,9 +88,9 @@ namespace Dynamo.TestInfrastructure
             {
                 try
                 {
-                    String valmap = valueMap[node.GUID].ToString();
-                    Object data = node.GetValue(0).Data;
-                    String nodeVal = data != null ? data.ToString() : "null";
+                    string valmap = valueMap[node.GUID].ToString();
+                    object data = node.GetValue(0).Data;
+                    string nodeVal = data != null ? data.ToString() : "null";
 
                     if (valmap != nodeVal)
                     {

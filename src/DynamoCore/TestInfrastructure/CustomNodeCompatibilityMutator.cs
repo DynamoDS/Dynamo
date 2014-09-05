@@ -31,18 +31,18 @@ namespace Dynamo.TestInfrastructure
         {
             get { return 1; }
         }
-        
+
         public override bool RunTest(NodeModel node, StreamWriter writer)
         {
             bool pass = false;
 
-            List<Type> types = LoadAllTypesFromDynamoAssemblies();
+            var types = LoadAllTypesFromDynamoAssemblies();
 
             foreach (Type type in types)
             {
                 string nodeName = GetName(type);
 
-                List<ConnectorModel> firstNodeConnectors = node.AllConnectors.ToList();
+                var firstNodeConnectors = node.AllConnectors.ToList();
 
                 double coordinatesX = node.X;
                 double coordinatesY = node.Y;
@@ -54,12 +54,13 @@ namespace Dynamo.TestInfrastructure
                         Guid guidNumber = Guid.NewGuid();
 
                         DynamoViewModel.CreateNodeCommand createCommand =
-                            new DynamoViewModel.CreateNodeCommand(guidNumber, nodeName, coordinatesX, coordinatesY, false, false);
+                            new DynamoViewModel.CreateNodeCommand(guidNumber, nodeName,
+                                coordinatesX, coordinatesY, false, false);
 
                         DynamoViewModel.ExecuteCommand(createCommand);
                     }));
 
-                    Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+                    var valueMap = new Dictionary<Guid, String>();
                     foreach (ConnectorModel connector in firstNodeConnectors)
                     {
                         Guid guid = connector.Start.Owner.GUID;
@@ -106,11 +107,14 @@ namespace Dynamo.TestInfrastructure
                     {
                         try
                         {
-                            NodeModel nodeAfterUndo = DynamoViewModel.Model.Nodes.ToList().FirstOrDefault(t => t.GUID == node.GUID);
+                            NodeModel nodeAfterUndo = DynamoViewModel.Model.Nodes.ToList().FirstOrDefault((t) =>
+                            {
+                                return (t.GUID == node.GUID);
+                            });
 
                             if (nodeAfterUndo != null)
                             {
-                                List<ConnectorModel> firstNodeConnectorsAfterUndo = nodeAfterUndo.AllConnectors.ToList();
+                                var firstNodeConnectorsAfterUndo = nodeAfterUndo.AllConnectors.ToList();
                                 foreach (ConnectorModel connector in firstNodeConnectors)
                                 {
                                     Guid guid = connector.Start.Owner.GUID;
@@ -153,9 +157,11 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoViewModel.MakeConnectionCommand connectCmd1 =
-                        new DynamoViewModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.OUTPUT, DynamoViewModel.MakeConnectionCommand.Mode.Begin);
+                        new DynamoViewModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.OUTPUT,
+                            DynamoViewModel.MakeConnectionCommand.Mode.Begin);
                     DynamoViewModel.MakeConnectionCommand connectCmd2 =
-                        new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT, DynamoViewModel.MakeConnectionCommand.Mode.End);
+                        new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT,
+                            DynamoViewModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connectCmd1);
                     DynamoViewModel.ExecuteCommand(connectCmd2);
@@ -166,9 +172,11 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoViewModel.MakeConnectionCommand connectCmd1 =
-                        new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.OUTPUT, DynamoViewModel.MakeConnectionCommand.Mode.Begin);
+                        new DynamoViewModel.MakeConnectionCommand(node.GUID, 0, PortType.OUTPUT,
+                            DynamoViewModel.MakeConnectionCommand.Mode.Begin);
                     DynamoViewModel.MakeConnectionCommand connectCmd2 =
-                        new DynamoViewModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.INPUT, DynamoViewModel.MakeConnectionCommand.Mode.End);
+                        new DynamoViewModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.INPUT,
+                            DynamoViewModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connectCmd1);
                     DynamoViewModel.ExecuteCommand(connectCmd2);
@@ -183,7 +191,7 @@ namespace Dynamo.TestInfrastructure
         public string GetName(Type type)
         {
             string name = string.Empty;
-            List<string> excludedTypeNames = new List<string>() { "Code Block", "Custom Node", "Compose Functions", "List.ForEach", "Build Sublists", "Apply Function" };
+            var excludedTypeNames = new List<string>() { "Code Block", "Custom Node", "Compose Functions", "List.ForEach", "Build Sublists", "Apply Function" };
 
             var attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
             var attrs = type.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
@@ -207,8 +215,8 @@ namespace Dynamo.TestInfrastructure
 
         public List<Type> LoadAllTypesFromDynamoAssemblies()
         {
-            List<Type> nodeTypes = new List<Type>();
-            HashSet<string> loadedAssemblyNames = new HashSet<string>();
+            var nodeTypes = new List<Type>();
+            var loadedAssemblyNames = new HashSet<string>();
             var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
             var allLoadedAssemblies = new Dictionary<string, Assembly>();
 
@@ -228,8 +236,11 @@ namespace Dynamo.TestInfrastructure
 
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
-            List<string> allDynamoAssemblyPaths =
-                DynamoPathManager.Instance.Nodes.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
+            var allDynamoAssemblyPaths =
+                DynamoPathManager.Instance.Nodes.SelectMany((path) =>
+                    {
+                        return (Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly));
+                    }).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
             allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
@@ -286,7 +297,7 @@ namespace Dynamo.TestInfrastructure
 
             var searchViewModel = DynamoViewModel.Model.SearchModel;
 
-            List<Type> types = new List<Type>();
+            var types = new List<Type>();
 
             try
             {
@@ -294,84 +305,86 @@ namespace Dynamo.TestInfrastructure
 
                 foreach (var t in loadedTypes)
                 {
-                    try
+                    //only load types that are in the right namespace, are not abstract
+                    //and have the elementname attribute
+                    var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                    var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
+                    var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
+                    var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
+
+                    bool isHidden = false;
+                    var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
+                    if (null != attrs && attrs.Any())
                     {
-                        //only load types that are in the right namespace, are not abstract
-                        //and have the elementname attribute
-                        var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
-                        var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
-                        var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
-                        var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
-
-                        bool isHidden = false;
-                        var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
-                        if (null != attrs && attrs.Any())
+                        var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
+                        if (null != isVisibleAttr && isVisibleAttr.Visible == false)
                         {
-                            var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
-                            if (null != isVisibleAttr && isVisibleAttr.Visible == false)
-                            {
-                                isHidden = true;
-                            }
+                            isHidden = true;
                         }
+                    }
 
-                        if (!DynamoViewModel.Model.Loader.IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
-                            continue;
+                    if (!DynamoViewModel.Model.Loader.IsNodeSubType(t) && 
+                        t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
+                        continue;
 
-                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                        //if available, to discern whether we should load this type
-                        if (!DynamoViewModel.Model.Context.Equals(Context.NONE))
+                    //if we are running in revit (or any context other than NONE) 
+                    //use the DoNotLoadOnPlatforms attribute, 
+                    
+                    //if available, to discern whether we should load this type
+                    if (!DynamoViewModel.Model.Context.Equals(Context.NONE))
+                    {
+
+                        object[] platformExclusionAttribs = 
+                            t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                        if (platformExclusionAttribs.Length > 0)
                         {
+                            string[] exclusions = 
+                                (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
 
-                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
-                            if (platformExclusionAttribs.Length > 0)
+                            //if the attribute's values contain the context stored on the controller
+                            //then skip loading this type.
+
+                            if (exclusions.Reverse().Any(e => e.Contains(DynamoViewModel.Model.Context)))
+                                continue;
+
+                            //utility was late for Vasari release, 
+                            //but could be available with after-post RevitAPI.dll
+                            if (t.Name.Equals("dynSkinCurveLoops"))
                             {
-                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-
-                                //if the attribute's values contain the context stored on the controller
-                                //then skip loading this type.
-
-                                if (exclusions.Reverse().Any(e => e.Contains(DynamoViewModel.Model.Context)))
-                                    continue;
-
-                                //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
-                                if (t.Name.Equals("dynSkinCurveLoops"))
+                                MethodInfo[] specialTypeStaticMethods = 
+                                    t.GetMethods(BindingFlags.Static | BindingFlags.Public);
+                                const string nameOfMethodCreate = "noSkinSolidMethod";
+                                bool exclude = true;
+                                foreach (MethodInfo m in specialTypeStaticMethods)
                                 {
-                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
-                                    const string nameOfMethodCreate = "noSkinSolidMethod";
-                                    bool exclude = true;
-                                    foreach (MethodInfo m in specialTypeStaticMethods)
+                                    if (m.Name == nameOfMethodCreate)
                                     {
-                                        if (m.Name == nameOfMethodCreate)
-                                        {
-                                            var argsM = new object[0];
-                                            exclude = (bool)m.Invoke(null, argsM);
-                                            break;
-                                        }
+                                        var argsM = new object[0];
+                                        exclude = (bool)m.Invoke(null, argsM);
+                                        break;
                                     }
-                                    if (exclude)
-                                        continue;
                                 }
+                                if (exclude)
+                                    continue;
                             }
                         }
-
-                        string typeName;
-
-                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
-                        {
-                            searchViewModel.Add(t);
-                            typeName = (attribs[0] as NodeNameAttribute).Name;
-                        }
-                        else
-                            typeName = t.Name;
-
-                        types.Add(t);
-
-                        var data = new TypeLoadData(assembly, t);
                     }
-                    catch (Exception e)
+
+                    string typeName;
+
+                    if (attribs.Length > 0 && !isDeprecated && 
+                        !isMetaNode && isDSCompatible && !isHidden)
                     {
-                        DynamoViewModel.Model.Logger.Log(e);
+                        searchViewModel.Add(t);
+                        typeName = (attribs[0] as NodeNameAttribute).Name;
                     }
+                    else
+                        typeName = t.Name;
+
+                    types.Add(t);
+
+                    var data = new TypeLoadData(assembly, t);
+
 
                 }
             }

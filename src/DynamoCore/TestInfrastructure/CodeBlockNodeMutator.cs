@@ -26,24 +26,19 @@ namespace Dynamo.TestInfrastructure
 
         public override bool RunTest(NodeModel node, StreamWriter writer)
         {
-            bool pass = false;
-            
-            List<NodeModel> nodes = DynamoViewModel.Model.Nodes.Where(t => t.GetType() == typeof(CodeBlockNodeModel)).ToList();
+            bool pass = false;        
 
             writer.WriteLine("### - Beginning readout");
 
-            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
-            foreach (NodeModel n in nodes)
+            var valueMap = new Dictionary<Guid, String>();
+            if (node.OutPorts.Count > 0)
             {
-                if (n.OutPorts.Count > 0)
-                {
-                    Guid guid = n.GUID;
-                    Object data = n.GetValue(0).Data;
-                    String val = data != null ? data.ToString() : "null";
-                    valueMap.Add(guid, val);
-                    writer.WriteLine(guid + " :: " + val);
-                    writer.Flush();
-                }
+                Guid guid = node.GUID;
+                Object data = node.GetValue(0).Data;
+                String val = data != null ? data.ToString() : "null";
+                valueMap.Add(guid, val);
+                writer.WriteLine(guid + " :: " + val);
+                writer.Flush();
             }
 
             writer.WriteLine("### - Readout complete");
@@ -109,35 +104,34 @@ namespace Dynamo.TestInfrastructure
             writer.Flush();
 
             writer.WriteLine("### - Beginning readback");
-            foreach (NodeModel n in nodes)
+
+            if (node.OutPorts.Count > 0)
             {
-                if (n.OutPorts.Count > 0)
+                try
                 {
-                    try
-                    {
-                        String valmap = valueMap[n.GUID].ToString();
-                        Object data = n.GetValue(0).Data;
-                        String nodeVal = data != null ? data.ToString() : "null";
+                    String valmap = valueMap[node.GUID].ToString();
+                    Object data = node.GetValue(0).Data;
+                    String nodeVal = data != null ? data.ToString() : "null";
 
-                        if (valmap != nodeVal)
-                        {
-                            writer.WriteLine("!!!!!!!!!!! Read-back failed");
-                            writer.WriteLine(n.GUID);
-
-                            writer.WriteLine("Was: " + nodeVal);
-                            writer.WriteLine("Should have been: " + valmap);
-                            writer.Flush();
-                            return pass;
-                        }
-                    }
-                    catch (Exception)
+                    if (valmap != nodeVal)
                     {
                         writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                        writer.WriteLine(node.GUID);
+
+                        writer.WriteLine("Was: " + nodeVal);
+                        writer.WriteLine("Should have been: " + valmap);
                         writer.Flush();
                         return pass;
                     }
                 }
+                catch (Exception)
+                {
+                    writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                    writer.Flush();
+                    return pass;
+                }
             }
+
             return pass = true;
         }
 
@@ -183,6 +177,6 @@ namespace Dynamo.TestInfrastructure
 
             //We've performed a single edit from the perspective of undo
             return 1;
-        }        
+        }
     }
 }

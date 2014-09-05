@@ -33,7 +33,7 @@ namespace Dynamo.TestInfrastructure
         {
             bool pass = false;
 
-            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+            var valueMap = new Dictionary<Guid, String>();
             if (node.OutPorts.Count > 0)
             {
                 Guid guid = node.GUID;
