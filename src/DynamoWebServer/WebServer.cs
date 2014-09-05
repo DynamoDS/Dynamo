@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Net;
 using System.Windows;
 using System.Windows.Threading;
-using System.Linq;
 
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -19,6 +18,7 @@ using SuperSocket.SocketBase.Config;
 
 using SuperWebSocket;
 using System.Threading;
+using Dynamo.Models;
 
 namespace DynamoWebServer
 {
@@ -145,19 +145,12 @@ namespace DynamoWebServer
                         
                         foreach (var guid in nodeInfos.Keys)
                         {
-
                             searchModel.RemoveNodeAndEmptyParentCategory(guid);
-
-                            var name = nodeInfos[guid].Name;
-                            dynamoModel.Workspaces.RemoveAll(elem => 
-                                {
-                                    // To avoid deleting home workspace 
-                                    // because of coincidence in the names
-                                    return elem != dynamoModel.HomeSpace && elem.Name == name;
-                                });
-
                             customNodeManager.LoadedCustomNodes.Remove(guid);
                         }
+
+                        // remove custom node definitions
+                        dynamoModel.Workspaces.RemoveAll(elem => elem is CustomNodeWorkspaceModel);
 
                         nodeInfos.Clear();
                         dynamoModel.Clear(null);
