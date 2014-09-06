@@ -69,6 +69,23 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        ///     SearchIconAlignment property
+        /// </summary>
+        /// <value>
+        ///     This is used for aligment search icon and text.
+        /// </value>
+        private System.Windows.HorizontalAlignment searchIconAlignment;
+        public System.Windows.HorizontalAlignment SearchIconAlignment
+        {
+            get { return searchIconAlignment; }
+            set
+            {
+                searchIconAlignment = value;
+                RaisePropertyChanged("SearchIconAlignment");
+            }
+        }
+
+        /// <summary>
         ///     SelectedIndex property
         /// </summary>
         /// <value>
@@ -156,6 +173,7 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<SearchElementBase>();
             Visible = false;
             searchText = "";
+            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             topResult = this.Model.AddRootCategoryToStart("Top Result");
             
