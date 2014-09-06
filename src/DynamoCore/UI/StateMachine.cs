@@ -177,6 +177,9 @@ namespace Dynamo.ViewModels
             bool isInPort = portType == PortType.INPUT;
 
             NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
+            if (node == null)
+                return;
+
             PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
             ConnectorModel connectorToRemove = null;
 
@@ -203,7 +206,7 @@ namespace Dynamo.ViewModels
                 second = start;
             }
 
-            ConnectorModel newConnectorModel = this.Model.AddConnection( firstPort.Owner,
+            ConnectorModel newConnectorModel = this.Model.AddConnection(firstPort.Owner,
                 second.Owner, firstPort.Index, second.Index, PortType.INPUT);
 
             // Record the creation of connector in the undo recorder.

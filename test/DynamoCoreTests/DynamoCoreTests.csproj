@@ -74,7 +74,6 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
-    <Compile Include="CustomNodeManagerTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
     <Compile Include="DSEvaluationViewModelTest.cs" />
     <Compile Include="DSFunctionNodeTest.cs" />

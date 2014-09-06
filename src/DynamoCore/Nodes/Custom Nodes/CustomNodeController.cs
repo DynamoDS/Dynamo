@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
             if (!model.IsPartiallyApplied)
                 return AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
 
-            var count = Definition.Parameters.Count();
+            var count = Definition.Parameters != null ? Definition.Parameters.Count() : 0;
             return AstFactory.BuildFunctionObject(
                 Definition.FunctionName,
                 count,
@@ -119,6 +119,7 @@ namespace Dynamo.Nodes
 
             outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);
+            nodeElement.SetAttribute("nickname", NickName);
         }
 
         public override void LoadNode(XmlNode nodeElement)
@@ -215,6 +216,21 @@ namespace Dynamo.Nodes
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
             this.dynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+        }
+
+        /// <summary>
+        /// load the definition for the custom node
+        /// </summary>
+        /// <param name="funcID">ID of the definition</param>
+        /// <param name="nickName">The name that will be displayed on the node itself</param>
+        internal void LoadNode(Guid funcID, string nickName)
+        {
+            if (!VerifyFuncId(ref funcID, nickName))
+            {
+                LoadProxyCustomNode(funcID, nickName);
+            }
+
+            Definition = this.dynamoModel.CustomNodeManager.GetFunctionDefinition(funcID);
         }
     }
 }

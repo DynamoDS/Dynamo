@@ -272,7 +272,7 @@ v7 = DisposeVerify.x; // 7
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T09_TestGCPassingArguments()
         {
             string code = @"

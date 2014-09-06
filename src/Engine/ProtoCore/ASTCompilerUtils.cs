@@ -5,6 +5,7 @@ using System.Text;
 
 using ProtoCore.Utils;
 using ProtoCore.AST.AssociativeAST;
+using System.Globalization;
 
 namespace ProtoCore
 {
@@ -20,7 +21,7 @@ namespace ProtoCore
                 if (formatString[i] == 'd')
                 {
                     double value;
-                    if (Double.TryParse(primitiveArgs[i], out value))
+                    if (Double.TryParse(primitiveArgs[i], NumberStyles.Number, CultureInfo.InvariantCulture, out value))
                     {
                         args.Add(new DoubleNode(value));
                     }

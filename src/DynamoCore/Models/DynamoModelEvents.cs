@@ -196,7 +196,7 @@ namespace Dynamo.Models
                 RequestNodeSelect(sender, e);
         }
 
-        public delegate void RunCompletedHandler(object controller, bool success);
+        public delegate void RunCompletedHandler(object sender, bool success);
         public event RunCompletedHandler RunCompleted;
         public virtual void OnRunCompleted(object sender, bool success)
         {

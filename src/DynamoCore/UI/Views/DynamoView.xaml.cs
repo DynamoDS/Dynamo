@@ -51,11 +51,6 @@ namespace Dynamo.Controls
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
-        public bool ConsoleShowing
-        {
-            get { return LogScroller.Height > 0; }
-        }
-
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
@@ -127,8 +122,6 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
-
-            Debug.WriteLine("Resetting window location to {0}:{1}", Left, Top);
         }
 
         void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -473,24 +466,10 @@ namespace Dynamo.Controls
             taskDialog.ShowDialog();
         }
 
-        //void PackageManagerClient_RequestSetLoginState(object sender, LoginStateEventArgs e)
-        //{
-        //    PackageManagerLoginState.Text = e.Text;
-        //    PackageManagerLoginButton.IsEnabled = e.Enabled;
-        //}
-
         void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                //var bench = dynSettings.Bench;
-
-                //if (bench == null)
-                //{
-                //    dynamoModel.Logger.Log("Cannot export bench as image without UI.  No image wil be exported.");
-                //    return;
-                //}
-
                 var control = WPF.FindChild<DragCanvas>(this, null);
 
                 double width = 1;
@@ -780,9 +759,27 @@ namespace Dynamo.Controls
                     }
                 }
 
+                if (dirPaths.Any())
+                {
+                    var showInFolder = new MenuItem
+                    {
+                        Header = "Show In Folder",
+                        Tag = dirPaths[0]
+                    };
+                    showInFolder.Click += OnShowInFolder;
+                    SamplesMenu.Items.Add(new Separator());
+                    SamplesMenu.Items.Add(showInFolder);
+                }
+
                 if (this.startPage != null)
                     this.startPage.PopulateSampleFileList(sampleFiles);
             }
+        }
+
+        private static void OnShowInFolder(object sender, RoutedEventArgs e)
+        {
+            var folderPath = (string)((MenuItem)sender).Tag;
+            Process.Start("explorer.exe", "/select," + folderPath);
         }
 #endif
 
