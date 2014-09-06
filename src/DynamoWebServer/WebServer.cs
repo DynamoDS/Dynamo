@@ -17,6 +17,8 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
 
 using SuperWebSocket;
+using System.Threading;
+using Dynamo.Models;
 
 namespace DynamoWebServer
 {
@@ -25,6 +27,7 @@ namespace DynamoWebServer
         private readonly DynamoViewModel dynamoViewModel;
         private readonly JsonSerializerSettings jsonSettings;
         private readonly IWebSocket webSocket;
+        private ManualResetEvent clearWorkspaceHandle = new ManualResetEvent(true);
 
         private readonly MessageHandler messageHandler;
 
@@ -108,14 +111,55 @@ namespace DynamoWebServer
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
+            clearWorkspaceHandle.Reset();
             // Close connection if not from localhost
             if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback))
             {
                 session.Close();
+                clearWorkspaceHandle.Set();
                 return;
             }
 
+
+            ClearWorkspace();
+
             LogInfo("Web socket: connected");
+        }
+
+        /// <summary>
+        /// Cleanup workspace
+        /// </summary>
+        private void ClearWorkspace()
+        {
+            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
+                .Invoke(new Action(() =>
+                {
+                    try
+                    {
+                        var dynamoModel = dynamoViewModel.Model;
+                        var customNodeManager = dynamoModel.CustomNodeManager;
+                        var searchModel = dynamoViewModel.SearchViewModel.Model;
+                        var nodeInfos = customNodeManager.NodeInfos;
+
+                        dynamoModel.Home(null);
+                        
+                        foreach (var guid in nodeInfos.Keys)
+                        {
+                            searchModel.RemoveNodeAndEmptyParentCategory(guid);
+                            customNodeManager.LoadedCustomNodes.Remove(guid);
+                        }
+
+                        // remove custom node definitions
+                        dynamoModel.Workspaces.RemoveAll(elem => elem is CustomNodeWorkspaceModel);
+
+                        nodeInfos.Clear();
+                        dynamoModel.Clear(null);
+                    }
+                    finally 
+                    {
+                        clearWorkspaceHandle.Set();
+                    }
+                }));
         }
 
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
@@ -170,6 +214,11 @@ namespace DynamoWebServer
 
         void ExecuteMessageFromSocket(Message message, string sessionId)
         {
+            // getting library items is urgent and it doesn't interfere clearing workspace
+            if (!(message is GetLibraryItemsMessage))
+                // wait for end of clearing workspace
+                clearWorkspaceHandle.WaitOne();
+
             (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
                 .Invoke(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
         }
