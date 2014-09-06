@@ -10,23 +10,19 @@ using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
+using ProtoCore;
 using DSIronPython;
-
 using DSNodeServices;
 
-using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 
-using ProtoCore;
-
 using Revit.Elements;
-
 using RevitServices.Elements;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 using Element = Autodesk.Revit.DB.Element;
@@ -63,36 +59,38 @@ namespace Dynamo.Applications.Models
 
         #region Constructors
 
-        public new struct StartConfiguration
-        {
-            public string Context { get; set; }
-            public string DynamoCorePath { get; set; }
-            public IPreferences Preferences { get; set; }
-            public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
-        }
-
         public new static RevitDynamoModel Start()
         {
             return RevitDynamoModel.Start(new StartConfiguration());
         }
 
-        public static RevitDynamoModel Start(RevitDynamoModel.StartConfiguration configuration)
+        public new static RevitDynamoModel Start(StartConfiguration configuration)
         {
             // where necessary, assign defaults
-            var context = configuration.Context ?? Core.Context.REVIT_2014;
-            var corePath = configuration.DynamoCorePath
-                ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var testMode = configuration.StartInTestMode;
-            var prefs = configuration.Preferences ?? new PreferenceSettings();
-            var updateManager = configuration.UpdateManager;
+            if (string.IsNullOrEmpty(configuration.Context))
+                configuration.Context = Core.Context.REVIT_2014;
+            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+            {
+                var asmLocation = Assembly.GetExecutingAssembly().Location;
+                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
+            }
 
-            return new RevitDynamoModel(context, prefs, corePath, updateManager, testMode);
+            if (configuration.Preferences == null)
+                configuration.Preferences = new PreferenceSettings();
+            if (configuration.Runner == null)
+                configuration.Runner = new RevitDynamoRunner();
+
+            return new RevitDynamoModel(configuration);
         }
 
-        private RevitDynamoModel(string context, IPreferences preferences, string corePath, IUpdateManager updateManager, bool isTestMode) :
-            base(context, preferences, corePath, new RevitDynamoRunner(), updateManager, isTestMode)
+        private RevitDynamoModel(StartConfiguration configuration) :
+            base(configuration)
         {
+            string context = configuration.Context;
+            IPreferences preferences = configuration.Preferences;
+            string corePath = configuration.DynamoCorePath;
+            bool isTestMode = configuration.StartInTestMode;
+
             RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
             SubscribeRevitServicesUpdaterEvents();
 
@@ -223,15 +221,19 @@ namespace Dynamo.Applications.Models
             {
                 // this method cannot be called without Revit 2014
                 var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-
                 UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-                if (uiapp.CanPostCommand(exitCommand))
-                    uiapp.PostCommand(exitCommand);
-                else
-                {
-                    MessageBox.Show(
-                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                }
+
+                IdlePromise.ExecuteOnIdleAsync(
+                    () =>
+                    {
+                        if (uiapp.CanPostCommand(exitCommand))
+                            uiapp.PostCommand(exitCommand);
+                        else
+                        {
+                            MessageBox.Show(
+                                "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+                        }
+                    });
             }
         }
 

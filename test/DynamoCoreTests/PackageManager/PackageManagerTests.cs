@@ -68,24 +68,24 @@ namespace Dynamo.Tests
         [Test]
         public void GetOwnerPackageReturnsPackageForValidFunctionDefinition()
         {
-            Assert.Inconclusive("Porting : Formula");
+            //Assert.Inconclusive("Porting : Formula");
 
-            //var loader = new PackageLoader(PackagesDirectory);
-            //loader.LoadPackages();
-            //var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
-            //Assert.AreEqual(3, pkg.LoadedCustomNodes.Count );
+            var loader = new PackageLoader(ViewModel.Model, PackagesDirectory);
+            loader.LoadPackages();
+            var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
+            Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
 
-            //foreach (var nodeInfo in pkg.LoadedCustomNodes)
-            //{
-            //    var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
-            //    Assert.IsNotNull(funcDef);
+            foreach (var nodeInfo in pkg.LoadedCustomNodes)
+            {
+                var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                Assert.IsNotNull(funcDef);
 
-            //    var foundPkg = loader.GetOwnerPackage(funcDef);
+                var foundPkg = loader.GetOwnerPackage(funcDef);
 
-            //    Assert.IsNotNull(foundPkg);
-            //    Assert.AreEqual(pkg.Name, foundPkg.Name);
-            //    Assert.IsTrue(pkg.Name == foundPkg.Name);
-            //}
+                Assert.IsNotNull(foundPkg);
+                Assert.AreEqual(pkg.Name, foundPkg.Name);
+                Assert.IsTrue(pkg.Name == foundPkg.Name);
+            }
         
         }
 

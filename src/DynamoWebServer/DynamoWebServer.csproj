@@ -80,12 +80,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IWebSocket.cs" />
+    <Compile Include="Messages\ClearWorkspaceMessage.cs" />
     <Compile Include="Messages\GeometryData.cs" />
     <Compile Include="Messages\GetNodeGeometryMessage.cs" />
     <Compile Include="Messages\ExecutedNode.cs" />
     <Compile Include="Messages\GetLibraryItemsMessage.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
+    <Compile Include="Messages\SocketMessageQueue.cs" />
     <Compile Include="Messages\SaveFileMessage.cs" />
     <Compile Include="Messages\RunCommandsMessage.cs" />
     <Compile Include="Messages\ResultReady.cs" />

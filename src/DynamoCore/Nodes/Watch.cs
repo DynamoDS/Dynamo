@@ -104,6 +104,12 @@ namespace Dynamo.Nodes
             );
         }
 
+        public override void Destroy()
+        {
+            base.Destroy();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
         /// <summary>
         /// Callback for port disconnection. Handles clearing the watch.
         /// </summary>
@@ -137,6 +143,7 @@ namespace Dynamo.Nodes
 
         protected override void OnBuilt()
         {
+            base.OnBuilt();
             DataBridge.Instance.RegisterCallback(GUID.ToString(), EvaluationCompleted);
         }
 

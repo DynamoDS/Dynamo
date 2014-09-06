@@ -53,6 +53,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Create a NodeModel with a given type as the method generic parameter
+        /// </summary>
+        /// <returns> The newly instantiated NodeModel with a new guid</returns>
+        internal T CreateNodeInstance<T>() where T : NodeModel
+        {
+            var node = this.GetNodeModelInstanceByType<T>();
+            if (node == null) return node;
+
+            node.GUID = Guid.NewGuid();
+
+            return node;
+        }
+
         /// A proxy custom node is a custom node without its definition loaded 
         /// in Dynamo. The creation of a proxy custom node relies on information 
         /// provided by the caller since the definition is not readily available 
@@ -158,6 +171,20 @@ namespace Dynamo.Models
         {
             TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
             return this.GetNodeModelInstanceByType(tld.Type);
+        }
+
+        private T GetNodeModelInstanceByType<T>() where T : NodeModel
+        {
+            try
+            {
+                return (T)Activator.CreateInstance(typeof(T), this.workspaceModel);
+            }
+            catch (Exception ex)
+            {
+                dynamoModel.Logger.Log("Failed to load built-in type");
+                dynamoModel.Logger.Log(ex);
+                return null;
+            }
         }
 
         private NodeModel GetNodeModelInstanceByType(Type type)
