@@ -290,12 +290,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The delegate used for sending the result of executing command to subscriber. 
-        /// </summary>
-        /// <param name="message">Result message</param>
-        public delegate void ShowMessage(string message);
-
-        /// <summary>
         /// This class is base for those RecordableCommands that should have 
         /// Guid NodeId that causes the problems during deserialization
         /// </summary>
@@ -513,13 +507,6 @@ namespace Dynamo.ViewModels
                 bool showErrors = helper.ReadBoolean("ShowErrors");
                 bool cancelRun = helper.ReadBoolean("CancelRun");
                 return new RunCancelCommand(showErrors, cancelRun);
-            }
-
-            internal static RecordableCommand DeserializeCoreFromDynamic(dynamic jsonObj)
-            {
-                bool ShowErrors = Convert.ToBoolean(jsonObj["ShowErrors"]);
-                bool CancelRun = Convert.ToBoolean(jsonObj["CancelRun"]);
-                return new RunCancelCommand(ShowErrors, CancelRun);
             }
 
             #endregion

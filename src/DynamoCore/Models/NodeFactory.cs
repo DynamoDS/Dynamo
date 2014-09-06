@@ -104,8 +104,9 @@ namespace Dynamo.Models
         private NodeModel GetCustomNodeByName(string name)
         {
             CustomNodeDefinition def;
-
-            if (dynamoModel.CustomNodeManager.GetDefinition(Guid.Parse(name), out def))
+            Guid guid;
+            // Check name is correct guid
+            if (Guid.TryParse(name, out guid) && dynamoModel.CustomNodeManager.GetDefinition(guid, out def))
             {
                 return new Function(this.workspaceModel, def)
                 {

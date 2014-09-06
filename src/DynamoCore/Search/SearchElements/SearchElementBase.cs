@@ -74,24 +74,52 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public class LibraryItem
     {
+        /// <summary>
+        /// Full category name
+        /// </summary>
         [DataMember]
         public string Category { get; private set; }
 
+        /// <summary>
+        /// A string describing the type of object
+        /// </summary>
         [DataMember]
         public string Type { get; private set; }
 
+        /// <summary>
+        /// Model name in the list of all node models
+        /// </summary>
         [DataMember]
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Unique name that is used during node creation
+        /// </summary>
         [DataMember]
         public string CreatingName { get; private set; }
 
+        /// <summary>
+        /// The name that will be displayed on node itself 
+        /// </summary>
+        [DataMember]
+        public string DisplayedName { get; private set; }
+
+        /// <summary>
+        /// A string describing what the node does
+        /// </summary>
         [DataMember]
         public string Description { get; private set; }
 
+        /// <summary>
+        /// A bool indicating if the object will appear in searches
+        /// </summary>
         [DataMember]
         public bool Searchable { get; private set; }
 
+        /// <summary>
+        /// Number defining the relative importance of the element in search. 
+        /// Higher = closer to the top of search results
+        /// </summary>
         [DataMember]
         public double Weight { get; private set; }
 
@@ -108,7 +136,7 @@ namespace Dynamo.Search.SearchElements
         {
             Category = node.FullCategoryName;
             Type = node.Type;
-            Name = node.Name;
+            DisplayedName = Name = node.Name;
             CreatingName = node.CreatingName;
             Description = node.Description;
             Searchable = node.Searchable;
@@ -122,18 +150,14 @@ namespace Dynamo.Search.SearchElements
         {
             var controller = dynamoModel.EngineController;
             var functionItem = (controller.GetFunctionDescriptor(CreatingName));
+            NodeModel newElement = null;
             if (functionItem != null)
             {
-                Parameters = functionItem.Parameters.Select(elem => elem.Name);
-
-                if (functionItem.ReturnKeys != null && functionItem.ReturnKeys.Any())
-                {
-                    ReturnKeys = functionItem.ReturnKeys;
-                }
+                DisplayedName = functionItem.DisplayName;
+                if (functionItem.IsVarArg)
+                    newElement = new DSVarArgFunction(dynamoModel.CurrentWorkspace, functionItem);
                 else
-                {
-                    ReturnKeys = new[] { functionItem.Type == FunctionType.Constructor ? functionItem.UnqualifedClassName : functionItem.ReturnType };
-                }
+                    newElement = new DSFunction(dynamoModel.CurrentWorkspace, functionItem);
             }
             else
             {
@@ -150,16 +174,19 @@ namespace Dynamo.Search.SearchElements
 
                 if (tld != null)
                 {
-                    var newElement = (NodeModel)Activator.CreateInstance(tld.Type, dynamoModel.CurrentWorkspace);
+                    newElement = (NodeModel)Activator.CreateInstance(tld.Type, dynamoModel.CurrentWorkspace);
+                }
+            }
 
-                    Parameters = newElement.InPorts.Select(elem => elem.PortName);
-                    ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
-                }
-                else
-                {
-                    Parameters = new[] { "Input" };
-                    ReturnKeys = new[] { "Output" };
-                }
+            if (newElement != null)
+            {
+                Parameters = newElement.InPorts.Select(elem => elem.PortName);
+                ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
+            }
+            else
+            {
+                Parameters = new[] { "Input" };
+                ReturnKeys = new[] { "Output" };
             }
         }
     }
