@@ -79,10 +79,12 @@ namespace DynamoSandbox
                 // DynamoSandbox.exe /c "C:\file path\file.xml"
                 // 
                 string commandFilePath = string.Empty;
+
                 for (int i = 0; i < args.Length; ++i)
                 {
-                    // Looking for '/c'
                     string arg = args[i];
+
+                    // Looking for '/c'
                     if (arg.Length != 2 || (arg[0] != '/'))
                         continue;
 

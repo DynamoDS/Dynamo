@@ -16,6 +16,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
@@ -137,6 +138,8 @@ namespace Dynamo.ViewModels
 
         public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
+
+        List<LibraryItem> allLibraryItems;
 
         #endregion
 
@@ -535,6 +538,37 @@ namespace Dynamo.ViewModels
         internal bool CanFocusSearch(object parameter)
         {
             return true;
+        }
+
+        public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory()
+        {
+            if (allLibraryItems == null || !allLibraryItems.Any())
+            {
+                allLibraryItems = new List<LibraryItem>();
+                foreach (var elem in Model.BrowserRootCategories)
+                {
+                    allLibraryItems.AddRange(GetLibraryItemsByCategory(elem));
+                }
+            }
+            return allLibraryItems;
+        }
+
+        private IEnumerable<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
+        {
+            var dynamoModel = dynamoViewModel.Model;
+            var result = new List<LibraryItem>();
+            foreach (BrowserItem item in elem.Items)
+            {
+                if (item is SearchElementBase) 
+                {
+                    result.Add(new LibraryItem(item as SearchElementBase, dynamoModel));
+                }
+                else
+                {
+                    result.AddRange(GetLibraryItemsByCategory(item));
+                }
+            }
+            return result;
         }
 
         #endregion

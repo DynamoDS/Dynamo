@@ -1,0 +1,8 @@
+{  
+   "$type":"DynamoWebServer.Messages.RunCommandsMessage, DynamoWebServer",
+   "commands":[  
+      {  
+         "$type":"Dynamo.ViewModels.DynamoViewModel+RunCancelCommand, DynamoCore"
+      }
+   ]
+}

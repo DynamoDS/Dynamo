@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -12,6 +13,7 @@ namespace Dynamo.ViewModels
     {
         // Automation related data members.
         private AutomationSettings automationSettings = null;
+        
 
         #region Automation Related Methods
 
@@ -117,13 +119,33 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
-            NodeModel nodeModel = CurrentSpace.AddNode(
-                command.NodeId,
+           NodeModel nodeModel;
+            // if we need to create a proxy custom node
+            // specify needed information for it from CreateProxyNodeCommand
+            if (command is CreateProxyNodeCommand)
+            {
+                var proxyCommand = command as CreateProxyNodeCommand;
+
+                nodeModel = CurrentSpace.AddNode(command.NodeId,
                 command.NodeName,
                 command.X,
                 command.Y,
                 command.DefaultPosition,
-                command.TransformCoordinates);
+                command.TransformCoordinates,
+                nickName: proxyCommand.NickName,
+                inputs: proxyCommand.Inputs,
+                outputs: proxyCommand.Outputs);
+            }
+            else
+            {
+               nodeModel = CurrentSpace.AddNode(
+               command.NodeId,
+               command.NodeName,
+               command.X,
+               command.Y,
+               command.DefaultPosition,
+               command.TransformCoordinates);
+            }
 
             CurrentSpace.RecordCreatedModel(nodeModel);
 

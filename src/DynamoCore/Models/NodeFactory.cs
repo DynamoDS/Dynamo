@@ -66,6 +66,35 @@ namespace Dynamo.Models
             return node;
         }
 
+        /// A proxy custom node is a custom node without its definition loaded 
+        /// in Dynamo. The creation of a proxy custom node relies on information 
+        /// provided by the caller since the definition is not readily available 
+        /// for reading. The actual definition may become available at a later 
+        /// time by means of user uploading the definition.
+        /// </summary>
+        /// <param name="id">Identifier of the custom node instance.</param>
+        /// <param name="name">The name represents the GUID of the custom node 
+        /// definition that is used for creating the custom node instance.</param>
+        /// <param name="nickName">The display name of the custom node.</param>
+        /// <param name="inputs">Number of input ports.</param>
+        /// <param name="outputs">Number of output ports.</param>
+        /// <returns>Returns the custom node instance if creation was successful, 
+        /// or null otherwise.</returns>
+        internal NodeModel CreateProxyNodeInstance(Guid id, string name, string nickName, int inputs, int outputs)
+        {
+            Guid guid;
+            if (!Guid.TryParse(name, out guid))
+            {
+                return null;
+            }
+
+            // create an instance of Function node 
+            Function result = CreateNodeInstance(typeof(Function), nickName, null, id) as Function;
+            // create its definition and add inputs and outputs
+            result.LoadNode(guid, inputs, outputs);
+            return result;
+        }
+
         /// <summary>
         ///     Create a NodeModel from a type object
         /// </summary>
@@ -118,8 +147,9 @@ namespace Dynamo.Models
         private NodeModel GetCustomNodeByName(string name)
         {
             CustomNodeDefinition def;
-
-            if (dynamoModel.CustomNodeManager.GetDefinition(Guid.Parse(name), out def))
+            Guid guid;
+            // Check name is correct guid
+            if (Guid.TryParse(name, out guid) && dynamoModel.CustomNodeManager.GetDefinition(guid, out def))
             {
                 return new Function(this.workspaceModel, def)
                 {

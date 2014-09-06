@@ -10,6 +10,11 @@ namespace Dynamo.Search.SearchElements
         internal readonly FunctionDescriptor FunctionDescriptor;
         private string _displayString;
 
+        /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public override string CreatingName { get { return FunctionDescriptor != null ? FunctionDescriptor.MangledName : this.Name; } }
+
         public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionDescriptorItem) :
             base(displayString, functionDescriptorItem.Description, new List<string> { })
         {
