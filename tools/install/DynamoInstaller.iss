@@ -123,7 +123,7 @@ var
   sUnInstallString: String;
 begin
   if(IsInnoSetupInstaller) then
-    sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+    sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1')
   else
     sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}');
 
@@ -178,7 +178,7 @@ begin
   Result := (GetUninstallString(True) <> '');
 end;
 
-functon MSIInstallExists(): Boolean;
+function MSIInstallExists(): Boolean;
 begin
   Result := (GetUninstallString(False) <> '');
 end;
@@ -199,7 +199,7 @@ begin
 
   // get the uninstall string of the old app
   if(IsInnoSetupInstaller) then
-    sUnInstallString := GetUninstallString(True);
+    sUnInstallString := GetUninstallString(True)
   else
     sUninstallString := GetUninstallString(False);
 
