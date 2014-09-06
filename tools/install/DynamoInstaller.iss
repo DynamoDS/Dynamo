@@ -117,12 +117,16 @@ begin
   Result := silentFlag;
 end;
 
-function GetUninstallString(): String;
+function GetUninstallString(IsInnoSetupInstaller: Boolean): String;
 var
   sUnInstPath: String;
   sUnInstallString: String;
 begin
-  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  if(IsInnoSetupInstaller) then
+    sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  else
+    sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}');
+
   sUnInstallString := '';
   if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
     RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
@@ -171,12 +175,16 @@ end;
 /////////////////////////////////////////////////////////////////////
 function IsUpgrade(): Boolean;
 begin
-  Result := (GetUninstallString() <> '');
+  Result := (GetUninstallString(True) <> '');
 end;
 
+functon MSIInstallExists(): Boolean;
+begin
+  Result := (GetUninstallString(False) <> '');
+end;
 
 /////////////////////////////////////////////////////////////////////
-function UnInstallOldVersion(): Integer;
+function UnInstallOldVersion(IsInnoSetupInstaller: Boolean): Integer;
 var
   sUnInstallString: String;
   iResultCode: Integer;
@@ -190,7 +198,11 @@ begin
   Result := 0;
 
   // get the uninstall string of the old app
-  sUnInstallString := GetUninstallString();
+  if(IsInnoSetupInstaller) then
+    sUnInstallString := GetUninstallString(True);
+  else
+    sUninstallString := GetUninstallString(False);
+
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
     if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
@@ -244,7 +256,11 @@ begin
     begin
       if (IsUpgrade()) then
       begin
-        UnInstallOldVersion();
+        UnInstallOldVersion(True);
+      end;
+      if (MSIInstallExists()) then
+      begin
+        UnInstallOldVersion(False);
       end;
     end;
 end;
