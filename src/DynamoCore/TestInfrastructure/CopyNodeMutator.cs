@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -11,23 +13,92 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.TestInfrastructure
 {
+    [MutationTest("CopyNodeMutator")]
     class CopyNodeMutator : AbstractMutator
     {
-        public CopyNodeMutator(DynamoViewModel viewModel, Random rand)
-            : base(viewModel, rand)
+        public CopyNodeMutator(DynamoViewModel viewModel)
+            : base(viewModel)
         {
-
         }
 
-        public override int Mutate()
+        public override bool RunTest(NodeModel node, StreamWriter writer)
         {
-            List<NodeModel> nodes = DynamoModel.Nodes.ToList();
+            bool pass = false;
 
+            var nodes = DynamoViewModel.Model.Nodes.ToList();
             if (nodes.Count == 0)
-                return 0;
+                return pass;
 
-            NodeModel node = nodes[Rand.Next(nodes.Count)];
+            int nodesCountBeforeCopying = nodes.Count;
 
+            int numberOfUndosNeeded = this.Mutate(node);
+            Thread.Sleep(100);
+
+            writer.WriteLine("### - Beginning undo");
+            for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                {
+                    DynamoViewModel.UndoRedoCommand undoCommand =
+                        new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                    DynamoViewModel.ExecuteCommand(undoCommand);
+
+                }));
+                Thread.Sleep(100);
+            }
+            writer.WriteLine("### - undo complete");
+            writer.Flush();
+
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+            {
+                DynamoViewModel.RunCancelCommand runCancel =
+                    new DynamoViewModel.RunCancelCommand(false, false);
+                DynamoViewModel.ExecuteCommand(runCancel);
+            }));
+            while (DynamoViewModel.Model.Runner.Running)
+            {
+                Thread.Sleep(10);
+            }
+
+            writer.WriteLine("### - Beginning test of CopyNode");
+            if (node.OutPorts.Count > 0)
+            {
+                try
+                {
+                    int nodesCountAfterCopying = DynamoViewModel.Model.Nodes.ToList().Count;
+
+                    if (nodesCountBeforeCopying != nodesCountAfterCopying)
+                    {
+                        writer.WriteLine("!!!!!!!!!!! - test of CopyNode is failed");
+                        writer.WriteLine(node.GUID);
+
+                        writer.WriteLine("Was: " + nodesCountAfterCopying);
+                        writer.WriteLine("Should have been: " + nodesCountBeforeCopying);
+                        writer.Flush();
+                        return pass;
+                    }
+                    else
+                    {
+                        writer.WriteLine("### - test of CopyNode is passed");
+                        writer.Flush();
+                    }
+
+                }
+                catch (Exception)
+                {
+                    writer.WriteLine("!!!!!!!!!!! - test of CopyNode is failed");
+                    writer.Flush();
+                    return pass;
+                }
+            }
+            writer.WriteLine("### - test of CopyNode complete");
+            writer.Flush();
+
+            return pass = true;
+        }
+
+        public override int Mutate(NodeModel node)
+        {
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoViewModel.SelectModelCommand selectNodeCommand =
@@ -40,6 +111,6 @@ namespace Dynamo.TestInfrastructure
             }));
 
             return 1;
-        }
+        }        
     }
 }
