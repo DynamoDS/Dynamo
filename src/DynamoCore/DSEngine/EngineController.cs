@@ -1,4 +1,6 @@
 ﻿using Autodesk.DesignScript.Interfaces;
+
+using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
@@ -188,7 +190,7 @@ namespace Dynamo.DSEngine
         /// the list of updated nodes. If updatedNodes is empty or does not 
         /// result in any GraphSyncData, then this method returns false.</returns>
         /// 
-        public GraphSyncData ComputeSyncData(IEnumerable<NodeModel> updatedNodes)
+        internal GraphSyncData ComputeSyncData(IEnumerable<NodeModel> updatedNodes)
         {
             if ((updatedNodes == null) || !updatedNodes.Any())
                 return null;
@@ -198,22 +200,25 @@ namespace Dynamo.DSEngine
             if (activeNodes.Any())
                 astBuilder.CompileToAstNodes(activeNodes, true);
 
-            if (!VerifyGraphSyncData())
+            if (!VerifyGraphSyncData() || ((graphSyncDataQueue.Count <= 0)))
                 return null;
 
-            // TODO(Ben): Remove these locks and graphSyncDataQueue.
-            lock (MacroMutex)
-            {
-                lock (graphSyncDataQueue)
-                {
-                    if (graphSyncDataQueue.Count > 0)
-                        return graphSyncDataQueue.Dequeue();
-                }
-            }
-
-            return null;
+            return graphSyncDataQueue.Dequeue();
         }
 
+        internal GraphSyncData ComputeSyncData(CompileCustomNodeParams initParams)
+        {
+            astBuilder.CompileCustomNodeDefinition(
+                initParams.Definition, 
+                initParams.Nodes,
+                initParams.Outputs,
+                initParams.Parameters);
+
+            if (!VerifyGraphSyncData() || ((graphSyncDataQueue.Count <= 0)))
+                return null;
+
+            return graphSyncDataQueue.Dequeue();
+        }
 #endif
 
         /// <summary>

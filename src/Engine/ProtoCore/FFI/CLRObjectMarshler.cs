@@ -419,25 +419,28 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            StackValue[] arr = dsi.runtime.rmem.GetArrayElements(dsObject);
-            int count = arr.Length;
-            T[] array = new T[count];
+            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.Core);
+            var result = new List<T>();
             Type objType = typeof(T);
-            for (int idx = 0; idx < count; ++idx)
+
+            foreach (var elem in dsElements)
             {
-                object obj = primitiveMarshaler.UnMarshal(arr[idx], context, dsi, objType);
+                object obj = primitiveMarshaler.UnMarshal(elem, context, dsi, objType);
                 if (null == obj)
                 {
                     if (objType.IsValueType)
-                        throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", objType.Name));
+                        throw new System.InvalidCastException(
+                            string.Format("Null value cannot be cast to {0}", objType.Name));
 
-                    array[idx] = default(T);
+                    result.Add(default(T));
                 }
                 else
-                    array[idx] = (T)obj;
+                {
+                    result.Add((T)obj);
+                }
             }
 
-            return array;
+            return result.ToArray();
         }
 
         /// <summary>
@@ -471,7 +474,6 @@ namespace ProtoFFI
 
             int ptr = (int)dsObject.opdata;
             HeapElement hs = dsi.runtime.rmem.Heap.Heaplist[ptr];
-            int count = hs.VisibleSize;
 
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
@@ -480,9 +482,9 @@ namespace ProtoFFI
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
-            for (int idx = 0; idx < count; ++idx)
+            foreach (var sv in hs.VisibleItems)
             {
-                object obj = primitiveMarshaler.UnMarshal(hs.Stack[idx], context, dsi, elementType);
+                object obj = primitiveMarshaler.UnMarshal(sv, context, dsi, elementType);
                 arrList.Add(obj);
             }
 

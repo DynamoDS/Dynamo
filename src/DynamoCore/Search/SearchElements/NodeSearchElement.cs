@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Input;
 using System.Linq;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using String = System.String;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using System.Windows.Media.Imaging;
-using Dynamo.DSEngine;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -44,7 +36,7 @@ namespace Dynamo.Search.SearchElements
 
         private string _fullName;
         public string FullName { get { return _fullName; } }
-		
+
         /// <summary>
         /// Description property </summary>
         /// <value>
@@ -64,7 +56,7 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                if (_inputParameters==null)
+                if (_inputParameters == null)
                 {
                     _inputParameters = new List<Tuple<string, string>>();
                     _inputParameters.Add(Tuple.Create<string, string>("", "none"));
@@ -189,11 +181,10 @@ namespace Dynamo.Search.SearchElements
             switch (resourceType)
             {
                 case ResourceType.SmallIcon: return this._fullName;
-                //TODO: try to load large icon, look how it works.
                 case ResourceType.LargeIcon: return this._fullName;
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
-        }  
+        }
     }
 }

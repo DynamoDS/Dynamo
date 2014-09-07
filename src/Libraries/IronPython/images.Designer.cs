@@ -63,9 +63,29 @@ namespace DSIronPythonNode {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSIronPythonNode_PythonNode_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSIronPythonNode.PythonNode.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSIronPythonNode_PythonNode_Small {
             get {
                 object obj = ResourceManager.GetObject("DSIronPythonNode.PythonNode.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DSIronPythonNode_PythonStringNode_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSIronPythonNode.PythonStringNode.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

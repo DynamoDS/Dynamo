@@ -63,9 +63,29 @@ namespace DSOffice {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DSOffice_Excel_Read_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSOffice.Excel.Read.Large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DSOffice_Excel_Read_Small {
             get {
                 object obj = ResourceManager.GetObject("DSOffice.Excel.Read.Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DSOffice_Excel_Write_Large {
+            get {
+                object obj = ResourceManager.GetObject("DSOffice.Excel.Write.Large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

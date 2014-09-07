@@ -52,7 +52,6 @@ namespace Dynamo.Search.SearchElements
             switch (resourceType)
             {
                 case ResourceType.SmallIcon: return FunctionDescriptor.QualifiedName;
-                //TODO: try to load large icon, look how it works.
                 case ResourceType.LargeIcon: return FunctionDescriptor.QualifiedName;
             }
 
