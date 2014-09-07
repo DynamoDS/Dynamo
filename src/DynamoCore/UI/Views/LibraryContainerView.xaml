@@ -6,7 +6,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"             
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
@@ -194,7 +194,7 @@
             </Grid>
         </Border>
 
-<!-- The code is commented for now.
+        <!-- The code is commented for now.
      It will be used for another purposes in near future
         <ScrollViewer HorizontalAlignment="Stretch"
                       Margin="0"
@@ -825,7 +825,7 @@
 
                     </HierarchicalDataTemplate>
 
-                </TreeView.Resources>
+                </TreeiView.Resources>
 
             </TreeView>
 
@@ -854,7 +854,7 @@
             </views:LibrarySearchView.Style>
         </views:LibrarySearchView>
 
-<!--
+        <!--
         <Button Name="NoMatchFoundButton"
                 Grid.Column="0"
                 Grid.ColumnSpan="1"

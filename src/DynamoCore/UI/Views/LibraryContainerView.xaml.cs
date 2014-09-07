@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,7 +7,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -220,11 +217,21 @@ namespace Dynamo.Search
 
         public void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
+            BindingExpression binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
                 binding.UpdateSource();
 
-            this.viewModel.SearchCommand.Execute(null);
+            // In this code libraryView.Visibility is specified.
+            // Visibility of LibrarySearchView control is changed automatically 
+            // by it DataTrigger depending on libraryView.Visibility.
+            if (string.IsNullOrEmpty(this.viewModel.SearchText))
+                libraryView.Visibility = Visibility.Visible;
+            else
+                libraryView.Visibility = Visibility.Collapsed;
+
+            // Do not search.
+            // Search functionality isn't ready for now.
+            //this.viewModel.SearchCommand.Execute(null);
         }
 
         // Not used anywhere.
