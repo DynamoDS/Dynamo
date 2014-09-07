@@ -181,6 +181,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestDefaultRecorderStates()
         {
             Assert.AreEqual(false, recorder.CanUndo);
@@ -188,6 +189,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestConstructor()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -197,6 +199,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestBeginActionGroup00()
         {
             Assert.Throws<InvalidOperationException>(() =>
@@ -207,6 +210,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestBeginActionGroup01()
         {
             recorder.BeginActionGroup();
@@ -216,6 +220,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestEndActionGroup00()
         {
             Assert.Throws<InvalidOperationException>(() =>
@@ -225,6 +230,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestEndActionGroup01()
         {
             Assert.Throws<InvalidOperationException>(() =>
@@ -236,6 +242,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestCreationUndoRedo()
         {
             // Ensure the recorder is in its default states.
@@ -266,6 +273,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestDeletionUndoRedo()
         {
             // Ensure the recorder is in its default states.
@@ -318,6 +326,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestDeletionsUndoRedo()
         {
             // Ensure the recorder is in its default states.
@@ -393,6 +402,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestModificationUndoRedo00()
         {
             // Ensure the recorder is in its default states.
@@ -439,6 +449,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestModificationUndoRedo01()
         {
             // Add a model into workspace, make sure it exists.
@@ -478,6 +489,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestRedoStackWipeOut()
         {
             // Add a model into workspace, make sure it exists.
@@ -540,6 +552,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestClearingStacks00()
         {
             // Ensure the recorder is in its default states.
@@ -563,6 +576,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestClearingStacks01()
         {
             Assert.Throws<InvalidOperationException>(() =>
@@ -573,6 +587,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestPopFromUndoGroup()
         {
             //Assert that it cannot pop from an empty undostack
@@ -595,6 +610,7 @@ namespace Dynamo.Tests
     internal class SerializationTests : DynamoViewModelUnitTest
     {
         [Test]
+        [Category("UnitTests")]
         public void TestBasicAttributes()
         {
             var model = ViewModel.Model;
@@ -647,6 +663,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestDoubleInput()
         {
 
@@ -678,6 +695,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestDoubleSliderInput()
         {
             var model = ViewModel.Model;
@@ -718,6 +736,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestBool()
         {
             var model = ViewModel.Model;
@@ -748,6 +767,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestStringInput()
         {
             var strNode = new StringInput(ViewModel.Model.CurrentWorkspace);
@@ -775,6 +795,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestStringFileName()
         {
             /*
@@ -845,6 +866,7 @@ namespace Dynamo.Tests
              
 
         [Test]
+        [Category("UnitTests")]
         public void TestSublists()
         {
             var strNode = new Sublists(ViewModel.Model.CurrentWorkspace);
@@ -872,6 +894,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestFormula()
         {
 
