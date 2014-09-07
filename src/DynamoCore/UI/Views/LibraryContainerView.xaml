@@ -825,7 +825,7 @@
 
                     </HierarchicalDataTemplate>
 
-                </TreeiView.Resources>
+                </TreeView.Resources>
 
             </TreeView>
 
