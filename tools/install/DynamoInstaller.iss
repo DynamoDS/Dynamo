@@ -94,7 +94,6 @@ Type: filesandordirs; Name: {app}\libg_220
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
-;Filename: "{app}\InstallASMForDynamo.exe"; Parameters:"{code:GetSilentParam}"
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
 
 [UninstallRun]
@@ -117,19 +116,31 @@ begin
   Result := silentFlag;
 end;
 
-function GetUninstallString(IsInnoSetupInstaller: Boolean): String;
+function GetUninstallStringForEXE(): String;
 var
   sUnInstPath: String;
   sUnInstallString: String;
 begin
-  if(IsInnoSetupInstaller) then
-    sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1')
-  else
-    sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}');
-
   sUnInstallString := '';
+
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1')
   if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString)
+
+  Result := sUnInstallString;
+end;
+
+function GetUninstallStringForMSI() : String;
+var 
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstallString := '';
+
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}')
+  if not RegQueryStringValue(HKLM64, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU64, sUnInstPath, 'UninstallString', sUnInstallString);
+
   Result := sUnInstallString;
 end;
 
@@ -173,20 +184,19 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////////
-function IsUpgrade(): Boolean;
+function IsEXEInstalled(): Boolean;
 begin
-  Result := (GetUninstallString(True) <> '');
+  Result := (GetUninstallStringForEXE() <> '');
 end;
 
-function MSIInstallExists(): Boolean;
+function IsMSIInstalled(): Boolean;
 begin
-  Result := (GetUninstallString(False) <> '');
+  Result := (GetUninstallStringForMSI() <> '');
 end;
 
 /////////////////////////////////////////////////////////////////////
-function UnInstallOldVersion(IsInnoSetupInstaller: Boolean): Integer;
+function UnInstallOldEXE(sUnInstallString: String): Integer;
 var
-  sUnInstallString: String;
   iResultCode: Integer;
 begin
 // Return Values:
@@ -197,15 +207,26 @@ begin
   // default return value
   Result := 0;
 
-  // get the uninstall string of the old app
-  if(IsInnoSetupInstaller) then
-    sUnInstallString := GetUninstallString(True)
-  else
-    sUninstallString := GetUninstallString(False);
-
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
     if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+function UnInstallOldMSI(sUnInstallString: String): Integer;
+var
+  iResultCode: Integer;
+begin
+  // default return value
+  Result := 0;
+
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec('MsiExec.exe', '/x{#emit StringChange(SetupSetting("AppId"),'{{','{')}','', SW_SHOWNORMAL, ewWaitUntilTerminated, iResultCode) then
       Result := 3
     else
       Result := 2;
@@ -251,17 +272,21 @@ begin
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
+var 
+  sUninstallString: String;
 begin
   if (CurStep=ssInstall) then
     begin
-      if (IsUpgrade()) then
-      begin
-        UnInstallOldVersion(True);
-      end;
-      if (MSIInstallExists()) then
-      begin
-        UnInstallOldVersion(False);
-      end;
+      if (IsEXEInstalled()) then
+        begin
+          sUninstallString := GetUninstallStringForEXE()
+          UnInstallOldEXE(sUninstallString)
+        end;
+      if (IsMSIInstalled()) then
+        begin
+          sUninstallString := GetUninstallStringForMSI()
+          UnInstallOldMSI(sUninstallString)
+        end;
     end;
 end;
 
