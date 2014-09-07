@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -83,9 +83,9 @@ namespace Dynamo.UI.Controls
         {
             var classInfo = this.DataContext as ClassInformation;
 
-            bool isCreateListEmpty = (classInfo.CreateMembers as List<BrowserInternalElement>).Count == 0;
-            bool isActionListEmpty = (classInfo.ActionMembers as List<BrowserInternalElement>).Count == 0;
-            bool isQueryListEmpty = (classInfo.QueryMembers as List<BrowserInternalElement>).Count == 0;
+            bool isCreateListEmpty = !classInfo.CreateMembers.Any();
+            bool isActionListEmpty = !classInfo.ActionMembers.Any();
+            bool isQueryListEmpty = !classInfo.QueryMembers.Any();
 
             areAllListsPresented = !isCreateListEmpty && !isActionListEmpty && !isQueryListEmpty;
 
@@ -99,14 +99,14 @@ namespace Dynamo.UI.Controls
 
                 if (!isQueryListEmpty)
                 {
-                    createAndPlaceQueryHeader(true);
+                    CreateAndPlaceQueryHeader(true);
 
                     addCategoryList.ItemsSource = classInfo.QueryMembers;
                 }
 
                 if (!isActionListEmpty)
                 {
-                    createAndPlaceActionHeader(isQueryListEmpty);
+                    CreateAndPlaceActionHeader(isQueryListEmpty);
 
                     if (isQueryListEmpty)
                         addCategoryList.ItemsSource = classInfo.ActionMembers;
@@ -129,7 +129,7 @@ namespace Dynamo.UI.Controls
 
                 if (!isQueryListEmpty)
                 {
-                    createAndPlaceQueryHeader();
+                    CreateAndPlaceQueryHeader();
 
                     addCategoryList.ItemsSource = classInfo.QueryMembers;
                 }
@@ -151,7 +151,7 @@ namespace Dynamo.UI.Controls
             topCategoryHeader.Visibility = Visibility.Collapsed;
         }
 
-        private void createAndPlaceActionHeader(bool makeUltraBold = false)
+        private void CreateAndPlaceActionHeader(bool makeUltraBold = false)
         {
             TextBlock actionHeader = new TextBlock();
             actionHeader.Tag = ActionHeaderTag;
@@ -164,7 +164,7 @@ namespace Dynamo.UI.Controls
             addCategoryHeaders.Children.Add(actionHeader);
         }
 
-        private void createAndPlaceQueryHeader(bool makeUltraBold = false)
+        private void CreateAndPlaceQueryHeader(bool makeUltraBold = false)
         {
             TextBlock queryHeader = new TextBlock();
             queryHeader.Tag = QueryHeaderTag;
