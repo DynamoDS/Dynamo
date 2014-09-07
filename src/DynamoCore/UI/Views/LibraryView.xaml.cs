@@ -17,11 +17,13 @@ namespace Dynamo.UI.Views
             this.viewModel = searchViewModel;
             this.dynamoViewModel = dynamoViewModel;
 
+            ProcessRootCategories();
+
             InitializeComponent();
             Loaded += LibraryViewLoaded;
         }
 
-        void LibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+        private void LibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             DataContext = this.viewModel;
         }
@@ -31,6 +33,26 @@ namespace Dynamo.UI.Views
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// Method goes through all BrowserCategories collections and
+        /// sets correct value of IsPlaceHolder. If need it populates
+        /// member collections for category.Classdetails instance
+        /// </summary>
+        private void ProcessRootCategories()
+        {
+            var rootCategories = viewModel.Model.BrowserRootCategories;
+            for (int i = 0; i < rootCategories.Count; i++)
+            {
+                rootCategories[i].SpecifyIsPlaceHolderProperty();
+
+                if (rootCategories[i].IsPlaceHolder)
+                {
+                    rootCategories[i].ClassDetails.PopulateMemberCollections(rootCategories[i]);
+                    rootCategories[i].ClassDetails.ClassDetailsVisibility = true;
+                }
+            }
         }
     }
 }

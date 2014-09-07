@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 using Dynamo.Search;
@@ -31,16 +29,27 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        /// <summary>
+        /// Property specifies if BrowserItem has members only as children. No any subcategories.
+        /// </summary>
+        private bool isPlaceHolder;
+        public bool IsPlaceHolder
+        {
+            get { return isPlaceHolder; }
+        }
+
+        private ClassInformation classDetails;
+        public ClassInformation ClassDetails
+        {
+            get { return classDetails; }
+        }
+
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
             this.Height = 32;
             this.Siblings = siblings;
             this._name = name;
-        }
-
-        public void SortChildren()
-        {
-            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
+            this.classDetails = new ClassInformation();
         }
 
         public BrowserRootElement(string name)
@@ -48,6 +57,22 @@ namespace Dynamo.Nodes.Search
             this.Height = 32;
             this.Siblings = null;
             this._name = name;
+            this.classDetails = new ClassInformation();
+        }
+
+        public void SortChildren()
+        {
+            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
+        }
+
+        /// <summary>
+        /// Specifies IsPlaceHolder property.
+        /// </summary>
+        public void SpecifyIsPlaceHolderProperty()
+        {
+            // If all childs are derived from NodeSearchElement they all are members
+            // not subcategories. 
+            isPlaceHolder = Items.Count > 0 && Items.All(it => it is NodeSearchElement);
         }
     }
 
@@ -132,7 +157,15 @@ namespace Dynamo.Nodes.Search
         private string assembly;
         public string Assembly
         {
-            get { return assembly; }
+            get
+            {
+                if (!string.IsNullOrEmpty(assembly))
+                    return assembly;
+
+                // If there wasn't any assembly, then it's buildin function or operator.
+                // Icons for these members are in DynamoCore project.
+                return "DynamoCore";
+            }
 
             // Note: we need setter, when we set resource assembly in NodeSearchElement.
             set { assembly = value; }
@@ -230,7 +263,7 @@ namespace Dynamo.Nodes.Search
             get { return this.queryMembers; }
         }
 
-        public void PopulateMemberCollections(BrowserInternalElement element)
+        public void PopulateMemberCollections(BrowserItem element)
         {
             createMembers.Clear();
             actionMembers.Clear();
