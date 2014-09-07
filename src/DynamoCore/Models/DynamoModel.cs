@@ -14,6 +14,7 @@ using System.Xml;
 using DSNodeServices;
 
 using Dynamo.Core;
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -67,6 +68,7 @@ namespace Dynamo.Models
 
         #region internal members
 
+        private DynamoScheduler scheduler;
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
@@ -102,6 +104,7 @@ namespace Dynamo.Models
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
+        public DynamoScheduler Scheduler { get { return scheduler; } }
         public bool ShutdownRequested { get; internal set; }
 
         // KILLDYNSETTINGS: wut am I!?!
@@ -244,6 +247,7 @@ namespace Dynamo.Models
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
             public DynamoRunner Runner { get; set; }
+            public ISchedulerThread SchedulerThread { get; set; }
         }
 
         /// <summary>
@@ -295,6 +299,11 @@ namespace Dynamo.Models
             IsTestMode = isTestMode;
             Logger = new DynamoLogger(this, DynamoPathManager.Instance.Logs);
             DebugSettings = new DebugSettings();
+
+#if ENABLE_DYNAMO_SCHEDULER
+            var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
+            scheduler = new DynamoScheduler(thread);
+#endif
 
             if (preferences is PreferenceSettings)
             {
@@ -380,6 +389,14 @@ namespace Dynamo.Models
             OnCleanup(args);
 
             Logger.Dispose();
+
+#if ENABLE_DYNAMO_SCHEDULER
+            if (scheduler != null)
+            {
+                scheduler.Shutdown();
+                scheduler = null;
+            }
+#endif
         }
         
         /// <summary>
@@ -410,10 +427,73 @@ namespace Dynamo.Models
             CustomNodeManager.RecompileAllNodes(EngineController);
         }
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
         public void RunExpression()
         {
             Runner.RunExpression(this.HomeSpace);
         }
+
+#else
+
+        /// <summary>
+        /// This method is typically called from the main application thread (as 
+        /// a result of user actions such as button click or node UI changes) to
+        /// schedule an update of the graph. This call may or may not represent 
+        /// an actual update. In the event that the user action does not result 
+        /// in actual graph update (e.g. moving of node on UI), the update task 
+        /// will not be scheduled for execution.
+        /// </summary>
+        /// 
+        public void RunExpression()
+        {
+            var task = new UpdateGraphAsyncTask(scheduler, OnUpdateGraphCompleted);
+            if (task.Initialize(EngineController, HomeSpace))
+                scheduler.ScheduleForExecution(task);
+        }
+
+        /// <summary>
+        /// This callback method is invoked in the context of ISchedulerThread 
+        /// when UpdateGraphAsyncTask is completed.
+        /// </summary>
+        /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
+        /// 
+        private static void OnUpdateGraphCompleted(AsyncTask task)
+        {
+            var updateTask = task as UpdateGraphAsyncTask;
+            var messages = new Dictionary<Guid, string>();
+
+            // Runtime warnings take precedence over build warnings.
+            foreach (var warning in updateTask.RuntimeWarnings)
+            {
+                var message = string.Join("\n", warning.Value);
+                messages.Add(warning.Key, message);
+            }
+
+            foreach (var warning in updateTask.BuildWarnings)
+            {
+                // If there is already runtime warnings for 
+                // this node, then ignore the build warnings.
+                if (messages.ContainsKey(warning.Key))
+                    continue;
+
+                var message = string.Join("\n", warning.Value);
+                messages.Add(warning.Key, message);
+            }
+
+            var workspace = updateTask.TargetedWorkspace;
+            foreach (var message in messages)
+            {
+                var guid = message.Key;
+                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                if (node == null)
+                    continue;
+
+                node.Warning(message.Value); // Update node warning message.
+            }
+        }
+
+#endif
 
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {

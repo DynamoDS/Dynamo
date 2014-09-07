@@ -135,9 +135,12 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
+    <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
+    <Compile Include="Core\Threading\DelegateBasedAsyncTask.cs" />
     <Compile Include="Core\Threading\DynamoScheduler.cs" />
     <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Threading\SchedulerThread.cs" />
+    <Compile Include="Core\Threading\SetTraceDataAsyncTask.cs" />
     <Compile Include="Core\Threading\TimeStampGenerator.cs" />
     <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
@@ -194,6 +197,7 @@ limitations under the License.
     <Compile Include="TestInfrastructure\FilePathMutator.cs" />
     <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
     <Compile Include="TestInfrastructure\ListMutator.cs" />
+    <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
@@ -273,6 +277,12 @@ limitations under the License.
     <Compile Include="UI\Commands\RecordableCommands.cs" />
     <Compile Include="UI\DynamoTextBox.cs" />
     <Compile Include="UI\StateMachine.cs" />
+    <Compile Include="UI\Views\LibraryContainerView.xaml.cs">
+      <DependentUpon>LibraryContainerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
     </Compile>
@@ -637,6 +647,14 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\LibraryContainerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\LibrarySearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

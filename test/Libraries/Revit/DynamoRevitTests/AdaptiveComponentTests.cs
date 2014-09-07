@@ -10,7 +10,7 @@ namespace Dynamo.Tests
     [TestFixture]
     class AdaptiveComponentTests:DynamoRevitUnitTestBase
     {
-        [Test]
+        [Test, Category("Failure")]
         [TestModel(@".\AdaptiveComponent\AdaptiveComponentByFace.rfa")]
         public void AdaptiveComponentByFace()
         {

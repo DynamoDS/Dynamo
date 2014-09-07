@@ -1,7 +1,0 @@
-<Workspace Version="0.6.3.7993" X="-811.79052550319" Y="-142.290390012068" zoom="1.25362068273995" Description="" Category="" Name="Home">
-  <Elements>
-    <Dynamo.Nodes.CloudRender type="Dynamo.Nodes.CloudRender" guid="021f06c8-9b89-4b20-aba3-445b7104fe65" nickname="Cloud Render" x="846.274830504405" y="255.389502161223" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </Elements>
-  <Connectors />
-  <Notes />
-</Workspace>
