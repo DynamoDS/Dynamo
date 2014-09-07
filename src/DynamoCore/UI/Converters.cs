@@ -1549,8 +1549,7 @@ namespace Dynamo.Controls
 
             if (!(parameter is DynamoViewModel)) return "Could not get version";
 
-            var dvm = parameter as DynamoViewModel;
-            var latest = dvm.Model.UpdateManager.AvailableVersion;
+            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
             return latest;
         }
 
@@ -1600,26 +1599,29 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string text = value.ToString();
-            if (text.Length > 40)
-                return text.Insert(text.LastIndexOf(".")+1, "\n");
+            string typeOfInput = parameter as string;
+            switch (typeOfInput)
+            {
+                case "ToolTip":
+                    if (text.Length > Configurations.MaxLengthTooltipCode)
+                        return text.Insert(text.LastIndexOf(".") + 1, "\n");
+                    return text;
+                case "ClassButton":
+                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
+                    if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
+                    {
+                        text = text.Insert(text.IndexOf(" ") + 1, "\n");
+                        if (text.Length > Configurations.MaxLengthClassButtonTitle)
+                            // If title is too long, we can cat it.
+                            text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
+                                Configurations.TwoDots;
+                    }
+                    return text;
 
-            return text;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    // Converter used to hide scrollbar for LibraryWrapPanel.
-    public class LibraryWrapPanelWidthConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            double doubleVal = System.Convert.ToDouble(value);
-
-            return doubleVal - 50;
+                // Maybe, later we need more string converters.
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1664,5 +1666,4 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
 }

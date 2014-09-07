@@ -139,6 +139,7 @@ namespace Dynamo.UI
         public static double ToolTipTargetGapInPixels = 3.0;
         public static double NodeButtonHeight = 32; // Height of node button.
         public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
+        public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
         #endregion
 
         #region Library Item Tooltip
@@ -189,12 +190,26 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Icon Resources Strings
+
+        public const string SmallIconPostfix = ".Small";
+        public const string LargeIconPostfix = ".Large";
+        public const string ResourcesDLL = ".resources.dll";
+
+        #endregion
+
+        #region Class button
+        public const int MaxLengthClassButtonTitle = 22;
+        public const int MaxLengthRowClassButtonTitle = 8; // How many characters can be in one row.
+        public const string TwoDots = "..";
+        #endregion
+
 #if DEBUG
         public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";
 #else
-        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
-        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3-us-west-2.amazonaws.com/";
+        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3.amazonaws.com/";
+        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3.amazonaws.com/";
 #endif
 
     }

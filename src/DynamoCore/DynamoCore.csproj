@@ -135,12 +135,21 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
+    <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
+    <Compile Include="Core\Threading\DelegateBasedAsyncTask.cs" />
     <Compile Include="Core\Threading\DynamoScheduler.cs" />
     <Compile Include="Core\Threading\DynamoSchedulerInternals.cs" />
     <Compile Include="Core\Threading\SchedulerThread.cs" />
+    <Compile Include="Core\Threading\SetTraceDataAsyncTask.cs" />
     <Compile Include="Core\Threading\TimeStampGenerator.cs" />
+    <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
+    <Compile Include="images.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>images.resx</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\ISchedulerThread.cs" />
@@ -188,6 +197,7 @@ limitations under the License.
     <Compile Include="TestInfrastructure\FilePathMutator.cs" />
     <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
     <Compile Include="TestInfrastructure\ListMutator.cs" />
+    <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
@@ -441,6 +451,10 @@ limitations under the License.
     <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
+    <EmbeddedResource Include="images.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>images.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -880,6 +894,9 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="Resources\Icons\Hue.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Tooltip\code.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
@@ -898,7 +915,9 @@ xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
-</PostBuildEvent>
+call "$(DevEnvDir)..\Tools\vsvars32.bat"
+resgen /usesourcepath "$(ProjectDir)images.resx" "$(ProjectDir)images.resources"
+al /target:lib /embed:"$(ProjectDir)images.resources" /out:"$(OutDir)$(TargetName).resources.dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

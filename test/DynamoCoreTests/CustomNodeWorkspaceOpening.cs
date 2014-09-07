@@ -24,6 +24,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");

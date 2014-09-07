@@ -132,6 +132,11 @@
             Rotates a Vector around an axis by a specified number of degrees
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
+            <summary>
+            Rotates an object around the Plane origin and normal by a specified  degree
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
             <summary>
             Scale Vector uniformly around the origin
@@ -140,6 +145,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double,System.Double,System.Double)">
             <summary>
             Scale Vector non-uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Returns the angle between the two Vectors, in degrees
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vector.X">
@@ -220,6 +230,75 @@
             degree
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>
+            Mirror the object across the input Plane
+            </summary>
+            <search>reflect</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double)">
+            <summary>
+            Scale uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around a given Plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale uniformly around a given point, using two pick points as scalars
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in two dimension by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Obtain the distance from this Geometry to another
+            </summary>
+            <param name="entity">The other Geometry</param>
+            <returns>The distance</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Obtain the closest Point on this Geometry to the other
+            </summary>
+            <search>NearestPoint, GetClosestPoint</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.DoesIntersect(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Determine if another Geometry object intersects with this one
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Intersect(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Get the intersection Geometry for this object and another
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
+            <summary>
+            Get the intersection of Geometry for this object and a collection of other Geometries. Finds common geometry of all participants.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
+            <summary>
+            Split this Geometry using another Geometry as a cutting "tool"
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Trim(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Removes elements of the entity closest to the pick point
@@ -238,6 +317,11 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
             WARNING: non-ascii characters are not supported in file nams.
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Geometry.BoundingBox">
+            <summary>
+            Get the BoundingBox containing the given piece of Geometry
+            </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
             <summary>
@@ -337,6 +421,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
             <summary>
             Obtain a solid Shell from the Faces of this Solid
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Projects the input Geometry onto this Solid, in the direction of the input Vector
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
@@ -525,6 +614,11 @@
             Combines this Surface and input Surfaces into a PolySurface
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Projects the input Geometry onto this Surface in the input Vector direction
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>
             Returns the total surface area.
@@ -671,11 +765,6 @@
             Make Polysurface by surfaces of Solid.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.PolyCurve)">
-            <summary>
-            Make Polysurface by sweeping Polycurve along rail.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make Polysurface by sweeping curves along rail.
@@ -689,11 +778,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
             <summary>
             Return new Surfaces representing the underlying Surfaces.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ProjectCurve(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Project curve on polysurface
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -835,9 +919,12 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
-            <summary>
-            Reverse the direction of the curve
-            </summary>
+             <summary>
+             Reverse the direction of the curve
+             </summary>
+            <search>
+            flip
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
             <summary>
@@ -847,6 +934,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
             Create a curve by pulling onto plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>
+            Pull this Curve onto the input Surface, in the direction of the Surface normals.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
@@ -1215,72 +1307,83 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Identity">
             <summary>
-            
+            Creates a CoordinateSystem as the World Coordinate System: origin at 
+            0, 0, 0; x axis at 1, 0, 0; y axis at 0, 1, 0; z axis at 0, 0, 1
             </summary>
+            <search>zero,wcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
             <summary>
-            
+            Deprecated -- DO NOT USE
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double)">
             <summary>
-            
+            Create a CoordinateSystem with origin at X and Y locations, with
+            X and Y Axes set as WCS X and Y Axes. Z defaults to 0.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(System.Double,System.Double,System.Double)">
             <summary>
-            
+            Create a CoordinateSystem with origin at X, Y, and Z locations, with
+            X and Y Axes set as WCS X and Y Axes.
             </summary>
+            <search>translate</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(Autodesk.DesignScript.Geometry.Point)">
             <summary>
-            
+            Create a CoordinateSystem with origin at input Point, with X and Y Axes
+            set as WCS X and Y Axes.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
-            
+            Create a CoordinateSystem with origin equal to input Plane origin, and 
+            X and Y axes lying in the Plane, aligned with Plane X and Y axes.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
-            
+            Create a CoordinateSystem at the origin with X and Y axis. 
+            Input Vectors are normalized before creating the CoordinateSystem.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
-            
+            Create a CoordinateSystem at the origin with X and Y axis, with Z
+            axis ignored completely. Input Vectors are normalized before creating 
+            the CoordinateSystem. 
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>
-            
+            http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1407
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>
-            
+            http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1408
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse">
             <summary>
-            
+            Get the inverse of this CoordinateSystem - applying this CoordinateSystem to a piece of Geometry reverses the original.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Mirror(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
-            
+            Mirror the object across the input Plane
             </summary>
+            <search>reflect</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
-            
+            Apply the argument CoordinateSystem after this one - Result = this * other
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PreMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
-            
+            Apply the argument CoordinateSystem before this one - Result = other * this
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor">
@@ -1290,7 +1393,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.IsEqualTo(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
-            
+            Determine if two CoordinateSystems are equal
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(System.Double,System.Double,System.Double)">
@@ -1303,6 +1406,11 @@
             <param name="zTranslation">Displacement along Z-axis.</param>
             <returns>Transformed CoordinateSystem.</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Translate the object in the direction and magnitude of input Vector.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
             <summary>
             Translates any CoordinateSystem type by the given distance in the given 
@@ -1311,6 +1419,11 @@
             <param name="direction">Displacement direction.</param>
             <param name="distance">Displacement distance along given direction.</param>
             <returns>Transformed CoordinateSystem.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
+            <summary>
+            Transform the object by the input CoordinateSystem matrix.
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -1333,74 +1446,104 @@
             degree
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double)">
+            <summary>
+            Scale uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double)">
+            <summary>
+            Scale non-uniformly around a given Plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale uniformly around a given point, using 
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
+            <summary>
+            Scale in two dimension by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsSingular">
             <summary>
-            
+            Determine whether it is possible to get the Inverse of this CoordinateSystem
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsScaledOrtho">
             <summary>
-            
+            Tests if the scaling orthogonal, i.e. does it have a shear component.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsUniscaledOrtho">
             <summary>
-            
+            Tests if the scaling orthogonal and are all the vectors normalized.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.Determinant">
             <summary>
-            
+            Obtain the Determinant of this CoordinateSystem
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.Origin">
             <summary>
-            
+            Creates a Point representing the CoordinateSystem origin. 
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XAxis">
             <summary>
-            
+            Returns X Axis of CoordinateSystem.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YAxis">
             <summary>
-            
+            Returns Y Axis of CoordinateSystem.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZAxis">
             <summary>
-            
+            Returns Z Axis of CoordinateSystem.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor">
             <summary>
-            
+            Returns the X Axis scaling of the CoordinateSystem: the length of the X Axis vector.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YScaleFactor">
             <summary>
-            
+            Returns the Y Axis scaling of the CoordinateSystem: the length of the Y Axis vector.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZScaleFactor">
             <summary>
-            
+            Returns the Z Axis scaling of the CoordinateSystem: the length of the Z Axis vector.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XYPlane">
             <summary>
-            
+            Returns the Plane the X and Y axes lie in, with root at the origin.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YZPlane">
             <summary>
-            
+            Returns the Plane the Y and Z axes lie in, with root at the origin.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZXPlane">
             <summary>
-            
+            Returns the Plane the Z and X axes lie in, with root at the origin.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.UV.ToString">
@@ -1487,6 +1630,11 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
+            <summary>
+            Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Make PolyCurve by thickening a curve.
@@ -1495,11 +1643,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make PolyCurve by joining curves. Flips curve as needed for connectivity
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>
-            Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
@@ -1778,6 +1921,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartEndAndTangencies(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Create an arc or tangent bi arc by start and end points and tangencies at start and end
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartPointEndPointStartTangent(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Create an Arc from start Point to end Point with start tangent to Vector
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.CenterPoint">

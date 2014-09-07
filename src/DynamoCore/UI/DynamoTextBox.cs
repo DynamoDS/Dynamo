@@ -18,6 +18,7 @@ using ProtoCore.DSASM;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -464,6 +465,9 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
+        private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
+        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
+
         public static readonly DependencyProperty AttachmentSidePopupProperty =
             DependencyProperty.Register("AttachmentSidePopup",
             typeof(LibraryToolTipPopup.Side), typeof(LibraryToolTipPopup),
@@ -483,16 +487,43 @@ namespace Dynamo.UI.Controls
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
-            this.DataContextChanged += Popup_DataContextChanged;
-            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
+            this.CustomPopupPlacementCallback = PlacementCallback;
+            this.Child = tooltip;
+            this.dispatcherTimer.Interval = new TimeSpan(0,0,1);
+            this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
+            this.Loaded += LoadMainDynamoWindow;
         }
 
-        private void Popup_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        // We should load main window after Popup has been initialized.
+        // If we try to load it before, we will get null.
+        private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
         {
-            this.Child = null;
-            Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
-            tooltip.DataContext = this.DataContext;
-            this.Child = tooltip;
+            var mainDynamoWindow = WPF.FindUpVisualTree<DynamoView>(this);
+
+            // When Dynamo window goes behind another app, the tool-tip should be hidden right 
+            // away. We cannot use CloseLibraryToolTipPopup because it only hides the tool-tip 
+            // window after a pause.
+            mainDynamoWindow.Deactivated += (Sender, args) =>
+            {
+                this.DataContext = null;
+            };
+        }
+
+        public void SetDataContext(object dataContext)
+        {
+            if (dataContext == null)
+            {
+                dispatcherTimer.Start();
+                return;
+            }
+            dispatcherTimer.Stop();
+            this.DataContext = dataContext;
+        }
+
+        private void CloseLibraryToolTipPopup(object sender, EventArgs e)
+        {
+            if (!this.IsMouseOver)
+                this.DataContext = null;
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
@@ -512,7 +543,7 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case Side.Right:
-                    x = target.Width + 3*gap - 50;
+                    x = target.Width + 2.5*gap;
                     var availableHeight = Application.Current.MainWindow.ActualHeight - popup.Height 
                         - (targetLocation.Y + Configurations.NodeButtonHeight);
                     if (availableHeight < Configurations.BottomPanelHeight)

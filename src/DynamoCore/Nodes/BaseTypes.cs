@@ -17,6 +17,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.UI;
 using System.Web;
+using System.Text;
 
 namespace Dynamo.Nodes
 {
@@ -623,6 +624,33 @@ namespace Dynamo.Nodes
             }
 
             return args.ClickedButtonId == (int)Utilities.ButtonId.Proceed;
+        }
+
+        /// <summary>
+        /// Add spaces to string before capital letters e.g. CoordinateSystem to Coordinate System.
+        /// </summary>
+        /// <param name="original">incoming string</param>
+        internal static string InsertSpacesToString(string original)
+        {
+            if (string.IsNullOrWhiteSpace(original))
+                return "";
+            StringBuilder newText = new StringBuilder(original.Length * 2);
+            newText.Append(original[0]);
+            for (int i = 1; i < original.Length; i++)
+            {
+                // We also have to check was previous character capital letter, e.g. Import From CSV
+                // In future there won't be "Method(parA : int)",
+                // TODO: this additional check Equals('(') will be removed.
+                var curr = original[i];
+                var prev = original[i - 1];
+                if ((Char.IsUpper(curr) || curr.Equals('(')) &&
+                    ((prev != ' ') && (!Char.IsUpper(prev))))
+                {
+                    newText.Append(" ");
+                }
+                newText.Append(original[i]);
+            }
+            return newText.ToString();
         }
     }
 
