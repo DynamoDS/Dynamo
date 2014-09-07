@@ -191,6 +191,7 @@ limitations under the License.
     <Compile Include="TestInfrastructure\FilePathMutator.cs" />
     <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
     <Compile Include="TestInfrastructure\ListMutator.cs" />
+    <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="TestInfrastructure\MutatorDriver.cs" />
     <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
