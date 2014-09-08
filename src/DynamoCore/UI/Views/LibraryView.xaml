@@ -11,7 +11,11 @@
              d:DesignWidth="350">
     <UserControl.Resources>
         <ResourceDictionary>
+            <!-- The order of DataTemplates and TemplateSelectors is correct.
+                 If you try to change it, you will have a bug or XamlParseException
+                 exception. -->
 
+            <!-- This data template is used to show one subcategory. -->
             <DataTemplate x:Key="ClassObjectDataTemplate">
                 <DataTemplate.Resources>
                     <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
@@ -46,6 +50,8 @@
                     </Grid>
                 </StackPanel>
             </DataTemplate>
+            <!-- This data template is used to show StandardPanel
+                 for some selected subcategory. -->
             <DataTemplate x:Key="ClassDetailsDataTemplate">
                 <Grid Background="{StaticResource WorkspaceBackgroundBrush}">
                     <Grid.Width>
@@ -59,7 +65,7 @@
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
                                                   ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
                                                   ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
-
+            <!-- This data template is used to show the list of subcategories. -->
             <DataTemplate x:Key="SubclassesTemplate">
                 <ListView Name="SubCategoryListView"
                           ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
