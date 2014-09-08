@@ -101,4 +101,5 @@
     <controls:NumberFormatToBoolConverter x:Key="NumberFormatToBoolConverter"/>
     <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>
+    <controls:StringLengthToVisibilityConverter x:Key="StringLengthToVisibilityConverter" />
 </ResourceDictionary>

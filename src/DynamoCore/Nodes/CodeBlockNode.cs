@@ -13,6 +13,7 @@ using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {
@@ -32,8 +33,7 @@ namespace Dynamo.Nodes
 
         private struct Formatting
         {
-            public const double InitialMargin = 7;
-            public const double VerticalMargin = 26;
+            public const double InitialMargin = 0;
             public const string ToolTipForTempVariable = "Statement Output";
         }
 
@@ -579,7 +579,7 @@ namespace Dynamo.Nodes
                     tooltip = Formatting.ToolTipForTempVariable;
 
                 double portCoordsY = Formatting.InitialMargin;
-                portCoordsY += visualIndex * Formatting.VerticalMargin;
+                portCoordsY += visualIndex * Configurations.PortHeightInPixels;
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
                     VerticalMargin = portCoordsY - prevPortBottom
@@ -590,7 +590,7 @@ namespace Dynamo.Nodes
                 // down the bottom coordinate value before proceeding to the next 
                 // port.
                 // 
-                prevPortBottom = portCoordsY + Formatting.VerticalMargin;
+                prevPortBottom = portCoordsY + Configurations.PortHeightInPixels;
             }
         }
 
