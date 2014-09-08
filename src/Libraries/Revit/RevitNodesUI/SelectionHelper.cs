@@ -50,7 +50,7 @@ namespace Revit.Interactivity
             return DocumentManager.Instance.CurrentDBDocument.GetElement(curveRef) as CurveElement;
         }
 
-        public static List<ElementId> RequestMultipleCurveElementsSelection(string message, out object selectionTarget, ILogger logger)
+        public static List<ElementId> RequestMultipleElementsSelection(string message, out object selectionTarget, ILogger logger)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -64,7 +64,7 @@ namespace Revit.Interactivity
             selectionTarget = null;
 
             return doc.Selection.PickElementsByRectangle(
-                "Window select multiple curves.").Select(x => x.Id).ToList();
+                "Window select multiple elements.").Select(x => x.Id).ToList();
         }
 
         public static Face RequestFaceSelection(string message, ILogger logger)

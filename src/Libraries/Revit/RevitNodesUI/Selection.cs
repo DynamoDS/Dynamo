@@ -1191,6 +1191,6 @@ namespace Dynamo.Nodes
         }
 
         public DSModelElementsSelection(WorkspaceModel workspaceModel)
-            : base(workspaceModel, SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.") { }
+            : base(workspaceModel, SelectionHelper.RequestMultipleElementsSelection, "Select elements.") { }
     }
 }
