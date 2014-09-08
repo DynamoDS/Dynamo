@@ -45,14 +45,12 @@ namespace RevitServices.Elements
             {
                 if (!cache.ContainsKey(doc))
                 {
-                    return;
-                    //throw new ArgumentException("Doc wasn't registered");
+                    throw new ArgumentException("Doc wasn't registered");
                 }
 
                 if (!cache[doc].ContainsKey(id))
                 {
-                    return;
-                    //throw new ArgumentException("Doc+id wasn't registered");
+                    throw new ArgumentException("Doc+id wasn't registered");
                 }
 
                 cache[doc].Remove(id);
@@ -92,8 +90,14 @@ namespace RevitServices.Elements
             Debug.WriteLine(string.Format("{0} elements deleted from Revit.", deleted.Count()));
             foreach (ElementId id in deleted)
             {
-                Delete(document, id);
-                ElementIDLifecycleManager<int>.GetInstance().NotifyOfRevitDeletion(id.IntegerValue);
+                try
+                {
+                    Delete(document, id);
+                    ElementIDLifecycleManager<int>.GetInstance()
+                        .NotifyOfRevitDeletion(id.IntegerValue);
+                }
+                catch
+                { }
             }
         }
 
