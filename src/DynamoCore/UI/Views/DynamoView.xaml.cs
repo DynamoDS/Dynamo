@@ -1002,7 +1002,6 @@ namespace Dynamo.Controls
             UserControl view = (UserControl)this.sidebarGrid.Children[0];
             if (view.Visibility == Visibility.Collapsed)
             {
-                //this.sidebarGrid.Width = restoreWidth;
                 view.Width = double.NaN;
                 view.HorizontalAlignment = HorizontalAlignment.Stretch;
                 view.Height = double.NaN;
@@ -1014,13 +1013,9 @@ namespace Dynamo.Controls
                 this.sidebarGrid.Visibility = Visibility.Visible;
                 this.collapsedSidebar.Visibility = Visibility.Collapsed;
             }
-            //UserControl view = (UserControl)this.sidebarGrid.Children[0];
-            //view.Width = double.NaN;
-            //this.sidebarGrid.Width = 250;
-            //this.collapsedSidebar.Visibility = Visibility.Collapsed;
         }
 
-		private void Button_MouseLeave(object sender, MouseEventArgs e)
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -1039,10 +1034,8 @@ namespace Dynamo.Controls
 
         private void LibraryClicked(object sender, EventArgs e)
         {
-            // this.sidebarGrid.Visibility = Visibility.Collapsed;
             restoreWidth = this.sidebarGrid.ActualWidth;
 
-            //this.sidebarGrid.Width = 0;
             this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
             this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
             this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;

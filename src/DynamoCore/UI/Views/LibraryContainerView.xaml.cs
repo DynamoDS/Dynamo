@@ -221,13 +221,8 @@ namespace Dynamo.Search
             if (binding != null)
                 binding.UpdateSource();
 
-            // In this code libraryView.Visibility is specified.
-            // Visibility of LibrarySearchView control is changed automatically 
-            // by it DataTrigger depending on libraryView.Visibility.
-            if (string.IsNullOrEmpty(this.viewModel.SearchText))
-                libraryView.Visibility = Visibility.Visible;
-            else
-                libraryView.Visibility = Visibility.Collapsed;
+            var searcTextEmpty = string.IsNullOrEmpty(this.viewModel.SearchText);
+            libraryView.Visibility = searcTextEmpty ? Visibility.Visible : Visibility.Collapsed;
 
             // Do not search.
             // Search functionality isn't ready for now.
