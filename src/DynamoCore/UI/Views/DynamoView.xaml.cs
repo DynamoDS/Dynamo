@@ -995,27 +995,23 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-		private void Button_Click(object sender, EventArgs e)
+        private void Button_Click(object sender, EventArgs e)
         {
-            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
-            if (sv.Visibility == Visibility.Collapsed)
+            UserControl view = (UserControl)this.sidebarGrid.Children[0];
+            if (view.Visibility == Visibility.Collapsed)
             {
                 //this.sidebarGrid.Width = restoreWidth;
-                sv.Width = double.NaN;
-                sv.HorizontalAlignment = HorizontalAlignment.Stretch;
-                sv.Height = double.NaN;
-                sv.VerticalAlignment = VerticalAlignment.Stretch;
+                view.Width = double.NaN;
+                view.HorizontalAlignment = HorizontalAlignment.Stretch;
+                view.Height = double.NaN;
+                view.VerticalAlignment = VerticalAlignment.Stretch;
 
                 this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
                 this.verticalSplitter.Visibility = Visibility.Visible;
-                sv.Visibility = Visibility.Visible;
+                view.Visibility = Visibility.Visible;
                 this.sidebarGrid.Visibility = Visibility.Visible;
                 this.collapsedSidebar.Visibility = Visibility.Collapsed;
-            }
-            //SearchView sv = (SearchView)this.sidebarGrid.Children[0];
-            //sv.Width = double.NaN;
-            //this.sidebarGrid.Width = 250;
-            //this.collapsedSidebar.Visibility = Visibility.Collapsed;
+            }            
         }
 
 		private void Button_MouseLeave(object sender, MouseEventArgs e)
@@ -1040,14 +1036,14 @@ namespace Dynamo.Controls
             // this.sidebarGrid.Visibility = Visibility.Collapsed;
             restoreWidth = this.sidebarGrid.ActualWidth;
 
-            // this.sidebarGrid.Width = 0;
+            //this.sidebarGrid.Width = 0;
             this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
             this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
             this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
-            
+
             this.horizontalSplitter.Width = double.NaN;
-            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
-            sv.Visibility = Visibility.Collapsed;
+            UserControl view = (UserControl)this.sidebarGrid.Children[0];
+            view.Visibility = Visibility.Collapsed;
 
             this.sidebarGrid.Visibility = Visibility.Collapsed;
             this.collapsedSidebar.Visibility = Visibility.Visible;
