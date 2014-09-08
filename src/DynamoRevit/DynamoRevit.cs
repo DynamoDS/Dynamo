@@ -66,7 +66,7 @@ namespace RevitServices.Threading
         public static void ExecuteOnIdleAsync(Action p)
         {
             var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
-            var task = new DelegateBasedAsyncTask(scheduler, null);
+            var task = new DelegateBasedAsyncTask(scheduler);
             task.Initialize(p);
             scheduler.ScheduleForExecution(task);
         }
