@@ -15,8 +15,8 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal DelegateBasedAsyncTask(DynamoScheduler scheduler, Action<AsyncTask> callback)
-            : base(scheduler, callback)
+        internal DelegateBasedAsyncTask(DynamoScheduler scheduler)
+            : base(scheduler)
         {
         }
 

@@ -439,9 +439,12 @@ namespace Dynamo.Models
         /// 
         public void RunExpression()
         {
-            var task = new UpdateGraphAsyncTask(scheduler, OnUpdateGraphCompleted);
+            var task = new UpdateGraphAsyncTask(scheduler);
             if (task.Initialize(EngineController, HomeSpace))
+            {
+                task.Completed += OnUpdateGraphCompleted;
                 scheduler.ScheduleForExecution(task);
+            }
         }
 
         /// <summary>
