@@ -489,45 +489,22 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
     {
         if (list == null)
         {
-            return= null;
+            return = null;
         }
 
         _count = Count(list);
+        _keys = { };
+
         if (_count == 0)
         {
-            return = {};
+            return = _keys;
         }
-        
-        _groupedList = { };
-        for (_index in 0..(Count(list) - 1))
+
+        for (_index in 0..(_count - 1))
         {
-            _key = Apply(keyProjector, list[_index]);
-            if (!ContainsKey(_groupedList, _key))
-            {
-                _groupedList[_key] = { };
-            }
-            
-            _subList = _groupedList[_key];
-            _groupedList[_key] = Concat(_subList, { list[_index] });
+            _keys[_index] = Apply(keyProjector, list[_index]);
         }
-        
-        _finalGroupedList = { };
-        _current = 0;
-        _keys = GetKeys(_groupedList);
-        
-        for (_index in 0..(Count(_keys) - 1))
-        {
-            _key = _keys[_index];
-            _subList = _groupedList[_keys[_index]];
-            
-            if (_subList!= null)
-            {
-                _finalGroupedList[_current] = _subList;
-                _current = _current + 1;
-            }
-        }
-        
-        return = _finalGroupedList;
+        return = Sorting.groupByKey(list, _keys);
     };
 }
 

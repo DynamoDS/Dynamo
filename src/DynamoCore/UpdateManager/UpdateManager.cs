@@ -7,6 +7,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 
 using Dynamo.UI;
 using System.Xml.Linq;
@@ -183,6 +184,7 @@ namespace Dynamo.UpdateManager
         private bool forceUpdate;
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
+        private IAppVersionInfo downloadedUpdateInfo;
         private static IUpdateManager instance;
         private static readonly object lockingObject = new object();
 
@@ -220,15 +222,17 @@ namespace Dynamo.UpdateManager
         }
 
         /// <summary>
-        /// Obtains available update version string 
+        ///     Obtains available update version string 
         /// </summary>
         public BinaryVersion AvailableVersion
         {
             get
             {
-                return updateInfo == null ? 
-                    ProductVersion : 
-                    updateInfo.Version;
+                // Dirty patch: A version is available only when the update has been downloaded.
+                // This causes the UI to display the update button only after the download has
+                // completed.
+                return downloadedUpdateInfo == null 
+                    ? ProductVersion : updateInfo.Version;
             }
         }
 
@@ -257,6 +261,20 @@ namespace Dynamo.UpdateManager
                 
                 updateInfo = value;
                 RaisePropertyChanged("UpdateInfo");
+            }
+        }
+
+        /// <summary>
+        ///     Dirty patch: Set to the value of UpdateInfo once the new update installer has been
+        ///     downloaded.
+        /// </summary>
+        public IAppVersionInfo DownloadedUpdateInfo
+        {
+            get { return downloadedUpdateInfo; }
+            set
+            {
+                downloadedUpdateInfo = value;
+                RaisePropertyChanged("DownloadedUpdateInfo");
             }
         }
 
@@ -510,11 +528,16 @@ namespace Dynamo.UpdateManager
             OnLog(new LogEventArgs(errorMessage, LogLevel.File));
 
             UpdateFileLocation = string.Empty;
-            if (e.Error == null)
-            {
-                UpdateFileLocation = (string)e.UserState;
-                OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
-            }
+            
+            if (e.Error != null) 
+                return;
+
+            // Dirty patch: this ensures that we have a property that reflects the update status 
+            // only after the update has been downloaded.
+            DownloadedUpdateInfo = UpdateInfo;
+            
+            UpdateFileLocation = (string)e.UserState;
+            OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));

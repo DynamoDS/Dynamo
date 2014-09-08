@@ -202,19 +202,21 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
+        [NUnit.Framework.Category("Failure")]
         public void RunDSPropertyChangedTest()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4391
             string code =
 @"class Foo{    x;}f = Foo();f.x = 41;";
             runner_.PreStart(code, runconfig_);
             PropertyChangedVerifier v = new PropertyChangedVerifier();
-            // ProtoFFI.FFIPropertyChangedMonitor.GetInstance().RegisterDSPropertyChangedHandler("f", "x", v.DSPropertyChanged);
 
             DebugRunner.VMState vms;
             vms = runner_.StepOver();
             vms = runner_.StepOver();
             vms = runner_.StepOver();
-            Assert.True(v.IsNotified);
+            string err = "MAGN-4391: Failed to track property change";
+            Assert.True(v.IsNotified, err);
         }
     }
 }

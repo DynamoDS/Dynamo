@@ -8,6 +8,7 @@ namespace DSCoreNodesTests
     class WebTests
     {
         [Test]
+        [Category("UnitTests")]
         public void WebRequest_ValidArgs()
         {
             var result = Web.WebRequestByUrl("http://www.google.com");
@@ -15,6 +16,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void WebRequest_BadArgs()
         {
             Assert.Throws<UriFormatException>(()=>Web.WebRequestByUrl("ThisIsNotAUrl"));
