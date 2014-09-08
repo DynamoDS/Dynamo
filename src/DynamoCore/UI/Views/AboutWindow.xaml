@@ -61,8 +61,7 @@
                                PreviewMouseDown="OnPreviewMouseDown"
                                HorizontalAlignment="Center">
                         <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" 
-                             Text="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
-                             ConverterParameter=DataContext, Mode=OneWay}"/>
+                             Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext, Converter={StaticResource IsUpdateAvailableToTextConverter}, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
