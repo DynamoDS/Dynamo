@@ -339,7 +339,7 @@ namespace Dynamo.Controls
         {
             if (_aboutWindow == null)
             {
-                _aboutWindow = new AboutWindow(dynamoViewModel.Model.Logger, model);
+                _aboutWindow = new AboutWindow(model);
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
