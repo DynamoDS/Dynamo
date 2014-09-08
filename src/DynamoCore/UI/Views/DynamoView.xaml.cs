@@ -185,14 +185,6 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
-            //ShortcutBarItem updateButton = new ShortcutBarItem();
-            ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
-            //updateButton.ShortcutCommand = dynamoViewModel.CheckForUpdateCommand;
-            //updateButton.ShortcutCommandParameter = null;
-            //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            //updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem runButton = new ShortcutBarItem();
             //runButton.ShortcutToolTip = "Run [Ctrl + R]";
@@ -339,7 +331,7 @@ namespace Dynamo.Controls
         {
             if (_aboutWindow == null)
             {
-                _aboutWindow = new AboutWindow(dynamoViewModel.Model.Logger, model);
+                _aboutWindow = new AboutWindow(model);
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
@@ -772,7 +764,15 @@ namespace Dynamo.Controls
                 }
 
                 if (this.startPage != null)
-                    this.startPage.PopulateSampleFileList(sampleFiles);
+                {
+                    string rootPath = Path.GetDirectoryName(
+                        Path.GetDirectoryName(sampleFiles.ToArray()[0]));
+                    DirectoryInfo root = new DirectoryInfo(rootPath);
+                    SampleFileEntry rootProperty = new SampleFileEntry("Samples", "Path");
+                    this.startPage.WalkDirectoryTree(root, rootProperty);
+
+                    this.startPage.SampleFiles.Add(rootProperty);
+                }
             }
         }
 
