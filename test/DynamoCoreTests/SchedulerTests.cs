@@ -173,12 +173,6 @@ namespace Dynamo
                 // The first argument cannot be null.
                 var task = new SampleAsyncTask(null);
             });
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                // Exception is thrown regardless of the second parameter.
-                var task = new SampleAsyncTask(null);
-            });
         }
 
         #endregion
