@@ -226,7 +226,7 @@ begin
 
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec('MsiExec.exe', '/x{#emit StringChange(SetupSetting("AppId"),'{{','{')}','', SW_SHOWNORMAL, ewWaitUntilTerminated, iResultCode) then
+    if Exec('MsiExec.exe', '/x{#emit StringChange(SetupSetting("AppId"),'{{','{')} /quiet','', SW_SHOWNORMAL, ewWaitUntilTerminated, iResultCode) then
       Result := 3
     else
       Result := 2;
