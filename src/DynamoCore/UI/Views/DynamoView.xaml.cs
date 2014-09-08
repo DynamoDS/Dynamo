@@ -1044,10 +1044,9 @@ namespace Dynamo.Controls
 
         private void LibraryClicked(object sender, EventArgs e)
         {
-            // this.sidebarGrid.Visibility = Visibility.Collapsed;
             restoreWidth = this.sidebarGrid.ActualWidth;
+            this.LibraryViewColumn.MinWidth = 0;
 
-            // this.sidebarGrid.Width = 0;
             this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
             this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
             this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
@@ -1131,6 +1130,22 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
+        }
+
+        private void OnCollapsedSidebarClick(object sender, RoutedEventArgs e)
+        {
+            this.LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
+
+            this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
+            this.verticalSplitter.Visibility = System.Windows.Visibility.Visible;
+            this.sidebarGrid.Visibility = System.Windows.Visibility.Visible;
+
+            this.horizontalSplitter.Width = restoreWidth;
+            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            sv.Visibility = Visibility.Visible;
+
+            this.sidebarGrid.Visibility = Visibility.Visible;
+            this.collapsedSidebar.Visibility = Visibility.Collapsed;
         }
     }
 }
