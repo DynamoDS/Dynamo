@@ -32,12 +32,7 @@ namespace Dynamo.Search
         #endregion
 
         #region Properties/Fields
-
-        /// <summary>
-        /// Leaves of the browser - used for navigation
-        /// </summary>
-        private List<SearchElementBase> _searchElements = new List<SearchElementBase>();
-        internal List<SearchElementBase> SearchElements { get { return _searchElements; } }
+        internal List<SearchElementBase> SearchElements { get; private set; }
 
         /// <summary>
         ///     Categories property
@@ -61,12 +56,7 @@ namespace Dynamo.Search
         /// <summary>
         /// The root elements for the browser
         /// </summary>
-        private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
-        public ObservableCollection<BrowserRootElement> BrowserRootCategories
-        {
-            get { return _browserRootCategories; } 
-            set { _browserRootCategories = value; }
-        }
+        public ObservableCollection<BrowserRootElement> BrowserRootCategories { get; set; }
 
         /// <summary>
         ///     SearchDictionary property
@@ -84,8 +74,6 @@ namespace Dynamo.Search
         /// </value>
         internal int MaxNumSearchResults { get; set; }
 
-        private readonly DynamoModel DynamoModel;
-
         #endregion
 
         #region Initialization
@@ -96,14 +84,8 @@ namespace Dynamo.Search
         /// </summary>
         internal SearchModel()
         {
-            InitializeCore();
-        }
-
-        internal SearchModel(DynamoModel model)
-        {
-            DynamoModel = model;
-            DynamoModel.CurrentWorkspaceChanged += RevealWorkspaceSpecificNodes;
-
+            BrowserRootCategories = new ObservableCollection<BrowserRootElement>();
+            SearchElements = new List<SearchElementBase>();
             InitializeCore();
         }
 
@@ -114,59 +96,47 @@ namespace Dynamo.Search
             MaxNumSearchResults = 15;
 
             // pre-populate the search categories
-            this.AddRootCategory(BuiltinNodeCategories.CORE);
-            this.AddRootCategory(LibraryServices.Categories.BuiltIns);
-            this.AddRootCategory(LibraryServices.Categories.Operators);
-            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
-            this.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            this.AddRootCategory("Units");
-            this.AddRootCategory("Office");
-            this.AddRootCategory("Migration");
-        }
-
-        #endregion
-
-        #region Destructor
-
-        ~SearchModel()
-        {
-            if (DynamoModel != null)
-            {
-                DynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
-            }
+            AddRootCategory(BuiltinNodeCategories.CORE);
+            AddRootCategory(LibraryServices.Categories.BuiltIns);
+            AddRootCategory(LibraryServices.Categories.Operators);
+            AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            AddRootCategory(BuiltinNodeCategories.REVIT);
+            AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            AddRootCategory("Units");
+            AddRootCategory("Office");
+            AddRootCategory("Migration");
         }
 
         #endregion
 
         #region Context-specific hiding
 
-        private List<NodeSearchElement> NodesHiddenInHomeWorkspace = new List<NodeSearchElement>();
-        private List<NodeSearchElement> NodesHiddenInCustomNodeWorkspace = new List<NodeSearchElement>();
+        private readonly List<NodeSearchElement> nodesHiddenInHomeWorkspace = new List<NodeSearchElement>();
+        private readonly List<NodeSearchElement> nodesHiddenInCustomNodeWorkspace = new List<NodeSearchElement>();
 
         /// <summary>
         /// Show or reveal workspace specific search elements.  These are usually declared using an attribute
         /// on a subclass of NodeModel.
         /// </summary>
         /// <param name="workspace"></param>
-        private void RevealWorkspaceSpecificNodes(WorkspaceModel workspace)
+        public void RevealWorkspaceSpecificNodes(WorkspaceModel workspace)
         {
             var isCustomNodeWorkspace = workspace is CustomNodeWorkspaceModel;
             var updateSearch = false;
 
-            foreach (var ele in NodesHiddenInHomeWorkspace)
+            foreach (var ele in nodesHiddenInHomeWorkspace)
             {
                 updateSearch = true;
                 ele.SetSearchable(isCustomNodeWorkspace);
             }
 
-            foreach (var ele in NodesHiddenInCustomNodeWorkspace)
+            foreach (var ele in nodesHiddenInCustomNodeWorkspace)
             {
                 updateSearch = true;
                 ele.SetSearchable(!isCustomNodeWorkspace);
             }
 
-            if (updateSearch) this.OnRequestSync();
+            if (updateSearch) OnRequestSync();
         }
 
         #endregion
@@ -181,12 +151,9 @@ namespace Dynamo.Search
         /// <param name="search"> The search query </param>
         internal IEnumerable<SearchElementBase> Search(string search)
         {
-            if (string.IsNullOrEmpty(search))
-            {
-                return _searchElements;
-            }
-
-            return SearchDictionary.Search(search, MaxNumSearchResults);
+            return string.IsNullOrEmpty(search)
+                ? SearchElements
+                : SearchDictionary.Search(search, MaxNumSearchResults);
         }
 
         #endregion
@@ -203,25 +170,25 @@ namespace Dynamo.Search
         internal void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
 
-            var cat = this.AddCategory(category);
+            var cat = AddCategory(category);
             cat.AddChild(item);
 
             item.FullCategoryName = category;
 
             var searchEleItem = item as SearchElementBase;
             if (searchEleItem != null)
-                _searchElements.Add(searchEleItem);
+                SearchElements.Add(searchEleItem);
 
         }
 
         internal void RemoveEmptyCategories()
         {
-            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
+            BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
         }
 
         internal void SortCategoryChildren()
         {
-            this.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
+            BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
         }
 
         internal void RemoveEmptyRootCategory(string categoryName)
@@ -334,7 +301,7 @@ namespace Dynamo.Search
         /// <returns>A list of output</returns>
         public static List<string> SplitCategoryName(string categoryName)
         {
-            if (System.String.IsNullOrEmpty(categoryName))
+            if (String.IsNullOrEmpty(categoryName))
                 return new List<string>();
 
             var splitCat = new List<string>();
@@ -342,7 +309,7 @@ namespace Dynamo.Search
             {
                 splitCat =
                     categoryName.Split(CATEGORY_DELIMITER)
-                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !System.String.IsNullOrEmpty(x))
+                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !String.IsNullOrEmpty(x))
                                 .ToList();
             }
             else
@@ -362,7 +329,7 @@ namespace Dynamo.Search
         {
             if (string.IsNullOrEmpty(categoryName))
             {
-                return this.TryAddRootCategory("Uncategorized");
+                return TryAddRootCategory("Uncategorized");
             }
 
             if (ContainsCategory(categoryName))
@@ -373,7 +340,7 @@ namespace Dynamo.Search
             if (!NodeCategories.ContainsKey(categoryName))
             {
                 var cat = new CategorySearchElement(categoryName);
-                cat.Executed += this.OnExecuted;
+                cat.Executed += OnExecuted;
 
                 NodeCategories.Add(categoryName, cat);
             }
@@ -384,7 +351,7 @@ namespace Dynamo.Search
             // attempt to add root element
             if (splitCat.Count == 1)
             {
-                return this.TryAddRootCategory(categoryName);
+                return TryAddRootCategory(categoryName);
             }
 
             if (splitCat.Count == 0)
@@ -491,7 +458,7 @@ namespace Dynamo.Search
             foreach (var splitName in split.GetRange(1, split.Count - 1))
             {
                 if (cat == null)
-                    return cat;
+                    return null;
                 cat = TryGetSubCategory(cat, splitName);
             }
             return cat;
@@ -505,11 +472,10 @@ namespace Dynamo.Search
         #endregion
 
         #region Add
-
         /// <summary>
         ///     Adds DesignScript function groups
         /// </summary>
-        /// <param name="func"></param>
+        /// <param name="functionGroups"></param>
         public void Add(IEnumerable<FunctionGroup> functionGroups)
         {
             if (null == functionGroups)
@@ -558,7 +524,7 @@ namespace Dynamo.Search
                     var searchElement = new DSFunctionNodeSearchElement(displayString, function);
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
-                    searchElement.Executed += this.OnExecuted;
+                    searchElement.Executed += OnExecuted;
 
                     // Add this search eleemnt to the search view
                     TryAddCategoryAndItem(category, searchElement);
@@ -579,8 +545,7 @@ namespace Dynamo.Search
         /// <summary>
         ///     Adds a local DynNode to search
         /// </summary>
-        /// <param name="dynNode">A Dynamo node object</param>
-        public void Add(Type t)
+        public void Add(Type t, WorkspaceModel currentWorkspace)
         {
             // get name, category, attributes (this is terribly ugly...)
             var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
@@ -612,7 +577,7 @@ namespace Dynamo.Search
             }
 
             var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
-            searchEle.Executed += this.OnExecuted;
+            searchEle.Executed += OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;
@@ -626,9 +591,8 @@ namespace Dynamo.Search
             attribs = t.GetCustomAttributes(typeof(NotSearchableInHomeWorkspace), false);
             if (attribs.Length > 0)
             {
-                this.NodesHiddenInHomeWorkspace.Add(searchEle);
-                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
-                    this.DynamoModel.CurrentWorkspace is HomeWorkspaceModel)
+                nodesHiddenInHomeWorkspace.Add(searchEle);
+                if (currentWorkspace is HomeWorkspaceModel)
                 {
                     searchEle.SetSearchable(false);
                 }
@@ -637,9 +601,8 @@ namespace Dynamo.Search
             attribs = t.GetCustomAttributes(typeof(NotSearchableInCustomNodeWorkspace), false);
             if (attribs.Length > 0)
             {
-                this.NodesHiddenInCustomNodeWorkspace.Add(searchEle);
-                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
-                    this.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel)
+                nodesHiddenInCustomNodeWorkspace.Add(searchEle);
+                if (currentWorkspace is CustomNodeWorkspaceModel)
                 {
                     searchEle.SetSearchable(false);
                 }
@@ -665,11 +628,11 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
-            nodeEle.Executed += this.OnExecuted;
+            nodeEle.Executed += OnExecuted;
 
             if (SearchDictionary.Contains(nodeEle))
             {
-                return this.Refactor(nodeInfo);
+                return Refactor(nodeInfo);
             }
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
@@ -704,7 +667,7 @@ namespace Dynamo.Search
             SearchDictionary.Remove((ele) => (ele).Name.EndsWith("." + nodeName));
 
             // remove from browser leaves
-            _searchElements.Where(x => x.Name == nodeName).ToList().ForEach(x => _searchElements.Remove(x));
+            SearchElements.Where(x => x.Name == nodeName).ToList().ForEach(x => SearchElements.Remove(x));
         }
 
         internal void RemoveNode(Guid funcId)
@@ -713,7 +676,7 @@ namespace Dynamo.Search
             SearchDictionary.Remove((x) => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId);
 
             // remove from browser leaves
-            _searchElements.Where(x => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId).ToList().ForEach(x => _searchElements.Remove(x));
+            SearchElements.Where(x => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId).ToList().ForEach(x => SearchElements.Remove(x));
         }
 
         /// <summary>
@@ -722,7 +685,7 @@ namespace Dynamo.Search
         /// <param name="nodeName">The name of the node</param>
         public void RemoveNodeAndEmptyParentCategory(string nodeName)
         {
-            var nodes = _searchElements.Where(x => x.Name == nodeName).ToList();
+            var nodes = SearchElements.Where(x => x.Name == nodeName).ToList();
             if (!nodes.Any())
             {
                 return;
@@ -742,7 +705,7 @@ namespace Dynamo.Search
         /// <param name="nodeName">The name of the node</param>
         public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
         {
-            var nodes = _searchElements
+            var nodes = SearchElements
                 .Where(x => x is CustomNodeSearchElement)
                 .Cast<CustomNodeSearchElement>()
                 .Where(x => x.Guid == customNodeFunctionId)
@@ -767,8 +730,8 @@ namespace Dynamo.Search
 
         internal bool Refactor(CustomNodeInfo nodeInfo)
         {
-            this.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-            return this.Add(nodeInfo);
+            RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
+            return Add(nodeInfo);
         }
 
         #endregion

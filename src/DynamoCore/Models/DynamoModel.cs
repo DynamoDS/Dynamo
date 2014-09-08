@@ -18,7 +18,6 @@ using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
-using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -152,19 +151,19 @@ namespace Dynamo.Models
 
         public bool IsShowingConnectors
         {
-            get { return this.PreferenceSettings.ShowConnector; }
+            get { return PreferenceSettings.ShowConnector; }
             set
             {
-                this.PreferenceSettings.ShowConnector = value;
+                PreferenceSettings.ShowConnector = value;
             }
         }
 
         public ConnectorType ConnectorType
         {
-            get { return this.PreferenceSettings.ConnectorType; }
+            get { return PreferenceSettings.ConnectorType; }
             set
             {
-                this.PreferenceSettings.ConnectorType = value;
+                PreferenceSettings.ConnectorType = value;
             }
         }
 
@@ -220,7 +219,7 @@ namespace Dynamo.Models
 
         public ObservableDictionary<string, Guid> CustomNodes
         {
-            get { return this.CustomNodeManager.GetAllNodeNames(); }
+            get { return CustomNodeManager.GetAllNodeNames(); }
         }
 
         /// <summary>
@@ -297,7 +296,7 @@ namespace Dynamo.Models
 
             if (preferences is PreferenceSettings)
             {
-                this.PreferenceSettings = preferences as PreferenceSettings;
+                PreferenceSettings = preferences as PreferenceSettings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
@@ -305,57 +304,53 @@ namespace Dynamo.Models
             InitializeUpdateManager(updateManager);
             //InitializeInstrumentationLogger();
 
-            SearchModel = new SearchModel(this);
+            SearchModel = new SearchModel();
+            CurrentWorkspaceChanged += SearchModel.RevealWorkspaceSpecificNodes;
 
             InitializeCurrentWorkspace();
 
-            this.CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
-            this.Loader = new DynamoLoader(this);
+            CustomNodeManager = new CustomNodeManager(this, DynamoPathManager.Instance.UserDefinitions);
+            Loader = new DynamoLoader(this);
 
             //this.Loader.PackageLoader.DoCachedPackageUninstalls();
             //this.Loader.PackageLoader.LoadPackages();
 
             DisposeLogic.IsShuttingDown = false;
 
-            this.EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
-            this.CustomNodeManager.RecompileAllNodes(EngineController);
+            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
+            CustomNodeManager.RecompileAllNodes(EngineController);
 
             ////This is necessary to avoid a race condition by causing a thread join
             ////inside the vm exec
-            this.Reset();
+            Reset();
 
             Logger.Log(String.Format(
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
-            this.Loader.ClearCachedAssemblies();
-            this.Loader.LoadNodeModels();
+            Loader.ClearCachedAssemblies();
+            Loader.LoadNodeModels();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             PackageManagerClient = new PackageManagerClient(Loader.PackageLoader.RootPackagesDirectory, CustomNodeManager);
         }
 
-        private void InitializeInstrumentationLogger()
-        {
-            InstrumentationLogger.Start(this);
-        }
-
         private void InitializeUpdateManager(IUpdateManager updateManager)
         {
             UpdateManager = updateManager ?? new UpdateManager.UpdateManager(this);
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), this.Logger, UpdateManager.UpdateDataAvailable));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), Logger, UpdateManager.UpdateDataAvailable));
         }
 
         private void InitializeCurrentWorkspace()
         {
-            this.AddHomeWorkspace();
-            this.CurrentWorkspace = this.HomeSpace;
-            this.CurrentWorkspace.X = 0;
-            this.CurrentWorkspace.Y = 0;
+            AddHomeWorkspace();
+            CurrentWorkspace = HomeSpace;
+            CurrentWorkspace.X = 0;
+            CurrentWorkspace.Y = 0;
         }
 
-        private void InitializePreferences(IPreferences preferences)
+        private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.LengthUnit = preferences.LengthUnit;
             BaseUnit.AreaUnit = preferences.AreaUnit;
@@ -414,13 +409,13 @@ namespace Dynamo.Models
 
         public void RunExpression()
         {
-            Runner.RunExpression(this.HomeSpace);
+            Runner.RunExpression(HomeSpace);
         }
 
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)
-                Runner.CancelAsync(this.EngineController);
+                Runner.CancelAsync(EngineController);
             else
                 RunExpression();
         }
@@ -428,7 +423,7 @@ namespace Dynamo.Models
         internal void ForceRunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)
-                Runner.CancelAsync(this.EngineController);
+                Runner.CancelAsync(EngineController);
             else
             {
                 Logger.Log("Beginning engine reset");
@@ -517,8 +512,8 @@ namespace Dynamo.Models
         {
             Loader.LoadCustomNodes();
 
-            this.SearchModel.RemoveEmptyCategories();
-            this.SearchModel.SortCategoryChildren();
+            SearchModel.RemoveEmptyCategories();
+            SearchModel.SortCategoryChildren();
 
             Logger.Log("Welcome to Dynamo!");
         }
@@ -534,10 +529,11 @@ namespace Dynamo.Models
             var manager = CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FileName);
             var funcDef = manager.GetFunctionDefinition(info.Guid);
+            
             if (funcDef == null) // Fail to load custom function.
                 return;
 
-            if (funcDef.IsProxy && info != null)
+            if (funcDef.IsProxy)
             {
                 funcDef = manager.ReloadFunctionDefintion(info.Guid);
                 if (funcDef == null)
@@ -546,21 +542,21 @@ namespace Dynamo.Models
                 }
             }
 
-            funcDef.AddToSearch(this.SearchModel);
+            funcDef.AddToSearch(SearchModel);
 
             var ws = funcDef.WorkspaceModel;
             ws.Zoom = workspaceHeader.Zoom;
             ws.HasUnsavedChanges = false;
 
-            if (!this.Workspaces.Contains(ws))
+            if (!Workspaces.Contains(ws))
             {
-                this.Workspaces.Add(ws);
+                Workspaces.Add(ws);
             }
 
-            var vm = this.Workspaces.First(x => x == ws);
+            var vm = Workspaces.First(x => x == ws);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
-            this.CurrentWorkspace = ws;
+            CurrentWorkspace = ws;
         }
 
         internal bool OpenDefinition(string xmlPath)
@@ -624,14 +620,13 @@ namespace Dynamo.Models
 
             CurrentWorkspace.ClearUndoRecorder();
 
-            this.ResetEngine();
+            ResetEngine();
             CurrentWorkspace.PreloadedTraceData = null;
         }
 
         /// <summary>
         ///     Change the currently visible workspace to the home workspace
         /// </summary>
-        /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
         internal void ViewHomeWorkspace()
         {
             CurrentWorkspace = HomeSpace;
@@ -639,12 +634,12 @@ namespace Dynamo.Models
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
         {
-            if (null == this.currentWorkspace)
+            if (null == currentWorkspace)
                 return;
 
             OnDeletionStarted(this, EventArgs.Empty);
 
-            this.currentWorkspace.RecordAndDeleteModels(modelsToDelete);
+            currentWorkspace.RecordAndDeleteModels(modelsToDelete);
 
             var selection = DynamoSelection.Instance.Selection;
             foreach (ModelBase model in modelsToDelete)
@@ -670,7 +665,7 @@ namespace Dynamo.Models
 
         public void HideWorkspace(WorkspaceModel workspace)
         {
-            this.CurrentWorkspace = workspaces[0];  // go home
+            CurrentWorkspace = workspaces[0];  // go home
             workspaces.Remove(workspace);
             OnWorkspaceHidden(workspace);
         }
@@ -678,7 +673,6 @@ namespace Dynamo.Models
         /// <summary>
         /// Add a workspace to the dynamo model.
         /// </summary>
-        /// <param name="workspace"></param>
         private void AddHomeWorkspace()
         {
             var workspace = new HomeWorkspaceModel(this)
@@ -735,31 +729,32 @@ namespace Dynamo.Models
                 if (workspaceNodes.Count == 0)
                     workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
 
-                foreach (XmlNode node in workspaceNodes)
+                foreach (
+                    XmlAttribute att in
+                        from XmlNode node in workspaceNodes
+                        from XmlAttribute att in node.Attributes
+                        select att)
                 {
-                    foreach (XmlAttribute att in node.Attributes)
+                    if (att.Name.Equals("X"))
                     {
-                        if (att.Name.Equals("X"))
-                        {
-                            cx = Double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        }
-                        else if (att.Name.Equals("Y"))
-                        {
-                            cy = Double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        }
-                        else if (att.Name.Equals("zoom"))
-                        {
-                            zoom = Double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        }
-                        else if (att.Name.Equals("Version"))
-                        {
-                            version = att.Value;
-                        }
+                        cx = Double.Parse(att.Value, CultureInfo.InvariantCulture);
+                    }
+                    else if (att.Name.Equals("Y"))
+                    {
+                        cy = Double.Parse(att.Value, CultureInfo.InvariantCulture);
+                    }
+                    else if (att.Name.Equals("zoom"))
+                    {
+                        zoom = Double.Parse(att.Value, CultureInfo.InvariantCulture);
+                    }
+                    else if (att.Name.Equals("Version"))
+                    {
+                        version = att.Value;
                     }
                 }
 
                 Version fileVersion = MigrationManager.VersionFromString(version);
-                var currentVersion = MigrationManager.VersionFromWorkspace(this.HomeSpace);
+                var currentVersion = MigrationManager.VersionFromWorkspace(HomeSpace);
 
                 if (fileVersion > currentVersion)
                 {
@@ -769,31 +764,36 @@ namespace Dynamo.Models
                 }
 
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
-                if (decision == MigrationManager.Decision.Abort)
+                switch (decision)
                 {
-                    Utils.DisplayObsoleteFileMessage(this, xmlPath, fileVersion, currentVersion);
-                    return false;
-                }
-                else if (decision == MigrationManager.Decision.Migrate)
-                {
-                    string backupPath = String.Empty;
-                    if (!IsTestMode && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
-                    {
-                        string message = String.Format(
-                            "Original file '{0}' gets backed up at '{1}'",
-                            Path.GetFileName(xmlPath), backupPath);
+                    case MigrationManager.Decision.Abort:
+                        Utils.DisplayObsoleteFileMessage(this, xmlPath, fileVersion, currentVersion);
+                        return false;
+                    case MigrationManager.Decision.Migrate:
+                        string backupPath = String.Empty;
+                        if (!IsTestMode
+                            && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
+                        {
+                            string message = String.Format(
+                                "Original file '{0}' gets backed up at '{1}'",
+                                Path.GetFileName(xmlPath),
+                                backupPath);
 
-                        Logger.Log(message);
-                    }
+                            Logger.Log(message);
+                        }
 
-                    //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
-                    //needs to be forced to be migrated. The version number needs to be changed from
-                    //0.7.0.x to 0.6.0.0.
-                    if (fileVersion == new Version(0, 7, 0, 0))
-                        fileVersion = new Version(0, 6, 0, 0);
+                        //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
+                        //needs to be forced to be migrated. The version number needs to be changed from
+                        //0.7.0.x to 0.6.0.0.
+                        if (fileVersion == new Version(0, 7, 0, 0))
+                            fileVersion = new Version(0, 6, 0, 0);
 
-                    MigrationManager.Instance.ProcessWorkspaceMigrations(this, xmlDoc, fileVersion);
-                    MigrationManager.Instance.ProcessNodesInWorkspace(this, xmlDoc, fileVersion);
+                        MigrationManager.Instance.ProcessWorkspaceMigrations(
+                            this,
+                            xmlDoc,
+                            fileVersion);
+                        MigrationManager.Instance.ProcessNodesInWorkspace(this, xmlDoc, fileVersion);
+                        break;
                 }
 
                 //set the zoom and offsets and trigger events
@@ -802,7 +802,7 @@ namespace Dynamo.Models
                 CurrentWorkspace.Y = cy;
                 CurrentWorkspace.Zoom = zoom;
 
-                var vm = this.Workspaces.First(x => x == CurrentWorkspace);
+                var vm = Workspaces.First(x => x == CurrentWorkspace);
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
@@ -850,11 +850,11 @@ namespace Dynamo.Models
 
                     bool isVisible = true;
                     if (isVisAttrib != null)
-                        isVisible = isVisAttrib.Value == "true" ? true : false;
+                        isVisible = isVisAttrib.Value == "true";
 
                     bool isUpstreamVisible = true;
                     if (isUpstreamVisAttrib != null)
-                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
+                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true";
 
                     // Retrieve optional 'function' attribute (only for DSFunction).
                     XmlAttribute signatureAttrib = elNode.Attributes["function"];
@@ -924,7 +924,7 @@ namespace Dynamo.Models
                     {
                         if (el.ArgumentLacing != LacingStrategy.Disabled)
                         {
-                            LacingStrategy lacing = LacingStrategy.Disabled;
+                            LacingStrategy lacing;
                             Enum.TryParse(lacingAttrib.Value, out lacing);
                             el.ArgumentLacing = lacing;
                         }
@@ -969,7 +969,7 @@ namespace Dynamo.Models
                     var guidEnd = new Guid(guidEndAttrib.Value);
                     int startIndex = Convert.ToInt16(intStartAttrib.Value);
                     int endIndex = Convert.ToInt16(intEndAttrib.Value);
-                    PortType portType = ((PortType) Convert.ToInt16(portTypeAttrib.Value));
+                    var portType = ((PortType) Convert.ToInt16(portTypeAttrib.Value));
 
                     //find the elements to connect
                     NodeModel start = null;
@@ -1042,7 +1042,7 @@ namespace Dynamo.Models
                 HomeSpace.FileName = xmlPath;
 
                 // Allow live runner a chance to preload trace data from XML.
-                var engine = this.EngineController;
+                var engine = EngineController;
                 if (engine != null && (engine.LiveRunnerCore != null))
                 {
                     var data = Utils.LoadTraceDataFromXmlDocument(xmlDoc);
@@ -1112,33 +1112,23 @@ namespace Dynamo.Models
         /// <param name="parameters"></param>
         public void Copy(object parameters)
         {
-            this.ClipBoard.Clear();
+            ClipBoard.Clear();
 
-            foreach (ISelectable sel in DynamoSelection.Instance.Selection)
+            foreach (var el in DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(el => !ClipBoard.Contains(el))) 
             {
-                //MVVM : selection and clipboard now hold view model objects
-                //UIElement el = sel as UIElement;
-                ModelBase el = sel as ModelBase;
-                if (el != null)
-                {
-                    if (!this.ClipBoard.Contains(el))
-                    {
-                        this.ClipBoard.Add(el);
+                ClipBoard.Add(el);
 
-                        //dynNodeView n = el as dynNodeView;
-                        NodeModel n = el as NodeModel;
-                        if (n != null)
-                        {
-                            var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
-                                .Concat(n.OutPorts.ToList().SelectMany(x => x.Connectors))
-                                .Where(x => x.End != null &&
-                                    x.End.Owner.IsSelected &&
-                                    !this.ClipBoard.Contains(x));
+                //dynNodeView n = el as dynNodeView;
+                var n = el as NodeModel;
+                if (n == null) 
+                    continue;
+                var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
+                    .Concat(n.OutPorts.ToList().SelectMany(x => x.Connectors))
+                    .Where(x => x.End != null &&
+                        x.End.Owner.IsSelected &&
+                        !ClipBoard.Contains(x));
 
-                            this.ClipBoard.AddRange(connectors);
-                        }
-                    }
-                }
+                ClipBoard.AddRange(connectors);
             }
         }
 
@@ -1160,9 +1150,9 @@ namespace Dynamo.Models
             //paste contents in
             DynamoSelection.Instance.ClearSelection();
 
-            var nodes = this.ClipBoard.OfType<NodeModel>();
+            var nodes = ClipBoard.OfType<NodeModel>();
 
-            var connectors = this.ClipBoard.OfType<ConnectorModel>();
+            var connectors = ClipBoard.OfType<ConnectorModel>();
 
             foreach (NodeModel node in nodes)
             {
@@ -1205,39 +1195,29 @@ namespace Dynamo.Models
 
             OnRequestLayoutUpdate(this, EventArgs.Empty);
 
-            foreach (ConnectorModel c in connectors)
-            {
-                var connectionData = new Dictionary<string, object>();
-
-                // if in nodeLookup, the node is paste.  otherwise, use the existing node guid
-                Guid startGuid = Guid.Empty;
-                Guid endGuid = Guid.Empty;
-
-                startGuid = nodeLookup.TryGetValue(c.Start.Owner.GUID, out startGuid) ? startGuid : c.Start.Owner.GUID;
-                endGuid = nodeLookup.TryGetValue(c.End.Owner.GUID, out endGuid) ? endGuid : c.End.Owner.GUID;
-
-                var startNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == startGuid);
-                var endNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == endGuid);
-
-                // do not form connector if the end nodes are null
-                if (startNode == null || endNode == null)
-                {
-                    continue;
-                }
-
-                //don't let users paste connectors between workspaces
-                if (startNode.Workspace != CurrentWorkspace)
-                {
-                    continue;
-                }
-
-                createdModels.Add(CurrentWorkspace.AddConnection(startNode, endNode, c.Start.Index, c.End.Index));
-            }
+            Guid start;
+            Guid end;
+            createdModels.AddRange(
+                from c in connectors
+                let startGuid =
+                    nodeLookup.TryGetValue(c.Start.Owner.GUID, out start)
+                        ? start
+                        : c.Start.Owner.GUID
+                let endGuid =
+                    nodeLookup.TryGetValue(c.End.Owner.GUID, out end)
+                        ? end
+                        : c.End.Owner.GUID
+                let startNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == startGuid)
+                let endNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == endGuid)
+                where startNode != null && endNode != null
+                where startNode.Workspace == CurrentWorkspace
+                select
+                    CurrentWorkspace.AddConnection(startNode, endNode, c.Start.Index, c.End.Index));
 
             //process the queue again to create the connectors
             //DynamoCommands.ProcessCommandQueue();
 
-            var notes = this.ClipBoard.OfType<NoteModel>();
+            var notes = ClipBoard.OfType<NoteModel>();
 
             foreach (NoteModel note in notes)
             {
