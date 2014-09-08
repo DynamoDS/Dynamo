@@ -762,17 +762,15 @@ namespace Dynamo.Controls
                     SamplesMenu.Items.Add(new Separator());
                     SamplesMenu.Items.Add(showInFolder);
                 }
-                if (sampleFiles.Any())
+
+                if (sampleFiles.Any()&&this.startPage != null)
                 {
-                    if (this.startPage != null)
-                    {
-                        string rootPath = Path.GetDirectoryName(
-                            Path.GetDirectoryName(sampleFiles.ToArray()[0]));
-                        DirectoryInfo root = new DirectoryInfo(rootPath);
-                        SampleFileEntry rootProperty = new SampleFileEntry("Samples", "Path");
-                        this.startPage.WalkDirectoryTree(root, rootProperty);
-                        this.startPage.SampleFiles.Add(rootProperty);
-                    }
+                    var firstFilePath=Path.GetDirectoryName(sampleFiles.ToArray()[0]);
+                    var rootPath = Path.GetDirectoryName(firstFilePath);
+                    var root = new DirectoryInfo(rootPath);
+                    var rootProperty = new SampleFileEntry("Samples", "Path");
+                    this.startPage.WalkDirectoryTree(root, rootProperty);
+                    this.startPage.SampleFiles.Add(rootProperty);
                 }
             }
         }
