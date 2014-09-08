@@ -1642,8 +1642,10 @@ x = [Associative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Function()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
             string code = @"
 class A
 { 
@@ -1672,7 +1674,8 @@ x = foo ();
 	  
 	
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4385 Regression with Modifier blocks used inside function definition";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Object v1 = null;
             Object[] v2 = new Object[] { 1, 2 };
             Object[] v3 = new Object[] { null, null };
@@ -1736,9 +1739,12 @@ y = a1.a;
 
         [Test]
         [Category("Modifier Block")]
+        [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_2()
         {
-            string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
+
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
+            string errmsg = "MAGN-4385 Modifier block inside function definition seems to corrupt input argument";
             string code = @"class B
 {
     x : var;

@@ -1235,6 +1235,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
+        [Category("Failure")]
         public void TS46_typedassignment_To_array_1467294_2()
         {
             string code =
@@ -1257,7 +1258,8 @@ a;b;c;d;e1;f;g;
                     g []=null;
                 }";
 
-            string error = "1467294 =Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3943
+            string error = "MAGN-3943 Array promotion in Imperative block is not happening";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { 1.0 });
             thisTest.Verify("b", new object[] { 1 });
@@ -1270,6 +1272,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
+        [Category("Failure")]
         public void TS46_typedassignment_To_array_1467294_3()
         {
             string code =
@@ -1294,7 +1297,8 @@ a;b;c;d;e1;f;g;
                     }
                     ";
 
-            string error = "1467294 =Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3943
+            string error = "MAGN-3943 Array promotion in Imperative block is not happening";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1.0 } });
             thisTest.Verify("b", new object[] { new object[] { 1 } });
@@ -1307,6 +1311,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
+        [Category("Failure")]
         public void TS46_typedassignment_To_Vararray_1467294_4()
         {
             string code =
@@ -1329,7 +1334,9 @@ a;b;c;d;e1;f;g;
                     f:var[][]= true;
                     g :var[][]=null;
                     }";
-            string error = "1467294 =Sprint 26 - Rev 3763 - in typed assignment, array promotion does not occur in some cases";
+
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3943
+            string error = "MAGN-3943 Array promotion in Imperative block is not happening";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { new object[] { 1.0 } });
             thisTest.Verify("b", new object[] { new object[] { 1 } });

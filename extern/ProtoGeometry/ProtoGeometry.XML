@@ -132,6 +132,11 @@
             Rotates a Vector around an axis by a specified number of degrees
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
+            <summary>
+            Rotates an object around the Plane origin and normal by a specified  degree
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
             <summary>
             Scale Vector uniformly around the origin
@@ -140,6 +145,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double,System.Double,System.Double)">
             <summary>
             Scale Vector non-uniformly around the origin
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Returns the angle between the two Vectors, in degrees
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vector.X">
@@ -909,9 +919,12 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
-            <summary>
-            Reverse the direction of the curve
-            </summary>
+             <summary>
+             Reverse the direction of the curve
+             </summary>
+            <search>
+            flip
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
             <summary>
@@ -1617,6 +1630,11 @@
             Get a string representation of the PolyCurve
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
+            <summary>
+            Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Make PolyCurve by thickening a curve.
@@ -1625,11 +1643,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make PolyCurve by joining curves. Flips curve as needed for connectivity
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>
-            Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
@@ -1908,6 +1921,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartEndAndTangencies(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Create an arc or tangent bi arc by start and end points and tangencies at start and end
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartPointEndPointStartTangent(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Create an Arc from start Point to end Point with start tangent to Vector
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.CenterPoint">
