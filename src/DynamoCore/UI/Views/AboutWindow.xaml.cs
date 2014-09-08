@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Dynamo.Interfaces;
+
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
@@ -17,7 +17,7 @@ namespace Dynamo.UI.Views
     {
         bool ignoreClose;
 
-        public AboutWindow(ILogger logger, DynamoViewModel dynamoViewModel)
+        public AboutWindow(DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
             InstallNewUpdate = false;
