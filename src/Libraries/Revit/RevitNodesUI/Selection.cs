@@ -644,7 +644,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public List<ElementId> SelectedElement
+        public List<ElementId> SelectedElements
         {
             get { return selectedElements; }
             set
@@ -669,7 +669,7 @@ namespace Dynamo.Nodes
                     RequiresRecalc = true;
                 }
 
-                RaisePropertyChanged("SelectedElement");
+                RaisePropertyChanged("SelectedElements");
             }
         }
 
@@ -679,9 +679,9 @@ namespace Dynamo.Nodes
             {
                 var sb = new StringBuilder();
                 int count = 0;
-                while (count < Math.Min(SelectedElement.Count, 10))
+                while (count < Math.Min(SelectedElements.Count, 10))
                 {
-                    sb.Append(SelectedElement[count] + ",");
+                    sb.Append(SelectedElements[count] + ",");
                     count++;
                 }
                 if (sb.Length > 0)
@@ -733,18 +733,18 @@ namespace Dynamo.Nodes
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
-            SelectedElement.Clear();
-            RaisePropertyChanged("SelectedElement");
+            SelectedElements.Clear();
+            RaisePropertyChanged("SelectedElements");
             RaisePropertyChanged("SelectionText");
         }
 
         void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
-            if (SelectedElement != null && document.Equals(selectionOwner))
+            if (SelectedElements != null && document.Equals(selectionOwner))
             {
-                SelectedElement = SelectedElement.Where(x => !deleted.Contains(x)).ToList();
+                SelectedElements = SelectedElements.Where(x => !deleted.Contains(x)).ToList();
 
-                RaisePropertyChanged("SelectedElement");
+                RaisePropertyChanged("SelectedElements");
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
@@ -752,14 +752,14 @@ namespace Dynamo.Nodes
 
         protected virtual void Updater_ElementsModified(IEnumerable<string> updated)
         {
-            if (SelectedElement != null && selectedUniqueIds.Any(updated.Contains))
+            if (SelectedElements != null && selectedUniqueIds.Any(updated.Contains))
             {
                 RequiresRecalc = true;
 
                 if (Update != null && _selectionTarget != null)
                 {
-                    SelectedElement.Clear();
-                    SelectedElement = Update.Invoke(_selectionTarget);
+                    SelectedElements.Clear();
+                    SelectedElements = Update.Invoke(_selectionTarget);
                 }
             }
         }
@@ -809,7 +809,7 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectedElement")
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectedElements")
             {
                 Mode = BindingMode.OneWay,
                 Converter = new SelectionButtonContentConverter(),
@@ -834,7 +834,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedElement = SelectionAction(_selectionMessage, out _selectionTarget, this.RevitDynamoModel.Logger);
+                SelectedElements = SelectionAction(_selectionMessage, out _selectionTarget, this.RevitDynamoModel.Logger);
 
                 RaisePropertyChanged("SelectionText");
 
@@ -854,7 +854,7 @@ namespace Dynamo.Nodes
         {
             AssociativeNode node;
 
-            if (SelectedElement == null || !SelectedElement.Any())
+            if (SelectedElements == null || !SelectedElements.Any())
             {
                 node = AstFactory.BuildNullNode();
             }
@@ -881,7 +881,7 @@ namespace Dynamo.Nodes
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            if (SelectedElement != null)
+            if (SelectedElements != null)
             {
                 foreach (string selectedElement in selectedUniqueIds.Where(x => x != null))
                 {
@@ -910,7 +910,7 @@ namespace Dynamo.Nodes
                     .ToList();
 
             RequiresRecalc = true;
-            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectedElements");
         }
     }
 
@@ -1179,8 +1179,8 @@ namespace Dynamo.Nodes
             get
             {
                 return _selectionText = 
-                    (SelectedElement != null && SelectedElement.Count > 0)
-                        ? "Element IDs:" + formatSelectionText(SelectedElement.Where(x => x != null).Select(x => x.ToString()))
+                    (SelectedElements != null && SelectedElements.Count > 0)
+                        ? "Element IDs:" + formatSelectionText(SelectedElements.Where(x => x != null).Select(x => x.ToString()))
                         : "Nothing Selected";
             }
             set
