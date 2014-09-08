@@ -149,6 +149,13 @@ namespace Dynamo.Applications
             get { return revitDynamoModel; }
         }
 
+        /// <summary>
+        /// This method (Application.Idling event handler) is called exactly once
+        /// during the creation of Dynamo Revit plug-in. It is in this call both 
+        /// DynamoScheduler and its RevitSchedulerThread objects are created. All 
+        /// other AsyncTask beyond this point are scheduled through the scheduler.
+        /// </summary>
+        /// 
         private static void OnRevitIdleOnce(object sender, IdlingEventArgs e)
         {
             // We only need to initialize this once, unregister.
